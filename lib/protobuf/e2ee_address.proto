@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+// user @ domain ; device ; group
+// @ domain ; ; group
+
+message e2ee_address {
+    bytes domain = 1;
+    bytes user_id = 2;
+    bytes device_id = 3;
+    bytes group_id = 4;
+}

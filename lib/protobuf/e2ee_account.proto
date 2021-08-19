@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_address.proto";
+
+message key_pair {
+    bytes public_key = 1;
+    bytes private_key = 2;
+}
+
+message signed_pre_key_pair {
+    uint32 spk_id = 1;
+    key_pair key_pair = 2;
+    bytes signature = 3;
+    uint64 ttl = 4;
+}
+
+message signed_pre_key_public {
+    uint32 spk_id = 1;
+    bytes public_key = 2;
+    bytes signature = 3;
+}
+
+message one_time_pre_key_pair {
+    uint32 opk_id = 1;
+    bool used = 2;
+    key_pair key_pair = 3;
+}
+
+message one_time_pre_key_public {
+    uint32 opk_id = 1;
+    bytes public_key = 2;
+}
+
+message e2ee_account {
+    uint32 version = 1;
+    bytes account_id = 2;
+    bool saved = 3;
+    e2ee_address address = 4;
+    key_pair identity_key_pair = 5;
+    signed_pre_key_pair signed_pre_key_pair = 6;
+    repeated one_time_pre_key_pair one_time_pre_keys = 7;
+    uint32 next_signed_pre_key_id = 8;
+    uint32 next_one_time_pre_key_id = 9;
+}

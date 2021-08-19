@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_account.proto";
+import "e2ee_address.proto";
+
+message pre_key_bundle {
+    e2ee_address peer_address = 1;
+    bytes identity_key_public = 2;
+    signed_pre_key_public signed_pre_key_public = 3;
+    one_time_pre_key_public one_time_pre_key_public = 4;
+}
