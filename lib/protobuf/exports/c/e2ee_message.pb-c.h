@@ -109,13 +109,16 @@ struct  Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload
 {
   ProtobufCMessage base;
   ProtobufCBinaryData session_id;
+  Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address;
+  size_t n_member_addresses;
+  Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses;
   uint32_t sequence;
   ProtobufCBinaryData chain_key;
   ProtobufCBinaryData signature_public_key;
 };
 #define ORG__E2EELAB__LIB__PROTOBUF__E2EE_GROUP_PRE_KEY_PAYLOAD__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__descriptor) \
-    , {0,NULL}, 0, {0,NULL}, {0,NULL} }
+    , {0,NULL}, NULL, 0,NULL, 0, {0,NULL}, {0,NULL} }
 
 
 /* Org__E2eelab__Lib__Protobuf__E2eeMsgPayload methods */

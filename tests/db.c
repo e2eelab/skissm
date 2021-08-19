@@ -1041,6 +1041,14 @@ void load_outbound_session(Org__E2eelab__Lib__Protobuf__E2eeAddress *owner,
   return;
 }
 
+void unload_session(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *owner,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *from,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *to
+) {
+
+}
+
 void load_outbound_group_session(
     Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
     Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
@@ -1178,7 +1186,7 @@ void unload_group_session(
   // bind
   sqlite3_bind_blob(stmt, 1, group_session->session_owner->user_id.data,
                     group_session->session_owner->user_id.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 1, group_session->group_address->group_id.data,
+  sqlite3_bind_blob(stmt, 2, group_session->group_address->group_id.data,
                     group_session->group_address->group_id.len, SQLITE_STATIC);
 
   // step
@@ -1187,3 +1195,10 @@ void unload_group_session(
   // release
   sqlite3_finalize(stmt);
 }
+
+void unload_inbound_group_session(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    size_t member_num,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses
+) {}

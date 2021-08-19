@@ -662,7 +662,7 @@ const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__e2ee_plaintext__de
   (ProtobufCMessageInit) org__e2eelab__lib__protobuf__e2ee_plaintext__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__field_descriptors[4] =
+static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__field_descriptors[6] =
 {
   {
     "session_id",
@@ -677,8 +677,32 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "sequence",
+    "group_address",
     2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, group_address),
+    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "member_addresses",
+    3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, n_member_addresses),
+    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, member_addresses),
+    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "sequence",
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
@@ -690,7 +714,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
   },
   {
     "chain_key",
-    3,
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
@@ -702,7 +726,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
   },
   {
     "signature_public_key",
-    4,
+    6,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
@@ -714,15 +738,17 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
   },
 };
 static const unsigned org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__field_indices_by_name[] = {
-  2,   /* field[2] = chain_key */
-  1,   /* field[1] = sequence */
+  4,   /* field[4] = chain_key */
+  1,   /* field[1] = group_address */
+  2,   /* field[2] = member_addresses */
+  3,   /* field[3] = sequence */
   0,   /* field[0] = session_id */
-  3,   /* field[3] = signature_public_key */
+  5,   /* field[5] = signature_public_key */
 };
 static const ProtobufCIntRange org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 6 }
 };
 const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__descriptor =
 {
@@ -732,7 +758,7 @@ const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__e2ee_group_pre_key
   "Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload",
   "org.e2eelab.lib.protobuf",
   sizeof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload),
-  4,
+  6,
   org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__field_descriptors,
   org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__field_indices_by_name,
   1,  org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__number_ranges,

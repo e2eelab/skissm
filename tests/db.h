@@ -65,6 +65,11 @@ void store_session(Org__E2eelab__Lib__Protobuf__E2eeSession *session);
 void load_outbound_session(Org__E2eelab__Lib__Protobuf__E2eeAddress *owner,
                            Org__E2eelab__Lib__Protobuf__E2eeAddress *to,
                            Org__E2eelab__Lib__Protobuf__E2eeSession **session);
+void unload_session(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *owner,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *from,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *to
+);
 void load_outbound_group_session(
     Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
     Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
@@ -77,5 +82,11 @@ void store_group_session(
     Org__E2eelab__Lib__Protobuf__E2eeGroupSession *group_session);
 void unload_group_session(
     Org__E2eelab__Lib__Protobuf__E2eeGroupSession *group_session);
+void unload_inbound_group_session(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    size_t member_num,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses
+);
 
 #endif /* TEST_DB_H_ */

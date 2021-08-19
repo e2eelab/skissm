@@ -114,17 +114,59 @@ typedef struct skissm_handler {
   void (*load_outbound_session)(Org__E2eelab__Lib__Protobuf__E2eeAddress *,
                                 Org__E2eelab__Lib__Protobuf__E2eeAddress *,
                                 Org__E2eelab__Lib__Protobuf__E2eeSession **);
+  /**
+   * @brief delete old inbound session
+   * @param owner
+   * @param from
+   * @param to
+   */
+  void (*unload_session)(Org__E2eelab__Lib__Protobuf__E2eeAddress *,
+                         Org__E2eelab__Lib__Protobuf__E2eeAddress *,
+                         Org__E2eelab__Lib__Protobuf__E2eeAddress *);
 
   // group session related handlers
+  /**
+   * @brief find outbound group session
+   * @param user_address
+   * @param group_address
+   * @param inbound_group_session
+   */
   void (*load_outbound_group_session)(
       Org__E2eelab__Lib__Protobuf__E2eeAddress *,
       Org__E2eelab__Lib__Protobuf__E2eeAddress *,
       Org__E2eelab__Lib__Protobuf__E2eeGroupSession **);
+  /**
+   * @brief find inbound group session
+   * @param group_session_id
+   * @param user_address
+   * @param outbound_group_session
+   */
   void (*load_inbound_group_session)(
       ProtobufCBinaryData, Org__E2eelab__Lib__Protobuf__E2eeAddress *,
       Org__E2eelab__Lib__Protobuf__E2eeGroupSession **);
+  /**
+   * @brief store group session
+   * @param group_session
+   */
   void (*store_group_session)(Org__E2eelab__Lib__Protobuf__E2eeGroupSession *);
+  /**
+   * @brief delete group session
+   * @param group_session
+   */
   void (*unload_group_session)(Org__E2eelab__Lib__Protobuf__E2eeGroupSession *);
+  /**
+   * @brief delete old inbound group session
+   * @param user_address
+   * @param group_address
+   * @param member_num
+   * @param member_addresses
+   */
+  void (*unload_inbound_group_session)(
+      Org__E2eelab__Lib__Protobuf__E2eeAddress *,
+      Org__E2eelab__Lib__Protobuf__E2eeAddress *,
+      size_t,
+      Org__E2eelab__Lib__Protobuf__E2eeAddress **
+  );
 } skissm_handler;
 
 extern const struct skissm_handler ssm_handler;

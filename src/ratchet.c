@@ -143,6 +143,7 @@ static size_t verify_and_decrypt_for_existing_chain(
     );
 
     org__e2eelab__lib__protobuf__chain_key__free_unpacked(new_chain, NULL);
+    org__e2eelab__lib__protobuf__message_key__free_unpacked(mk, NULL);
 
     return result;
 }

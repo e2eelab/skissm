@@ -194,8 +194,10 @@ const struct skissm_handler ssm_handler = {
     load_inbound_session,
     store_session,
     load_outbound_session,
+    unload_session,
     load_outbound_group_session,
     load_inbound_group_session,
     store_group_session,
     unload_group_session,
+    unload_inbound_group_session,
 };

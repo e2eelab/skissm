@@ -378,13 +378,17 @@ size_t decrypt_session(
         return (size_t)(-1);
     }
 
-    Org__E2eelab__Lib__Protobuf__E2eeSession *session;
+    /* load the corresponding inbound session */
+    Org__E2eelab__Lib__Protobuf__E2eeSession *session = NULL;
     ssm_handler.load_inbound_session(inbound_message->session_id, inbound_message->to, &session);
     if (session == NULL){
         if (inbound_message->msg_type != ORG__E2EELAB__LIB__PROTOBUF__E2EE_MESSAGE_TYPE__PRE_KEY){
             ssm_notify_error(BAD_MESSAGE_FORMAT, "decrypt_session()");
             return (size_t)(-1);
         }
+        /* delete the old inbound session if it exists */
+        ssm_handler.unload_session(inbound_message->to, inbound_message->from, inbound_message->to);
+        /* create a new inbound session */
         session = (Org__E2eelab__Lib__Protobuf__E2eeSession *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeSession));
         initialise_session(session, inbound_message->from, inbound_message->to);
         copy_address_from_address(&(session->session_owner), inbound_message->to);
@@ -422,6 +426,7 @@ size_t decrypt_session(
                 ssm_notify_one2one_msg(inbound_message->from, inbound_message->to, e2ee_plaintext->payload.data, e2ee_plaintext->payload.len);
             } else if (e2ee_plaintext->plaintext_type == ORG__E2EELAB__LIB__PROTOBUF__E2EE_PLAINTEXT_TYPE__GROUP_PRE_KEY){
                 Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *group_pre_key_payload = org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__unpack(NULL, e2ee_plaintext->payload.len, e2ee_plaintext->payload.data);
+                ssm_handler.unload_inbound_group_session(inbound_message->to, group_pre_key_payload->group_address, group_pre_key_payload->n_member_addresses, group_pre_key_payload->member_addresses);
                 create_inbound_group_session(group_pre_key_payload, inbound_message->to);
                 org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__free_unpacked(group_pre_key_payload, NULL);
             }

@@ -88,9 +88,18 @@ void create_outbound_group_session(
     /* pack the group pre-key message */
     Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *group_pre_key_payload = (Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload));
     org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__init(group_pre_key_payload);
+
+    copy_protobuf_from_protobuf(&(group_pre_key_payload->session_id), &(group_session->session_id));
+
+    copy_address_from_address(&(group_pre_key_payload->group_address), group_address);
+
+    group_pre_key_payload->n_member_addresses = member_num;
+    copy_member_addresses_from_member_addresses(&(group_pre_key_payload->member_addresses), (const Org__E2eelab__Lib__Protobuf__E2eeAddress **)group_session->member_addresses, member_num);
+
     group_pre_key_payload->sequence = group_session->sequence;
     copy_protobuf_from_protobuf(&(group_pre_key_payload->chain_key), &(group_session->chain_key));
     copy_protobuf_from_protobuf(&(group_pre_key_payload->signature_public_key), &(group_session->signature_public_key));
+
     size_t plaintext_len = org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__get_packed_size(group_pre_key_payload);
     uint8_t *plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
     org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__pack(group_pre_key_payload, plaintext);
@@ -128,6 +137,10 @@ void create_inbound_group_session(
     group_session->version = PROTOCOL_VERSION;
     copy_address_from_address(&(group_session->session_owner), user_address);
     copy_protobuf_from_protobuf(&(group_session->session_id), &(group_pre_key_payload->session_id));
+
+    copy_address_from_address(&(group_session->group_address), group_pre_key_payload->group_address);
+    group_session->n_member_addresses = group_pre_key_payload->n_member_addresses;
+    copy_member_addresses_from_member_addresses(&(group_session->member_addresses), (const Org__E2eelab__Lib__Protobuf__E2eeAddress **)group_pre_key_payload->member_addresses, group_pre_key_payload->n_member_addresses);
 
     group_session->sequence = group_pre_key_payload->sequence;
     copy_protobuf_from_protobuf(&(group_session->chain_key), &(group_pre_key_payload->chain_key));
@@ -251,8 +264,11 @@ void decrypt_group_session(
         return;
     }
 
+    Org__E2eelab__Lib__Protobuf__E2eeGroupMsgPayload *group_msg_payload = NULL;
+    Org__E2eelab__Lib__Protobuf__MessageKey *keys = NULL;
+
     /* Unpack the e2ee message */
-    Org__E2eelab__Lib__Protobuf__E2eeGroupMsgPayload *group_msg_payload = org__e2eelab__lib__protobuf__e2ee_group_msg_payload__unpack(NULL, group_msg->payload.len, group_msg->payload.data);
+    group_msg_payload = org__e2eelab__lib__protobuf__e2ee_group_msg_payload__unpack(NULL, group_msg->payload.len, group_msg->payload.data);
 
     /* Verify the signature */
     size_t result = CIPHER.suit1->verify(
@@ -261,7 +277,7 @@ void decrypt_group_session(
         group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len);
     if (result < 0){
         ssm_notify_error(BAD_SIGNATURE, "decrypt_group_session()");
-        return;
+        goto complete;
     }
 
     /* Advance the chain key */
@@ -271,7 +287,7 @@ void decrypt_group_session(
     }
 
     /* Create the message key */
-    Org__E2eelab__Lib__Protobuf__MessageKey *keys = (Org__E2eelab__Lib__Protobuf__MessageKey *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__MessageKey));
+    keys = (Org__E2eelab__Lib__Protobuf__MessageKey *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__MessageKey));
     org__e2eelab__lib__protobuf__message_key__init(keys);
     create_message_keys(&(group_session->chain_key), keys);
 
@@ -291,6 +307,7 @@ void decrypt_group_session(
         free_mem((void **)&plaintext, plaintext_len);
     }
 
+complete:
     /* release */
     org__e2eelab__lib__protobuf__message_key__free_unpacked(keys, NULL);
     org__e2eelab__lib__protobuf__e2ee_group_msg_payload__free_unpacked(group_msg_payload, NULL);
