@@ -48,6 +48,37 @@ typedef struct skissm_event_handler {
     Org__E2eelab__Lib__Protobuf__E2eeAddress *,
     Org__E2eelab__Lib__Protobuf__E2eeAddress *,
     uint8_t *, size_t);
+
+  /**
+   * @brief notify group created event
+   * @param group_address
+   * @param group_name
+   */
+  void (*on_group_created)(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *,
+    ProtobufCBinaryData *);
+
+  /**
+   * @brief notify group members added
+   * @param group_address
+   * @param group_name
+   * @param member_addresses
+   */
+  void (*on_group_members_added)(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *,
+    ProtobufCBinaryData *,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress **);
+
+  /**
+   * @brief notify group members removed
+   * @param group_address
+   * @param group_name
+   * @param member_addresses
+   */
+  void (*on_group_members_removed)(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *,
+    ProtobufCBinaryData *,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress **);
 } skissm_event_handler;
 
 void set_skissm_event_handler(skissm_event_handler *event_handler);
@@ -64,6 +95,21 @@ void ssm_notify_group_msg(
   Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
   uint8_t *plaintext, size_t plaintext_len);
 
+void ssm_notify_group_created(
+  Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+  ProtobufCBinaryData *group_name);
+
+void ssm_notify_group_members_added(
+  Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+  ProtobufCBinaryData *group_name,
+  Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses
+  );
+
+void ssm_notify_group_members_removed(
+  Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+  ProtobufCBinaryData *group_name,
+  Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses
+  );
 typedef struct skissm_handler {
   // common handlers
   int64_t (*handle_get_ts)();

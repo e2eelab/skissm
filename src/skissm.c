@@ -28,3 +28,28 @@ void ssm_notify_group_msg(
     ssm_event_handler->on_group_msg_received(from_address, group_address,
                                              plaintext, plaintext_len);
 }
+
+void ssm_notify_group_created(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    ProtobufCBinaryData *group_name) {
+  if (ssm_event_handler != NULL)
+    ssm_event_handler->on_group_created(group_address, group_name);
+}
+
+void ssm_notify_group_members_added(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    ProtobufCBinaryData *group_name,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses) {
+  if (ssm_event_handler != NULL)
+    ssm_event_handler->on_group_members_added(group_address, group_name,
+                                              member_addresses);
+}
+
+void ssm_notify_group_members_removed(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    ProtobufCBinaryData *group_name,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses) {
+  if (ssm_event_handler != NULL)
+    ssm_event_handler->on_group_members_removed(group_address, group_name,
+                                                member_addresses);
+}

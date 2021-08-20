@@ -33,10 +33,33 @@ static void on_group_msg_received(
     printf("😊 on_group_msg_received: plaintext[len=%zu]: %s\n", plaintext_len, plaintext);
 }
 
+static void on_group_created(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    ProtobufCBinaryData *group_name) {
+
+}
+
+static void on_group_members_added(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    ProtobufCBinaryData *group_name,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses) {
+
+}
+
+static void on_group_members_removed(
+    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    ProtobufCBinaryData *group_name,
+    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses) {
+
+}
+
 static skissm_event_handler test_event_handler = {
   on_error,
   on_one2one_msg_received,
-  on_group_msg_received
+  on_group_msg_received,
+  on_group_created,
+  on_group_members_added,
+  on_group_members_removed
 };
 
 int main(){

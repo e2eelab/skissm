@@ -17,6 +17,7 @@ static void handle_create_group_response(
     group.group_address = group_address;
     group.group_name = response_handler->group_name;
     create_outbound_group_session(response_handler->sender_address, group_address, response_handler->member_addresses, response_handler->member_num);
+    ssm_notify_group_created(group_address, response_handler->group_name);
 }
 
 create_group_response_handler create_group_response_handler_store = {
