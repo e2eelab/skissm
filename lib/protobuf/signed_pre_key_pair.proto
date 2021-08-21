@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "key_pair.proto";
+
+message signed_pre_key_pair {
+  uint32 spk_id = 1;
+  key_pair key_pair = 2;
+  bytes signature = 3;
+  uint64 ttl = 4;
+}

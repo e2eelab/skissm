@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "message_key.proto";
+
+message skipped_message_key_node {
+  bytes ratchet_key_public = 1;
+  message_key message_key = 2;
+}

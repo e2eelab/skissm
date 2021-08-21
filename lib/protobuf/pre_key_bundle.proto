@@ -2,8 +2,9 @@ syntax = "proto3";
 
 package org.e2eelab.lib.protobuf;
 
-import "e2ee_account.proto";
 import "e2ee_address.proto";
+import "signed_pre_key_public.proto";
+import "one_time_pre_key_public.proto";
 
 message pre_key_bundle {
     e2ee_address peer_address = 1;

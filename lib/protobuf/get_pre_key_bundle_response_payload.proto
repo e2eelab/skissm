@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "pre_key_bundle.proto";
+
+message get_pre_key_bundle_response_payload {
+  uint32 code = 1;
+  string msg = 2;
+  bytes user_name = 3;
+  pre_key_bundle pre_key_bundle = 4;
+}

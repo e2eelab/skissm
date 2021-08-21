@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+message add_group_members_response_payload {
+  uint32 code = 1;
+  string msg = 2;
+}

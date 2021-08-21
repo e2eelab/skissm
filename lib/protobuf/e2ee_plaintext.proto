@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_plaintext_type.proto";
+
+message e2ee_plaintext {
+    uint32 version = 1;
+    e2ee_plaintext_type plaintext_type = 2;
+    bytes payload = 3;
+}

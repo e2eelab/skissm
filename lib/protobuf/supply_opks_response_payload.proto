@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_address.proto";
+import "one_time_pre_key_public.proto";
+
+message supply_opks_response_payload {
+  uint32 code = 1;
+  string msg = 2;
+  e2ee_address user_address = 3;
+  repeated one_time_pre_key_public one_time_pre_key_public = 4;
+}

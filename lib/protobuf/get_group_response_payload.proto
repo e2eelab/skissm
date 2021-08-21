@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_address.proto";
+
+message get_group_response_payload {
+  uint32 code = 1;
+  string msg = 2;
+  bytes group_name = 3;
+  repeated e2ee_address member_addresses = 4;
+}

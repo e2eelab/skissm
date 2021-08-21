@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "chain_key.proto";
+
+message receiver_chain_node {
+  bytes ratchet_key_public = 1;
+  chain_key chain_key = 2;
+}

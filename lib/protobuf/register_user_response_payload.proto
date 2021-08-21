@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_address.proto";
+
+message register_user_response_payload {
+  uint32 code = 1;
+  string msg = 2;
+  e2ee_address address = 3;
+}

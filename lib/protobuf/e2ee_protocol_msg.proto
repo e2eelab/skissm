@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_commands.proto";
+
+message e2ee_protocol_msg {
+  uint32 id = 1;
+  e2ee_commands cmd = 2;
+  bytes payload = 3;
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_address.proto";
+
+message e2ee_group_pre_key_payload {
+    bytes session_id = 1;
+    e2ee_address group_address = 2;
+    repeated e2ee_address member_addresses = 3;
+    uint32 sequence = 4;
+    bytes chain_key = 5;
+    bytes signature_public_key = 6;
+}

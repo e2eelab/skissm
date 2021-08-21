@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "signed_pre_key_public.proto";
+import "one_time_pre_key_public.proto";
+
+message register_user_request_payload {
+  bytes user_name = 1;
+  bytes identity_key_public = 2;
+  signed_pre_key_public signed_pre_key_public = 3;
+  repeated one_time_pre_key_public one_time_pre_keys = 4;
+}

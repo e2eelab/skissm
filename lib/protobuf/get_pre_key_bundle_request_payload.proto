@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_address.proto";
+
+message get_pre_key_bundle_request_payload {
+  e2ee_address peer_address = 1;
+}

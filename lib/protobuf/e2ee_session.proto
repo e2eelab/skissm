@@ -2,40 +2,8 @@ syntax = "proto3";
 
 package org.e2eelab.lib.protobuf;
 
-import "e2ee_account.proto";
 import "e2ee_address.proto";
-
-message chain_key {
-    uint32 index = 1;
-    bytes shared_key = 2;
-}
-
-message message_key {
-    uint32 index = 1;
-    bytes derived_key = 2;
-}
-
-message sender_chain_node {
-    key_pair ratchet_key_pair = 1;
-    chain_key chain_key = 2;
-}
-
-message receiver_chain_node {
-    bytes ratchet_key_public = 1;
-    chain_key chain_key = 2;
-}
-
-message skipped_message_key_node {
-    bytes ratchet_key_public = 1;
-    message_key message_key = 2;
-}
-
-message ratchet {
-    bytes root_key = 1;
-    sender_chain_node sender_chain = 2;
-    repeated receiver_chain_node receiver_chains = 3;
-    repeated skipped_message_key_node skipped_message_keys = 4;
-}
+import "ratchet.proto";
 
 message e2ee_session {
     uint32 version = 1;
@@ -51,17 +19,4 @@ message e2ee_session {
 
     bool responded = 11;
     bytes associated_data = 12;
-}
-
-message e2ee_group_session {
-    uint32 version = 1;
-    bytes session_id = 2;
-    e2ee_address session_owner = 3;
-    e2ee_address group_address = 4;
-    repeated e2ee_address member_addresses = 5;
-    uint32 sequence = 6;
-    bytes chain_key = 7;
-    bytes signature_private_key = 8;
-    bytes signature_public_key = 9;
-    bytes associated_data = 10;
 }

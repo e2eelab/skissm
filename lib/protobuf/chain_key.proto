@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+message chain_key {
+  uint32 index = 1;
+  bytes shared_key = 2;
+}

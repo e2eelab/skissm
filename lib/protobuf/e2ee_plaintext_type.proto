@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+enum e2ee_plaintext_type {
+    COMMON_MSG = 0;
+    GROUP_PRE_KEY = 1;
+}

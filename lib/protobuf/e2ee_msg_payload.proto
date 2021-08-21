@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+message e2ee_msg_payload {
+  uint32 sequence = 1;
+  bytes ciphertext = 2;
+  bytes ratchet_key = 3;
+}

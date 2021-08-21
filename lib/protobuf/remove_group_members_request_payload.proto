@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_address.proto";
+
+message remove_group_members_request_payload {
+  e2ee_address sender_address = 1;
+  e2ee_address group_address = 2;
+  repeated e2ee_address member_addresses = 3;
+}

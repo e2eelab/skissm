@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package org.e2eelab.lib.protobuf;
+
+import "e2ee_address.proto";
+
+message get_group_request_payload {
+  e2ee_address group_address = 1;
+}
