@@ -1,12 +1,16 @@
 syntax = "proto3";
 
-package org.e2eelab.lib.protobuf;
+package org.e2eelab.skissm.proto;
 
-import "pre_key_bundle.proto";
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "GetPreKeyBundleResponsePayload";
+option java_multiple_files = true;
+
+import "e2ee_pre_key_bundle.proto";
 
 message get_pre_key_bundle_response_payload {
   uint32 code = 1;
   string msg = 2;
   bytes user_name = 3;
-  pre_key_bundle pre_key_bundle = 4;
+  e2ee_pre_key_bundle pre_key_bundle = 4;
 }

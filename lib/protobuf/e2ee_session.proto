@@ -1,9 +1,13 @@
 syntax = "proto3";
 
-package org.e2eelab.lib.protobuf;
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "E2eeSession";
+option java_multiple_files = true;
 
 import "e2ee_address.proto";
-import "ratchet.proto";
+import "e2ee_ratchet.proto";
 
 message e2ee_session {
     uint32 version = 1;
@@ -11,7 +15,7 @@ message e2ee_session {
     e2ee_address session_owner = 3;
     e2ee_address from = 4;
     e2ee_address to = 5;
-    ratchet ratchet = 6;
+    e2ee_ratchet ratchet = 6;
     bytes alice_identity_key = 7;
     bytes alice_ephemeral_key = 8;
     bytes bob_signed_pre_key = 9;

@@ -1,11 +1,15 @@
 syntax = "proto3";
 
-package org.e2eelab.lib.protobuf;
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "OneTimePreKeyPair";
+option java_multiple_files = true;
 
 import "key_pair.proto";
 
 message one_time_pre_key_pair {
-  uint32 opk_id = 1;
-  bool used = 2;
-  key_pair key_pair = 3;
+    uint32 opk_id = 1;
+    bool used = 2;
+    key_pair key_pair = 3;
 }

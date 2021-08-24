@@ -1,6 +1,10 @@
 syntax = "proto3";
 
-package org.e2eelab.lib.protobuf;
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "RegisterUserRequestPayload";
+option java_multiple_files = true;
 
 import "signed_pre_key_public.proto";
 import "one_time_pre_key_public.proto";
