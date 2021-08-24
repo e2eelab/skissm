@@ -25,8 +25,8 @@ void test_find_session()
     setup();
 
     // create session and two addresses
-    Org__E2eelab__Lib__Protobuf__E2eeSession *session = (Org__E2eelab__Lib__Protobuf__E2eeSession *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeSession));
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *from, *to;
+    Org__E2eelab__Skissm__Proto__E2eeSession *session = (Org__E2eelab__Skissm__Proto__E2eeSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeSession));
+    Org__E2eelab__Skissm__Proto__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
     initialise_session(session, from, to);
@@ -58,17 +58,17 @@ void test_find_session()
     store_session(session);
 
     // load_outbound_session
-    Org__E2eelab__Lib__Protobuf__E2eeSession *session_copy;
+    Org__E2eelab__Skissm__Proto__E2eeSession *session_copy;
     load_outbound_session(from, to, &session_copy);
 
     // assert session equals to session_copy
     print_result("test_find_session", is_equal_session(session, session_copy));
 
     // free
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(from, NULL);
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(to, NULL);
-    org__e2eelab__lib__protobuf__e2ee_session__free_unpacked(session, NULL);
-    org__e2eelab__lib__protobuf__e2ee_session__free_unpacked(session_copy, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(from, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(to, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_session__free_unpacked(session, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_session__free_unpacked(session_copy, NULL);
 
     tear_down();
 }
@@ -78,10 +78,10 @@ void test_load_session()
     setup();
 
     // create session and two addresses
-    Org__E2eelab__Lib__Protobuf__E2eeSession *session = (Org__E2eelab__Lib__Protobuf__E2eeSession *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeSession));
-    org__e2eelab__lib__protobuf__e2ee_session__init(session);
+    Org__E2eelab__Skissm__Proto__E2eeSession *session = (Org__E2eelab__Skissm__Proto__E2eeSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeSession));
+    Org__E2eelab__Skissm__Proto__e2ee_session__init(session);
     
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *from, *to;
+    Org__E2eelab__Skissm__Proto__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
     initialise_session(session, from, to);
@@ -113,17 +113,17 @@ void test_load_session()
     store_session(session);
 
     // load_inbound_session
-    Org__E2eelab__Lib__Protobuf__E2eeSession *session_copy;
+    Org__E2eelab__Skissm__Proto__E2eeSession *session_copy;
     load_inbound_session(session->session_id, to, &session_copy);
 
     // assert session equals to session_copy
     print_result("test_load_session", is_equal_session(session, session_copy));
 
     // free
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(from, NULL);
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(to, NULL);
-    org__e2eelab__lib__protobuf__e2ee_session__free_unpacked(session, NULL);
-    org__e2eelab__lib__protobuf__e2ee_session__free_unpacked(session_copy, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(from, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(to, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_session__free_unpacked(session, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_session__free_unpacked(session_copy, NULL);
 
     tear_down();
 }
@@ -133,18 +133,18 @@ void test_load_outbound_group_session()
     setup();
 
     // create two addresses
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *Alice, *Bob;
+    Org__E2eelab__Skissm__Proto__E2eeAddress *Alice, *Bob;
     mock_address(&Alice, "alice", "alice's domain", "alice's device");
     mock_address(&Bob, "bob", "bob's domain", "bob's device");
 
     // create member_addresses
-    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses = (Org__E2eelab__Lib__Protobuf__E2eeAddress **) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeAddress *) * 2);
+    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * 2);
     copy_address_from_address(&(member_addresses[0]), Alice);
     copy_address_from_address(&(member_addresses[1]), Bob);
 
     // mock group address
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address = (Org__E2eelab__Lib__Protobuf__E2eeAddress *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeAddress));
-    org__e2eelab__lib__protobuf__e2ee_address__init(group_address);
+    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
+    Org__E2eelab__Skissm__Proto__e2ee_address__init(group_address);
     group_address->domain.len = sizeof(DOMAIN);
     group_address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
     memcpy(group_address->domain.data, DOMAIN, sizeof(DOMAIN));
@@ -153,8 +153,8 @@ void test_load_outbound_group_session()
     ssm_handler.handle_rg(group_address->group_id.data, 32);
 
     // create outbound group session
-    Org__E2eelab__Lib__Protobuf__E2eeGroupSession *group_session = (Org__E2eelab__Lib__Protobuf__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession));
-    org__e2eelab__lib__protobuf__e2ee_group_session__init(group_session);
+    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));
+    Org__E2eelab__Skissm__Proto__e2ee_group_session__init(group_session);
 
     group_session->version = PROTOCOL_VERSION;
 
@@ -168,7 +168,7 @@ void test_load_outbound_group_session()
 
     group_session->n_member_addresses = 2;
 
-    copy_member_addresses_from_member_addresses(&(group_session->member_addresses), (const Org__E2eelab__Lib__Protobuf__E2eeAddress **)member_addresses, 2);
+    copy_member_addresses_from_member_addresses(&(group_session->member_addresses), (const Org__E2eelab__Skissm__Proto__E2eeAddress **)member_addresses, 2);
 
     group_session->sequence = 0;
 
@@ -191,19 +191,19 @@ void test_load_outbound_group_session()
     store_group_session(group_session);
 
     // load_outbound_group_session
-    Org__E2eelab__Lib__Protobuf__E2eeGroupSession *group_session_copy;
+    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session_copy;
     load_outbound_group_session(Alice, group_address, &group_session_copy);
 
     // assert session equals to session_copy
     print_result("test_load_outbound_group_session", is_equal_group_session(group_session, group_session_copy));
 
     // free
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(Alice, NULL);
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(Bob, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(Alice, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(Bob, NULL);
     free(member_addresses);
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(group_address, NULL);
-    org__e2eelab__lib__protobuf__e2ee_group_session__free_unpacked(group_session, NULL);
-    org__e2eelab__lib__protobuf__e2ee_group_session__free_unpacked(group_session_copy, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(group_address, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_group_session__free_unpacked(group_session, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_group_session__free_unpacked(group_session_copy, NULL);
 
     tear_down();
 }
@@ -213,18 +213,18 @@ void test_load_inbound_group_session()
     setup();
 
     // create two addresses
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *Alice, *Bob;
+    Org__E2eelab__Skissm__Proto__E2eeAddress *Alice, *Bob;
     mock_address(&Alice, "alice", DOMAIN, "alice's device");
     mock_address(&Bob, "bob", DOMAIN, "bob's device");
 
     // create member_addresses
-    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses = (Org__E2eelab__Lib__Protobuf__E2eeAddress **) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeAddress *) * 2);
+    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * 2);
     copy_address_from_address(&(member_addresses[0]), Alice);
     copy_address_from_address(&(member_addresses[1]), Bob);
 
     // mock group address
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address = (Org__E2eelab__Lib__Protobuf__E2eeAddress *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeAddress));
-    org__e2eelab__lib__protobuf__e2ee_address__init(group_address);
+    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
+    Org__E2eelab__Skissm__Proto__e2ee_address__init(group_address);
     group_address->domain.len = sizeof(DOMAIN);
     group_address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
     memcpy(group_address->domain.data, DOMAIN, sizeof(DOMAIN));
@@ -233,8 +233,8 @@ void test_load_inbound_group_session()
     ssm_handler.handle_rg(group_address->group_id.data, 32);
 
     // create inbound group session
-    Org__E2eelab__Lib__Protobuf__E2eeGroupSession *group_session = (Org__E2eelab__Lib__Protobuf__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession));
-    org__e2eelab__lib__protobuf__e2ee_group_session__init(group_session);
+    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));
+    Org__E2eelab__Skissm__Proto__e2ee_group_session__init(group_session);
 
     group_session->version = PROTOCOL_VERSION;
 
@@ -248,7 +248,7 @@ void test_load_inbound_group_session()
 
     group_session->n_member_addresses = 2;
 
-    copy_member_addresses_from_member_addresses(&(group_session->member_addresses), (const Org__E2eelab__Lib__Protobuf__E2eeAddress **)member_addresses, 2);
+    copy_member_addresses_from_member_addresses(&(group_session->member_addresses), (const Org__E2eelab__Skissm__Proto__E2eeAddress **)member_addresses, 2);
 
     group_session->sequence = 0;
 
@@ -271,19 +271,19 @@ void test_load_inbound_group_session()
     store_group_session(group_session);
 
     // load_inbound_group_session for owner: Alice
-    Org__E2eelab__Lib__Protobuf__E2eeGroupSession *group_session_copy = NULL;
+    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session_copy = NULL;
     load_inbound_group_session(group_session->session_id, Alice, &group_session_copy);
 
     // assert session equals to session_copy
     print_result("test_load_inbound_group_session", is_equal_group_session(group_session, group_session_copy));
 
     // free
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(Alice, NULL);
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(Bob, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(Alice, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(Bob, NULL);
     free(member_addresses);
-    org__e2eelab__lib__protobuf__e2ee_address__free_unpacked(group_address, NULL);
-    org__e2eelab__lib__protobuf__e2ee_group_session__free_unpacked(group_session, NULL);
-    org__e2eelab__lib__protobuf__e2ee_group_session__free_unpacked(group_session_copy, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(group_address, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_group_session__free_unpacked(group_session, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_group_session__free_unpacked(group_session_copy, NULL);
 
     tear_down();
 }

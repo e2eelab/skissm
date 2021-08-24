@@ -7,52 +7,52 @@
 #endif
 
 #include "signed_pre_key_pair.pb-c.h"
-void   org__e2eelab__lib__protobuf__signed_pre_key_pair__init
-                     (Org__E2eelab__Lib__Protobuf__SignedPreKeyPair         *message)
+void   org__e2eelab__skissm__proto__signed_pre_key_pair__init
+                     (Org__E2eelab__Skissm__Proto__SignedPreKeyPair         *message)
 {
-  static const Org__E2eelab__Lib__Protobuf__SignedPreKeyPair init_value = ORG__E2EELAB__LIB__PROTOBUF__SIGNED_PRE_KEY_PAIR__INIT;
+  static const Org__E2eelab__Skissm__Proto__SignedPreKeyPair init_value = ORG__E2EELAB__SKISSM__PROTO__SIGNED_PRE_KEY_PAIR__INIT;
   *message = init_value;
 }
-size_t org__e2eelab__lib__protobuf__signed_pre_key_pair__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *message)
+size_t org__e2eelab__skissm__proto__signed_pre_key_pair__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__SignedPreKeyPair *message)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__signed_pre_key_pair__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__signed_pre_key_pair__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t org__e2eelab__lib__protobuf__signed_pre_key_pair__pack
-                     (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *message,
+size_t org__e2eelab__skissm__proto__signed_pre_key_pair__pack
+                     (const Org__E2eelab__Skissm__Proto__SignedPreKeyPair *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__signed_pre_key_pair__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__signed_pre_key_pair__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t org__e2eelab__lib__protobuf__signed_pre_key_pair__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *message,
+size_t org__e2eelab__skissm__proto__signed_pre_key_pair__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__SignedPreKeyPair *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__signed_pre_key_pair__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__signed_pre_key_pair__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *
-       org__e2eelab__lib__protobuf__signed_pre_key_pair__unpack
+Org__E2eelab__Skissm__Proto__SignedPreKeyPair *
+       org__e2eelab__skissm__proto__signed_pre_key_pair__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__signed_pre_key_pair__descriptor,
+  return (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *)
+     protobuf_c_message_unpack (&org__e2eelab__skissm__proto__signed_pre_key_pair__descriptor,
                                 allocator, len, data);
 }
-void   org__e2eelab__lib__protobuf__signed_pre_key_pair__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *message,
+void   org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__signed_pre_key_pair__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__signed_pre_key_pair__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__signed_pre_key_pair__field_descriptors[4] =
+static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__signed_pre_key_pair__field_descriptors[4] =
 {
   {
     "spk_id",
@@ -60,7 +60,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__signed_pre_ke
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SignedPreKeyPair, spk_id),
+    offsetof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair, spk_id),
     NULL,
     NULL,
     0,             /* flags */
@@ -72,8 +72,8 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__signed_pre_ke
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SignedPreKeyPair, key_pair),
-    &org__e2eelab__lib__protobuf__key_pair__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair, key_pair),
+    &org__e2eelab__skissm__proto__key_pair__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -84,7 +84,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__signed_pre_ke
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SignedPreKeyPair, signature),
+    offsetof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair, signature),
     NULL,
     NULL,
     0,             /* flags */
@@ -94,38 +94,38 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__signed_pre_ke
     "ttl",
     4,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_UINT64,
+    PROTOBUF_C_TYPE_INT64,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SignedPreKeyPair, ttl),
+    offsetof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair, ttl),
     NULL,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned org__e2eelab__lib__protobuf__signed_pre_key_pair__field_indices_by_name[] = {
+static const unsigned org__e2eelab__skissm__proto__signed_pre_key_pair__field_indices_by_name[] = {
   1,   /* field[1] = key_pair */
   2,   /* field[2] = signature */
   0,   /* field[0] = spk_id */
   3,   /* field[3] = ttl */
 };
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__signed_pre_key_pair__number_ranges[1 + 1] =
+static const ProtobufCIntRange org__e2eelab__skissm__proto__signed_pre_key_pair__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 4 }
 };
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__signed_pre_key_pair__descriptor =
+const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__signed_pre_key_pair__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.signed_pre_key_pair",
+  "org.e2eelab.skissm.proto.signed_pre_key_pair",
   "SignedPreKeyPair",
-  "Org__E2eelab__Lib__Protobuf__SignedPreKeyPair",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__SignedPreKeyPair),
+  "Org__E2eelab__Skissm__Proto__SignedPreKeyPair",
+  "org.e2eelab.skissm.proto",
+  sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair),
   4,
-  org__e2eelab__lib__protobuf__signed_pre_key_pair__field_descriptors,
-  org__e2eelab__lib__protobuf__signed_pre_key_pair__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__signed_pre_key_pair__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__signed_pre_key_pair__init,
+  org__e2eelab__skissm__proto__signed_pre_key_pair__field_descriptors,
+  org__e2eelab__skissm__proto__signed_pre_key_pair__field_indices_by_name,
+  1,  org__e2eelab__skissm__proto__signed_pre_key_pair__number_ranges,
+  (ProtobufCMessageInit) org__e2eelab__skissm__proto__signed_pre_key_pair__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

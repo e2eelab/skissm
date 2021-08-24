@@ -45,11 +45,11 @@ void crypto_curve25519_generate_public_key(
 );
 
 void crypto_curve25519_generate_key_pair(
-    Org__E2eelab__Lib__Protobuf__KeyPair *key_pair
+    Org__E2eelab__Skissm__Proto__KeyPair *key_pair
 );
 
 void crypto_curve25519_dh(
-    const Org__E2eelab__Lib__Protobuf__KeyPair *our_key,
+    const Org__E2eelab__Skissm__Proto__KeyPair *our_key,
     const ProtobufCBinaryData *their_key,
     uint8_t *shared_secret
 );

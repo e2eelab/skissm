@@ -7,52 +7,52 @@
 #endif
 
 #include "skipped_message_key_node.pb-c.h"
-void   org__e2eelab__lib__protobuf__skipped_message_key_node__init
-                     (Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode         *message)
+void   org__e2eelab__skissm__proto__skipped_message_key_node__init
+                     (Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode         *message)
 {
-  static const Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode init_value = ORG__E2EELAB__LIB__PROTOBUF__SKIPPED_MESSAGE_KEY_NODE__INIT;
+  static const Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode init_value = ORG__E2EELAB__SKISSM__PROTO__SKIPPED_MESSAGE_KEY_NODE__INIT;
   *message = init_value;
 }
-size_t org__e2eelab__lib__protobuf__skipped_message_key_node__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *message)
+size_t org__e2eelab__skissm__proto__skipped_message_key_node__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *message)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__skipped_message_key_node__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t org__e2eelab__lib__protobuf__skipped_message_key_node__pack
-                     (const Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *message,
+size_t org__e2eelab__skissm__proto__skipped_message_key_node__pack
+                     (const Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__skipped_message_key_node__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t org__e2eelab__lib__protobuf__skipped_message_key_node__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *message,
+size_t org__e2eelab__skissm__proto__skipped_message_key_node__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__skipped_message_key_node__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *
-       org__e2eelab__lib__protobuf__skipped_message_key_node__unpack
+Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *
+       org__e2eelab__skissm__proto__skipped_message_key_node__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor,
+  return (Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *)
+     protobuf_c_message_unpack (&org__e2eelab__skissm__proto__skipped_message_key_node__descriptor,
                                 allocator, len, data);
 }
-void   org__e2eelab__lib__protobuf__skipped_message_key_node__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *message,
+void   org__e2eelab__skissm__proto__skipped_message_key_node__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__skipped_message_key_node__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__skipped_message_key_node__field_descriptors[2] =
+static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__skipped_message_key_node__field_descriptors[2] =
 {
   {
     "ratchet_key_public",
@@ -60,7 +60,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__skipped_messa
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode, ratchet_key_public),
+    offsetof(Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode, ratchet_key_public),
     NULL,
     NULL,
     0,             /* flags */
@@ -72,34 +72,34 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__skipped_messa
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode, message_key),
-    &org__e2eelab__lib__protobuf__message_key__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode, message_key),
+    &org__e2eelab__skissm__proto__message_key__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned org__e2eelab__lib__protobuf__skipped_message_key_node__field_indices_by_name[] = {
+static const unsigned org__e2eelab__skissm__proto__skipped_message_key_node__field_indices_by_name[] = {
   1,   /* field[1] = message_key */
   0,   /* field[0] = ratchet_key_public */
 };
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__skipped_message_key_node__number_ranges[1 + 1] =
+static const ProtobufCIntRange org__e2eelab__skissm__proto__skipped_message_key_node__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 2 }
 };
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor =
+const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__skipped_message_key_node__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.skipped_message_key_node",
+  "org.e2eelab.skissm.proto.skipped_message_key_node",
   "SkippedMessageKeyNode",
-  "Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode),
+  "Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode",
+  "org.e2eelab.skissm.proto",
+  sizeof(Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode),
   2,
-  org__e2eelab__lib__protobuf__skipped_message_key_node__field_descriptors,
-  org__e2eelab__lib__protobuf__skipped_message_key_node__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__skipped_message_key_node__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__skipped_message_key_node__init,
+  org__e2eelab__skissm__proto__skipped_message_key_node__field_descriptors,
+  org__e2eelab__skissm__proto__skipped_message_key_node__field_indices_by_name,
+  1,  org__e2eelab__skissm__proto__skipped_message_key_node__number_ranges,
+  (ProtobufCMessageInit) org__e2eelab__skissm__proto__skipped_message_key_node__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

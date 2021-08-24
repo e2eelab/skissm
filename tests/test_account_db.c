@@ -42,7 +42,7 @@ void test_insert_address()
   setup();
 
   // create address
-  Org__E2eelab__Lib__Protobuf__E2eeAddress *address;
+  Org__E2eelab__Skissm__Proto__E2eeAddress *address;
   mock_address(&address, "alice", "alice's domain", "alice's device");
 
   // insert to the db
@@ -60,7 +60,7 @@ void test_insert_key_pair()
   setup();
 
   // create keypair
-  Org__E2eelab__Lib__Protobuf__KeyPair *keypair;
+  Org__E2eelab__Skissm__Proto__KeyPair *keypair;
   mock_keypair(&keypair, "hello public key", "hello private key");
 
   // insert to the db
@@ -78,7 +78,7 @@ void test_insert_signed_pre_key()
   setup();
 
   // create spk
-  Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *signed_pre_keypair;
+  Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_keypair;
   mock_signed_pre_keypair(&signed_pre_keypair, 0, "hello public key", "hello private key", "hello signature");
 
   // insert to the db
@@ -96,7 +96,7 @@ void test_insert_one_time_pre_key()
   setup();
 
   // create opk
-  Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *onetime_pre_keypiar;
+  Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *onetime_pre_keypiar;
   mock_onetime_pre_keypiar(&onetime_pre_keypiar, 0, 0, "hello public key", "hello private key");
 
   // insert to the db
@@ -124,7 +124,7 @@ void test_init_account()
   setup();
 
   // create account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account = create_account();
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
@@ -142,14 +142,14 @@ void test_update_identity_key()
   setup();
 
   // create account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account = create_account();
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
   init_account(account);
 
   // keypair used to update
-  Org__E2eelab__Lib__Protobuf__KeyPair *kp_p;
+  Org__E2eelab__Skissm__Proto__KeyPair *kp_p;
   mock_keypair(&kp_p, "new public key", "new private key");
 
   // update_identity_key
@@ -167,14 +167,14 @@ void test_update_signed_pre_key()
   setup();
 
   // create account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account = create_account();
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
   init_account(account);
 
   // create spk
-  Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *signed_pre_keypair;
+  Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_keypair;
   mock_signed_pre_keypair(&signed_pre_keypair, 1, "hello public key", "hello private key", "hello signature");
 
   // update_signed_pre_key
@@ -193,14 +193,14 @@ void test_update_address()
   setup();
 
   // create account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account = create_account();
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
   init_account(account);
 
   // create address
-  Org__E2eelab__Lib__Protobuf__E2eeAddress *new_address;
+  Org__E2eelab__Skissm__Proto__E2eeAddress *new_address;
   mock_address(&(new_address), "bob", "bob's domain", "bob's device");
 
   // update_address
@@ -219,14 +219,14 @@ void test_add_one_time_pre_key()
   setup();
 
   // create account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account = create_account();
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
   init_account(account);
 
   // create opk
-  Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *onetime_pre_keypiar;
+  Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *onetime_pre_keypiar;
   mock_onetime_pre_keypiar(&onetime_pre_keypiar, 101, 0, "hello public key", "hello private key");
 
   // add_one_time_pre_key
@@ -245,7 +245,7 @@ void test_remove_one_time_pre_key()
   setup();
 
   // create account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account = create_account();
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
@@ -266,14 +266,14 @@ void test_load_account()
   setup();
 
   // create account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account = create_account();
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
   init_account(account);
 
   // load_account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account_copy;
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account_copy;
   load_account(&(account->account_id), &account_copy);
 
   // assert account equals to account_copy
@@ -292,28 +292,28 @@ void test_two_accounts()
   setup();
 
   // create the first account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account_1 = create_account();
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account_1 = create_account();
   mock_address(&(account_1->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
   init_account(account_1);
 
   // create the first account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account_2 = create_account();
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account_2 = create_account();
   mock_address(&(account_2->address), "bob", "bob's domain", "bob's device");
 
   // insert to the db
   init_account(account_2);
 
   // load the first account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account_copy_1;
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account_copy_1;
   load_account(&(account_1->account_id), &account_copy_1);
 
   // assert account_1 equals to account_copy_1
   printf("%d\n", is_equal_account(account_1, account_copy_1));
 
   // load the second account
-  Org__E2eelab__Lib__Protobuf__E2eeAccount *account_copy_2;
+  Org__E2eelab__Skissm__Proto__E2eeAccount *account_copy_2;
   load_account(&(account_2->account_id), &account_copy_2);
 
   // assert account_2 equals to account_copy_2

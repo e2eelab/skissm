@@ -12,7 +12,7 @@
 
 #include "test_env.h"
 
-static void verify_one_time_pre_keys(Org__E2eelab__Lib__Protobuf__E2eeAccount *account, unsigned int n_one_time_pre_keys) {
+static void verify_one_time_pre_keys(Org__E2eelab__Skissm__Proto__E2eeAccount *account, unsigned int n_one_time_pre_keys) {
     unsigned int i;
 
     assert(account->n_one_time_pre_keys == n_one_time_pre_keys);
@@ -31,7 +31,7 @@ int main(){
     setup();
 
     // Register test
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *account = create_account();
+    Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
 
     assert(account->identity_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
@@ -51,12 +51,12 @@ int main(){
 
     // Post some new one-time pre-keys test
     // Generate 80 one-time pre-key pairs
-    Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair **output = generate_opks(80, account);
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **output = generate_opks(80, account);
 
     verify_one_time_pre_keys(account, 180);
 
     // release
-    org__e2eelab__lib__protobuf__e2ee_account__free_unpacked(account, NULL);
+    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(account, NULL);
 
     // test stop.
     tear_down();

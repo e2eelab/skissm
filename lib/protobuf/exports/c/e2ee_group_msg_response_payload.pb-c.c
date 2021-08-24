@@ -7,52 +7,52 @@
 #endif
 
 #include "e2ee_group_msg_response_payload.pb-c.h"
-void   org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__init
-                     (Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload         *message)
+void   org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__init
+                     (Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload         *message)
 {
-  static const Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload init_value = ORG__E2EELAB__LIB__PROTOBUF__E2EE_GROUP_MSG_RESPONSE_PAYLOAD__INIT;
+  static const Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload init_value = ORG__E2EELAB__SKISSM__PROTO__E2EE_GROUP_MSG_RESPONSE_PAYLOAD__INIT;
   *message = init_value;
 }
-size_t org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload *message)
+size_t org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload *message)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__pack
-                     (const Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload *message,
+size_t org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__pack
+                     (const Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload *message,
+size_t org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload *
-       org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__unpack
+Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload *
+       org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__descriptor,
+  return (Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload *)
+     protobuf_c_message_unpack (&org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__descriptor,
                                 allocator, len, data);
 }
-void   org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload *message,
+void   org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__field_descriptors[2] =
+static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__field_descriptors[2] =
 {
   {
     "code",
@@ -60,7 +60,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_ms
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload, code),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload, code),
     NULL,
     NULL,
     0,             /* flags */
@@ -72,34 +72,34 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_ms
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload, msg),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload, msg),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__field_indices_by_name[] = {
+static const unsigned org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__field_indices_by_name[] = {
   0,   /* field[0] = code */
   1,   /* field[1] = msg */
 };
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__number_ranges[1 + 1] =
+static const ProtobufCIntRange org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 2 }
 };
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__descriptor =
+const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.e2ee_group_msg_response_payload",
+  "org.e2eelab.skissm.proto.e2ee_group_msg_response_payload",
   "E2eeGroupMsgResponsePayload",
-  "Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__E2eeGroupMsgResponsePayload),
+  "Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload",
+  "org.e2eelab.skissm.proto",
+  sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupMsgResponsePayload),
   2,
-  org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__field_descriptors,
-  org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__e2ee_group_msg_response_payload__init,
+  org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__field_descriptors,
+  org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__field_indices_by_name,
+  1,  org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__number_ranges,
+  (ProtobufCMessageInit) org__e2eelab__skissm__proto__e2ee_group_msg_response_payload__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

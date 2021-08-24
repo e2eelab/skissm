@@ -7,52 +7,52 @@
 #endif
 
 #include "key_pair.pb-c.h"
-void   org__e2eelab__lib__protobuf__key_pair__init
-                     (Org__E2eelab__Lib__Protobuf__KeyPair         *message)
+void   org__e2eelab__skissm__proto__key_pair__init
+                     (Org__E2eelab__Skissm__Proto__KeyPair         *message)
 {
-  static const Org__E2eelab__Lib__Protobuf__KeyPair init_value = ORG__E2EELAB__LIB__PROTOBUF__KEY_PAIR__INIT;
+  static const Org__E2eelab__Skissm__Proto__KeyPair init_value = ORG__E2EELAB__SKISSM__PROTO__KEY_PAIR__INIT;
   *message = init_value;
 }
-size_t org__e2eelab__lib__protobuf__key_pair__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__KeyPair *message)
+size_t org__e2eelab__skissm__proto__key_pair__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__KeyPair *message)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__key_pair__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__key_pair__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t org__e2eelab__lib__protobuf__key_pair__pack
-                     (const Org__E2eelab__Lib__Protobuf__KeyPair *message,
+size_t org__e2eelab__skissm__proto__key_pair__pack
+                     (const Org__E2eelab__Skissm__Proto__KeyPair *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__key_pair__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__key_pair__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t org__e2eelab__lib__protobuf__key_pair__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__KeyPair *message,
+size_t org__e2eelab__skissm__proto__key_pair__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__KeyPair *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__key_pair__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__key_pair__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Org__E2eelab__Lib__Protobuf__KeyPair *
-       org__e2eelab__lib__protobuf__key_pair__unpack
+Org__E2eelab__Skissm__Proto__KeyPair *
+       org__e2eelab__skissm__proto__key_pair__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Org__E2eelab__Lib__Protobuf__KeyPair *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__key_pair__descriptor,
+  return (Org__E2eelab__Skissm__Proto__KeyPair *)
+     protobuf_c_message_unpack (&org__e2eelab__skissm__proto__key_pair__descriptor,
                                 allocator, len, data);
 }
-void   org__e2eelab__lib__protobuf__key_pair__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__KeyPair *message,
+void   org__e2eelab__skissm__proto__key_pair__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__KeyPair *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__key_pair__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__key_pair__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__key_pair__field_descriptors[2] =
+static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__key_pair__field_descriptors[2] =
 {
   {
     "public_key",
@@ -60,7 +60,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__key_pair__fie
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__KeyPair, public_key),
+    offsetof(Org__E2eelab__Skissm__Proto__KeyPair, public_key),
     NULL,
     NULL,
     0,             /* flags */
@@ -72,34 +72,34 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__key_pair__fie
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__KeyPair, private_key),
+    offsetof(Org__E2eelab__Skissm__Proto__KeyPair, private_key),
     NULL,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned org__e2eelab__lib__protobuf__key_pair__field_indices_by_name[] = {
+static const unsigned org__e2eelab__skissm__proto__key_pair__field_indices_by_name[] = {
   1,   /* field[1] = private_key */
   0,   /* field[0] = public_key */
 };
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__key_pair__number_ranges[1 + 1] =
+static const ProtobufCIntRange org__e2eelab__skissm__proto__key_pair__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 2 }
 };
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__key_pair__descriptor =
+const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__key_pair__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.key_pair",
+  "org.e2eelab.skissm.proto.key_pair",
   "KeyPair",
-  "Org__E2eelab__Lib__Protobuf__KeyPair",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__KeyPair),
+  "Org__E2eelab__Skissm__Proto__KeyPair",
+  "org.e2eelab.skissm.proto",
+  sizeof(Org__E2eelab__Skissm__Proto__KeyPair),
   2,
-  org__e2eelab__lib__protobuf__key_pair__field_descriptors,
-  org__e2eelab__lib__protobuf__key_pair__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__key_pair__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__key_pair__init,
+  org__e2eelab__skissm__proto__key_pair__field_descriptors,
+  org__e2eelab__skissm__proto__key_pair__field_indices_by_name,
+  1,  org__e2eelab__skissm__proto__key_pair__number_ranges,
+  (ProtobufCMessageInit) org__e2eelab__skissm__proto__key_pair__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

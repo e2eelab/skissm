@@ -7,52 +7,52 @@
 #endif
 
 #include "e2ee_group_pre_key_payload.pb-c.h"
-void   org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__init
-                     (Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload         *message)
+void   org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__init
+                     (Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload         *message)
 {
-  static const Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload init_value = ORG__E2EELAB__LIB__PROTOBUF__E2EE_GROUP_PRE_KEY_PAYLOAD__INIT;
+  static const Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload init_value = ORG__E2EELAB__SKISSM__PROTO__E2EE_GROUP_PRE_KEY_PAYLOAD__INIT;
   *message = init_value;
 }
-size_t org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *message)
+size_t org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *message)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__pack
-                     (const Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *message,
+size_t org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__pack
+                     (const Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *message,
+size_t org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *
-       org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__unpack
+Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *
+       org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__descriptor,
+  return (Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *)
+     protobuf_c_message_unpack (&org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__descriptor,
                                 allocator, len, data);
 }
-void   org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *message,
+void   org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__field_descriptors[6] =
+static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__field_descriptors[6] =
 {
   {
     "session_id",
@@ -60,7 +60,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, session_id),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload, session_id),
     NULL,
     NULL,
     0,             /* flags */
@@ -72,8 +72,8 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, group_address),
-    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload, group_address),
+    &org__e2eelab__skissm__proto__e2ee_address__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -83,9 +83,9 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
     3,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, n_member_addresses),
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, member_addresses),
-    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload, n_member_addresses),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload, member_addresses),
+    &org__e2eelab__skissm__proto__e2ee_address__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -96,7 +96,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, sequence),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload, sequence),
     NULL,
     NULL,
     0,             /* flags */
@@ -108,7 +108,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, chain_key),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload, chain_key),
     NULL,
     NULL,
     0,             /* flags */
@@ -120,14 +120,14 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_pr
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload, signature_public_key),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload, signature_public_key),
     NULL,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__field_indices_by_name[] = {
+static const unsigned org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__field_indices_by_name[] = {
   4,   /* field[4] = chain_key */
   1,   /* field[1] = group_address */
   2,   /* field[2] = member_addresses */
@@ -135,23 +135,23 @@ static const unsigned org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__f
   0,   /* field[0] = session_id */
   5,   /* field[5] = signature_public_key */
 };
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__number_ranges[1 + 1] =
+static const ProtobufCIntRange org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 6 }
 };
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__descriptor =
+const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.e2ee_group_pre_key_payload",
+  "org.e2eelab.skissm.proto.e2ee_group_pre_key_payload",
   "E2eeGroupPreKeyPayload",
-  "Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload),
+  "Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload",
+  "org.e2eelab.skissm.proto",
+  sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload),
   6,
-  org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__field_descriptors,
-  org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__e2ee_group_pre_key_payload__init,
+  org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__field_descriptors,
+  org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__field_indices_by_name,
+  1,  org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__number_ranges,
+  (ProtobufCMessageInit) org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

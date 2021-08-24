@@ -38,7 +38,7 @@ typedef struct cipher_suits {
    *
    * @param key_pair
    */
-  void (*gen_key_pair)(Org__E2eelab__Lib__Protobuf__KeyPair *key_pair);
+  void (*gen_key_pair)(Org__E2eelab__Skissm__Proto__KeyPair *key_pair);
 
   /**
    * @brief Calculate shared secret by Diffie–Hellman (DH) algorithm
@@ -47,7 +47,7 @@ typedef struct cipher_suits {
    * @param their_key
    * @param shared_secret
    */
-  void (*dh)(const Org__E2eelab__Lib__Protobuf__KeyPair *our_key,
+  void (*dh)(const Org__E2eelab__Skissm__Proto__KeyPair *our_key,
              const ProtobufCBinaryData *their_key, uint8_t *shared_secret);
 
   /**

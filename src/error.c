@@ -15,9 +15,11 @@ static const char * ERROR_STRINGS[] = {
   "BAD_MESSAGE_FORMAT",
   "BAD_MESSAGE_MAC",
   "BAD_MESSAGE_SEQUENCE",
-  "BAD_MESSAGE_KEY_ID",
+  "BAD_SIGNED_PRE_KEY",
+  "BAD_ONE_TIME_PRE_KEY",
   "BAD_MESSAGE_ENCRYPTION",
   "BAD_MESSAGE_DECRYPTION",
+  "BAD_GROUP_SESSION",
 };
 
 const char *error_string(ErrorCode error_code){

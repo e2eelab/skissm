@@ -7,52 +7,52 @@
 #endif
 
 #include "register_user_response_payload.pb-c.h"
-void   org__e2eelab__lib__protobuf__register_user_response_payload__init
-                     (Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload         *message)
+void   org__e2eelab__skissm__proto__register_user_response_payload__init
+                     (Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload         *message)
 {
-  static const Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload init_value = ORG__E2EELAB__LIB__PROTOBUF__REGISTER_USER_RESPONSE_PAYLOAD__INIT;
+  static const Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload init_value = ORG__E2EELAB__SKISSM__PROTO__REGISTER_USER_RESPONSE_PAYLOAD__INIT;
   *message = init_value;
 }
-size_t org__e2eelab__lib__protobuf__register_user_response_payload__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload *message)
+size_t org__e2eelab__skissm__proto__register_user_response_payload__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload *message)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__register_user_response_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__register_user_response_payload__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t org__e2eelab__lib__protobuf__register_user_response_payload__pack
-                     (const Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload *message,
+size_t org__e2eelab__skissm__proto__register_user_response_payload__pack
+                     (const Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__register_user_response_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__register_user_response_payload__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t org__e2eelab__lib__protobuf__register_user_response_payload__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload *message,
+size_t org__e2eelab__skissm__proto__register_user_response_payload__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__register_user_response_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__register_user_response_payload__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload *
-       org__e2eelab__lib__protobuf__register_user_response_payload__unpack
+Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload *
+       org__e2eelab__skissm__proto__register_user_response_payload__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__register_user_response_payload__descriptor,
+  return (Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload *)
+     protobuf_c_message_unpack (&org__e2eelab__skissm__proto__register_user_response_payload__descriptor,
                                 allocator, len, data);
 }
-void   org__e2eelab__lib__protobuf__register_user_response_payload__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload *message,
+void   org__e2eelab__skissm__proto__register_user_response_payload__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__register_user_response_payload__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__register_user_response_payload__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__register_user_response_payload__field_descriptors[3] =
+static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__register_user_response_payload__field_descriptors[3] =
 {
   {
     "code",
@@ -60,7 +60,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__register_user
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload, code),
+    offsetof(Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload, code),
     NULL,
     NULL,
     0,             /* flags */
@@ -72,7 +72,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__register_user
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_STRING,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload, msg),
+    offsetof(Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload, msg),
     NULL,
     &protobuf_c_empty_string,
     0,             /* flags */
@@ -84,35 +84,35 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__register_user
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload, address),
-    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload, address),
+    &org__e2eelab__skissm__proto__e2ee_address__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned org__e2eelab__lib__protobuf__register_user_response_payload__field_indices_by_name[] = {
+static const unsigned org__e2eelab__skissm__proto__register_user_response_payload__field_indices_by_name[] = {
   2,   /* field[2] = address */
   0,   /* field[0] = code */
   1,   /* field[1] = msg */
 };
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__register_user_response_payload__number_ranges[1 + 1] =
+static const ProtobufCIntRange org__e2eelab__skissm__proto__register_user_response_payload__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 3 }
 };
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__register_user_response_payload__descriptor =
+const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__register_user_response_payload__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.register_user_response_payload",
+  "org.e2eelab.skissm.proto.register_user_response_payload",
   "RegisterUserResponsePayload",
-  "Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__RegisterUserResponsePayload),
+  "Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload",
+  "org.e2eelab.skissm.proto",
+  sizeof(Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload),
   3,
-  org__e2eelab__lib__protobuf__register_user_response_payload__field_descriptors,
-  org__e2eelab__lib__protobuf__register_user_response_payload__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__register_user_response_payload__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__register_user_response_payload__init,
+  org__e2eelab__skissm__proto__register_user_response_payload__field_descriptors,
+  org__e2eelab__skissm__proto__register_user_response_payload__field_indices_by_name,
+  1,  org__e2eelab__skissm__proto__register_user_response_payload__number_ranges,
+  (ProtobufCMessageInit) org__e2eelab__skissm__proto__register_user_response_payload__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

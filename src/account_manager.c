@@ -6,7 +6,7 @@
 /* registration related */
 static void handle_register_user_response(
     register_user_response_handler *response_handler,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *address
+    Org__E2eelab__Skissm__Proto__E2eeAddress *address
 ) {
     copy_address_from_address(&(response_handler->account->address), address);
     // save to db
@@ -44,14 +44,14 @@ void supply_opks(struct supply_opks_handler *response_handler) {
 
 /* send to the server */
 void register_account(){
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *account = create_account();
+    Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
 
     // register account to server
     register_user_response_handler_store.account = account;
     send_register_user_request(account, &register_user_response_handler_store);
 }
 
-void publish_spk(Org__E2eelab__Lib__Protobuf__E2eeAccount *account){
+void publish_spk(Org__E2eelab__Skissm__Proto__E2eeAccount *account){
     // publish account spk to server
     publish_spk_response_handler_store.account = account;
     send_publish_spk_request(account, &publish_spk_response_handler_store);

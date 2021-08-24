@@ -91,7 +91,7 @@ static int handle_send(u_int8_t *msg, size_t msg_len)
 }
 
 // account related handlers
-void load_account(ProtobufCBinaryData *account_id, Org__E2eelab__Lib__Protobuf__E2eeAccount **account)
+void load_account(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__E2eeAccount **account)
 {
   if (account_id == NULL)
   {
@@ -101,8 +101,8 @@ void load_account(ProtobufCBinaryData *account_id, Org__E2eelab__Lib__Protobuf__
     return;
   }
 
-  *account = (Org__E2eelab__Lib__Protobuf__E2eeAccount *)malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeAccount));
-  org__e2eelab__lib__protobuf__e2ee_account__init((*account));
+  *account = (Org__E2eelab__Skissm__Proto__E2eeAccount *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount));
+  Org__E2eelab__Skissm__Proto__e2ee_account__init((*account));
 
   (*account)->version = load_version(account_id);
   (*account)->saved = load_saved(account_id);
@@ -115,14 +115,14 @@ void load_account(ProtobufCBinaryData *account_id, Org__E2eelab__Lib__Protobuf__
   (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(account_id);
 }
 
-void load_account_by_address(Org__E2eelab__Lib__Protobuf__E2eeAddress *address, Org__E2eelab__Lib__Protobuf__E2eeAccount **account)
+void load_account_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address, Org__E2eelab__Skissm__Proto__E2eeAccount **account)
 {
   ProtobufCBinaryData *account_id;
   load_id_by_address(address, &account_id);
   load_account(account_id, account);
 }
 
-void init_account(Org__E2eelab__Lib__Protobuf__E2eeAccount *account)
+void init_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account)
 {
   // insert address
   sqlite_int64 address_id = insert_address(account->address);
@@ -162,15 +162,15 @@ void init_account(Org__E2eelab__Lib__Protobuf__E2eeAccount *account)
 
 // callback handlers
 static void on_one2one_msg_received(
-      Org__E2eelab__Lib__Protobuf__E2eeAddress *from_address,
-      Org__E2eelab__Lib__Protobuf__E2eeAddress *to_address,
+      Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
+      Org__E2eelab__Skissm__Proto__E2eeAddress *to_address,
       uint8_t *plaintext, size_t plaintext_len) {
     printf("😊 on_one2one_msg_received: plaintext[len=%zu]: %s\n", plaintext_len, plaintext);
 }
 
 static void on_group_msg_received(
-      Org__E2eelab__Lib__Protobuf__E2eeAddress *from_address,
-      Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+      Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
+      Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
       uint8_t *plaintext, size_t plaintext_len) {
     printf("😊 on_group_msg_received: plaintext[len=%zu]: %s\n", plaintext_len, plaintext);
 }

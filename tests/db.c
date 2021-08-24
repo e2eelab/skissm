@@ -447,11 +447,11 @@ protobuf_c_boolean load_saved(ProtobufCBinaryData *account_id) {
 }
 
 void load_address(ProtobufCBinaryData *account_id,
-                  Org__E2eelab__Lib__Protobuf__E2eeAddress **address) {
+                  Org__E2eelab__Skissm__Proto__E2eeAddress **address) {
   // allocate memory
-  *address = (Org__E2eelab__Lib__Protobuf__E2eeAddress *)malloc(
-      sizeof(Org__E2eelab__Lib__Protobuf__E2eeAddress));
-  org__e2eelab__lib__protobuf__e2ee_address__init(*address);
+  *address = (Org__E2eelab__Skissm__Proto__E2eeAddress *)malloc(
+      sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
+  Org__E2eelab__Skissm__Proto__e2ee_address__init(*address);
 
   // prepare
   sqlite3_stmt *stmt;
@@ -479,11 +479,11 @@ void load_address(ProtobufCBinaryData *account_id,
 
 void load_identity_key_pair(
     ProtobufCBinaryData *account_id,
-    Org__E2eelab__Lib__Protobuf__KeyPair **identity_key_pair) {
+    Org__E2eelab__Skissm__Proto__KeyPair **identity_key_pair) {
   // allocate memory
-  *identity_key_pair = (Org__E2eelab__Lib__Protobuf__KeyPair *)malloc(
-      sizeof(Org__E2eelab__Lib__Protobuf__KeyPair));
-  org__e2eelab__lib__protobuf__key_pair__init(*identity_key_pair);
+  *identity_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(
+      sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
+  Org__E2eelab__Skissm__Proto__key_pair__init(*identity_key_pair);
 
   // prepare
   sqlite3_stmt *stmt;
@@ -508,17 +508,17 @@ void load_identity_key_pair(
 
 void load_signed_pre_key_pair(
     ProtobufCBinaryData *account_id,
-    Org__E2eelab__Lib__Protobuf__SignedPreKeyPair **signed_pre_key_pair) {
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_key_pair) {
   // allocate memory
   *signed_pre_key_pair =
-      (Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *)malloc(
-          sizeof(Org__E2eelab__Lib__Protobuf__SignedPreKeyPair));
-  org__e2eelab__lib__protobuf__signed_pre_key_pair__init(*signed_pre_key_pair);
+      (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *)malloc(
+          sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
+  Org__E2eelab__Skissm__Proto__signed_pre_key_pair__init(*signed_pre_key_pair);
 
-  Org__E2eelab__Lib__Protobuf__KeyPair *key_pair =
-      (Org__E2eelab__Lib__Protobuf__KeyPair *)malloc(
-          sizeof(Org__E2eelab__Lib__Protobuf__KeyPair));
-  org__e2eelab__lib__protobuf__key_pair__init(key_pair);
+  Org__E2eelab__Skissm__Proto__KeyPair *key_pair =
+      (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(
+          sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
+  Org__E2eelab__Skissm__Proto__key_pair__init(key_pair);
   (*signed_pre_key_pair)->key_pair = key_pair;
 
   // prepare
@@ -568,13 +568,13 @@ int load_n_one_time_pre_keys(ProtobufCBinaryData *account_id) {
 
 uint32_t load_one_time_pre_keys(
     ProtobufCBinaryData *account_id,
-    Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair ***one_time_pre_keys) {
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***one_time_pre_keys) {
   // allocate memory
   size_t n_one_time_pre_keys = load_n_one_time_pre_keys(account_id);
   (*one_time_pre_keys) =
-      (Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair **)malloc(
+      (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **)malloc(
           n_one_time_pre_keys *
-          sizeof(Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *));
+          sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *));
 
   // prepare
   sqlite3_stmt *stmt;
@@ -588,15 +588,15 @@ uint32_t load_one_time_pre_keys(
 
     // allocate
     (*one_time_pre_keys)[i] =
-        (Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *)malloc(
-            sizeof(Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair));
-    org__e2eelab__lib__protobuf__one_time_pre_key_pair__init(
+        (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *)malloc(
+            sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
+    Org__E2eelab__Skissm__Proto__one_time_pre_key_pair__init(
         (*one_time_pre_keys)[i]);
 
-    Org__E2eelab__Lib__Protobuf__KeyPair *key_pair =
-        (Org__E2eelab__Lib__Protobuf__KeyPair *)malloc(
-            sizeof(Org__E2eelab__Lib__Protobuf__KeyPair));
-    org__e2eelab__lib__protobuf__key_pair__init(key_pair);
+    Org__E2eelab__Skissm__Proto__KeyPair *key_pair =
+        (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(
+            sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
+    Org__E2eelab__Skissm__Proto__key_pair__init(key_pair);
     (*one_time_pre_keys)[i]->key_pair = key_pair;
 
     // load
@@ -654,7 +654,7 @@ uint32_t load_next_one_time_pre_key_id(ProtobufCBinaryData *account_id) {
   return next_one_time_pre_key_id;
 }
 
-void load_id_by_address(Org__E2eelab__Lib__Protobuf__E2eeAddress *address,
+void load_id_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address,
                         ProtobufCBinaryData **account_id) {
   // allocate memory
   *account_id = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
@@ -676,7 +676,7 @@ void load_id_by_address(Org__E2eelab__Lib__Protobuf__E2eeAddress *address,
   sqlite3_finalize(stmt);
 }
 
-sqlite_int64 insert_address(Org__E2eelab__Lib__Protobuf__E2eeAddress *address) {
+sqlite_int64 insert_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address) {
   // prepare
   sqlite3_stmt *stmt;
   sqlite_prepare(ADDRESS_INSERT, &stmt);
@@ -700,7 +700,7 @@ sqlite_int64 insert_address(Org__E2eelab__Lib__Protobuf__E2eeAddress *address) {
   return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_key_pair(Org__E2eelab__Lib__Protobuf__KeyPair *key_pair) {
+sqlite_int64 insert_key_pair(Org__E2eelab__Skissm__Proto__KeyPair *key_pair) {
   // prepare
   sqlite3_stmt *stmt;
   sqlite_prepare(KEYPAIR_INSERT, &stmt);
@@ -721,7 +721,7 @@ sqlite_int64 insert_key_pair(Org__E2eelab__Lib__Protobuf__KeyPair *key_pair) {
 }
 
 sqlite_int64 insert_signed_pre_key(
-    Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *signed_pre_key) {
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key) {
   int key_pair_id = insert_key_pair(signed_pre_key->key_pair);
 
   // prepare
@@ -745,7 +745,7 @@ sqlite_int64 insert_signed_pre_key(
 }
 
 sqlite_int64 insert_one_time_pre_key(
-    Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *one_time_pre_key) {
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key) {
   sqlite_int64 key_pair_id = insert_key_pair(one_time_pre_key->key_pair);
 
   // prepare
@@ -829,8 +829,8 @@ void insert_account_one_time_pre_key_id(sqlite_int64 account_id,
 }
 
 void update_identity_key(
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
-    Org__E2eelab__Lib__Protobuf__KeyPair *identity_key_pair) {
+    Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+    Org__E2eelab__Skissm__Proto__KeyPair *identity_key_pair) {
   int key_pair_id = insert_key_pair(identity_key_pair);
 
   // prepare
@@ -850,8 +850,8 @@ void update_identity_key(
 }
 
 void update_signed_pre_key(
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
-    Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *signed_pre_key) {
+    Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key) {
   int signed_pre_key_id = insert_signed_pre_key(signed_pre_key);
 
   // prepare
@@ -870,8 +870,8 @@ void update_signed_pre_key(
   sqlite3_finalize(stmt);
 }
 
-void update_address(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
-                    Org__E2eelab__Lib__Protobuf__E2eeAddress *address) {
+void update_address(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+                    Org__E2eelab__Skissm__Proto__E2eeAddress *address) {
   int address_id = insert_address(address);
 
   // prepare
@@ -891,8 +891,8 @@ void update_address(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
 }
 
 void add_one_time_pre_key(
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
-    Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *one_time_pre_key) {
+    Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key) {
   int one_time_pre_key_id = insert_one_time_pre_key(one_time_pre_key);
 
   // prepare
@@ -911,7 +911,7 @@ void add_one_time_pre_key(
   sqlite3_finalize(stmt);
 }
 
-void remove_one_time_pre_key(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
+void remove_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
                              uint32_t one_time_pre_key_id) {
   // prepare
   sqlite3_stmt *stmt;
@@ -929,8 +929,8 @@ void remove_one_time_pre_key(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
 
 // session related handlers
 void load_inbound_session(ProtobufCBinaryData session_id,
-                          Org__E2eelab__Lib__Protobuf__E2eeAddress *owner,
-                          Org__E2eelab__Lib__Protobuf__E2eeSession **session) {
+                          Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
+                          Org__E2eelab__Skissm__Proto__E2eeSession **session) {
   // prepare
   sqlite3_stmt *stmt;
   if (!sqlite_prepare(SESSION_LOAD_DATA_BY_ID_AND_OWNER, &stmt)) {
@@ -959,7 +959,7 @@ void load_inbound_session(ProtobufCBinaryData session_id,
   }
 
   // unpack
-  *session = org__e2eelab__lib__protobuf__e2ee_session__unpack(
+  *session = Org__E2eelab__Skissm__Proto__e2ee_session__unpack(
       NULL, session_data_len, session_data);
 
   // release
@@ -968,13 +968,13 @@ void load_inbound_session(ProtobufCBinaryData session_id,
   return;
 }
 
-void store_session(Org__E2eelab__Lib__Protobuf__E2eeSession *session) {
+void store_session(Org__E2eelab__Skissm__Proto__E2eeSession *session) {
   // pack
   ProtobufCBinaryData session_id = session->session_id;
   size_t session_data_len =
-      org__e2eelab__lib__protobuf__e2ee_session__get_packed_size(session);
+      Org__E2eelab__Skissm__Proto__e2ee_session__get_packed_size(session);
   uint8_t *session_data = (uint8_t *)malloc(session_data_len);
-  org__e2eelab__lib__protobuf__e2ee_session__pack(session, session_data);
+  Org__E2eelab__Skissm__Proto__e2ee_session__pack(session, session_data);
 
   int owner_id = insert_address(session->session_owner);
   int from_id = insert_address(session->from);
@@ -1000,9 +1000,9 @@ void store_session(Org__E2eelab__Lib__Protobuf__E2eeSession *session) {
 }
 
 // return the lastest updated session
-void load_outbound_session(Org__E2eelab__Lib__Protobuf__E2eeAddress *owner,
-                           Org__E2eelab__Lib__Protobuf__E2eeAddress *to,
-                           Org__E2eelab__Lib__Protobuf__E2eeSession **session) {
+void load_outbound_session(Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
+                           Org__E2eelab__Skissm__Proto__E2eeAddress *to,
+                           Org__E2eelab__Skissm__Proto__E2eeSession **session) {
   // prepare
   sqlite3_stmt *stmt;
   if (!sqlite_prepare(SESSION_LOAD_DATA_BY_OWNER_AND_TO, &stmt)) {
@@ -1032,7 +1032,7 @@ void load_outbound_session(Org__E2eelab__Lib__Protobuf__E2eeAddress *owner,
   }
 
   // unpack
-  *session = org__e2eelab__lib__protobuf__e2ee_session__unpack(
+  *session = Org__E2eelab__Skissm__Proto__e2ee_session__unpack(
       NULL, session_data_len, session_data);
 
   // release
@@ -1042,17 +1042,17 @@ void load_outbound_session(Org__E2eelab__Lib__Protobuf__E2eeAddress *owner,
 }
 
 void unload_session(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *owner,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *from,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *to
+    Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *from,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *to
 ) {
 
 }
 
 void load_outbound_group_session(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
-    Org__E2eelab__Lib__Protobuf__E2eeGroupSession **group_session) {
+    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+    Org__E2eelab__Skissm__Proto__E2eeGroupSession **group_session) {
   // prepare
   sqlite3_stmt *stmt;
   if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_OWNER_AND_ADDRESS, &stmt)) {
@@ -1087,7 +1087,7 @@ void load_outbound_group_session(
   }
 
   // unpack
-  *group_session = org__e2eelab__lib__protobuf__e2ee_group_session__unpack(
+  *group_session = Org__E2eelab__Skissm__Proto__e2ee_group_session__unpack(
       NULL, group_session_data_len, group_session_data);
 
   // release
@@ -1099,8 +1099,8 @@ void load_outbound_group_session(
 // signature_private_key is null
 void load_inbound_group_session(
     ProtobufCBinaryData group_session_id,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
-    Org__E2eelab__Lib__Protobuf__E2eeGroupSession **group_session) {
+    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+    Org__E2eelab__Skissm__Proto__E2eeGroupSession **group_session) {
   // prepare
   sqlite3_stmt *stmt;
   if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_ID_AND_OWNER, &stmt)) {
@@ -1135,7 +1135,7 @@ void load_inbound_group_session(
   }
 
   // unpack
-  *group_session = org__e2eelab__lib__protobuf__e2ee_group_session__unpack(
+  *group_session = Org__E2eelab__Skissm__Proto__e2ee_group_session__unpack(
       NULL, group_session_data_len, group_session_data);
 
   // release
@@ -1145,13 +1145,13 @@ void load_inbound_group_session(
 }
 
 void store_group_session(
-    Org__E2eelab__Lib__Protobuf__E2eeGroupSession *group_session) {
+    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session) {
   // pack
   size_t group_session_data_len =
-      org__e2eelab__lib__protobuf__e2ee_group_session__get_packed_size(
+      Org__E2eelab__Skissm__Proto__e2ee_group_session__get_packed_size(
           group_session);
   uint8_t *group_session_data = (uint8_t *)malloc(group_session_data_len);
-  org__e2eelab__lib__protobuf__e2ee_group_session__pack(group_session,
+  Org__E2eelab__Skissm__Proto__e2ee_group_session__pack(group_session,
                                                         group_session_data);
 
   int owner_id = insert_address(group_session->session_owner);
@@ -1178,7 +1178,7 @@ void store_group_session(
 }
 
 void unload_group_session(
-    Org__E2eelab__Lib__Protobuf__E2eeGroupSession *group_session) {
+    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session) {
   // prepare
   sqlite3_stmt *stmt;
   sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS, &stmt);
@@ -1197,8 +1197,8 @@ void unload_group_session(
 }
 
 void unload_inbound_group_session(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
     size_t member_num,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses
+    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses
 ) {}

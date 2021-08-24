@@ -7,52 +7,52 @@
 #endif
 
 #include "sender_chain_node.pb-c.h"
-void   org__e2eelab__lib__protobuf__sender_chain_node__init
-                     (Org__E2eelab__Lib__Protobuf__SenderChainNode         *message)
+void   org__e2eelab__skissm__proto__sender_chain_node__init
+                     (Org__E2eelab__Skissm__Proto__SenderChainNode         *message)
 {
-  static const Org__E2eelab__Lib__Protobuf__SenderChainNode init_value = ORG__E2EELAB__LIB__PROTOBUF__SENDER_CHAIN_NODE__INIT;
+  static const Org__E2eelab__Skissm__Proto__SenderChainNode init_value = ORG__E2EELAB__SKISSM__PROTO__SENDER_CHAIN_NODE__INIT;
   *message = init_value;
 }
-size_t org__e2eelab__lib__protobuf__sender_chain_node__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__SenderChainNode *message)
+size_t org__e2eelab__skissm__proto__sender_chain_node__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__SenderChainNode *message)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__sender_chain_node__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__sender_chain_node__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t org__e2eelab__lib__protobuf__sender_chain_node__pack
-                     (const Org__E2eelab__Lib__Protobuf__SenderChainNode *message,
+size_t org__e2eelab__skissm__proto__sender_chain_node__pack
+                     (const Org__E2eelab__Skissm__Proto__SenderChainNode *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__sender_chain_node__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__sender_chain_node__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t org__e2eelab__lib__protobuf__sender_chain_node__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__SenderChainNode *message,
+size_t org__e2eelab__skissm__proto__sender_chain_node__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__SenderChainNode *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__sender_chain_node__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__sender_chain_node__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Org__E2eelab__Lib__Protobuf__SenderChainNode *
-       org__e2eelab__lib__protobuf__sender_chain_node__unpack
+Org__E2eelab__Skissm__Proto__SenderChainNode *
+       org__e2eelab__skissm__proto__sender_chain_node__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Org__E2eelab__Lib__Protobuf__SenderChainNode *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__sender_chain_node__descriptor,
+  return (Org__E2eelab__Skissm__Proto__SenderChainNode *)
+     protobuf_c_message_unpack (&org__e2eelab__skissm__proto__sender_chain_node__descriptor,
                                 allocator, len, data);
 }
-void   org__e2eelab__lib__protobuf__sender_chain_node__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__SenderChainNode *message,
+void   org__e2eelab__skissm__proto__sender_chain_node__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__SenderChainNode *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__sender_chain_node__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__sender_chain_node__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__sender_chain_node__field_descriptors[2] =
+static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__sender_chain_node__field_descriptors[2] =
 {
   {
     "ratchet_key_pair",
@@ -60,8 +60,8 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__sender_chain_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SenderChainNode, ratchet_key_pair),
-    &org__e2eelab__lib__protobuf__key_pair__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__SenderChainNode, ratchet_key_pair),
+    &org__e2eelab__skissm__proto__key_pair__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -72,34 +72,34 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__sender_chain_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SenderChainNode, chain_key),
-    &org__e2eelab__lib__protobuf__chain_key__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__SenderChainNode, chain_key),
+    &org__e2eelab__skissm__proto__chain_key__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned org__e2eelab__lib__protobuf__sender_chain_node__field_indices_by_name[] = {
+static const unsigned org__e2eelab__skissm__proto__sender_chain_node__field_indices_by_name[] = {
   1,   /* field[1] = chain_key */
   0,   /* field[0] = ratchet_key_pair */
 };
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__sender_chain_node__number_ranges[1 + 1] =
+static const ProtobufCIntRange org__e2eelab__skissm__proto__sender_chain_node__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 2 }
 };
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__sender_chain_node__descriptor =
+const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__sender_chain_node__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.sender_chain_node",
+  "org.e2eelab.skissm.proto.sender_chain_node",
   "SenderChainNode",
-  "Org__E2eelab__Lib__Protobuf__SenderChainNode",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__SenderChainNode),
+  "Org__E2eelab__Skissm__Proto__SenderChainNode",
+  "org.e2eelab.skissm.proto",
+  sizeof(Org__E2eelab__Skissm__Proto__SenderChainNode),
   2,
-  org__e2eelab__lib__protobuf__sender_chain_node__field_descriptors,
-  org__e2eelab__lib__protobuf__sender_chain_node__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__sender_chain_node__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__sender_chain_node__init,
+  org__e2eelab__skissm__proto__sender_chain_node__field_descriptors,
+  org__e2eelab__skissm__proto__sender_chain_node__field_indices_by_name,
+  1,  org__e2eelab__skissm__proto__sender_chain_node__number_ranges,
+  (ProtobufCMessageInit) org__e2eelab__skissm__proto__sender_chain_node__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
