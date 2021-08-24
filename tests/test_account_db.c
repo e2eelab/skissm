@@ -128,7 +128,7 @@ void test_init_account()
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
-  init_account(account);
+  store_account(account);
 
   // free
   free_account(account);
@@ -146,7 +146,7 @@ void test_update_identity_key()
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
-  init_account(account);
+  store_account(account);
 
   // keypair used to update
   Org__E2eelab__Skissm__Proto__KeyPair *kp_p;
@@ -171,7 +171,7 @@ void test_update_signed_pre_key()
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
-  init_account(account);
+  store_account(account);
 
   // create spk
   Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_keypair;
@@ -197,7 +197,7 @@ void test_update_address()
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
-  init_account(account);
+  store_account(account);
 
   // create address
   Org__E2eelab__Skissm__Proto__E2eeAddress *new_address;
@@ -223,7 +223,7 @@ void test_add_one_time_pre_key()
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
-  init_account(account);
+  store_account(account);
 
   // create opk
   Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *onetime_pre_keypiar;
@@ -249,7 +249,7 @@ void test_remove_one_time_pre_key()
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
-  init_account(account);
+  store_account(account);
 
   // remove_one_time_pre_key
   remove_one_time_pre_key(account, 0);
@@ -270,7 +270,7 @@ void test_load_account()
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
-  init_account(account);
+  store_account(account);
 
   // load_account
   Org__E2eelab__Skissm__Proto__E2eeAccount *account_copy;
@@ -296,14 +296,14 @@ void test_two_accounts()
   mock_address(&(account_1->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
-  init_account(account_1);
+  store_account(account_1);
 
   // create the first account
   Org__E2eelab__Skissm__Proto__E2eeAccount *account_2 = create_account();
   mock_address(&(account_2->address), "bob", "bob's domain", "bob's device");
 
   // insert to the db
-  init_account(account_2);
+  store_account(account_2);
 
   // load the first account
   Org__E2eelab__Skissm__Proto__E2eeAccount *account_copy_1;

@@ -11,7 +11,7 @@ static void handle_register_user_response(
     copy_address_from_address(&(response_handler->account->address), address);
     // save to db
     response_handler->account->saved = true;
-    ssm_handler.init_account(response_handler->account);
+    ssm_handler.store_account(response_handler->account);
 }
 
 register_user_response_handler register_user_response_handler_store = {

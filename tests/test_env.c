@@ -122,7 +122,7 @@ void load_account_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address, 
   load_account(account_id, account);
 }
 
-void init_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account)
+void store_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account)
 {
   // insert address
   sqlite_int64 address_id = insert_address(account->address);
@@ -182,7 +182,7 @@ const struct skissm_handler ssm_handler = {
     handle_generate_uuid,
     handle_send,
     // account
-    init_account,
+    store_account,
     load_account,
     load_account_by_address,
     update_identity_key,

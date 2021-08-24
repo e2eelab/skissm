@@ -165,21 +165,60 @@ typedef struct skissm_handler {
   int (*handle_send)(u_int8_t *, size_t);
 
   // account related handlers
-  void (*init_account)(Org__E2eelab__Skissm__Proto__E2eeAccount *);
+  /**
+   * @brief store account to db
+   * @param account
+   */
+  void (*store_account)(Org__E2eelab__Skissm__Proto__E2eeAccount *);
+  /**
+   * @brief load account from db
+   * @param account_id
+   * @param account
+   */
   void (*load_account)(ProtobufCBinaryData *,
                        Org__E2eelab__Skissm__Proto__E2eeAccount **);
+  /**
+   * @brief load account from db by giving address
+   * @param address
+   * @param account
+   */
   void (*load_account_by_address)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
                                   Org__E2eelab__Skissm__Proto__E2eeAccount **);
+  /**
+   * @brief update identity key of account to db
+   * @param account
+   * @param identity_key_pair
+   */
   void (*update_identity_key)(Org__E2eelab__Skissm__Proto__E2eeAccount *,
                               Org__E2eelab__Skissm__Proto__KeyPair *);
+  /**
+   * @brief update signed pre key of account to db
+   * @param account
+   * @param signed_pre_key
+   */
   void (*update_signed_pre_key)(
       Org__E2eelab__Skissm__Proto__E2eeAccount *,
       Org__E2eelab__Skissm__Proto__SignedPreKeyPair *);
+  /**
+   * @brief update address of account to db
+   * @param account
+   * @param address
+   */
   void (*update_address)(Org__E2eelab__Skissm__Proto__E2eeAccount *,
                          Org__E2eelab__Skissm__Proto__E2eeAddress *);
+  /**
+   * @brief add an one time pre key of account to db
+   * @param account
+   * @param one_time_pre_key
+   */
   void (*add_one_time_pre_key)(
       Org__E2eelab__Skissm__Proto__E2eeAccount *,
       Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *);
+  /**
+   * @brief remove an one time pre key of acount from db
+   * @param account
+   * @param one_time_pre_key_id
+   */
   void (*remove_one_time_pre_key)(Org__E2eelab__Skissm__Proto__E2eeAccount *,
                                   uint32_t);
 
