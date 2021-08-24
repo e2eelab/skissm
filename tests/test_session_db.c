@@ -65,10 +65,10 @@ void test_find_session()
     print_result("test_find_session", is_equal_session(session, session_copy));
 
     // free
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(from, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(to, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_session__free_unpacked(session, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_session__free_unpacked(session_copy, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(from, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(to, NULL);
+    org__e2eelab__skissm__proto__e2ee_session__free_unpacked(session, NULL);
+    org__e2eelab__skissm__proto__e2ee_session__free_unpacked(session_copy, NULL);
 
     tear_down();
 }
@@ -79,7 +79,7 @@ void test_load_session()
 
     // create session and two addresses
     Org__E2eelab__Skissm__Proto__E2eeSession *session = (Org__E2eelab__Skissm__Proto__E2eeSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeSession));
-    Org__E2eelab__Skissm__Proto__e2ee_session__init(session);
+    org__e2eelab__skissm__proto__e2ee_session__init(session);
     
     Org__E2eelab__Skissm__Proto__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
@@ -120,10 +120,10 @@ void test_load_session()
     print_result("test_load_session", is_equal_session(session, session_copy));
 
     // free
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(from, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(to, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_session__free_unpacked(session, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_session__free_unpacked(session_copy, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(from, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(to, NULL);
+    org__e2eelab__skissm__proto__e2ee_session__free_unpacked(session, NULL);
+    org__e2eelab__skissm__proto__e2ee_session__free_unpacked(session_copy, NULL);
 
     tear_down();
 }
@@ -144,7 +144,7 @@ void test_load_outbound_group_session()
 
     // mock group address
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-    Org__E2eelab__Skissm__Proto__e2ee_address__init(group_address);
+    org__e2eelab__skissm__proto__e2ee_address__init(group_address);
     group_address->domain.len = sizeof(DOMAIN);
     group_address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
     memcpy(group_address->domain.data, DOMAIN, sizeof(DOMAIN));
@@ -154,7 +154,7 @@ void test_load_outbound_group_session()
 
     // create outbound group session
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));
-    Org__E2eelab__Skissm__Proto__e2ee_group_session__init(group_session);
+    org__e2eelab__skissm__proto__e2ee_group_session__init(group_session);
 
     group_session->version = PROTOCOL_VERSION;
 
@@ -198,12 +198,12 @@ void test_load_outbound_group_session()
     print_result("test_load_outbound_group_session", is_equal_group_session(group_session, group_session_copy));
 
     // free
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(Alice, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(Bob, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(Alice, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(Bob, NULL);
     free(member_addresses);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(group_address, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_group_session__free_unpacked(group_session, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_group_session__free_unpacked(group_session_copy, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(group_address, NULL);
+    org__e2eelab__skissm__proto__e2ee_group_session__free_unpacked(group_session, NULL);
+    org__e2eelab__skissm__proto__e2ee_group_session__free_unpacked(group_session_copy, NULL);
 
     tear_down();
 }
@@ -224,7 +224,7 @@ void test_load_inbound_group_session()
 
     // mock group address
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-    Org__E2eelab__Skissm__Proto__e2ee_address__init(group_address);
+    org__e2eelab__skissm__proto__e2ee_address__init(group_address);
     group_address->domain.len = sizeof(DOMAIN);
     group_address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
     memcpy(group_address->domain.data, DOMAIN, sizeof(DOMAIN));
@@ -234,7 +234,7 @@ void test_load_inbound_group_session()
 
     // create inbound group session
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));
-    Org__E2eelab__Skissm__Proto__e2ee_group_session__init(group_session);
+    org__e2eelab__skissm__proto__e2ee_group_session__init(group_session);
 
     group_session->version = PROTOCOL_VERSION;
 
@@ -278,12 +278,12 @@ void test_load_inbound_group_session()
     print_result("test_load_inbound_group_session", is_equal_group_session(group_session, group_session_copy));
 
     // free
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(Alice, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(Bob, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(Alice, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(Bob, NULL);
     free(member_addresses);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(group_address, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_group_session__free_unpacked(group_session, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_group_session__free_unpacked(group_session_copy, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(group_address, NULL);
+    org__e2eelab__skissm__proto__e2ee_group_session__free_unpacked(group_session, NULL);
+    org__e2eelab__skissm__proto__e2ee_group_session__free_unpacked(group_session_copy, NULL);
 
     tear_down();
 }

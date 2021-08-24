@@ -38,8 +38,8 @@ static void test_basic_session(){
     );
     encrypt_session(a_account->address, b_account->address, context, context_len);
 
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(a_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
 
     // test stop
     tear_down();
@@ -81,8 +81,8 @@ static void test_interaction(){
     );
     encrypt_session(b_account->address, a_account->address, context_2, context_len_2);
 
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(a_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
 
     // test stop
     tear_down();
@@ -115,8 +115,8 @@ static void test_continual_messages(){
         encrypt_session(a_account->address, b_account->address, context, context_len);
     }
 
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(a_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
 
     // test stop
     tear_down();

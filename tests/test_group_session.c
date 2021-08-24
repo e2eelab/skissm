@@ -121,10 +121,10 @@ static void test_create_group(){
     test_encryption(a_account->address, plaintext, plaintext_len);
 
     // release
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(a_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(b_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
     free_protobuf(group_name);
 
@@ -175,14 +175,14 @@ static void test_add_group_members(){
     test_encryption(a_account->address, plaintext, plaintext_len);
 
     // release
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(a_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(b_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(c_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(c_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
     free_protobuf(group_name);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
     free(new_member_addresses);
 
     // test stop
@@ -233,15 +233,15 @@ static void test_remove_group_members(){
     test_encryption(a_account->address, plaintext, plaintext_len);
 
     // release
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(a_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(b_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(c_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[2], NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(c_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[2], NULL);
     free(member_addresses);
     free_protobuf(group_name);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(removing_member_addresses[0], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(removing_member_addresses[0], NULL);
     free(removing_member_addresses);
 
     // test stop
@@ -304,14 +304,14 @@ static void test_create_add_remove(){
     test_encryption(a_account->address, plaintext_3, plaintext_len_3);
 
     // release
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(a_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(b_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(c_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(c_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
     free_protobuf(group_name);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
     free(new_member_addresses);
 
     // test stop
@@ -371,14 +371,14 @@ int main(){
     remove_group_members(a_account->address, group.group_address, new_member_addresses, new_member_num);
 
     // release
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(a_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(b_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(c_account, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(c_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
     free_protobuf(group_name);
-    Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
+    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
     free(new_member_addresses);
 
     // test stop

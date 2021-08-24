@@ -71,7 +71,7 @@ void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src
 
 void copy_address_from_address(Org__E2eelab__Skissm__Proto__E2eeAddress **dest, const Org__E2eelab__Skissm__Proto__E2eeAddress *src){
     *dest = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-    Org__E2eelab__Skissm__Proto__e2ee_address__init(*dest);
+    org__e2eelab__skissm__proto__e2ee_address__init(*dest);
     if (src->user_id.data){
         (*dest)->user_id.len = src->user_id.len;
         (*dest)->user_id.data = (uint8_t *) malloc(sizeof(uint8_t) * src->user_id.len);

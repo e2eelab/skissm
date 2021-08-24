@@ -48,7 +48,7 @@ void initialise_session(
     Org__E2eelab__Skissm__Proto__E2eeAddress *from,
     Org__E2eelab__Skissm__Proto__E2eeAddress *to
 ) {
-    Org__E2eelab__Skissm__Proto__e2ee_session__init(session);
+    org__e2eelab__skissm__proto__e2ee_session__init(session);
     copy_address_from_address(&(session->from), from);
     copy_address_from_address(&(session->to), to);
     initialise_ratchet(&(session->ratchet));
@@ -56,7 +56,7 @@ void initialise_session(
 
 static void close_session(Org__E2eelab__Skissm__Proto__E2eeSession *session){
     if (session != NULL){
-        Org__E2eelab__Skissm__Proto__e2ee_session__free_unpacked(session, NULL);
+        org__e2eelab__skissm__proto__e2ee_session__free_unpacked(session, NULL);
     }
 }
 
@@ -66,16 +66,16 @@ void pack_e2ee_plaintext(
     uint8_t **context, size_t *context_len
 ) {
     Org__E2eelab__Skissm__Proto__E2eePlaintext *e2ee_plaintext = (Org__E2eelab__Skissm__Proto__E2eePlaintext *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eePlaintext));
-    Org__E2eelab__Skissm__Proto__e2ee_plaintext__init(e2ee_plaintext);
+    org__e2eelab__skissm__proto__e2ee_plaintext__init(e2ee_plaintext);
     e2ee_plaintext->version = PLAINTEXT_VERSION;
     e2ee_plaintext->plaintext_type = plaintext_type;
     e2ee_plaintext->payload.len = plaintext_len;
     e2ee_plaintext->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
     memcpy(e2ee_plaintext->payload.data, plaintext, plaintext_len);
 
-    *context_len = Org__E2eelab__Skissm__Proto__e2ee_plaintext__get_packed_size(e2ee_plaintext);
+    *context_len = org__e2eelab__skissm__proto__e2ee_plaintext__get_packed_size(e2ee_plaintext);
     *context = (uint8_t *) malloc(sizeof(uint8_t) * (*context_len));
-    Org__E2eelab__Skissm__Proto__e2ee_plaintext__pack(e2ee_plaintext, *context);
+    org__e2eelab__skissm__proto__e2ee_plaintext__pack(e2ee_plaintext, *context);
 }
 
 size_t new_outbound_session(
@@ -169,12 +169,12 @@ size_t new_inbound_session(
 ) {
     session->version = inbound_message->version;
 
-    Org__E2eelab__Skissm__Proto__E2eePreKeyPayload *pre_key_context = Org__E2eelab__Skissm__Proto__e2ee_pre_key_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
+    Org__E2eelab__Skissm__Proto__E2eePreKeyPayload *pre_key_context = org__e2eelab__skissm__proto__e2ee_pre_key_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
 
     /* Verify the signed pre-key */
     if (compare_protobuf(&(local_account->signed_pre_key_pair->key_pair->public_key), &(pre_key_context->bob_signed_pre_key)) == false){
         ssm_notify_error(BAD_SIGNED_PRE_KEY, "new_inbound_session()");
-        Org__E2eelab__Skissm__Proto__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
+        org__e2eelab__skissm__proto__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
         return (size_t)(-1);
     }
 
@@ -199,7 +199,7 @@ size_t new_inbound_session(
 
         if (!our_one_time_pre_key){
             ssm_notify_error(BAD_ONE_TIME_PRE_KEY, "new_inbound_session()");
-            Org__E2eelab__Skissm__Proto__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
+            org__e2eelab__skissm__proto__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
             return (size_t)(-1);
         } else{
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
@@ -246,7 +246,7 @@ static size_t perform_encrypt_session(
 ) {
     Org__E2eelab__Skissm__Proto__E2eeMessage *outbound_message;
     outbound_message = (Org__E2eelab__Skissm__Proto__E2eeMessage *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeMessage));
-    Org__E2eelab__Skissm__Proto__e2ee_message__init(outbound_message);
+    org__e2eelab__skissm__proto__e2ee_message__init(outbound_message);
 
     outbound_message->version = PROTOCOL_VERSION;
     copy_protobuf_from_protobuf(&(outbound_message->session_id), &(session->session_id));
@@ -263,14 +263,14 @@ static size_t perform_encrypt_session(
             context, context_len,
             &msg_context);
 
-        size_t msg_len = Org__E2eelab__Skissm__Proto__e2ee_msg_payload__get_packed_size(msg_context);
+        size_t msg_len = org__e2eelab__skissm__proto__e2ee_msg_payload__get_packed_size(msg_context);
         outbound_message->payload.len = msg_len;
         outbound_message->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * msg_len);
-        Org__E2eelab__Skissm__Proto__e2ee_msg_payload__pack(msg_context, outbound_message->payload.data);
+        org__e2eelab__skissm__proto__e2ee_msg_payload__pack(msg_context, outbound_message->payload.data);
     } else {
         outbound_message->msg_type = ORG__E2EELAB__SKISSM__PROTO__E2EE_MESSAGE_TYPE__PRE_KEY;
         Org__E2eelab__Skissm__Proto__E2eePreKeyPayload *pre_key_context = (Org__E2eelab__Skissm__Proto__E2eePreKeyPayload *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eePreKeyPayload));
-        Org__E2eelab__Skissm__Proto__e2ee_pre_key_payload__init(pre_key_context);
+        org__e2eelab__skissm__proto__e2ee_pre_key_payload__init(pre_key_context);
         copy_protobuf_from_protobuf(&pre_key_context->alice_identity_key, &session->alice_identity_key);
         copy_protobuf_from_protobuf(&pre_key_context->alice_ephemeral_key, &session->alice_ephemeral_key);
         copy_protobuf_from_protobuf(&pre_key_context->bob_signed_pre_key, &session->bob_signed_pre_key);
@@ -284,23 +284,23 @@ static size_t perform_encrypt_session(
 
         pre_key_context->msg_payload = msg_context;
 
-        size_t pre_key_len = Org__E2eelab__Skissm__Proto__e2ee_pre_key_payload__get_packed_size(pre_key_context);
+        size_t pre_key_len = org__e2eelab__skissm__proto__e2ee_pre_key_payload__get_packed_size(pre_key_context);
         outbound_message->payload.len = pre_key_len;
         outbound_message->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * pre_key_len);
-        Org__E2eelab__Skissm__Proto__e2ee_pre_key_payload__pack(pre_key_context, outbound_message->payload.data);
+        org__e2eelab__skissm__proto__e2ee_pre_key_payload__pack(pre_key_context, outbound_message->payload.data);
     }
 
     Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *protocol_msg = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    Org__E2eelab__Skissm__Proto__e2ee_protocol_msg__init(protocol_msg);
+    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(protocol_msg);
     protocol_msg->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__e2ee_msg;
 
-    protocol_msg->payload.len = Org__E2eelab__Skissm__Proto__e2ee_message__get_packed_size(outbound_message);
+    protocol_msg->payload.len = org__e2eelab__skissm__proto__e2ee_message__get_packed_size(outbound_message);
     protocol_msg->payload.data = (uint8_t *) malloc(protocol_msg->payload.len);
-    Org__E2eelab__Skissm__Proto__e2ee_message__pack(outbound_message, protocol_msg->payload.data);
+    org__e2eelab__skissm__proto__e2ee_message__pack(outbound_message, protocol_msg->payload.data);
 
-    size_t message_len = Org__E2eelab__Skissm__Proto__e2ee_protocol_msg__get_packed_size(protocol_msg);
+    size_t message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(protocol_msg);
     uint8_t *message = (uint8_t *) malloc(sizeof(uint8_t) * message_len);
-    Org__E2eelab__Skissm__Proto__e2ee_protocol_msg__pack(protocol_msg, message);
+    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(protocol_msg, message);
 
     // send message to server
     ssm_handler.handle_send(message, message_len);
@@ -310,8 +310,8 @@ static size_t perform_encrypt_session(
 
     // release
     free_mem((void **)(&message), message_len);
-    Org__E2eelab__Skissm__Proto__e2ee_message__free_unpacked(outbound_message, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_protocol_msg__free_unpacked(protocol_msg, NULL);
+    org__e2eelab__skissm__proto__e2ee_message__free_unpacked(outbound_message, NULL);
+    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(protocol_msg, NULL);
 
     // done
     return message_len;
@@ -410,9 +410,9 @@ size_t decrypt_session(
     uint8_t *context = NULL;
     size_t context_len = -1;
     if (inbound_message->msg_type == ORG__E2EELAB__SKISSM__PROTO__E2EE_MESSAGE_TYPE__MESSAGE){
-        msg_payload = Org__E2eelab__Skissm__Proto__e2ee_msg_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
+        msg_payload = org__e2eelab__skissm__proto__e2ee_msg_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
     } else if (inbound_message->msg_type == ORG__E2EELAB__SKISSM__PROTO__E2EE_MESSAGE_TYPE__PRE_KEY){
-        pre_key_context = Org__E2eelab__Skissm__Proto__e2ee_pre_key_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
+        pre_key_context = org__e2eelab__skissm__proto__e2ee_pre_key_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
         msg_payload = pre_key_context->msg_payload;
     }
 
@@ -426,14 +426,14 @@ size_t decrypt_session(
             ssm_notify_error(BAD_MESSAGE_DECRYPTION, "decrypt_session()");
             goto complete;
         } else{
-            Org__E2eelab__Skissm__Proto__E2eePlaintext *e2ee_plaintext = Org__E2eelab__Skissm__Proto__e2ee_plaintext__unpack(NULL, context_len, context);
+            Org__E2eelab__Skissm__Proto__E2eePlaintext *e2ee_plaintext = org__e2eelab__skissm__proto__e2ee_plaintext__unpack(NULL, context_len, context);
             if (e2ee_plaintext->plaintext_type == ORG__E2EELAB__SKISSM__PROTO__E2EE_PLAINTEXT_TYPE__COMMON_MSG){
                 ssm_notify_one2one_msg(inbound_message->from, inbound_message->to, e2ee_plaintext->payload.data, e2ee_plaintext->payload.len);
             } else if (e2ee_plaintext->plaintext_type == ORG__E2EELAB__SKISSM__PROTO__E2EE_PLAINTEXT_TYPE__GROUP_PRE_KEY){
-                Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *group_pre_key_payload = Org__E2eelab__Skissm__Proto__e2ee_group_pre_key_payload__unpack(NULL, e2ee_plaintext->payload.len, e2ee_plaintext->payload.data);
+                Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *group_pre_key_payload = org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__unpack(NULL, e2ee_plaintext->payload.len, e2ee_plaintext->payload.data);
                 ssm_handler.unload_inbound_group_session(inbound_message->to, group_pre_key_payload->group_address, group_pre_key_payload->n_member_addresses, group_pre_key_payload->member_addresses);
                 create_inbound_group_session(group_pre_key_payload, inbound_message->to);
-                Org__E2eelab__Skissm__Proto__e2ee_group_pre_key_payload__free_unpacked(group_pre_key_payload, NULL);
+                org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__free_unpacked(group_pre_key_payload, NULL);
             }
         }
 
@@ -454,9 +454,9 @@ size_t decrypt_session(
 complete:
     // release
     if (inbound_message->msg_type == ORG__E2EELAB__SKISSM__PROTO__E2EE_MESSAGE_TYPE__MESSAGE){
-        Org__E2eelab__Skissm__Proto__e2ee_msg_payload__free_unpacked(msg_payload, NULL);
+        org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(msg_payload, NULL);
     } else if (inbound_message->msg_type == ORG__E2EELAB__SKISSM__PROTO__E2EE_MESSAGE_TYPE__PRE_KEY){
-        Org__E2eelab__Skissm__Proto__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
+        org__e2eelab__skissm__proto__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
     }
     close_session(session);
 

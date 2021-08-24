@@ -88,7 +88,7 @@ static void handle_remove_group_members_response(
     for (j = 0; j < this_handler->removing_member_num; j++){
         for (i = 0; i < original_member_num; i++){
             if (compare_address((this_handler->outbound_group_session->member_addresses)[i], (this_handler->removing_member_addresses)[j])){
-                Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked((this_handler->outbound_group_session->member_addresses)[i], NULL);
+                org__e2eelab__skissm__proto__e2ee_address__free_unpacked((this_handler->outbound_group_session->member_addresses)[i], NULL);
                 (this_handler->outbound_group_session->member_addresses)[i] = NULL;
                 break;
             }

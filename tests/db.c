@@ -451,7 +451,7 @@ void load_address(ProtobufCBinaryData *account_id,
   // allocate memory
   *address = (Org__E2eelab__Skissm__Proto__E2eeAddress *)malloc(
       sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-  Org__E2eelab__Skissm__Proto__e2ee_address__init(*address);
+  org__e2eelab__skissm__proto__e2ee_address__init(*address);
 
   // prepare
   sqlite3_stmt *stmt;
@@ -483,7 +483,7 @@ void load_identity_key_pair(
   // allocate memory
   *identity_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(
       sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-  Org__E2eelab__Skissm__Proto__key_pair__init(*identity_key_pair);
+  org__e2eelab__skissm__proto__key_pair__init(*identity_key_pair);
 
   // prepare
   sqlite3_stmt *stmt;
@@ -513,12 +513,12 @@ void load_signed_pre_key_pair(
   *signed_pre_key_pair =
       (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *)malloc(
           sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
-  Org__E2eelab__Skissm__Proto__signed_pre_key_pair__init(*signed_pre_key_pair);
+  org__e2eelab__skissm__proto__signed_pre_key_pair__init(*signed_pre_key_pair);
 
   Org__E2eelab__Skissm__Proto__KeyPair *key_pair =
       (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(
           sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-  Org__E2eelab__Skissm__Proto__key_pair__init(key_pair);
+  org__e2eelab__skissm__proto__key_pair__init(key_pair);
   (*signed_pre_key_pair)->key_pair = key_pair;
 
   // prepare
@@ -590,13 +590,13 @@ uint32_t load_one_time_pre_keys(
     (*one_time_pre_keys)[i] =
         (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *)malloc(
             sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
-    Org__E2eelab__Skissm__Proto__one_time_pre_key_pair__init(
+    org__e2eelab__skissm__proto__one_time_pre_key_pair__init(
         (*one_time_pre_keys)[i]);
 
     Org__E2eelab__Skissm__Proto__KeyPair *key_pair =
         (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(
             sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-    Org__E2eelab__Skissm__Proto__key_pair__init(key_pair);
+    org__e2eelab__skissm__proto__key_pair__init(key_pair);
     (*one_time_pre_keys)[i]->key_pair = key_pair;
 
     // load
@@ -959,7 +959,7 @@ void load_inbound_session(ProtobufCBinaryData session_id,
   }
 
   // unpack
-  *session = Org__E2eelab__Skissm__Proto__e2ee_session__unpack(
+  *session = org__e2eelab__skissm__proto__e2ee_session__unpack(
       NULL, session_data_len, session_data);
 
   // release
@@ -972,9 +972,9 @@ void store_session(Org__E2eelab__Skissm__Proto__E2eeSession *session) {
   // pack
   ProtobufCBinaryData session_id = session->session_id;
   size_t session_data_len =
-      Org__E2eelab__Skissm__Proto__e2ee_session__get_packed_size(session);
+      org__e2eelab__skissm__proto__e2ee_session__get_packed_size(session);
   uint8_t *session_data = (uint8_t *)malloc(session_data_len);
-  Org__E2eelab__Skissm__Proto__e2ee_session__pack(session, session_data);
+  org__e2eelab__skissm__proto__e2ee_session__pack(session, session_data);
 
   int owner_id = insert_address(session->session_owner);
   int from_id = insert_address(session->from);
@@ -1032,7 +1032,7 @@ void load_outbound_session(Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
   }
 
   // unpack
-  *session = Org__E2eelab__Skissm__Proto__e2ee_session__unpack(
+  *session = org__e2eelab__skissm__proto__e2ee_session__unpack(
       NULL, session_data_len, session_data);
 
   // release
@@ -1087,7 +1087,7 @@ void load_outbound_group_session(
   }
 
   // unpack
-  *group_session = Org__E2eelab__Skissm__Proto__e2ee_group_session__unpack(
+  *group_session = org__e2eelab__skissm__proto__e2ee_group_session__unpack(
       NULL, group_session_data_len, group_session_data);
 
   // release
@@ -1135,7 +1135,7 @@ void load_inbound_group_session(
   }
 
   // unpack
-  *group_session = Org__E2eelab__Skissm__Proto__e2ee_group_session__unpack(
+  *group_session = org__e2eelab__skissm__proto__e2ee_group_session__unpack(
       NULL, group_session_data_len, group_session_data);
 
   // release
@@ -1148,10 +1148,10 @@ void store_group_session(
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session) {
   // pack
   size_t group_session_data_len =
-      Org__E2eelab__Skissm__Proto__e2ee_group_session__get_packed_size(
+      org__e2eelab__skissm__proto__e2ee_group_session__get_packed_size(
           group_session);
   uint8_t *group_session_data = (uint8_t *)malloc(group_session_data_len);
-  Org__E2eelab__Skissm__Proto__e2ee_group_session__pack(group_session,
+  org__e2eelab__skissm__proto__e2ee_group_session__pack(group_session,
                                                         group_session_data);
 
   int owner_id = insert_address(group_session->session_owner);

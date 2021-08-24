@@ -56,7 +56,7 @@ int main(){
     verify_one_time_pre_keys(account, 180);
 
     // release
-    Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account, NULL);
 
     // test stop.
     tear_down();

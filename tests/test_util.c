@@ -288,7 +288,7 @@ void mock_string(char **to, const char *from)
 void mock_address(Org__E2eelab__Skissm__Proto__E2eeAddress **address, const char *user_id, const char *domain, const char *device_id)
 {
   *address = malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-  Org__E2eelab__Skissm__Proto__e2ee_address__init((*address));
+  org__e2eelab__skissm__proto__e2ee_address__init((*address));
 
   mock_data(&((*address)->user_id), user_id);
   mock_data(&((*address)->domain), domain);
@@ -298,7 +298,7 @@ void mock_address(Org__E2eelab__Skissm__Proto__E2eeAddress **address, const char
 void mock_keypair(Org__E2eelab__Skissm__Proto__KeyPair **keypair, const char *public_key, const char *private_key)
 {
   *keypair = malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-  Org__E2eelab__Skissm__Proto__key_pair__init(*keypair);
+  org__e2eelab__skissm__proto__key_pair__init(*keypair);
 
   mock_data(&((*keypair)->public_key), public_key);
   mock_data(&((*keypair)->private_key), private_key);
@@ -307,7 +307,7 @@ void mock_keypair(Org__E2eelab__Skissm__Proto__KeyPair **keypair, const char *pu
 void mock_signed_pre_keypair(Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_keypair, uint32_t spk_id, const char *public_key, const char *private_key, const char *signature)
 {
   *signed_pre_keypair = malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
-  Org__E2eelab__Skissm__Proto__signed_pre_key_pair__init(*signed_pre_keypair);
+  org__e2eelab__skissm__proto__signed_pre_key_pair__init(*signed_pre_keypair);
   mock_data(&((*signed_pre_keypair)->signature), signature);
   mock_keypair(&((*signed_pre_keypair)->key_pair), public_key, private_key);
   (*signed_pre_keypair)->spk_id = spk_id;
@@ -316,7 +316,7 @@ void mock_signed_pre_keypair(Org__E2eelab__Skissm__Proto__SignedPreKeyPair **sig
 void mock_onetime_pre_keypiar(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **onetime_pre_keypiar, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key)
 {
   *onetime_pre_keypiar = malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
-  Org__E2eelab__Skissm__Proto__one_time_pre_key_pair__init(*onetime_pre_keypiar);
+  org__e2eelab__skissm__proto__one_time_pre_key_pair__init(*onetime_pre_keypiar);
   mock_keypair(&((*onetime_pre_keypiar)->key_pair), public_key, private_key);
   (*onetime_pre_keypiar)->opk_id = opk_id;
   (*onetime_pre_keypiar)->used = used;
@@ -324,7 +324,7 @@ void mock_onetime_pre_keypiar(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **o
 
 void free_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account)
 {
-  Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(account, NULL);
+  org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account, NULL);
 }
 
 void free_keypair(Org__E2eelab__Skissm__Proto__KeyPair *keypair)
@@ -334,15 +334,15 @@ void free_keypair(Org__E2eelab__Skissm__Proto__KeyPair *keypair)
 
 void free_signed_pre_keypair(Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_keypair)
 {
-  Org__E2eelab__Skissm__Proto__signed_pre_key_pair__free_unpacked(signed_pre_keypair, NULL);
+  org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(signed_pre_keypair, NULL);
 }
 
 void free_onetime_pre_keypiar(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *onetime_pre_keypiar)
 {
-  Org__E2eelab__Skissm__Proto__one_time_pre_key_pair__free_unpacked(onetime_pre_keypiar, NULL);
+  org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked(onetime_pre_keypiar, NULL);
 }
 
 void free_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address)
 {
-  Org__E2eelab__Skissm__Proto__e2ee_address__free_unpacked(address, NULL);
+  org__e2eelab__skissm__proto__e2ee_address__free_unpacked(address, NULL);
 }

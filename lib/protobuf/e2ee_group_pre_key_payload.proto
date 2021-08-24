@@ -9,10 +9,11 @@ option java_multiple_files = true;
 import "e2ee_address.proto";
 
 message e2ee_group_pre_key_payload {
-    bytes session_id = 1;
-    e2ee_address group_address = 2;
-    repeated e2ee_address member_addresses = 3;
-    uint32 sequence = 4;
-    bytes chain_key = 5;
-    bytes signature_public_key = 6;
+    uint32 version = 1;
+    bytes session_id = 2;
+    e2ee_address group_address = 3;
+    repeated e2ee_address member_addresses = 4;
+    uint32 sequence = 5;
+    bytes chain_key = 6;
+    bytes signature_public_key = 7;
 }

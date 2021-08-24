@@ -124,7 +124,7 @@ static size_t verify_and_decrypt_for_existing_chain(
     }
 
     Org__E2eelab__Skissm__Proto__ChainKey *new_chain = (Org__E2eelab__Skissm__Proto__ChainKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ChainKey));
-    Org__E2eelab__Skissm__Proto__chain_key__init(new_chain);
+    org__e2eelab__skissm__proto__chain_key__init(new_chain);
     new_chain->index = chain->index;
     copy_protobuf_from_protobuf(&new_chain->shared_key, &chain->shared_key);
 
@@ -134,7 +134,7 @@ static size_t verify_and_decrypt_for_existing_chain(
     assert(new_chain->index == e2ee_msg_payload->sequence);
 
     Org__E2eelab__Skissm__Proto__MessageKey *mk = (Org__E2eelab__Skissm__Proto__MessageKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__MessageKey));
-    Org__E2eelab__Skissm__Proto__message_key__init(mk);
+    org__e2eelab__skissm__proto__message_key__init(mk);
     create_message_keys(new_chain, mk);
 
     size_t result = verify_and_decrypt(
@@ -142,8 +142,8 @@ static size_t verify_and_decrypt_for_existing_chain(
         plaintext
     );
 
-    Org__E2eelab__Skissm__Proto__chain_key__free_unpacked(new_chain, NULL);
-    Org__E2eelab__Skissm__Proto__message_key__free_unpacked(mk, NULL);
+    org__e2eelab__skissm__proto__chain_key__free_unpacked(new_chain, NULL);
+    org__e2eelab__skissm__proto__message_key__free_unpacked(mk, NULL);
 
     return result;
 }
@@ -172,11 +172,11 @@ static size_t verify_and_decrypt_for_new_chain(
 
     assert(e2ee_msg_payload->ratchet_key.len == CURVE25519_KEY_LENGTH);
 
-    Org__E2eelab__Skissm__Proto__receiver_chain_node__init(&new_chain);
+    org__e2eelab__skissm__proto__receiver_chain_node__init(&new_chain);
     copy_protobuf_from_protobuf(&(new_chain.ratchet_key_public), &(e2ee_msg_payload->ratchet_key));
     
     new_chain.chain_key = (Org__E2eelab__Skissm__Proto__ChainKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ChainKey));
-    Org__E2eelab__Skissm__Proto__chain_key__init(new_chain.chain_key);
+    org__e2eelab__skissm__proto__chain_key__init(new_chain.chain_key);
 
     create_chain_key(
         ratchet->root_key, ratchet->sender_chain->ratchet_key_pair,
@@ -198,7 +198,7 @@ static size_t verify_and_decrypt_for_new_chain(
 
 void initialise_ratchet(Org__E2eelab__Skissm__Proto__E2eeRatchet **ratchet){
     *ratchet = (Org__E2eelab__Skissm__Proto__E2eeRatchet *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeRatchet));
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__init(*ratchet);
+    org__e2eelab__skissm__proto__e2ee_ratchet__init(*ratchet);
 }
 
 void initialise_as_bob(
@@ -216,9 +216,9 @@ void initialise_as_bob(
     );
 
     ratchet->sender_chain = (Org__E2eelab__Skissm__Proto__SenderChainNode *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SenderChainNode));
-    Org__E2eelab__Skissm__Proto__sender_chain_node__init(ratchet->sender_chain);
+    org__e2eelab__skissm__proto__sender_chain_node__init(ratchet->sender_chain);
     ratchet->sender_chain->chain_key = (Org__E2eelab__Skissm__Proto__ChainKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ChainKey));
-    Org__E2eelab__Skissm__Proto__chain_key__init(ratchet->sender_chain->chain_key);
+    org__e2eelab__skissm__proto__chain_key__init(ratchet->sender_chain->chain_key);
     ratchet->sender_chain->chain_key->index = 0;
 
     /* The first half of the ssk will be the root key, and the second half will be the sending chain key */
@@ -227,7 +227,7 @@ void initialise_as_bob(
     copy_protobuf_from_array(&(ratchet->sender_chain->chain_key->shared_key), derived_secrets + SHARED_KEY_LENGTH, SHARED_KEY_LENGTH);
 
     ratchet->sender_chain->ratchet_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-    Org__E2eelab__Skissm__Proto__key_pair__init(ratchet->sender_chain->ratchet_key_pair);
+    org__e2eelab__skissm__proto__key_pair__init(ratchet->sender_chain->ratchet_key_pair);
     copy_protobuf_from_protobuf(&(ratchet->sender_chain->ratchet_key_pair->public_key), &(our_ratchet_key->public_key));
     copy_protobuf_from_protobuf(&(ratchet->sender_chain->ratchet_key_pair->private_key), &(our_ratchet_key->private_key));
 
@@ -251,9 +251,9 @@ void initialise_as_alice(
     );
     ratchet->receiver_chains = (Org__E2eelab__Skissm__Proto__ReceiverChainNode **) malloc(sizeof(Org__E2eelab__Skissm__Proto__ReceiverChainNode *));
     ratchet->receiver_chains[0] = (Org__E2eelab__Skissm__Proto__ReceiverChainNode *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ReceiverChainNode));
-    Org__E2eelab__Skissm__Proto__receiver_chain_node__init(ratchet->receiver_chains[0]);
+    org__e2eelab__skissm__proto__receiver_chain_node__init(ratchet->receiver_chains[0]);
     ratchet->receiver_chains[0]->chain_key = (Org__E2eelab__Skissm__Proto__ChainKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ChainKey));
-    Org__E2eelab__Skissm__Proto__chain_key__init(ratchet->receiver_chains[0]->chain_key);
+    org__e2eelab__skissm__proto__chain_key__init(ratchet->receiver_chains[0]->chain_key);
 
     /* The first half of the ssk will be the root key, and the second half will be the receiving chain key */
     copy_protobuf_from_array(&(ratchet->root_key), derived_secrets, SHARED_KEY_LENGTH);
@@ -266,15 +266,15 @@ void initialise_as_alice(
 
     /* Generate a new root key and a sending chain key */
     ratchet->sender_chain = (Org__E2eelab__Skissm__Proto__SenderChainNode *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SenderChainNode));
-    Org__E2eelab__Skissm__Proto__sender_chain_node__init(ratchet->sender_chain);
+    org__e2eelab__skissm__proto__sender_chain_node__init(ratchet->sender_chain);
     
     ratchet->sender_chain->chain_key = (Org__E2eelab__Skissm__Proto__ChainKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ChainKey));
-    Org__E2eelab__Skissm__Proto__chain_key__init(ratchet->sender_chain->chain_key);
+    org__e2eelab__skissm__proto__chain_key__init(ratchet->sender_chain->chain_key);
     
     create_chain_key(ratchet->root_key, our_ratchet_key, their_ratchet_key, &(ratchet->root_key), ratchet->sender_chain->chain_key);
 
     ratchet->sender_chain->ratchet_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-    Org__E2eelab__Skissm__Proto__key_pair__init(ratchet->sender_chain->ratchet_key_pair);
+    org__e2eelab__skissm__proto__key_pair__init(ratchet->sender_chain->ratchet_key_pair);
     copy_protobuf_from_protobuf(&(ratchet->sender_chain->ratchet_key_pair->public_key), &(our_ratchet_key->public_key));
     copy_protobuf_from_protobuf(&(ratchet->sender_chain->ratchet_key_pair->private_key), &(our_ratchet_key->private_key));
 
@@ -290,12 +290,12 @@ void encrypt_ratchet(
     // Prepare sender_chain
     if (ratchet->sender_chain == NULL) {
         ratchet->sender_chain = (Org__E2eelab__Skissm__Proto__SenderChainNode *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SenderChainNode));
-        Org__E2eelab__Skissm__Proto__sender_chain_node__init(ratchet->sender_chain);
+        org__e2eelab__skissm__proto__sender_chain_node__init(ratchet->sender_chain);
         ratchet->sender_chain->ratchet_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-        Org__E2eelab__Skissm__Proto__key_pair__init(ratchet->sender_chain->ratchet_key_pair);
+        org__e2eelab__skissm__proto__key_pair__init(ratchet->sender_chain->ratchet_key_pair);
         CIPHER.suit1->gen_key_pair(ratchet->sender_chain->ratchet_key_pair);
         ratchet->sender_chain->chain_key = (Org__E2eelab__Skissm__Proto__ChainKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ChainKey));
-        Org__E2eelab__Skissm__Proto__chain_key__init(ratchet->sender_chain->chain_key);
+        org__e2eelab__skissm__proto__chain_key__init(ratchet->sender_chain->chain_key);
         create_chain_key(
             ratchet->root_key,
             ratchet->sender_chain->ratchet_key_pair,
@@ -306,7 +306,7 @@ void encrypt_ratchet(
 
     Org__E2eelab__Skissm__Proto__MessageKey *keys;
     keys = (Org__E2eelab__Skissm__Proto__MessageKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__MessageKey));
-    Org__E2eelab__Skissm__Proto__message_key__init(keys);
+    org__e2eelab__skissm__proto__message_key__init(keys);
     create_message_keys(ratchet->sender_chain->chain_key, keys);
     advance_chain_key(ratchet->sender_chain->chain_key);
 
@@ -316,7 +316,7 @@ void encrypt_ratchet(
     memcpy(ratchet_key_data, ratchet_key->data, CURVE25519_KEY_LENGTH);
 
     *e2ee_msg_payload = (Org__E2eelab__Skissm__Proto__E2eeMsgPayload *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeMsgPayload));
-    Org__E2eelab__Skissm__Proto__e2ee_msg_payload__init(*e2ee_msg_payload);
+    org__e2eelab__skissm__proto__e2ee_msg_payload__init(*e2ee_msg_payload);
     (*e2ee_msg_payload)->sequence = sequence;
     (*e2ee_msg_payload)->ratchet_key.data = ratchet_key_data;
     (*e2ee_msg_payload)->ratchet_key.len = CURVE25519_KEY_LENGTH;
@@ -328,7 +328,7 @@ void encrypt_ratchet(
     );
 
     // release
-    Org__E2eelab__Skissm__Proto__message_key__free_unpacked(keys, NULL);
+    org__e2eelab__skissm__proto__message_key__free_unpacked(keys, NULL);
 
     // done
     return;
@@ -393,7 +393,7 @@ size_t decrypt_ratchet(
                 );
 
                 if (result != (size_t)(-1)){
-                    Org__E2eelab__Skissm__Proto__skipped_message_key_node__free_unpacked(ratchet->skipped_message_keys[i], NULL);
+                    org__e2eelab__skissm__proto__skipped_message_key_node__free_unpacked(ratchet->skipped_message_keys[i], NULL);
                     ratchet->skipped_message_keys[i] = NULL;
                 }
             }
@@ -421,14 +421,14 @@ size_t decrypt_ratchet(
          * We will generate a new key when we send the next message. */
 
         chain = (Org__E2eelab__Skissm__Proto__ReceiverChainNode *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ReceiverChainNode));
-        Org__E2eelab__Skissm__Proto__receiver_chain_node__init(chain);
+        org__e2eelab__skissm__proto__receiver_chain_node__init(chain);
 
         copy_protobuf_from_protobuf(&(chain->ratchet_key_public), &(e2ee_msg_payload->ratchet_key));
 
         // TODO: we've already done this once, in
         // verify_mac_and_decrypt_for_new_chain(). we could reuse the result.
         chain->chain_key = (Org__E2eelab__Skissm__Proto__ChainKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ChainKey));
-        Org__E2eelab__Skissm__Proto__chain_key__init(chain->chain_key);
+        org__e2eelab__skissm__proto__chain_key__init(chain->chain_key);
         create_chain_key(
             ratchet->root_key, ratchet->sender_chain->ratchet_key_pair, &(chain->ratchet_key_public),
             &(ratchet->root_key), chain->chain_key
@@ -448,7 +448,7 @@ size_t decrypt_ratchet(
         (ratchet->n_receiver_chains)++;
 
         // ratchet->sender_chain will not be used anymore
-        Org__E2eelab__Skissm__Proto__sender_chain_node__free_unpacked(ratchet->sender_chain, NULL);
+        org__e2eelab__skissm__proto__sender_chain_node__free_unpacked(ratchet->sender_chain, NULL);
         ratchet->sender_chain = NULL;
     }
 
@@ -458,9 +458,9 @@ size_t decrypt_ratchet(
          * together with their ratchet key in the skipped message key list. */
         while (chain->chain_key->index < e2ee_msg_payload->sequence){
             Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *key = (Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode));
-            Org__E2eelab__Skissm__Proto__skipped_message_key_node__init(key);
+            org__e2eelab__skissm__proto__skipped_message_key_node__init(key);
             key->message_key = (Org__E2eelab__Skissm__Proto__MessageKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__MessageKey));
-            Org__E2eelab__Skissm__Proto__message_key__init(key->message_key);
+            org__e2eelab__skissm__proto__message_key__init(key->message_key);
             create_message_keys(chain->chain_key, key->message_key);
             copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(chain->ratchet_key_public));
             if (ratchet->skipped_message_keys == NULL){

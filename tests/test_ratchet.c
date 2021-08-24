@@ -59,10 +59,10 @@ static void test_alice_to_bob(
       printf("Decryption failed!!!\n");
     }
 
-    Org__E2eelab__Skissm__Proto__e2ee_msg_payload__free_unpacked(message, NULL);
+    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(alice_ratchet, NULL);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(bob_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_bob_to_alice(
@@ -106,10 +106,10 @@ static void test_bob_to_alice(
       printf("Decryption failed!!!\n");
     }
 
-    Org__E2eelab__Skissm__Proto__e2ee_msg_payload__free_unpacked(message, NULL);
+    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(alice_ratchet, NULL);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(bob_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_out_of_order(
@@ -163,12 +163,12 @@ static void test_out_of_order(
       printf("The second decryption failed!!!\n");
     }
 
-    Org__E2eelab__Skissm__Proto__e2ee_msg_payload__free_unpacked(message_1, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_msg_payload__free_unpacked(message_2, NULL);
+    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_1, NULL);
+    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, output_1_length);
     free_mem((void **)&output_2, output_2_length);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(alice_ratchet, NULL);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(bob_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_interaction(
@@ -226,12 +226,12 @@ static void test_interaction(
 
     assert(result = is_equal(plaintext_bob, output_bob, plaintext_length_bob));
 
-    Org__E2eelab__Skissm__Proto__e2ee_msg_payload__free_unpacked(message_alice, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_msg_payload__free_unpacked(message_bob, NULL);
+    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_alice, NULL);
+    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_bob, NULL);
     free_mem((void **)&output_alice, decrypt_length_alice);
     free_mem((void **)&output_bob, decrypt_length_bob);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(alice_ratchet, NULL);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(bob_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_two_ratchets(
@@ -303,14 +303,14 @@ static void test_two_ratchets(
 
     assert(alice_ratchet_2->sender_chain == NULL);
 
-    Org__E2eelab__Skissm__Proto__e2ee_msg_payload__free_unpacked(message_alice, NULL);
-    Org__E2eelab__Skissm__Proto__e2ee_msg_payload__free_unpacked(message_bob, NULL);
+    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_alice, NULL);
+    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_bob, NULL);
     free_mem((void **)&output_alice, decrypt_length_alice);
     free_mem((void **)&output_bob, decrypt_length_bob);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(alice_ratchet, NULL);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(bob_ratchet, NULL);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(alice_ratchet_2, NULL);
-    Org__E2eelab__Skissm__Proto__E2eeRatchet__free_unpacked(bob_ratchet_2, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet_2, NULL);
+    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet_2, NULL);
 }
 
 int main() {

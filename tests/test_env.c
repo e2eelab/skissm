@@ -102,7 +102,7 @@ void load_account(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__
   }
 
   *account = (Org__E2eelab__Skissm__Proto__E2eeAccount *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount));
-  Org__E2eelab__Skissm__Proto__e2ee_account__init((*account));
+  org__e2eelab__skissm__proto__e2ee_account__init((*account));
 
   (*account)->version = load_version(account_id);
   (*account)->saved = load_saved(account_id);

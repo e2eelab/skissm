@@ -26,14 +26,14 @@ void account_begin(){
 
 void account_end(){
     if (local_account != NULL){
-        Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(local_account, NULL);
+        org__e2eelab__skissm__proto__e2ee_account__free_unpacked(local_account, NULL);
         local_account = NULL;
     }
 }
 
 Org__E2eelab__Skissm__Proto__E2eeAccount *create_account(){
     Org__E2eelab__Skissm__Proto__E2eeAccount *account = (Org__E2eelab__Skissm__Proto__E2eeAccount *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount));
-    Org__E2eelab__Skissm__Proto__e2ee_account__init(account);
+    org__e2eelab__skissm__proto__e2ee_account__init(account);
 
     // Set the version
     account->version = PROTOCOL_VERSION;
@@ -45,7 +45,7 @@ Org__E2eelab__Skissm__Proto__E2eeAccount *create_account(){
 
     // Generate the identity key pair
     account->identity_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-    Org__E2eelab__Skissm__Proto__key_pair__init(account->identity_key_pair);
+    org__e2eelab__skissm__proto__key_pair__init(account->identity_key_pair);
     CIPHER.suit1->gen_key_pair(account->identity_key_pair);
 
     // Generate a signed pre-key pair
@@ -62,7 +62,7 @@ Org__E2eelab__Skissm__Proto__E2eeAccount *get_local_account(Org__E2eelab__Skissm
         if ((local_account->address) && compare_address(local_account->address, address)){
             return local_account;
         }
-        Org__E2eelab__Skissm__Proto__e2ee_account__free_unpacked(local_account, NULL);
+        org__e2eelab__skissm__proto__e2ee_account__free_unpacked(local_account, NULL);
         local_account = NULL;
     }
     ssm_handler.load_account_by_address(address, &local_account);
@@ -72,16 +72,16 @@ Org__E2eelab__Skissm__Proto__E2eeAccount *get_local_account(Org__E2eelab__Skissm
 size_t generate_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account){
     // Check whether the old signed pre-key exists or not
     if (account->signed_pre_key_pair){
-        Org__E2eelab__Skissm__Proto__signed_pre_key_pair__free_unpacked(account->signed_pre_key_pair, NULL);
+        org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(account->signed_pre_key_pair, NULL);
     }
 
     // Initialize
     account->signed_pre_key_pair = (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
-    Org__E2eelab__Skissm__Proto__signed_pre_key_pair__init(account->signed_pre_key_pair);
+    org__e2eelab__skissm__proto__signed_pre_key_pair__init(account->signed_pre_key_pair);
 
     // Generate signed pre-key
     account->signed_pre_key_pair->key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-    Org__E2eelab__Skissm__Proto__key_pair__init(account->signed_pre_key_pair->key_pair);
+    org__e2eelab__skissm__proto__key_pair__init(account->signed_pre_key_pair->key_pair);
     CIPHER.suit1->gen_key_pair(account->signed_pre_key_pair->key_pair);
     account->signed_pre_key_pair->spk_id = (account->next_signed_pre_key_id)++;
 
@@ -140,11 +140,11 @@ Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **generate_opks(size_t number_of_
     for (i = 0; i < number_of_keys; i++) {
         Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *node;
         node = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
-        Org__E2eelab__Skissm__Proto__one_time_pre_key_pair__init(node);
+        org__e2eelab__skissm__proto__one_time_pre_key_pair__init(node);
         node->opk_id = (account->next_one_time_pre_key_id)++;
         node->used = false;
         node->key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-        Org__E2eelab__Skissm__Proto__key_pair__init(node->key_pair);
+        org__e2eelab__skissm__proto__key_pair__init(node->key_pair);
         CIPHER.suit1->gen_key_pair(node->key_pair);
         inserted_one_time_pre_key_list_node[i] = node;
     }
@@ -170,14 +170,14 @@ Org__E2eelab__Skissm__Proto__RegisterUserRequestPayload *create_register_request
     Org__E2eelab__Skissm__Proto__E2eeAccount *account
 ) {
     Org__E2eelab__Skissm__Proto__RegisterUserRequestPayload *payload = (Org__E2eelab__Skissm__Proto__RegisterUserRequestPayload *) malloc(sizeof(Org__E2eelab__Skissm__Proto__RegisterUserRequestPayload));
-    Org__E2eelab__Skissm__Proto__register_user_request_payload__init(payload);
+    org__e2eelab__skissm__proto__register_user_request_payload__init(payload);
 
     unsigned int i;
 
     copy_protobuf_from_protobuf(&(payload->identity_key_public), &(account->identity_key_pair->public_key));
 
     payload->signed_pre_key_public = (Org__E2eelab__Skissm__Proto__SignedPreKeyPublic *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPublic));
-    Org__E2eelab__Skissm__Proto__signed_pre_key_public__init(payload->signed_pre_key_public);
+    org__e2eelab__skissm__proto__signed_pre_key_public__init(payload->signed_pre_key_public);
     payload->signed_pre_key_public->spk_id = account->signed_pre_key_pair->spk_id;
     copy_protobuf_from_protobuf(&(payload->signed_pre_key_public->public_key), &(account->signed_pre_key_pair->key_pair->public_key));
 
@@ -187,7 +187,7 @@ Org__E2eelab__Skissm__Proto__RegisterUserRequestPayload *create_register_request
     payload->one_time_pre_keys = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic **) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic *) * payload->n_one_time_pre_keys);
     for (i = 0; i < payload->n_one_time_pre_keys; i++){
         payload->one_time_pre_keys[i] = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic *) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic));
-        Org__E2eelab__Skissm__Proto__one_time_pre_key_public__init(payload->one_time_pre_keys[i]);
+        org__e2eelab__skissm__proto__one_time_pre_key_public__init(payload->one_time_pre_keys[i]);
         payload->one_time_pre_keys[i]->opk_id = account->one_time_pre_keys[i]->opk_id;
         copy_protobuf_from_protobuf(&(payload->one_time_pre_keys[i]->public_key), &(account->one_time_pre_keys[i]->key_pair->public_key));
     }
@@ -203,11 +203,11 @@ static void copy_one_time_pre_keys(
     size_t i;
     for (i = 0; i < num; i++){
         dest[i] = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
-        Org__E2eelab__Skissm__Proto__one_time_pre_key_pair__init(dest[i]);
+        org__e2eelab__skissm__proto__one_time_pre_key_pair__init(dest[i]);
         dest[i]->opk_id = src[i]->opk_id;
         dest[i]->used = src[i]->used;
         dest[i]->key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-        Org__E2eelab__Skissm__Proto__key_pair__init(dest[i]->key_pair);
+        org__e2eelab__skissm__proto__key_pair__init(dest[i]->key_pair);
         copy_protobuf_from_protobuf(&(dest[i]->key_pair->private_key), &(src[i]->key_pair->private_key));
         copy_protobuf_from_protobuf(&(dest[i]->key_pair->public_key), &(src[i]->key_pair->public_key));
     }
@@ -237,7 +237,7 @@ void free_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account){
                 copy_one_time_pre_keys(new_one_time_pre_keys, temp, new_num);
             }
             for (i = 0; i < account->n_one_time_pre_keys; i++){
-                Org__E2eelab__Skissm__Proto__one_time_pre_key_pair__free_unpacked(account->one_time_pre_keys[i], NULL);
+                org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked(account->one_time_pre_keys[i], NULL);
             }
             free_mem((void **)&(account->one_time_pre_keys), sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **) * account->n_one_time_pre_keys);
             if (new_num > 0){

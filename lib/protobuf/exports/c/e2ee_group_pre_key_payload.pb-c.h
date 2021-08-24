@@ -27,6 +27,7 @@ typedef struct Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload Org__E2eelab_
 struct  Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload
 {
   ProtobufCMessage base;
+  uint32_t version;
   ProtobufCBinaryData session_id;
   Org__E2eelab__Skissm__Proto__E2eeAddress *group_address;
   size_t n_member_addresses;
@@ -37,7 +38,7 @@ struct  Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload
 };
 #define ORG__E2EELAB__SKISSM__PROTO__E2EE_GROUP_PRE_KEY_PAYLOAD__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__descriptor) \
-    , {0,NULL}, NULL, 0,NULL, 0, {0,NULL}, {0,NULL} }
+    , 0, {0,NULL}, NULL, 0,NULL, 0, {0,NULL}, {0,NULL} }
 
 
 /* Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload methods */
