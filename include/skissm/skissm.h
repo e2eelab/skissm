@@ -178,6 +178,11 @@ typedef struct skissm_handler {
   void (*load_account)(ProtobufCBinaryData *,
                        Org__E2eelab__Skissm__Proto__E2eeAccount **);
   /**
+   * @brief load all accounts from db
+   * @param accounts
+   */
+  void (*load_accounts)(Org__E2eelab__Skissm__Proto__E2eeAccount ***);
+  /**
    * @brief load account from db by giving address
    * @param address
    * @param account
