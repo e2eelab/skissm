@@ -180,8 +180,9 @@ typedef struct skissm_handler {
   /**
    * @brief load all accounts from db
    * @param accounts
+   * @return number of loaded accounts
    */
-  void (*load_accounts)(Org__E2eelab__Skissm__Proto__E2eeAccount ***);
+  size_t (*load_accounts)(Org__E2eelab__Skissm__Proto__E2eeAccount ***);
   /**
    * @brief load account from db by giving address
    * @param address

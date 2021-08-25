@@ -8,33 +8,34 @@
 
 void init_db();
 void close_db();
-void load_id(ProtobufCBinaryData **account_id_pp);
+void load_id(ProtobufCBinaryData **account_id);
+size_t load_ids(ProtobufCBinaryData ***account_ids);
 uint32_t load_version(ProtobufCBinaryData *account_id);
 protobuf_c_boolean load_saved(ProtobufCBinaryData *account_id);
 
 void load_address(ProtobufCBinaryData *account_id,
-                  Org__E2eelab__Skissm__Proto__E2eeAddress **address_pp);
+                  Org__E2eelab__Skissm__Proto__E2eeAddress **address);
 void load_identity_key_pair(
     ProtobufCBinaryData *account_id,
-    Org__E2eelab__Skissm__Proto__KeyPair **identity_key_pair_pp);
+    Org__E2eelab__Skissm__Proto__KeyPair **identity_key_pair);
 void load_signed_pre_key_pair(
     ProtobufCBinaryData *account_id,
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_key_pair_pp);
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_key_pair);
 int load_n_one_time_pre_keys(ProtobufCBinaryData *account_id);
 uint32_t load_one_time_pre_keys(
     ProtobufCBinaryData *account_id,
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***one_time_pre_keys_ppp);
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***one_time_pre_keys);
 uint32_t load_next_signed_pre_key_id(ProtobufCBinaryData *account_id);
 uint32_t load_next_one_time_pre_key_id(ProtobufCBinaryData *account_id);
-void load_id_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address_p,
-                        ProtobufCBinaryData **account_id_pp);
+void load_id_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address,
+                        ProtobufCBinaryData **account_id);
 sqlite_int64
-insert_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address_p);
-sqlite_int64 insert_key_pair(Org__E2eelab__Skissm__Proto__KeyPair *key_pair_p);
+insert_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address);
+sqlite_int64 insert_key_pair(Org__E2eelab__Skissm__Proto__KeyPair *key_pair);
 sqlite_int64 insert_signed_pre_key(
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key_p);
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key);
 sqlite_int64 insert_one_time_pre_key(
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key_p);
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key);
 sqlite_int64 insert_account(ProtobufCBinaryData *account_id, int version,
                             protobuf_c_boolean saved, sqlite_int64 address_id,
                             sqlite_int64 identity_key_pair_id,

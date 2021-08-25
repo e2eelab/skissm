@@ -115,6 +115,31 @@ void load_account(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__
   (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(account_id);
 }
 
+size_t load_accounts(Org__E2eelab__Skissm__Proto__E2eeAccount ***accounts)
+{
+  // load all account_ids
+  ProtobufCBinaryData **account_ids;
+  size_t num = load_ids(&account_ids);
+
+  // load all account by account_ids
+  if (num == 0) {
+    **accounts = NULL;
+  } else {
+    **accounts = (Org__E2eelab__Skissm__Proto__E2eeAccount **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount *) * num);
+    for(int i = 0; i<num; i++) {
+      load_account(&account_ids[i], accounts[i]);
+      // release account_ids element
+      free(account_ids[i]);
+    }
+
+    // release account_ids array
+    free(account_ids);
+  }
+
+  //done
+  return num;
+}
+
 void load_account_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address, Org__E2eelab__Skissm__Proto__E2eeAccount **account)
 {
   ProtobufCBinaryData *account_id;
@@ -184,6 +209,7 @@ const struct skissm_handler ssm_handler = {
     // account
     store_account,
     load_account,
+    load_accounts,
     load_account_by_address,
     update_identity_key,
     update_signed_pre_key,

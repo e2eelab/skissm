@@ -210,9 +210,13 @@ static const char *CREATE_TABLE_ACCOUNT_ONETIME_PRE_KEYPAIR =
     "FOREIGN KEY(ACCOUNT) REFERENCES ACCOUNT(ID), "
     "FOREIGN KEY(ONETIME_PRE_KEYPAIR) REFERENCES ONETIME_PRE_KEYPAIR(ID));";
 
+static const char *ACCOUNTS_NUM = "SELECT COUNT(*) FROM ACCOUNT;";
+
 static const char *ACCOUNT_LOAD_FIRST_ACCOUNT_ID = "SELECT ACCOUNT_ID "
                                                    "FROM ACCOUNT "
                                                    "WHERE ID = 1;";
+
+static const char *ACCOUNT_LOAD_ALL_ACCOUNT_IDS = "SELECT ACCOUNT_ID FROM ACCOUNT;";
 
 static const char *ACCOUNT_LOAD_VERSION = "SELECT VERSION "
                                           "FROM ACCOUNT "
@@ -406,6 +410,42 @@ void load_id(ProtobufCBinaryData **account_id) {
 
   // release
   sqlite3_finalize(stmt);
+}
+
+size_t load_ids(ProtobufCBinaryData ***account_ids) {
+  // find num of account_ids
+  // prepare
+  sqlite3_stmt *stmt1;
+  sqlite_prepare(ACCOUNTS_NUM, &stmt1);
+  // step
+  sqlite_step(stmt1, SQLITE_ROW);
+  size_t num = (size_t)sqlite3_column_int64(stmt1, 0);
+  // release
+  sqlite3_finalize(stmt1);
+
+  if (num == 0) {
+    *account_ids = NULL;
+    return num;
+  }
+
+  // allocate memory
+  *account_ids = (ProtobufCBinaryData **)malloc(sizeof(ProtobufCBinaryData*)*num);
+
+  // prepare
+  sqlite3_stmt *stmt2;
+  sqlite_prepare(ACCOUNT_LOAD_ALL_ACCOUNT_IDS, &stmt2);
+  // step
+  int i = 0;
+  while (sqlite3_step(stmt2) != SQLITE_DONE) {
+    (*account_ids)[i] = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+    ((*account_ids)[i])->len = sqlite3_column_bytes(stmt2, 0);
+    ((*account_ids)[i])->data = (uint8_t *)sqlite3_column_blob(stmt2, 0);
+  }
+  // release
+  sqlite3_finalize(stmt2);
+
+  // done
+  return num;
 }
 
 uint32_t load_version(ProtobufCBinaryData *account_id) {
