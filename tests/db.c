@@ -95,6 +95,15 @@ static const char *SESSION_LOAD_DATA_BY_ID_AND_OWNER =
     "ON SESSION.OWNER = ADDRESS.ID "
     "WHERE SESSION.ID = (?) AND ADDRESS.USER_ID = (?);";
 
+static const char *SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO =
+    "DELETE FROM SESSION "
+    "WHERE OWNER IN "
+    "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
+    "AND FROM_ADDRESS IN "
+    "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
+    "AND TO_ADDRESS IN "
+    "(SELECT ID FROM ADDRESS WHERE USER_ID = (?));";
+
 static const char *GROUP_SESSION_DROP_TABLE =
     "DROP TABLE IF EXISTS GROUP_SESSION;";
 static const char *GROUP_SESSION_CREATE_TABLE =
@@ -104,6 +113,7 @@ static const char *GROUP_SESSION_CREATE_TABLE =
     "ADDRESS INTEGER NOT NULL, "
     "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
     "GROUP_DATA BLOB NOT NULL, "
+    "HAS_SIGNATURE_PRIVATE_KEY INTEGER NOT NULL, "
     "FOREIGN KEY(OWNER) REFERENCES ADDRESS(ID), "
     "FOREIGN KEY(ADDRESS) REFERENCES ADDRESS(ID), "
     "PRIMARY KEY (ADDRESS, OWNER), "
@@ -111,8 +121,8 @@ static const char *GROUP_SESSION_CREATE_TABLE =
 
 static const char *GROUP_SESSION_INSERT_OR_REPLACE =
     "INSERT OR REPLACE INTO GROUP_SESSION "
-    "(ID, OWNER, ADDRESS, GROUP_DATA) "
-    "VALUES (?, ?, ?, ?);";
+    "(ID, OWNER, ADDRESS, GROUP_DATA, HAS_SIGNATURE_PRIVATE_KEY) "
+    "VALUES (?, ?, ?, ?, ?);";
 
 static const char *GROUP_SESSION_LOAD_DATA_BY_ID_AND_OWNER =
     "SELECT GROUP_DATA FROM GROUP_SESSION "
@@ -128,7 +138,8 @@ static const char *GROUP_SESSION_LOAD_DATA_BY_OWNER_AND_ADDRESS =
     "INNER JOIN ADDRESS as a2 "
     "ON GROUP_SESSION.ADDRESS = a2.ID "
     "WHERE a1.USER_ID = (?) AND a1.DOMAIN = (?) AND a1.DEVICE_ID = (?) AND "
-    "a2.GROUP_ID = (?);";
+    "a2.GROUP_ID = (?) AND HAS_SIGNATURE_PRIVATE_KEY = 1 "
+    "LIMIT 1;";
 
 static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS =
     "DELETE FROM GROUP_SESSION "
@@ -1086,9 +1097,26 @@ void unload_session(
     Org__E2eelab__Skissm__Proto__E2eeAddress *from,
     Org__E2eelab__Skissm__Proto__E2eeAddress *to
 ) {
+  // prepare
+  sqlite3_stmt *stmt;
+  sqlite_prepare(SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO, &stmt);
 
+  // bind
+  sqlite3_bind_blob(stmt, 1, owner->user_id.data,
+                    owner->user_id.len, SQLITE_STATIC);
+  sqlite3_bind_blob(stmt, 2, from->user_id.data,
+                    from->user_id.len, SQLITE_STATIC);
+  sqlite3_bind_blob(stmt, 3, to->user_id.data,
+                    to->user_id.len, SQLITE_STATIC);
+
+  // step
+  sqlite_step(stmt, SQLITE_DONE);
+
+  // release
+  sqlite3_finalize(stmt);
 }
 
+// return the first signature which is not null
 void load_outbound_group_session(
     Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
@@ -1208,6 +1236,7 @@ void store_group_session(
   sqlite3_bind_int(stmt, 3, address_id);
   sqlite3_bind_blob(stmt, 4, group_session_data, group_session_data_len,
                     SQLITE_STATIC);
+  sqlite3_bind_int(stmt, 5, group_session->signature_private_key.len? 1: 0);
 
   // step
   sqlite_step(stmt, SQLITE_DONE);
@@ -1236,6 +1265,9 @@ void unload_group_session(
   sqlite3_finalize(stmt);
 }
 
+// todo
+// unload group_session if member_num or member_addresses not the same
+// use compare_member_addresses to compare
 void unload_inbound_group_session(
     Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
