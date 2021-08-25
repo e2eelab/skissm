@@ -57,6 +57,7 @@ void initialise_session(
 static void close_session(Org__E2eelab__Skissm__Proto__E2eeSession *session){
     if (session != NULL){
         org__e2eelab__skissm__proto__e2ee_session__free_unpacked(session, NULL);
+        session = NULL;
     }
 }
 

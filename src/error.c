@@ -7,8 +7,7 @@ static const char * ERROR_STRINGS[] = {
   "BAD_PRE_KEY_BUNDLE",
   "BAD_SERVER_MESSAGE",
   "NOT_ENOUGH_RANDOM",
-  "NOT_ENOUGH_INPUT_BUFFER",
-  "NOT_ENOUGH_OUTPUT_BUFFER",
+  "NOT_ENOUGH_MEMORY",
   "NOT_ENOUGH_SPACE",
   "ERROR_REMOVE_OPK",
   "BAD_MESSAGE_VERSION",
@@ -20,6 +19,7 @@ static const char * ERROR_STRINGS[] = {
   "BAD_MESSAGE_ENCRYPTION",
   "BAD_MESSAGE_DECRYPTION",
   "BAD_GROUP_SESSION",
+  "BAD_LOAD_ACCOUNTS",
 };
 
 const char *error_string(ErrorCode error_code){

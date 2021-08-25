@@ -14,7 +14,7 @@
 #include "e2ee_protocol_simulator.h"
 #include "e2ee_protocol.h"
 
-#include "db.h"
+#include "test_db.h"
 
 // test case interface
 
@@ -28,6 +28,7 @@ void tear_down()
 {
   close_db();
   protocol_end();
+  protocol_simulator_release();
 }
 
 // utility functions
@@ -123,11 +124,11 @@ size_t load_accounts(Org__E2eelab__Skissm__Proto__E2eeAccount ***accounts)
 
   // load all account by account_ids
   if (num == 0) {
-    **accounts = NULL;
+    *accounts = NULL;
   } else {
-    **accounts = (Org__E2eelab__Skissm__Proto__E2eeAccount **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount *) * num);
-    for(int i = 0; i<num; i++) {
-      load_account(&account_ids[i], accounts[i]);
+    *accounts = (Org__E2eelab__Skissm__Proto__E2eeAccount **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount *) * num);
+    for (int i = 0; i < num; i++) {
+      load_account(account_ids[i], &(*accounts)[i]);
       // release account_ids element
       free(account_ids[i]);
     }

@@ -11,17 +11,33 @@ static const struct cipher CIPHER = CIPHER_INIT;
 static Org__E2eelab__Skissm__Proto__E2eeAccount *local_account = NULL;
 
 void account_begin(){
-    Org__E2eelab__Skissm__Proto__E2eeAddress *address = NULL;
-    local_account = get_local_account(address);
+    Org__E2eelab__Skissm__Proto__E2eeAccount **accounts = NULL;
+    size_t account_num = ssm_handler.load_accounts(&accounts);
 
-    int64_t now = ssm_handler.handle_get_ts();
-    if (now > local_account->signed_pre_key_pair->ttl){
-        generate_signed_pre_key(local_account);
-        publish_spk(local_account);
+    if (account_num == 0){
+        if (accounts != NULL){
+            ssm_notify_error(BAD_LOAD_ACCOUNTS, "account_begin()");
+        }
+        return;
     }
-
-    /* Check if there are too many "used" one-time pre-keys */
-    free_one_time_pre_key(local_account);
+    Org__E2eelab__Skissm__Proto__E2eeAccount *cur_account = NULL;
+    int64_t now;
+    size_t i;
+    for (i = 0; i < account_num; i++){
+        cur_account = accounts[i];
+        /* Check if the signed pre-key expired */
+        now = ssm_handler.handle_get_ts();
+        if (now > cur_account->signed_pre_key_pair->ttl){
+            generate_signed_pre_key(cur_account);
+            publish_spk(cur_account);
+        }
+        /* Check if there are too many "used" one-time pre-keys */
+        free_one_time_pre_key(cur_account);
+        /* Release */
+        org__e2eelab__skissm__proto__e2ee_account__free_unpacked(cur_account, NULL);
+        cur_account = NULL;
+    }
+    free(accounts);
 }
 
 void account_end(){
@@ -73,6 +89,7 @@ size_t generate_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account
     // Check whether the old signed pre-key exists or not
     if (account->signed_pre_key_pair){
         org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(account->signed_pre_key_pair, NULL);
+        account->signed_pre_key_pair = NULL;
     }
 
     // Initialize
@@ -238,6 +255,7 @@ void free_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account){
             }
             for (i = 0; i < account->n_one_time_pre_keys; i++){
                 org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked(account->one_time_pre_keys[i], NULL);
+                account->one_time_pre_keys[i] = NULL;
             }
             free_mem((void **)&(account->one_time_pre_keys), sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **) * account->n_one_time_pre_keys);
             if (new_num > 0){

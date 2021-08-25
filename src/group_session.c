@@ -16,6 +16,7 @@ static const size_t MESSAGE_KEY_LENGTH = AES256_KEY_LENGTH + AES256_IV_LENGTH;
 static void close_group_session(Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session){
     if (group_session != NULL){
         org__e2eelab__skissm__proto__e2ee_group_session__free_unpacked(group_session, NULL);
+        group_session = NULL;
     }
 }
 

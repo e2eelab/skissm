@@ -7,7 +7,7 @@ set(sqlite3_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/sqlite3")
 add_subdirectory(lib)
 
 add_library(db STATIC
-    db.c)
+    test_db.c)
 
 target_include_directories(db
     PRIVATE

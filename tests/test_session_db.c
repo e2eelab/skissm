@@ -14,7 +14,7 @@
 #include "test_env.h"
 
 // -----------------
-#include "db.h"
+#include "test_db.h"
 #include "test_env.h"
 #include "test_util.h"
 

@@ -46,6 +46,29 @@ static uint8_t user_data_set_insert_pos = 0;
 
 static uint8_t group_data_set_insert_pos = 0;
 
+void protocol_simulator_release(){
+    uint8_t i, j;
+    for (i = 0; i < user_data_set_insert_pos; i++){
+        org__e2eelab__skissm__proto__e2ee_address__free_unpacked(user_data_set[i].address, NULL);
+        user_data_set[i].address = NULL;
+        org__e2eelab__skissm__proto__register_user_request_payload__free_unpacked(user_data_set[i].pre_key, NULL);
+        user_data_set[i].pre_key = NULL;
+    }
+    user_data_set_insert_pos = 0;
+    for (i = 0; i < group_data_set_insert_pos; i++){
+        org__e2eelab__skissm__proto__e2ee_address__free_unpacked(group_data_set[i].group_address, NULL);
+        group_data_set[i].group_address = NULL;
+        free_mem((void **)&(group_data_set[i].group_name.data), group_data_set[i].group_name.len);
+        group_data_set[i].group_name.len = 0;
+        for (j = 0; j < group_data_set[i].member_num; j++){
+            org__e2eelab__skissm__proto__e2ee_address__free_unpacked(group_data_set[i].member_addresses[j], NULL);
+            group_data_set[i].member_addresses[j] = NULL;
+        }
+        group_data_set[i].member_num = 0;
+    }
+    group_data_set_insert_pos = 0;
+}
+
 static void mock_protocol_send(
     Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *response,
     Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address
@@ -153,7 +176,9 @@ static void process_delete_user_request(
     } else{
         delete_user_response_payload->code = OK;
         org__e2eelab__skissm__proto__register_user_request_payload__free_unpacked(user_data_set[user_data_find].pre_key, NULL);
+        user_data_set[user_data_find].pre_key = NULL;
         org__e2eelab__skissm__proto__e2ee_address__free_unpacked(user_data_set[user_data_find].address, NULL);
+        user_data_set[user_data_find].address = NULL;
         unset((void volatile *)&user_data_set[user_data_find], sizeof(user_data));
     }
 
@@ -220,6 +245,7 @@ static void process_get_pre_key_bundle_request(
     }
     /* release the one-time pre-key */
     org__e2eelab__skissm__proto__one_time_pre_key_public__free_unpacked(user_data_set[user_data_find].pre_key->one_time_pre_keys[i], NULL);
+    user_data_set[user_data_find].pre_key->one_time_pre_keys[i] = NULL;
 
     get_pre_key_bundle_response_payload->code = OK;
 
@@ -477,16 +503,16 @@ static void process_add_group_members_request(
     size_t new_member_num = group_data_set[group_data_find].member_num + payload->n_member_addresses;
     group_data_set[group_data_find].member_num = new_member_num;
 
-    Org__E2eelab__Skissm__Proto__E2eeAddress **temp_member_addresses;
-    temp_member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **) realloc(group_data_set[group_data_find].member_addresses, new_member_num);
-    if (temp_member_addresses == NULL){
-        ssm_notify_error(NOT_ENOUGH_MEMORY, "process_add_group_members_request()");
-        add_group_members_response_payload->code = Internal_Server_Error;
-        goto complete;
+    Org__E2eelab__Skissm__Proto__E2eeAddress **temp_member_addresses = NULL;
+    temp_member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * new_member_num);
+    size_t i;
+    for (i = 0; i < old_member_num; i++){
+        copy_address_from_address(&(temp_member_addresses[i]), group_data_set[group_data_find].member_addresses[i]);
+        org__e2eelab__skissm__proto__e2ee_address__free_unpacked(group_data_set[group_data_find].member_addresses[i], NULL);
     }
+    free(group_data_set[group_data_find].member_addresses);
     group_data_set[group_data_find].member_addresses = temp_member_addresses;
 
-    size_t i;
     for (i = old_member_num; i < new_member_num; i++){
         copy_address_from_address(&(group_data_set[group_data_find].member_addresses[i]), (payload->member_addresses)[i - old_member_num]);
     }
@@ -572,6 +598,7 @@ static void process_remove_group_members_request(
     i = 0;
     for (i = 0; i < original_member_num; i++){
         org__e2eelab__skissm__proto__e2ee_address__free_unpacked(group_data_set[group_data_find].member_addresses[i], NULL);
+        group_data_set[group_data_find].member_addresses[i] = NULL;
     }
     free(group_data_set[group_data_find].member_addresses);
     group_data_set[group_data_find].member_addresses = temp_member_addresses;

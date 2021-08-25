@@ -1,6 +1,18 @@
 #include "skissm.h"
+#include "account.h"
+#include "e2ee_protocol.h"
 
 static skissm_event_handler *ssm_event_handler = NULL;
+
+void ssm_begin(){
+  account_begin();
+  protocol_begin();
+}
+
+void ssm_end(){
+  account_end();
+  protocol_end();
+}
 
 void set_skissm_event_handler(skissm_event_handler *event_handler) {
   ssm_event_handler = event_handler;

@@ -20,6 +20,7 @@ enum ErrorCode {
   BAD_MESSAGE_ENCRYPTION = 15,
   BAD_MESSAGE_DECRYPTION = 16,
   BAD_GROUP_SESSION = 17,
+  BAD_LOAD_ACCOUNTS = 18,
 };
 
 typedef enum ErrorCode ErrorCode;

@@ -325,24 +325,29 @@ void mock_onetime_pre_keypiar(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **o
 void free_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account)
 {
   org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account, NULL);
+  account = NULL;
 }
 
 void free_keypair(Org__E2eelab__Skissm__Proto__KeyPair *keypair)
 {
   org__e2eelab__skissm__proto__key_pair__free_unpacked(keypair, NULL);
+  keypair = NULL;
 }
 
-void free_signed_pre_keypair(Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_keypair)
+void free_signed_pre_keypair(Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key_pair)
 {
-  org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(signed_pre_keypair, NULL);
+  org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(signed_pre_key_pair, NULL);
+  signed_pre_key_pair = NULL;
 }
 
-void free_onetime_pre_keypiar(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *onetime_pre_keypiar)
+void free_one_time_pre_key_pair(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key_pair)
 {
-  org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked(onetime_pre_keypiar, NULL);
+  org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked(one_time_pre_key_pair, NULL);
+  one_time_pre_key_pair = NULL;
 }
 
 void free_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address)
 {
   org__e2eelab__skissm__proto__e2ee_address__free_unpacked(address, NULL);
+  address = NULL;
 }

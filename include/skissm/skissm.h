@@ -128,6 +128,10 @@ typedef struct skissm_event_handler {
     Org__E2eelab__Skissm__Proto__E2eeAddress **);
 } skissm_event_handler;
 
+void ssm_begin();
+
+void ssm_end();
+
 void set_skissm_event_handler(skissm_event_handler *event_handler);
 
 void ssm_notify_error(ErrorCode, char *);

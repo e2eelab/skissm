@@ -26,7 +26,7 @@ void mock_onetime_pre_keypiar(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **o
 void free_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account);
 void free_keypair(Org__E2eelab__Skissm__Proto__KeyPair *keypair);
 void free_signed_pre_keypair(Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_keypair);
-void free_onetime_pre_keypiar(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *onetime_pre_keypiar);
+void free_one_time_pre_key_pair(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *onetime_pre_keypiar);
 void free_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address);
 
 #endif /* TEST_UTIL_H_ */

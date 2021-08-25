@@ -13,7 +13,7 @@
 
 // -----------------
 #include "account.h"
-#include "db.h"
+#include "test_db.h"
 #include "test_env.h"
 #include "test_util.h"
 
@@ -103,7 +103,7 @@ void test_insert_one_time_pre_key()
   insert_one_time_pre_key(onetime_pre_keypiar);
 
   // free
-  free_onetime_pre_keypiar(onetime_pre_keypiar);
+  free_one_time_pre_key_pair(onetime_pre_keypiar);
 
   tear_down();
 }
@@ -234,7 +234,7 @@ void test_add_one_time_pre_key()
 
   // free
   free_account(account);
-  free_onetime_pre_keypiar(onetime_pre_keypiar);
+  free_one_time_pre_key_pair(onetime_pre_keypiar);
 
   tear_down();
 }
