@@ -7,699 +7,52 @@
 #endif
 
 #include "e2ee_session.pb-c.h"
-void   org__e2eelab__lib__protobuf__chain_key__init
-                     (Org__E2eelab__Lib__Protobuf__ChainKey         *message)
+void   org__e2eelab__skissm__proto__e2ee_session__init
+                     (Org__E2eelab__Skissm__Proto__E2eeSession         *message)
 {
-  static const Org__E2eelab__Lib__Protobuf__ChainKey init_value = ORG__E2EELAB__LIB__PROTOBUF__CHAIN_KEY__INIT;
+  static const Org__E2eelab__Skissm__Proto__E2eeSession init_value = ORG__E2EELAB__SKISSM__PROTO__E2EE_SESSION__INIT;
   *message = init_value;
 }
-size_t org__e2eelab__lib__protobuf__chain_key__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__ChainKey *message)
+size_t org__e2eelab__skissm__proto__e2ee_session__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__E2eeSession *message)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__chain_key__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_session__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t org__e2eelab__lib__protobuf__chain_key__pack
-                     (const Org__E2eelab__Lib__Protobuf__ChainKey *message,
+size_t org__e2eelab__skissm__proto__e2ee_session__pack
+                     (const Org__E2eelab__Skissm__Proto__E2eeSession *message,
                       uint8_t       *out)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__chain_key__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_session__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t org__e2eelab__lib__protobuf__chain_key__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__ChainKey *message,
+size_t org__e2eelab__skissm__proto__e2ee_session__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__E2eeSession *message,
                       ProtobufCBuffer *buffer)
 {
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__chain_key__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_session__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Org__E2eelab__Lib__Protobuf__ChainKey *
-       org__e2eelab__lib__protobuf__chain_key__unpack
+Org__E2eelab__Skissm__Proto__E2eeSession *
+       org__e2eelab__skissm__proto__e2ee_session__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Org__E2eelab__Lib__Protobuf__ChainKey *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__chain_key__descriptor,
+  return (Org__E2eelab__Skissm__Proto__E2eeSession *)
+     protobuf_c_message_unpack (&org__e2eelab__skissm__proto__e2ee_session__descriptor,
                                 allocator, len, data);
 }
-void   org__e2eelab__lib__protobuf__chain_key__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__ChainKey *message,
+void   org__e2eelab__skissm__proto__e2ee_session__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__E2eeSession *message,
                       ProtobufCAllocator *allocator)
 {
   if(!message)
     return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__chain_key__descriptor);
+  assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_session__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-void   org__e2eelab__lib__protobuf__message_key__init
-                     (Org__E2eelab__Lib__Protobuf__MessageKey         *message)
-{
-  static const Org__E2eelab__Lib__Protobuf__MessageKey init_value = ORG__E2EELAB__LIB__PROTOBUF__MESSAGE_KEY__INIT;
-  *message = init_value;
-}
-size_t org__e2eelab__lib__protobuf__message_key__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__MessageKey *message)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__message_key__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t org__e2eelab__lib__protobuf__message_key__pack
-                     (const Org__E2eelab__Lib__Protobuf__MessageKey *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__message_key__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t org__e2eelab__lib__protobuf__message_key__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__MessageKey *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__message_key__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Org__E2eelab__Lib__Protobuf__MessageKey *
-       org__e2eelab__lib__protobuf__message_key__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Org__E2eelab__Lib__Protobuf__MessageKey *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__message_key__descriptor,
-                                allocator, len, data);
-}
-void   org__e2eelab__lib__protobuf__message_key__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__MessageKey *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__message_key__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-void   org__e2eelab__lib__protobuf__sender_chain_node__init
-                     (Org__E2eelab__Lib__Protobuf__SenderChainNode         *message)
-{
-  static const Org__E2eelab__Lib__Protobuf__SenderChainNode init_value = ORG__E2EELAB__LIB__PROTOBUF__SENDER_CHAIN_NODE__INIT;
-  *message = init_value;
-}
-size_t org__e2eelab__lib__protobuf__sender_chain_node__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__SenderChainNode *message)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__sender_chain_node__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t org__e2eelab__lib__protobuf__sender_chain_node__pack
-                     (const Org__E2eelab__Lib__Protobuf__SenderChainNode *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__sender_chain_node__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t org__e2eelab__lib__protobuf__sender_chain_node__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__SenderChainNode *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__sender_chain_node__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Org__E2eelab__Lib__Protobuf__SenderChainNode *
-       org__e2eelab__lib__protobuf__sender_chain_node__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Org__E2eelab__Lib__Protobuf__SenderChainNode *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__sender_chain_node__descriptor,
-                                allocator, len, data);
-}
-void   org__e2eelab__lib__protobuf__sender_chain_node__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__SenderChainNode *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__sender_chain_node__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-void   org__e2eelab__lib__protobuf__receiver_chain_node__init
-                     (Org__E2eelab__Lib__Protobuf__ReceiverChainNode         *message)
-{
-  static const Org__E2eelab__Lib__Protobuf__ReceiverChainNode init_value = ORG__E2EELAB__LIB__PROTOBUF__RECEIVER_CHAIN_NODE__INIT;
-  *message = init_value;
-}
-size_t org__e2eelab__lib__protobuf__receiver_chain_node__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__ReceiverChainNode *message)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__receiver_chain_node__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t org__e2eelab__lib__protobuf__receiver_chain_node__pack
-                     (const Org__E2eelab__Lib__Protobuf__ReceiverChainNode *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__receiver_chain_node__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t org__e2eelab__lib__protobuf__receiver_chain_node__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__ReceiverChainNode *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__receiver_chain_node__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Org__E2eelab__Lib__Protobuf__ReceiverChainNode *
-       org__e2eelab__lib__protobuf__receiver_chain_node__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Org__E2eelab__Lib__Protobuf__ReceiverChainNode *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__receiver_chain_node__descriptor,
-                                allocator, len, data);
-}
-void   org__e2eelab__lib__protobuf__receiver_chain_node__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__ReceiverChainNode *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__receiver_chain_node__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-void   org__e2eelab__lib__protobuf__skipped_message_key_node__init
-                     (Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode         *message)
-{
-  static const Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode init_value = ORG__E2EELAB__LIB__PROTOBUF__SKIPPED_MESSAGE_KEY_NODE__INIT;
-  *message = init_value;
-}
-size_t org__e2eelab__lib__protobuf__skipped_message_key_node__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *message)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t org__e2eelab__lib__protobuf__skipped_message_key_node__pack
-                     (const Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t org__e2eelab__lib__protobuf__skipped_message_key_node__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *
-       org__e2eelab__lib__protobuf__skipped_message_key_node__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor,
-                                allocator, len, data);
-}
-void   org__e2eelab__lib__protobuf__skipped_message_key_node__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-void   org__e2eelab__lib__protobuf__ratchet__init
-                     (Org__E2eelab__Lib__Protobuf__Ratchet         *message)
-{
-  static const Org__E2eelab__Lib__Protobuf__Ratchet init_value = ORG__E2EELAB__LIB__PROTOBUF__RATCHET__INIT;
-  *message = init_value;
-}
-size_t org__e2eelab__lib__protobuf__ratchet__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__Ratchet *message)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__ratchet__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t org__e2eelab__lib__protobuf__ratchet__pack
-                     (const Org__E2eelab__Lib__Protobuf__Ratchet *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__ratchet__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t org__e2eelab__lib__protobuf__ratchet__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__Ratchet *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__ratchet__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Org__E2eelab__Lib__Protobuf__Ratchet *
-       org__e2eelab__lib__protobuf__ratchet__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Org__E2eelab__Lib__Protobuf__Ratchet *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__ratchet__descriptor,
-                                allocator, len, data);
-}
-void   org__e2eelab__lib__protobuf__ratchet__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__Ratchet *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__ratchet__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-void   org__e2eelab__lib__protobuf__e2ee_session__init
-                     (Org__E2eelab__Lib__Protobuf__E2eeSession         *message)
-{
-  static const Org__E2eelab__Lib__Protobuf__E2eeSession init_value = ORG__E2EELAB__LIB__PROTOBUF__E2EE_SESSION__INIT;
-  *message = init_value;
-}
-size_t org__e2eelab__lib__protobuf__e2ee_session__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__E2eeSession *message)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_session__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t org__e2eelab__lib__protobuf__e2ee_session__pack
-                     (const Org__E2eelab__Lib__Protobuf__E2eeSession *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_session__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t org__e2eelab__lib__protobuf__e2ee_session__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__E2eeSession *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_session__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Org__E2eelab__Lib__Protobuf__E2eeSession *
-       org__e2eelab__lib__protobuf__e2ee_session__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Org__E2eelab__Lib__Protobuf__E2eeSession *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__e2ee_session__descriptor,
-                                allocator, len, data);
-}
-void   org__e2eelab__lib__protobuf__e2ee_session__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__E2eeSession *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_session__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-void   org__e2eelab__lib__protobuf__e2ee_group_session__init
-                     (Org__E2eelab__Lib__Protobuf__E2eeGroupSession         *message)
-{
-  static const Org__E2eelab__Lib__Protobuf__E2eeGroupSession init_value = ORG__E2EELAB__LIB__PROTOBUF__E2EE_GROUP_SESSION__INIT;
-  *message = init_value;
-}
-size_t org__e2eelab__lib__protobuf__e2ee_group_session__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__E2eeGroupSession *message)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_session__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t org__e2eelab__lib__protobuf__e2ee_group_session__pack
-                     (const Org__E2eelab__Lib__Protobuf__E2eeGroupSession *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_session__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t org__e2eelab__lib__protobuf__e2ee_group_session__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__E2eeGroupSession *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_session__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-Org__E2eelab__Lib__Protobuf__E2eeGroupSession *
-       org__e2eelab__lib__protobuf__e2ee_group_session__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (Org__E2eelab__Lib__Protobuf__E2eeGroupSession *)
-     protobuf_c_message_unpack (&org__e2eelab__lib__protobuf__e2ee_group_session__descriptor,
-                                allocator, len, data);
-}
-void   org__e2eelab__lib__protobuf__e2ee_group_session__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__E2eeGroupSession *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &org__e2eelab__lib__protobuf__e2ee_group_session__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__chain_key__field_descriptors[2] =
-{
-  {
-    "index",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_UINT32,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__ChainKey, index),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "shared_key",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__ChainKey, shared_key),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned org__e2eelab__lib__protobuf__chain_key__field_indices_by_name[] = {
-  0,   /* field[0] = index */
-  1,   /* field[1] = shared_key */
-};
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__chain_key__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 2 }
-};
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__chain_key__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.chain_key",
-  "ChainKey",
-  "Org__E2eelab__Lib__Protobuf__ChainKey",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__ChainKey),
-  2,
-  org__e2eelab__lib__protobuf__chain_key__field_descriptors,
-  org__e2eelab__lib__protobuf__chain_key__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__chain_key__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__chain_key__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__message_key__field_descriptors[2] =
-{
-  {
-    "index",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_UINT32,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__MessageKey, index),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "derived_key",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__MessageKey, derived_key),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned org__e2eelab__lib__protobuf__message_key__field_indices_by_name[] = {
-  1,   /* field[1] = derived_key */
-  0,   /* field[0] = index */
-};
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__message_key__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 2 }
-};
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__message_key__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.message_key",
-  "MessageKey",
-  "Org__E2eelab__Lib__Protobuf__MessageKey",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__MessageKey),
-  2,
-  org__e2eelab__lib__protobuf__message_key__field_descriptors,
-  org__e2eelab__lib__protobuf__message_key__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__message_key__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__message_key__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__sender_chain_node__field_descriptors[2] =
-{
-  {
-    "ratchet_key_pair",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SenderChainNode, ratchet_key_pair),
-    &org__e2eelab__lib__protobuf__key_pair__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "chain_key",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SenderChainNode, chain_key),
-    &org__e2eelab__lib__protobuf__chain_key__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned org__e2eelab__lib__protobuf__sender_chain_node__field_indices_by_name[] = {
-  1,   /* field[1] = chain_key */
-  0,   /* field[0] = ratchet_key_pair */
-};
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__sender_chain_node__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 2 }
-};
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__sender_chain_node__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.sender_chain_node",
-  "SenderChainNode",
-  "Org__E2eelab__Lib__Protobuf__SenderChainNode",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__SenderChainNode),
-  2,
-  org__e2eelab__lib__protobuf__sender_chain_node__field_descriptors,
-  org__e2eelab__lib__protobuf__sender_chain_node__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__sender_chain_node__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__sender_chain_node__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__receiver_chain_node__field_descriptors[2] =
-{
-  {
-    "ratchet_key_public",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__ReceiverChainNode, ratchet_key_public),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "chain_key",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__ReceiverChainNode, chain_key),
-    &org__e2eelab__lib__protobuf__chain_key__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned org__e2eelab__lib__protobuf__receiver_chain_node__field_indices_by_name[] = {
-  1,   /* field[1] = chain_key */
-  0,   /* field[0] = ratchet_key_public */
-};
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__receiver_chain_node__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 2 }
-};
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__receiver_chain_node__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.receiver_chain_node",
-  "ReceiverChainNode",
-  "Org__E2eelab__Lib__Protobuf__ReceiverChainNode",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__ReceiverChainNode),
-  2,
-  org__e2eelab__lib__protobuf__receiver_chain_node__field_descriptors,
-  org__e2eelab__lib__protobuf__receiver_chain_node__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__receiver_chain_node__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__receiver_chain_node__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__skipped_message_key_node__field_descriptors[2] =
-{
-  {
-    "ratchet_key_public",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode, ratchet_key_public),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "message_key",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode, message_key),
-    &org__e2eelab__lib__protobuf__message_key__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned org__e2eelab__lib__protobuf__skipped_message_key_node__field_indices_by_name[] = {
-  1,   /* field[1] = message_key */
-  0,   /* field[0] = ratchet_key_public */
-};
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__skipped_message_key_node__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 2 }
-};
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.skipped_message_key_node",
-  "SkippedMessageKeyNode",
-  "Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__SkippedMessageKeyNode),
-  2,
-  org__e2eelab__lib__protobuf__skipped_message_key_node__field_descriptors,
-  org__e2eelab__lib__protobuf__skipped_message_key_node__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__skipped_message_key_node__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__skipped_message_key_node__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__ratchet__field_descriptors[4] =
-{
-  {
-    "root_key",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__Ratchet, root_key),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "sender_chain",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__Ratchet, sender_chain),
-    &org__e2eelab__lib__protobuf__sender_chain_node__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "receiver_chains",
-    3,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_MESSAGE,
-    offsetof(Org__E2eelab__Lib__Protobuf__Ratchet, n_receiver_chains),
-    offsetof(Org__E2eelab__Lib__Protobuf__Ratchet, receiver_chains),
-    &org__e2eelab__lib__protobuf__receiver_chain_node__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "skipped_message_keys",
-    4,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_MESSAGE,
-    offsetof(Org__E2eelab__Lib__Protobuf__Ratchet, n_skipped_message_keys),
-    offsetof(Org__E2eelab__Lib__Protobuf__Ratchet, skipped_message_keys),
-    &org__e2eelab__lib__protobuf__skipped_message_key_node__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned org__e2eelab__lib__protobuf__ratchet__field_indices_by_name[] = {
-  2,   /* field[2] = receiver_chains */
-  0,   /* field[0] = root_key */
-  1,   /* field[1] = sender_chain */
-  3,   /* field[3] = skipped_message_keys */
-};
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__ratchet__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 4 }
-};
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__ratchet__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.ratchet",
-  "Ratchet",
-  "Org__E2eelab__Lib__Protobuf__Ratchet",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__Ratchet),
-  4,
-  org__e2eelab__lib__protobuf__ratchet__field_descriptors,
-  org__e2eelab__lib__protobuf__ratchet__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__ratchet__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__ratchet__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session__field_descriptors[12] =
+static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_session__field_descriptors[12] =
 {
   {
     "version",
@@ -707,7 +60,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, version),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, version),
     NULL,
     NULL,
     0,             /* flags */
@@ -719,7 +72,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, session_id),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, session_id),
     NULL,
     NULL,
     0,             /* flags */
@@ -731,8 +84,8 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, session_owner),
-    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, session_owner),
+    &org__e2eelab__skissm__proto__e2ee_address__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -743,8 +96,8 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, from),
-    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, from),
+    &org__e2eelab__skissm__proto__e2ee_address__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -755,8 +108,8 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, to),
-    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, to),
+    &org__e2eelab__skissm__proto__e2ee_address__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -767,8 +120,8 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, ratchet),
-    &org__e2eelab__lib__protobuf__ratchet__descriptor,
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, ratchet),
+    &org__e2eelab__skissm__proto__e2ee_ratchet__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
@@ -779,7 +132,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, alice_identity_key),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, alice_identity_key),
     NULL,
     NULL,
     0,             /* flags */
@@ -791,7 +144,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, alice_ephemeral_key),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, alice_ephemeral_key),
     NULL,
     NULL,
     0,             /* flags */
@@ -803,7 +156,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, bob_signed_pre_key),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, bob_signed_pre_key),
     NULL,
     NULL,
     0,             /* flags */
@@ -815,7 +168,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, bob_one_time_pre_key),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, bob_one_time_pre_key),
     NULL,
     NULL,
     0,             /* flags */
@@ -827,7 +180,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BOOL,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, responded),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, responded),
     NULL,
     NULL,
     0,             /* flags */
@@ -839,14 +192,14 @@ static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_session_
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeSession, associated_data),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, associated_data),
     NULL,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
-static const unsigned org__e2eelab__lib__protobuf__e2ee_session__field_indices_by_name[] = {
+static const unsigned org__e2eelab__skissm__proto__e2ee_session__field_indices_by_name[] = {
   7,   /* field[7] = alice_ephemeral_key */
   6,   /* field[6] = alice_identity_key */
   11,   /* field[11] = associated_data */
@@ -860,178 +213,23 @@ static const unsigned org__e2eelab__lib__protobuf__e2ee_session__field_indices_b
   4,   /* field[4] = to */
   0,   /* field[0] = version */
 };
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__e2ee_session__number_ranges[1 + 1] =
+static const ProtobufCIntRange org__e2eelab__skissm__proto__e2ee_session__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 12 }
 };
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__e2ee_session__descriptor =
+const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__e2ee_session__descriptor =
 {
   PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.e2ee_session",
+  "org.e2eelab.skissm.proto.e2ee_session",
   "E2eeSession",
-  "Org__E2eelab__Lib__Protobuf__E2eeSession",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__E2eeSession),
+  "Org__E2eelab__Skissm__Proto__E2eeSession",
+  "org.e2eelab.skissm.proto",
+  sizeof(Org__E2eelab__Skissm__Proto__E2eeSession),
   12,
-  org__e2eelab__lib__protobuf__e2ee_session__field_descriptors,
-  org__e2eelab__lib__protobuf__e2ee_session__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__e2ee_session__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__e2ee_session__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
-static const ProtobufCFieldDescriptor org__e2eelab__lib__protobuf__e2ee_group_session__field_descriptors[10] =
-{
-  {
-    "version",
-    1,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_UINT32,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, version),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "session_id",
-    2,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, session_id),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "session_owner",
-    3,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, session_owner),
-    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "group_address",
-    4,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_MESSAGE,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, group_address),
-    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "member_addresses",
-    5,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_MESSAGE,
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, n_member_addresses),
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, member_addresses),
-    &org__e2eelab__lib__protobuf__e2ee_address__descriptor,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "sequence",
-    6,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_UINT32,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, sequence),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "chain_key",
-    7,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, chain_key),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "signature_private_key",
-    8,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, signature_private_key),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "signature_public_key",
-    9,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, signature_public_key),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-  {
-    "associated_data",
-    10,
-    PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
-    0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession, associated_data),
-    NULL,
-    NULL,
-    0,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned org__e2eelab__lib__protobuf__e2ee_group_session__field_indices_by_name[] = {
-  9,   /* field[9] = associated_data */
-  6,   /* field[6] = chain_key */
-  3,   /* field[3] = group_address */
-  4,   /* field[4] = member_addresses */
-  5,   /* field[5] = sequence */
-  1,   /* field[1] = session_id */
-  2,   /* field[2] = session_owner */
-  7,   /* field[7] = signature_private_key */
-  8,   /* field[8] = signature_public_key */
-  0,   /* field[0] = version */
-};
-static const ProtobufCIntRange org__e2eelab__lib__protobuf__e2ee_group_session__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 10 }
-};
-const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__e2ee_group_session__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "org.e2eelab.lib.protobuf.e2ee_group_session",
-  "E2eeGroupSession",
-  "Org__E2eelab__Lib__Protobuf__E2eeGroupSession",
-  "org.e2eelab.lib.protobuf",
-  sizeof(Org__E2eelab__Lib__Protobuf__E2eeGroupSession),
-  10,
-  org__e2eelab__lib__protobuf__e2ee_group_session__field_descriptors,
-  org__e2eelab__lib__protobuf__e2ee_group_session__field_indices_by_name,
-  1,  org__e2eelab__lib__protobuf__e2ee_group_session__number_ranges,
-  (ProtobufCMessageInit) org__e2eelab__lib__protobuf__e2ee_group_session__init,
+  org__e2eelab__skissm__proto__e2ee_session__field_descriptors,
+  org__e2eelab__skissm__proto__e2ee_session__field_indices_by_name,
+  1,  org__e2eelab__skissm__proto__e2ee_session__number_ranges,
+  (ProtobufCMessageInit) org__e2eelab__skissm__proto__e2ee_session__init,
   NULL,NULL,NULL    /* reserved[123] */
 };

@@ -15,13 +15,11 @@ PROTOBUF_C__BEGIN_DECLS
 #endif
 
 #include "e2ee_address.pb-c.h"
+#include "key_pair.pb-c.h"
+#include "signed_pre_key_pair.pb-c.h"
+#include "one_time_pre_key_pair.pb-c.h"
 
-typedef struct Org__E2eelab__Lib__Protobuf__KeyPair Org__E2eelab__Lib__Protobuf__KeyPair;
-typedef struct Org__E2eelab__Lib__Protobuf__SignedPreKeyPair Org__E2eelab__Lib__Protobuf__SignedPreKeyPair;
-typedef struct Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic;
-typedef struct Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair;
-typedef struct Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic;
-typedef struct Org__E2eelab__Lib__Protobuf__E2eeAccount Org__E2eelab__Lib__Protobuf__E2eeAccount;
+typedef struct Org__E2eelab__Skissm__Proto__E2eeAccount Org__E2eelab__Skissm__Proto__E2eeAccount;
 
 
 /* --- enums --- */
@@ -29,217 +27,48 @@ typedef struct Org__E2eelab__Lib__Protobuf__E2eeAccount Org__E2eelab__Lib__Proto
 
 /* --- messages --- */
 
-struct  Org__E2eelab__Lib__Protobuf__KeyPair
-{
-  ProtobufCMessage base;
-  ProtobufCBinaryData public_key;
-  ProtobufCBinaryData private_key;
-};
-#define ORG__E2EELAB__LIB__PROTOBUF__KEY_PAIR__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__lib__protobuf__key_pair__descriptor) \
-    , {0,NULL}, {0,NULL} }
-
-
-struct  Org__E2eelab__Lib__Protobuf__SignedPreKeyPair
-{
-  ProtobufCMessage base;
-  uint32_t spk_id;
-  Org__E2eelab__Lib__Protobuf__KeyPair *key_pair;
-  ProtobufCBinaryData signature;
-  uint64_t ttl;
-};
-#define ORG__E2EELAB__LIB__PROTOBUF__SIGNED_PRE_KEY_PAIR__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__lib__protobuf__signed_pre_key_pair__descriptor) \
-    , 0, NULL, {0,NULL}, 0 }
-
-
-struct  Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic
-{
-  ProtobufCMessage base;
-  uint32_t spk_id;
-  ProtobufCBinaryData public_key;
-  ProtobufCBinaryData signature;
-};
-#define ORG__E2EELAB__LIB__PROTOBUF__SIGNED_PRE_KEY_PUBLIC__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__lib__protobuf__signed_pre_key_public__descriptor) \
-    , 0, {0,NULL}, {0,NULL} }
-
-
-struct  Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair
-{
-  ProtobufCMessage base;
-  uint32_t opk_id;
-  protobuf_c_boolean used;
-  Org__E2eelab__Lib__Protobuf__KeyPair *key_pair;
-};
-#define ORG__E2EELAB__LIB__PROTOBUF__ONE_TIME_PRE_KEY_PAIR__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__lib__protobuf__one_time_pre_key_pair__descriptor) \
-    , 0, 0, NULL }
-
-
-struct  Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic
-{
-  ProtobufCMessage base;
-  uint32_t opk_id;
-  ProtobufCBinaryData public_key;
-};
-#define ORG__E2EELAB__LIB__PROTOBUF__ONE_TIME_PRE_KEY_PUBLIC__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__lib__protobuf__one_time_pre_key_public__descriptor) \
-    , 0, {0,NULL} }
-
-
-struct  Org__E2eelab__Lib__Protobuf__E2eeAccount
+struct  Org__E2eelab__Skissm__Proto__E2eeAccount
 {
   ProtobufCMessage base;
   uint32_t version;
   ProtobufCBinaryData account_id;
   protobuf_c_boolean saved;
-  Org__E2eelab__Lib__Protobuf__E2eeAddress *address;
-  Org__E2eelab__Lib__Protobuf__KeyPair *identity_key_pair;
-  Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *signed_pre_key_pair;
+  Org__E2eelab__Skissm__Proto__E2eeAddress *address;
+  Org__E2eelab__Skissm__Proto__KeyPair *identity_key_pair;
+  Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key_pair;
   size_t n_one_time_pre_keys;
-  Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair **one_time_pre_keys;
+  Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **one_time_pre_keys;
   uint32_t next_signed_pre_key_id;
   uint32_t next_one_time_pre_key_id;
 };
-#define ORG__E2EELAB__LIB__PROTOBUF__E2EE_ACCOUNT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__lib__protobuf__e2ee_account__descriptor) \
+#define ORG__E2EELAB__SKISSM__PROTO__E2EE_ACCOUNT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__skissm__proto__e2ee_account__descriptor) \
     , 0, {0,NULL}, 0, NULL, NULL, NULL, 0,NULL, 0, 0 }
 
 
-/* Org__E2eelab__Lib__Protobuf__KeyPair methods */
-void   org__e2eelab__lib__protobuf__key_pair__init
-                     (Org__E2eelab__Lib__Protobuf__KeyPair         *message);
-size_t org__e2eelab__lib__protobuf__key_pair__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__KeyPair   *message);
-size_t org__e2eelab__lib__protobuf__key_pair__pack
-                     (const Org__E2eelab__Lib__Protobuf__KeyPair   *message,
+/* Org__E2eelab__Skissm__Proto__E2eeAccount methods */
+void   org__e2eelab__skissm__proto__e2ee_account__init
+                     (Org__E2eelab__Skissm__Proto__E2eeAccount         *message);
+size_t org__e2eelab__skissm__proto__e2ee_account__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__E2eeAccount   *message);
+size_t org__e2eelab__skissm__proto__e2ee_account__pack
+                     (const Org__E2eelab__Skissm__Proto__E2eeAccount   *message,
                       uint8_t             *out);
-size_t org__e2eelab__lib__protobuf__key_pair__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__KeyPair   *message,
+size_t org__e2eelab__skissm__proto__e2ee_account__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__E2eeAccount   *message,
                       ProtobufCBuffer     *buffer);
-Org__E2eelab__Lib__Protobuf__KeyPair *
-       org__e2eelab__lib__protobuf__key_pair__unpack
+Org__E2eelab__Skissm__Proto__E2eeAccount *
+       org__e2eelab__skissm__proto__e2ee_account__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   org__e2eelab__lib__protobuf__key_pair__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__KeyPair *message,
-                      ProtobufCAllocator *allocator);
-/* Org__E2eelab__Lib__Protobuf__SignedPreKeyPair methods */
-void   org__e2eelab__lib__protobuf__signed_pre_key_pair__init
-                     (Org__E2eelab__Lib__Protobuf__SignedPreKeyPair         *message);
-size_t org__e2eelab__lib__protobuf__signed_pre_key_pair__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPair   *message);
-size_t org__e2eelab__lib__protobuf__signed_pre_key_pair__pack
-                     (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPair   *message,
-                      uint8_t             *out);
-size_t org__e2eelab__lib__protobuf__signed_pre_key_pair__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPair   *message,
-                      ProtobufCBuffer     *buffer);
-Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *
-       org__e2eelab__lib__protobuf__signed_pre_key_pair__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   org__e2eelab__lib__protobuf__signed_pre_key_pair__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *message,
-                      ProtobufCAllocator *allocator);
-/* Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic methods */
-void   org__e2eelab__lib__protobuf__signed_pre_key_public__init
-                     (Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic         *message);
-size_t org__e2eelab__lib__protobuf__signed_pre_key_public__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic   *message);
-size_t org__e2eelab__lib__protobuf__signed_pre_key_public__pack
-                     (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic   *message,
-                      uint8_t             *out);
-size_t org__e2eelab__lib__protobuf__signed_pre_key_public__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic   *message,
-                      ProtobufCBuffer     *buffer);
-Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic *
-       org__e2eelab__lib__protobuf__signed_pre_key_public__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   org__e2eelab__lib__protobuf__signed_pre_key_public__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic *message,
-                      ProtobufCAllocator *allocator);
-/* Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair methods */
-void   org__e2eelab__lib__protobuf__one_time_pre_key_pair__init
-                     (Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair         *message);
-size_t org__e2eelab__lib__protobuf__one_time_pre_key_pair__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair   *message);
-size_t org__e2eelab__lib__protobuf__one_time_pre_key_pair__pack
-                     (const Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair   *message,
-                      uint8_t             *out);
-size_t org__e2eelab__lib__protobuf__one_time_pre_key_pair__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair   *message,
-                      ProtobufCBuffer     *buffer);
-Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *
-       org__e2eelab__lib__protobuf__one_time_pre_key_pair__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   org__e2eelab__lib__protobuf__one_time_pre_key_pair__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *message,
-                      ProtobufCAllocator *allocator);
-/* Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic methods */
-void   org__e2eelab__lib__protobuf__one_time_pre_key_public__init
-                     (Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic         *message);
-size_t org__e2eelab__lib__protobuf__one_time_pre_key_public__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic   *message);
-size_t org__e2eelab__lib__protobuf__one_time_pre_key_public__pack
-                     (const Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic   *message,
-                      uint8_t             *out);
-size_t org__e2eelab__lib__protobuf__one_time_pre_key_public__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic   *message,
-                      ProtobufCBuffer     *buffer);
-Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic *
-       org__e2eelab__lib__protobuf__one_time_pre_key_public__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   org__e2eelab__lib__protobuf__one_time_pre_key_public__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic *message,
-                      ProtobufCAllocator *allocator);
-/* Org__E2eelab__Lib__Protobuf__E2eeAccount methods */
-void   org__e2eelab__lib__protobuf__e2ee_account__init
-                     (Org__E2eelab__Lib__Protobuf__E2eeAccount         *message);
-size_t org__e2eelab__lib__protobuf__e2ee_account__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__E2eeAccount   *message);
-size_t org__e2eelab__lib__protobuf__e2ee_account__pack
-                     (const Org__E2eelab__Lib__Protobuf__E2eeAccount   *message,
-                      uint8_t             *out);
-size_t org__e2eelab__lib__protobuf__e2ee_account__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__E2eeAccount   *message,
-                      ProtobufCBuffer     *buffer);
-Org__E2eelab__Lib__Protobuf__E2eeAccount *
-       org__e2eelab__lib__protobuf__e2ee_account__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   org__e2eelab__lib__protobuf__e2ee_account__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__E2eeAccount *message,
+void   org__e2eelab__skissm__proto__e2ee_account__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__E2eeAccount *message,
                       ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
-typedef void (*Org__E2eelab__Lib__Protobuf__KeyPair_Closure)
-                 (const Org__E2eelab__Lib__Protobuf__KeyPair *message,
-                  void *closure_data);
-typedef void (*Org__E2eelab__Lib__Protobuf__SignedPreKeyPair_Closure)
-                 (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPair *message,
-                  void *closure_data);
-typedef void (*Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic_Closure)
-                 (const Org__E2eelab__Lib__Protobuf__SignedPreKeyPublic *message,
-                  void *closure_data);
-typedef void (*Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair_Closure)
-                 (const Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *message,
-                  void *closure_data);
-typedef void (*Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic_Closure)
-                 (const Org__E2eelab__Lib__Protobuf__OneTimePreKeyPublic *message,
-                  void *closure_data);
-typedef void (*Org__E2eelab__Lib__Protobuf__E2eeAccount_Closure)
-                 (const Org__E2eelab__Lib__Protobuf__E2eeAccount *message,
+typedef void (*Org__E2eelab__Skissm__Proto__E2eeAccount_Closure)
+                 (const Org__E2eelab__Skissm__Proto__E2eeAccount *message,
                   void *closure_data);
 
 /* --- services --- */
@@ -247,12 +76,7 @@ typedef void (*Org__E2eelab__Lib__Protobuf__E2eeAccount_Closure)
 
 /* --- descriptors --- */
 
-extern const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__key_pair__descriptor;
-extern const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__signed_pre_key_pair__descriptor;
-extern const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__signed_pre_key_public__descriptor;
-extern const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__one_time_pre_key_pair__descriptor;
-extern const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__one_time_pre_key_public__descriptor;
-extern const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__e2ee_account__descriptor;
+extern const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__e2ee_account__descriptor;
 
 PROTOBUF_C__END_DECLS
 

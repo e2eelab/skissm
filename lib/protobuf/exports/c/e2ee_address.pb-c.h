@@ -15,7 +15,7 @@ PROTOBUF_C__BEGIN_DECLS
 #endif
 
 
-typedef struct Org__E2eelab__Lib__Protobuf__E2eeAddress Org__E2eelab__Lib__Protobuf__E2eeAddress;
+typedef struct Org__E2eelab__Skissm__Proto__E2eeAddress Org__E2eelab__Skissm__Proto__E2eeAddress;
 
 
 /* --- enums --- */
@@ -23,7 +23,7 @@ typedef struct Org__E2eelab__Lib__Protobuf__E2eeAddress Org__E2eelab__Lib__Proto
 
 /* --- messages --- */
 
-struct  Org__E2eelab__Lib__Protobuf__E2eeAddress
+struct  Org__E2eelab__Skissm__Proto__E2eeAddress
 {
   ProtobufCMessage base;
   ProtobufCBinaryData domain;
@@ -31,34 +31,34 @@ struct  Org__E2eelab__Lib__Protobuf__E2eeAddress
   ProtobufCBinaryData device_id;
   ProtobufCBinaryData group_id;
 };
-#define ORG__E2EELAB__LIB__PROTOBUF__E2EE_ADDRESS__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__lib__protobuf__e2ee_address__descriptor) \
+#define ORG__E2EELAB__SKISSM__PROTO__E2EE_ADDRESS__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__skissm__proto__e2ee_address__descriptor) \
     , {0,NULL}, {0,NULL}, {0,NULL}, {0,NULL} }
 
 
-/* Org__E2eelab__Lib__Protobuf__E2eeAddress methods */
-void   org__e2eelab__lib__protobuf__e2ee_address__init
-                     (Org__E2eelab__Lib__Protobuf__E2eeAddress         *message);
-size_t org__e2eelab__lib__protobuf__e2ee_address__get_packed_size
-                     (const Org__E2eelab__Lib__Protobuf__E2eeAddress   *message);
-size_t org__e2eelab__lib__protobuf__e2ee_address__pack
-                     (const Org__E2eelab__Lib__Protobuf__E2eeAddress   *message,
+/* Org__E2eelab__Skissm__Proto__E2eeAddress methods */
+void   org__e2eelab__skissm__proto__e2ee_address__init
+                     (Org__E2eelab__Skissm__Proto__E2eeAddress         *message);
+size_t org__e2eelab__skissm__proto__e2ee_address__get_packed_size
+                     (const Org__E2eelab__Skissm__Proto__E2eeAddress   *message);
+size_t org__e2eelab__skissm__proto__e2ee_address__pack
+                     (const Org__E2eelab__Skissm__Proto__E2eeAddress   *message,
                       uint8_t             *out);
-size_t org__e2eelab__lib__protobuf__e2ee_address__pack_to_buffer
-                     (const Org__E2eelab__Lib__Protobuf__E2eeAddress   *message,
+size_t org__e2eelab__skissm__proto__e2ee_address__pack_to_buffer
+                     (const Org__E2eelab__Skissm__Proto__E2eeAddress   *message,
                       ProtobufCBuffer     *buffer);
-Org__E2eelab__Lib__Protobuf__E2eeAddress *
-       org__e2eelab__lib__protobuf__e2ee_address__unpack
+Org__E2eelab__Skissm__Proto__E2eeAddress *
+       org__e2eelab__skissm__proto__e2ee_address__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   org__e2eelab__lib__protobuf__e2ee_address__free_unpacked
-                     (Org__E2eelab__Lib__Protobuf__E2eeAddress *message,
+void   org__e2eelab__skissm__proto__e2ee_address__free_unpacked
+                     (Org__E2eelab__Skissm__Proto__E2eeAddress *message,
                       ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
-typedef void (*Org__E2eelab__Lib__Protobuf__E2eeAddress_Closure)
-                 (const Org__E2eelab__Lib__Protobuf__E2eeAddress *message,
+typedef void (*Org__E2eelab__Skissm__Proto__E2eeAddress_Closure)
+                 (const Org__E2eelab__Skissm__Proto__E2eeAddress *message,
                   void *closure_data);
 
 /* --- services --- */
@@ -66,7 +66,7 @@ typedef void (*Org__E2eelab__Lib__Protobuf__E2eeAddress_Closure)
 
 /* --- descriptors --- */
 
-extern const ProtobufCMessageDescriptor org__e2eelab__lib__protobuf__e2ee_address__descriptor;
+extern const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__e2ee_address__descriptor;
 
 PROTOBUF_C__END_DECLS
 

@@ -21,6 +21,6 @@ void register_account();
  *
  * @param account The account to be processed
  */
-void publish_spk(Org__E2eelab__Lib__Protobuf__E2eeAccount *account);
+void publish_spk(Org__E2eelab__Skissm__Proto__E2eeAccount *account);
 
 #endif

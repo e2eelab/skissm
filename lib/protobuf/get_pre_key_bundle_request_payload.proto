@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "GetPreKeyBundleRequestPayload";
+option java_multiple_files = true;
+
+import "e2ee_address.proto";
+
+message get_pre_key_bundle_request_payload {
+  e2ee_address peer_address = 1;
+}

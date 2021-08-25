@@ -15,9 +15,9 @@
  * @param member_num 
  */
 void create_outbound_group_session(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses,
     size_t member_num
 );
 
@@ -28,8 +28,8 @@ void create_outbound_group_session(
  * @param user_address
  */
 void create_inbound_group_session(
-    Org__E2eelab__Lib__Protobuf__E2eeGroupPreKeyPayload *group_pre_key_payload,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address
+    Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *group_pre_key_payload,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address
 );
 
 /**
@@ -41,8 +41,8 @@ void create_inbound_group_session(
  * @param plaintext_len
  */
 void encrypt_group_session(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
     const uint8_t *plaintext, size_t plaintext_len
 );
 
@@ -54,8 +54,8 @@ void encrypt_group_session(
  * @param group_msg
  */
 void decrypt_group_session(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
-    Org__E2eelab__Lib__Protobuf__E2eeMessage *group_msg
+    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+    Org__E2eelab__Skissm__Proto__E2eeMessage *group_msg
 );
 
 #endif /* GROUP_SESSION_H_ */

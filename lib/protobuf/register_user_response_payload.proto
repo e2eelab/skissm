@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "RegisterUserResponsePayload";
+option java_multiple_files = true;
+
+import "e2ee_address.proto";
+
+message register_user_response_payload {
+  uint32 code = 1;
+  string msg = 2;
+  e2ee_address address = 3;
+}

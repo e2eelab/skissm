@@ -54,7 +54,7 @@ void remove_request_handler(handler_entry *entry);
  * @param cmd
  * @return
  */
-void *get_request_handler(Org__E2eelab__Lib__Protobuf__E2eeCommands cmd);
+void *get_request_handler(Org__E2eelab__Skissm__Proto__E2eeCommands cmd);
 
 /**
  * @brief Insert a response handler with id
@@ -104,7 +104,7 @@ void protocol_end();
  * @param response_handler
  */
 void send_register_user_request(
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
+    Org__E2eelab__Skissm__Proto__E2eeAccount *account,
     register_user_response_handler *response_handler);
 
 /**
@@ -113,7 +113,7 @@ void send_register_user_request(
  * @param account
  * @param response_handler
  */
-void send_publish_spk_request(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
+void send_publish_spk_request(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
                               publish_spk_response_handler *response_handler);
 
 /**
@@ -125,7 +125,7 @@ void send_publish_spk_request(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
  */
 void send_supply_opks_response(
     uint32_t request_id,
-    Org__E2eelab__Lib__Protobuf__SupplyOpksResponsePayload
+    Org__E2eelab__Skissm__Proto__SupplyOpksResponsePayload
         *request_opks_response,
     supply_opks_handler *handler);
 
@@ -136,7 +136,7 @@ void send_supply_opks_response(
  * @param create_group_response
  */
 void send_create_group_response(
-    uint32_t request_id, Org__E2eelab__Lib__Protobuf__CreateGroupResponsePayload
+    uint32_t request_id, Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload
                              *create_group_response);
 
 /**
@@ -147,7 +147,7 @@ void send_create_group_response(
  */
 void send_add_group_members_response(
     uint32_t request_id,
-    Org__E2eelab__Lib__Protobuf__AddGroupMembersResponsePayload
+    Org__E2eelab__Skissm__Proto__AddGroupMembersResponsePayload
         *add_group_members_response);
 
 /**
@@ -158,7 +158,7 @@ void send_add_group_members_response(
  */
 void send_remove_group_members_response(
     uint32_t request_id,
-    Org__E2eelab__Lib__Protobuf__RemoveGroupMembersResponsePayload
+    Org__E2eelab__Skissm__Proto__RemoveGroupMembersResponsePayload
         *remove_group_members_response);
 
 /**
@@ -170,7 +170,7 @@ void send_remove_group_members_response(
  * @param response_handler
  */
 void send_get_pre_key_bundle_request(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *e2ee_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *e2ee_address,
     const uint8_t *plaintext, size_t plaintext_len,
     pre_key_bundle_response_handler *response_handler);
 
@@ -218,6 +218,6 @@ void send_receive_msg_response(uint32_t request_id);
  */
 void process_protocol_msg(
     uint8_t *server_msg, size_t server_msg_len,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *receiver_address);
+    Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address);
 
 #endif /* E2EE_PROTOCOL_H_ */

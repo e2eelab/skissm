@@ -25,10 +25,10 @@ int main(int argc, char **argv)
   }
   size_t port = atoi(argv[1]);
 
-  Org__E2eelab__Lib__Protobuf__KeyPair alice_ratchet_key;
+  Org__E2eelab__Skissm__Proto__KeyPair alice_ratchet_key;
   crypto_curve25519_generate_key(&alice_ratchet_key);
 
-  Org__E2eelab__Lib__Protobuf__KeyPair bob_spk;
+  Org__E2eelab__Skissm__Proto__KeyPair bob_spk;
   crypto_curve25519_generate_key(&bob_spk);
 
   uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
       cout << "\r" << "testing #" << i << " data..." << std::flush;
 
       // prepare ratchet
-      Org__E2eelab__Lib__Protobuf__Ratchet alice_ratchet, bob_ratchet;
+      Org__E2eelab__Skissm__Proto__E2eeRatchet alice_ratchet, bob_ratchet;
       initialise_ratchet(&alice_ratchet);
       initialise_ratchet(&bob_ratchet);
 
@@ -94,11 +94,11 @@ int main(int argc, char **argv)
       random_session_id(&session_id);
 
       size_t plaintext_length = sizeof(plaintext);
-      Org__E2eelab__Lib__Protobuf__E2eeMsgContext *message;
+      Org__E2eelab__Skissm__Proto__E2eeMsgContext *message;
       encrypt_ratchet(&alice_ratchet, ad, plaintext, plaintext_length, &message);
 
       // send msg
-      size_t message_length = org__e2eelab__lib__protobuf__e2ee_msg_context__get_packed_size(message);
+      size_t message_length = Org__E2eelab__Skissm__Proto__e2ee_msg_context__get_packed_size(message);
       string message_str(reinterpret_cast<char const *>(message), message_length);
       assert(message_str.size() == message_length);
 
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
       const uint8_t *enc_text = reinterpret_cast<const uint8_t *>(enc_text_str.c_str());
       size_t enc_text_len = enc_text_str.size();
 
-      Org__E2eelab__Lib__Protobuf__E2eeMsgContext *msg_context = org__e2eelab__lib__protobuf__e2ee_msg_context__unpack(NULL, enc_text_len, enc_text);
+      Org__E2eelab__Skissm__Proto__E2eeMsgContext *msg_context = Org__E2eelab__Skissm__Proto__e2ee_msg_context__unpack(NULL, enc_text_len, enc_text);
 
       size_t dec_text_len = decrypt_ratchet(&bob_ratchet, ad, msg_context, &dec_text);
 

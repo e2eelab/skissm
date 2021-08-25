@@ -1,33 +1,13 @@
 syntax = "proto3";
 
-package org.e2eelab.lib.protobuf;
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "E2eeMessage";
+option java_multiple_files = true;
+
 import "e2ee_address.proto";
-
-enum e2ee_message_type {
-    PRE_KEY = 0;
-    MESSAGE = 1;
-    GROUP_MESSAGE = 2;
-}
-
-message e2ee_msg_payload {
-    uint32 sequence = 1;
-    bytes ciphertext = 2;
-    bytes ratchet_key = 3;
-}
-
-message e2ee_group_msg_payload {
-    uint32 sequence = 1;
-    bytes ciphertext = 2;
-    bytes signature = 3;
-}
-
-message e2ee_pre_key_payload {
-    bytes alice_identity_key = 1;
-    bytes alice_ephemeral_key = 2;
-    bytes bob_signed_pre_key = 3;
-    bytes bob_one_time_pre_key = 4;
-    e2ee_msg_payload msg_payload = 5;
-}
+import "e2ee_message_type.proto";
 
 message e2ee_message {
     uint32 version = 1;
@@ -36,24 +16,4 @@ message e2ee_message {
     bytes session_id = 4;
     e2ee_message_type msg_type = 5;
     bytes payload = 6;
-}
-
-enum e2ee_plaintext_type {
-    COMMON_MSG = 0;
-    GROUP_PRE_KEY = 1;
-}
-
-message e2ee_plaintext {
-    uint32 version = 1;
-    e2ee_plaintext_type plaintext_type = 2;
-    bytes payload = 3;
-}
-
-message e2ee_group_pre_key_payload {
-    bytes session_id = 1;
-    e2ee_address group_address = 2;
-    repeated e2ee_address member_addresses = 3;
-    uint32 sequence = 4;
-    bytes chain_key = 5;
-    bytes signature_public_key = 6;
 }

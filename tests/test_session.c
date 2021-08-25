@@ -18,11 +18,11 @@ static void test_basic_session(){
     // test start
     setup();
 
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *a_account = create_account();
+    Org__E2eelab__Skissm__Proto__E2eeAccount *a_account = create_account();
     register_user_response_handler_store.account = a_account;
     send_register_user_request(a_account, &register_user_response_handler_store);
 
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *b_account = create_account();
+    Org__E2eelab__Skissm__Proto__E2eeAccount *b_account = create_account();
     register_user_response_handler_store.account = b_account;
     send_register_user_request(b_account, &register_user_response_handler_store);
 
@@ -33,13 +33,13 @@ static void test_basic_session(){
     size_t context_len;
     pack_e2ee_plaintext(
         plaintext, plaintext_len,
-        ORG__E2EELAB__LIB__PROTOBUF__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
+        ORG__E2EELAB__SKISSM__PROTO__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
         &context, &context_len
     );
     encrypt_session(a_account->address, b_account->address, context, context_len);
 
-    org__e2eelab__lib__protobuf__e2ee_account__free_unpacked(a_account, NULL);
-    org__e2eelab__lib__protobuf__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
 
     // test stop
     tear_down();
@@ -49,11 +49,11 @@ static void test_interaction(){
     // test start
     setup();
 
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *a_account = create_account();
+    Org__E2eelab__Skissm__Proto__E2eeAccount *a_account = create_account();
     register_user_response_handler_store.account = a_account;
     send_register_user_request(a_account, &register_user_response_handler_store);
 
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *b_account = create_account();
+    Org__E2eelab__Skissm__Proto__E2eeAccount *b_account = create_account();
     register_user_response_handler_store.account = b_account;
     send_register_user_request(b_account, &register_user_response_handler_store);
 
@@ -64,7 +64,7 @@ static void test_interaction(){
     size_t context_len;
     pack_e2ee_plaintext(
         plaintext, plaintext_len,
-        ORG__E2EELAB__LIB__PROTOBUF__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
+        ORG__E2EELAB__SKISSM__PROTO__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
         &context, &context_len
     );
     encrypt_session(a_account->address, b_account->address, context, context_len);
@@ -76,13 +76,13 @@ static void test_interaction(){
     size_t context_len_2;
     pack_e2ee_plaintext(
         plaintext_2, plaintext_len_2,
-        ORG__E2EELAB__LIB__PROTOBUF__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
+        ORG__E2EELAB__SKISSM__PROTO__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
         &context_2, &context_len_2
     );
     encrypt_session(b_account->address, a_account->address, context_2, context_len_2);
 
-    org__e2eelab__lib__protobuf__e2ee_account__free_unpacked(a_account, NULL);
-    org__e2eelab__lib__protobuf__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
 
     // test stop
     tear_down();
@@ -92,11 +92,11 @@ static void test_continual_messages(){
     // test start
     setup();
 
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *a_account = create_account();
+    Org__E2eelab__Skissm__Proto__E2eeAccount *a_account = create_account();
     register_user_response_handler_store.account = a_account;
     send_register_user_request(a_account, &register_user_response_handler_store);
 
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *b_account = create_account();
+    Org__E2eelab__Skissm__Proto__E2eeAccount *b_account = create_account();
     register_user_response_handler_store.account = b_account;
     send_register_user_request(b_account, &register_user_response_handler_store);
 
@@ -107,7 +107,7 @@ static void test_continual_messages(){
     size_t context_len;
     pack_e2ee_plaintext(
         plaintext, plaintext_len,
-        ORG__E2EELAB__LIB__PROTOBUF__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
+        ORG__E2EELAB__SKISSM__PROTO__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
         &context, &context_len
     );
     int i;
@@ -115,8 +115,8 @@ static void test_continual_messages(){
         encrypt_session(a_account->address, b_account->address, context, context_len);
     }
 
-    org__e2eelab__lib__protobuf__e2ee_account__free_unpacked(a_account, NULL);
-    org__e2eelab__lib__protobuf__e2ee_account__free_unpacked(b_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(a_account, NULL);
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(b_account, NULL);
 
     // test stop
     tear_down();

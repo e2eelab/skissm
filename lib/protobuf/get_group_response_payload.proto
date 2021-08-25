@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "GetGroupResponsePayload";
+option java_multiple_files = true;
+
+import "e2ee_address.proto";
+
+message get_group_response_payload {
+  uint32 code = 1;
+  string msg = 2;
+  bytes group_name = 3;
+  repeated e2ee_address member_addresses = 4;
+}

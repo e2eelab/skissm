@@ -8,17 +8,6 @@
 #include "e2ee_protocol_handler.h"
 
 /**
- * @brief Save a group object
- *
- * @group_address
- * @group_name
- */
-typedef struct store_group {
-  Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address;
-  ProtobufCBinaryData *group_name;
-} store_group;
-
-/**
  * @brief Create a group object
  *
  * @param user_address
@@ -26,9 +15,9 @@ typedef struct store_group {
  * @param member_addresses
  * @param member_num
  */
-void create_group(Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
+void create_group(Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
                   ProtobufCBinaryData *group_name,
-                  Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses,
+                  Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses,
                   size_t member_num);
 
 /**
@@ -36,7 +25,7 @@ void create_group(Org__E2eelab__Lib__Protobuf__E2eeAddress *user_address,
  *
  * @param group_address
  */
-get_group_response_handler *get_group_members(Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address);
+get_group_response_handler *get_group_members(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address);
 
 /**
  * @brief Add group members
@@ -47,9 +36,9 @@ get_group_response_handler *get_group_members(Org__E2eelab__Lib__Protobuf__E2eeA
  * @param new_member_num
  */
 size_t add_group_members(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *sender_address,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress **new_member_addresses,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *sender_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress **new_member_addresses,
     size_t new_member_num);
 
 /**
@@ -61,9 +50,9 @@ size_t add_group_members(
  * @param old_member_num
  */
 void remove_group_members(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *sender_address,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *group_address,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress **old_member_addresses,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *sender_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress **old_member_addresses,
     size_t old_member_num);
 
 #endif /* GROUP_SESSION_MANAGER_H_ */

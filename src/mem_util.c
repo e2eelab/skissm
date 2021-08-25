@@ -19,7 +19,7 @@ bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2){
     return false;
 }
 
-bool compare_address(Org__E2eelab__Lib__Protobuf__E2eeAddress *address_1, Org__E2eelab__Lib__Protobuf__E2eeAddress *address_2){
+bool compare_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address_1, Org__E2eelab__Skissm__Proto__E2eeAddress *address_2){
     if ((address_1->user_id.len == address_2->user_id.len)
         && (address_1->domain.len == address_2->domain.len)
         && (address_1->device_id.len == address_2->device_id.len)
@@ -38,8 +38,8 @@ bool compare_address(Org__E2eelab__Lib__Protobuf__E2eeAddress *address_1, Org__E
 }
 
 bool compare_member_addresses(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses_1, size_t member_num_1,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress **member_addresses_2, size_t member_num_2
+    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses_1, size_t member_num_1,
+    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses_2, size_t member_num_2
 ) {
     if (member_num_1 != member_num_2){
         return false;
@@ -69,9 +69,9 @@ void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src
     memcpy(dest->data, src, dest->len);
 }
 
-void copy_address_from_address(Org__E2eelab__Lib__Protobuf__E2eeAddress **dest, const Org__E2eelab__Lib__Protobuf__E2eeAddress *src){
-    *dest = (Org__E2eelab__Lib__Protobuf__E2eeAddress *) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeAddress));
-    org__e2eelab__lib__protobuf__e2ee_address__init(*dest);
+void copy_address_from_address(Org__E2eelab__Skissm__Proto__E2eeAddress **dest, const Org__E2eelab__Skissm__Proto__E2eeAddress *src){
+    *dest = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
+    org__e2eelab__skissm__proto__e2ee_address__init(*dest);
     if (src->user_id.data){
         (*dest)->user_id.len = src->user_id.len;
         (*dest)->user_id.data = (uint8_t *) malloc(sizeof(uint8_t) * src->user_id.len);
@@ -95,11 +95,11 @@ void copy_address_from_address(Org__E2eelab__Lib__Protobuf__E2eeAddress **dest, 
 }
 
 void copy_member_addresses_from_member_addresses(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress ***dest,
-    const Org__E2eelab__Lib__Protobuf__E2eeAddress **src,
+    Org__E2eelab__Skissm__Proto__E2eeAddress ***dest,
+    const Org__E2eelab__Skissm__Proto__E2eeAddress **src,
     size_t member_num
 ) {
-    *dest = (Org__E2eelab__Lib__Protobuf__E2eeAddress **) malloc(sizeof(Org__E2eelab__Lib__Protobuf__E2eeAddress *) * member_num);
+    *dest = (Org__E2eelab__Skissm__Proto__E2eeAddress **) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * member_num);
     size_t i;
     for (i = 0; i < member_num; i++){
         copy_address_from_address(&((*dest)[i]), src[i]);

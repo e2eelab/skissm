@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "AddGroupMembersRequestPayload";
+option java_multiple_files = true;
+
+import "e2ee_address.proto";
+
+message add_group_members_request_payload {
+  e2ee_address sender_address = 1;
+  e2ee_address group_address = 2;
+  repeated e2ee_address member_addresses = 3;
+}

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "SenderChainNode";
+option java_multiple_files = true;
+
+import "key_pair.proto";
+import "chain_key.proto";
+
+message sender_chain_node {
+  key_pair ratchet_key_pair = 1;
+  chain_key chain_key = 2;
+}

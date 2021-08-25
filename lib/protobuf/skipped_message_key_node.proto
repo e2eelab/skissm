@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "SkippedMessageKeyNode";
+option java_multiple_files = true;
+
+import "message_key.proto";
+
+message skipped_message_key_node {
+  bytes ratchet_key_public = 1;
+  message_key message_key = 2;
+}

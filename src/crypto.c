@@ -35,7 +35,7 @@ void crypto_curve25519_generate_public_key(ProtobufCBinaryData *pub_key,
 }
 
 void crypto_curve25519_generate_key_pair(
-    Org__E2eelab__Lib__Protobuf__KeyPair *key_pair) {
+    Org__E2eelab__Skissm__Proto__KeyPair *key_pair) {
   key_pair->private_key.data =
       (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
   key_pair->private_key.len = CURVE25519_KEY_LENGTH;
@@ -53,7 +53,7 @@ void crypto_curve25519_generate_key_pair(
                    CURVE25519_BASEPOINT);
 }
 
-void crypto_curve25519_dh(const Org__E2eelab__Lib__Protobuf__KeyPair *our_key,
+void crypto_curve25519_dh(const Org__E2eelab__Skissm__Proto__KeyPair *our_key,
                           const ProtobufCBinaryData *their_key,
                           uint8_t *shared_secret) {
   curve25519_donna(shared_secret, our_key->private_key.data, their_key->data);

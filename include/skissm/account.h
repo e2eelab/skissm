@@ -15,9 +15,9 @@ void account_end();
  * @brief Create a new account object
  * This will generate an identity key pair, a signed pre-key pair,
  * a signature, and 100 one-time pre-key pairs.
- * @return Org__E2eelab__Lib__Protobuf__E2eeAccount*
+ * @return Org__E2eelab__Skissm__Proto__E2eeAccount*
  */
-Org__E2eelab__Lib__Protobuf__E2eeAccount *create_account();
+Org__E2eelab__Skissm__Proto__E2eeAccount *create_account();
 
 /**
  * @brief Get the local account object
@@ -25,8 +25,8 @@ Org__E2eelab__Lib__Protobuf__E2eeAccount *create_account();
  * @param address the peer address that is related to an account
  * @return The local account object
  */
-Org__E2eelab__Lib__Protobuf__E2eeAccount *
-get_local_account(Org__E2eelab__Lib__Protobuf__E2eeAddress *address);
+Org__E2eelab__Skissm__Proto__E2eeAccount *
+get_local_account(Org__E2eelab__Skissm__Proto__E2eeAddress *address);
 
 /**  */
 
@@ -37,8 +37,8 @@ get_local_account(Org__E2eelab__Lib__Protobuf__E2eeAddress *address);
  * @param public_key The public key to be matched
  * @return The matched one-time pre-key.
  */
-const Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair *
-lookup_one_time_pre_key(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
+const Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *
+lookup_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
                         const ProtobufCBinaryData public_key);
 
 /**
@@ -48,7 +48,7 @@ lookup_one_time_pre_key(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
  * @return Success or not
  */
 size_t
-generate_signed_pre_key(Org__E2eelab__Lib__Protobuf__E2eeAccount *account);
+generate_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account);
 
 /** Generates a number of new one time keys. */
 
@@ -58,11 +58,11 @@ generate_signed_pre_key(Org__E2eelab__Lib__Protobuf__E2eeAccount *account);
  * @param number_of_keys The given number
  * @param account The account to be appended with new generated one-time
  * pre-keys
- * @return Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair**
+ * @return Org__E2eelab__Skissm__Proto__OneTimePreKeyPair**
  */
-Org__E2eelab__Lib__Protobuf__OneTimePreKeyPair **
+Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **
 generate_opks(size_t number_of_keys,
-              Org__E2eelab__Lib__Protobuf__E2eeAccount *account);
+              Org__E2eelab__Skissm__Proto__E2eeAccount *account);
 
 /**
  * @brief Mark one of the one-time pre-key pairs as used given by ID
@@ -71,7 +71,7 @@ generate_opks(size_t number_of_keys,
  * @param id The id of one-time pre-key that will be marked as used.
  * @return Success or not
  */
-size_t mark_opk_as_used(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
+size_t mark_opk_as_used(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
                         uint32_t id);
 
 /**
@@ -81,15 +81,15 @@ size_t mark_opk_as_used(Org__E2eelab__Lib__Protobuf__E2eeAccount *account,
  * @param account The account to be processed
  * @return The payload data
  */
-Org__E2eelab__Lib__Protobuf__RegisterUserRequestPayload *
+Org__E2eelab__Skissm__Proto__RegisterUserRequestPayload *
 create_register_request_payload(
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *account);
+    Org__E2eelab__Skissm__Proto__E2eeAccount *account);
 
 /**
  * @brief Remove the used one-time pre-keys
  *
  * @param account The account to be processed
  */
-void free_one_time_pre_key(Org__E2eelab__Lib__Protobuf__E2eeAccount *account);
+void free_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account);
 
 #endif /* ACCOUNT_H_ */

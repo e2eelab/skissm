@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "E2eeRatchet";
+option java_multiple_files = true;
+
+
+import "sender_chain_node.proto";
+import "receiver_chain_node.proto";
+import "skipped_message_key_node.proto";
+
+message e2ee_ratchet {
+  bytes root_key = 1;
+  sender_chain_node sender_chain = 2;
+  repeated receiver_chain_node receiver_chains = 3;
+  repeated skipped_message_key_node skipped_message_keys = 4;
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "E2eeMsgPayload";
+option java_multiple_files = true;
+
+message e2ee_msg_payload {
+  uint32 sequence = 1;
+  bytes ciphertext = 2;
+  bytes ratchet_key = 3;
+}

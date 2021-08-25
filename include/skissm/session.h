@@ -18,27 +18,27 @@ typedef struct encryption_handler {
 } encryption_handler;
 
 void initialise_session(
-    Org__E2eelab__Lib__Protobuf__E2eeSession *session,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *from,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *to
+    Org__E2eelab__Skissm__Proto__E2eeSession *session,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *from,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *to
 );
 
 void pack_e2ee_plaintext(
     uint8_t *plaintext, size_t plaintext_len,
-    Org__E2eelab__Lib__Protobuf__E2eePlaintextType plaintext_type,
+    Org__E2eelab__Skissm__Proto__E2eePlaintextType plaintext_type,
     uint8_t **context, size_t *context_len
 );
 
 size_t new_outbound_session(
-    Org__E2eelab__Lib__Protobuf__E2eeSession *session,
-    const Org__E2eelab__Lib__Protobuf__E2eeAccount *local_account,
-    Org__E2eelab__Lib__Protobuf__PreKeyBundle *their_pre_key_bundle
+    Org__E2eelab__Skissm__Proto__E2eeSession *session,
+    const Org__E2eelab__Skissm__Proto__E2eeAccount *local_account,
+    Org__E2eelab__Skissm__Proto__E2eePreKeyBundle *their_pre_key_bundle
 );
 
 size_t new_inbound_session(
-    Org__E2eelab__Lib__Protobuf__E2eeSession *session,
-    Org__E2eelab__Lib__Protobuf__E2eeAccount *local_account,
-    Org__E2eelab__Lib__Protobuf__E2eeMessage *inbound_prekey_message
+    Org__E2eelab__Skissm__Proto__E2eeSession *session,
+    Org__E2eelab__Skissm__Proto__E2eeAccount *local_account,
+    Org__E2eelab__Skissm__Proto__E2eeMessage *inbound_prekey_message
 );
 
 /**
@@ -51,8 +51,8 @@ size_t new_inbound_session(
  * @return size_t 
  */
 size_t encrypt_session(
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *from,
-    Org__E2eelab__Lib__Protobuf__E2eeAddress *to,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *from,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *to,
     const uint8_t *context, size_t context_len
 );
 
@@ -62,8 +62,8 @@ size_t encrypt_session(
  * @param receive_msg_payload
  * @return size_t Succcess or not
  */
-size_t decrypt_session(Org__E2eelab__Lib__Protobuf__E2eeMessage *receive_msg_payload);
+size_t decrypt_session(Org__E2eelab__Skissm__Proto__E2eeMessage *receive_msg_payload);
 
-void describe(Org__E2eelab__Lib__Protobuf__E2eeSession *session, char *describe_buffer, size_t buflen);
+void describe(Org__E2eelab__Skissm__Proto__E2eeSession *session, char *describe_buffer, size_t buflen);
 
 #endif /* SESSION_H_ */

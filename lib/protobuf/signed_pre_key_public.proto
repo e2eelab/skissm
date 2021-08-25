@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package org.e2eelab.skissm.proto;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "SignedPreKeyPublic";
+option java_multiple_files = true;
+
+message signed_pre_key_public {
+  uint32 spk_id = 1;
+  bytes public_key = 2;
+  bytes signature = 3;
+}
