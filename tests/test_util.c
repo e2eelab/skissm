@@ -329,7 +329,7 @@ void free_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account)
 
 void free_keypair(Org__E2eelab__Skissm__Proto__KeyPair *keypair)
 {
-  Org__E2eelab__Skissm__Proto__key_pair__free_unpacked(keypair, NULL);
+  org__e2eelab__skissm__proto__key_pair__free_unpacked(keypair, NULL);
 }
 
 void free_signed_pre_keypair(Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_keypair)

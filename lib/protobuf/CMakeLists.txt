@@ -40,8 +40,10 @@ set(protobuf_SRCS
     exports/c/e2ee_msg_response_payload.pb-c.c
     exports/c/e2ee_plaintext.pb-c.c
     exports/c/e2ee_plaintext_type.pb-c.c
+    exports/c/e2ee_pre_key_bundle.pb-c.c
     exports/c/e2ee_pre_key_payload.pb-c.c
     exports/c/e2ee_protocol_msg.pb-c.c
+    exports/c/e2ee_ratchet.pb-c.c
     exports/c/e2ee_session.pb-c.c
     exports/c/get_group_request_payload.pb-c.c
     exports/c/get_group_response_payload.pb-c.c
@@ -51,10 +53,8 @@ set(protobuf_SRCS
     exports/c/message_key.pb-c.c
     exports/c/one_time_pre_key_pair.pb-c.c
     exports/c/one_time_pre_key_public.pb-c.c
-    exports/c/pre_key_bundle.pb-c.c
     exports/c/publish_spk_request_payload.pb-c.c
     exports/c/publish_spk_response_payload.pb-c.c
-    exports/c/ratchet.pb-c.c
     exports/c/receiver_chain_node.pb-c.c
     exports/c/register_user_request_payload.pb-c.c
     exports/c/register_user_response_payload.pb-c.c
