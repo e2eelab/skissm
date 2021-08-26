@@ -437,11 +437,20 @@ size_t decrypt_ratchet(
             ratchet->receiver_chains = (Org__E2eelab__Skissm__Proto__ReceiverChainNode **) malloc(sizeof(Org__E2eelab__Skissm__Proto__ReceiverChainNode *));
         } else{
             Org__E2eelab__Skissm__Proto__ReceiverChainNode **temp_receiver_chains;
-            temp_receiver_chains = (Org__E2eelab__Skissm__Proto__ReceiverChainNode **) realloc(ratchet->receiver_chains, sizeof(Org__E2eelab__Skissm__Proto__ReceiverChainNode *) * (ratchet->n_receiver_chains + 1));
-            if (temp_receiver_chains == NULL){
-                ssm_notify_error(NOT_ENOUGH_SPACE, "decrypt_ratchet()");
-                return (size_t)(-1);
+            temp_receiver_chains = (Org__E2eelab__Skissm__Proto__ReceiverChainNode **) malloc(sizeof(Org__E2eelab__Skissm__Proto__ReceiverChainNode *) * (ratchet->n_receiver_chains + 1));
+            size_t i;
+            for (i = 0; i < ratchet->n_receiver_chains; i++){
+                temp_receiver_chains[i] = (Org__E2eelab__Skissm__Proto__ReceiverChainNode *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ReceiverChainNode));
+                org__e2eelab__skissm__proto__receiver_chain_node__init(temp_receiver_chains[i]);
+                copy_protobuf_from_protobuf(&(temp_receiver_chains[i]->ratchet_key_public), &(ratchet->receiver_chains[i]->ratchet_key_public));
+                temp_receiver_chains[i]->chain_key = (Org__E2eelab__Skissm__Proto__ChainKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__ChainKey));
+                org__e2eelab__skissm__proto__chain_key__init(temp_receiver_chains[i]->chain_key);
+                temp_receiver_chains[i]->chain_key->index = ratchet->receiver_chains[i]->chain_key->index;
+                copy_protobuf_from_protobuf(&(temp_receiver_chains[i]->chain_key->shared_key), &(ratchet->receiver_chains[i]->chain_key->shared_key));
+                org__e2eelab__skissm__proto__receiver_chain_node__free_unpacked(ratchet->receiver_chains[i], NULL);
+                ratchet->receiver_chains[i] = NULL;
             }
+            free(ratchet->receiver_chains);
             ratchet->receiver_chains = temp_receiver_chains;
         }
         ratchet->receiver_chains[ratchet->n_receiver_chains] = chain;
@@ -467,11 +476,20 @@ size_t decrypt_ratchet(
                 ratchet->skipped_message_keys = (Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode **) malloc(sizeof(Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *));
             } else{
                 Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode **temp_skipped_message_keys;
-                temp_skipped_message_keys = (Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode **) realloc(ratchet->skipped_message_keys, sizeof(Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *) * (ratchet->n_skipped_message_keys + 1));
-                if (temp_skipped_message_keys == NULL){
-                    ssm_notify_error(NOT_ENOUGH_MEMORY, "decrypt_ratchet()");
-                    return (size_t)(-1);
+                temp_skipped_message_keys = (Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode **) malloc(sizeof(Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *) * (ratchet->n_skipped_message_keys + 1));
+                size_t k;
+                for (k = 0; k < ratchet->n_skipped_message_keys; k++){
+                    temp_skipped_message_keys[k] = (Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SkippedMessageKeyNode));
+                    org__e2eelab__skissm__proto__skipped_message_key_node__init(temp_skipped_message_keys[k]);
+                    temp_skipped_message_keys[k]->message_key = (Org__E2eelab__Skissm__Proto__MessageKey *) malloc(sizeof(Org__E2eelab__Skissm__Proto__MessageKey));
+                    org__e2eelab__skissm__proto__message_key__init(temp_skipped_message_keys[k]->message_key);
+                    temp_skipped_message_keys[k]->message_key->index = ratchet->skipped_message_keys[k]->message_key->index;
+                    copy_protobuf_from_protobuf(&(temp_skipped_message_keys[k]->message_key->derived_key), &(ratchet->skipped_message_keys[k]->message_key->derived_key));
+                    copy_protobuf_from_protobuf(&(temp_skipped_message_keys[k]->ratchet_key_public), &(ratchet->skipped_message_keys[k]->ratchet_key_public));
+                    org__e2eelab__skissm__proto__skipped_message_key_node__free_unpacked(ratchet->skipped_message_keys[k], NULL);
+                    ratchet->skipped_message_keys[k] = NULL;
                 }
+                free(ratchet->skipped_message_keys);
                 ratchet->skipped_message_keys = temp_skipped_message_keys;
             }
             ratchet->skipped_message_keys[ratchet->n_skipped_message_keys] = key;

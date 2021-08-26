@@ -337,14 +337,19 @@ static void process_supply_opks_response(
 
     user_data_set[user_data_find].pre_key->n_one_time_pre_keys += payload->n_one_time_pre_key_public;
     Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic **temp;
-    temp = realloc(user_data_set[user_data_find].pre_key->one_time_pre_keys, sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic *) * user_data_set[user_data_find].pre_key->n_one_time_pre_keys);
-    if (temp == NULL){
-        ssm_notify_error(NOT_ENOUGH_MEMORY, "generate_opks()");
-        return;
+    temp = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic **) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic *) * user_data_set[user_data_find].pre_key->n_one_time_pre_keys);
+    size_t i;
+    for (i = 0; i < old_num; i++){
+        temp[i] = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic *) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic));
+        org__e2eelab__skissm__proto__one_time_pre_key_public__init(temp[i]);
+        temp[i]->opk_id = user_data_set[user_data_find].pre_key->one_time_pre_keys[i]->opk_id;
+        copy_protobuf_from_protobuf(&(temp[i]->public_key), &(user_data_set[user_data_find].pre_key->one_time_pre_keys[i]->public_key));
+        org__e2eelab__skissm__proto__one_time_pre_key_public__free_unpacked(user_data_set[user_data_find].pre_key->one_time_pre_keys[i], NULL);
+        user_data_set[user_data_find].pre_key->one_time_pre_keys[i] = NULL;
     }
+    free(user_data_set[user_data_find].pre_key->one_time_pre_keys);
     user_data_set[user_data_find].pre_key->one_time_pre_keys = temp;
 
-    unsigned int i;
     for (i = old_num; i < user_data_set[user_data_find].pre_key->n_one_time_pre_keys; i++){
         user_data_set[user_data_find].pre_key->one_time_pre_keys[i] = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic *) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic));
         org__e2eelab__skissm__proto__one_time_pre_key_public__init(user_data_set[user_data_find].pre_key->one_time_pre_keys[i]);

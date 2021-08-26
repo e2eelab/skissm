@@ -144,11 +144,21 @@ Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **generate_opks(size_t number_of_
         size_t n = account->n_one_time_pre_keys;
         account->n_one_time_pre_keys = n + number_of_keys;
         Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **temp_one_time_pre_keys;
-        temp_one_time_pre_keys = realloc(account->one_time_pre_keys, sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *) * account->n_one_time_pre_keys);
-        if (temp_one_time_pre_keys == NULL){
-            ssm_notify_error(NOT_ENOUGH_SPACE, "generate_opks()");
-            return NULL;
+        temp_one_time_pre_keys = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *) * account->n_one_time_pre_keys);
+        size_t i;
+        for (i = 0; i < n; i++){
+            temp_one_time_pre_keys[i] = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
+            org__e2eelab__skissm__proto__one_time_pre_key_pair__init(temp_one_time_pre_keys[i]);
+            temp_one_time_pre_keys[i]->opk_id = account->one_time_pre_keys[i]->opk_id;
+            temp_one_time_pre_keys[i]->used = account->one_time_pre_keys[i]->used;
+            temp_one_time_pre_keys[i]->key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
+            org__e2eelab__skissm__proto__key_pair__init(temp_one_time_pre_keys[i]->key_pair);
+            copy_protobuf_from_protobuf(&(temp_one_time_pre_keys[i]->key_pair->private_key), &(account->one_time_pre_keys[i]->key_pair->private_key));
+            copy_protobuf_from_protobuf(&(temp_one_time_pre_keys[i]->key_pair->public_key), &(account->one_time_pre_keys[i]->key_pair->public_key));
+            org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked(account->one_time_pre_keys[i], NULL);
+            account->one_time_pre_keys[i] = NULL;
         }
+        free(account->one_time_pre_keys);
         account->one_time_pre_keys = temp_one_time_pre_keys;
         inserted_one_time_pre_key_list_node = &((account->one_time_pre_keys)[n]);
     }
