@@ -83,9 +83,7 @@ void unload_group_session(
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session);
 void unload_inbound_group_session(
     Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
-    size_t member_num,
-    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses
+    ProtobufCBinaryData *old_session_id
 );
 
 #endif /* TEST_DB_H_ */

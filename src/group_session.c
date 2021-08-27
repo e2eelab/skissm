@@ -54,7 +54,8 @@ void create_outbound_group_session(
     Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
     Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses,
-    size_t member_num
+    size_t member_num,
+    ProtobufCBinaryData *old_session_id
 ) {
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));
     org__e2eelab__skissm__proto__e2ee_group_session__init(group_session);
@@ -93,6 +94,10 @@ void create_outbound_group_session(
     group_pre_key_payload->version = GROUP_VERSION;
 
     copy_protobuf_from_protobuf(&(group_pre_key_payload->session_id), &(group_session->session_id));
+
+    if (old_session_id != NULL) {
+        copy_protobuf_from_protobuf(&(group_pre_key_payload->old_session_id), old_session_id);
+    }
 
     copy_address_from_address(&(group_pre_key_payload->group_address), group_address);
 

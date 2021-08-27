@@ -299,15 +299,11 @@ typedef struct skissm_handler {
   /**
    * @brief delete old inbound group session
    * @param user_address
-   * @param group_address
-   * @param member_num
-   * @param member_addresses
+   * @param old_session_id
    */
   void (*unload_inbound_group_session)(
       Org__E2eelab__Skissm__Proto__E2eeAddress *,
-      Org__E2eelab__Skissm__Proto__E2eeAddress *,
-      size_t,
-      Org__E2eelab__Skissm__Proto__E2eeAddress **
+      ProtobufCBinaryData *
   );
 } skissm_handler;
 

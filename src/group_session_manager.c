@@ -12,7 +12,7 @@ static void handle_create_group_response(
     create_group_response_handler *response_handler,
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address
 ) {
-    create_outbound_group_session(response_handler->sender_address, group_address, response_handler->member_addresses, response_handler->member_num);
+    create_outbound_group_session(response_handler->sender_address, group_address, response_handler->member_addresses, response_handler->member_num, NULL);
     ssm_notify_group_created(group_address, response_handler->group_name);
 }
 
@@ -63,9 +63,10 @@ static void handle_add_group_members_response(
 
     /* delete the old outbound group session */
     ssm_handler.unload_group_session(this_handler->outbound_group_session);
+    ProtobufCBinaryData *old_session_id = &(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
-    create_outbound_group_session(sender_address, group_address, member_addresses, member_num);
+    create_outbound_group_session(sender_address, group_address, member_addresses, member_num, old_session_id);
 }
 
 add_group_members_response_handler add_group_members_response_handler_store = {
@@ -106,9 +107,10 @@ static void handle_remove_group_members_response(
 
     /* delete the old outbound group session */
     ssm_handler.unload_group_session(this_handler->outbound_group_session);
+    ProtobufCBinaryData *old_session_id = &(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
-    create_outbound_group_session(sender_address, group_address, member_addresses, member_num);
+    create_outbound_group_session(sender_address, group_address, member_addresses, member_num, old_session_id);
 }
 
 remove_group_members_response_handler remove_group_members_response_handler_store = {

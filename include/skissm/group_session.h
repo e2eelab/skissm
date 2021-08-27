@@ -8,17 +8,19 @@
 
 /**
  * @brief Create an outbound group session
- * 
- * @param user_address 
- * @param group_address 
- * @param member_addresses 
- * @param member_num 
+ *
+ * @param user_address
+ * @param group_address
+ * @param member_addresses
+ * @param member_num
+ * @param old_session_id
  */
 void create_outbound_group_session(
     Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
     Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses,
-    size_t member_num
+    size_t member_num,
+    ProtobufCBinaryData *old_session_id
 );
 
 /**

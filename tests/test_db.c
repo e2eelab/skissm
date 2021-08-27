@@ -1265,12 +1265,9 @@ void unload_group_session(
   sqlite3_finalize(stmt);
 }
 
-// todo
-// unload group_session if member_num or member_addresses not the same
-// use compare_member_addresses to compare
-void unload_inbound_group_session(
+void unload_inbound_group_session (
     Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
-    size_t member_num,
-    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses
-) {}
+    ProtobufCBinaryData *old_session_id
+) {
+
+}

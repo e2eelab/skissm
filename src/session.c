@@ -432,7 +432,7 @@ size_t decrypt_session(
                 ssm_notify_one2one_msg(inbound_message->from, inbound_message->to, e2ee_plaintext->payload.data, e2ee_plaintext->payload.len);
             } else if (e2ee_plaintext->plaintext_type == ORG__E2EELAB__SKISSM__PROTO__E2EE_PLAINTEXT_TYPE__GROUP_PRE_KEY){
                 Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *group_pre_key_payload = org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__unpack(NULL, e2ee_plaintext->payload.len, e2ee_plaintext->payload.data);
-                ssm_handler.unload_inbound_group_session(inbound_message->to, group_pre_key_payload->group_address, group_pre_key_payload->n_member_addresses, group_pre_key_payload->member_addresses);
+                ssm_handler.unload_inbound_group_session(inbound_message->to, &(group_pre_key_payload->old_session_id));
                 create_inbound_group_session(group_pre_key_payload, inbound_message->to);
                 org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__free_unpacked(group_pre_key_payload, NULL);
             }

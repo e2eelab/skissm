@@ -267,7 +267,7 @@ void handle_create_group_request(
     Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload **create_group_response
 ) {
     /* create a new outbound group session */
-    create_outbound_group_session(receiver_address, group_address, member_addresses, member_num);
+    create_outbound_group_session(receiver_address, group_address, member_addresses, member_num, NULL);
 
     /* prepare the response payload */
     *create_group_response = (Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload *) malloc(sizeof(Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload));
@@ -299,12 +299,13 @@ void handle_add_group_members_request(
         }
         /* delete the old group session */
         ssm_handler.unload_group_session(group_session);
+        ProtobufCBinaryData *old_session_id = &(group_session->session_id);
 
         /* create a new outbound group session */
-        create_outbound_group_session(receiver_address, group_address, new_member_addresses, new_member_num);
+        create_outbound_group_session(receiver_address, group_address, new_member_addresses, new_member_num, old_session_id);
     } else{
         get_group_response_handler *handler = get_group_members(group_address);
-        create_outbound_group_session(receiver_address, group_address, handler->member_addresses, handler->member_num);
+        create_outbound_group_session(receiver_address, group_address, handler->member_addresses, handler->member_num, NULL);
     }
 
     /* prepare the response payload */
@@ -342,9 +343,10 @@ void handle_remove_group_members_request(
     }
     /* delete the old group session */
     ssm_handler.unload_group_session(group_session);
+    ProtobufCBinaryData *old_session_id = &(group_session->session_id);
 
     /* create a new outbound group session */
-    create_outbound_group_session(receiver_address, group_address, new_member_addresses, new_member_num);
+    create_outbound_group_session(receiver_address, group_address, new_member_addresses, new_member_num, old_session_id);
 
     /* prepare the response payload */
     *remove_group_members_response = (Org__E2eelab__Skissm__Proto__RemoveGroupMembersResponsePayload *) malloc(sizeof(Org__E2eelab__Skissm__Proto__RemoveGroupMembersResponsePayload));
