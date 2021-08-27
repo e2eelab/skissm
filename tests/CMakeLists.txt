@@ -27,7 +27,7 @@ target_include_directories(test_env
         ${protobuf_DIR}/lib
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>)
 
-add_library(test_util STATIC 
+add_library(test_util STATIC
     test_util.c)
 
 target_include_directories(test_util
@@ -94,6 +94,5 @@ add_test(Session test_session)
 add_test(GroupSession test_group_session)
 add_test(Account_db test_account_db)
 add_test(Session_db test_session_db)
-# add_test(GCM test_gcm)
 # add_test(UTF8 test_utf8 9000)
 # add_test(UTF8_crypto test_utf8_crypto 9001)

@@ -1,5 +1,5 @@
-#include "./echo_server.hpp"
-#include "./client.hpp"
+#include "echo_server.hpp"
+#include "client.hpp"
 #include <unistd.h> // for sleep
 #include <fstream>
 
