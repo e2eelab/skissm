@@ -148,6 +148,10 @@ static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS =
     "AND ADDRESS IN "
     "(SELECT ID FROM ADDRESS WHERE GROUP_ID = (?));";
 
+static const char *GROUP_SESSION_DELETE_DATA_BY_ID =
+    "DELETE FROM GROUP_SESSION "
+    "WHERE ID = (?);";
+
 // account related
 static const char *ADDRESS_DROP_TABLE = "DROP TABLE IF EXISTS ADDRESS;";
 static const char *ADDRESS_CREATE_TABLE =
@@ -1269,5 +1273,17 @@ void unload_inbound_group_session (
     Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
     ProtobufCBinaryData *old_session_id
 ) {
+  // prepare
+  sqlite3_stmt *stmt;
+  sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_ID, &stmt);
 
+  // bind
+  sqlite3_bind_blob(stmt, 1, old_session_id->data,
+                    old_session_id->len, SQLITE_STATIC);
+
+  // step
+  sqlite_step(stmt, SQLITE_DONE);
+
+  // release
+  sqlite3_finalize(stmt);
 }
