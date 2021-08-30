@@ -79,24 +79,24 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_pre_key_
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "bob_signed_pre_key",
+    "bob_signed_pre_key_id",
     3,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
+    PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Skissm__Proto__E2eePreKeyPayload, bob_signed_pre_key),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eePreKeyPayload, bob_signed_pre_key_id),
     NULL,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "bob_one_time_pre_key",
+    "bob_one_time_pre_key_id",
     4,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BYTES,
+    PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
-    offsetof(Org__E2eelab__Skissm__Proto__E2eePreKeyPayload, bob_one_time_pre_key),
+    offsetof(Org__E2eelab__Skissm__Proto__E2eePreKeyPayload, bob_one_time_pre_key_id),
     NULL,
     NULL,
     0,             /* flags */
@@ -118,8 +118,8 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_pre_key_
 static const unsigned org__e2eelab__skissm__proto__e2ee_pre_key_payload__field_indices_by_name[] = {
   1,   /* field[1] = alice_ephemeral_key */
   0,   /* field[0] = alice_identity_key */
-  3,   /* field[3] = bob_one_time_pre_key */
-  2,   /* field[2] = bob_signed_pre_key */
+  3,   /* field[3] = bob_one_time_pre_key_id */
+  2,   /* field[2] = bob_signed_pre_key_id */
   4,   /* field[4] = msg_payload */
 };
 static const ProtobufCIntRange org__e2eelab__skissm__proto__e2ee_pre_key_payload__number_ranges[1 + 1] =

@@ -34,12 +34,12 @@ get_local_account(Org__E2eelab__Skissm__Proto__E2eeAddress *address);
  * @brief Lookup a one-time pre-key with a given public key
  *
  * @param account The account for looking up the one-time pre-key
- * @param public_key The public key to be matched
+ * @param one_time_pre_key_id The one-time pre-key id to be matched
  * @return The matched one-time pre-key.
  */
 const Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *
 lookup_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
-                        const ProtobufCBinaryData public_key);
+                        uint32_t one_time_pre_key_id);
 
 /**
  * @brief Generate a signed pre-key and a signature

@@ -11,7 +11,7 @@ import "e2ee_msg_payload.proto";
 message e2ee_pre_key_payload {
   bytes alice_identity_key = 1;
   bytes alice_ephemeral_key = 2;
-  bytes bob_signed_pre_key = 3;
-  bytes bob_one_time_pre_key = 4;
+  uint32 bob_signed_pre_key_id = 3;
+  uint32 bob_one_time_pre_key_id = 4;
   e2ee_msg_payload msg_payload = 5;
 }

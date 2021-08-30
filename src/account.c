@@ -54,6 +54,10 @@ Org__E2eelab__Skissm__Proto__E2eeAccount *create_account(){
     // Set the version
     account->version = PROTOCOL_VERSION;
 
+    // Set some initial ids
+    account->next_signed_pre_key_id = 1;
+    account->next_one_time_pre_key_id = 1;
+
     // Generate an account ID
     account->account_id.data = (uint8_t *) malloc(sizeof(uint8_t) * UUID_LEN);
     account->account_id.len = UUID_LEN;
@@ -119,12 +123,12 @@ size_t generate_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account
 
 const Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *lookup_one_time_pre_key(
     Org__E2eelab__Skissm__Proto__E2eeAccount *account,
-    const ProtobufCBinaryData public_key
+    uint32_t one_time_pre_key_id
 ) {
     Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **cur = account->one_time_pre_keys;
-    unsigned int i;
+    size_t i;
     for (i = 0; i < account->n_one_time_pre_keys; i++){
-        if (is_equal(cur[i]->key_pair->public_key.data, public_key.data, CURVE25519_KEY_LENGTH)){
+        if (cur[i]->opk_id == one_time_pre_key_id){
             return cur[i];
         }
     }

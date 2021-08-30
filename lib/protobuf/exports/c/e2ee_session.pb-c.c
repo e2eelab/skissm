@@ -52,7 +52,7 @@ void   org__e2eelab__skissm__proto__e2ee_session__free_unpacked
   assert(message->base.descriptor == &org__e2eelab__skissm__proto__e2ee_session__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_session__field_descriptors[12] =
+static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_session__field_descriptors[14] =
 {
   {
     "version",
@@ -163,8 +163,20 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_session_
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "bob_one_time_pre_key",
+    "bob_signed_pre_key_id",
     10,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, bob_signed_pre_key_id),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "bob_one_time_pre_key",
+    11,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
@@ -175,8 +187,20 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_session_
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "bob_one_time_pre_key_id",
+    12,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(Org__E2eelab__Skissm__Proto__E2eeSession, bob_one_time_pre_key_id),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "responded",
-    11,
+    13,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BOOL,
     0,   /* quantifier_offset */
@@ -188,7 +212,7 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_session_
   },
   {
     "associated_data",
-    12,
+    14,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
@@ -202,12 +226,14 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_session_
 static const unsigned org__e2eelab__skissm__proto__e2ee_session__field_indices_by_name[] = {
   7,   /* field[7] = alice_ephemeral_key */
   6,   /* field[6] = alice_identity_key */
-  11,   /* field[11] = associated_data */
-  9,   /* field[9] = bob_one_time_pre_key */
+  13,   /* field[13] = associated_data */
+  10,   /* field[10] = bob_one_time_pre_key */
+  11,   /* field[11] = bob_one_time_pre_key_id */
   8,   /* field[8] = bob_signed_pre_key */
+  9,   /* field[9] = bob_signed_pre_key_id */
   3,   /* field[3] = from */
   5,   /* field[5] = ratchet */
-  10,   /* field[10] = responded */
+  12,   /* field[12] = responded */
   1,   /* field[1] = session_id */
   2,   /* field[2] = session_owner */
   4,   /* field[4] = to */
@@ -216,7 +242,7 @@ static const unsigned org__e2eelab__skissm__proto__e2ee_session__field_indices_b
 static const ProtobufCIntRange org__e2eelab__skissm__proto__e2ee_session__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 12 }
+  { 0, 14 }
 };
 const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__e2ee_session__descriptor =
 {
@@ -226,7 +252,7 @@ const ProtobufCMessageDescriptor org__e2eelab__skissm__proto__e2ee_session__desc
   "Org__E2eelab__Skissm__Proto__E2eeSession",
   "org.e2eelab.skissm.proto",
   sizeof(Org__E2eelab__Skissm__Proto__E2eeSession),
-  12,
+  14,
   org__e2eelab__skissm__proto__e2ee_session__field_descriptors,
   org__e2eelab__skissm__proto__e2ee_session__field_indices_by_name,
   1,  org__e2eelab__skissm__proto__e2ee_session__number_ranges,

@@ -18,7 +18,7 @@ static void verify_one_time_pre_keys(Org__E2eelab__Skissm__Proto__E2eeAccount *a
     assert(account->n_one_time_pre_keys == n_one_time_pre_keys);
 
     for (i = 0; i < account->n_one_time_pre_keys; i++){
-        assert(account->one_time_pre_keys[i]->opk_id == i);
+        assert(account->one_time_pre_keys[i]->opk_id == (i + 1));
         assert(account->one_time_pre_keys[i]->key_pair->private_key.data != NULL);
         assert(account->one_time_pre_keys[i]->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
         assert(account->one_time_pre_keys[i]->key_pair->public_key.data != NULL);
@@ -35,7 +35,7 @@ int main(){
 
     assert(account->identity_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key_pair->spk_id == 0);
+    assert(account->signed_pre_key_pair->spk_id == 1);
     assert(account->signed_pre_key_pair->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->signed_pre_key_pair->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
     assert(account->signed_pre_key_pair->signature.len == CURVE_SIGNATURE_LENGTH);
@@ -44,7 +44,7 @@ int main(){
     // Generate a new signed pre-key pair and a new signature
     generate_signed_pre_key(account);
 
-    assert(account->signed_pre_key_pair->spk_id == 1);
+    assert(account->signed_pre_key_pair->spk_id == 2);
     assert(account->signed_pre_key_pair->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->signed_pre_key_pair->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
     assert(account->signed_pre_key_pair->signature.len == CURVE_SIGNATURE_LENGTH);

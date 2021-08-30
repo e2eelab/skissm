@@ -64,6 +64,4 @@ size_t encrypt_session(
  */
 size_t decrypt_session(Org__E2eelab__Skissm__Proto__E2eeMessage *receive_msg_payload);
 
-void describe(Org__E2eelab__Skissm__Proto__E2eeSession *session, char *describe_buffer, size_t buflen);
-
 #endif /* SESSION_H_ */

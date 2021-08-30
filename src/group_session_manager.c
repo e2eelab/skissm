@@ -17,7 +17,7 @@ static void handle_create_group_response(
 }
 
 static void handle_create_group_release(
-    get_group_response_handler *this_handler
+    create_group_response_handler *this_handler
 ) {
 }
 

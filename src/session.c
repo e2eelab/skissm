@@ -25,24 +25,6 @@ static void create_session_id(Org__E2eelab__Skissm__Proto__E2eeSession *session)
     CIPHER.suit1->hash(tmp, sizeof(tmp), session->session_id.data);
 }
 
-static bool check_message_fields(
-    Org__E2eelab__Skissm__Proto__E2eePreKeyPayload *pre_key_context,
-    bool have_their_identity_key
-) {
-    bool ok = true;
-    ok = ok && (have_their_identity_key || pre_key_context->alice_identity_key.data);
-    if (pre_key_context->alice_identity_key.data) {
-        ok = ok && pre_key_context->alice_identity_key.len == CURVE25519_KEY_LENGTH;
-    }
-    ok = ok && pre_key_context->alice_ephemeral_key.data;
-    ok = ok && pre_key_context->alice_ephemeral_key.len == CURVE25519_KEY_LENGTH;
-    ok = ok && pre_key_context->bob_signed_pre_key.data;
-    ok = ok && pre_key_context->bob_signed_pre_key.len == CURVE25519_KEY_LENGTH;
-    ok = ok && pre_key_context->bob_one_time_pre_key.data;
-    ok = ok && pre_key_context->bob_one_time_pre_key.len == CURVE25519_KEY_LENGTH;
-    return ok;
-}
-
 void initialise_session(
     Org__E2eelab__Skissm__Proto__E2eeSession *session,
     Org__E2eelab__Skissm__Proto__E2eeAddress *from,
@@ -121,9 +103,11 @@ size_t new_outbound_session(
     copy_protobuf_from_protobuf(&(session->alice_identity_key), &(my_identity_key_pair.public_key));
     copy_protobuf_from_protobuf(&(session->alice_ephemeral_key), &(my_ephemeral_key.public_key));
     copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(their_pre_key_bundle->signed_pre_key_public->public_key));
+    session->bob_signed_pre_key_id = their_pre_key_bundle->signed_pre_key_public->spk_id;
     // server may return empty one-time pre-key(public)
     if (their_pre_key_bundle->one_time_pre_key_public){
         copy_protobuf_from_protobuf(&(session->bob_one_time_pre_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key));
+        session->bob_one_time_pre_key_id = their_pre_key_bundle->one_time_pre_key_public->opk_id;
         x3dh_epoch = 4;
     }
 
@@ -173,7 +157,7 @@ size_t new_inbound_session(
     Org__E2eelab__Skissm__Proto__E2eePreKeyPayload *pre_key_context = org__e2eelab__skissm__proto__e2ee_pre_key_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
 
     /* Verify the signed pre-key */
-    if (compare_protobuf(&(local_account->signed_pre_key_pair->key_pair->public_key), &(pre_key_context->bob_signed_pre_key)) == false){
+    if (local_account->signed_pre_key_pair->spk_id != pre_key_context->bob_signed_pre_key_id){
         ssm_notify_error(BAD_SIGNED_PRE_KEY, "new_inbound_session()");
         org__e2eelab__skissm__proto__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
         return (size_t)(-1);
@@ -182,9 +166,9 @@ size_t new_inbound_session(
     uint8_t x3dh_epoch = 3;
     copy_protobuf_from_protobuf(&(session->alice_identity_key), &(pre_key_context->alice_identity_key));
     copy_protobuf_from_protobuf(&(session->alice_ephemeral_key), &(pre_key_context->alice_ephemeral_key));
-    copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(pre_key_context->bob_signed_pre_key));
-    if (pre_key_context->bob_one_time_pre_key.data){
-        copy_protobuf_from_protobuf(&(session->bob_one_time_pre_key), &(pre_key_context->bob_one_time_pre_key));
+    copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(local_account->signed_pre_key_pair->key_pair->public_key));
+    session->bob_signed_pre_key_id = pre_key_context->bob_signed_pre_key_id;
+    if (pre_key_context->bob_one_time_pre_key_id != 0){
         x3dh_epoch = 4;
     }
 
@@ -196,7 +180,7 @@ size_t new_inbound_session(
     /* Mark the one-time pre-key as used */
     const Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *our_one_time_pre_key;
     if (x3dh_epoch == 4){
-        our_one_time_pre_key = lookup_one_time_pre_key(local_account, session->bob_one_time_pre_key);
+        our_one_time_pre_key = lookup_one_time_pre_key(local_account, pre_key_context->bob_one_time_pre_key_id);
 
         if (!our_one_time_pre_key){
             ssm_notify_error(BAD_ONE_TIME_PRE_KEY, "new_inbound_session()");
@@ -204,6 +188,8 @@ size_t new_inbound_session(
             return (size_t)(-1);
         } else{
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
+            copy_protobuf_from_protobuf(&(session->bob_one_time_pre_key), &(our_one_time_pre_key->key_pair->public_key));
+            session->bob_one_time_pre_key_id = our_one_time_pre_key->opk_id;
         }
     } else{
         our_one_time_pre_key = NULL;
@@ -274,8 +260,8 @@ static size_t perform_encrypt_session(
         org__e2eelab__skissm__proto__e2ee_pre_key_payload__init(pre_key_context);
         copy_protobuf_from_protobuf(&pre_key_context->alice_identity_key, &session->alice_identity_key);
         copy_protobuf_from_protobuf(&pre_key_context->alice_ephemeral_key, &session->alice_ephemeral_key);
-        copy_protobuf_from_protobuf(&pre_key_context->bob_signed_pre_key, &session->bob_signed_pre_key);
-        copy_protobuf_from_protobuf(&pre_key_context->bob_one_time_pre_key, &session->bob_one_time_pre_key);
+        pre_key_context->bob_signed_pre_key_id = session->bob_signed_pre_key_id;
+        pre_key_context->bob_one_time_pre_key_id = session->bob_one_time_pre_key_id;
 
         encrypt_ratchet(
             session->ratchet,
@@ -472,40 +458,4 @@ complete:
 
     // done
     return context_len;
-}
-
-void describe(Org__E2eelab__Skissm__Proto__E2eeSession *session, char *describe_buffer, size_t buflen) {
-    if (buflen == 0) return;
-
-    describe_buffer[0] = '\0';
-    char *buf_pos = describe_buffer;
-
-    int size;
-
-    size = snprintf(
-        buf_pos, buflen - (buf_pos - describe_buffer),
-        "sender chain index: %d ", session->ratchet->sender_chain->chain_key->index
-    );
-    if (size > 0) buf_pos += size;
-
-    size = snprintf(buf_pos, buflen - (buf_pos - describe_buffer), "receiver chain indices:");
-    if (size > 0) buf_pos += size;
-    int i;
-    for (i = 0; i < session->ratchet->n_receiver_chains; i++){
-        size = snprintf(
-            buf_pos, buflen - (buf_pos - describe_buffer),
-            " %d", session->ratchet->receiver_chains[i]->chain_key->index
-        );
-        if (size > 0) buf_pos += size;
-    }
-
-    size = snprintf(buf_pos, buflen - (buf_pos - describe_buffer), " skipped message keys:");
-    if (size >= 0) buf_pos += size;
-    for (i = 0; i < session->ratchet->n_skipped_message_keys; i++){
-        size = snprintf(
-            buf_pos, buflen - (buf_pos - describe_buffer),
-            " %d", session->ratchet->skipped_message_keys[i]->message_key->index
-        );
-        if (size > 0) buf_pos += size;
-    }
 }
