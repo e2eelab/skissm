@@ -14,9 +14,14 @@ static void handle_register_user_response(
     ssm_handler.store_account(response_handler->account);
 }
 
+static void handle_register_release(register_user_response_handler *response_handler) {
+
+}
+
 register_user_response_handler register_user_response_handler_store = {
     NULL,
-    handle_register_user_response
+    handle_register_user_response,
+    handle_register_release
 };
 
 /* spk related */
@@ -26,9 +31,13 @@ static void handle_publish_spk_response(publish_spk_response_handler *response_h
         ssm_handler.update_signed_pre_key(response_handler->account, response_handler->account->signed_pre_key_pair);
 }
 
+static void handle_publish_spk_release(publish_spk_response_handler *response_handler) {
+}
+
 publish_spk_response_handler publish_spk_response_handler_store = {
     NULL,
-    handle_publish_spk_response
+    handle_publish_spk_response,
+    handle_publish_spk_release
 };
 
 /* opk related */

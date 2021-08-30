@@ -203,13 +203,6 @@ void send_add_group_members_request(add_group_members_response_handler *response
 void send_remove_group_members_request(remove_group_members_response_handler *response_handler);
 
 /**
- * @brief Send a receive msg response to messaging server
- *
- * @param request_id
- */
-void send_receive_msg_response(uint32_t request_id);
-
-/**
  * @brief Process a protocol msg received from messaging server
  *
  * @param server_msg

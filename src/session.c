@@ -319,11 +319,14 @@ static size_t perform_encrypt_session(
 }
 
 static void handle_pre_key_bundle_response(
-    Org__E2eelab__Skissm__Proto__E2eePreKeyBundle *their_pre_key_bundle,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *from,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *to,
-    const uint8_t *context, size_t context_len
+    pre_key_bundle_response_handler *this_response_handler,
+    Org__E2eelab__Skissm__Proto__E2eePreKeyBundle *their_pre_key_bundle
 ) {
+    Org__E2eelab__Skissm__Proto__E2eeAddress *from = this_response_handler->from;
+    Org__E2eelab__Skissm__Proto__E2eeAddress *to = this_response_handler->to;
+    uint8_t *context = this_response_handler->context;
+    size_t context_len = this_response_handler->context_len;
+
     Org__E2eelab__Skissm__Proto__E2eeSession *session = (Org__E2eelab__Skissm__Proto__E2eeSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeSession));
     initialise_session(session, from, to);
     copy_address_from_address(&(session->session_owner), from);
@@ -335,12 +338,18 @@ static void handle_pre_key_bundle_response(
     close_session(session);
 }
 
+static void handle_pre_key_bundle_release(
+    pre_key_bundle_response_handler *this_response_handler
+) {
+}
+
 static pre_key_bundle_response_handler pre_key_bundle_handler = {
     NULL,
     NULL,
     NULL,
     0,
-    handle_pre_key_bundle_response
+    handle_pre_key_bundle_response,
+    handle_pre_key_bundle_release
 };
 
 size_t encrypt_session(

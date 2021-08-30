@@ -16,12 +16,18 @@ static void handle_create_group_response(
     ssm_notify_group_created(group_address, response_handler->group_name);
 }
 
+static void handle_create_group_release(
+    get_group_response_handler *this_handler
+) {
+}
+
 create_group_response_handler create_group_response_handler_store = {
     NULL,
     NULL,
     NULL,
     0,
-    handle_create_group_response
+    handle_create_group_response,
+    handle_create_group_release
 };
 
 static void handle_get_group_response(
@@ -36,12 +42,18 @@ static void handle_get_group_response(
     copy_member_addresses_from_member_addresses(&(this_handler->member_addresses), (const Org__E2eelab__Skissm__Proto__E2eeAddress **)member_addresses, member_num);
 }
 
+static void handle_get_group_release(
+    get_group_response_handler *this_handler
+) {
+}
+
 get_group_response_handler get_group_response_handler_store = {
     NULL,
     NULL,
     0,
     NULL,
-    handle_get_group_response
+    handle_get_group_response,
+    handle_get_group_release
 };
 
 static void handle_add_group_members_response(
@@ -69,11 +81,17 @@ static void handle_add_group_members_response(
     create_outbound_group_session(sender_address, group_address, member_addresses, member_num, old_session_id);
 }
 
+static void handle_add_group_members_release(
+    add_group_members_response_handler *this_handler
+) {
+}
+
 add_group_members_response_handler add_group_members_response_handler_store = {
     NULL,
     NULL,
     0,
-    handle_add_group_members_response
+    handle_add_group_members_response,
+    handle_add_group_members_release
 };
 
 static void handle_remove_group_members_response(
@@ -113,11 +131,17 @@ static void handle_remove_group_members_response(
     create_outbound_group_session(sender_address, group_address, member_addresses, member_num, old_session_id);
 }
 
+static void handle_remove_group_members_release(
+    remove_group_members_response_handler *this_handler
+) {
+}
+
 remove_group_members_response_handler remove_group_members_response_handler_store = {
     NULL,
     NULL,
     0,
-    handle_remove_group_members_response
+    handle_remove_group_members_response,
+    handle_remove_group_members_release
 };
 
 void create_group(
