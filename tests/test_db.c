@@ -20,8 +20,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "test_db.h"
 #include "mem_util.h"
+#include "test_db.h"
 
 // global variable
 static const char *db_name = (char *)"test.db";
@@ -29,119 +29,110 @@ static sqlite3 *db;
 
 // util function
 static void sqlite_connect(const char *db_name) {
-  int rc = sqlite3_open(db_name, &db);
-  if (rc) {
-    fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-    exit(1);
-  }
+    int rc = sqlite3_open(db_name, &db);
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        exit(1);
+    }
 }
 
-static int sqlite_callback(void *data, int argc, char **argv,
-                           char **azColName) {
-  fprintf(stderr, "%s: ", (const char *)data);
-  for (int i = 0; i < argc; i++) {
-    printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-  }
-  printf("\n");
+static int sqlite_callback(void *data, int argc, char **argv, char **azColName) {
+    fprintf(stderr, "%s: ", (const char *)data);
+    for (int i = 0; i < argc; i++) {
+        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+    }
+    printf("\n");
 
-  return 0;
+    return 0;
 }
 
 static void sqlite_execute(const char *sql) {
-  char *errMsg = NULL;
-  const char *data = (char *)"Callback function called";
+    char *errMsg = NULL;
+    const char *data = (char *)"Callback function called";
 
-  int rc = sqlite3_exec(db, sql, sqlite_callback, (void *)data, &errMsg);
-  if (rc != SQLITE_OK) {
-    fprintf(stderr, "SQL error: %s\n", errMsg);
-    sqlite3_free(errMsg);
-  }
+    int rc = sqlite3_exec(db, sql, sqlite_callback, (void *)data, &errMsg);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "SQL error: %s\n", errMsg);
+        sqlite3_free(errMsg);
+    }
 }
 
 static bool sqlite_prepare(const char *sql, sqlite3_stmt **stmt) {
-  int rc = sqlite3_prepare(db, sql, -1, stmt, NULL);
-  if (rc != SQLITE_OK) {
-    fprintf(stderr, "Cannot prepare statement: %s\n", sqlite3_errmsg(db));
-    return false;
-  }
+    int rc = sqlite3_prepare(db, sql, -1, stmt, NULL);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Cannot prepare statement: %s\n", sqlite3_errmsg(db));
+        return false;
+    }
 
-  return true;
+    return true;
 }
 
 static bool sqlite_step(sqlite3_stmt *stmt, int return_code) {
-  int rc = sqlite3_step(stmt);
-  if (rc != return_code) {
-    fprintf(stderr, "Cannot step correctly.");
-    return false;
-  }
+    int rc = sqlite3_step(stmt);
+    if (rc != return_code) {
+        fprintf(stderr, "Cannot step correctly.");
+        return false;
+    }
 
-  return true;
+    return true;
 }
 
 // SQLs
 // session related
 static const char *SESSION_DROP_TABLE = "DROP TABLE IF EXISTS SESSION;";
-static const char *SESSION_CREATE_TABLE =
-    "CREATE TABLE SESSION( "
-    "ID BLOB NOT NULL, "
-    "OWNER INTEGER NOT NULL, "
-    "FROM_ADDRESS INTEGER NOT NULL, "
-    "TO_ADDRESS INTEGER NOT NULL, "
-    "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
-    "DATA BLOB NOT NULL, "
-    "FOREIGN KEY(FROM_ADDRESS) REFERENCES ADDRESS(ID), "
-    "FOREIGN KEY(TO_ADDRESS) REFERENCES ADDRESS(ID), "
-    "PRIMARY KEY (ID, TO_ADDRESS));";
+static const char *SESSION_CREATE_TABLE = "CREATE TABLE SESSION( "
+                                          "ID BLOB NOT NULL, "
+                                          "OWNER INTEGER NOT NULL, "
+                                          "FROM_ADDRESS INTEGER NOT NULL, "
+                                          "TO_ADDRESS INTEGER NOT NULL, "
+                                          "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
+                                          "DATA BLOB NOT NULL, "
+                                          "FOREIGN KEY(FROM_ADDRESS) REFERENCES ADDRESS(ID), "
+                                          "FOREIGN KEY(TO_ADDRESS) REFERENCES ADDRESS(ID), "
+                                          "PRIMARY KEY (ID, TO_ADDRESS));";
 
-static const char *SESSION_LOAD_DATA_BY_OWNER_AND_TO =
-    "SELECT DATA FROM SESSION "
-    "INNER JOIN ADDRESS AS a1 "
-    "ON SESSION.OWNER = a1.ID "
-    "INNER JOIN ADDRESS AS a2 "
-    "ON SESSION.TO_ADDRESS = a2.ID "
-    "WHERE a1.USER_ID = (?) AND a2.USER_ID = (?) "
-    "ORDER BY TIMESTAMP DESC "
-    "LIMIT 1;";
+static const char *SESSION_LOAD_DATA_BY_OWNER_AND_TO = "SELECT DATA FROM SESSION "
+                                                       "INNER JOIN ADDRESS AS a1 "
+                                                       "ON SESSION.OWNER = a1.ID "
+                                                       "INNER JOIN ADDRESS AS a2 "
+                                                       "ON SESSION.TO_ADDRESS = a2.ID "
+                                                       "WHERE a1.USER_ID = (?) AND a2.USER_ID = (?) "
+                                                       "ORDER BY TIMESTAMP DESC "
+                                                       "LIMIT 1;";
 
-static const char *SESSION_INSERT_OR_REPLACE =
-    "INSERT OR REPLACE INTO SESSION "
-    "(ID, OWNER, FROM_ADDRESS, TO_ADDRESS, DATA) "
-    "VALUES (?, ?, ?, ?, ?);";
+static const char *SESSION_INSERT_OR_REPLACE = "INSERT OR REPLACE INTO SESSION "
+                                               "(ID, OWNER, FROM_ADDRESS, TO_ADDRESS, DATA) "
+                                               "VALUES (?, ?, ?, ?, ?);";
 
-static const char *SESSION_LOAD_DATA_BY_ID_AND_OWNER =
-    "SELECT DATA FROM SESSION "
-    "INNER JOIN ADDRESS "
-    "ON SESSION.OWNER = ADDRESS.ID "
-    "WHERE SESSION.ID = (?) AND ADDRESS.USER_ID = (?);";
+static const char *SESSION_LOAD_DATA_BY_ID_AND_OWNER = "SELECT DATA FROM SESSION "
+                                                       "INNER JOIN ADDRESS "
+                                                       "ON SESSION.OWNER = ADDRESS.ID "
+                                                       "WHERE SESSION.ID = (?) AND ADDRESS.USER_ID = (?);";
 
-static const char *SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO =
-    "DELETE FROM SESSION "
-    "WHERE OWNER IN "
-    "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
-    "AND FROM_ADDRESS IN "
-    "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
-    "AND TO_ADDRESS IN "
-    "(SELECT ID FROM ADDRESS WHERE USER_ID = (?));";
+static const char *SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO = "DELETE FROM SESSION "
+                                                              "WHERE OWNER IN "
+                                                              "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
+                                                              "AND FROM_ADDRESS IN "
+                                                              "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
+                                                              "AND TO_ADDRESS IN "
+                                                              "(SELECT ID FROM ADDRESS WHERE USER_ID = (?));";
 
-static const char *GROUP_SESSION_DROP_TABLE =
-    "DROP TABLE IF EXISTS GROUP_SESSION;";
-static const char *GROUP_SESSION_CREATE_TABLE =
-    "CREATE TABLE GROUP_SESSION( "
-    "ID BLOB NOT NULL, "
-    "OWNER INTEGER NOT NULL, "
-    "ADDRESS INTEGER NOT NULL, "
-    "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
-    "GROUP_DATA BLOB NOT NULL, "
-    "HAS_SIGNATURE_PRIVATE_KEY INTEGER NOT NULL, "
-    "FOREIGN KEY(OWNER) REFERENCES ADDRESS(ID), "
-    "FOREIGN KEY(ADDRESS) REFERENCES ADDRESS(ID), "
-    "PRIMARY KEY (ADDRESS, OWNER), "
-    "UNIQUE (ID, OWNER));";
+static const char *GROUP_SESSION_DROP_TABLE = "DROP TABLE IF EXISTS GROUP_SESSION;";
+static const char *GROUP_SESSION_CREATE_TABLE = "CREATE TABLE GROUP_SESSION( "
+                                                "ID BLOB NOT NULL, "
+                                                "OWNER INTEGER NOT NULL, "
+                                                "ADDRESS INTEGER NOT NULL, "
+                                                "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
+                                                "GROUP_DATA BLOB NOT NULL, "
+                                                "HAS_SIGNATURE_PRIVATE_KEY INTEGER NOT NULL, "
+                                                "FOREIGN KEY(OWNER) REFERENCES ADDRESS(ID), "
+                                                "FOREIGN KEY(ADDRESS) REFERENCES ADDRESS(ID), "
+                                                "PRIMARY KEY (ADDRESS, OWNER), "
+                                                "UNIQUE (ID, OWNER));";
 
-static const char *GROUP_SESSION_INSERT_OR_REPLACE =
-    "INSERT OR REPLACE INTO GROUP_SESSION "
-    "(ID, OWNER, ADDRESS, GROUP_DATA, HAS_SIGNATURE_PRIVATE_KEY) "
-    "VALUES (?, ?, ?, ?, ?);";
+static const char *GROUP_SESSION_INSERT_OR_REPLACE = "INSERT OR REPLACE INTO GROUP_SESSION "
+                                                     "(ID, OWNER, ADDRESS, GROUP_DATA, HAS_SIGNATURE_PRIVATE_KEY) "
+                                                     "VALUES (?, ?, ?, ?, ?);";
 
 static const char *GROUP_SESSION_LOAD_DATA_BY_ID_AND_OWNER =
     "SELECT GROUP_DATA FROM GROUP_SESSION "
@@ -160,74 +151,64 @@ static const char *GROUP_SESSION_LOAD_DATA_BY_OWNER_AND_ADDRESS =
     "a2.GROUP_ID = (?) AND HAS_SIGNATURE_PRIVATE_KEY = 1 "
     "LIMIT 1;";
 
-static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS =
-    "DELETE FROM GROUP_SESSION "
-    "WHERE OWNER IN "
-    "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
-    "AND ADDRESS IN "
-    "(SELECT ID FROM ADDRESS WHERE GROUP_ID = (?));";
+static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS = "DELETE FROM GROUP_SESSION "
+                                                                    "WHERE OWNER IN "
+                                                                    "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
+                                                                    "AND ADDRESS IN "
+                                                                    "(SELECT ID FROM ADDRESS WHERE GROUP_ID = (?));";
 
-static const char *GROUP_SESSION_DELETE_DATA_BY_ID =
-    "DELETE FROM GROUP_SESSION "
-    "WHERE ID = (?);";
+static const char *GROUP_SESSION_DELETE_DATA_BY_ID = "DELETE FROM GROUP_SESSION "
+                                                     "WHERE ID = (?);";
 
 // account related
 static const char *ADDRESS_DROP_TABLE = "DROP TABLE IF EXISTS ADDRESS;";
-static const char *ADDRESS_CREATE_TABLE =
-    "CREATE TABLE ADDRESS( "
-    "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-    "USER_ID BLOB, "
-    "DOMAIN BLOB NOT NULL, "
-    "DEVICE_ID BLOB, "
-    "GROUP_ID BLOB, "
-    "UNIQUE (USER_ID, DOMAIN, DEVICE_ID, GROUP_ID));";
+static const char *ADDRESS_CREATE_TABLE = "CREATE TABLE ADDRESS( "
+                                          "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                          "USER_ID BLOB, "
+                                          "DOMAIN BLOB NOT NULL, "
+                                          "DEVICE_ID BLOB, "
+                                          "GROUP_ID BLOB, "
+                                          "UNIQUE (USER_ID, DOMAIN, DEVICE_ID, GROUP_ID));";
 
 static const char *KEYPAIR_DROP_TABLE = "DROP TABLE IF EXISTS KEYPAIR;";
-static const char *KEYPAIR_CREATE_TABLE =
-    "CREATE TABLE KEYPAIR( "
-    "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-    "PUBLIC_KEY BLOB NOT NULL, "
-    "PRIVATE_KEY BLOB NOT NULL);";
+static const char *KEYPAIR_CREATE_TABLE = "CREATE TABLE KEYPAIR( "
+                                          "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                          "PUBLIC_KEY BLOB NOT NULL, "
+                                          "PRIVATE_KEY BLOB NOT NULL);";
 
-static const char *SIGNED_PRE_KEYPAIR_DROP_TABLE =
-    "DROP TABLE IF EXISTS SIGNED_PRE_KEYPAIR;";
-static const char *SIGNED_PRE_KEYPAIR_CREATE_TABLE =
-    "CREATE TABLE SIGNED_PRE_KEYPAIR( "
-    "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-    "SPK_ID INTEGER NOT NULL, "
-    "KEYPAIR INTEGER NOT NULL, "
-    "SIGNATURE BLOB NOT NULL, "
-    "TTL INTEGER NOT NULL, "
-    "FOREIGN KEY(KEYPAIR) REFERENCES KEYPAIR(ID));";
+static const char *SIGNED_PRE_KEYPAIR_DROP_TABLE = "DROP TABLE IF EXISTS SIGNED_PRE_KEYPAIR;";
+static const char *SIGNED_PRE_KEYPAIR_CREATE_TABLE = "CREATE TABLE SIGNED_PRE_KEYPAIR( "
+                                                     "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                     "SPK_ID INTEGER NOT NULL, "
+                                                     "KEYPAIR INTEGER NOT NULL, "
+                                                     "SIGNATURE BLOB NOT NULL, "
+                                                     "TTL INTEGER NOT NULL, "
+                                                     "FOREIGN KEY(KEYPAIR) REFERENCES KEYPAIR(ID));";
 
-static const char *DROP_TABLE_ONETIME_PRE_KEYPAIR =
-    "DROP TABLE IF EXISTS ONETIME_PRE_KEYPAIR;";
-static const char *ONETIME_PRE_KEYPAIR_CREATE_TABLE =
-    "CREATE TABLE ONETIME_PRE_KEYPAIR(  "
-    "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-    "OPK_ID INTEGER NOT NULL, "
-    "USED INTEGER NOT NULL, "
-    "KEYPAIR INTEGER NOT NULL, "
-    "FOREIGN KEY(KEYPAIR) REFERENCES KEYPAIR(ID));";
+static const char *DROP_TABLE_ONETIME_PRE_KEYPAIR = "DROP TABLE IF EXISTS ONETIME_PRE_KEYPAIR;";
+static const char *ONETIME_PRE_KEYPAIR_CREATE_TABLE = "CREATE TABLE ONETIME_PRE_KEYPAIR(  "
+                                                      "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                      "OPK_ID INTEGER NOT NULL, "
+                                                      "USED INTEGER NOT NULL, "
+                                                      "KEYPAIR INTEGER NOT NULL, "
+                                                      "FOREIGN KEY(KEYPAIR) REFERENCES KEYPAIR(ID));";
 
 static const char *DROP_TABLE_ACCOUNT = "DROP TABLE IF EXISTS ACCOUNT;";
-static const char *ACCOUNT_CREATE_TABLE =
-    "CREATE TABLE ACCOUNT( "
-    "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-    "ACCOUNT_ID BLOB UNIQUE, "
-    "VERSION INTEGER NOT NULL, "
-    "SAVED INTEGER NOT NULL, "
-    "ADDRESS INTEGER NOT NULL, "
-    "IDENTITY_KEYPAIR INTEGER NOT NULL, "
-    "SIGNED_PRE_KEYPAIR INTEGER NOT NULL, "
-    "NEXT_SIGNED_PRE_KEY_ID INTEGER NOT NULL, "
-    "NEXT_ONETIME_PRE_KEY_ID INTEGER NOT NULL, "
-    "FOREIGN KEY(ADDRESS) REFERENCES ADDRESS(ID), "
-    "FOREIGN KEY(IDENTITY_KEYPAIR) REFERENCES KEYPAIR(ID), "
-    "FOREIGN KEY(SIGNED_PRE_KEYPAIR) REFERENCES SIGNED_PRE_KEYPAIR(ID));";
+static const char *ACCOUNT_CREATE_TABLE = "CREATE TABLE ACCOUNT( "
+                                          "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                          "ACCOUNT_ID BLOB UNIQUE, "
+                                          "VERSION INTEGER NOT NULL, "
+                                          "SAVED INTEGER NOT NULL, "
+                                          "ADDRESS INTEGER NOT NULL, "
+                                          "IDENTITY_KEYPAIR INTEGER NOT NULL, "
+                                          "SIGNED_PRE_KEYPAIR INTEGER NOT NULL, "
+                                          "NEXT_SIGNED_PRE_KEY_ID INTEGER NOT NULL, "
+                                          "NEXT_ONETIME_PRE_KEY_ID INTEGER NOT NULL, "
+                                          "FOREIGN KEY(ADDRESS) REFERENCES ADDRESS(ID), "
+                                          "FOREIGN KEY(IDENTITY_KEYPAIR) REFERENCES KEYPAIR(ID), "
+                                          "FOREIGN KEY(SIGNED_PRE_KEYPAIR) REFERENCES SIGNED_PRE_KEYPAIR(ID));";
 
-static const char *ACCOUNT_SIGNED_PRE_KEYPAIR_DROP_TABLE =
-    "DROP TABLE IF EXISTS ACCOUNT_SIGNED_PRE_KEYPAIR;";
+static const char *ACCOUNT_SIGNED_PRE_KEYPAIR_DROP_TABLE = "DROP TABLE IF EXISTS ACCOUNT_SIGNED_PRE_KEYPAIR;";
 static const char *CREATE_TABLE_ACCOUNT_SIGNED_PRE_KEYPAIR =
     "CREATE TABLE ACCOUNT_SIGNED_PRE_KEYPAIR( "
     "ACCOUNT INTEGER NOT NULL, "
@@ -235,8 +216,7 @@ static const char *CREATE_TABLE_ACCOUNT_SIGNED_PRE_KEYPAIR =
     "FOREIGN KEY(ACCOUNT) REFERENCES ACCOUNT(ID), "
     "FOREIGN KEY(SIGNED_PRE_KEYPAIR) REFERENCES SIGNED_PRE_KEYPAIR(ID));";
 
-static const char *ACCOUNT_ONETIME_PRE_KEYPAIR_DROP_TABLE =
-    "DROP TABLE IF EXISTS ACCOUNT_ONETIME_PRE_KEYPAIR;";
+static const char *ACCOUNT_ONETIME_PRE_KEYPAIR_DROP_TABLE = "DROP TABLE IF EXISTS ACCOUNT_ONETIME_PRE_KEYPAIR;";
 static const char *CREATE_TABLE_ACCOUNT_ONETIME_PRE_KEYPAIR =
     "CREATE TABLE ACCOUNT_ONETIME_PRE_KEYPAIR( "
     "ACCOUNT INTEGER NOT NULL, "
@@ -269,65 +249,58 @@ static const char *ACCOUNT_LOAD_ADDRESS = "SELECT "
                                           "ON ACCOUNT.ADDRESS = ADDRESS.ID "
                                           "WHERE ACCOUNT.ACCOUNT_ID = (?);";
 
-static const char *ACCOUNT_LOAD_KEYPAIR =
-    "SELECT KEYPAIR.PUBLIC_KEY, "
-    "KEYPAIR.PRIVATE_KEY "
-    "FROM ACCOUNT "
-    "INNER JOIN KEYPAIR "
-    "ON ACCOUNT.IDENTITY_KEYPAIR = KEYPAIR.ID "
-    "WHERE ACCOUNT.ACCOUNT_ID = (?);";
+static const char *ACCOUNT_LOAD_KEYPAIR = "SELECT KEYPAIR.PUBLIC_KEY, "
+                                          "KEYPAIR.PRIVATE_KEY "
+                                          "FROM ACCOUNT "
+                                          "INNER JOIN KEYPAIR "
+                                          "ON ACCOUNT.IDENTITY_KEYPAIR = KEYPAIR.ID "
+                                          "WHERE ACCOUNT.ACCOUNT_ID = (?);";
 
-static const char *ACCOUNT_LOAD_SINGED_PRE_KEYPAIR =
-    "SELECT SIGNED_PRE_KEYPAIR.SPK_ID, "
-    "KEYPAIR.PUBLIC_KEY, "
-    "KEYPAIR.PRIVATE_KEY, "
-    "SIGNED_PRE_KEYPAIR.SIGNATURE, "
-    "SIGNED_PRE_KEYPAIR.TTL "
-    "FROM ACCOUNT "
-    "INNER JOIN SIGNED_PRE_KEYPAIR "
-    "ON ACCOUNT.SIGNED_PRE_KEYPAIR = SIGNED_PRE_KEYPAIR.ID "
-    "INNER JOIN KEYPAIR "
-    "ON SIGNED_PRE_KEYPAIR.KEYPAIR = KEYPAIR.ID "
-    "WHERE ACCOUNT.ACCOUNT_ID = (?)";
+static const char *ACCOUNT_LOAD_SINGED_PRE_KEYPAIR = "SELECT SIGNED_PRE_KEYPAIR.SPK_ID, "
+                                                     "KEYPAIR.PUBLIC_KEY, "
+                                                     "KEYPAIR.PRIVATE_KEY, "
+                                                     "SIGNED_PRE_KEYPAIR.SIGNATURE, "
+                                                     "SIGNED_PRE_KEYPAIR.TTL "
+                                                     "FROM ACCOUNT "
+                                                     "INNER JOIN SIGNED_PRE_KEYPAIR "
+                                                     "ON ACCOUNT.SIGNED_PRE_KEYPAIR = SIGNED_PRE_KEYPAIR.ID "
+                                                     "INNER JOIN KEYPAIR "
+                                                     "ON SIGNED_PRE_KEYPAIR.KEYPAIR = KEYPAIR.ID "
+                                                     "WHERE ACCOUNT.ACCOUNT_ID = (?)";
 
-static const char *ACCOUNT_LOAD_N_ONETIME_PRE_KEYPAIRS =
-    "SELECT COUNT(*) "
-    "FROM ACCOUNT_ONETIME_PRE_KEYPAIR "
-    "INNER JOIN ACCOUNT "
-    "ON ACCOUNT_ONETIME_PRE_KEYPAIR.ACCOUNT = ACCOUNT.ID "
-    "WHERE ACCOUNT.ACCOUNT_ID = (?);";
+static const char *ACCOUNT_LOAD_N_ONETIME_PRE_KEYPAIRS = "SELECT COUNT(*) "
+                                                         "FROM ACCOUNT_ONETIME_PRE_KEYPAIR "
+                                                         "INNER JOIN ACCOUNT "
+                                                         "ON ACCOUNT_ONETIME_PRE_KEYPAIR.ACCOUNT = ACCOUNT.ID "
+                                                         "WHERE ACCOUNT.ACCOUNT_ID = (?);";
 
-static const char *ACCOUNT_LOAD_ONETIME_PRE_KEYPAIRS =
-    "SELECT ONETIME_PRE_KEYPAIR.OPK_ID, "
-    "ONETIME_PRE_KEYPAIR.USED, "
-    "KEYPAIR.PUBLIC_KEY, "
-    "KEYPAIR.PRIVATE_KEY "
-    "FROM ACCOUNT_ONETIME_PRE_KEYPAIR "
-    "INNER JOIN ACCOUNT "
-    "ON ACCOUNT_ONETIME_PRE_KEYPAIR.ACCOUNT = ACCOUNT.ID "
-    "INNER JOIN ONETIME_PRE_KEYPAIR "
-    "ON ACCOUNT_ONETIME_PRE_KEYPAIR.ONETIME_PRE_KEYPAIR = "
-    "ONETIME_PRE_KEYPAIR.ID "
-    "INNER JOIN KEYPAIR "
-    "ON ONETIME_PRE_KEYPAIR.KEYPAIR = KEYPAIR.ID "
-    "WHERE ACCOUNT.ACCOUNT_ID = (?);";
+static const char *ACCOUNT_LOAD_ONETIME_PRE_KEYPAIRS = "SELECT ONETIME_PRE_KEYPAIR.OPK_ID, "
+                                                       "ONETIME_PRE_KEYPAIR.USED, "
+                                                       "KEYPAIR.PUBLIC_KEY, "
+                                                       "KEYPAIR.PRIVATE_KEY "
+                                                       "FROM ACCOUNT_ONETIME_PRE_KEYPAIR "
+                                                       "INNER JOIN ACCOUNT "
+                                                       "ON ACCOUNT_ONETIME_PRE_KEYPAIR.ACCOUNT = ACCOUNT.ID "
+                                                       "INNER JOIN ONETIME_PRE_KEYPAIR "
+                                                       "ON ACCOUNT_ONETIME_PRE_KEYPAIR.ONETIME_PRE_KEYPAIR = "
+                                                       "ONETIME_PRE_KEYPAIR.ID "
+                                                       "INNER JOIN KEYPAIR "
+                                                       "ON ONETIME_PRE_KEYPAIR.KEYPAIR = KEYPAIR.ID "
+                                                       "WHERE ACCOUNT.ACCOUNT_ID = (?);";
 
-static const char *ACCOUNT_LOAD_NEXT_SIGNED_PRE_KEYPAIR_ID =
-    "SELECT NEXT_SIGNED_PRE_KEY_ID "
-    "FROM ACCOUNT "
-    "WHERE ACCOUNT_ID = (?);";
+static const char *ACCOUNT_LOAD_NEXT_SIGNED_PRE_KEYPAIR_ID = "SELECT NEXT_SIGNED_PRE_KEY_ID "
+                                                             "FROM ACCOUNT "
+                                                             "WHERE ACCOUNT_ID = (?);";
 
-static const char *ACCOUNT_LOAD_NEXT_ONETIME_PRE_KEYPAIR_ID =
-    "SELECT NEXT_ONETIME_PRE_KEY_ID "
-    "FROM ACCOUNT "
-    "WHERE ACCOUNT_ID = (?);";
+static const char *ACCOUNT_LOAD_NEXT_ONETIME_PRE_KEYPAIR_ID = "SELECT NEXT_ONETIME_PRE_KEY_ID "
+                                                              "FROM ACCOUNT "
+                                                              "WHERE ACCOUNT_ID = (?);";
 
-static const char *LOAD_ACCOUNT_ID_BY_ADDRESS =
-    "SELECT ACCOUNT_ID "
-    "FROM ACCOUNT "
-    "INNER JOIN ADDRESS "
-    "ON ACCOUNT.ADDRESS = ADDRESS.ID "
-    "WHERE ADDRESS.USER_ID = (?);";
+static const char *LOAD_ACCOUNT_ID_BY_ADDRESS = "SELECT ACCOUNT_ID "
+                                                "FROM ACCOUNT "
+                                                "INNER JOIN ADDRESS "
+                                                "ON ACCOUNT.ADDRESS = ADDRESS.ID "
+                                                "WHERE ADDRESS.USER_ID = (?);";
 
 static const char *ADDRESS_INSERT = "INSERT INTO ADDRESS "
                                     "(USER_ID, DOMAIN, DEVICE_ID, GROUP_ID) "
@@ -340,10 +313,9 @@ static const char *SIGNED_PRE_KEYPAIR_INSERT = "INSERT INTO SIGNED_PRE_KEYPAIR "
 static const char *KEYPAIR_INSERT = "INSERT INTO KEYPAIR "
                                     "(PUBLIC_KEY, PRIVATE_KEY) "
                                     "VALUES (?, ?);";
-static const char *ONETIME_PRE_KEYPAIR_INSERT =
-    "INSERT INTO ONETIME_PRE_KEYPAIR "
-    "(OPK_ID, USED, KEYPAIR) "
-    "VALUES (?, ?, ?);";
+static const char *ONETIME_PRE_KEYPAIR_INSERT = "INSERT INTO ONETIME_PRE_KEYPAIR "
+                                                "(OPK_ID, USED, KEYPAIR) "
+                                                "VALUES (?, ?, ?);";
 
 static const char *ACCOUNT_INSERT = "INSERT INTO ACCOUNT "
                                     "(ACCOUNT_ID, "
@@ -356,953 +328,864 @@ static const char *ACCOUNT_INSERT = "INSERT INTO ACCOUNT "
                                     "NEXT_ONETIME_PRE_KEY_ID) "
                                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
-static const char *ACCOUNT_SIGNED_PRE_KEYPAIR_INSERT =
-    "INSERT INTO ACCOUNT_SIGNED_PRE_KEYPAIR "
-    "(ACCOUNT, SIGNED_PRE_KEYPAIR) "
-    "VALUES (?, ?);";
+static const char *ACCOUNT_SIGNED_PRE_KEYPAIR_INSERT = "INSERT INTO ACCOUNT_SIGNED_PRE_KEYPAIR "
+                                                       "(ACCOUNT, SIGNED_PRE_KEYPAIR) "
+                                                       "VALUES (?, ?);";
 
-static const char *ACCOUNT_ONETIME_PRE_KEYPAIR_INSERT =
-    "INSERT INTO ACCOUNT_ONETIME_PRE_KEYPAIR "
-    "(ACCOUNT, ONETIME_PRE_KEYPAIR) "
-    "VALUES (?, ?);";
+static const char *ACCOUNT_ONETIME_PRE_KEYPAIR_INSERT = "INSERT INTO ACCOUNT_ONETIME_PRE_KEYPAIR "
+                                                        "(ACCOUNT, ONETIME_PRE_KEYPAIR) "
+                                                        "VALUES (?, ?);";
 
 static const char *ACCOUNT_UPDATE_ADDRESS = "UPDATE ACCOUNT "
                                             "SET ADDRESS = (?) "
                                             "WHERE ACCOUNT_ID = (?);";
 
-static const char *ACCOUNT_UPDATE_SIGNED_PRE_KEYPAIR =
-    "UPDATE ACCOUNT "
-    "SET SIGNED_PRE_KEYPAIR = (?) "
-    "WHERE ACCOUNT_ID = (?);";
+static const char *ACCOUNT_UPDATE_SIGNED_PRE_KEYPAIR = "UPDATE ACCOUNT "
+                                                       "SET SIGNED_PRE_KEYPAIR = (?) "
+                                                       "WHERE ACCOUNT_ID = (?);";
 
-static const char *ACCOUNT_UPDATE_IDENTITY_KEYPAIR =
-    "UPDATE ACCOUNT "
-    "SET IDENTITY_KEYPAIR = (?) "
-    "WHERE ACCOUNT_ID = (?);";
+static const char *ACCOUNT_UPDATE_IDENTITY_KEYPAIR = "UPDATE ACCOUNT "
+                                                     "SET IDENTITY_KEYPAIR = (?) "
+                                                     "WHERE ACCOUNT_ID = (?);";
 
-static const char *ONETIME_PRE_KEYPAIR_UPDATE_USED =
-    "UPDATE ONETIME_PRE_KEYPAIR "
-    "SET USED = 0 "
-    "WHERE OPK_ID = (?);";
+static const char *ONETIME_PRE_KEYPAIR_UPDATE_USED = "UPDATE ONETIME_PRE_KEYPAIR "
+                                                     "SET USED = 0 "
+                                                     "WHERE OPK_ID = (?);";
 
 void init_db() {
-  // connect
-  sqlite_connect(db_name);
+    // connect
+    sqlite_connect(db_name);
 
-  // session
-  sqlite_execute(SESSION_DROP_TABLE);
-  sqlite_execute(SESSION_CREATE_TABLE);
+    // session
+    sqlite_execute(SESSION_DROP_TABLE);
+    sqlite_execute(SESSION_CREATE_TABLE);
 
-  // group_session
-  sqlite_execute(GROUP_SESSION_DROP_TABLE);
-  sqlite_execute(GROUP_SESSION_CREATE_TABLE);
+    // group_session
+    sqlite_execute(GROUP_SESSION_DROP_TABLE);
+    sqlite_execute(GROUP_SESSION_CREATE_TABLE);
 
-  // address
-  sqlite_execute(ADDRESS_DROP_TABLE);
-  sqlite_execute(ADDRESS_CREATE_TABLE);
+    // address
+    sqlite_execute(ADDRESS_DROP_TABLE);
+    sqlite_execute(ADDRESS_CREATE_TABLE);
 
-  // key pair
-  sqlite_execute(KEYPAIR_DROP_TABLE);
-  sqlite_execute(KEYPAIR_CREATE_TABLE);
+    // key pair
+    sqlite_execute(KEYPAIR_DROP_TABLE);
+    sqlite_execute(KEYPAIR_CREATE_TABLE);
 
-  // signed_pre_key_pair
-  sqlite_execute(SIGNED_PRE_KEYPAIR_DROP_TABLE);
-  sqlite_execute(SIGNED_PRE_KEYPAIR_CREATE_TABLE);
+    // signed_pre_key_pair
+    sqlite_execute(SIGNED_PRE_KEYPAIR_DROP_TABLE);
+    sqlite_execute(SIGNED_PRE_KEYPAIR_CREATE_TABLE);
 
-  // one_time_pre_key_pair
-  sqlite_execute(DROP_TABLE_ONETIME_PRE_KEYPAIR);
-  sqlite_execute(ONETIME_PRE_KEYPAIR_CREATE_TABLE);
+    // one_time_pre_key_pair
+    sqlite_execute(DROP_TABLE_ONETIME_PRE_KEYPAIR);
+    sqlite_execute(ONETIME_PRE_KEYPAIR_CREATE_TABLE);
 
-  // account
-  sqlite_execute(DROP_TABLE_ACCOUNT);
-  sqlite_execute(ACCOUNT_CREATE_TABLE);
+    // account
+    sqlite_execute(DROP_TABLE_ACCOUNT);
+    sqlite_execute(ACCOUNT_CREATE_TABLE);
 
-  // account_signed_pre_key_pair
-  sqlite_execute(ACCOUNT_SIGNED_PRE_KEYPAIR_DROP_TABLE);
-  sqlite_execute(CREATE_TABLE_ACCOUNT_SIGNED_PRE_KEYPAIR);
-    
-  // account_one_time_pre_key_pair
-  sqlite_execute(ACCOUNT_ONETIME_PRE_KEYPAIR_DROP_TABLE);
-  sqlite_execute(CREATE_TABLE_ACCOUNT_ONETIME_PRE_KEYPAIR);
+    // account_signed_pre_key_pair
+    sqlite_execute(ACCOUNT_SIGNED_PRE_KEYPAIR_DROP_TABLE);
+    sqlite_execute(CREATE_TABLE_ACCOUNT_SIGNED_PRE_KEYPAIR);
+
+    // account_one_time_pre_key_pair
+    sqlite_execute(ACCOUNT_ONETIME_PRE_KEYPAIR_DROP_TABLE);
+    sqlite_execute(CREATE_TABLE_ACCOUNT_ONETIME_PRE_KEYPAIR);
 }
 
 void close_db() { sqlite3_close(db); }
 
 // this function is using for real user to take their id
 void load_id(ProtobufCBinaryData **account_id) {
-  // allocate memory
-  *account_id = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+    // allocate memory
+    *account_id = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_FIRST_ACCOUNT_ID, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_FIRST_ACCOUNT_ID, &stmt);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
-  (*account_id)->len = sqlite3_column_bytes(stmt, 0);
-  (*account_id)->data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
+    (*account_id)->len = sqlite3_column_bytes(stmt, 0);
+    (*account_id)->data = (uint8_t *)sqlite3_column_blob(stmt, 0);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
 size_t load_ids(ProtobufCBinaryData ***account_ids) {
-  // find num of account_ids
-  // prepare
-  sqlite3_stmt *stmt1;
-  sqlite_prepare(ACCOUNTS_NUM, &stmt1);
-  // step
-  sqlite_step(stmt1, SQLITE_ROW);
-  size_t num = (size_t)sqlite3_column_int64(stmt1, 0);
-  // release
-  sqlite3_finalize(stmt1);
+    // find num of account_ids
+    // prepare
+    sqlite3_stmt *stmt1;
+    sqlite_prepare(ACCOUNTS_NUM, &stmt1);
+    // step
+    sqlite_step(stmt1, SQLITE_ROW);
+    size_t num = (size_t)sqlite3_column_int64(stmt1, 0);
+    // release
+    sqlite3_finalize(stmt1);
 
-  if (num == 0) {
-    *account_ids = NULL;
+    if (num == 0) {
+        *account_ids = NULL;
+        return num;
+    }
+
+    // allocate memory
+    *account_ids = (ProtobufCBinaryData **)malloc(sizeof(ProtobufCBinaryData *) * num);
+
+    // prepare
+    sqlite3_stmt *stmt2;
+    sqlite_prepare(ACCOUNT_LOAD_ALL_ACCOUNT_IDS, &stmt2);
+    // step
+    int i = 0;
+    while (sqlite3_step(stmt2) != SQLITE_DONE) {
+        (*account_ids)[i] = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+        ((*account_ids)[i])->len = sqlite3_column_bytes(stmt2, 0);
+        ((*account_ids)[i])->data = (uint8_t *)sqlite3_column_blob(stmt2, 0);
+    }
+    // release
+    sqlite3_finalize(stmt2);
+
+    // done
     return num;
-  }
-
-  // allocate memory
-  *account_ids = (ProtobufCBinaryData **)malloc(sizeof(ProtobufCBinaryData*)*num);
-
-  // prepare
-  sqlite3_stmt *stmt2;
-  sqlite_prepare(ACCOUNT_LOAD_ALL_ACCOUNT_IDS, &stmt2);
-  // step
-  int i = 0;
-  while (sqlite3_step(stmt2) != SQLITE_DONE) {
-    (*account_ids)[i] = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-    ((*account_ids)[i])->len = sqlite3_column_bytes(stmt2, 0);
-    ((*account_ids)[i])->data = (uint8_t *)sqlite3_column_blob(stmt2, 0);
-  }
-  // release
-  sqlite3_finalize(stmt2);
-
-  // done
-  return num;
 }
 
 uint32_t load_version(ProtobufCBinaryData *account_id) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_VERSION, &stmt);
-  sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_VERSION, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
 
-  // load
-  uint32_t version = (uint32_t)sqlite3_column_int(stmt, 0);
+    // load
+    uint32_t version = (uint32_t)sqlite3_column_int(stmt, 0);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return version;
+    return version;
 }
 
 protobuf_c_boolean load_saved(ProtobufCBinaryData *account_id) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_SAVED, &stmt);
-  sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_SAVED, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
 
-  // load
-  protobuf_c_boolean saved = (protobuf_c_boolean)sqlite3_column_int(stmt, 0);
+    // load
+    protobuf_c_boolean saved = (protobuf_c_boolean)sqlite3_column_int(stmt, 0);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return saved;
+    return saved;
 }
 
-void load_address(ProtobufCBinaryData *account_id,
-                  Org__E2eelab__Skissm__Proto__E2eeAddress **address) {
-  // allocate memory
-  *address = (Org__E2eelab__Skissm__Proto__E2eeAddress *)malloc(
-      sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-  org__e2eelab__skissm__proto__e2ee_address__init(*address);
+void load_address(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__E2eeAddress **address) {
+    // allocate memory
+    *address = (Org__E2eelab__Skissm__Proto__E2eeAddress *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
+    org__e2eelab__skissm__proto__e2ee_address__init(*address);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_ADDRESS, &stmt);
-  sqlite3_bind_blob(stmt, 1, (const uint8_t *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_ADDRESS, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const uint8_t *)account_id->data, account_id->len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
 
-  // load
-  copy_protobuf_from_array(&((*address)->user_id),
-                           (uint8_t *)sqlite3_column_blob(stmt, 0),
-                           sqlite3_column_bytes(stmt, 0));
-  copy_protobuf_from_array(&((*address)->domain),
-                           (uint8_t *)sqlite3_column_blob(stmt, 1),
-                           sqlite3_column_bytes(stmt, 1));
-  copy_protobuf_from_array(&((*address)->device_id),
-                           (uint8_t *)sqlite3_column_blob(stmt, 2),
-                           sqlite3_column_bytes(stmt, 2));
+    // load
+    copy_protobuf_from_array(&((*address)->user_id), (uint8_t *)sqlite3_column_blob(stmt, 0),
+                             sqlite3_column_bytes(stmt, 0));
+    copy_protobuf_from_array(&((*address)->domain), (uint8_t *)sqlite3_column_blob(stmt, 1),
+                             sqlite3_column_bytes(stmt, 1));
+    copy_protobuf_from_array(&((*address)->device_id), (uint8_t *)sqlite3_column_blob(stmt, 2),
+                             sqlite3_column_bytes(stmt, 2));
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
-void load_identity_key_pair(
-    ProtobufCBinaryData *account_id,
-    Org__E2eelab__Skissm__Proto__KeyPair **identity_key_pair) {
-  // allocate memory
-  *identity_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(
-      sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-  org__e2eelab__skissm__proto__key_pair__init(*identity_key_pair);
+void load_identity_key_pair(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__KeyPair **identity_key_pair) {
+    // allocate memory
+    *identity_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
+    org__e2eelab__skissm__proto__key_pair__init(*identity_key_pair);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_KEYPAIR, &stmt);
-  sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_KEYPAIR, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
 
-  // load
-  copy_protobuf_from_array(&((*identity_key_pair)->public_key),
-                           (uint8_t *)sqlite3_column_blob(stmt, 0),
-                           sqlite3_column_bytes(stmt, 0));
-  copy_protobuf_from_array(&((*identity_key_pair)->private_key),
-                           (uint8_t *)sqlite3_column_blob(stmt, 1),
-                           sqlite3_column_bytes(stmt, 1));
+    // load
+    copy_protobuf_from_array(&((*identity_key_pair)->public_key), (uint8_t *)sqlite3_column_blob(stmt, 0),
+                             sqlite3_column_bytes(stmt, 0));
+    copy_protobuf_from_array(&((*identity_key_pair)->private_key), (uint8_t *)sqlite3_column_blob(stmt, 1),
+                             sqlite3_column_bytes(stmt, 1));
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
-void load_signed_pre_key_pair(
-    ProtobufCBinaryData *account_id,
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_key_pair) {
-  // allocate memory
-  *signed_pre_key_pair =
-      (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *)malloc(
-          sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
-  org__e2eelab__skissm__proto__signed_pre_key_pair__init(*signed_pre_key_pair);
+void load_signed_pre_key_pair(ProtobufCBinaryData *account_id,
+                              Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_key_pair) {
+    // allocate memory
+    *signed_pre_key_pair =
+        (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
+    org__e2eelab__skissm__proto__signed_pre_key_pair__init(*signed_pre_key_pair);
 
-  Org__E2eelab__Skissm__Proto__KeyPair *key_pair =
-      (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(
-          sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-  org__e2eelab__skissm__proto__key_pair__init(key_pair);
-  (*signed_pre_key_pair)->key_pair = key_pair;
+    Org__E2eelab__Skissm__Proto__KeyPair *key_pair =
+        (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
+    org__e2eelab__skissm__proto__key_pair__init(key_pair);
+    (*signed_pre_key_pair)->key_pair = key_pair;
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_SINGED_PRE_KEYPAIR, &stmt);
-  sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_SINGED_PRE_KEYPAIR, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
 
-  // load
-  (*signed_pre_key_pair)->spk_id = (uint32_t)sqlite3_column_int(stmt, 0);
-  copy_protobuf_from_array(&((*signed_pre_key_pair)->key_pair->public_key),
-                           (uint8_t *)sqlite3_column_blob(stmt, 1),
-                           sqlite3_column_bytes(stmt, 1));
-  copy_protobuf_from_array(&((*signed_pre_key_pair)->key_pair->private_key),
-                           (uint8_t *)sqlite3_column_blob(stmt, 2),
-                           sqlite3_column_bytes(stmt, 2));
-  copy_protobuf_from_array(&((*signed_pre_key_pair)->signature),
-                           (uint8_t *)sqlite3_column_blob(stmt, 3),
-                           sqlite3_column_bytes(stmt, 3));
-  (*signed_pre_key_pair)->ttl = (uint64_t)sqlite3_column_int(stmt, 4);
+    // load
+    (*signed_pre_key_pair)->spk_id = (uint32_t)sqlite3_column_int(stmt, 0);
+    copy_protobuf_from_array(&((*signed_pre_key_pair)->key_pair->public_key), (uint8_t *)sqlite3_column_blob(stmt, 1),
+                             sqlite3_column_bytes(stmt, 1));
+    copy_protobuf_from_array(&((*signed_pre_key_pair)->key_pair->private_key), (uint8_t *)sqlite3_column_blob(stmt, 2),
+                             sqlite3_column_bytes(stmt, 2));
+    copy_protobuf_from_array(&((*signed_pre_key_pair)->signature), (uint8_t *)sqlite3_column_blob(stmt, 3),
+                             sqlite3_column_bytes(stmt, 3));
+    (*signed_pre_key_pair)->ttl = (uint64_t)sqlite3_column_int(stmt, 4);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
 int load_n_one_time_pre_keys(ProtobufCBinaryData *account_id) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_N_ONETIME_PRE_KEYPAIRS, &stmt);
-  sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_N_ONETIME_PRE_KEYPAIRS, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
-
-  // load
-  int n_one_time_pre_keys = (int)sqlite3_column_int(stmt, 0);
-
-  // release
-  sqlite3_finalize(stmt);
-
-  return n_one_time_pre_keys;
-}
-
-uint32_t load_one_time_pre_keys(
-    ProtobufCBinaryData *account_id,
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***one_time_pre_keys) {
-  // allocate memory
-  size_t n_one_time_pre_keys = load_n_one_time_pre_keys(account_id);
-  (*one_time_pre_keys) =
-      (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **)malloc(
-          n_one_time_pre_keys *
-          sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *));
-
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_ONETIME_PRE_KEYPAIRS, &stmt);
-  sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
-
-  // step
-  for (int i = 0; i < n_one_time_pre_keys; i++) {
-    sqlite3_step(stmt);
-
-    // allocate
-    (*one_time_pre_keys)[i] =
-        (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *)malloc(
-            sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
-    org__e2eelab__skissm__proto__one_time_pre_key_pair__init(
-        (*one_time_pre_keys)[i]);
-
-    Org__E2eelab__Skissm__Proto__KeyPair *key_pair =
-        (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(
-            sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-    org__e2eelab__skissm__proto__key_pair__init(key_pair);
-    (*one_time_pre_keys)[i]->key_pair = key_pair;
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    (*one_time_pre_keys)[i]->opk_id = (uint32_t)sqlite3_column_int(stmt, 0);
-    (*one_time_pre_keys)[i]->used = sqlite3_column_int(stmt, 1);
-    copy_protobuf_from_array(&((*one_time_pre_keys)[i]->key_pair->public_key),
-                             (uint8_t *)sqlite3_column_blob(stmt, 2),
-                             sqlite3_column_bytes(stmt, 2));
-    copy_protobuf_from_array(&((*one_time_pre_keys)[i]->key_pair->private_key),
-                             (uint8_t *)sqlite3_column_blob(stmt, 3),
-                             sqlite3_column_bytes(stmt, 3));
-  }
+    int n_one_time_pre_keys = (int)sqlite3_column_int(stmt, 0);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return n_one_time_pre_keys;
+    return n_one_time_pre_keys;
+}
+
+uint32_t load_one_time_pre_keys(ProtobufCBinaryData *account_id,
+                                Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***one_time_pre_keys) {
+    // allocate memory
+    size_t n_one_time_pre_keys = load_n_one_time_pre_keys(account_id);
+    (*one_time_pre_keys) = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **)malloc(
+        n_one_time_pre_keys * sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *));
+
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_ONETIME_PRE_KEYPAIRS, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
+
+    // step
+    for (int i = 0; i < n_one_time_pre_keys; i++) {
+        sqlite3_step(stmt);
+
+        // allocate
+        (*one_time_pre_keys)[i] = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *)malloc(
+            sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
+        org__e2eelab__skissm__proto__one_time_pre_key_pair__init((*one_time_pre_keys)[i]);
+
+        Org__E2eelab__Skissm__Proto__KeyPair *key_pair =
+            (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
+        org__e2eelab__skissm__proto__key_pair__init(key_pair);
+        (*one_time_pre_keys)[i]->key_pair = key_pair;
+
+        // load
+        (*one_time_pre_keys)[i]->opk_id = (uint32_t)sqlite3_column_int(stmt, 0);
+        (*one_time_pre_keys)[i]->used = sqlite3_column_int(stmt, 1);
+        copy_protobuf_from_array(&((*one_time_pre_keys)[i]->key_pair->public_key),
+                                 (uint8_t *)sqlite3_column_blob(stmt, 2), sqlite3_column_bytes(stmt, 2));
+        copy_protobuf_from_array(&((*one_time_pre_keys)[i]->key_pair->private_key),
+                                 (uint8_t *)sqlite3_column_blob(stmt, 3), sqlite3_column_bytes(stmt, 3));
+    }
+
+    // release
+    sqlite3_finalize(stmt);
+
+    return n_one_time_pre_keys;
 }
 
 uint32_t load_next_signed_pre_key_id(ProtobufCBinaryData *account_id) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_NEXT_SIGNED_PRE_KEYPAIR_ID, &stmt);
-  sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_NEXT_SIGNED_PRE_KEYPAIR_ID, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
 
-  // load
-  uint32_t next_signed_pre_key_id = (uint32_t)sqlite3_column_int(stmt, 0);
+    // load
+    uint32_t next_signed_pre_key_id = (uint32_t)sqlite3_column_int(stmt, 0);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return next_signed_pre_key_id;
+    return next_signed_pre_key_id;
 }
 
 uint32_t load_next_one_time_pre_key_id(ProtobufCBinaryData *account_id) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_LOAD_NEXT_ONETIME_PRE_KEYPAIR_ID, &stmt);
-  sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_NEXT_ONETIME_PRE_KEYPAIR_ID, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
 
-  // load
-  uint32_t next_one_time_pre_key_id = (uint32_t)sqlite3_column_int(stmt, 0);
+    // load
+    uint32_t next_one_time_pre_key_id = (uint32_t)sqlite3_column_int(stmt, 0);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return next_one_time_pre_key_id;
+    return next_one_time_pre_key_id;
 }
 
-void load_id_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address,
-                        ProtobufCBinaryData **account_id) {
-  // allocate memory
-  *account_id = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+void load_id_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address, ProtobufCBinaryData **account_id) {
+    // allocate memory
+    *account_id = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(LOAD_ACCOUNT_ID_BY_ADDRESS, &stmt);
-  sqlite3_bind_blob(stmt, 1, address->user_id.data, address->user_id.len,
-                    SQLITE_STATIC);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(LOAD_ACCOUNT_ID_BY_ADDRESS, &stmt);
+    sqlite3_bind_blob(stmt, 1, address->user_id.data, address->user_id.len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_ROW);
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
 
-  // load
-  copy_protobuf_from_array(*account_id, (uint8_t *)sqlite3_column_blob(stmt, 0),
-                           sqlite3_column_bytes(stmt, 0));
+    // load
+    copy_protobuf_from_array(*account_id, (uint8_t *)sqlite3_column_blob(stmt, 0), sqlite3_column_bytes(stmt, 0));
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
 sqlite_int64 insert_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ADDRESS_INSERT, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ADDRESS_INSERT, &stmt);
 
-  // bind
-  sqlite3_bind_blob(stmt, 1, address->user_id.data, address->user_id.len,
-                    SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 2, address->domain.data, address->domain.len,
-                    SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 3, address->device_id.data, address->device_id.len,
-                    SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 4, address->group_id.data, address->group_id.len,
-                    SQLITE_STATIC);
+    // bind
+    sqlite3_bind_blob(stmt, 1, address->user_id.data, address->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, address->domain.data, address->domain.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 3, address->device_id.data, address->device_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 4, address->group_id.data, address->group_id.len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return sqlite3_last_insert_rowid(db);
+    return sqlite3_last_insert_rowid(db);
 }
 
 sqlite_int64 insert_key_pair(Org__E2eelab__Skissm__Proto__KeyPair *key_pair) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(KEYPAIR_INSERT, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(KEYPAIR_INSERT, &stmt);
 
-  // bind
-  sqlite3_bind_blob(stmt, 1, key_pair->public_key.data,
-                    key_pair->public_key.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 2, key_pair->private_key.data,
-                    key_pair->private_key.len, SQLITE_STATIC);
+    // bind
+    sqlite3_bind_blob(stmt, 1, key_pair->public_key.data, key_pair->public_key.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, key_pair->private_key.data, key_pair->private_key.len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return sqlite3_last_insert_rowid(db);
+    return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_signed_pre_key(
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key) {
-  int key_pair_id = insert_key_pair(signed_pre_key->key_pair);
+sqlite_int64 insert_signed_pre_key(Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key) {
+    int key_pair_id = insert_key_pair(signed_pre_key->key_pair);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(SIGNED_PRE_KEYPAIR_INSERT, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(SIGNED_PRE_KEYPAIR_INSERT, &stmt);
 
-  // bind
-  sqlite3_bind_int(stmt, 1, signed_pre_key->spk_id);
-  sqlite3_bind_int(stmt, 2, key_pair_id);
-  sqlite3_bind_blob(stmt, 3, signed_pre_key->signature.data,
-                    signed_pre_key->signature.len, SQLITE_STATIC);
-  sqlite3_bind_int64(stmt, 4, signed_pre_key->ttl);
+    // bind
+    sqlite3_bind_int(stmt, 1, signed_pre_key->spk_id);
+    sqlite3_bind_int(stmt, 2, key_pair_id);
+    sqlite3_bind_blob(stmt, 3, signed_pre_key->signature.data, signed_pre_key->signature.len, SQLITE_STATIC);
+    sqlite3_bind_int64(stmt, 4, signed_pre_key->ttl);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return sqlite3_last_insert_rowid(db);
+    return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_one_time_pre_key(
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key) {
-  sqlite_int64 key_pair_id = insert_key_pair(one_time_pre_key->key_pair);
+sqlite_int64 insert_one_time_pre_key(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key) {
+    sqlite_int64 key_pair_id = insert_key_pair(one_time_pre_key->key_pair);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ONETIME_PRE_KEYPAIR_INSERT, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ONETIME_PRE_KEYPAIR_INSERT, &stmt);
 
-  // bind
-  sqlite3_bind_int(stmt, 1, one_time_pre_key->opk_id);
-  sqlite3_bind_int(stmt, 2, one_time_pre_key->used);
-  sqlite3_bind_int(stmt, 3, key_pair_id);
+    // bind
+    sqlite3_bind_int(stmt, 1, one_time_pre_key->opk_id);
+    sqlite3_bind_int(stmt, 2, one_time_pre_key->used);
+    sqlite3_bind_int(stmt, 3, key_pair_id);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return sqlite3_last_insert_rowid(db);
+    return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_account(ProtobufCBinaryData *account_id, int version,
-                   protobuf_c_boolean saved, sqlite_int64 address_id,
-                   sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
-                   sqlite_int64 next_signed_pre_key_id, sqlite_int64 next_one_time_pre_key_id) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_INSERT, &stmt);
+sqlite_int64 insert_account(ProtobufCBinaryData *account_id, int version, protobuf_c_boolean saved,
+                            sqlite_int64 address_id, sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
+                            sqlite_int64 next_signed_pre_key_id, sqlite_int64 next_one_time_pre_key_id) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_INSERT, &stmt);
 
-  // bind
-  sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len,
-                    SQLITE_STATIC);
-  sqlite3_bind_int(stmt, 2, version);
-  sqlite3_bind_int(stmt, 3, (int)saved);
-  sqlite3_bind_int(stmt, 4, address_id);
-  sqlite3_bind_int(stmt, 5, identity_key_pair_id);
-  sqlite3_bind_int(stmt, 6, signed_pre_key_id);
-  sqlite3_bind_int(stmt, 7, next_signed_pre_key_id);
-  sqlite3_bind_int(stmt, 8, next_one_time_pre_key_id);
+    // bind
+    sqlite3_bind_blob(stmt, 1, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 2, version);
+    sqlite3_bind_int(stmt, 3, (int)saved);
+    sqlite3_bind_int(stmt, 4, address_id);
+    sqlite3_bind_int(stmt, 5, identity_key_pair_id);
+    sqlite3_bind_int(stmt, 6, signed_pre_key_id);
+    sqlite3_bind_int(stmt, 7, next_signed_pre_key_id);
+    sqlite3_bind_int(stmt, 8, next_one_time_pre_key_id);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 
-  return sqlite3_last_insert_rowid(db);
+    return sqlite3_last_insert_rowid(db);
 }
 
-void insert_account_signed_pre_key_id(sqlite_int64 account_id,
-                                      sqlite_int64 signed_pre_key_id) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_SIGNED_PRE_KEYPAIR_INSERT, &stmt);
+void insert_account_signed_pre_key_id(sqlite_int64 account_id, sqlite_int64 signed_pre_key_id) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_SIGNED_PRE_KEYPAIR_INSERT, &stmt);
 
-  // bind
-  sqlite3_bind_int(stmt, 1, account_id);
-  sqlite3_bind_int(stmt, 2, signed_pre_key_id);
+    // bind
+    sqlite3_bind_int(stmt, 1, account_id);
+    sqlite3_bind_int(stmt, 2, signed_pre_key_id);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
-void insert_account_one_time_pre_key_id(sqlite_int64 account_id,
-                                        sqlite_int64 one_time_pre_key_id) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_ONETIME_PRE_KEYPAIR_INSERT, &stmt);
+void insert_account_one_time_pre_key_id(sqlite_int64 account_id, sqlite_int64 one_time_pre_key_id) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_ONETIME_PRE_KEYPAIR_INSERT, &stmt);
 
-  // bind
-  sqlite3_bind_int(stmt, 1, account_id);
-  sqlite3_bind_int(stmt, 2, one_time_pre_key_id);
+    // bind
+    sqlite3_bind_int(stmt, 1, account_id);
+    sqlite3_bind_int(stmt, 2, one_time_pre_key_id);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
-void update_identity_key(
-    Org__E2eelab__Skissm__Proto__E2eeAccount *account,
-    Org__E2eelab__Skissm__Proto__KeyPair *identity_key_pair) {
-  int key_pair_id = insert_key_pair(identity_key_pair);
+void update_identity_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+                         Org__E2eelab__Skissm__Proto__KeyPair *identity_key_pair) {
+    int key_pair_id = insert_key_pair(identity_key_pair);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_UPDATE_IDENTITY_KEYPAIR, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_UPDATE_IDENTITY_KEYPAIR, &stmt);
 
-  // bind
-  sqlite3_bind_int(stmt, 1, key_pair_id);
-  sqlite3_bind_blob(stmt, 2, account->account_id.data, account->account_id.len,
-                    SQLITE_STATIC);
+    // bind
+    sqlite3_bind_int(stmt, 1, key_pair_id);
+    sqlite3_bind_blob(stmt, 2, account->account_id.data, account->account_id.len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
-void update_signed_pre_key(
-    Org__E2eelab__Skissm__Proto__E2eeAccount *account,
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key) {
-  int signed_pre_key_id = insert_signed_pre_key(signed_pre_key);
+void update_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+                           Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key) {
+    int signed_pre_key_id = insert_signed_pre_key(signed_pre_key);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_UPDATE_SIGNED_PRE_KEYPAIR, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_UPDATE_SIGNED_PRE_KEYPAIR, &stmt);
 
-  // bind
-  sqlite3_bind_int(stmt, 1, signed_pre_key_id);
-  sqlite3_bind_blob(stmt, 2, (const char *)account->account_id.data,
-                    account->account_id.len, SQLITE_STATIC);
+    // bind
+    sqlite3_bind_int(stmt, 1, signed_pre_key_id);
+    sqlite3_bind_blob(stmt, 2, (const char *)account->account_id.data, account->account_id.len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
+
+void load_old_signed_pre_key(ProtobufCBinaryData *account_id, ProtobufCBinaryData *spk_id) {}
+
+void remove_expired_signed_pre_key(ProtobufCBinaryData *account_id) {}
 
 void update_address(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
                     Org__E2eelab__Skissm__Proto__E2eeAddress *address) {
-  int address_id = insert_address(address);
+    int address_id = insert_address(address);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_UPDATE_ADDRESS, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_UPDATE_ADDRESS, &stmt);
 
-  // bind
-  sqlite3_bind_int(stmt, 1, address_id);
-  sqlite3_bind_blob(stmt, 2, account->account_id.data, account->account_id.len,
-                    SQLITE_STATIC);
+    // bind
+    sqlite3_bind_int(stmt, 1, address_id);
+    sqlite3_bind_blob(stmt, 2, account->account_id.data, account->account_id.len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
-void add_one_time_pre_key(
-    Org__E2eelab__Skissm__Proto__E2eeAccount *account,
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key) {
-  int one_time_pre_key_id = insert_one_time_pre_key(one_time_pre_key);
+void add_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+                          Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key) {
+    int one_time_pre_key_id = insert_one_time_pre_key(one_time_pre_key);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ACCOUNT_ONETIME_PRE_KEYPAIR_INSERT, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_ONETIME_PRE_KEYPAIR_INSERT, &stmt);
 
-  // bind
-  sqlite3_bind_blob(stmt, 1, account->account_id.data, account->account_id.len,
-                    SQLITE_STATIC);
-  sqlite3_bind_int(stmt, 2, one_time_pre_key_id);
+    // bind
+    sqlite3_bind_blob(stmt, 1, account->account_id.data, account->account_id.len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 2, one_time_pre_key_id);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
-void remove_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
-                             uint32_t one_time_pre_key_id) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(ONETIME_PRE_KEYPAIR_UPDATE_USED, &stmt);
+void remove_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account, uint32_t one_time_pre_key_id) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ONETIME_PRE_KEYPAIR_UPDATE_USED, &stmt);
 
-  // bind
-  sqlite3_bind_int(stmt, 1, one_time_pre_key_id);
+    // bind
+    sqlite3_bind_int(stmt, 1, one_time_pre_key_id);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
 // session related handlers
-void load_inbound_session(ProtobufCBinaryData session_id,
-                          Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
+void load_inbound_session(ProtobufCBinaryData session_id, Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
                           Org__E2eelab__Skissm__Proto__E2eeSession **session) {
-  // prepare
-  sqlite3_stmt *stmt;
-  if (!sqlite_prepare(SESSION_LOAD_DATA_BY_ID_AND_OWNER, &stmt)) {
-    *session = NULL;
+    // prepare
+    sqlite3_stmt *stmt;
+    if (!sqlite_prepare(SESSION_LOAD_DATA_BY_ID_AND_OWNER, &stmt)) {
+        *session = NULL;
+        return;
+    }
+
+    // bind
+    sqlite3_bind_blob(stmt, 1, session_id.data, session_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, owner->user_id.data, owner->user_id.len, SQLITE_STATIC);
+
+    // step
+    if (!sqlite_step(stmt, SQLITE_ROW)) {
+        *session = NULL;
+        return;
+    }
+
+    // load
+    size_t session_data_len = sqlite3_column_bytes(stmt, 0);
+    uint8_t *session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+    // no data
+    if (session_data_len == 0) {
+        *session = NULL;
+        return;
+    }
+
+    // unpack
+    *session = org__e2eelab__skissm__proto__e2ee_session__unpack(NULL, session_data_len, session_data);
+
+    // release
+    sqlite3_finalize(stmt);
+
     return;
-  }
-
-  // bind
-  sqlite3_bind_blob(stmt, 1, session_id.data, session_id.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 2, owner->user_id.data, owner->user_id.len, SQLITE_STATIC);
-
-  // step
-  if (!sqlite_step(stmt, SQLITE_ROW)) {
-    *session = NULL;
-    return;
-  }
-
-  // load
-  size_t session_data_len = sqlite3_column_bytes(stmt, 0);
-  uint8_t *session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
-
-  // no data
-  if (session_data_len == 0) {
-    *session = NULL;
-    return;
-  }
-
-  // unpack
-  *session = org__e2eelab__skissm__proto__e2ee_session__unpack(
-      NULL, session_data_len, session_data);
-
-  // release
-  sqlite3_finalize(stmt);
-
-  return;
 }
 
 void store_session(Org__E2eelab__Skissm__Proto__E2eeSession *session) {
-  // pack
-  ProtobufCBinaryData session_id = session->session_id;
-  size_t session_data_len =
-      org__e2eelab__skissm__proto__e2ee_session__get_packed_size(session);
-  uint8_t *session_data = (uint8_t *)malloc(session_data_len);
-  org__e2eelab__skissm__proto__e2ee_session__pack(session, session_data);
+    // pack
+    ProtobufCBinaryData session_id = session->session_id;
+    size_t session_data_len = org__e2eelab__skissm__proto__e2ee_session__get_packed_size(session);
+    uint8_t *session_data = (uint8_t *)malloc(session_data_len);
+    org__e2eelab__skissm__proto__e2ee_session__pack(session, session_data);
 
-  int owner_id = insert_address(session->session_owner);
-  int from_id = insert_address(session->from);
-  int to_id = insert_address(session->to);
+    int owner_id = insert_address(session->session_owner);
+    int from_id = insert_address(session->from);
+    int to_id = insert_address(session->to);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(SESSION_INSERT_OR_REPLACE, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(SESSION_INSERT_OR_REPLACE, &stmt);
 
-  // bind
-  sqlite3_bind_blob(stmt, 1, session_id.data, session_id.len, SQLITE_STATIC);
-  sqlite3_bind_int(stmt, 2, owner_id);
-  sqlite3_bind_int(stmt, 3, from_id);
-  sqlite3_bind_int(stmt, 4, to_id);
-  sqlite3_bind_blob(stmt, 5, session_data, session_data_len, SQLITE_STATIC);
+    // bind
+    sqlite3_bind_blob(stmt, 1, session_id.data, session_id.len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 2, owner_id);
+    sqlite3_bind_int(stmt, 3, from_id);
+    sqlite3_bind_int(stmt, 4, to_id);
+    sqlite3_bind_blob(stmt, 5, session_data, session_data_len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
-  free_mem((void **)(&session_data), session_data_len);
+    // release
+    sqlite3_finalize(stmt);
+    free_mem((void **)(&session_data), session_data_len);
 }
 
 // return the lastest updated session
 void load_outbound_session(Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
                            Org__E2eelab__Skissm__Proto__E2eeAddress *to,
                            Org__E2eelab__Skissm__Proto__E2eeSession **session) {
-  // prepare
-  sqlite3_stmt *stmt;
-  if (!sqlite_prepare(SESSION_LOAD_DATA_BY_OWNER_AND_TO, &stmt)) {
-    *session = NULL;
+    // prepare
+    sqlite3_stmt *stmt;
+    if (!sqlite_prepare(SESSION_LOAD_DATA_BY_OWNER_AND_TO, &stmt)) {
+        *session = NULL;
+        return;
+    }
+
+    // bind
+    sqlite3_bind_blob(stmt, 1, owner->user_id.data, owner->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, to->user_id.data, to->user_id.len, SQLITE_STATIC);
+
+    // step
+    if (!sqlite_step(stmt, SQLITE_ROW)) {
+        *session = NULL;
+        return;
+    }
+
+    // load
+    size_t session_data_len = sqlite3_column_bytes(stmt, 0);
+    uint8_t *session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+    // no data
+    if (session_data_len == 0) {
+        *session = NULL;
+        return;
+    }
+
+    // unpack
+    *session = org__e2eelab__skissm__proto__e2ee_session__unpack(NULL, session_data_len, session_data);
+
+    // release
+    sqlite3_finalize(stmt);
+
     return;
-  }
-
-  // bind
-  sqlite3_bind_blob(stmt, 1, owner->user_id.data, owner->user_id.len,
-                    SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 2, to->user_id.data, to->user_id.len, SQLITE_STATIC);
-
-  // step
-  if (!sqlite_step(stmt, SQLITE_ROW)) {
-    *session = NULL;
-    return;
-  }
-
-  // load
-  size_t session_data_len = sqlite3_column_bytes(stmt, 0);
-  uint8_t *session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
-
-  // no data
-  if (session_data_len == 0) {
-    *session = NULL;
-    return;
-  }
-
-  // unpack
-  *session = org__e2eelab__skissm__proto__e2ee_session__unpack(
-      NULL, session_data_len, session_data);
-
-  // release
-  sqlite3_finalize(stmt);
-
-  return;
 }
 
-void unload_session(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *from,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *to
-) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO, &stmt);
+void unload_session(Org__E2eelab__Skissm__Proto__E2eeAddress *owner, Org__E2eelab__Skissm__Proto__E2eeAddress *from,
+                    Org__E2eelab__Skissm__Proto__E2eeAddress *to) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO, &stmt);
 
-  // bind
-  sqlite3_bind_blob(stmt, 1, owner->user_id.data,
-                    owner->user_id.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 2, from->user_id.data,
-                    from->user_id.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 3, to->user_id.data,
-                    to->user_id.len, SQLITE_STATIC);
+    // bind
+    sqlite3_bind_blob(stmt, 1, owner->user_id.data, owner->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, from->user_id.data, from->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 3, to->user_id.data, to->user_id.len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
 // return the first signature which is not null
-void load_outbound_group_session(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
-    Org__E2eelab__Skissm__Proto__E2eeGroupSession **group_session) {
-  // prepare
-  sqlite3_stmt *stmt;
-  if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_OWNER_AND_ADDRESS, &stmt)) {
-    *group_session = NULL;
+void load_outbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+                                 Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+                                 Org__E2eelab__Skissm__Proto__E2eeGroupSession **group_session) {
+    // prepare
+    sqlite3_stmt *stmt;
+    if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_OWNER_AND_ADDRESS, &stmt)) {
+        *group_session = NULL;
+        return;
+    }
+
+    // bind
+    sqlite3_bind_blob(stmt, 1, user_address->user_id.data, user_address->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, user_address->domain.data, user_address->domain.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 3, user_address->device_id.data, user_address->device_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 4, group_address->group_id.data, group_address->group_id.len, SQLITE_STATIC);
+
+    // step
+    if (!sqlite_step(stmt, SQLITE_ROW)) {
+        *group_session = NULL;
+        return;
+    }
+
+    // load
+    size_t group_session_data_len = sqlite3_column_bytes(stmt, 0);
+    uint8_t *group_session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+    // no data
+    if (group_session_data_len == 0) {
+        *group_session = NULL;
+        return;
+    }
+
+    // unpack
+    *group_session =
+        org__e2eelab__skissm__proto__e2ee_group_session__unpack(NULL, group_session_data_len, group_session_data);
+
+    // release
+    sqlite3_finalize(stmt);
+
     return;
-  }
-
-  // bind
-  sqlite3_bind_blob(stmt, 1, user_address->user_id.data,
-                    user_address->user_id.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 2, user_address->domain.data,
-                    user_address->domain.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 3, user_address->device_id.data,
-                    user_address->device_id.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 4, group_address->group_id.data,
-                    group_address->group_id.len, SQLITE_STATIC);
-
-  // step
-  if (!sqlite_step(stmt, SQLITE_ROW)) {
-    *group_session = NULL;
-    return;
-  }
-
-  // load
-  size_t group_session_data_len = sqlite3_column_bytes(stmt, 0);
-  uint8_t *group_session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
-
-  // no data
-  if (group_session_data_len == 0) {
-    *group_session = NULL;
-    return;
-  }
-
-  // unpack
-  *group_session = org__e2eelab__skissm__proto__e2ee_group_session__unpack(
-      NULL, group_session_data_len, group_session_data);
-
-  // release
-  sqlite3_finalize(stmt);
-
-  return;
 }
 
 // signature_private_key is null
-void load_inbound_group_session(
-    ProtobufCBinaryData group_session_id,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
-    Org__E2eelab__Skissm__Proto__E2eeGroupSession **group_session) {
-  // prepare
-  sqlite3_stmt *stmt;
-  if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_ID_AND_OWNER, &stmt)) {
-    *group_session = NULL;
+void load_inbound_group_session(ProtobufCBinaryData group_session_id,
+                                Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+                                Org__E2eelab__Skissm__Proto__E2eeGroupSession **group_session) {
+    // prepare
+    sqlite3_stmt *stmt;
+    if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_ID_AND_OWNER, &stmt)) {
+        *group_session = NULL;
+        return;
+    }
+
+    // bind
+    sqlite3_bind_blob(stmt, 1, group_session_id.data, group_session_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, user_address->user_id.data, user_address->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 3, user_address->domain.data, user_address->domain.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 4, user_address->device_id.data, user_address->device_id.len, SQLITE_STATIC);
+
+    // step
+    if (!sqlite_step(stmt, SQLITE_ROW)) {
+        *group_session = NULL;
+        return;
+    }
+
+    // load
+    size_t group_session_data_len = sqlite3_column_bytes(stmt, 0);
+    uint8_t *group_session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+    // no data
+    if (group_session_data_len == 0) {
+        *group_session = NULL;
+        return;
+    }
+
+    // unpack
+    *group_session =
+        org__e2eelab__skissm__proto__e2ee_group_session__unpack(NULL, group_session_data_len, group_session_data);
+
+    // release
+    sqlite3_finalize(stmt);
+
     return;
-  }
-
-  // bind
-  sqlite3_bind_blob(stmt, 1, group_session_id.data, group_session_id.len,
-                    SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 2, user_address->user_id.data,
-                    user_address->user_id.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 3, user_address->domain.data,
-                    user_address->domain.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 4, user_address->device_id.data,
-                    user_address->device_id.len, SQLITE_STATIC);
-
-  // step
-  if (!sqlite_step(stmt, SQLITE_ROW)) {
-    *group_session = NULL;
-    return;
-  }
-
-  // load
-  size_t group_session_data_len = sqlite3_column_bytes(stmt, 0);
-  uint8_t *group_session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
-
-  // no data
-  if (group_session_data_len == 0) {
-    *group_session = NULL;
-    return;
-  }
-
-  // unpack
-  *group_session = org__e2eelab__skissm__proto__e2ee_group_session__unpack(
-      NULL, group_session_data_len, group_session_data);
-
-  // release
-  sqlite3_finalize(stmt);
-
-  return;
 }
 
-void store_group_session(
-    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session) {
-  // pack
-  size_t group_session_data_len =
-      org__e2eelab__skissm__proto__e2ee_group_session__get_packed_size(
-          group_session);
-  uint8_t *group_session_data = (uint8_t *)malloc(group_session_data_len);
-  org__e2eelab__skissm__proto__e2ee_group_session__pack(group_session,
-                                                        group_session_data);
+void store_group_session(Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session) {
+    // pack
+    size_t group_session_data_len = org__e2eelab__skissm__proto__e2ee_group_session__get_packed_size(group_session);
+    uint8_t *group_session_data = (uint8_t *)malloc(group_session_data_len);
+    org__e2eelab__skissm__proto__e2ee_group_session__pack(group_session, group_session_data);
 
-  int owner_id = insert_address(group_session->session_owner);
-  int address_id = insert_address(group_session->group_address);
+    int owner_id = insert_address(group_session->session_owner);
+    int address_id = insert_address(group_session->group_address);
 
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(GROUP_SESSION_INSERT_OR_REPLACE, &stmt);
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(GROUP_SESSION_INSERT_OR_REPLACE, &stmt);
 
-  // bind
-  sqlite3_bind_blob(stmt, 1, group_session->session_id.data,
-                    group_session->session_id.len, SQLITE_STATIC);
-  sqlite3_bind_int(stmt, 2, owner_id);
-  sqlite3_bind_int(stmt, 3, address_id);
-  sqlite3_bind_blob(stmt, 4, group_session_data, group_session_data_len,
-                    SQLITE_STATIC);
-  sqlite3_bind_int(stmt, 5, group_session->signature_private_key.len? 1: 0);
+    // bind
+    sqlite3_bind_blob(stmt, 1, group_session->session_id.data, group_session->session_id.len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 2, owner_id);
+    sqlite3_bind_int(stmt, 3, address_id);
+    sqlite3_bind_blob(stmt, 4, group_session_data, group_session_data_len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 5, group_session->signature_private_key.len ? 1 : 0);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
-  free_mem((void **)(&group_session_data), group_session_data_len);
+    // release
+    sqlite3_finalize(stmt);
+    free_mem((void **)(&group_session_data), group_session_data_len);
 }
 
-void unload_group_session(
-    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS, &stmt);
+void unload_group_session(Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS, &stmt);
 
-  // bind
-  sqlite3_bind_blob(stmt, 1, group_session->session_owner->user_id.data,
-                    group_session->session_owner->user_id.len, SQLITE_STATIC);
-  sqlite3_bind_blob(stmt, 2, group_session->group_address->group_id.data,
-                    group_session->group_address->group_id.len, SQLITE_STATIC);
+    // bind
+    sqlite3_bind_blob(stmt, 1, group_session->session_owner->user_id.data, group_session->session_owner->user_id.len,
+                      SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, group_session->group_address->group_id.data, group_session->group_address->group_id.len,
+                      SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }
 
-void unload_inbound_group_session (
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
-    ProtobufCBinaryData *old_session_id
-) {
-  // prepare
-  sqlite3_stmt *stmt;
-  sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_ID, &stmt);
+void unload_inbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+                                  ProtobufCBinaryData *old_session_id) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_ID, &stmt);
 
-  // bind
-  sqlite3_bind_blob(stmt, 1, old_session_id->data,
-                    old_session_id->len, SQLITE_STATIC);
+    // bind
+    sqlite3_bind_blob(stmt, 1, old_session_id->data, old_session_id->len, SQLITE_STATIC);
 
-  // step
-  sqlite_step(stmt, SQLITE_DONE);
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
 
-  // release
-  sqlite3_finalize(stmt);
+    // release
+    sqlite3_finalize(stmt);
 }

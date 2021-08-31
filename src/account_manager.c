@@ -45,8 +45,10 @@ register_user_response_handler register_user_response_handler_store = {
 /* spk related */
 static void handle_publish_spk_response(publish_spk_response_handler *response_handler) {
     // save to db
-    if (response_handler->account->saved == true)
-        ssm_handler.update_signed_pre_key(response_handler->account, response_handler->account->signed_pre_key_pair);
+    if (response_handler->account->saved == true) {
+        Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key_pair = response_handler->account->signed_pre_key_pair;
+        ssm_handler.update_signed_pre_key(response_handler->account, signed_pre_key_pair);
+    }
 }
 
 static void handle_publish_spk_release(publish_spk_response_handler *response_handler) {

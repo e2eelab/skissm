@@ -228,6 +228,20 @@ typedef struct skissm_handler {
       Org__E2eelab__Skissm__Proto__E2eeAccount *,
       Org__E2eelab__Skissm__Proto__SignedPreKeyPair *);
   /**
+   * @brief load old signed pre key by spk_id
+   * @param account_id
+   * @param spk_id
+   */
+  void (*load_old_signed_pre_key)(
+      ProtobufCBinaryData *,
+      ProtobufCBinaryData *);
+  /**
+   * @brief remove expired signed pre key of account from db
+   * @param account_id
+   */
+  void (*remove_expired_signed_pre_key)(
+      ProtobufCBinaryData *);
+  /**
    * @brief update address of account to db
    * @param account
    * @param address

@@ -232,6 +232,8 @@ const struct skissm_handler ssm_handler = {
     load_account_by_address,
     update_identity_key,
     update_signed_pre_key,
+    load_old_signed_pre_key,
+    remove_expired_signed_pre_key,
     update_address,
     add_one_time_pre_key,
     remove_one_time_pre_key,
