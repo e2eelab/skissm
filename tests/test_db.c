@@ -157,8 +157,10 @@ static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS = "DELETE FROM
                                                                     "AND ADDRESS IN "
                                                                     "(SELECT ID FROM ADDRESS WHERE GROUP_ID = (?));";
 
-static const char *GROUP_SESSION_DELETE_DATA_BY_ID = "DELETE FROM GROUP_SESSION "
-                                                     "WHERE ID = (?);";
+static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ID = "DELETE FROM GROUP_SESSION "
+                                                               "WHERE OWNER IN "
+                                                               "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
+                                                               "AND ID = (?);";
 
 // account related
 static const char *ADDRESS_DROP_TABLE = "DROP TABLE IF EXISTS ADDRESS;";
@@ -343,6 +345,20 @@ static const char *ACCOUNT_UPDATE_ADDRESS = "UPDATE ACCOUNT "
 static const char *ACCOUNT_UPDATE_SIGNED_PRE_KEYPAIR = "UPDATE ACCOUNT "
                                                        "SET SIGNED_PRE_KEYPAIR = (?) "
                                                        "WHERE ACCOUNT_ID = (?);";
+
+static const char *LOAD_OLD_SIGNED_PRE_KEYPAIR = "SELECT SIGNED_PRE_KEYPAIR.SPK_ID, "
+                                                 "KEYPAIR.PUBLIC_KEY, "
+                                                 "KEYPAIR.PRIVATE_KEY, "
+                                                 "SIGNED_PRE_KEYPAIR.SIGNATURE, "
+                                                 "SIGNED_PRE_KEYPAIR.TTL "
+                                                 "FROM ACCOUNT_SIGNED_PRE_KEYPAIR "
+                                                 "INNER JOIN ACCOUNT "
+                                                 "ON ACCOUNT_SIGNED_PRE_KEYPAIR.ACCOUNT = ACCOUNT.ID "
+                                                 "INNER JOIN SIGNED_PRE_KEYPAIR "
+                                                 "ON ACCOUNT_SIGNED_PRE_KEYPAIR.SIGNED_PRE_KEYPAIR = SIGNED_PRE_KEYPAIR.ID "
+                                                 "INNER JOIN KEYPAIR "
+                                                 "ON SIGNED_PRE_KEYPAIR.KEYPAIR = KEYPAIR.ID "
+                                                 "WHERE ACCOUNT.ACCOUNT_ID = (?) AND SIGNED_PRE_KEYPAIR.SPK_ID = (?);";
 
 static const char *ACCOUNT_UPDATE_IDENTITY_KEYPAIR = "UPDATE ACCOUNT "
                                                      "SET IDENTITY_KEYPAIR = (?) "
@@ -858,7 +874,40 @@ void update_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
     sqlite3_finalize(stmt);
 }
 
-void load_old_signed_pre_key(ProtobufCBinaryData *account_id, ProtobufCBinaryData *spk_id) {}
+void load_old_signed_pre_key(ProtobufCBinaryData *account_id, ProtobufCBinaryData *spk_id,
+                             Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_key_pair) {
+    // allocate memory
+    *signed_pre_key_pair =
+        (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
+    org__e2eelab__skissm__proto__signed_pre_key_pair__init(*signed_pre_key_pair);
+
+    Org__E2eelab__Skissm__Proto__KeyPair *key_pair =
+        (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
+    org__e2eelab__skissm__proto__key_pair__init(key_pair);
+    (*signed_pre_key_pair)->key_pair = key_pair;
+
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(LOAD_OLD_SIGNED_PRE_KEYPAIR, &stmt);
+    sqlite3_bind_blob(stmt, 1, account_id->data, account_id->len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, spk_id->data, spk_id->len, SQLITE_STATIC);
+
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
+
+    // load
+    (*signed_pre_key_pair)->spk_id = (uint32_t)sqlite3_column_int(stmt, 0);
+    copy_protobuf_from_array(&((*signed_pre_key_pair)->key_pair->public_key), (uint8_t *)sqlite3_column_blob(stmt, 1),
+                             sqlite3_column_bytes(stmt, 1));
+    copy_protobuf_from_array(&((*signed_pre_key_pair)->key_pair->private_key), (uint8_t *)sqlite3_column_blob(stmt, 2),
+                             sqlite3_column_bytes(stmt, 2));
+    copy_protobuf_from_array(&((*signed_pre_key_pair)->signature), (uint8_t *)sqlite3_column_blob(stmt, 3),
+                             sqlite3_column_bytes(stmt, 3));
+    (*signed_pre_key_pair)->ttl = (uint64_t)sqlite3_column_int(stmt, 4);
+
+    // release
+    sqlite3_finalize(stmt);
+}
 
 void remove_expired_signed_pre_key(ProtobufCBinaryData *account_id) {}
 
@@ -1178,10 +1227,11 @@ void unload_inbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *user
                                   ProtobufCBinaryData *old_session_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_ID, &stmt);
+    sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ID, &stmt);
 
     // bind
-    sqlite3_bind_blob(stmt, 1, old_session_id->data, old_session_id->len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 1, user_address->user_id.data, user_address->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, old_session_id->data, old_session_id->len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

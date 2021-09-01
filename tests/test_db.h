@@ -69,7 +69,7 @@ void update_identity_key(
 void update_signed_pre_key(
     Org__E2eelab__Skissm__Proto__E2eeAccount *account,
     Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key);
-void load_old_signed_pre_key(ProtobufCBinaryData *account_id, ProtobufCBinaryData *spk_id);
+void load_old_signed_pre_key(ProtobufCBinaryData *account_id, ProtobufCBinaryData *spk_id, Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_key_pair);
 void remove_expired_signed_pre_key(ProtobufCBinaryData *account_id);
 void update_address(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
                     Org__E2eelab__Skissm__Proto__E2eeAddress *address);
