@@ -886,7 +886,7 @@ void update_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
     sqlite3_finalize(stmt);
 }
 
-void load_old_signed_pre_key(ProtobufCBinaryData *account_id, ProtobufCBinaryData *spk_id,
+void load_old_signed_pre_key(ProtobufCBinaryData *account_id, uint32_t spk_id,
                              Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_key_pair) {
     // allocate memory
     *signed_pre_key_pair =
@@ -902,7 +902,7 @@ void load_old_signed_pre_key(ProtobufCBinaryData *account_id, ProtobufCBinaryDat
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_OLD_SIGNED_PRE_KEYPAIR, &stmt);
     sqlite3_bind_blob(stmt, 1, account_id->data, account_id->len, SQLITE_STATIC);
-    sqlite3_bind_blob(stmt, 2, spk_id->data, spk_id->len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 2, spk_id);
 
     // step
     sqlite_step(stmt, SQLITE_ROW);
@@ -938,7 +938,7 @@ static sqlite_int64 load_account_id(ProtobufCBinaryData *account_id) {
     return id;
 }
 
-static void  delete_signed_pre_key(sqlite_int64 signed_pre_key_id) {
+static void delete_signed_pre_key(sqlite_int64 signed_pre_key_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SIGNED_PRE_KEYPAIR_DELETE, &stmt);
@@ -1282,6 +1282,9 @@ void unload_group_session(Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_s
 
 void unload_inbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
                                   ProtobufCBinaryData *old_session_id) {
+    if (old_session_id->data == NULL){
+        return;
+    }
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ID, &stmt);

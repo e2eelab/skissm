@@ -64,6 +64,8 @@ set(TEST_SKISSM
     # test_gcm
     test_account_db
     test_session_db
+    test_unload
+    test_spk_db
   )
 
 set(TEST_WS
@@ -114,5 +116,7 @@ add_test(Session test_session)
 add_test(GroupSession test_group_session)
 add_test(Account_db test_account_db)
 add_test(Session_db test_session_db)
+add_test(Unload test_unload)
+add_test(SPK_db test_spk_db)
 # add_test(UTF8 test_utf8 9000)
 # add_test(UTF8_crypto test_utf8_crypto 9001)

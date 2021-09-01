@@ -235,7 +235,7 @@ typedef struct skissm_handler {
    */
   void (*load_old_signed_pre_key)(
       ProtobufCBinaryData *,
-      ProtobufCBinaryData *,
+      uint32_t,
       Org__E2eelab__Skissm__Proto__SignedPreKeyPair **);
   /**
    * @brief remove expired signed pre key of account from db
