@@ -22,7 +22,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
-void protocol_simulator_release();
+void protocol_simulator_begin();
+void protocol_simulator_end();
 
 void mock_protocol_receive(u_int8_t *msg, size_t msg_len);
 

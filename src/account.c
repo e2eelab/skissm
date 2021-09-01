@@ -49,8 +49,13 @@ void account_begin(){
             generate_signed_pre_key(cur_account);
             publish_spk(cur_account);
         }
+
+        /* Check and remove signed pre-keys (keep last two) */
+        ssm_handler.remove_expired_signed_pre_key(&(cur_account->account_id));
+
         /* Check if there are too many "used" one-time pre-keys */
         free_one_time_pre_key(cur_account);
+
         /* Release */
         org__e2eelab__skissm__proto__e2ee_account__free_unpacked(cur_account, NULL);
         cur_account = NULL;

@@ -38,15 +38,16 @@
 
 void setup()
 {
-  init_db();
-  protocol_begin();
+  test_db_begin();
+  ssm_begin();
+  protocol_simulator_begin();
 }
 
 void tear_down()
 {
-  close_db();
-  protocol_end();
-  protocol_simulator_release();
+  test_db_end();
+  ssm_end();
+  protocol_simulator_end();
 }
 
 // utility functions

@@ -64,7 +64,10 @@ static uint8_t user_data_set_insert_pos = 0;
 
 static uint8_t group_data_set_insert_pos = 0;
 
-void protocol_simulator_release(){
+void protocol_simulator_begin(){
+}
+
+void protocol_simulator_end(){
     uint8_t i, j;
     for (i = 0; i < user_data_set_insert_pos; i++){
         org__e2eelab__skissm__proto__e2ee_address__free_unpacked(user_data_set[i].address, NULL);

@@ -23,8 +23,8 @@
 
 #include "skissm.h"
 
-void init_db();
-void close_db();
+void test_db_begin();
+void test_db_end();
 void load_id(ProtobufCBinaryData **account_id);
 size_t load_ids(ProtobufCBinaryData ***account_ids);
 uint32_t load_version(ProtobufCBinaryData *account_id);

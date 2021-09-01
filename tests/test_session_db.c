@@ -98,7 +98,7 @@ void test_load_session()
     // create session and two addresses
     Org__E2eelab__Skissm__Proto__E2eeSession *session = (Org__E2eelab__Skissm__Proto__E2eeSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeSession));
     org__e2eelab__skissm__proto__e2ee_session__init(session);
-    
+
     Org__E2eelab__Skissm__Proto__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
