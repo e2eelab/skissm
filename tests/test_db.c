@@ -538,6 +538,23 @@ void load_address(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__
     sqlite3_finalize(stmt);
 }
 
+static sqlite_int64 load_account_id(ProtobufCBinaryData *account_id) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_ID, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const uint8_t *)account_id->data, account_id->len, SQLITE_STATIC);
+
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
+    sqlite_int64 id = sqlite3_column_int(stmt, 0);
+
+    // release
+    sqlite3_finalize(stmt);
+
+    // done
+    return id;
+}
+
 void load_identity_key_pair(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__KeyPair **identity_key_pair) {
     // allocate memory
     *identity_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
@@ -871,6 +888,10 @@ void update_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
                            Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key) {
     sqlite_int64 signed_pre_key_id = insert_signed_pre_key(signed_pre_key);
 
+    sqlite_int64 account_id = load_account_id(&(account->account_id));
+
+    insert_account_signed_pre_key_id(account_id, signed_pre_key_id);
+
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_UPDATE_SIGNED_PRE_KEYPAIR, &stmt);
@@ -888,6 +909,19 @@ void update_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
 
 void load_old_signed_pre_key(ProtobufCBinaryData *account_id, uint32_t spk_id,
                              Org__E2eelab__Skissm__Proto__SignedPreKeyPair **signed_pre_key_pair) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(LOAD_OLD_SIGNED_PRE_KEYPAIR, &stmt);
+    sqlite3_bind_blob(stmt, 1, account_id->data, account_id->len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 2, spk_id);
+
+    // step
+    if (!sqlite_step(stmt, SQLITE_ROW)) {
+        *signed_pre_key_pair = NULL;
+        sqlite3_finalize(stmt);
+        return;
+    }
+
     // allocate memory
     *signed_pre_key_pair =
         (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
@@ -897,15 +931,6 @@ void load_old_signed_pre_key(ProtobufCBinaryData *account_id, uint32_t spk_id,
         (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
     org__e2eelab__skissm__proto__key_pair__init(key_pair);
     (*signed_pre_key_pair)->key_pair = key_pair;
-
-    // prepare
-    sqlite3_stmt *stmt;
-    sqlite_prepare(LOAD_OLD_SIGNED_PRE_KEYPAIR, &stmt);
-    sqlite3_bind_blob(stmt, 1, account_id->data, account_id->len, SQLITE_STATIC);
-    sqlite3_bind_int(stmt, 2, spk_id);
-
-    // step
-    sqlite_step(stmt, SQLITE_ROW);
 
     // load
     (*signed_pre_key_pair)->spk_id = (uint32_t)sqlite3_column_int(stmt, 0);
@@ -919,23 +944,6 @@ void load_old_signed_pre_key(ProtobufCBinaryData *account_id, uint32_t spk_id,
 
     // release
     sqlite3_finalize(stmt);
-}
-
-static sqlite_int64 load_account_id(ProtobufCBinaryData *account_id) {
-    // prepare
-    sqlite3_stmt *stmt;
-    sqlite_prepare(ACCOUNT_LOAD_ID, &stmt);
-    sqlite3_bind_blob(stmt, 1, (const uint8_t *)account_id->data, account_id->len, SQLITE_STATIC);
-
-    // step
-    sqlite_step(stmt, SQLITE_ROW);
-    sqlite_int64 id = sqlite3_column_int(stmt, 0);
-
-    // release
-    sqlite3_finalize(stmt);
-
-    // done
-    return id;
 }
 
 static void delete_signed_pre_key(sqlite_int64 signed_pre_key_id) {
@@ -1038,6 +1046,7 @@ void load_inbound_session(ProtobufCBinaryData session_id, Org__E2eelab__Skissm__
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
         *session = NULL;
+        sqlite3_finalize(stmt);
         return;
     }
 
@@ -1048,6 +1057,7 @@ void load_inbound_session(ProtobufCBinaryData session_id, Org__E2eelab__Skissm__
     // no data
     if (session_data_len == 0) {
         *session = NULL;
+        sqlite3_finalize(stmt);
         return;
     }
 
@@ -1108,6 +1118,7 @@ void load_outbound_session(Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
         *session = NULL;
+        sqlite3_finalize(stmt);
         return;
     }
 
@@ -1118,6 +1129,7 @@ void load_outbound_session(Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
     // no data
     if (session_data_len == 0) {
         *session = NULL;
+        sqlite3_finalize(stmt);
         return;
     }
 
@@ -1168,6 +1180,7 @@ void load_outbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *user_
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
         *group_session = NULL;
+        sqlite3_finalize(stmt);
         return;
     }
 
@@ -1178,6 +1191,7 @@ void load_outbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *user_
     // no data
     if (group_session_data_len == 0) {
         *group_session = NULL;
+        sqlite3_finalize(stmt);
         return;
     }
 
@@ -1211,6 +1225,7 @@ void load_inbound_group_session(ProtobufCBinaryData group_session_id,
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
         *group_session = NULL;
+        sqlite3_finalize(stmt);
         return;
     }
 
@@ -1221,6 +1236,7 @@ void load_inbound_group_session(ProtobufCBinaryData group_session_id,
     // no data
     if (group_session_data_len == 0) {
         *group_session = NULL;
+        sqlite3_finalize(stmt);
         return;
     }
 

@@ -195,7 +195,7 @@ void store_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account)
                                   account->next_signed_pre_key_id,
                                   account->next_one_time_pre_key_id);
 
-  // insert ACCOUNT_ONE_TIME_PRE_KEY_PAIR
+  // insert ACCOUNT_SIGNED_PRE_KEY_PAIR
   insert_account_signed_pre_key_id(account_id, signed_pre_key_id);
 
   // insert ACCOUNT_ONE_TIME_PRE_KEY_PAIR

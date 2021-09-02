@@ -127,6 +127,6 @@ void test_remove_expired_signed_pre_key(){
 
 int main(){
     test_load_old_signed_pre_key();
-    //test_remove_expired_signed_pre_key();
+    test_remove_expired_signed_pre_key();
     return 0;
 }
