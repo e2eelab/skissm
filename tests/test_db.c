@@ -341,6 +341,9 @@ static const char *ACCOUNT_SIGNED_PRE_KEYPAIR_INSERT = "INSERT INTO ACCOUNT_SIGN
                                                        "(ACCOUNT, SIGNED_PRE_KEYPAIR) "
                                                        "VALUES (?, ?);";
 
+static const char *ACCOUNT_SIGNED_PRE_KEYPAIR_DELETE = "DELETE FROM ACCOUNT_SIGNED_PRE_KEYPAIR "
+                                                       "WHERE ACCOUNT = (?) AND SIGNED_PRE_KEYPAIR = (?);";
+
 static const char *ACCOUNT_SIGNED_PRE_KEYPAIR_SELECT_MORE_THAN_2 = "SELECT SIGNED_PRE_KEYPAIR "
                                                "FROM ACCOUNT_SIGNED_PRE_KEYPAIR "
                                                "WHERE ACCOUNT = (?) AND "
@@ -964,7 +967,8 @@ void remove_expired_signed_pre_key(ProtobufCBinaryData *account_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_SIGNED_PRE_KEYPAIR_SELECT_MORE_THAN_2, &stmt);
-    sqlite3_bind_int(stmt, 1, load_account_id(account_id));
+    sqlite_int64 id = load_account_id(account_id);
+    sqlite3_bind_int(stmt, 1, id);
 
     // step
     while (sqlite3_step(stmt) != SQLITE_DONE) {
