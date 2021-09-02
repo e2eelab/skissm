@@ -962,6 +962,19 @@ static void delete_signed_pre_key(sqlite_int64 signed_pre_key_id) {
     sqlite3_finalize(stmt);
 }
 
+static void delete_account_signed_pre_key(sqlite_int64 account_id, sqlite_int64 signed_pre_key_id){
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_SIGNED_PRE_KEYPAIR_DELETE, &stmt);
+    sqlite3_bind_int(stmt, 1, account_id);
+    sqlite3_bind_int(stmt, 2, signed_pre_key_id);
+
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
+
+    // release
+    sqlite3_finalize(stmt);
+}
+
 void remove_expired_signed_pre_key(ProtobufCBinaryData *account_id) {
     // delete old signed pre keys and keep last two
     // prepare
@@ -974,6 +987,7 @@ void remove_expired_signed_pre_key(ProtobufCBinaryData *account_id) {
     while (sqlite3_step(stmt) != SQLITE_DONE) {
         sqlite_int64 signed_pre_key_id = sqlite3_column_int(stmt, 0);
         delete_signed_pre_key(signed_pre_key_id);
+        delete_account_signed_pre_key(id, signed_pre_key_id);
     }
 
     // release
