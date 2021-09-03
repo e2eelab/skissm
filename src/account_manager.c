@@ -30,10 +30,12 @@ static void handle_register_user_response(
     // save to db
     response_handler->account->saved = true;
     ssm_handler.store_account(response_handler->account);
+    ssm_notify_user_registered(response_handler->account);
 }
 
 static void handle_register_release(register_user_response_handler *response_handler) {
-
+    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(response_handler->account, NULL);
+    response_handler->account = NULL;
 }
 
 register_user_response_handler register_user_response_handler_store = {
@@ -52,6 +54,7 @@ static void handle_publish_spk_response(publish_spk_response_handler *response_h
 }
 
 static void handle_publish_spk_release(publish_spk_response_handler *response_handler) {
+    response_handler->account = NULL;
 }
 
 publish_spk_response_handler publish_spk_response_handler_store = {

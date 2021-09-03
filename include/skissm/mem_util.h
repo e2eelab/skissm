@@ -46,11 +46,35 @@ void copy_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src, siz
 void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src);
 
 void copy_address_from_address(Org__E2eelab__Skissm__Proto__E2eeAddress **dest, const Org__E2eelab__Skissm__Proto__E2eeAddress *src);
+
+void copy_key_pair_from_key_pair(
+    Org__E2eelab__Skissm__Proto__KeyPair **dest,
+    Org__E2eelab__Skissm__Proto__KeyPair *src
+);
+
+void copy_spk_from_spk(
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair **dest,
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *src
+);
+
+void copy_opks_from_opks(
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***dest,
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **src,
+    size_t opk_num
+);
+
+void copy_account_from_account(
+    Org__E2eelab__Skissm__Proto__E2eeAccount **dest,
+    Org__E2eelab__Skissm__Proto__E2eeAccount *src
+);
+
 void copy_member_addresses_from_member_addresses(
     Org__E2eelab__Skissm__Proto__E2eeAddress ***dest,
     const Org__E2eelab__Skissm__Proto__E2eeAddress **src,
     size_t member_num
 );
+
+void free_member_addresses(Org__E2eelab__Skissm__Proto__E2eeAddress ***dest, size_t member_num);
 
 void free_protobuf(ProtobufCBinaryData *output);
 

@@ -112,6 +112,72 @@ void copy_address_from_address(Org__E2eelab__Skissm__Proto__E2eeAddress **dest, 
     }
 }
 
+void copy_key_pair_from_key_pair(
+    Org__E2eelab__Skissm__Proto__KeyPair **dest,
+    Org__E2eelab__Skissm__Proto__KeyPair *src
+) {
+    *dest = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
+    org__e2eelab__skissm__proto__key_pair__init(*dest);
+    copy_protobuf_from_protobuf(&((*dest)->private_key), &(src->private_key));
+    copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
+}
+
+void copy_spk_from_spk(
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair **dest,
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *src
+) {
+    *dest = (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
+    org__e2eelab__skissm__proto__signed_pre_key_pair__init(*dest);
+    (*dest)->spk_id = src->spk_id;
+    copy_key_pair_from_key_pair(&((*dest)->key_pair), src->key_pair);
+    copy_protobuf_from_protobuf(&((*dest)->signature), &(src->signature));
+    (*dest)->ttl = src->ttl;
+}
+
+void copy_opks_from_opks(
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***dest,
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **src,
+    size_t opk_num
+) {
+    *dest = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *) * opk_num);
+    size_t i;
+    for (i = 0; i < opk_num; i++){
+        (*dest)[i] = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
+        org__e2eelab__skissm__proto__one_time_pre_key_pair__init((*dest)[i]);
+        (*dest)[i]->opk_id = src[i]->opk_id;
+        (*dest)[i]->used = src[i]->used;
+        copy_key_pair_from_key_pair(&((*dest)[i]->key_pair), src[i]->key_pair);
+    }
+}
+
+void copy_account_from_account(
+    Org__E2eelab__Skissm__Proto__E2eeAccount **dest,
+    Org__E2eelab__Skissm__Proto__E2eeAccount *src
+) {
+    *dest = (Org__E2eelab__Skissm__Proto__E2eeAccount *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount));
+    org__e2eelab__skissm__proto__e2ee_account__init(*dest);
+    (*dest)->version = src->version;
+    if (src->account_id.data){
+        copy_protobuf_from_protobuf(&((*dest)->account_id), &(src->account_id));
+    }
+    (*dest)->saved = src->saved;
+    if (src->address){
+        copy_address_from_address(&((*dest)->address), src->address);
+    }
+    if (src->identity_key_pair){
+        copy_key_pair_from_key_pair(&((*dest)->identity_key_pair), src->identity_key_pair);
+    }
+    if (src->signed_pre_key_pair){
+        copy_spk_from_spk(&((*dest)->signed_pre_key_pair), src->signed_pre_key_pair);
+    }
+    if (src->one_time_pre_keys){
+        copy_opks_from_opks(&((*dest)->one_time_pre_keys), src->one_time_pre_keys, src->n_one_time_pre_keys);
+    }
+    (*dest)->n_one_time_pre_keys = src->n_one_time_pre_keys;
+    (*dest)->next_signed_pre_key_id = src->next_signed_pre_key_id;
+    (*dest)->next_one_time_pre_key_id = src->next_one_time_pre_key_id;
+}
+
 void copy_member_addresses_from_member_addresses(
     Org__E2eelab__Skissm__Proto__E2eeAddress ***dest,
     const Org__E2eelab__Skissm__Proto__E2eeAddress **src,
@@ -122,6 +188,16 @@ void copy_member_addresses_from_member_addresses(
     for (i = 0; i < member_num; i++){
         copy_address_from_address(&((*dest)[i]), src[i]);
     }
+}
+
+void free_member_addresses(Org__E2eelab__Skissm__Proto__E2eeAddress ***dest, size_t member_num){
+    size_t i;
+    for (i = 0; i < member_num; i++){
+        org__e2eelab__skissm__proto__e2ee_address__free_unpacked((*dest)[i], NULL);
+        (*dest)[i] = NULL;
+    }
+    free(*dest);
+    *dest = NULL;
 }
 
 void free_protobuf(ProtobufCBinaryData *output){

@@ -37,6 +37,10 @@ static void handle_create_group_response(
 static void handle_create_group_release(
     create_group_response_handler *this_handler
 ) {
+    this_handler->sender_address = NULL;
+    this_handler->group_name = NULL;
+    this_handler->member_addresses = NULL;
+    this_handler->member_num = 0;
 }
 
 create_group_response_handler create_group_response_handler_store = {
@@ -63,6 +67,12 @@ static void handle_get_group_response(
 static void handle_get_group_release(
     get_group_response_handler *this_handler
 ) {
+    this_handler->group_address = NULL;
+    free_mem((void **)&(this_handler->group_name->data), this_handler->group_name->len);
+    free_mem((void **)&(this_handler->group_name), sizeof(ProtobufCBinaryData));
+    this_handler->group_name = NULL;
+    free_member_addresses(&(this_handler->member_addresses), this_handler->member_num);
+    this_handler->member_num = 0;
 }
 
 get_group_response_handler get_group_response_handler_store = {
@@ -102,6 +112,10 @@ static void handle_add_group_members_response(
 static void handle_add_group_members_release(
     add_group_members_response_handler *this_handler
 ) {
+    org__e2eelab__skissm__proto__e2ee_group_session__free_unpacked(this_handler->outbound_group_session, NULL);
+    this_handler->outbound_group_session = NULL;
+    this_handler->adding_member_addresses = NULL;
+    this_handler->adding_member_num = 0;
 }
 
 add_group_members_response_handler add_group_members_response_handler_store = {
@@ -152,6 +166,10 @@ static void handle_remove_group_members_response(
 static void handle_remove_group_members_release(
     remove_group_members_response_handler *this_handler
 ) {
+    org__e2eelab__skissm__proto__e2ee_group_session__free_unpacked(this_handler->outbound_group_session, NULL);
+    this_handler->outbound_group_session = NULL;
+    this_handler->removing_member_addresses = NULL;
+    this_handler->removing_member_num = 0;
 }
 
 remove_group_members_response_handler remove_group_members_response_handler_store = {
