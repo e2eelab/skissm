@@ -345,6 +345,10 @@ static void handle_pre_key_bundle_response(
 static void handle_pre_key_bundle_release(
     pre_key_bundle_response_handler *this_response_handler
 ) {
+    this_response_handler->from = NULL;
+    this_response_handler->to = NULL;
+    this_response_handler->context = NULL;
+    this_response_handler->context_len = 0;
 }
 
 static pre_key_bundle_response_handler pre_key_bundle_handler = {

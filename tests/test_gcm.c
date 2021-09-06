@@ -21,28 +21,52 @@
 #include <string.h>
 #include <assert.h>
 
-#include "cipher.h"
+#include "mem_util.h"
+#include "crypto.h"
 #include "test_env.h"
 
 int main(){
-    uint8_t plaintext[] = "This is a aes gcm test.";
-    size_t plaintext_length = sizeof(plaintext) - 1;
     uint8_t key[32] = "aes_gcm_key_aes_gcm_key_aes_keys";
     uint8_t iv[16] = "aes_gcm_iv_aesiv";
     uint8_t AD[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ01";
-    uint8_t ciphertext[plaintext_length + 16];
+    uint8_t *plaintext, *ciphertext, *decrypted_plaintext;
+    size_t plaintext_len, ciphertext_len, decrypted_plaintext_len;
 
-    crypto_aes_encrypt_gcm(plaintext, plaintext_length, key, iv, AD, 64, ciphertext);
+    size_t tot_test = 2000;
+    FILE *fptr;
+    int i;
+    for (i = 0; i < tot_test; i++){
+        char str[20];
+        sprintf(str, "./data/%d", i);
+        if ((fptr = fopen(str, "r")) == NULL){
+            printf("Error! opening file");
+            // Program exits if the file pointer returns NULL.
+            exit(1);
+        } else{
+            fseek(fptr, 0, SEEK_END);
+            plaintext_len = ftell(fptr);
+            fseek(fptr, 0, SEEK_SET);
+            plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
+            fread(plaintext, 1, plaintext_len, fptr);
+            fclose(fptr);
+        }
+        ciphertext_len = plaintext_len + AES256_GCM_TAG_LENGTH;
+        ciphertext = (uint8_t *) malloc(sizeof(uint8_t) * ciphertext_len);
+        crypto_aes_encrypt_gcm(plaintext, plaintext_len, key, iv, AD, 64, ciphertext);
 
-    uint8_t decrypted_plaintext[plaintext_length];
-    size_t decrypted_plaintext_len
-        = crypto_aes_decrypt_gcm(ciphertext, sizeof(ciphertext), key, iv, AD, 64, decrypted_plaintext);
+        decrypted_plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
+        decrypted_plaintext_len = crypto_aes_decrypt_gcm(ciphertext, ciphertext_len, key, iv, AD, 64, decrypted_plaintext);
 
-    assert(decrypted_plaintext_len == plaintext_length);
-    assert(memcmp(plaintext, decrypted_plaintext, plaintext_length) == 0);
+        assert(decrypted_plaintext_len == plaintext_len);
+        assert(memcmp(plaintext, decrypted_plaintext, plaintext_len) == 0);
 
-    print_hex("plaintext", plaintext, plaintext_length);
-    print_hex("decrypted_plaintext", decrypted_plaintext, decrypted_plaintext_len);
+        print_hex("plaintext", plaintext, plaintext_len);
+        print_hex("decrypted_plaintext", decrypted_plaintext, decrypted_plaintext_len);
+
+        free_mem((void **)&plaintext, plaintext_len);
+        free_mem((void **)&ciphertext, ciphertext_len);
+        free_mem((void **)&decrypted_plaintext, decrypted_plaintext_len);
+    }
 
     return 0;
 }

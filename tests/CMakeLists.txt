@@ -57,21 +57,16 @@ target_include_directories(test_util
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>)
 
 set(TEST_SKISSM
+    test_gcm
     test_account
     test_ratchet
     test_session
     test_group_session
-    # test_gcm
     test_account_db
     test_session_db
     test_unload
     test_spk_db
   )
-
-set(TEST_WS
-    test_utf8
-    # test_utf8_crypto
-)
 
 if(NOT (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND BUILD_SHARED_LIBS))
   # test_ratchet doesn't work on Windows when building a DLL, because it tries
@@ -110,6 +105,7 @@ endforeach(test)
 
 file(COPY data DESTINATION .)
 
+add_test(GCM test_gcm)
 add_test(Account test_account)
 add_test(Ratchet test_ratchet)
 add_test(Session test_session)
@@ -118,5 +114,3 @@ add_test(Account_db test_account_db)
 add_test(Session_db test_session_db)
 add_test(Unload test_unload)
 add_test(SPK_db test_spk_db)
-# add_test(UTF8 test_utf8 9000)
-# add_test(UTF8_crypto test_utf8_crypto 9001)
