@@ -308,10 +308,10 @@ static size_t perform_encrypt_session(
     org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(protocol_msg, message);
 
     // send message to server
-    ssm_handler.handle_send(message, message_len);
+    ssm_plugin.handle_send(message, message_len);
 
     // store sesson state
-    ssm_handler.store_session(session);
+    ssm_plugin.store_session(session);
 
     // release
     free_mem((void **)(&message), message_len);
@@ -366,7 +366,7 @@ size_t encrypt_session(
     const uint8_t *context, size_t context_len
 ) {
     Org__E2eelab__Skissm__Proto__E2eeSession *session = NULL;
-    ssm_handler.load_outbound_session(from, to, &session);
+    ssm_plugin.load_outbound_session(from, to, &session);
     if (session == NULL){
         pre_key_bundle_handler.from = from;
         pre_key_bundle_handler.to = to;
@@ -403,14 +403,14 @@ size_t decrypt_session(
 
     /* load the corresponding inbound session */
     Org__E2eelab__Skissm__Proto__E2eeSession *session = NULL;
-    ssm_handler.load_inbound_session(inbound_message->session_id, inbound_message->to, &session);
+    ssm_plugin.load_inbound_session(inbound_message->session_id, inbound_message->to, &session);
     if (session == NULL){
         if (inbound_message->msg_type != ORG__E2EELAB__SKISSM__PROTO__E2EE_MESSAGE_TYPE__PRE_KEY){
             ssm_notify_error(BAD_MESSAGE_FORMAT, "decrypt_session()");
             return (size_t)(-1);
         }
         /* delete the old inbound session if it exists */
-        ssm_handler.unload_session(inbound_message->to, inbound_message->from, inbound_message->to);
+        ssm_plugin.unload_session(inbound_message->to, inbound_message->from, inbound_message->to);
         /* create a new inbound session */
         session = (Org__E2eelab__Skissm__Proto__E2eeSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeSession));
         initialise_session(session, inbound_message->from, inbound_message->to);
@@ -438,7 +438,7 @@ size_t decrypt_session(
         context_len = decrypt_ratchet(session->ratchet, session->associated_data, msg_payload, &context);
 
         // store sesson state
-        ssm_handler.store_session(session);
+        ssm_plugin.store_session(session);
 
         if (context_len == (size_t)(-1)){
             ssm_notify_error(BAD_MESSAGE_DECRYPTION, "decrypt_session()");
@@ -449,7 +449,7 @@ size_t decrypt_session(
                 ssm_notify_one2one_msg(inbound_message->from, inbound_message->to, e2ee_plaintext->payload.data, e2ee_plaintext->payload.len);
             } else if (e2ee_plaintext->plaintext_type == ORG__E2EELAB__SKISSM__PROTO__E2EE_PLAINTEXT_TYPE__GROUP_PRE_KEY){
                 Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *group_pre_key_payload = org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__unpack(NULL, e2ee_plaintext->payload.len, e2ee_plaintext->payload.data);
-                ssm_handler.unload_inbound_group_session(inbound_message->to, &(group_pre_key_payload->old_session_id));
+                ssm_plugin.unload_inbound_group_session(inbound_message->to, &(group_pre_key_payload->old_session_id));
                 create_inbound_group_session(group_pre_key_payload, inbound_message->to);
                 org__e2eelab__skissm__proto__e2ee_group_pre_key_payload__free_unpacked(group_pre_key_payload, NULL);
             }
@@ -457,11 +457,11 @@ size_t decrypt_session(
 
         // try to find outbound session
         Org__E2eelab__Skissm__Proto__E2eeSession *outbound_session = NULL;
-        ssm_handler.load_outbound_session(inbound_message->to, inbound_message->from, &outbound_session);
+        ssm_plugin.load_outbound_session(inbound_message->to, inbound_message->from, &outbound_session);
         if (outbound_session != NULL){
             if (outbound_session->responded == false){
                 outbound_session->responded = true;
-                ssm_handler.store_session(outbound_session);
+                ssm_plugin.store_session(outbound_session);
             }
         }
 

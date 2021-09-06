@@ -168,7 +168,7 @@ void test_load_outbound_group_session()
     memcpy(group_address->domain.data, DOMAIN, sizeof(DOMAIN));
     group_address->group_id.len = 32;
     group_address->group_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_handler.handle_rg(group_address->group_id.data, 32);
+    ssm_plugin.handle_rg(group_address->group_id.data, 32);
 
     // create outbound group session
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));
@@ -248,7 +248,7 @@ void test_load_inbound_group_session()
     memcpy(group_address->domain.data, DOMAIN, sizeof(DOMAIN));
     group_address->group_id.len = 32;
     group_address->group_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_handler.handle_rg(group_address->group_id.data, 32);
+    ssm_plugin.handle_rg(group_address->group_id.data, 32);
 
     // create inbound group session
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));

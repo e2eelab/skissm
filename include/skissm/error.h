@@ -49,6 +49,6 @@ typedef enum ErrorCode ErrorCode;
  * @param error The error code
  * @return The error string
  */
-const char *error_string(ErrorCode error);
+const char *error_string(ErrorCode error_code);
 
 #endif /* ERROR_H_ */

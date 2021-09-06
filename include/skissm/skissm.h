@@ -167,7 +167,7 @@ void ssm_notify_group_members_added(Org__E2eelab__Skissm__Proto__E2eeAddress *gr
 void ssm_notify_group_members_removed(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
                                       ProtobufCBinaryData *group_name,
                                       Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses);
-typedef struct skissm_handler {
+typedef struct skissm_plugin {
     // common handlers
     int64_t (*handle_get_ts)();
     void (*handle_rg)(uint8_t *, size_t);
@@ -310,8 +310,8 @@ typedef struct skissm_handler {
      * @param old_session_id
      */
     void (*unload_inbound_group_session)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *);
-} skissm_handler;
+} skissm_plugin;
 
-extern const struct skissm_handler ssm_handler;
+extern const struct skissm_plugin ssm_plugin;
 
 #endif /* SKISSM_H_ */

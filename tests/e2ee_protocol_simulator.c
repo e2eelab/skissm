@@ -143,13 +143,13 @@ static void process_register_user_request(
     org__e2eelab__skissm__proto__e2ee_address__init(random_address);
     random_address->user_id.len = 32;
     random_address->user_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_handler.handle_rg(random_address->user_id.data, 32);
+    ssm_plugin.handle_rg(random_address->user_id.data, 32);
     random_address->domain.len = sizeof(DOMAIN);
     random_address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
     memcpy(random_address->domain.data, DOMAIN, sizeof(DOMAIN));
     random_address->device_id.len = 32;
     random_address->device_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_handler.handle_rg(random_address->device_id.data, 32);
+    ssm_plugin.handle_rg(random_address->device_id.data, 32);
 
     copy_address_from_address(&(user_data_set[user_data_set_insert_pos].address), random_address);
 
@@ -405,7 +405,7 @@ static void process_create_group_request(
     memcpy(random_address->domain.data, DOMAIN, sizeof(DOMAIN));
     random_address->group_id.len = 32;
     random_address->group_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_handler.handle_rg(random_address->group_id.data, 32);
+    ssm_plugin.handle_rg(random_address->group_id.data, 32);
 
     copy_address_from_address(&(group_data_set[group_data_set_insert_pos].group_address), random_address);
 

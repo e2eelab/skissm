@@ -199,7 +199,7 @@ void send_register_user_request(Org__E2eelab__Skissm__Proto__E2eeAccount *accoun
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     // release
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
@@ -244,7 +244,7 @@ void send_publish_spk_request(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
     free_mem((void **)&packed_message, packed_message_len);
@@ -300,7 +300,7 @@ void handle_add_group_members_request(
     size_t adding_member_num, Org__E2eelab__Skissm__Proto__E2eeAddress **adding_member_addresses,
     Org__E2eelab__Skissm__Proto__AddGroupMembersResponsePayload **add_group_members_response) {
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = NULL;
-    ssm_handler.load_outbound_group_session(receiver_address, group_address, &group_session);
+    ssm_plugin.load_outbound_group_session(receiver_address, group_address, &group_session);
 
     // TODO: compare adding_member_addresses
 
@@ -318,7 +318,7 @@ void handle_add_group_members_request(
                                       adding_member_addresses[i]);
         }
         /* delete the old group session */
-        ssm_handler.unload_group_session(group_session);
+        ssm_plugin.unload_group_session(group_session);
         ProtobufCBinaryData *old_session_id = &(group_session->session_id);
 
         /* create a new outbound group session */
@@ -342,7 +342,7 @@ void handle_remove_group_members_request(
     size_t removing_member_num, Org__E2eelab__Skissm__Proto__E2eeAddress **removing_member_addresses,
     Org__E2eelab__Skissm__Proto__RemoveGroupMembersResponsePayload **remove_group_members_response) {
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = NULL;
-    ssm_handler.load_outbound_group_session(receiver_address, group_address, &group_session);
+    ssm_plugin.load_outbound_group_session(receiver_address, group_address, &group_session);
 
     size_t new_member_num = group_session->n_member_addresses - removing_member_num;
     Org__E2eelab__Skissm__Proto__E2eeAddress **new_member_addresses =
@@ -364,7 +364,7 @@ void handle_remove_group_members_request(
         }
     }
     /* delete the old group session */
-    ssm_handler.unload_group_session(group_session);
+    ssm_plugin.unload_group_session(group_session);
     ProtobufCBinaryData *old_session_id = &(group_session->session_id);
 
     /* create a new outbound group session */
@@ -399,7 +399,7 @@ void send_supply_opks_response(uint32_t request_id,
     org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
-    int result = ssm_handler.handle_send(packed_message, packed_message_len);
+    int result = ssm_plugin.handle_send(packed_message, packed_message_len);
     if (result == 0) {
         handler->account = get_local_account(request_opks_response->user_address);
         supply_opks(handler);
@@ -429,7 +429,7 @@ void send_create_group_response(uint32_t request_id,
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
     org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     /* release */
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
@@ -455,7 +455,7 @@ void send_add_group_members_response(
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
     org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     /* release */
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
@@ -483,7 +483,7 @@ void send_remove_group_members_response(
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
     org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     /* release */
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
@@ -528,7 +528,7 @@ void send_get_pre_key_bundle_request(Org__E2eelab__Skissm__Proto__E2eeAddress *e
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     // release
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
@@ -567,7 +567,7 @@ void send_create_group_request(create_group_response_handler *response_handler) 
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     // release
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
@@ -598,7 +598,7 @@ void send_get_group_request(get_group_response_handler *response_handler) {
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     // release
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
@@ -640,7 +640,7 @@ void send_add_group_members_request(add_group_members_response_handler *response
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     // release
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
@@ -682,7 +682,7 @@ void send_remove_group_members_request(remove_group_members_response_handler *re
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     // release
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
@@ -714,7 +714,7 @@ static void send_receive_msg_response(uint32_t request_id) {
     org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_protocol_msg, packed_message);
 
     /* done */
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     /* release */
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_protocol_msg, NULL);
@@ -747,7 +747,7 @@ static void send_receive_group_msg_response(uint32_t request_id) {
     org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_protocol_msg, packed_message);
 
     /* done */
-    ssm_handler.handle_send(packed_message, packed_message_len);
+    ssm_plugin.handle_send(packed_message, packed_message_len);
 
     /* release */
     org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_protocol_msg, NULL);

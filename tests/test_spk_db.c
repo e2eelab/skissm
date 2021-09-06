@@ -41,16 +41,16 @@ void test_load_old_signed_pre_key(){
     org__e2eelab__skissm__proto__e2ee_address__init(account->address);
     account->address->user_id.len = 32;
     account->address->user_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_handler.handle_rg(account->address->user_id.data, 32);
+    ssm_plugin.handle_rg(account->address->user_id.data, 32);
     account->address->domain.len = sizeof(DOMAIN);
     account->address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
     memcpy(account->address->domain.data, DOMAIN, sizeof(DOMAIN));
     account->address->device_id.len = 32;
     account->address->device_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_handler.handle_rg(account->address->device_id.data, 32);
+    ssm_plugin.handle_rg(account->address->device_id.data, 32);
     /* Save to db */
     account->saved = true;
-    ssm_handler.store_account(account);
+    ssm_plugin.store_account(account);
 
     Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk = (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
     org__e2eelab__skissm__proto__signed_pre_key_pair__init(old_spk);
@@ -64,7 +64,7 @@ void test_load_old_signed_pre_key(){
 
     /* Generate a new signed pre-key pair */
     generate_signed_pre_key(account);
-    ssm_handler.update_signed_pre_key(account, account->signed_pre_key_pair);
+    ssm_plugin.update_signed_pre_key(account, account->signed_pre_key_pair);
 
     /* Load the old signed pre-key */
     Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk_copy = NULL;
@@ -90,24 +90,24 @@ void test_remove_expired_signed_pre_key(){
     org__e2eelab__skissm__proto__e2ee_address__init(account->address);
     account->address->user_id.len = 32;
     account->address->user_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_handler.handle_rg(account->address->user_id.data, 32);
+    ssm_plugin.handle_rg(account->address->user_id.data, 32);
     account->address->domain.len = sizeof(DOMAIN);
     account->address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
     memcpy(account->address->domain.data, DOMAIN, sizeof(DOMAIN));
     account->address->device_id.len = 32;
     account->address->device_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_handler.handle_rg(account->address->device_id.data, 32);
+    ssm_plugin.handle_rg(account->address->device_id.data, 32);
     /* Save to db */
     account->saved = true;
-    ssm_handler.store_account(account);
+    ssm_plugin.store_account(account);
 
     uint32_t old_spk_id = account->signed_pre_key_pair->spk_id;
 
     /* Generate a new signed pre-key pair */
     generate_signed_pre_key(account);
-    ssm_handler.update_signed_pre_key(account, account->signed_pre_key_pair);
+    ssm_plugin.update_signed_pre_key(account, account->signed_pre_key_pair);
     generate_signed_pre_key(account);
-    ssm_handler.update_signed_pre_key(account, account->signed_pre_key_pair);
+    ssm_plugin.update_signed_pre_key(account, account->signed_pre_key_pair);
 
     /* Remove expired signed pre-keys */
     remove_expired_signed_pre_key(&(account->account_id));

@@ -55,7 +55,7 @@ void random_session_id(ProtobufCBinaryData *session_id)
 {
   session_id->len = SHA256_OUTPUT_LENGTH;
   session_id->data = (uint8_t *)malloc(SHA256_OUTPUT_LENGTH * sizeof(uint8_t));
-  ssm_handler.handle_rg(session_id->data, SHA256_OUTPUT_LENGTH);
+  ssm_plugin.handle_rg(session_id->data, SHA256_OUTPUT_LENGTH);
 }
 
 void print_hex(char *title, uint8_t *msg, size_t msg_len)
@@ -220,7 +220,7 @@ static void on_group_msg_received(
     printf("😊 on_group_msg_received: plaintext[len=%zu]: %s\n", plaintext_len, plaintext);
 }
 
-const struct skissm_handler ssm_handler = {
+const struct skissm_plugin ssm_plugin = {
     // common
     handle_get_ts,
     handle_rg,
