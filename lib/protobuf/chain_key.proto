@@ -22,7 +22,6 @@ package org.e2eelab.skissm.proto;
 
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "ChainKey";
-option java_multiple_files = true;
 
 message chain_key {
   uint32 index = 1;

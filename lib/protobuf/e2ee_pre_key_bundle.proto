@@ -22,7 +22,6 @@ package org.e2eelab.skissm.proto;
 
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eePreKeyBundle";
-option java_multiple_files = true;
 
 import "e2ee_address.proto";
 import "signed_pre_key_public.proto";

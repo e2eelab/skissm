@@ -22,7 +22,6 @@ package org.e2eelab.skissm.proto;
 
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "KeyPair";
-option java_multiple_files = true;
 
 message key_pair {
   bytes public_key = 1;

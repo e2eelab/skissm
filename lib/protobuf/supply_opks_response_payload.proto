@@ -22,7 +22,6 @@ package org.e2eelab.skissm.proto;
 
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "SupplyOpksResponsePayload";
-option java_multiple_files = true;
 
 import "e2ee_address.proto";
 import "one_time_pre_key_public.proto";
