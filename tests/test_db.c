@@ -1179,7 +1179,7 @@ void unload_session(Org__E2eelab__Skissm__Proto__E2eeAddress *owner, Org__E2eela
 }
 
 // return the first signature which is not null
-void load_outbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+void load_outbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *sender_address,
                                  Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
                                  Org__E2eelab__Skissm__Proto__E2eeGroupSession **group_session) {
     // prepare
@@ -1190,9 +1190,9 @@ void load_outbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *user_
     }
 
     // bind
-    sqlite3_bind_blob(stmt, 1, user_address->user_id.data, user_address->user_id.len, SQLITE_STATIC);
-    sqlite3_bind_blob(stmt, 2, user_address->domain.data, user_address->domain.len, SQLITE_STATIC);
-    sqlite3_bind_blob(stmt, 3, user_address->device_id.data, user_address->device_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 1, sender_address->user_id.data, sender_address->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, sender_address->domain.data, sender_address->domain.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 3, sender_address->device_id.data, sender_address->device_id.len, SQLITE_STATIC);
     sqlite3_bind_blob(stmt, 4, group_address->group_id.data, group_address->group_id.len, SQLITE_STATIC);
 
     // step

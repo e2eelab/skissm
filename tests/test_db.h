@@ -91,7 +91,7 @@ void unload_session(
     Org__E2eelab__Skissm__Proto__E2eeAddress *to
 );
 void load_outbound_group_session(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *sender_address,
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
     Org__E2eelab__Skissm__Proto__E2eeGroupSession **group_session);
 void load_inbound_group_session(

@@ -262,13 +262,13 @@ void perform_encrypt_group_session(
 }
 
 void encrypt_group_session(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *sender_address,
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
     const uint8_t *plaintext, size_t plaintext_len
 ) {
     /* Load the outbound group session */
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = NULL;
-    ssm_handler.load_outbound_group_session(user_address, group_address, &group_session);
+    ssm_handler.load_outbound_group_session(sender_address, group_address, &group_session);
 
     /* Do the encryption */
     perform_encrypt_group_session(group_session, plaintext, plaintext_len);

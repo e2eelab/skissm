@@ -89,13 +89,11 @@ typedef struct skissm_event_handler {
      * @param error_msg
      */
     void (*on_error)(ErrorCode, char *);
-
     /**
      * @brief notify user registered event
      * @param account
      */
     void (*on_user_registered)(Org__E2eelab__Skissm__Proto__E2eeAccount *);
-
     /**
      * @brief notify one2one msg received event
      * @param from_address
@@ -281,7 +279,7 @@ typedef struct skissm_handler {
     // group session related handlers
     /**
      * @brief find outbound group session
-     * @param user_address
+     * @param sender_address
      * @param group_address
      * @param inbound_group_session
      */
