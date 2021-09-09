@@ -24,7 +24,6 @@
 #include "skissm.h"
 #include "account.h"
 #include "mem_util.h"
-
 // -----------------
 #include "test_db.h"
 #include "test_env.h"
@@ -32,7 +31,16 @@
 
 static const char DOMAIN[] = "e2eelab.org";
 
-void test_load_old_signed_pre_key(){
+static void free_opks(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***opks, uint32_t opk_num){
+    uint32_t i;
+    for (i = 0; i < opk_num; i++){
+        org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked((*opks)[i], NULL);
+        (*opks)[i] = NULL;
+    }
+    free(*opks);
+}
+
+void test_update_one_time_pre_key(){
     setup();
 
     Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
@@ -52,36 +60,27 @@ void test_load_old_signed_pre_key(){
     account->saved = true;
     ssm_plugin.store_account(account);
 
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk = (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
-    org__e2eelab__skissm__proto__signed_pre_key_pair__init(old_spk);
-    old_spk->spk_id = account->signed_pre_key_pair->spk_id;
-    old_spk->key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-    org__e2eelab__skissm__proto__key_pair__init(old_spk->key_pair);
-    copy_protobuf_from_protobuf(&(old_spk->key_pair->private_key), &(account->signed_pre_key_pair->key_pair->private_key));
-    copy_protobuf_from_protobuf(&(old_spk->key_pair->public_key), &(account->signed_pre_key_pair->key_pair->public_key));
-    copy_protobuf_from_protobuf(&(old_spk->signature), &(account->signed_pre_key_pair->signature));
-    old_spk->ttl = account->signed_pre_key_pair->ttl;
+    int used_opk = 10;
+    uint32_t opk_id = account->one_time_pre_keys[used_opk]->opk_id;
 
-    /* Generate a new signed pre-key pair */
-    generate_signed_pre_key(account);
-    ssm_plugin.update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
+    mark_opk_as_used(account, opk_id);
+    update_one_time_pre_key(&(account->account_id), opk_id);
 
-    /* Load the old signed pre-key */
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk_copy = NULL;
-    load_old_signed_pre_key(&(account->account_id), old_spk->spk_id, &old_spk_copy);
+    /* load the one-time pre-keys */
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **opk_copy = NULL;
+    uint32_t opk_num = load_one_time_pre_keys(&(account->account_id), &opk_copy);
 
-    // assert old_spk equals to old_spk_copy
-    print_result("test_load_old_signed_pre_key", is_equal_spk(old_spk, old_spk_copy));
+    /* assert the opk is used */
+    print_result("test_update_one_time_pre_key", (opk_copy[used_opk]->used == true));
 
     // free
     org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account, NULL);
-    org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(old_spk, NULL);
-    org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(old_spk_copy, NULL);
+    free_opks(&opk_copy, opk_num);
 
     tear_down();
 }
 
-void test_remove_expired_signed_pre_key(){
+void test_remove_one_time_pre_key(){
     setup();
 
     Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
@@ -101,32 +100,30 @@ void test_remove_expired_signed_pre_key(){
     account->saved = true;
     ssm_plugin.store_account(account);
 
-    uint32_t old_spk_id = account->signed_pre_key_pair->spk_id;
+    int origin_opk_num = account->n_one_time_pre_keys;
 
-    /* Generate a new signed pre-key pair */
-    generate_signed_pre_key(account);
-    ssm_plugin.update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
-    generate_signed_pre_key(account);
-    ssm_plugin.update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
+    int used_opk_num = 80;
+    int i;
+    for (i = 0; i < used_opk_num; i++){
+        remove_one_time_pre_key(&(account->account_id), account->one_time_pre_keys[i]->opk_id);
+    }
 
-    /* Remove expired signed pre-keys */
-    remove_expired_signed_pre_key(&(account->account_id));
+    /* load the one-time pre-keys */
+    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **opk_copy = NULL;
+    uint32_t opk_num = load_one_time_pre_keys(&(account->account_id), &opk_copy);
 
-    /* Load the old signed pre-key */
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk_copy = NULL;
-    load_old_signed_pre_key(&(account->account_id), old_spk_id, &old_spk_copy);
-
-    /* assert old_spk_copy is NULL */
-    print_result("test_remove_expired_signed_pre_key", (old_spk_copy == NULL));
+    /* check if the opks are deleted */
+    print_result("test_remove_one_time_pre_key", (opk_num == origin_opk_num - used_opk_num));
 
     // free
     org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account, NULL);
+    free_opks(&opk_copy, opk_num);
 
     tear_down();
 }
 
 int main(){
-    test_load_old_signed_pre_key();
-    test_remove_expired_signed_pre_key();
+    test_update_one_time_pre_key();
+    test_remove_one_time_pre_key();
     return 0;
 }

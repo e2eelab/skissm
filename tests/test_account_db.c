@@ -171,7 +171,7 @@ void test_update_identity_key()
   mock_keypair(&kp_p, "new public key", "new private key");
 
   // update_identity_key
-  update_identity_key(account, kp_p);
+  update_identity_key(&(account->account_id), kp_p);
 
   // free
   free_account(account);
@@ -196,7 +196,7 @@ void test_update_signed_pre_key()
   mock_signed_pre_keypair(&signed_pre_keypair, 1, "hello public key", "hello private key", "hello signature");
 
   // update_signed_pre_key
-  update_signed_pre_key(account, signed_pre_keypair);
+  update_signed_pre_key(&(account->account_id), signed_pre_keypair);
 
   // free
   free_account(account);
@@ -222,7 +222,7 @@ void test_update_address()
   mock_address(&(new_address), "bob", "bob's domain", "bob's device");
 
   // update_address
-  update_address(account, new_address);
+  update_address(&(account->account_id), new_address);
 
   // free
   free_account(account);
@@ -248,32 +248,11 @@ void test_add_one_time_pre_key()
   mock_onetime_pre_keypiar(&onetime_pre_keypiar, 101, 0, "hello public key", "hello private key");
 
   // add_one_time_pre_key
-  add_one_time_pre_key(account, onetime_pre_keypiar);
+  add_one_time_pre_key(&(account->account_id), onetime_pre_keypiar);
 
   // free
   free_account(account);
   free_one_time_pre_key_pair(onetime_pre_keypiar);
-
-  tear_down();
-}
-
-void test_remove_one_time_pre_key()
-{
-  fprintf(stderr, "test_remove_one_time_pre_key\n");
-  setup();
-
-  // create account
-  Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
-  mock_address(&(account->address), "alice", "alice's domain", "alice's device");
-
-  // insert to the db
-  store_account(account);
-
-  // remove_one_time_pre_key
-  remove_one_time_pre_key(account, 0);
-
-  // free
-  free_account(account);
 
   tear_down();
 }
@@ -358,7 +337,6 @@ int main()
   test_update_signed_pre_key();
   test_update_address();
   test_add_one_time_pre_key();
-  test_remove_one_time_pre_key();
   test_load_account();
   test_two_accounts();
 }

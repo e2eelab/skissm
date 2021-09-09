@@ -201,16 +201,16 @@ typedef struct skissm_plugin {
                                     Org__E2eelab__Skissm__Proto__E2eeAccount **);
     /**
      * @brief update identity key of account to db
-     * @param account
+     * @param account_id
      * @param identity_key_pair
      */
-    void (*update_identity_key)(Org__E2eelab__Skissm__Proto__E2eeAccount *, Org__E2eelab__Skissm__Proto__KeyPair *);
+    void (*update_identity_key)(ProtobufCBinaryData *, Org__E2eelab__Skissm__Proto__KeyPair *);
     /**
      * @brief update signed pre key of account to db
-     * @param account
+     * @param account_id
      * @param signed_pre_key
      */
-    void (*update_signed_pre_key)(Org__E2eelab__Skissm__Proto__E2eeAccount *,
+    void (*update_signed_pre_key)(ProtobufCBinaryData *,
                                   Org__E2eelab__Skissm__Proto__SignedPreKeyPair *);
     /**
      * @brief load old signed pre key by spk_id
@@ -226,23 +226,29 @@ typedef struct skissm_plugin {
     void (*remove_expired_signed_pre_key)(ProtobufCBinaryData *);
     /**
      * @brief update address of account to db
-     * @param account
+     * @param account_id
      * @param address
      */
-    void (*update_address)(Org__E2eelab__Skissm__Proto__E2eeAccount *, Org__E2eelab__Skissm__Proto__E2eeAddress *);
+    void (*update_address)(ProtobufCBinaryData *, Org__E2eelab__Skissm__Proto__E2eeAddress *);
     /**
      * @brief add an one time pre key of account to db
-     * @param account
+     * @param account_id
      * @param one_time_pre_key
      */
-    void (*add_one_time_pre_key)(Org__E2eelab__Skissm__Proto__E2eeAccount *,
+    void (*add_one_time_pre_key)(ProtobufCBinaryData *,
                                  Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *);
     /**
-     * @brief remove an one time pre key of acount from db
-     * @param account
+     * @brief remove an one time pre key of account to db
+     * @param account_id
      * @param one_time_pre_key_id
      */
-    void (*remove_one_time_pre_key)(Org__E2eelab__Skissm__Proto__E2eeAccount *, uint32_t);
+    void (*remove_one_time_pre_key)(ProtobufCBinaryData *, uint32_t);
+    /**
+     * @brief update an one time pre key of acount from db
+     * @param account_id
+     * @param one_time_pre_key_id
+     */
+    void (*update_one_time_pre_key)(ProtobufCBinaryData *, uint32_t);
 
     // session related handlers
     /**

@@ -238,6 +238,7 @@ const struct skissm_plugin ssm_plugin = {
     update_address,
     add_one_time_pre_key,
     remove_one_time_pre_key,
+    update_one_time_pre_key,
     // session
     load_inbound_session,
     store_session,

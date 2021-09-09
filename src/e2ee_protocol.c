@@ -866,7 +866,7 @@ static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *r
             break;
         }
         register_user_response_handler *this_response_handler = (register_user_response_handler *)response_handler;
-        this_response_handler->handle_response(response_handler, payload->address);
+        this_response_handler->handle_response(this_response_handler, payload->address);
         this_response_handler->handle_release(this_response_handler);
     } break;
 
@@ -907,7 +907,7 @@ static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *r
             break;
         }
         publish_spk_response_handler *this_response_handler = (publish_spk_response_handler *)response_handler;
-        this_response_handler->handle_response(response_handler);
+        this_response_handler->handle_response(this_response_handler);
         this_response_handler->handle_release(this_response_handler);
     } break;
 
@@ -924,7 +924,7 @@ static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *r
             break;
         }
         create_group_response_handler *this_response_handler = (create_group_response_handler *)response_handler;
-        this_response_handler->handle_response(response_handler, create_group_response_payload->group_address);
+        this_response_handler->handle_response(this_response_handler, create_group_response_payload->group_address);
         this_response_handler->handle_release(this_response_handler);
     } break;
 
@@ -941,7 +941,7 @@ static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *r
             break;
         }
         get_group_response_handler *this_response_handler = (get_group_response_handler *)response_handler;
-        this_response_handler->handle_response(response_handler, &(get_group_response_payload->group_name),
+        this_response_handler->handle_response(this_response_handler, &(get_group_response_payload->group_name),
                               get_group_response_payload->n_member_addresses,
                               get_group_response_payload->member_addresses);
         this_response_handler->handle_release(this_response_handler);
@@ -960,7 +960,7 @@ static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *r
             break;
         }
         add_group_members_response_handler *this_response_handler = (add_group_members_response_handler *)response_handler;
-        this_response_handler->handle_response(response_handler);
+        this_response_handler->handle_response(this_response_handler);
         this_response_handler->handle_release(this_response_handler);
     } break;
 
@@ -977,7 +977,7 @@ static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *r
             break;
         }
         remove_group_members_response_handler *this_response_handler = (remove_group_members_response_handler *)response_handler;
-        this_response_handler->handle_response(response_handler);
+        this_response_handler->handle_response(this_response_handler);
         this_response_handler->handle_release(this_response_handler);
     } break;
 

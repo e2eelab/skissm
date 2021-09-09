@@ -175,17 +175,28 @@ size_t new_inbound_session(
     Org__E2eelab__Skissm__Proto__E2eePreKeyPayload *pre_key_context = org__e2eelab__skissm__proto__e2ee_pre_key_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
 
     /* Verify the signed pre-key */
+    bool old_spk = 0;
+    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk_data = NULL;
     if (local_account->signed_pre_key_pair->spk_id != pre_key_context->bob_signed_pre_key_id){
-        ssm_notify_error(BAD_SIGNED_PRE_KEY, "new_inbound_session()");
-        org__e2eelab__skissm__proto__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
-        return (size_t)(-1);
+        ssm_plugin.load_old_signed_pre_key(&(local_account->account_id), pre_key_context->bob_signed_pre_key_id, &old_spk_data);
+        if (old_spk_data == NULL){
+            ssm_notify_error(BAD_SIGNED_PRE_KEY, "new_inbound_session()");
+            org__e2eelab__skissm__proto__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
+            return (size_t)(-1);
+        } else{
+            old_spk = 1;
+        }
     }
 
     uint8_t x3dh_epoch = 3;
     copy_protobuf_from_protobuf(&(session->alice_identity_key), &(pre_key_context->alice_identity_key));
     copy_protobuf_from_protobuf(&(session->alice_ephemeral_key), &(pre_key_context->alice_ephemeral_key));
-    copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(local_account->signed_pre_key_pair->key_pair->public_key));
     session->bob_signed_pre_key_id = pre_key_context->bob_signed_pre_key_id;
+    if (old_spk == 0){
+        copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(local_account->signed_pre_key_pair->key_pair->public_key));
+    } else{
+        copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(old_spk_data->key_pair->public_key));
+    }
     if (pre_key_context->bob_one_time_pre_key_id != 0){
         x3dh_epoch = 4;
     }
@@ -214,7 +225,12 @@ size_t new_inbound_session(
     }
 
     const Org__E2eelab__Skissm__Proto__KeyPair *bob_identity_key = local_account->identity_key_pair;
-    const Org__E2eelab__Skissm__Proto__KeyPair *bob_signed_pre_key = local_account->signed_pre_key_pair->key_pair;
+    const Org__E2eelab__Skissm__Proto__KeyPair *bob_signed_pre_key;
+    if (old_spk == 0){
+        bob_signed_pre_key = local_account->signed_pre_key_pair->key_pair;
+    } else{
+        bob_signed_pre_key = old_spk_data->key_pair;
+    }
     const Org__E2eelab__Skissm__Proto__KeyPair *bob_one_time_pre_key;
     if (x3dh_epoch == 4){
         bob_one_time_pre_key = our_one_time_pre_key->key_pair;
@@ -239,6 +255,7 @@ size_t new_inbound_session(
     create_session_id(session);
 
     // release
+    org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(old_spk_data, NULL);
     unset(secret, sizeof(secret));
 
     // done

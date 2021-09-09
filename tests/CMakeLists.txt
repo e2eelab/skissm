@@ -66,6 +66,7 @@ set(TEST_SKISSM
     test_session_db
     test_unload
     test_spk_db
+    test_opk_db
   )
 
 if(NOT (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND BUILD_SHARED_LIBS))
@@ -114,3 +115,4 @@ add_test(Account_db test_account_db)
 add_test(Session_db test_session_db)
 add_test(Unload test_unload)
 add_test(SPK_db test_spk_db)
+add_test(OPK_db test_opk_db)

@@ -49,7 +49,7 @@ static void handle_publish_spk_response(publish_spk_response_handler *response_h
     // save to db
     if (response_handler->account->saved == true) {
         Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key_pair = response_handler->account->signed_pre_key_pair;
-        ssm_plugin.update_signed_pre_key(response_handler->account, signed_pre_key_pair);
+        ssm_plugin.update_signed_pre_key(&(response_handler->account->account_id), signed_pre_key_pair);
     }
 }
 
@@ -69,7 +69,7 @@ void supply_opks(struct supply_opks_handler *response_handler) {
     unsigned int i;
     if (response_handler->account->saved == true){
         for (i = 0; i < response_handler->account->n_one_time_pre_keys; i++){
-            ssm_plugin.add_one_time_pre_key(response_handler->account, response_handler->account->one_time_pre_keys[i]);
+            ssm_plugin.add_one_time_pre_key(&(response_handler->account->account_id), response_handler->account->one_time_pre_keys[i]);
         }
     }
 }

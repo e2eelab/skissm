@@ -294,6 +294,15 @@ static const char *ACCOUNT_LOAD_ONETIME_PRE_KEYPAIRS = "SELECT ONETIME_PRE_KEYPA
                                                        "ON ONETIME_PRE_KEYPAIR.KEYPAIR = KEYPAIR.ID "
                                                        "WHERE ACCOUNT.ACCOUNT_ID = (?);";
 
+static const char *ACCOUNT_LOAD_ONETIME_PRE_KEYPAIR = "SELECT ONETIME_PRE_KEYPAIR.ID "
+                                                      "FROM ACCOUNT_ONETIME_PRE_KEYPAIR "
+                                                      "INNER JOIN ACCOUNT "
+                                                      "ON ACCOUNT_ONETIME_PRE_KEYPAIR.ACCOUNT = ACCOUNT.ID "
+                                                      "INNER JOIN ONETIME_PRE_KEYPAIR "
+                                                      "ON ACCOUNT_ONETIME_PRE_KEYPAIR.ONETIME_PRE_KEYPAIR = "
+                                                      "ONETIME_PRE_KEYPAIR.ID "
+                                                      "WHERE ACCOUNT.ACCOUNT_ID = (?) AND ONETIME_PRE_KEYPAIR.OPK_ID = (?);";
+
 static const char *ACCOUNT_LOAD_NEXT_SIGNED_PRE_KEYPAIR_ID = "SELECT NEXT_SIGNED_PRE_KEY_ID "
                                                              "FROM ACCOUNT "
                                                              "WHERE ACCOUNT_ID = (?);";
@@ -326,6 +335,9 @@ static const char *ONETIME_PRE_KEYPAIR_INSERT = "INSERT INTO ONETIME_PRE_KEYPAIR
                                                 "(OPK_ID, USED, KEYPAIR) "
                                                 "VALUES (?, ?, ?);";
 
+static const char *ONETIME_PRE_KEYPAIR_DELETE = "DELETE FROM ONETIME_PRE_KEYPAIR "
+                                                "WHERE ID = (?);";
+
 static const char *ACCOUNT_INSERT = "INSERT INTO ACCOUNT "
                                     "(ACCOUNT_ID, "
                                     "VERSION, "
@@ -352,6 +364,9 @@ static const char *ACCOUNT_SIGNED_PRE_KEYPAIR_SELECT_MORE_THAN_2 = "SELECT SIGNE
 static const char *ACCOUNT_ONETIME_PRE_KEYPAIR_INSERT = "INSERT INTO ACCOUNT_ONETIME_PRE_KEYPAIR "
                                                         "(ACCOUNT, ONETIME_PRE_KEYPAIR) "
                                                         "VALUES (?, ?);";
+
+static const char *ACCOUNT_ONETIME_PRE_KEYPAIR_DELETE = "DELETE FROM ACCOUNT_ONETIME_PRE_KEYPAIR "
+                                                        "WHERE ACCOUNT = (?) AND ONETIME_PRE_KEYPAIR = (?);";
 
 static const char *ACCOUNT_UPDATE_ADDRESS = "UPDATE ACCOUNT "
                                             "SET ADDRESS = (?) "
@@ -380,8 +395,8 @@ static const char *ACCOUNT_UPDATE_IDENTITY_KEYPAIR = "UPDATE ACCOUNT "
                                                      "WHERE ACCOUNT_ID = (?);";
 
 static const char *ONETIME_PRE_KEYPAIR_UPDATE_USED = "UPDATE ONETIME_PRE_KEYPAIR "
-                                                     "SET USED = 0 "
-                                                     "WHERE OPK_ID = (?);";
+                                                     "SET USED = 1 "
+                                                     "WHERE ID = (?);";
 
 void test_db_begin() {
     // connect
@@ -868,7 +883,7 @@ void insert_account_one_time_pre_key_id(sqlite_int64 account_id, sqlite_int64 on
     sqlite3_finalize(stmt);
 }
 
-void update_identity_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+void update_identity_key(ProtobufCBinaryData *account_id,
                          Org__E2eelab__Skissm__Proto__KeyPair *identity_key_pair) {
     int key_pair_id = insert_key_pair(identity_key_pair);
 
@@ -878,7 +893,7 @@ void update_identity_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
 
     // bind
     sqlite3_bind_int(stmt, 1, key_pair_id);
-    sqlite3_bind_blob(stmt, 2, account->account_id.data, account->account_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, account_id->data, account_id->len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -887,13 +902,13 @@ void update_identity_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
     sqlite3_finalize(stmt);
 }
 
-void update_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+void update_signed_pre_key(ProtobufCBinaryData *account_id,
                            Org__E2eelab__Skissm__Proto__SignedPreKeyPair *signed_pre_key) {
     sqlite_int64 signed_pre_key_id = insert_signed_pre_key(signed_pre_key);
 
-    sqlite_int64 account_id = load_account_id(&(account->account_id));
+    sqlite_int64 id = load_account_id(account_id);
 
-    insert_account_signed_pre_key_id(account_id, signed_pre_key_id);
+    insert_account_signed_pre_key_id(id, signed_pre_key_id);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -901,7 +916,7 @@ void update_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
 
     // bind
     sqlite3_bind_int(stmt, 1, signed_pre_key_id);
-    sqlite3_bind_blob(stmt, 2, (const char *)account->account_id.data, account->account_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, (const char *)account_id->data, account_id->len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -994,7 +1009,7 @@ void remove_expired_signed_pre_key(ProtobufCBinaryData *account_id) {
     sqlite3_finalize(stmt);
 }
 
-void update_address(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+void update_address(ProtobufCBinaryData *account_id,
                     Org__E2eelab__Skissm__Proto__E2eeAddress *address) {
     int address_id = insert_address(address);
 
@@ -1004,7 +1019,7 @@ void update_address(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
 
     // bind
     sqlite3_bind_int(stmt, 1, address_id);
-    sqlite3_bind_blob(stmt, 2, account->account_id.data, account->account_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, account_id->data, account_id->len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -1013,7 +1028,7 @@ void update_address(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
     sqlite3_finalize(stmt);
 }
 
-void add_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+void add_one_time_pre_key(ProtobufCBinaryData *account_id,
                           Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *one_time_pre_key) {
     int one_time_pre_key_id = insert_one_time_pre_key(one_time_pre_key);
 
@@ -1022,7 +1037,7 @@ void add_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
     sqlite_prepare(ACCOUNT_ONETIME_PRE_KEYPAIR_INSERT, &stmt);
 
     // bind
-    sqlite3_bind_blob(stmt, 1, account->account_id.data, account->account_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 1, account_id->data, account_id->len, SQLITE_STATIC);
     sqlite3_bind_int(stmt, 2, one_time_pre_key_id);
 
     // step
@@ -1032,7 +1047,54 @@ void add_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
     sqlite3_finalize(stmt);
 }
 
-void remove_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account, uint32_t one_time_pre_key_id) {
+static void delete_one_time_pre_key(sqlite_int64 one_time_pre_key_id) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ONETIME_PRE_KEYPAIR_DELETE, &stmt);
+    sqlite3_bind_int(stmt, 1, one_time_pre_key_id);
+
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
+
+    // release
+    sqlite3_finalize(stmt);
+}
+
+static void delete_account_one_time_pre_key(sqlite_int64 account_id, sqlite_int64 one_time_pre_key_id){
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_ONETIME_PRE_KEYPAIR_DELETE, &stmt);
+    sqlite3_bind_int(stmt, 1, account_id);
+    sqlite3_bind_int(stmt, 2, one_time_pre_key_id);
+
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
+
+    // release
+    sqlite3_finalize(stmt);
+}
+
+void remove_one_time_pre_key(ProtobufCBinaryData *account_id, uint32_t one_time_pre_key_id){
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_ONETIME_PRE_KEYPAIR, &stmt);
+    sqlite_int64 a_id = load_account_id(account_id);
+
+    // bind
+    sqlite3_bind_blob(stmt, 1, account_id->data, account_id->len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 2, one_time_pre_key_id);
+
+    // step
+    if ((sqlite3_step(stmt) != SQLITE_DONE)){
+        sqlite_int64 id = sqlite3_column_int(stmt, 0);
+        delete_one_time_pre_key(id);
+        delete_account_one_time_pre_key(a_id, id);
+    }
+
+    // release
+    sqlite3_finalize(stmt);
+}
+
+static void mark_one_time_pre_key_as_used(sqlite_int64 one_time_pre_key_id){
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ONETIME_PRE_KEYPAIR_UPDATE_USED, &stmt);
@@ -1042,6 +1104,25 @@ void remove_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account, 
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
+
+    // release
+    sqlite3_finalize(stmt);
+}
+
+void update_one_time_pre_key(ProtobufCBinaryData *account_id, uint32_t one_time_pre_key_id) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_ONETIME_PRE_KEYPAIR, &stmt);
+
+    // bind
+    sqlite3_bind_blob(stmt, 1, account_id->data, account_id->len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 2, one_time_pre_key_id);
+
+    // step
+    if ((sqlite3_step(stmt) != SQLITE_DONE)){
+        sqlite_int64 id = sqlite3_column_int(stmt, 0);
+        mark_one_time_pre_key_as_used(id);
+    }
 
     // release
     sqlite3_finalize(stmt);
