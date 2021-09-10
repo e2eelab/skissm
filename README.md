@@ -32,6 +32,10 @@ cd build/tests
 ctest
 ```
 
+# Doc
+
+[SLISSM Whitepaper](doc/skissm-whitepaper-v1.1.pdf)
+
 # Licensing
 
 SKISSM is available under two licenses:
