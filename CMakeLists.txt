@@ -60,7 +60,6 @@ add_library(skissm
     src/session.c
     src/e2ee_protocol.c
     src/skissm.c
-
     src/error.c)
 
 add_subdirectory(lib)
