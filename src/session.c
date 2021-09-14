@@ -217,6 +217,7 @@ size_t new_inbound_session(
             return (size_t)(-1);
         } else{
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
+            ssm_plugin.update_one_time_pre_key(&(local_account->account_id), our_one_time_pre_key->opk_id);
             copy_protobuf_from_protobuf(&(session->bob_one_time_pre_key), &(our_one_time_pre_key->key_pair->public_key));
             session->bob_one_time_pre_key_id = our_one_time_pre_key->opk_id;
         }

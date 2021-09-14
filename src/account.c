@@ -291,6 +291,7 @@ void free_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account){
                 copy_one_time_pre_keys(new_one_time_pre_keys, temp, new_num);
             }
             for (i = 0; i < account->n_one_time_pre_keys; i++){
+                ssm_plugin.remove_one_time_pre_key(&(account->account_id), account->one_time_pre_keys[i]->opk_id);
                 org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked(account->one_time_pre_keys[i], NULL);
                 account->one_time_pre_keys[i] = NULL;
             }

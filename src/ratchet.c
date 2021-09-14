@@ -305,7 +305,13 @@ void encrypt_ratchet(
     const uint8_t *plaintext, size_t plaintext_length,
     Org__E2eelab__Skissm__Proto__E2eeMsgPayload **e2ee_msg_payload
 ) {
-    // Prepare sender_chain
+    if (ratchet->sender_chain != NULL){
+        if (ratchet->sender_chain->chain_key->index > MAX_MESSAGE_GAP){
+            org__e2eelab__skissm__proto__sender_chain_node__free_unpacked(ratchet->sender_chain, NULL);
+            ratchet->sender_chain = NULL;
+        }
+    }
+    /* Prepare a new sender chain if no available */
     if (ratchet->sender_chain == NULL) {
         ratchet->sender_chain = (Org__E2eelab__Skissm__Proto__SenderChainNode *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SenderChainNode));
         org__e2eelab__skissm__proto__sender_chain_node__init(ratchet->sender_chain);
