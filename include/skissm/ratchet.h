@@ -28,9 +28,6 @@
 
 typedef struct cipher cipher;
 
-static const size_t MAX_RECEIVER_CHAINS = 5;
-static const size_t MAX_SKIPPED_MESSAGE_KEYS = 40;
-
 static const size_t SHARED_KEY_LENGTH = SHA256_OUTPUT_LENGTH;
 static const size_t MESSAGE_KEY_LENGTH = AES256_KEY_LENGTH + AES256_IV_LENGTH;
 

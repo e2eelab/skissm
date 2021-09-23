@@ -100,8 +100,8 @@ void create_outbound_group_session(
 
     group_session->associated_data.len = AD_LENGTH;
     group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
-    memcpy(group_session->associated_data.data, group_session->chain_key.data, SHARED_KEY_LENGTH);
-    memcpy((group_session->associated_data.data) + SHARED_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    memcpy(group_session->associated_data.data, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
 
     ssm_plugin.store_group_session(group_session);
 
@@ -174,8 +174,8 @@ void create_inbound_group_session(
 
     group_session->associated_data.len = AD_LENGTH;
     group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
-    memcpy(group_session->associated_data.data, group_session->chain_key.data, SHARED_KEY_LENGTH);
-    memcpy((group_session->associated_data.data) + SHARED_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    memcpy(group_session->associated_data.data, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
 
     ssm_plugin.store_group_session(group_session);
 
