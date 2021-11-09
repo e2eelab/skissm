@@ -23,8 +23,8 @@ package org.e2eelab.skissm.proto;
 option java_outer_classname = "E2eeAddress";
 
 message e2ee_address {
-    string domain = 1;
-    string user_id = 2;
-    string device_id = 3;
-    string group_id = 4;
+    bytes domain = 1;
+    bytes user_id = 2;
+    bytes device_id = 3;
+    bytes group_id = 4;
 }

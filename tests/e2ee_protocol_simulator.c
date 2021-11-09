@@ -139,9 +139,9 @@ static void process_register_user_request(
     /* Generate a random address */
     Org__E2eelab__Skissm__Proto__E2eeAddress *random_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(random_address);
-    random_address->user_id = random_chars(32);
-    //random_address->domain = create_domain_str();
-    //random_address->device_id = random_chars(32);
+    create_domain(&(random_address->domain));
+    random_id(&(random_address->user_id), 32);
+    random_id(&(random_address->device_id), 32);
 
     copy_address_from_address(&(user_data_set[user_data_set_insert_pos].address), random_address);
 
@@ -163,20 +163,6 @@ static void process_register_user_request(
     response->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * response->payload.len);
     org__e2eelab__server__grpc__response_data__pack(response_data, response->payload.data);
 
-    print_hex("user_id", (uint8_t *)register_user_response_payload->address->user_id, strlen(register_user_response_payload->address->user_id));
-    print_hex("domain", (uint8_t *)register_user_response_payload->address->domain, strlen(register_user_response_payload->address->domain));
-    print_hex("device_id", (uint8_t *)register_user_response_payload->address->device_id, strlen(register_user_response_payload->address->device_id));
-    
-    Org__E2eelab__Server__Grpc__ResponseData *r = org__e2eelab__server__grpc__response_data__unpack(NULL, response->payload.len, response->payload.data);
-    printf("\n\n>>> ? %p\n\n", r);
-    Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload *rr = org__e2eelab__skissm__proto__register_user_response_payload__unpack(NULL, r->data.len, r->data.data);
-    printf("\n\n>>> ? %s\n", rr->address->user_id);
-    printf(">>> ? %s\n", rr->address->device_id);
-    printf(">>> ? %s\n", rr->address->domain);
-    
-    org__e2eelab__server__grpc__response_data__free_unpacked(r, NULL);
-    org__e2eelab__skissm__proto__register_user_response_payload__free_unpacked(rr, NULL);
-    
     /* release */
     org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
     org__e2eelab__skissm__proto__register_user_request_payload__free_unpacked(payload, NULL);
@@ -224,8 +210,8 @@ static void process_delete_user_request(
     org__e2eelab__server__grpc__response_data__pack(response_data, response->payload.data);
 
     /* release */
-    org__e2eelab__skissm__proto__delete_user_request_payload__free_unpacked(payload, NULL);
     org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
+    org__e2eelab__skissm__proto__delete_user_request_payload__free_unpacked(payload, NULL);
 }
 
 static void process_get_pre_key_bundle_request(
@@ -419,9 +405,8 @@ static void process_create_group_request(
     /* Generate a random address */
     Org__E2eelab__Skissm__Proto__E2eeAddress *random_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(random_address);
-    random_address->domain = create_domain_str();
-    random_address->group_id = random_chars(32);
-
+    create_domain(&(random_address->domain));
+    random_id(&(random_address->group_id), 32);
     copy_address_from_address(&(group_data_set[group_data_set_insert_pos].group_address), random_address);
 
     Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload *create_group_response_payload = (Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload *) malloc(sizeof(Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload));
@@ -466,8 +451,8 @@ static void process_create_group_request(
     group_data_set_insert_pos++;
 
     /* release */
-    org__e2eelab__skissm__proto__create_group_request_payload__free_unpacked(payload, NULL);
     org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
+    org__e2eelab__skissm__proto__create_group_request_payload__free_unpacked(payload, NULL);
     org__e2eelab__skissm__proto__create_group_response_payload__free_unpacked(create_group_response_payload, NULL);
 }
 

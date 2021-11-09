@@ -58,11 +58,11 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_address_
     "domain",
     1,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
+    PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
     offsetof(Org__E2eelab__Skissm__Proto__E2eeAddress, domain),
     NULL,
-    &protobuf_c_empty_string,
+    NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
@@ -70,11 +70,11 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_address_
     "user_id",
     2,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
+    PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
     offsetof(Org__E2eelab__Skissm__Proto__E2eeAddress, user_id),
     NULL,
-    &protobuf_c_empty_string,
+    NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
@@ -82,11 +82,11 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_address_
     "device_id",
     3,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
+    PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
     offsetof(Org__E2eelab__Skissm__Proto__E2eeAddress, device_id),
     NULL,
-    &protobuf_c_empty_string,
+    NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
@@ -94,11 +94,11 @@ static const ProtobufCFieldDescriptor org__e2eelab__skissm__proto__e2ee_address_
     "group_id",
     4,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_STRING,
+    PROTOBUF_C_TYPE_BYTES,
     0,   /* quantifier_offset */
     offsetof(Org__E2eelab__Skissm__Proto__E2eeAddress, group_id),
     NULL,
-    &protobuf_c_empty_string,
+    NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },

@@ -161,8 +161,8 @@ void test_load_outbound_group_session()
     // mock group address
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(group_address);
-    group_address->domain = create_domain_str();
-    group_address->group_id = random_chars(32);
+    create_domain(&(group_address->domain));
+    random_id(&(group_address->group_id), 32);
 
     // create outbound group session
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));
@@ -237,8 +237,8 @@ void test_load_inbound_group_session()
     // mock group address
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(group_address);
-    group_address->domain = create_domain_str();
-    group_address->group_id = random_chars(32);
+    create_domain(&(group_address->domain));
+    random_id(&(group_address->group_id), 32);
 
     // create inbound group session
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));

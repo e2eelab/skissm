@@ -67,15 +67,15 @@ bool is_equal_str(char *str1, char *str2)
 
 bool is_equal_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address1, Org__E2eelab__Skissm__Proto__E2eeAddress *address2)
 {
-  if (!safe_strcmp(address1->user_id, address2->user_id))
+  if (!is_equal_data(&(address1->user_id), &(address2->user_id)))
   {
     return false;
   }
-  if (!safe_strcmp(address1->domain, address2->domain))
+  if (!is_equal_data(&(address1->domain), &(address2->domain)))
   {
     return false;
   }
-  if (!safe_strcmp(address1->device_id, address2->device_id))
+  if (!is_equal_data(&(address1->device_id), &(address2->device_id)))
   {
     return false;
   }
@@ -309,9 +309,9 @@ void mock_address(Org__E2eelab__Skissm__Proto__E2eeAddress **address, const char
   *address = malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
   org__e2eelab__skissm__proto__e2ee_address__init((*address));
 
-  (*address)->user_id = strdup(user_id);
-  (*address)->domain = strdup(domain);
-  (*address)->device_id = strdup(device_id);
+  mock_data(&((*address)->user_id), user_id);
+  mock_data(&((*address)->domain), domain);
+  mock_data(&((*address)->device_id), device_id);
 }
 
 void mock_keypair(Org__E2eelab__Skissm__Proto__KeyPair **keypair, const char *public_key, const char *private_key)

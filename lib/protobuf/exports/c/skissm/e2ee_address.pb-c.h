@@ -26,14 +26,14 @@ typedef struct Org__E2eelab__Skissm__Proto__E2eeAddress Org__E2eelab__Skissm__Pr
 struct  Org__E2eelab__Skissm__Proto__E2eeAddress
 {
   ProtobufCMessage base;
-  char *domain;
-  char *user_id;
-  char *device_id;
-  char *group_id;
+  ProtobufCBinaryData domain;
+  ProtobufCBinaryData user_id;
+  ProtobufCBinaryData device_id;
+  ProtobufCBinaryData group_id;
 };
 #define ORG__E2EELAB__SKISSM__PROTO__E2EE_ADDRESS__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&org__e2eelab__skissm__proto__e2ee_address__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
+    , {0,NULL}, {0,NULL}, {0,NULL}, {0,NULL} }
 
 
 /* Org__E2eelab__Skissm__Proto__E2eeAddress methods */

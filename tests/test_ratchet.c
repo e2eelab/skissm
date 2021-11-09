@@ -353,7 +353,7 @@ int main() {
     }
 
     ProtobufCBinaryData session_id;
-    random_session_id(&session_id);
+    random_id(&session_id, SHA256_OUTPUT_LENGTH);
 
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 

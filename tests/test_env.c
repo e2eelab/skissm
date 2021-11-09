@@ -51,16 +51,17 @@ void tear_down()
 }
 
 // utility functions
-char *create_domain_str(){
-    char *domain_str = strdup(E2EELAB_DOMAIN);
-    return domain_str;
+void create_domain(ProtobufCBinaryData *domain){
+  domain->len = sizeof(E2EELAB_DOMAIN);
+  domain->data = (uint8_t *) malloc(sizeof(uint8_t) * domain->len);
+  memcpy(domain->data, E2EELAB_DOMAIN, domain->len);
 }
 
-void random_session_id(ProtobufCBinaryData *session_id)
+void random_id(ProtobufCBinaryData *id, size_t len)
 {
-  session_id->len = SHA256_OUTPUT_LENGTH;
-  session_id->data = (uint8_t *)malloc(SHA256_OUTPUT_LENGTH * sizeof(uint8_t));
-  ssm_plugin.handle_rg(session_id->data, SHA256_OUTPUT_LENGTH);
+  id->len = len;
+  id->data = (uint8_t *)malloc(len * sizeof(uint8_t));
+  ssm_plugin.handle_rg(id->data, len);
 }
 
 char *random_chars(size_t len) {

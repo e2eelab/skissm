@@ -166,10 +166,10 @@ static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ID = "DELETE FROM GROU
 static const char *ADDRESS_DROP_TABLE = "DROP TABLE IF EXISTS ADDRESS;";
 static const char *ADDRESS_CREATE_TABLE = "CREATE TABLE ADDRESS( "
                                           "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                                          "USER_ID TEXT, "
-                                          "DOMAIN TEXT NOT NULL, "
-                                          "DEVICE_ID TEXT, "
-                                          "GROUP_ID TEXT, "
+                                          "USER_ID BLOB, "
+                                          "DOMAIN BLOB NOT NULL, "
+                                          "DEVICE_ID BLOB, "
+                                          "GROUP_ID BLOB, "
                                           "UNIQUE (USER_ID, DOMAIN, DEVICE_ID, GROUP_ID));";
 
 static const char *KEYPAIR_DROP_TABLE = "DROP TABLE IF EXISTS KEYPAIR;";
@@ -439,7 +439,9 @@ void test_db_begin() {
     sqlite_execute(ACCOUNT_ONETIME_PRE_KEYPAIR_CREATE_TABLE);
 }
 
-void test_db_end() { sqlite3_close(db); }
+void test_db_end() {
+    sqlite3_close(db);
+}
 
 // this function is using for real user to take their id
 void load_id(ProtobufCBinaryData **account_id) {
@@ -545,9 +547,12 @@ void load_address(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__
     sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    (*address)->user_id = strdup((char *)sqlite3_column_text(stmt, 0));
-    (*address)->domain = strdup((char *)sqlite3_column_text(stmt, 1));
-    (*address)->device_id = strdup((char *)sqlite3_column_text(stmt, 2));
+    copy_protobuf_from_array(&((*address)->user_id), (uint8_t *)sqlite3_column_blob(stmt, 0),
+                             sqlite3_column_bytes(stmt, 0));
+    copy_protobuf_from_array(&((*address)->domain), (uint8_t *)sqlite3_column_blob(stmt, 1),
+                             sqlite3_column_bytes(stmt, 1));
+    copy_protobuf_from_array(&((*address)->device_id), (uint8_t *)sqlite3_column_blob(stmt, 2),
+                             sqlite3_column_bytes(stmt, 2));
 
     // release
     sqlite3_finalize(stmt);
@@ -729,7 +734,7 @@ void load_id_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address, Proto
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_ACCOUNT_ID_BY_ADDRESS, &stmt);
-    sqlite3_bind_text(stmt, 1, address->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_blob(stmt, 1, address->user_id.data, address->user_id.len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_ROW);
@@ -747,10 +752,10 @@ sqlite_int64 insert_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address) {
     sqlite_prepare(ADDRESS_INSERT, &stmt);
 
     // bind
-    sqlite3_bind_text(stmt, 1, address->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, address->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, address->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, address->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_blob(stmt, 1, address->user_id.data, address->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, address->domain.data, address->domain.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 3, address->device_id.data, address->device_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 4, address->group_id.data, address->group_id.len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -1137,7 +1142,7 @@ void load_inbound_session(ProtobufCBinaryData session_id, Org__E2eelab__Skissm__
 
     // bind
     sqlite3_bind_blob(stmt, 1, session_id.data, session_id.len, SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 2, owner->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_blob(stmt, 2, owner->user_id.data, owner->user_id.len, SQLITE_STATIC);
 
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
@@ -1208,8 +1213,8 @@ void load_outbound_session(Org__E2eelab__Skissm__Proto__E2eeAddress *owner,
     }
 
     // bind
-    sqlite3_bind_text(stmt, 1, owner->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, to->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_blob(stmt, 1, owner->user_id.data, owner->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, to->user_id.data, to->user_id.len, SQLITE_STATIC);
 
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
@@ -1245,9 +1250,9 @@ void unload_session(Org__E2eelab__Skissm__Proto__E2eeAddress *owner, Org__E2eela
     sqlite_prepare(SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO, &stmt);
 
     // bind
-    sqlite3_bind_text(stmt, 1, owner->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, from->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, to->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_blob(stmt, 1, owner->user_id.data, owner->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, from->user_id.data, from->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 3, to->user_id.data, to->user_id.len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -1268,10 +1273,10 @@ void load_outbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *sende
     }
 
     // bind
-    sqlite3_bind_text(stmt, 1, sender_address->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, sender_address->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, sender_address->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, group_address->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_blob(stmt, 1, sender_address->user_id.data, sender_address->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, sender_address->domain.data, sender_address->domain.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 3, sender_address->device_id.data, sender_address->device_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 4, group_address->group_id.data, group_address->group_id.len, SQLITE_STATIC);
 
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
@@ -1314,9 +1319,9 @@ void load_inbound_group_session(ProtobufCBinaryData group_session_id,
 
     // bind
     sqlite3_bind_blob(stmt, 1, group_session_id.data, group_session_id.len, SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 2, user_address->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, user_address->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, user_address->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_blob(stmt, 2, user_address->user_id.data, user_address->user_id.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 3, user_address->domain.data, user_address->domain.len, SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 4, user_address->device_id.data, user_address->device_id.len, SQLITE_STATIC);
 
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
@@ -1380,9 +1385,10 @@ void unload_group_session(Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_s
     sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS, &stmt);
 
     // bind
-
-    sqlite3_bind_text(stmt, 1, group_session->session_owner->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, group_session->group_address->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_blob(stmt, 1, group_session->session_owner->user_id.data, group_session->session_owner->user_id.len,
+                      SQLITE_STATIC);
+    sqlite3_bind_blob(stmt, 2, group_session->group_address->group_id.data, group_session->group_address->group_id.len,
+                      SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -1401,7 +1407,7 @@ void unload_inbound_group_session(Org__E2eelab__Skissm__Proto__E2eeAddress *user
     sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ID, &stmt);
 
     // bind
-    sqlite3_bind_text(stmt, 1, user_address->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_blob(stmt, 1, user_address->user_id.data, user_address->user_id.len, SQLITE_STATIC);
     sqlite3_bind_blob(stmt, 2, old_session_id->data, old_session_id->len, SQLITE_STATIC);
 
     // step

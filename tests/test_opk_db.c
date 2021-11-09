@@ -45,9 +45,9 @@ void test_update_one_time_pre_key(){
     /* Generate a random address */
     account->address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(account->address);
-    account->address->user_id = (char *) random_chars(32);
-    account->address->domain = create_domain_str();
-    account->address->device_id = (char *) random_chars(32);
+    create_domain(&(account->address->domain));
+    random_id(&(account->address->user_id), 32);
+    random_id(&(account->address->device_id), 32);
 
     /* Save to db */
     account->saved = true;
@@ -80,9 +80,9 @@ void test_remove_one_time_pre_key(){
     /* Generate a random address */
     account->address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(account->address);
-    account->address->user_id = (char *) random_chars(32);
-    account->address->domain = create_domain_str();
-    account->address->device_id = (char *) random_chars(32);
+    create_domain(&(account->address->domain));
+    random_id(&(account->address->user_id), 32);
+    random_id(&(account->address->device_id), 32);
 
     /* Save to db */
     account->saved = true;
