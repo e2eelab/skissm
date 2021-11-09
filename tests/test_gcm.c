@@ -23,7 +23,10 @@
 
 #include "mem_util.h"
 #include "crypto.h"
-#include "test_env.h"
+
+#include "test_util.h"
+
+const struct skissm_plugin ssm_plugin;
 
 int main(){
     uint8_t key[32] = "aes_gcm_key_aes_gcm_key_aes_keys";

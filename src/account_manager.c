@@ -34,8 +34,8 @@ static void handle_register_user_response(
 }
 
 static void handle_register_release(register_user_response_handler *response_handler) {
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(response_handler->account, NULL);
-    response_handler->account = NULL;
+    // org__e2eelab__skissm__proto__e2ee_account__free_unpacked(response_handler->account, NULL);
+    // response_handler->account = NULL;
 }
 
 register_user_response_handler register_user_response_handler_store = {

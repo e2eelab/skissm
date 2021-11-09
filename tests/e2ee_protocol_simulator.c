@@ -155,7 +155,7 @@ static void process_register_user_request(
     /* pack */
     response_data->code = OK;
     response_data->data.len = org__e2eelab__skissm__proto__register_user_response_payload__get_packed_size(register_user_response_payload);
-    response_data->data.data = (uint8_t *) malloc(sizeof(uint8_t) * response->payload.len);
+    response_data->data.data = (uint8_t *) malloc(sizeof(uint8_t) *  response_data->data.len);
     org__e2eelab__skissm__proto__register_user_response_payload__pack(register_user_response_payload, response_data->data.data);
 
     response->id = request->id;
@@ -272,7 +272,7 @@ static void process_get_pre_key_bundle_request(
 
     response_data->code = OK;
     response_data->data.len = org__e2eelab__skissm__proto__get_pre_key_bundle_response_payload__get_packed_size(get_pre_key_bundle_response_payload);
-    response_data->data.data = (uint8_t *) malloc(sizeof(uint8_t) * response->payload.len);
+    response_data->data.data = (uint8_t *) malloc(sizeof(uint8_t) * response_data->data.len);
     org__e2eelab__skissm__proto__get_pre_key_bundle_response_payload__pack(get_pre_key_bundle_response_payload, response_data->data.data);
 
 complete:
@@ -421,7 +421,7 @@ static void process_create_group_request(
     /* pack */
     response_data->code = OK;
     response_data->data.len = org__e2eelab__skissm__proto__create_group_response_payload__get_packed_size(create_group_response_payload);
-    response_data->data.data = (uint8_t *) malloc(sizeof(uint8_t) * response->payload.len);
+    response_data->data.data = (uint8_t *) malloc(sizeof(uint8_t) * response_data->data.len);
     org__e2eelab__skissm__proto__create_group_response_payload__pack(create_group_response_payload, response_data->data.data);
 
     response->id = request->id;
@@ -494,7 +494,7 @@ static void process_get_group_request(
 
     response_data->code = OK;
     response_data->data.len = org__e2eelab__skissm__proto__get_group_response_payload__get_packed_size(get_group_response_payload);
-    response_data->data.data = (uint8_t *) malloc(sizeof(uint8_t) * response->payload.len);
+    response_data->data.data = (uint8_t *) malloc(sizeof(uint8_t) * response_data->data.len);
     org__e2eelab__skissm__proto__get_group_response_payload__pack(get_group_response_payload, response_data->data.data);
 
 complete:

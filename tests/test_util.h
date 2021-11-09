@@ -21,6 +21,12 @@
 
 #include "skissm.h"
 
+// debug msg to console
+void print_msg(char *title, uint8_t *msg, size_t len);
+void print_error(char *error_msg, int error_code);
+void print_hex(char *title, uint8_t *msg, size_t msg_len);
+void print_result(char *title, bool success);
+
 // is_equal
 bool is_equal_data(ProtobufCBinaryData *data1, ProtobufCBinaryData *data2);
 bool is_equal_str(char *str1, char *str2);

@@ -30,6 +30,7 @@
 #include "mem_util.h"
 
 #include "test_env.h"
+#include "test_util.h"
 
 extern register_user_response_handler register_user_response_handler_store;
 
@@ -61,7 +62,7 @@ static void test_end(){
 }
 
 static void on_error(ErrorCode error_code, char *error_msg) {
-    printf("💀 ErrorCode: %d, ErrorMsg: %s\n", error_code, error_msg);
+    print_error(error_msg, error_code);
 }
 
 static void on_user_registered(Org__E2eelab__Skissm__Proto__E2eeAccount *account){
@@ -74,7 +75,7 @@ static void on_one2one_msg_received(
     Org__E2eelab__Skissm__Proto__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
-    printf("😊 on_one2one_msg_received: plaintext[len=%zu]: %s\n", plaintext_len, plaintext);
+    print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
     if (plaintext_store.plaintext != NULL){
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
     }

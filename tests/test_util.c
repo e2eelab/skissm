@@ -26,6 +26,35 @@ typedef int bool;
 #include "account.h"
 #include "mem_util.h"
 
+void print_hex(char *title, uint8_t *msg, size_t msg_len) {
+    printf("%s", title);
+    for (int i = 0; i < msg_len; i++) {
+        if (i % 16 == 0)
+            printf("\n| ");
+        printf("0x%02x ", msg[i]);
+
+        if (i % 8 == 7)
+            printf("| ");
+    }
+
+    printf("\n");
+}
+
+void print_msg(char *title, uint8_t *msg, size_t len) {
+  printf("😊 %s [msg len=%zu]: %.*s\n", title, len, (int)len, msg);
+}
+
+void print_error(char *error_msg, int error_code) {
+  printf("💀 [ErrorCode=%d]: %s\n", error_code, error_msg);
+}
+
+void print_result(char *title, bool success) {
+    if (success)
+        printf("%s: success\n", title);
+    else
+        printf("%s: failed\n", title);
+}
+
 bool is_equal_data(ProtobufCBinaryData *data1, ProtobufCBinaryData *data2)
 {
   if (data1->len != data2->len)

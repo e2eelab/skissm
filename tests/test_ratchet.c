@@ -23,6 +23,7 @@
 #include "mem_util.h"
 #include "ratchet.h"
 
+#include "test_util.h"
 #include "test_env.h"
 
 static const struct cipher CIPHER = CIPHER_INIT;
@@ -66,15 +67,15 @@ static void test_alice_to_bob(
 
     uint8_t *output;
     decrypt_length = decrypt_ratchet(bob_ratchet, ad, message, &output);
+    print_msg("output: ", output, decrypt_length);
 
-    printf("%s\n", output);
     bool result;
     assert(result = is_equal(plaintext, output, plaintext_length));
 
     if (result) {
-      printf("Decryption success!!!\n");
+      print_result("Decryption success!!!", true);
     } else {
-      printf("Decryption failed!!!\n");
+      print_result("Decryption failed!!!", false);
     }
 
     org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message, NULL);
@@ -119,9 +120,9 @@ static void test_bob_to_alice(
     bool result;
     assert(result = is_equal(plaintext, output, plaintext_length));
     if (result) {
-      printf("Decryption success!!!\n");
+      print_result("Decryption success!!!", true);
     } else {
-      printf("Decryption failed!!!\n");
+      print_result("Decryption failed!!!", false);
     }
 
     org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message, NULL);
@@ -167,18 +168,18 @@ static void test_out_of_order(
     bool result;
     assert(result = is_equal(plaintext_2, output_1, plaintext_2_length));
     if (result) {
-      printf("The first decryption success!!!\n");
+      print_result("The first decryption success!!!", true);
     } else {
-      printf("The first decryption failed!!!\n");
+      print_result("The first decryption failed!!!", false);
     }
 
     uint8_t *output_2;
     output_2_length = decrypt_ratchet(bob_ratchet, ad, message_1, &output_2);
     assert(result = is_equal(plaintext_1, output_2, plaintext_1_length));
     if (result) {
-      printf("The second decryption success!!!\n");
+      print_result("The second decryption success!!!", true);
     } else {
-      printf("The second decryption failed!!!\n");
+      print_result("The second decryption failed!!!!", false);
     }
 
     org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_1, NULL);
