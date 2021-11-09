@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package org.e2eelab.server.grpc.auth;
+
+option java_outer_classname = "LoginRequest";
+
+message login_request {
+    string userId = 1;
+    string userPass = 2;
+}

@@ -21,7 +21,7 @@
 
 cmake_minimum_required(VERSION 3.4)
 
-project(skissm VERSION 3.2.1 LANGUAGES CXX C)
+project(skissm VERSION 1.0.0 LANGUAGES CXX C)
 
 option(SKISSM_TESTS "Build tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)

@@ -36,8 +36,6 @@
 #include "test_env.h"
 #include "test_util.h"
 
-static const char DOMAIN[] = "e2eelab.org";
-
 void test_find_session()
 {
     setup();
@@ -163,12 +161,8 @@ void test_load_outbound_group_session()
     // mock group address
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(group_address);
-    group_address->domain.len = sizeof(DOMAIN);
-    group_address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
-    memcpy(group_address->domain.data, DOMAIN, sizeof(DOMAIN));
-    group_address->group_id.len = 32;
-    group_address->group_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_plugin.handle_rg(group_address->group_id.data, 32);
+    group_address->domain = create_domain_str();
+    group_address->group_id = random_chars(32);
 
     // create outbound group session
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));
@@ -232,8 +226,8 @@ void test_load_inbound_group_session()
 
     // create two addresses
     Org__E2eelab__Skissm__Proto__E2eeAddress *Alice, *Bob;
-    mock_address(&Alice, "alice", DOMAIN, "alice's device");
-    mock_address(&Bob, "bob", DOMAIN, "bob's device");
+    mock_address(&Alice, "alice", E2EELAB_DOMAIN, "alice's device");
+    mock_address(&Bob, "bob", E2EELAB_DOMAIN, "bob's device");
 
     // create member_addresses
     Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * 2);
@@ -243,12 +237,8 @@ void test_load_inbound_group_session()
     // mock group address
     Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(group_address);
-    group_address->domain.len = sizeof(DOMAIN);
-    group_address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
-    memcpy(group_address->domain.data, DOMAIN, sizeof(DOMAIN));
-    group_address->group_id.len = 32;
-    group_address->group_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_plugin.handle_rg(group_address->group_id.data, 32);
+    group_address->domain = create_domain_str();
+    group_address->group_id = random_chars(32);
 
     // create inbound group session
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = (Org__E2eelab__Skissm__Proto__E2eeGroupSession *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupSession));

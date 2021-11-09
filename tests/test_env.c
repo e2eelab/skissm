@@ -51,11 +51,32 @@ void tear_down()
 }
 
 // utility functions
+char *create_domain_str(){
+    char *domain_str = strdup(E2EELAB_DOMAIN);
+    return domain_str;
+}
+
 void random_session_id(ProtobufCBinaryData *session_id)
 {
   session_id->len = SHA256_OUTPUT_LENGTH;
   session_id->data = (uint8_t *)malloc(SHA256_OUTPUT_LENGTH * sizeof(uint8_t));
   ssm_plugin.handle_rg(session_id->data, SHA256_OUTPUT_LENGTH);
+}
+
+char *random_chars(size_t len) {
+    static char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,<.>~!@#$+-*";
+    char *str = NULL;
+    if (len) {
+        str = malloc(sizeof(char) * (len +1));
+        if (str) {
+            for (int n = 0;n < len;n++) {
+                int key = rand() % (int)(sizeof(charset) -1);
+                str[n] = charset[key];
+            }
+            str[len] = '\0';
+        }
+    }
+    return str;
 }
 
 void print_hex(char *title, uint8_t *msg, size_t msg_len)
@@ -70,7 +91,7 @@ void print_hex(char *title, uint8_t *msg, size_t msg_len)
     if (i % 8 == 7)
       printf("| ");
   }
-    
+
   printf("\n");
 }
 

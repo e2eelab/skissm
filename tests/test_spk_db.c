@@ -30,8 +30,6 @@
 #include "test_env.h"
 #include "test_util.h"
 
-static const char DOMAIN[] = "e2eelab.org";
-
 void test_load_old_signed_pre_key(){
     setup();
 
@@ -39,15 +37,10 @@ void test_load_old_signed_pre_key(){
     /* Generate a random address */
     account->address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(account->address);
-    account->address->user_id.len = 32;
-    account->address->user_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_plugin.handle_rg(account->address->user_id.data, 32);
-    account->address->domain.len = sizeof(DOMAIN);
-    account->address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
-    memcpy(account->address->domain.data, DOMAIN, sizeof(DOMAIN));
-    account->address->device_id.len = 32;
-    account->address->device_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_plugin.handle_rg(account->address->device_id.data, 32);
+    account->address->user_id = random_chars(32);
+    account->address->domain = create_domain_str();
+    account->address->device_id = random_chars(32);
+
     /* Save to db */
     account->saved = true;
     ssm_plugin.store_account(account);
@@ -88,15 +81,10 @@ void test_remove_expired_signed_pre_key(){
     /* Generate a random address */
     account->address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(account->address);
-    account->address->user_id.len = 32;
-    account->address->user_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_plugin.handle_rg(account->address->user_id.data, 32);
-    account->address->domain.len = sizeof(DOMAIN);
-    account->address->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * sizeof(DOMAIN));
-    memcpy(account->address->domain.data, DOMAIN, sizeof(DOMAIN));
-    account->address->device_id.len = 32;
-    account->address->device_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    ssm_plugin.handle_rg(account->address->device_id.data, 32);
+    account->address->user_id = (char *) random_chars(32);
+    account->address->domain = create_domain_str();
+    account->address->device_id = (char *) random_chars(32);
+
     /* Save to db */
     account->saved = true;
     ssm_plugin.store_account(account);

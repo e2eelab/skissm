@@ -25,12 +25,16 @@
 
 #include "skissm.h"
 
+#define E2EELAB_DOMAIN      "e2eelab.org\0"
+
 extern const char *db_name;
 
 void setup();
 void tear_down();
 
+char *create_domain_str();
 void random_session_id(ProtobufCBinaryData *session_id);
+char *random_chars(size_t len);
 void print_hex(char *title, uint8_t *msg, size_t msg_len);
 void print_result(char *title, bool success);
 

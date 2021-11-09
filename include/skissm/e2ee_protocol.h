@@ -138,46 +138,44 @@ void send_publish_spk_request(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
  * @brief send a supply opks response to messaging server
  *
  * @param request_id
- * @param request_opks_response
+ * @param response_data
  * @param handler
+ * @param user_address
  */
 void send_supply_opks_response(
     uint32_t request_id,
-    Org__E2eelab__Skissm__Proto__SupplyOpksResponsePayload
-        *request_opks_response,
-    supply_opks_handler *handler);
+    Org__E2eelab__Server__Grpc__ResponseData *response_data,
+    supply_opks_handler *handler,
+    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address);
 
 /**
  * @brief Send a create group response to messaging server
  *
  * @param request_id
- * @param create_group_response
+ * @param response_data
  */
 void send_create_group_response(
-    uint32_t request_id, Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload
-                             *create_group_response);
+    uint32_t request_id, Org__E2eelab__Server__Grpc__ResponseData *response_data);
 
 /**
  * @brief Send an add group members response to messaging server
  *
  * @param request_id
- * @param add_group_members_response
+ * @param response_data
  */
 void send_add_group_members_response(
     uint32_t request_id,
-    Org__E2eelab__Skissm__Proto__AddGroupMembersResponsePayload
-        *add_group_members_response);
+    Org__E2eelab__Server__Grpc__ResponseData *response_data);
 
 /**
  * @brief Send a remove group members response to messaging server
  *
  * @param request_id
- * @param remove_group_members_response
+ * @param response_data
  */
 void send_remove_group_members_response(
     uint32_t request_id,
-    Org__E2eelab__Skissm__Proto__RemoveGroupMembersResponsePayload
-        *remove_group_members_response);
+    Org__E2eelab__Server__Grpc__ResponseData *response_data);
 
 /**
  * @brief Send a get pre-key bundle request to messaging server

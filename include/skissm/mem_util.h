@@ -41,6 +41,8 @@ bool compare_member_addresses(
     Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses_2, size_t member_num_2
 );
 
+bool safe_strcmp(char *str1, char *str2);
+
 void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src);
 void copy_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src, size_t len);
 void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src);

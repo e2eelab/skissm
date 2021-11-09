@@ -315,7 +315,7 @@ static size_t perform_encrypt_session(
 
     Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *protocol_msg = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
     org__e2eelab__skissm__proto__e2ee_protocol_msg__init(protocol_msg);
-    protocol_msg->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__e2ee_msg;
+    protocol_msg->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__send_one2one_msg_request;
 
     protocol_msg->payload.len = org__e2eelab__skissm__proto__e2ee_message__get_packed_size(outbound_message);
     protocol_msg->payload.data = (uint8_t *) malloc(protocol_msg->payload.len);

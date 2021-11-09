@@ -37,22 +37,23 @@ bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2){
     return false;
 }
 
-bool compare_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address_1, Org__E2eelab__Skissm__Proto__E2eeAddress *address_2){
-    if ((address_1->user_id.len == address_2->user_id.len)
-        && (address_1->domain.len == address_2->domain.len)
-        && (address_1->device_id.len == address_2->device_id.len)
-        && (address_1->group_id.len == address_2->group_id.len)
-    ) {
-        if ((memcmp(address_1->user_id.data, address_2->user_id.data, address_1->user_id.len) == 0)
-            && (memcmp(address_1->domain.data, address_2->domain.data, address_1->domain.len) == 0)
-            && (memcmp(address_1->device_id.data, address_2->device_id.data, address_1->device_id.len) == 0)
-            && (memcmp(address_1->group_id.data, address_2->group_id.data, address_1->group_id.len) == 0)
-        ) {
-            return true;
-        }
+bool safe_strcmp(char *str1, char *str2) {
+    if (str1 == NULL && str2 == NULL)
+        return true;
+    if (str1 != NULL && str2 != NULL) {
+        return strcmp(str1, str2) == 0;
     }
-
     return false;
+}
+
+bool compare_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address_1, Org__E2eelab__Skissm__Proto__E2eeAddress *address_2){
+    if (address_1 == NULL || address_2 == NULL)
+        return false;
+
+    return safe_strcmp(address_1->user_id, address_2->user_id)
+        && safe_strcmp(address_1->domain, address_2->domain)
+        && safe_strcmp(address_1->device_id, address_2->device_id)
+        && safe_strcmp(address_1->group_id, address_2->group_id);
 }
 
 bool compare_member_addresses(
@@ -90,25 +91,17 @@ void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src
 void copy_address_from_address(Org__E2eelab__Skissm__Proto__E2eeAddress **dest, const Org__E2eelab__Skissm__Proto__E2eeAddress *src){
     *dest = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
     org__e2eelab__skissm__proto__e2ee_address__init(*dest);
-    if (src->user_id.data){
-        (*dest)->user_id.len = src->user_id.len;
-        (*dest)->user_id.data = (uint8_t *) malloc(sizeof(uint8_t) * src->user_id.len);
-        memcpy((*dest)->user_id.data, src->user_id.data, src->user_id.len);
+    if (src->user_id != NULL){
+        (*dest)->user_id = strdup(src->user_id);
     }
-    if (src->domain.data){
-        (*dest)->domain.len = src->domain.len;
-        (*dest)->domain.data = (uint8_t *) malloc(sizeof(uint8_t) * src->domain.len);
-        memcpy((*dest)->domain.data, src->domain.data, src->domain.len);
+    if (src->domain != NULL){
+        (*dest)->domain = strdup(src->domain);
     }
-    if (src->device_id.data){
-        (*dest)->device_id.len = src->device_id.len;
-        (*dest)->device_id.data = (uint8_t *) malloc(sizeof(uint8_t) * src->device_id.len);
-        memcpy((*dest)->device_id.data, src->device_id.data, src->device_id.len);
+    if (src->device_id != NULL){
+        (*dest)->device_id = strdup(src->device_id);
     }
-    if (src->group_id.data){
-        (*dest)->group_id.len = src->group_id.len;
-        (*dest)->group_id.data = (uint8_t *) malloc(sizeof(uint8_t) * src->group_id.len);
-        memcpy((*dest)->group_id.data, src->group_id.data, src->group_id.len);
+    if (src->group_id != NULL){
+        (*dest)->group_id = strdup(src->group_id);
     }
 }
 

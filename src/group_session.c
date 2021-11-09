@@ -232,7 +232,7 @@ void perform_encrypt_group_session(
     /* Prepare the e2ee protocol message */
     Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *protocol_msg = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
     org__e2eelab__skissm__proto__e2ee_protocol_msg__init(protocol_msg);
-    protocol_msg->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__e2ee_group_msg;
+    protocol_msg->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__send_group_msg_request;
 
     /* Pack the e2ee message into the e2ee protocol message */
     protocol_msg->payload.len = org__e2eelab__skissm__proto__e2ee_message__get_packed_size(group_message);

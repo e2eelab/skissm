@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package org.e2eelab.server.grpc;
+
+option java_outer_classname = "ResponseData";
+option cc_enable_arenas = true;
+
+message response_data {
+    uint32 code = 1;
+    string msg = 2;
+    bytes data = 3;
+}

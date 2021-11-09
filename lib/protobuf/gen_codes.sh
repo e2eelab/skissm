@@ -18,14 +18,14 @@
 #   protoc -I=. --objc_out=./exports/objc e2ee_address.proto
 #   protoc -I=. --swift_out=./exports/swift e2ee_address.proto
 
-langs="c java" # "c cpp java js objc swift"
+langs="c" # "c cpp java js objc swift"
 PWD=`pwd`
 for lang in $langs
 do
   dir=$PWD/exports/$lang
   mkdir -p $dir
-  for proto_file in $(ls *.proto)
+  for proto_file in $(find $PWD -name *.proto)
   do
-    protoc -I=. --"$lang"_out=$PWD/exports/$lang $proto_file
+    protoc --proto_path=$PWD --"$lang"_out=$PWD/exports/$lang $proto_file
   done
 done

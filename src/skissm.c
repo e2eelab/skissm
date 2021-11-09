@@ -32,7 +32,9 @@ void ssm_end() {
     protocol_end();
 }
 
-void set_skissm_event_handler(skissm_event_handler *event_handler) { ssm_event_handler = event_handler; }
+void set_skissm_event_handler(skissm_event_handler *event_handler) {
+    ssm_event_handler = event_handler;
+}
 
 void ssm_notify_error(ErrorCode error_code, char *error_msg) {
     if (ssm_event_handler != NULL)
