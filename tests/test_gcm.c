@@ -26,8 +26,6 @@
 
 #include "test_util.h"
 
-const struct skissm_plugin ssm_plugin;
-
 int main(){
     uint8_t key[32] = "aes_gcm_key_aes_gcm_key_aes_keys";
     uint8_t iv[16] = "aes_gcm_iv_aesiv";

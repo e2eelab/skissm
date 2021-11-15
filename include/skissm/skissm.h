@@ -82,98 +82,17 @@
 
 #define SIGNED_PRE_KEY_EXPIRATION 604800
 
-// callback handlers
-typedef struct skissm_event_handler {
-    /**
-     * @brief notify error
-     * @param error_code
-     * @param error_msg
-     */
-    void (*on_error)(ErrorCode, char *);
-    /**
-     * @brief notify user registered event
-     * @param account
-     */
-    void (*on_user_registered)(Org__E2eelab__Skissm__Proto__E2eeAccount *);
-    /**
-     * @brief notify one2one msg received event
-     * @param from_address
-     * @param to_address
-     * @param plaintext
-     * @param plaintext_len
-     */
-    void (*on_one2one_msg_received)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                    Org__E2eelab__Skissm__Proto__E2eeAddress *, uint8_t *, size_t);
-
-    /**
-     * @brief notify group msg received event
-     * @param from_address
-     * @param group_address
-     * @param plaintext
-     * @param plaintext_len
-     */
-    void (*on_group_msg_received)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                  Org__E2eelab__Skissm__Proto__E2eeAddress *, uint8_t *, size_t);
-
-    /**
-     * @brief notify group created event
-     * @param group_address
-     * @param group_name
-     */
-    void (*on_group_created)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *);
-
-    /**
-     * @brief notify group members added
-     * @param group_address
-     * @param group_name
-     * @param member_addresses
-     */
-    void (*on_group_members_added)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *,
-                                   Org__E2eelab__Skissm__Proto__E2eeAddress **);
-
-    /**
-     * @brief notify group members removed
-     * @param group_address
-     * @param group_name
-     * @param member_addresses
-     */
-    void (*on_group_members_removed)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *,
-                                     Org__E2eelab__Skissm__Proto__E2eeAddress **);
-} skissm_event_handler;
-
 void ssm_begin();
 
 void ssm_end();
 
-void set_skissm_event_handler(skissm_event_handler *event_handler);
-
-void ssm_notify_error(ErrorCode, char *);
-
-void ssm_notify_user_registered(Org__E2eelab__Skissm__Proto__E2eeAccount *account);
-
-void ssm_notify_one2one_msg(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
-                            Org__E2eelab__Skissm__Proto__E2eeAddress *to_address, uint8_t *plaintext,
-                            size_t plaintext_len);
-
-void ssm_notify_group_msg(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
-                          Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, uint8_t *plaintext,
-                          size_t plaintext_len);
-
-void ssm_notify_group_created(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, ProtobufCBinaryData *group_name);
-
-void ssm_notify_group_members_added(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
-                                    ProtobufCBinaryData *group_name,
-                                    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses);
-
-void ssm_notify_group_members_removed(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
-                                      ProtobufCBinaryData *group_name,
-                                      Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses);
+// skissm_plugin
 typedef struct skissm_plugin {
     // common handlers
     int64_t (*handle_get_ts)();
     void (*handle_rg)(uint8_t *, size_t);
     void (*handle_generate_uuid)(uint8_t uuid[UUID_LEN]);
-    int (*handle_send)(u_int8_t *, size_t);
+    int (*handle_send)(uint8_t *, size_t);
 
     // account related handlers
     /**
@@ -319,6 +238,91 @@ typedef struct skissm_plugin {
     void (*unload_inbound_group_session)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *);
 } skissm_plugin;
 
-extern const struct skissm_plugin ssm_plugin;
+// callback handlers
+typedef struct skissm_event_handler {
+    /**
+     * @brief notify error
+     * @param error_code
+     * @param error_msg
+     */
+    void (*on_error)(ErrorCode, char *);
+    /**
+     * @brief notify user registered event
+     * @param account
+     */
+    void (*on_user_registered)(Org__E2eelab__Skissm__Proto__E2eeAccount *);
+    /**
+     * @brief notify one2one msg received event
+     * @param from_address
+     * @param to_address
+     * @param plaintext
+     * @param plaintext_len
+     */
+    void (*on_one2one_msg_received)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
+                                    Org__E2eelab__Skissm__Proto__E2eeAddress *, uint8_t *, size_t);
+
+    /**
+     * @brief notify group msg received event
+     * @param from_address
+     * @param group_address
+     * @param plaintext
+     * @param plaintext_len
+     */
+    void (*on_group_msg_received)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
+                                  Org__E2eelab__Skissm__Proto__E2eeAddress *, uint8_t *, size_t);
+
+    /**
+     * @brief notify group created event
+     * @param group_address
+     * @param group_name
+     */
+    void (*on_group_created)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *);
+
+    /**
+     * @brief notify group members added
+     * @param group_address
+     * @param group_name
+     * @param member_addresses
+     */
+    void (*on_group_members_added)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *,
+                                   Org__E2eelab__Skissm__Proto__E2eeAddress **);
+
+    /**
+     * @brief notify group members removed
+     * @param group_address
+     * @param group_name
+     * @param member_addresses
+     */
+    void (*on_group_members_removed)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *,
+                                     Org__E2eelab__Skissm__Proto__E2eeAddress **);
+} skissm_event_handler;
+
+void set_ssm_plugin(skissm_plugin *plugin);
+
+skissm_plugin *get_ssm_plugin();
+
+void set_skissm_event_handler(skissm_event_handler *event_handler);
+
+void ssm_notify_error(ErrorCode, char *);
+
+void ssm_notify_user_registered(Org__E2eelab__Skissm__Proto__E2eeAccount *account);
+
+void ssm_notify_one2one_msg(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
+                            Org__E2eelab__Skissm__Proto__E2eeAddress *to_address, uint8_t *plaintext,
+                            size_t plaintext_len);
+
+void ssm_notify_group_msg(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
+                          Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, uint8_t *plaintext,
+                          size_t plaintext_len);
+
+void ssm_notify_group_created(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, ProtobufCBinaryData *group_name);
+
+void ssm_notify_group_members_added(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+                                    ProtobufCBinaryData *group_name,
+                                    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses);
+
+void ssm_notify_group_members_removed(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+                                      ProtobufCBinaryData *group_name,
+                                      Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses);
 
 #endif /* SKISSM_H_ */

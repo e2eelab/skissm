@@ -51,7 +51,7 @@ void test_update_one_time_pre_key(){
 
     /* Save to db */
     account->saved = true;
-    ssm_plugin.store_account(account);
+    get_ssm_plugin()->store_account(account);
 
     int used_opk = 10;
     uint32_t opk_id = account->one_time_pre_keys[used_opk]->opk_id;
@@ -86,7 +86,7 @@ void test_remove_one_time_pre_key(){
 
     /* Save to db */
     account->saved = true;
-    ssm_plugin.store_account(account);
+    get_ssm_plugin()->store_account(account);
 
     int origin_opk_num = account->n_one_time_pre_keys;
 

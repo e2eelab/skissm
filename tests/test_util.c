@@ -25,6 +25,7 @@ typedef int bool;
 
 #include "account.h"
 #include "mem_util.h"
+#include "test_util.h"
 
 void print_hex(char *title, uint8_t *msg, size_t msg_len) {
     printf("%s", title);

@@ -736,7 +736,7 @@ complete:
     org__e2eelab__skissm__proto__e2ee_message__free_unpacked(e2ee_msg, NULL);
 }
 
-void mock_protocol_receive(u_int8_t *msg, size_t msg_len){
+void mock_protocol_receive(uint8_t *msg, size_t msg_len){
     Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *client_msg = org__e2eelab__skissm__proto__e2ee_protocol_msg__unpack(NULL, msg_len, msg);
 
     Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *response = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));

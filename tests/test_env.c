@@ -31,22 +31,9 @@
 #include "e2ee_protocol.h"
 #include "e2ee_protocol_simulator.h"
 #include "mem_util.h"
+
 #include "test_util.h"
 #include "test_db.h"
-
-// test case interface
-
-void setup() {
-    test_db_begin();
-    ssm_begin();
-    protocol_simulator_begin();
-}
-
-void tear_down() {
-    test_db_end();
-    ssm_end();
-    protocol_simulator_end();
-}
 
 // utility functions
 void create_domain(ProtobufCBinaryData *domain) {
@@ -58,7 +45,7 @@ void create_domain(ProtobufCBinaryData *domain) {
 void random_id(ProtobufCBinaryData *id, size_t len) {
     id->len = len;
     id->data = (uint8_t *)malloc(len * sizeof(uint8_t));
-    ssm_plugin.handle_rg(id->data, len);
+    get_ssm_plugin()->handle_rg(id->data, len);
 }
 
 char *random_chars(size_t len) {
@@ -92,7 +79,7 @@ static void handle_rg(uint8_t *rand_out, size_t rand_out_len) {
 
 static void handle_generate_uuid(uint8_t uuid[UUID_LEN]) { handle_rg(uuid, UUID_LEN); }
 
-static int handle_send(u_int8_t *msg, size_t msg_len) {
+static int handle_send(uint8_t *msg, size_t msg_len) {
     mock_protocol_receive(msg, msg_len);
     return 0;
 }
@@ -188,7 +175,7 @@ static void on_group_msg_received(Org__E2eelab__Skissm__Proto__E2eeAddress *from
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-const struct skissm_plugin ssm_plugin = {
+struct skissm_plugin ssm_plugin = {
     // common
     handle_get_ts,
     handle_rg,
@@ -218,3 +205,18 @@ const struct skissm_plugin ssm_plugin = {
     unload_group_session,
     unload_inbound_group_session,
 };
+
+// test case interface
+
+void setup() {
+    set_ssm_plugin(&ssm_plugin);
+    test_db_begin();
+    ssm_begin();
+    protocol_simulator_begin();
+}
+
+void tear_down() {
+    test_db_end();
+    ssm_end();
+    protocol_simulator_end();
+}

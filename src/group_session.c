@@ -41,7 +41,7 @@ static void close_group_session(Org__E2eelab__Skissm__Proto__E2eeGroupSession *g
 static void advance_chain_key(
     ProtobufCBinaryData *chain_key, uint32_t iteration
 ) {
-    uint8_t shared_key[SHARED_KEY_LENGTH] = {0};
+    uint8_t shared_key[SHARED_KEY_LENGTH];
     CIPHER.suit1->hmac(
         chain_key->data, chain_key->len,
         CHAIN_KEY_SEED, sizeof(CHAIN_KEY_SEED),
@@ -103,7 +103,7 @@ void create_outbound_group_session(
     memcpy(group_session->associated_data.data, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
     memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
 
-    ssm_plugin.store_group_session(group_session);
+    get_ssm_plugin()->store_group_session(group_session);
 
     /* pack the group pre-key message */
     Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *group_pre_key_payload = (Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload));
@@ -177,7 +177,7 @@ void create_inbound_group_session(
     memcpy(group_session->associated_data.data, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
     memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
 
-    ssm_plugin.store_group_session(group_session);
+    get_ssm_plugin()->store_group_session(group_session);
 
     /* release */
     org__e2eelab__skissm__proto__e2ee_group_session__free_unpacked(group_session, NULL);
@@ -245,14 +245,14 @@ void perform_encrypt_group_session(
     org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(protocol_msg, message);
 
     /* send message to server */
-    ssm_plugin.handle_send(message, message_len);
+    get_ssm_plugin()->handle_send(message, message_len);
 
     /* Prepare a new chain key for next encryption */
     advance_chain_key(&(group_session->chain_key), group_session->sequence);
     group_session->sequence += 1;
 
     /* store sesson state */
-    ssm_plugin.store_group_session(group_session);
+    get_ssm_plugin()->store_group_session(group_session);
 
     /* release */
     org__e2eelab__skissm__proto__message_key__free_unpacked(keys, NULL);
@@ -268,7 +268,7 @@ void encrypt_group_session(
 ) {
     /* Load the outbound group session */
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = NULL;
-    ssm_plugin.load_outbound_group_session(sender_address, group_address, &group_session);
+    get_ssm_plugin()->load_outbound_group_session(sender_address, group_address, &group_session);
 
     /* Do the encryption */
     perform_encrypt_group_session(group_session, plaintext, plaintext_len);
@@ -283,7 +283,7 @@ void decrypt_group_session(
 ) {
     /* Load the inbound group session */
     Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = NULL;
-    ssm_plugin.load_inbound_group_session(group_msg->session_id, user_address, &group_session);
+    get_ssm_plugin()->load_inbound_group_session(group_msg->session_id, user_address, &group_session);
 
     if (group_session == NULL){
         ssm_notify_error(BAD_MESSAGE_FORMAT, "decrypt_group_session()");

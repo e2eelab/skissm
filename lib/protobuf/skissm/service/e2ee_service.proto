@@ -3,7 +3,7 @@ syntax = "proto3";
 package org.e2eelab.server.grpc.e2ee;
 
 option cc_enable_arenas = true;
-option cc_generic_services = true;
+option cc_generic_services = false;
 
 import "skissm/e2ee_protocol_msg.proto";
 import "skissm/register_user_request_payload.proto";

@@ -21,19 +21,19 @@
 
 cmake_minimum_required(VERSION 3.4)
 
-project(skissm VERSION 1.0.0 LANGUAGES CXX C)
+project(skissm VERSION 1.0.1 LANGUAGES CXX C)
 
 option(SKISSM_TESTS "Build tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
 set(PROJECT_VERSION_MAJOR 1)
 set(PROJECT_VERSION_MINOR 0)
-set(PROJECT_VERSION_PATCH 0)
+set(PROJECT_VERSION_PATCH 1)
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-set(PROJECT_VERSION_SO 1)
+set(PROJECT_VERSION_SO 1.0.1)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -48,7 +48,9 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-add_library(skissm
+add_subdirectory(lib)
+
+set(skissm_src
     src/account_manager.c
     src/account.c
     src/cipher.c
@@ -60,11 +62,10 @@ add_library(skissm
     src/session.c
     src/e2ee_protocol.c
     src/skissm.c
-    src/error.c)
+    src/error.c
+)
 
-add_subdirectory(lib)
-
-target_include_directories(skissm
+set(skissm_include
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -77,19 +78,55 @@ target_include_directories(skissm
         ${curve25519_DIR}/ed25519/additions/generalized
         ${curve25519_DIR}/ed25519/nacl_includes
         ${mbedtls_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib
+)
 
-set_target_properties(skissm PROPERTIES
+# skissm_static
+add_library(skissm_static STATIC
+    ${skissm_src}
+)
+
+target_include_directories(skissm_static
+    ${skissm_include}
+)
+
+set_target_properties(skissm_static PROPERTIES
     SOVERSION "${PROJECT_VERSION_SO}"
     VERSION "${PROJECT_VERSION}"
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
-# add_link_options(skissm "LINKER:-z,nodefs")
+target_link_libraries(skissm_static
+    curve25519
+    protobuf
+    mbedtls)
+
+if (SKISSM_TESTS)
+   add_subdirectory(tests)
+endif()
+
+# skissm_shared
+add_library(skissm_shared SHARED
+    ${skissm_src}
+)
+
+target_include_directories(skissm_shared
+    ${skissm_include}
+)
+
+set_target_properties(skissm_shared PROPERTIES
+    SOVERSION "${PROJECT_VERSION_SO}"
+    VERSION "${PROJECT_VERSION}"
+    POSITION_INDEPENDENT_CODE ON
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+
+add_link_options(skissm_shared "LINKER:-z,nodefs")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined,dynamic_lookup")
 
-target_link_libraries(skissm
+target_link_libraries(skissm_shared
     curve25519
     protobuf
     mbedtls)
@@ -99,21 +136,15 @@ target_link_libraries(skissm
 #
 include(GNUInstallDirs)
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/skissm)
-install(TARGETS skissm
-    EXPORT skissm-targets
+install(TARGETS skissm_static EXPORT skissm-targets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-# The exported target will be named skissm.
-set_target_properties(skissm PROPERTIES EXPORT_NAME skissm)
+# The exported target will be named skissm_static.
+set_target_properties(skissm_static PROPERTIES EXPORT_NAME skissm)
 install(FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/skissm/e2ee_protocol.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/skissm/account.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/skissm)
-
-
-if (SKISSM_TESTS)
-   add_subdirectory(tests)
-endif()

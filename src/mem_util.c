@@ -56,6 +56,8 @@ bool compare_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address_1, Org__E
         }
         return false;
     }
+
+    return false;
 }
 
 void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src) {

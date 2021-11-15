@@ -91,7 +91,7 @@ set(protobuf_SRCS
 
 # Add -fPIC flag
 if(BUILD_SHARED_LIBS)
-    add_library(protobuf OBJECT ${protobuf_SRCS})
+    add_library(protobuf SHARED ${protobuf_SRCS})
     set_property(TARGET protobuf PROPERTY POSITION_INDEPENDENT_CODE ON)
 else()
     add_library(protobuf STATIC ${protobuf_SRCS})

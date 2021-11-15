@@ -30,7 +30,7 @@ static Org__E2eelab__Skissm__Proto__E2eeAccount *local_account = NULL;
 
 void account_begin(){
     Org__E2eelab__Skissm__Proto__E2eeAccount **accounts = NULL;
-    size_t account_num = ssm_plugin.load_accounts(&accounts);
+    size_t account_num = get_ssm_plugin()->load_accounts(&accounts);
 
     if (account_num == 0){
         if (accounts != NULL){
@@ -44,14 +44,14 @@ void account_begin(){
     for (i = 0; i < account_num; i++){
         cur_account = accounts[i];
         /* Check if the signed pre-key expired */
-        now = ssm_plugin.handle_get_ts();
+        now = get_ssm_plugin()->handle_get_ts();
         if (now > cur_account->signed_pre_key_pair->ttl){
             generate_signed_pre_key(cur_account);
             publish_spk(cur_account);
         }
 
         /* Check and remove signed pre-keys (keep last two) */
-        ssm_plugin.remove_expired_signed_pre_key(&(cur_account->account_id));
+        get_ssm_plugin()->remove_expired_signed_pre_key(&(cur_account->account_id));
 
         /* Check if there are too many "used" one-time pre-keys */
         free_one_time_pre_key(cur_account);
@@ -84,7 +84,7 @@ Org__E2eelab__Skissm__Proto__E2eeAccount *create_account(){
     // Generate an account ID
     account->account_id.data = (uint8_t *) malloc(sizeof(uint8_t) * UUID_LEN);
     account->account_id.len = UUID_LEN;
-    ssm_plugin.handle_generate_uuid(account->account_id.data);
+    get_ssm_plugin()->handle_generate_uuid(account->account_id.data);
 
     // Generate the identity key pair
     account->identity_key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
@@ -108,7 +108,7 @@ Org__E2eelab__Skissm__Proto__E2eeAccount *get_local_account(Org__E2eelab__Skissm
         org__e2eelab__skissm__proto__e2ee_account__free_unpacked(local_account, NULL);
         local_account = NULL;
     }
-    ssm_plugin.load_account_by_address(address, &local_account);
+    get_ssm_plugin()->load_account_by_address(address, &local_account);
     return local_account;
 }
 
@@ -138,7 +138,7 @@ size_t generate_signed_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account
         CURVE25519_KEY_LENGTH,
         account->signed_pre_key_pair->signature.data);
 
-    int64_t now = ssm_plugin.handle_get_ts();
+    int64_t now = get_ssm_plugin()->handle_get_ts();
     account->signed_pre_key_pair->ttl = now + SIGNED_PRE_KEY_EXPIRATION;
 
     return 0;
@@ -291,7 +291,7 @@ void free_one_time_pre_key(Org__E2eelab__Skissm__Proto__E2eeAccount *account){
                 copy_one_time_pre_keys(new_one_time_pre_keys, temp, new_num);
             }
             for (i = 0; i < account->n_one_time_pre_keys; i++){
-                ssm_plugin.remove_one_time_pre_key(&(account->account_id), account->one_time_pre_keys[i]->opk_id);
+                get_ssm_plugin()->remove_one_time_pre_key(&(account->account_id), account->one_time_pre_keys[i]->opk_id);
                 org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked(account->one_time_pre_keys[i], NULL);
                 account->one_time_pre_keys[i] = NULL;
             }

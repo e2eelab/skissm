@@ -102,7 +102,7 @@ static void handle_add_group_members_response(
     }
 
     /* delete the old outbound group session */
-    ssm_plugin.unload_group_session(this_handler->outbound_group_session);
+    get_ssm_plugin()->unload_group_session(this_handler->outbound_group_session);
     ProtobufCBinaryData *old_session_id = &(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
@@ -156,7 +156,7 @@ static void handle_remove_group_members_response(
     }
 
     /* delete the old outbound group session */
-    ssm_plugin.unload_group_session(this_handler->outbound_group_session);
+    get_ssm_plugin()->unload_group_session(this_handler->outbound_group_session);
     ProtobufCBinaryData *old_session_id = &(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
@@ -206,7 +206,7 @@ size_t add_group_members(
     Org__E2eelab__Skissm__Proto__E2eeAddress **adding_member_addresses,
     size_t adding_member_num
 ) {
-    ssm_plugin.load_outbound_group_session(sender_address, group_address, &(add_group_members_response_handler_store.outbound_group_session));
+    get_ssm_plugin()->load_outbound_group_session(sender_address, group_address, &(add_group_members_response_handler_store.outbound_group_session));
     if (add_group_members_response_handler_store.outbound_group_session == NULL){
         ssm_notify_error(BAD_GROUP_SESSION, "add_group_members()");
         return (size_t)(-1);
@@ -225,7 +225,7 @@ void remove_group_members(
     Org__E2eelab__Skissm__Proto__E2eeAddress **removing_member_addresses,
     size_t removing_member_num
 ) {
-    ssm_plugin.load_outbound_group_session(sender_address, group_address, &(remove_group_members_response_handler_store.outbound_group_session));
+    get_ssm_plugin()->load_outbound_group_session(sender_address, group_address, &(remove_group_members_response_handler_store.outbound_group_session));
     remove_group_members_response_handler_store.removing_member_addresses = removing_member_addresses;
     remove_group_members_response_handler_store.removing_member_num = removing_member_num;
 

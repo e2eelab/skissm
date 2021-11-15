@@ -87,7 +87,7 @@ foreach(test IN ITEMS ${TEST_SKISSM})
           ${protobuf_DIR}
           ${protobuf_DIR}/lib
           ${mbedtls_DIR})
-  target_link_libraries(${test} db test_util test_env sqlite3 skissm)
+  target_link_libraries(${test} db test_util test_env sqlite3 skissm_static)
 endforeach(test)
 
 foreach(test IN ITEMS ${TEST_WS})
@@ -101,7 +101,7 @@ foreach(test IN ITEMS ${TEST_WS})
           ${mbedtls_DIR}
           ${websocketpp_DIR}
           ${asio_DIR})
-  target_link_libraries(${test} db test_util test_env sqlite3 skissm)
+  target_link_libraries(${test} db test_util test_env sqlite3 skissm_static)
 endforeach(test)
 
 file(COPY data DESTINATION .)

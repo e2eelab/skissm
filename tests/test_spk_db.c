@@ -43,7 +43,7 @@ void test_load_old_signed_pre_key(){
 
     /* Save to db */
     account->saved = true;
-    ssm_plugin.store_account(account);
+    get_ssm_plugin()->store_account(account);
 
     Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk = (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
     org__e2eelab__skissm__proto__signed_pre_key_pair__init(old_spk);
@@ -57,7 +57,7 @@ void test_load_old_signed_pre_key(){
 
     /* Generate a new signed pre-key pair */
     generate_signed_pre_key(account);
-    ssm_plugin.update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
+    get_ssm_plugin()->update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
 
     /* Load the old signed pre-key */
     Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk_copy = NULL;
@@ -87,15 +87,15 @@ void test_remove_expired_signed_pre_key(){
 
     /* Save to db */
     account->saved = true;
-    ssm_plugin.store_account(account);
+    get_ssm_plugin()->store_account(account);
 
     uint32_t old_spk_id = account->signed_pre_key_pair->spk_id;
 
     /* Generate a new signed pre-key pair */
     generate_signed_pre_key(account);
-    ssm_plugin.update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
+    get_ssm_plugin()->update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
     generate_signed_pre_key(account);
-    ssm_plugin.update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
+    get_ssm_plugin()->update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
 
     /* Remove expired signed pre-keys */
     remove_expired_signed_pre_key(&(account->account_id));

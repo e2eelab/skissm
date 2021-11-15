@@ -18,7 +18,7 @@
 #   protoc -I=. --objc_out=./exports/objc e2ee_address.proto
 #   protoc -I=. --swift_out=./exports/swift e2ee_address.proto
 
-langs="c" # "c cpp java js objc swift"
+langs="c cpp" # "c cpp java js objc swift"
 PWD=`pwd`
 for lang in $langs
 do
