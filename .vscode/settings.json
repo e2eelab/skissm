@@ -11,5 +11,8 @@
         "curve_sigs.h": "c",
         "cipher.h": "c",
         "crypto.h": "c"
+    },
+    "cmake.configureEnvironment": {
+        "OPENSSL_ROOT_DIR": "/opt/homebrew/opt/openssl"
     }
 }

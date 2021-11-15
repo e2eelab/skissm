@@ -1,17 +1,5 @@
-IF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-variable -Wno-unused-function -Wno-shadow")
-ENDIF(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
-
-IF(CMAKE_COMPILER_IS_GNUCC)
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-sign-compare")
-    IF(GCC_WARN_SIGN_CONVERSION)
-        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-sign-conversion")
-    ENDIF(GCC_WARN_SIGN_CONVERSION)
-ENDIF(CMAKE_COMPILER_IS_GNUCC)
-
-IF(CMAKE_C_COMPILER_ID MATCHES "Clang")
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-shorten-64-to-32")
-ENDIF(CMAKE_C_COMPILER_ID MATCHES "Clang")
+cmake_minimum_required(VERSION 3.14)
+project(curve25519)
 
 include_directories(
     ed25519/nacl_includes
@@ -103,8 +91,22 @@ set(ed25519_SRCS
 # Add -fPIC flag
 if(BUILD_SHARED_LIBS)
     add_library(curve25519 OBJECT ${curve25519_SRCS} ${ed25519_SRCS})
-    set_property(TARGET curve25519 PROPERTY POSITION_INDEPENDENT_CODE ON)
+    set_target_properties(curve25519 PROPERTIES POSITION_INDEPENDENT_CODE ON)
 else()
     add_library(curve25519 STATIC ${curve25519_SRCS} ${ed25519_SRCS})
-    set_property(TARGET curve25519 PROPERTY POSITION_INDEPENDENT_CODE OFF)
+    set_target_properties(curve25519 PROPERTIES POSITION_INDEPENDENT_CODE OFF)
 endif()
+
+target_compile_options(curve25519 PUBLIC 
+"$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-unused-variable>"
+"$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-unused-function>" 
+"$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-shadow>"
+"$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-shorten-64-to-32>" 
+"$<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-sign-compare>")
+
+IF(GCC_WARN_SIGN_CONVERSION)
+    target_compile_options(curve25519 PUBLIC "$<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-sign-conversion>")
+ENDIF(GCC_WARN_SIGN_CONVERSION)
+
+include(GNUInstallDirs)
+install(TARGETS curve25519 LIBRARY)

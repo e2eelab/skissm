@@ -20,9 +20,9 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.14)
-include(FetchContent)
-
 project(skissm VERSION 1.0.1 LANGUAGES CXX C)
+
+include(FetchContent)
 include(GNUInstallDirs)
 
 option(SKISSM_TESTS "Build tests" OFF)
@@ -31,27 +31,24 @@ option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 set(PROJECT_VERSION_SO 1.0.1)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-set(curve25519_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/curve25519")
+set(curve25519_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(protos_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protos")
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-# add_link_options(skissm "LINKER:-z,nodefs")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined,dynamic_lookup")
-
 FetchContent_Declare(
     mbedtls
     GIT_REPOSITORY https://github.com/ARMmbed/mbedtls.git
     GIT_TAG v3.0.0
 )
+message(STATUS "Fetching mbedtls")
 FetchContent_MakeAvailable(mbedtls)
-list(APPEND CMAKE_MODULE_PATH "${mbedtls_BINARY_DIR}/cmake")
-find_package(mbedtls PATHS ${mbedtls_BINARY_DIR} REQUIRED)
+
 find_package(Protobuf REQUIRED)
 find_package(gRPC REQUIRED)
-add_subdirectory(${curve25519_DIR})
+add_subdirectory(${curve25519_DIR}/curve25519)
 
 set(skissm_src
     src/account_manager.c
@@ -75,14 +72,17 @@ set(PROTO_DIS_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto-src)
 file(MAKE_DIRECTORY ${PROTO_DIS_DIR})
 
 FOREACH(proto ${PROTOS})
-    get_filename_component(proto_name ${proto} NAME)
-
-    if(EXISTS ${PROTO_SRC_DIR}/skissm/${proto_name})
-        EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${protos_DIR} --c_out=${PROTO_DIS_DIR} skissm/${proto_name} RESULT_VARIABLE rv)
-    elseif(EXISTS ${PROTO_DIS_DIR}/skissm/service/${proto_name})
-        EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${protos_DIR} --c_out=${PROTO_DIS_DIR} skissm/service/${proto_name} RESULT_VARIABLE rv)
+    get_filename_component(proto_name ${proto} NAME_WE)
+    message(STATUS "Converting ${proto}")
+    if(EXISTS ${PROTO_SRC_DIR}/skissm/${proto_name}.proto)
+        EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${protos_DIR} --c_out=${PROTO_DIS_DIR} --plugin=protoc-gen-grpc=grpc_cpp_plugin skissm/${proto_name}.proto RESULT_VARIABLE rv)
+        list(APPEND skissm_src ${PROTO_DIS_DIR}/skissm/${proto_name}.pb-c.c)
+    elseif(EXISTS ${PROTO_SRC_DIR}/skissm/service/${proto_name}.proto)
+        EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${protos_DIR} --c_out=${PROTO_DIS_DIR} --plugin=protoc-gen-grpc=grpc_cpp_plugin skissm/service/${proto_name}.proto RESULT_VARIABLE rv)
+        list(APPEND skissm_src ${PROTO_DIS_DIR}/skissm/service/${proto_name}.pb-c.c)
     else()
-        EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${protos_DIR} --c_out=${PROTO_DIS_DIR} skissm/service/dto/${proto_name} RESULT_VARIABLE rv)
+        EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${protos_DIR} --c_out=${PROTO_DIS_DIR} --plugin=protoc-gen-grpc=grpc_cpp_plugin skissm/service/dto/${proto_name}.proto RESULT_VARIABLE rv)
+        list(APPEND skissm_src ${PROTO_DIS_DIR}/skissm/service/dto/${proto_name}.pb-c.c)
     endif()
     
     # Optional, but that can show the user if something have gone wrong with the proto generation 
@@ -91,8 +91,6 @@ FOREACH(proto ${PROTOS})
     ENDIF()
 ENDFOREACH(proto)
 
-
-
 set(skissm_include
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
@@ -100,12 +98,11 @@ set(skissm_include
     PRIVATE
         ${Protobuf_INCLUDE_DIRS}
         ${PROTO_DIS_DIR}
+        ${PROTO_DIS_DIR}/service
+        ${PROTO_DIS_DIR}/service/dto
         ${curve25519_DIR}
-        ${curve25519_DIR}/ed25519
-        ${curve25519_DIR}/ed25519/additions
-        ${curve25519_DIR}/ed25519/additions/generalized
-        ${curve25519_DIR}/ed25519/nacl_includes
-        ${mbedtls_DIR}/include
+        ${curve25519_DIR}/curve25519/ed25519
+        ${mbedtls_BINARY_DIR}/include
 )
 
 if (CMAKE_GENERATOR MATCHES "Xcode")
@@ -120,7 +117,6 @@ if (CMAKE_GENERATOR MATCHES "Xcode")
     )
 endif()
 
-
 # skissm_static
 add_library(skissm_static STATIC
     ${skissm_src}
@@ -134,9 +130,9 @@ target_compile_features(skissm_static PRIVATE
     c_std_99
     cxx_std_14
 )
+
 set_target_properties(skissm_static PROPERTIES
-	EXPORT_NAME skissm
-    POSITION_INDEPENDENT_CODE ON
+    POSITION_INDEPENDENT_CODE OFF
     WINDOWS_EXPORT_ALL_SYMBOLS ON
     SOVERSION "${PROJECT_VERSION_SO}"
     VERSION "${CMAKE_PROJECT_VERSION}"
@@ -149,12 +145,13 @@ target_link_options(skissm_static PUBLIC "LINKER:-undefined,dynamic_lookup")
 add_dependencies(skissm_static mbedtls curve25519)
 
 target_link_libraries(skissm_static
-    PUBLIC MbedTLS::mbedtls
-           MbedTLS::mbedcrypto
-           MbedTLS::mbedx509
-           curve25519
-           gRPC::grpc
-           Protobuf
+    PUBLIC 
+        mbedtls 
+        mbedx509 
+        mbedcrypto
+        curve25519
+        gRPC::grpc
+        Protobuf
 )
 
 # skissm_shared
@@ -165,7 +162,6 @@ add_library(skissm_shared SHARED
 target_include_directories(skissm_shared
     ${skissm_include}
 )
-
 
 target_compile_features(skissm_shared PRIVATE 
     c_std_99
@@ -185,12 +181,13 @@ set_target_properties(skissm_shared PROPERTIES
 target_link_options(skissm_shared PUBLIC "LINKER:-undefined,dynamic_lookup")
 add_dependencies(skissm_shared mbedtls curve25519)
 target_link_libraries(skissm_static
-    PUBLIC MbedTLS::mbedtls
-           MbedTLS::mbedcrypto
-           MbedTLS::mbedx509
-           curve25519
-           gRPC::grpc
-           Protobuf
+    PUBLIC 
+    mbedtls 
+    mbedx509 
+    mbedcrypto
+    curve25519
+    gRPC::grpc
+    Protobuf
 )
 
 
