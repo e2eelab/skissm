@@ -19,36 +19,39 @@
 #
 ################################################################################
 
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.14)
+include(FetchContent)
 
 project(skissm VERSION 1.0.1 LANGUAGES CXX C)
+include(GNUInstallDirs)
 
-option(SKISSM_TESTS "Build tests" ON)
+option(SKISSM_TESTS "Build tests" OFF)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
-set(PROJECT_VERSION_MAJOR 1)
-set(PROJECT_VERSION_MINOR 0)
-set(PROJECT_VERSION_PATCH 1)
-set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 set(PROJECT_VERSION_SO 1.0.1)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(curve25519_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/curve25519")
-set(mbedtls_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/mbedtls")
-set(protobuf_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/protobuf/exports/c")
+set(protos_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protos")
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-add_subdirectory(lib)
+# add_link_options(skissm "LINKER:-z,nodefs")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined,dynamic_lookup")
+
+FetchContent_Declare(
+    mbedtls
+    GIT_REPOSITORY https://github.com/ARMmbed/mbedtls.git
+    GIT_TAG v3.0.0
+)
+FetchContent_MakeAvailable(mbedtls)
+list(APPEND CMAKE_MODULE_PATH "${mbedtls_BINARY_DIR}/cmake")
+find_package(mbedtls PATHS ${mbedtls_BINARY_DIR} REQUIRED)
+find_package(Protobuf REQUIRED)
+find_package(gRPC REQUIRED)
+add_subdirectory(${curve25519_DIR})
 
 set(skissm_src
     src/account_manager.c
@@ -65,21 +68,58 @@ set(skissm_src
     src/error.c
 )
 
+
+FILE(GLOB_RECURSE PROTOS "${protos_DIR}" *.proto)
+set(PROTO_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protos)
+set(PROTO_DIS_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto-src)
+file(MAKE_DIRECTORY ${PROTO_DIS_DIR})
+
+FOREACH(proto ${PROTOS})
+    get_filename_component(proto_name ${proto} NAME)
+
+    if(EXISTS ${PROTO_SRC_DIR}/skissm/${proto_name})
+        EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${protos_DIR} --c_out=${PROTO_DIS_DIR} skissm/${proto_name} RESULT_VARIABLE rv)
+    elseif(EXISTS ${PROTO_DIS_DIR}/skissm/service/${proto_name})
+        EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${protos_DIR} --c_out=${PROTO_DIS_DIR} skissm/service/${proto_name} RESULT_VARIABLE rv)
+    else()
+        EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${protos_DIR} --c_out=${PROTO_DIS_DIR} skissm/service/dto/${proto_name} RESULT_VARIABLE rv)
+    endif()
+    
+    # Optional, but that can show the user if something have gone wrong with the proto generation 
+    IF(${rv})
+        MESSAGE("Generation of data model returned ${rv} for dir:${proto_dir} name:{proto_name}")
+    ENDIF()
+ENDFOREACH(proto)
+
+
+
 set(skissm_include
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     PRIVATE
-        ${protobuf_DIR}
-        ${protobuf_DIR}/lib
+        ${Protobuf_INCLUDE_DIRS}
+        ${PROTO_DIS_DIR}
         ${curve25519_DIR}
         ${curve25519_DIR}/ed25519
         ${curve25519_DIR}/ed25519/additions
         ${curve25519_DIR}/ed25519/additions/generalized
         ${curve25519_DIR}/ed25519/nacl_includes
         ${mbedtls_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib
 )
+
+if (CMAKE_GENERATOR MATCHES "Xcode")
+    set_xcode_property(skissm 
+        PRODUCT_BUNDLE_IDENTIFIER "org.e2eelab.skissm" All
+    )
+    set_xcode_property(skissm 
+        CODE_SIGN_IDENTITY "iPhone Developer" All
+    )
+    set_xcode_property(skissm 
+        DEVELOPMENT_TEAM FCU7D4F89K All
+    )
+endif()
+
 
 # skissm_static
 add_library(skissm_static STATIC
@@ -90,21 +130,32 @@ target_include_directories(skissm_static
     ${skissm_include}
 )
 
+target_compile_features(skissm_static PRIVATE 
+    c_std_99
+    cxx_std_14
+)
 set_target_properties(skissm_static PROPERTIES
+	EXPORT_NAME skissm
+    POSITION_INDEPENDENT_CODE ON
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
     SOVERSION "${PROJECT_VERSION_SO}"
-    VERSION "${PROJECT_VERSION}"
+    VERSION "${CMAKE_PROJECT_VERSION}"
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+)
+
+target_link_options(skissm_static PUBLIC "LINKER:-undefined,dynamic_lookup")
+add_dependencies(skissm_static mbedtls curve25519)
 
 target_link_libraries(skissm_static
-    curve25519
-    protobuf
-    mbedtls)
-
-if (SKISSM_TESTS)
-   add_subdirectory(tests)
-endif()
+    PUBLIC MbedTLS::mbedtls
+           MbedTLS::mbedcrypto
+           MbedTLS::mbedx509
+           curve25519
+           gRPC::grpc
+           Protobuf
+)
 
 # skissm_shared
 add_library(skissm_shared SHARED
@@ -115,26 +166,37 @@ target_include_directories(skissm_shared
     ${skissm_include}
 )
 
+
+target_compile_features(skissm_shared PRIVATE 
+    c_std_99
+    cxx_std_14
+)
+
 set_target_properties(skissm_shared PROPERTIES
-    SOVERSION "${PROJECT_VERSION_SO}"
-    VERSION "${PROJECT_VERSION}"
     POSITION_INDEPENDENT_CODE ON
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
+    SOVERSION "${PROJECT_VERSION_SO}"
+    VERSION "${CMAKE_PROJECT_VERSION}"
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+)
 
-add_link_options(skissm_shared "LINKER:-z,nodefs")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined,dynamic_lookup")
+target_link_options(skissm_shared PUBLIC "LINKER:-undefined,dynamic_lookup")
+add_dependencies(skissm_shared mbedtls curve25519)
+target_link_libraries(skissm_static
+    PUBLIC MbedTLS::mbedtls
+           MbedTLS::mbedcrypto
+           MbedTLS::mbedx509
+           curve25519
+           gRPC::grpc
+           Protobuf
+)
 
-target_link_libraries(skissm_shared
-    curve25519
-    protobuf
-    mbedtls)
 
 #
 # Installation
 #
-include(GNUInstallDirs)
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/skissm)
 install(TARGETS skissm_static EXPORT skissm-targets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -142,9 +204,12 @@ install(TARGETS skissm_static EXPORT skissm-targets
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-# The exported target will be named skissm_static.
-set_target_properties(skissm_static PROPERTIES EXPORT_NAME skissm)
 install(FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/skissm/e2ee_protocol.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/skissm/account.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/skissm)
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/skissm
+)
+
+if (SKISSM_TESTS)
+   add_subdirectory(tests)
+endif()

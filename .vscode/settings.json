@@ -1,0 +1,15 @@
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    // "cmake.configureSettings": {
+    //     "CMAKE_TOOLCHAIN_FILE": "../cmake/ios.toolchain.cmake",
+    //     "PLATFORM": "OS64COMBINED"
+    // },
+    // "cmake.generator": "Xcode",
+    "files.associations": {
+        "cstring": "c",
+        "locale": "c",
+        "curve_sigs.h": "c",
+        "cipher.h": "c",
+        "crypto.h": "c"
+    }
+}
