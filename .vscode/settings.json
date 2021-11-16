@@ -14,5 +14,6 @@
     },
     "cmake.configureEnvironment": {
         "OPENSSL_ROOT_DIR": "/opt/homebrew/opt/openssl"
-    }
+    },
+    "cmake.loggingLevel": "debug"
 }
