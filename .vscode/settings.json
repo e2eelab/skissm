@@ -1,19 +1,37 @@
 {
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    
+    // iOS Config
     // "cmake.configureSettings": {
     //     "CMAKE_TOOLCHAIN_FILE": "../cmake/ios.toolchain.cmake",
     //     "PLATFORM": "OS64COMBINED"
     // },
     // "cmake.generator": "Xcode",
+
+    // Android Config
+    // "cmake.configureSettings": {
+    //     "ANDROID_ABI": "arm64-v8a",
+    //     "ANDROID_PLATFORM": "android-28",
+    //     "ANDROID_NDK": "${env:ANDROID_NDK_HOME}",
+    //     "CMAKE_TOOLCHAIN_FILE": "${env:ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake",
+    //     "BUILD_SHARED_LIBS": "ON",
+    //     "gRPC_PROTOBUF_PROVIDER":"package",
+    //     // "gRPC_PROTOBUF_PACKAGE_TYPE": "CONFIG"
+    //     "protobuf_BUILD_TESTS": "OFF"
+    // },
+    // "cmake.generator": "Ninja",
+
     "files.associations": {
         "cstring": "c",
         "locale": "c",
         "curve_sigs.h": "c",
         "cipher.h": "c",
-        "crypto.h": "c"
+        "crypto.h": "c",
+        "test_env.h": "c",
+        "*.inc": "cpp"
     },
     "cmake.configureEnvironment": {
         "OPENSSL_ROOT_DIR": "/opt/homebrew/opt/openssl"
     },
-    "cmake.loggingLevel": "debug"
+    "cmake.loggingLevel": "debug",
 }

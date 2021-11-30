@@ -1,0 +1,6 @@
+[submodule "lib/mbedtls"]
+	path = lib/mbedtls
+	url = https://github.com/ARMmbed/mbedtls.git
+[submodule "lib/protobuf-c"]
+	path = lib/protobuf-c
+	url = https://github.com/protobuf-c/protobuf-c.git
