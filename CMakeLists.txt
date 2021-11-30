@@ -49,6 +49,7 @@ set(lib_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(curve25519_DIR "${lib_DIR}/curve25519")
 set(mbedtls_DIR "${lib_DIR}/mbedtls")
 set(protobuf-c_DIR "${lib_DIR}/protobuf-c")
+set(sqlite3_DIR "${lib_DIR}/sqlite3")
 
 list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake"

@@ -18,5 +18,3 @@
 #  along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-
-add_subdirectory(sqlite3)

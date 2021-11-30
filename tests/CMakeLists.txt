@@ -22,7 +22,6 @@ enable_testing()
 
 set(websocketpp_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/websocketpp")
 set(asio_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/asio")
-set(sqlite3_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/sqlite3")
 
 add_subdirectory(lib)
 
