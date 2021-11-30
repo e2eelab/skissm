@@ -32,8 +32,8 @@ add_library(db STATIC
 target_include_directories(db
     PRIVATE
         ${sqlite3_DIR}
-        ${protobuf_DIR}
-        ${protobuf_DIR}/lib
+        $<BUILD_INTERFACE:${protobuf-c_DIR}>
+        $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>)
 
 add_library(test_env STATIC
@@ -43,8 +43,8 @@ add_library(test_env STATIC
 target_include_directories(test_env
     PRIVATE
         ${sqlite3_DIR}
-        ${protobuf_DIR}
-        ${protobuf_DIR}/lib
+        $<BUILD_INTERFACE:${protobuf-c_DIR}>
+        $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>)
 
 add_library(test_util STATIC
@@ -52,8 +52,8 @@ add_library(test_util STATIC
 
 target_include_directories(test_util
     PRIVATE
-        ${protobuf_DIR}
-        ${protobuf_DIR}/lib
+        $<BUILD_INTERFACE:${protobuf-c_DIR}>
+        $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>)
 
 set(TEST_SKISSM
@@ -81,12 +81,12 @@ endif()
 foreach(test IN ITEMS ${TEST_SKISSM})
   add_executable(${test} ${test}.c)
   target_include_directories(${test}
-      PRIVATE
-          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>
-          ${sqlite3_DIR}
-          ${protobuf_DIR}
-          ${protobuf_DIR}/lib
-          ${mbedtls_DIR})
+    PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>
+        ${sqlite3_DIR}
+        $<BUILD_INTERFACE:${protobuf-c_DIR}>
+        $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
+        ${mbedtls_DIR})
   target_link_libraries(${test} db test_util test_env sqlite3 skissm_static)
 endforeach(test)
 
@@ -96,8 +96,8 @@ foreach(test IN ITEMS ${TEST_WS})
       PRIVATE
           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>
           ${sqlite3_DIR}
-          ${protobuf_DIR}
-          ${protobuf_DIR}/lib
+          $<BUILD_INTERFACE:${protobuf-c_DIR}>
+          $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
           ${mbedtls_DIR}
           ${websocketpp_DIR}
           ${asio_DIR})

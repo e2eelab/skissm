@@ -29,17 +29,16 @@ set(CMAKE_POLICY_DEFAULT_CMP0079 NEW)
 include(FetchContent)
 include(GNUInstallDirs)
 
-option(SKISSM_TESTS "Build tests" OFF)
+option(SKISSM_TESTS "Build tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
 set(PROJECT_VERSION_SO 1.0.1)
-list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew" "/opt/homebrew/opt")
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(ENABLE_TESTING OFF)
+set(ENABLE_TESTING ON)
 set(BENCHMARK_ENABLE_TESTING OFF)
 set(ENABLE_PROGRAMS OFF)
 set(USE_SHARED_MBEDTLS_LIBRARY ON)
@@ -51,14 +50,20 @@ set(curve25519_DIR "${lib_DIR}/curve25519")
 set(mbedtls_DIR "${lib_DIR}/mbedtls")
 set(protobuf-c_DIR "${lib_DIR}/protobuf-c")
 
-list(APPEND CMAKE_MODULE_PATH 
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake" 
+list(APPEND CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
 )
 
 add_subdirectory(${curve25519_DIR})
 add_subdirectory(${mbedtls_DIR})
-find_package(gRPC REQUIRED)
-find_package(Protobuf REQUIRED)
+
+if(NOT TARGET grpc)
+    find_package(gRPC REQUIRED)
+endif()
+
+if(NOT TARGET libprotobuf)
+    find_package(Protobuf REQUIRED)
+endif()
 
 # Patch Protobuf-c bug https://github.com/protobuf-c/protobuf-c/pull/482
 configure_file(
@@ -87,7 +92,7 @@ set(PROTO_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protos)
 set(PROTO_DIS_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto-src)
 file(MAKE_DIRECTORY ${PROTO_DIS_DIR})
 
-FILE(GLOB skissm_PROTOS 
+FILE(GLOB skissm_PROTOS
     ${PROTO_SRC_DIR}/skissm/*.proto
     ${PROTO_SRC_DIR}/skissm/service/*.proto
     ${PROTO_SRC_DIR}/skissm/service/dto/*.proto
@@ -106,7 +111,7 @@ FOREACH(proto ${skissm_PROTOS})
         EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${PROTO_SRC_DIR} --c_out=${PROTO_DIS_DIR} --plugin=protoc-gen-grpc=grpc_cpp_plugin skissm/service/dto/${proto_name}.proto RESULT_VARIABLE rv)
         list(APPEND skissm_src ${PROTO_DIS_DIR}/skissm/service/dto/${proto_name}.pb-c.c)
     endif()
-    
+
     # Optional, but that can show the user if something have gone wrong with the proto generation 
     IF(${rv})
         MESSAGE("Generation of data model returned ${rv}")
@@ -132,10 +137,10 @@ if (CMAKE_GENERATOR MATCHES "Xcode")
     set(CMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")
 
     add_library(skissm_framework SHARED
-        ${skissm_src} 
-        ${skissm_headers} 
+        ${skissm_src}
+        ${skissm_headers}
     )
-    add_dependencies(skissm_framework curve25519 gRPC::grpc mbedtls protobuf::libprotobuf protobuf-c)
+    add_dependencies(skissm_framework curve25519 mbedtls protobuf::libprotobuf protobuf-c)
 
     target_include_directories(skissm_framework
         PUBLIC
@@ -146,7 +151,7 @@ if (CMAKE_GENERATOR MATCHES "Xcode")
             ${skissm_private_include}
     )
 
-    target_compile_features(skissm_framework PRIVATE 
+    target_compile_features(skissm_framework PRIVATE
         c_std_99
         cxx_std_14
     )
@@ -170,10 +175,9 @@ if (CMAKE_GENERATOR MATCHES "Xcode")
     endforeach(file_path)
 
     target_link_libraries(skissm_framework
-        PUBLIC 
-            mbedtls 
+        PUBLIC
+            mbedtls
             curve25519
-            gRPC::grpc
             protobuf::libprotobuf
             protobuf-c
     )
@@ -183,18 +187,20 @@ else()
     add_library(skissm_static SHARED
         ${skissm_src} ${skissm_headers}
     )
-    add_dependencies(skissm_static curve25519 gRPC::grpc mbedtls protobuf::libprotobuf protobuf-c)
+    add_dependencies(skissm_static curve25519 mbedtls protobuf::libprotobuf protobuf-c)
 
     target_include_directories(skissm_static
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
+            $<BUILD_INTERFACE:${protobuf-c_DIR}>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
             ${PROTO_DIS_DIR}
         PRIVATE
+            $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
             ${skissm_private_include}
     )
 
-    target_compile_features(skissm_static PRIVATE 
+    target_compile_features(skissm_static PRIVATE
         c_std_99
         cxx_std_14
     )
@@ -209,10 +215,9 @@ else()
 
     target_link_options(skissm_static PUBLIC "LINKER:-undefined,dynamic_lookup")
     target_link_libraries(skissm_static
-        PUBLIC 
-            mbedtls 
+        PUBLIC
+            mbedtls
             curve25519
-            gRPC::grpc
             protobuf::libprotobuf
             protobuf-c
     )
@@ -227,17 +232,19 @@ else()
     add_library(skissm_shared SHARED
         ${skissm_src} ${skissm_headers}
     )
-    add_dependencies(skissm_shared curve25519 gRPC::grpc mbedtls protobuf::libprotobuf protobuf-c)
+    add_dependencies(skissm_shared curve25519 mbedtls protobuf::libprotobuf protobuf-c)
     target_include_directories(skissm_shared
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
+            $<BUILD_INTERFACE:${protobuf-c_DIR}>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
             ${PROTO_DIS_DIR}
         PRIVATE
+            $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
             ${skissm_private_include}
     )
 
-    target_compile_features(skissm_shared PRIVATE 
+    target_compile_features(skissm_shared PRIVATE
         c_std_99
         cxx_std_14
     )
@@ -253,10 +260,9 @@ else()
 
     target_link_options(skissm_shared PUBLIC "LINKER:-undefined,dynamic_lookup")
     target_link_libraries(skissm_shared
-        PUBLIC 
-            mbedtls 
+        PUBLIC
+            mbedtls
             curve25519
-            gRPC::grpc
             protobuf::libprotobuf
             protobuf-c
     )
