@@ -2,11 +2,17 @@
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     
     // iOS Config
-    // "cmake.configureSettings": {
-    //     "CMAKE_TOOLCHAIN_FILE": "../cmake/ios.toolchain.cmake",
-    //     "PLATFORM": "OS64COMBINED"
-    // },
-    // "cmake.generator": "Xcode",
+    "cmake.configureSettings": {
+        "CMAKE_TOOLCHAIN_FILE": "../cmake/ios.toolchain.cmake",
+        "PLATFORM": "OS64",
+        "ENABLE_STRICT_TRY_COMPILE": "ON",
+        "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED": "NO",
+        "DEPLOYMENT_TARGET": "13.0",
+        "ENABLE_BITCODE": "ON",
+        "ENABLE_ARC": "ON",
+        "ENABLE_VISIBILITY": "ON",
+    },
+    "cmake.generator": "Xcode",
 
     // Android Config
     // "cmake.configureSettings": {
@@ -33,5 +39,5 @@
     "cmake.configureEnvironment": {
         "OPENSSL_ROOT_DIR": "/opt/homebrew/opt/openssl"
     },
-    "cmake.loggingLevel": "debug",
+    "cmake.setBuildTypeOnMultiConfig": true,
 }

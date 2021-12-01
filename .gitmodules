@@ -4,3 +4,6 @@
 [submodule "lib/protobuf-c"]
 	path = lib/protobuf-c
 	url = https://github.com/protobuf-c/protobuf-c.git
+[submodule "lib/protobuf"]
+	path = lib/protobuf
+	url = https://github.com/protocolbuffers/protobuf.git
