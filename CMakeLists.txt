@@ -185,7 +185,7 @@ if (CMAKE_GENERATOR MATCHES "Xcode")
 
 else()
     # skissm_static
-    add_library(skissm_static SHARED
+    add_library(skissm_static STATIC
         ${skissm_src} ${skissm_headers}
     )
     add_dependencies(skissm_static curve25519 mbedtls protobuf::libprotobuf protobuf-c)
