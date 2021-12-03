@@ -18,13 +18,14 @@
  */
 syntax = "proto3";
 
-package org.e2eelab.skissm.proto;
+package skissm;
 
+option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeRatchet";
 
-import "skissm/sender_chain_node.proto";
-import "skissm/receiver_chain_node.proto";
-import "skissm/skipped_message_key_node.proto";
+import "sender_chain_node.proto";
+import "receiver_chain_node.proto";
+import "skipped_message_key_node.proto";
 
 message e2ee_ratchet {
   bytes root_key = 1;

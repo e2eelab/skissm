@@ -18,13 +18,14 @@
  */
 syntax = "proto3";
 
-package org.e2eelab.skissm.proto;
+package skissm;
 
+option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eePreKeyBundle";
 
-import "skissm/e2ee_address.proto";
-import "skissm/signed_pre_key_public.proto";
-import "skissm/one_time_pre_key_public.proto";
+import "e2ee_address.proto";
+import "signed_pre_key_public.proto";
+import "one_time_pre_key_public.proto";
 
 message e2ee_pre_key_bundle {
     e2ee_address peer_address = 1;

@@ -21,6 +21,10 @@
 
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "skissm.h"
 
 /**
@@ -36,43 +40,54 @@ typedef struct encryption_handler {
 } encryption_handler;
 
 void initialise_session(
-    Org__E2eelab__Skissm__Proto__E2eeSession *session,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *from,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *to
+    Skissm__E2eeSession *session,
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to
 );
 
 void pack_e2ee_plaintext(
     uint8_t *plaintext, size_t plaintext_len,
-    Org__E2eelab__Skissm__Proto__E2eePlaintextType plaintext_type,
+    Skissm__E2eePlaintextType plaintext_type,
     uint8_t **context, size_t *context_len
 );
 
 size_t new_outbound_session(
-    Org__E2eelab__Skissm__Proto__E2eeSession *session,
-    const Org__E2eelab__Skissm__Proto__E2eeAccount *local_account,
-    Org__E2eelab__Skissm__Proto__E2eePreKeyBundle *their_pre_key_bundle
+    Skissm__E2eeSession *session,
+    const Skissm__E2eeAccount *local_account,
+    Skissm__E2eePreKeyBundle *their_pre_key_bundle
 );
 
 size_t new_inbound_session(
-    Org__E2eelab__Skissm__Proto__E2eeSession *session,
-    Org__E2eelab__Skissm__Proto__E2eeAccount *local_account,
-    Org__E2eelab__Skissm__Proto__E2eeMessage *inbound_prekey_message
+    Skissm__E2eeSession *session,
+    Skissm__E2eeAccount *local_account,
+    Skissm__E2eeMessage *inbound_prekey_message
 );
 
 /**
- * @brief Encrypt a given context by engaging corresponding outbound session.
+ * @brief Encrypt a given plaintext. If there is no engaged outbound
+ * session, a new outbound session will try to be created after requesting
+ * the pre-key bundle of receipient.
  *
  * @param from From address
  * @param to To Address
- * @param context context to be encrypted
- * @param context_len context length
- * @return size_t 
+ * @param plaintext plaintext to be encrypted
+ * @param plaintext_len plaintext length
  */
-size_t encrypt_session(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *from,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *to,
-    const uint8_t *context, size_t context_len
+void encrypt_session(
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    const uint8_t *plaintext, size_t plaintext_len
 );
+
+/**
+ * @brief Encrypt a given plaintext with an initialized outbound session
+ *
+ * @param session initialized outbound session
+ * @param plaintext plaintext to be encrypted
+ * @param plaintext_len plaintext length
+ * @return size_t encrypted message length
+ */
+size_t perform_encrypt_session(Skissm__E2eeSession *session, const uint8_t *plaintext, size_t plaintext_len);
 
 /**
  * @brief Decrypt a received msg_payload by engaging corresponding inbound session.
@@ -80,6 +95,17 @@ size_t encrypt_session(
  * @param receive_msg_payload
  * @return size_t Succcess or not
  */
-size_t decrypt_session(Org__E2eelab__Skissm__Proto__E2eeMessage *receive_msg_payload);
+size_t decrypt_session(Skissm__E2eeMessage *receive_msg_payload);
+
+/**
+ * @brief Close a session
+ *
+ * @param session
+ */
+void close_session(Skissm__E2eeSession *session);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SESSION_H_ */

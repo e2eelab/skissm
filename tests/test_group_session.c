@@ -35,7 +35,7 @@ extern register_user_response_handler register_user_response_handler_store;
 
 #define account_data_max 3
 
-static Org__E2eelab__Skissm__Proto__E2eeAccount *account_data[account_data_max];
+static Skissm__E2eeAccount *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
@@ -45,7 +45,7 @@ typedef struct store_plaintext {
 } store_plaintext;
 
 typedef struct store_group {
-    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address;
+    Skissm__E2eeAddress *group_address;
     ProtobufCBinaryData *group_name;
 } store_group;
 
@@ -61,27 +61,27 @@ static void test_begin() {
 }
 
 static void test_end() {
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account_data[0], NULL);
+    skissm__e2ee_account__free_unpacked(account_data[0], NULL);
     account_data[0] = NULL;
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account_data[1], NULL);
+    skissm__e2ee_account__free_unpacked(account_data[1], NULL);
     account_data[1] = NULL;
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account_data[2], NULL);
+    skissm__e2ee_account__free_unpacked(account_data[2], NULL);
     account_data[2] = NULL;
     account_data_insert_pos = 0;
 }
 
 static void on_error(ErrorCode error_code, char *error_msg) { print_error(error_msg, error_code); }
 
-static void on_user_registered(Org__E2eelab__Skissm__Proto__E2eeAccount *account) {
+static void on_user_registered(Skissm__E2eeAccount *account) {
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
 }
 
-static void on_one2one_msg_received(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address, Org__E2eelab__Skissm__Proto__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_one2one_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-static void on_group_msg_received(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address, Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
     if (plaintext_store.plaintext != NULL) {
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
@@ -91,20 +91,20 @@ static void on_group_msg_received(Org__E2eelab__Skissm__Proto__E2eeAddress *from
     plaintext_store.plaintext_len = plaintext_len;
 }
 
-static void on_group_created(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, ProtobufCBinaryData *group_name) {
+static void on_group_created(Skissm__E2eeAddress *group_address, ProtobufCBinaryData *group_name) {
     copy_address_from_address(&(group.group_address), group_address);
     
     group.group_name = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
     copy_protobuf_from_protobuf(group.group_name, group_name);
 }
 
-static void on_group_members_added(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, ProtobufCBinaryData *group_name, Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses) {}
+static void on_group_members_added(Skissm__E2eeAddress *group_address, ProtobufCBinaryData *group_name, Skissm__E2eeAddress **member_addresses) {}
 
-static void on_group_members_removed(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, ProtobufCBinaryData *group_name, Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses) {}
+static void on_group_members_removed(Skissm__E2eeAddress *group_address, ProtobufCBinaryData *group_name, Skissm__E2eeAddress **member_addresses) {}
 
 static skissm_event_handler test_event_handler = {on_error, on_user_registered, on_one2one_msg_received, on_group_msg_received, on_group_created, on_group_members_added, on_group_members_removed};
 
-static void test_encryption(Org__E2eelab__Skissm__Proto__E2eeAddress *sender_address, uint8_t *plaintext, size_t plaintext_len) {
+static void test_encryption(Skissm__E2eeAddress *sender_address, uint8_t *plaintext, size_t plaintext_len) {
     encrypt_group_session(sender_address, group.group_address, plaintext, plaintext_len);
     assert(plaintext_len == plaintext_store.plaintext_len);
     assert(memcmp(plaintext, plaintext_store.plaintext, plaintext_len) == 0);
@@ -122,7 +122,7 @@ static void test_create_group() {
     register_account();
 
     // Alice invites Bob to create a group
-    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * 2);
+    Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 2);
     copy_address_from_address(&(member_addresses[0]), account_data[0]->address);
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
 
@@ -138,8 +138,8 @@ static void test_create_group() {
     test_encryption(account_data[0]->address, plaintext, plaintext_len);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
+    skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
+    skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
     free_protobuf(group_name);
 
@@ -161,7 +161,7 @@ static void test_add_group_members() {
     register_account();
 
     // Alice invites Bob to create a group
-    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * 2);
+    Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 2);
     copy_address_from_address(&(member_addresses[0]), account_data[0]->address);
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
 
@@ -172,7 +172,7 @@ static void test_add_group_members() {
     create_group(account_data[0]->address, group_name, member_addresses, 2);
 
     // Alice invites Claire to join the group
-    Org__E2eelab__Skissm__Proto__E2eeAddress **new_member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *));
+    Skissm__E2eeAddress **new_member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *));
     copy_address_from_address(&(new_member_addresses[0]), account_data[2]->address);
     size_t new_member_num = 1;
     size_t result = add_group_members(account_data[0]->address, group.group_address, new_member_addresses, new_member_num);
@@ -184,11 +184,11 @@ static void test_add_group_members() {
     test_encryption(account_data[0]->address, plaintext, plaintext_len);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
+    skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
+    skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
     free_protobuf(group_name);
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
+    skissm__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
     free(new_member_addresses);
 
     // test stop
@@ -209,7 +209,7 @@ static void test_remove_group_members() {
     register_account();
 
     // Alice invites Bob to create a group
-    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * 3);
+    Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 3);
     copy_address_from_address(&(member_addresses[0]), account_data[0]->address);
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
     copy_address_from_address(&(member_addresses[2]), account_data[2]->address);
@@ -220,7 +220,7 @@ static void test_remove_group_members() {
     memcpy(group_name->data, "Group name", group_name->len);
     create_group(account_data[0]->address, group_name, member_addresses, 3);
 
-    Org__E2eelab__Skissm__Proto__E2eeAddress **removing_member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *));
+    Skissm__E2eeAddress **removing_member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *));
     copy_address_from_address(&(removing_member_addresses[0]), account_data[2]->address);
     size_t removing_member_num = 1;
 
@@ -233,12 +233,12 @@ static void test_remove_group_members() {
     test_encryption(account_data[0]->address, plaintext, plaintext_len);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[2], NULL);
+    skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
+    skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
+    skissm__e2ee_address__free_unpacked(member_addresses[2], NULL);
     free(member_addresses);
     free_protobuf(group_name);
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(removing_member_addresses[0], NULL);
+    skissm__e2ee_address__free_unpacked(removing_member_addresses[0], NULL);
     free(removing_member_addresses);
 
     // test stop
@@ -259,7 +259,7 @@ static void test_create_add_remove() {
     register_account();
 
     // Alice invites Bob to create a group
-    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * 2);
+    Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 2);
     copy_address_from_address(&(member_addresses[0]), account_data[0]->address);
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
 
@@ -275,7 +275,7 @@ static void test_create_add_remove() {
     test_encryption(account_data[0]->address, plaintext, plaintext_len);
 
     // Alice invites Claire to join the group
-    Org__E2eelab__Skissm__Proto__E2eeAddress **new_member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *));
+    Skissm__E2eeAddress **new_member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *));
     copy_address_from_address(&(new_member_addresses[0]), account_data[2]->address);
     size_t new_member_num = 1;
     size_t result = add_group_members(account_data[0]->address, group.group_address, new_member_addresses, new_member_num);
@@ -295,11 +295,11 @@ static void test_create_add_remove() {
     test_encryption(account_data[0]->address, plaintext_3, plaintext_len_3);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[0], NULL);
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(member_addresses[1], NULL);
+    skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
+    skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
     free_protobuf(group_name);
-    org__e2eelab__skissm__proto__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
+    skissm__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
     free(new_member_addresses);
 
     // test stop

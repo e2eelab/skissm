@@ -23,6 +23,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "skissm.h"
 
 /** Check if two buffers are equal in constant time. */
@@ -34,11 +38,11 @@ bool is_equal(
 
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2);
 
-bool compare_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address_1, Org__E2eelab__Skissm__Proto__E2eeAddress *address_2);
+bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *address_2);
 
 bool compare_member_addresses(
-    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses_1, size_t member_num_1,
-    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses_2, size_t member_num_2
+    Skissm__E2eeAddress **member_addresses_1, size_t member_num_1,
+    Skissm__E2eeAddress **member_addresses_2, size_t member_num_2
 );
 
 bool safe_strcmp(char *str1, char *str2);
@@ -47,36 +51,36 @@ void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinar
 void copy_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src, size_t len);
 void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src);
 
-void copy_address_from_address(Org__E2eelab__Skissm__Proto__E2eeAddress **dest, const Org__E2eelab__Skissm__Proto__E2eeAddress *src);
+void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAddress *src);
 
 void copy_key_pair_from_key_pair(
-    Org__E2eelab__Skissm__Proto__KeyPair **dest,
-    Org__E2eelab__Skissm__Proto__KeyPair *src
+    Skissm__KeyPair **dest,
+    Skissm__KeyPair *src
 );
 
 void copy_spk_from_spk(
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair **dest,
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *src
+    Skissm__SignedPreKeyPair **dest,
+    Skissm__SignedPreKeyPair *src
 );
 
 void copy_opks_from_opks(
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***dest,
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **src,
+    Skissm__OneTimePreKeyPair ***dest,
+    Skissm__OneTimePreKeyPair **src,
     size_t opk_num
 );
 
 void copy_account_from_account(
-    Org__E2eelab__Skissm__Proto__E2eeAccount **dest,
-    Org__E2eelab__Skissm__Proto__E2eeAccount *src
+    Skissm__E2eeAccount **dest,
+    Skissm__E2eeAccount *src
 );
 
 void copy_member_addresses_from_member_addresses(
-    Org__E2eelab__Skissm__Proto__E2eeAddress ***dest,
-    const Org__E2eelab__Skissm__Proto__E2eeAddress **src,
+    Skissm__E2eeAddress ***dest,
+    const Skissm__E2eeAddress **src,
     size_t member_num
 );
 
-void free_member_addresses(Org__E2eelab__Skissm__Proto__E2eeAddress ***dest, size_t member_num);
+void free_member_addresses(Skissm__E2eeAddress ***dest, size_t member_num);
 
 void free_protobuf(ProtobufCBinaryData *output);
 
@@ -87,5 +91,9 @@ void free_mem(void **buffer, size_t buffer_len);
  * This is more resilient to being optimised away than memset or bzero.
  */
 void unset(void volatile *buffer, size_t buffer_len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MEM_UTIL_H_ */

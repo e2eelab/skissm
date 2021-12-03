@@ -46,7 +46,7 @@ bool safe_strcmp(char *str1, char *str2) {
     return false;
 }
 
-bool compare_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address_1, Org__E2eelab__Skissm__Proto__E2eeAddress *address_2) {
+bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *address_2) {
     if ((address_1->user_id.len == address_2->user_id.len) && (address_1->domain.len == address_2->domain.len) && (address_1->device_id.len == address_2->device_id.len) &&
         (address_1->group_id.len == address_2->group_id.len)) {
         if ((memcmp(address_1->user_id.data, address_2->user_id.data, address_1->user_id.len) == 0) && (memcmp(address_1->domain.data, address_2->domain.data, address_1->domain.len) == 0) &&
@@ -74,9 +74,9 @@ void copy_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src, siz
 
 void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src) { memcpy(dest->data, src, dest->len); }
 
-void copy_address_from_address(Org__E2eelab__Skissm__Proto__E2eeAddress **dest, const Org__E2eelab__Skissm__Proto__E2eeAddress *src) {
-    *dest = (Org__E2eelab__Skissm__Proto__E2eeAddress *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-    org__e2eelab__skissm__proto__e2ee_address__init(*dest);
+void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAddress *src) {
+    *dest = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
+    skissm__e2ee_address__init(*dest);
     if (src->user_id.data) {
         (*dest)->user_id.len = src->user_id.len;
         (*dest)->user_id.data = (uint8_t *)malloc(sizeof(uint8_t) * src->user_id.len);
@@ -99,37 +99,37 @@ void copy_address_from_address(Org__E2eelab__Skissm__Proto__E2eeAddress **dest, 
     }
 }
 
-void copy_key_pair_from_key_pair(Org__E2eelab__Skissm__Proto__KeyPair **dest, Org__E2eelab__Skissm__Proto__KeyPair *src) {
-    *dest = (Org__E2eelab__Skissm__Proto__KeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-    org__e2eelab__skissm__proto__key_pair__init(*dest);
+void copy_key_pair_from_key_pair(Skissm__KeyPair **dest, Skissm__KeyPair *src) {
+    *dest = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
+    skissm__key_pair__init(*dest);
     copy_protobuf_from_protobuf(&((*dest)->private_key), &(src->private_key));
     copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
 }
 
-void copy_spk_from_spk(Org__E2eelab__Skissm__Proto__SignedPreKeyPair **dest, Org__E2eelab__Skissm__Proto__SignedPreKeyPair *src) {
-    *dest = (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
-    org__e2eelab__skissm__proto__signed_pre_key_pair__init(*dest);
+void copy_spk_from_spk(Skissm__SignedPreKeyPair **dest, Skissm__SignedPreKeyPair *src) {
+    *dest = (Skissm__SignedPreKeyPair *)malloc(sizeof(Skissm__SignedPreKeyPair));
+    skissm__signed_pre_key_pair__init(*dest);
     (*dest)->spk_id = src->spk_id;
     copy_key_pair_from_key_pair(&((*dest)->key_pair), src->key_pair);
     copy_protobuf_from_protobuf(&((*dest)->signature), &(src->signature));
     (*dest)->ttl = src->ttl;
 }
 
-void copy_opks_from_opks(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***dest, Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **src, size_t opk_num) {
-    *dest = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **)malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *) * opk_num);
+void copy_opks_from_opks(Skissm__OneTimePreKeyPair ***dest, Skissm__OneTimePreKeyPair **src, size_t opk_num) {
+    *dest = (Skissm__OneTimePreKeyPair **)malloc(sizeof(Skissm__OneTimePreKeyPair *) * opk_num);
     size_t i;
     for (i = 0; i < opk_num; i++) {
-        (*dest)[i] = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *)malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair));
-        org__e2eelab__skissm__proto__one_time_pre_key_pair__init((*dest)[i]);
+        (*dest)[i] = (Skissm__OneTimePreKeyPair *)malloc(sizeof(Skissm__OneTimePreKeyPair));
+        skissm__one_time_pre_key_pair__init((*dest)[i]);
         (*dest)[i]->opk_id = src[i]->opk_id;
         (*dest)[i]->used = src[i]->used;
         copy_key_pair_from_key_pair(&((*dest)[i]->key_pair), src[i]->key_pair);
     }
 }
 
-void copy_account_from_account(Org__E2eelab__Skissm__Proto__E2eeAccount **dest, Org__E2eelab__Skissm__Proto__E2eeAccount *src) {
-    *dest = (Org__E2eelab__Skissm__Proto__E2eeAccount *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount));
-    org__e2eelab__skissm__proto__e2ee_account__init(*dest);
+void copy_account_from_account(Skissm__E2eeAccount **dest, Skissm__E2eeAccount *src) {
+    *dest = (Skissm__E2eeAccount *)malloc(sizeof(Skissm__E2eeAccount));
+    skissm__e2ee_account__init(*dest);
     (*dest)->version = src->version;
     if (src->account_id.data) {
         copy_protobuf_from_protobuf(&((*dest)->account_id), &(src->account_id));
@@ -152,18 +152,18 @@ void copy_account_from_account(Org__E2eelab__Skissm__Proto__E2eeAccount **dest, 
     (*dest)->next_one_time_pre_key_id = src->next_one_time_pre_key_id;
 }
 
-void copy_member_addresses_from_member_addresses(Org__E2eelab__Skissm__Proto__E2eeAddress ***dest, const Org__E2eelab__Skissm__Proto__E2eeAddress **src, size_t member_num) {
-    *dest = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * member_num);
+void copy_member_addresses_from_member_addresses(Skissm__E2eeAddress ***dest, const Skissm__E2eeAddress **src, size_t member_num) {
+    *dest = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * member_num);
     size_t i;
     for (i = 0; i < member_num; i++) {
         copy_address_from_address(&((*dest)[i]), src[i]);
     }
 }
 
-void free_member_addresses(Org__E2eelab__Skissm__Proto__E2eeAddress ***dest, size_t member_num) {
+void free_member_addresses(Skissm__E2eeAddress ***dest, size_t member_num) {
     size_t i;
     for (i = 0; i < member_num; i++) {
-        org__e2eelab__skissm__proto__e2ee_address__free_unpacked((*dest)[i], NULL);
+        skissm__e2ee_address__free_unpacked((*dest)[i], NULL);
         (*dest)[i] = NULL;
     }
     free(*dest);

@@ -29,21 +29,22 @@
 #include "group_session_manager.h"
 #include "mem_util.h"
 #include "session.h"
+#include "session_manager.h"
 #include "skissm.h"
 
 #define REQUEST_HANDLERS_NUM 1
 #define RESPONSE_CMD_FLAG 0x1000
 
-void handle_supply_opks_request(uint32_t num, Org__E2eelab__Skissm__Proto__E2eeAddress *address, Org__E2eelab__Server__Grpc__ResponseData **response_data);
+void handle_supply_opks_request(uint32_t num, Skissm__E2eeAddress *address, Skissm__ResponseData **response_data);
 
-void handle_create_group_request(Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address, Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
-                                 Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses, size_t member_num, Org__E2eelab__Server__Grpc__ResponseData **response_data);
+void handle_create_group_request(Skissm__E2eeAddress *receiver_address, Skissm__E2eeAddress *group_address,
+                                 Skissm__E2eeAddress **member_addresses, size_t member_num, Skissm__ResponseData **response_data);
 
-void handle_add_group_members_request(Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address, Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, size_t adding_member_num,
-                                      Org__E2eelab__Skissm__Proto__E2eeAddress **adding_member_addresses, Org__E2eelab__Server__Grpc__ResponseData **response_data);
+void handle_add_group_members_request(Skissm__E2eeAddress *receiver_address, Skissm__E2eeAddress *group_address, size_t adding_member_num,
+                                      Skissm__E2eeAddress **adding_member_addresses, Skissm__ResponseData **response_data);
 
-void handle_remove_group_members_request(Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address, Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, size_t member_num,
-                                         Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses, Org__E2eelab__Server__Grpc__ResponseData **response_data);
+void handle_remove_group_members_request(Skissm__E2eeAddress *receiver_address, Skissm__E2eeAddress *group_address, size_t member_num,
+                                         Skissm__E2eeAddress **member_addresses, Skissm__ResponseData **response_data);
 
 typedef struct handler_entry_node {
     uint32_t key;
@@ -51,7 +52,7 @@ typedef struct handler_entry_node {
     struct handler_entry_node *next;
 } handler_entry_node;
 
-static Org__E2eelab__Skissm__Proto__E2eeAccount *_account = NULL;
+static Skissm__E2eeAccount *_account = NULL;
 
 static volatile uint32_t request_id = 0;
 
@@ -64,7 +65,7 @@ void protocol_begin() {
     request_id = 0;
     next_request_handler_pos = 0;
     handler_entry *entry = (handler_entry *)malloc(sizeof(handler_entry));
-    entry->key = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__supply_opks_request;
+    entry->key = SKISSM__E2EE_COMMANDS__supply_opks_request;
     entry->handler = handle_supply_opks_request;
     add_request_handler(entry);
     response_handlers_map = NULL;
@@ -100,7 +101,7 @@ void remove_request_handler(handler_entry *entry) {
     }
 }
 
-void *get_request_handler(Org__E2eelab__Skissm__Proto__E2eeCommands cmd) {
+void *get_request_handler(Skissm__E2eeCommands cmd) {
     unsigned short i;
     for (i = 0; i < REQUEST_HANDLERS_NUM; i++) {
         handler_entry *entry = (handler_entry *)request_handlers_map[i];
@@ -170,83 +171,72 @@ void destroy_response_handlers_map() {
     response_handlers_map = NULL;
 }
 
-void send_register_user_request(Org__E2eelab__Skissm__Proto__E2eeAccount *account, register_user_response_handler *response_handler) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+void send_register_user_request(Skissm__E2eeAccount *account, register_user_response_handler *response_handler) {
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__register_user_request;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__register_user_request;
     e2ee_command_request->id = next_request_id();
-    Org__E2eelab__Skissm__Proto__RegisterUserRequestPayload *payload = create_register_request_payload(account);
+    Skissm__RegisterUserRequestPayload *payload = produce_register_request_payload(account);
 
-    e2ee_command_request->payload.len = org__e2eelab__skissm__proto__register_user_request_payload__get_packed_size(payload);
+    e2ee_command_request->payload.len = skissm__register_user_request_payload__get_packed_size(payload);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__skissm__proto__register_user_request_payload__pack(payload, e2ee_command_request->payload.data);
+    skissm__register_user_request_payload__pack(payload, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
     free_mem((void **)&packed_message, packed_message_len);
 }
 
-void send_publish_spk_request(Org__E2eelab__Skissm__Proto__E2eeAccount *account, publish_spk_response_handler *response_handler) {
-    /* Generate a new signed pre-key pair and a new signature. */
-    generate_signed_pre_key(account);
+void send_publish_spk_request(Skissm__E2eeAccount *account, publish_spk_response_handler *response_handler) {
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
-
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__publish_spk_request;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__publish_spk_request;
     e2ee_command_request->id = next_request_id();
-    Org__E2eelab__Skissm__Proto__PublishSpkRequestPayload *publish_spk_message =
-        (Org__E2eelab__Skissm__Proto__PublishSpkRequestPayload *)malloc(sizeof(Org__E2eelab__Skissm__Proto__PublishSpkRequestPayload));
-    org__e2eelab__skissm__proto__publish_spk_request_payload__init(publish_spk_message);
 
-    copy_address_from_address(&(publish_spk_message->user_address), account->address);
-    publish_spk_message->signed_pre_key_public = (Org__E2eelab__Skissm__Proto__SignedPreKeyPublic *)malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPublic));
-    org__e2eelab__skissm__proto__signed_pre_key_public__init(publish_spk_message->signed_pre_key_public);
-    publish_spk_message->signed_pre_key_public->spk_id = account->signed_pre_key_pair->spk_id;
-    copy_protobuf_from_protobuf(&(publish_spk_message->signed_pre_key_public->public_key), &(account->signed_pre_key_pair->key_pair->public_key));
-    copy_protobuf_from_protobuf(&(publish_spk_message->signed_pre_key_public->signature), &(account->signed_pre_key_pair->signature));
+    Skissm__PublishSpkRequestPayload *publish_spk_message = produce_publish_spk_request_payload(account);
 
-    e2ee_command_request->payload.len = org__e2eelab__skissm__proto__publish_spk_request_payload__get_packed_size(publish_spk_message);
+    e2ee_command_request->payload.len = skissm__publish_spk_request_payload__get_packed_size(publish_spk_message);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__skissm__proto__publish_spk_request_payload__pack(publish_spk_message, e2ee_command_request->payload.data);
+    skissm__publish_spk_request_payload__pack(publish_spk_message, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
     free_mem((void **)&packed_message, packed_message_len);
 }
 
-void handle_supply_opks_request(uint32_t num, Org__E2eelab__Skissm__Proto__E2eeAddress *address, Org__E2eelab__Server__Grpc__ResponseData **response_data) {
+void handle_supply_opks_request(uint32_t num, Skissm__E2eeAddress *address, Skissm__ResponseData **response_data) {
     _account = get_local_account(address);
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **inserted_one_time_pre_key_pair_list = generate_opks((size_t)num, _account);
+    Skissm__OneTimePreKeyPair **inserted_one_time_pre_key_pair_list = generate_opks((size_t)num, _account);
 
-    *response_data = (Org__E2eelab__Server__Grpc__ResponseData *)malloc(sizeof(Org__E2eelab__Server__Grpc__ResponseData));
-    org__e2eelab__server__grpc__response_data__init(*response_data);
-    Org__E2eelab__Skissm__Proto__SupplyOpksResponsePayload *supply_opks_response =
-        (Org__E2eelab__Skissm__Proto__SupplyOpksResponsePayload *)malloc(sizeof(Org__E2eelab__Skissm__Proto__SupplyOpksResponsePayload));
-    org__e2eelab__skissm__proto__supply_opks_response_payload__init(supply_opks_response);
+    *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
+    skissm__response_data__init(*response_data);
+    Skissm__SupplyOpksResponsePayload *supply_opks_response =
+        (Skissm__SupplyOpksResponsePayload *)malloc(sizeof(Skissm__SupplyOpksResponsePayload));
+    skissm__supply_opks_response_payload__init(supply_opks_response);
     supply_opks_response->n_one_time_pre_key_public = (size_t)num;
-    supply_opks_response->one_time_pre_key_public = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic **)malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic *) * num);
+    supply_opks_response->one_time_pre_key_public = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * num);
 
     unsigned int i;
     for (i = 0; i < num; i++) {
-        supply_opks_response->one_time_pre_key_public[i] = (Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic *)malloc(sizeof(Org__E2eelab__Skissm__Proto__OneTimePreKeyPublic));
-        org__e2eelab__skissm__proto__one_time_pre_key_public__init(supply_opks_response->one_time_pre_key_public[i]);
+        supply_opks_response->one_time_pre_key_public[i] = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
+        skissm__one_time_pre_key_public__init(supply_opks_response->one_time_pre_key_public[i]);
         supply_opks_response->one_time_pre_key_public[i]->opk_id = inserted_one_time_pre_key_pair_list[i]->opk_id;
         copy_protobuf_from_protobuf(&(supply_opks_response->one_time_pre_key_public[i]->public_key), &(inserted_one_time_pre_key_pair_list[i]->key_pair->public_key));
     }
@@ -255,47 +245,47 @@ void handle_supply_opks_request(uint32_t num, Org__E2eelab__Skissm__Proto__E2eeA
 
     /* code */
     (*response_data)->code = OK;
-    size_t payload_length = org__e2eelab__skissm__proto__supply_opks_response_payload__get_packed_size(supply_opks_response);
+    size_t payload_length = skissm__supply_opks_response_payload__get_packed_size(supply_opks_response);
     (*response_data)->data.len = payload_length;
     (*response_data)->data.data = (uint8_t *)malloc(sizeof(uint8_t) * payload_length);
-    org__e2eelab__skissm__proto__supply_opks_response_payload__pack(supply_opks_response, (*response_data)->data.data);
+    skissm__supply_opks_response_payload__pack(supply_opks_response, (*response_data)->data.data);
 
     /* release */
-    org__e2eelab__skissm__proto__supply_opks_response_payload__free_unpacked(supply_opks_response, NULL);
+    skissm__supply_opks_response_payload__free_unpacked(supply_opks_response, NULL);
 }
 
-void handle_create_group_request(Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address, Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
-                                 Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses, size_t member_num, Org__E2eelab__Server__Grpc__ResponseData **response_data) {
+void handle_create_group_request(Skissm__E2eeAddress *receiver_address, Skissm__E2eeAddress *group_address,
+                                 Skissm__E2eeAddress **member_addresses, size_t member_num, Skissm__ResponseData **response_data) {
     /* create a new outbound group session */
     create_outbound_group_session(receiver_address, group_address, member_addresses, member_num, NULL);
 
     /* prepare the response payload */
-    *response_data = (Org__E2eelab__Server__Grpc__ResponseData *)malloc(sizeof(Org__E2eelab__Server__Grpc__ResponseData));
-    org__e2eelab__server__grpc__response_data__init(*response_data);
-    Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload *create_group_response_payload =
-        (Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload *)malloc(sizeof(Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload));
-    org__e2eelab__skissm__proto__create_group_response_payload__init(create_group_response_payload);
+    *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
+    skissm__response_data__init(*response_data);
+    Skissm__CreateGroupResponsePayload *create_group_response_payload =
+        (Skissm__CreateGroupResponsePayload *)malloc(sizeof(Skissm__CreateGroupResponsePayload));
+    skissm__create_group_response_payload__init(create_group_response_payload);
 
     /* code */
     (*response_data)->code = OK;
-    (*response_data)->data.len = org__e2eelab__skissm__proto__create_group_response_payload__get_packed_size(create_group_response_payload);
+    (*response_data)->data.len = skissm__create_group_response_payload__get_packed_size(create_group_response_payload);
     (*response_data)->data.data = (uint8_t *)malloc(sizeof(uint8_t) * (*response_data)->data.len);
-    org__e2eelab__skissm__proto__create_group_response_payload__pack(create_group_response_payload, (*response_data)->data.data);
+    skissm__create_group_response_payload__pack(create_group_response_payload, (*response_data)->data.data);
 
     /* release */
-    org__e2eelab__skissm__proto__create_group_response_payload__free_unpacked(create_group_response_payload, NULL);
+    skissm__create_group_response_payload__free_unpacked(create_group_response_payload, NULL);
 }
 
-void handle_add_group_members_request(Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address, Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, size_t adding_member_num,
-                                      Org__E2eelab__Skissm__Proto__E2eeAddress **adding_member_addresses, Org__E2eelab__Server__Grpc__ResponseData **response_data) {
-    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = NULL;
+void handle_add_group_members_request(Skissm__E2eeAddress *receiver_address, Skissm__E2eeAddress *group_address, size_t adding_member_num,
+                                      Skissm__E2eeAddress **adding_member_addresses, Skissm__ResponseData **response_data) {
+    Skissm__E2eeGroupSession *group_session = NULL;
     get_ssm_plugin()->load_outbound_group_session(receiver_address, group_address, &group_session);
 
     // TODO: compare adding_member_addresses
 
     if (group_session != NULL) {
         size_t new_member_num = group_session->n_member_addresses + adding_member_num;
-        Org__E2eelab__Skissm__Proto__E2eeAddress **new_member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * new_member_num);
+        Skissm__E2eeAddress **new_member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * new_member_num);
         size_t i;
         for (i = 0; i < group_session->n_member_addresses; i++) {
             copy_address_from_address(&(new_member_addresses[i]), (group_session->member_addresses)[i]);
@@ -315,20 +305,20 @@ void handle_add_group_members_request(Org__E2eelab__Skissm__Proto__E2eeAddress *
     }
 
     /* prepare the response payload */
-    *response_data = (Org__E2eelab__Server__Grpc__ResponseData *)malloc(sizeof(Org__E2eelab__Server__Grpc__ResponseData));
-    org__e2eelab__server__grpc__response_data__init(*response_data);
+    *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
+    skissm__response_data__init(*response_data);
 
     /* code */
     (*response_data)->code = OK;
 }
 
-void handle_remove_group_members_request(Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address, Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, size_t removing_member_num,
-                                         Org__E2eelab__Skissm__Proto__E2eeAddress **removing_member_addresses, Org__E2eelab__Server__Grpc__ResponseData **response_data) {
-    Org__E2eelab__Skissm__Proto__E2eeGroupSession *group_session = NULL;
+void handle_remove_group_members_request(Skissm__E2eeAddress *receiver_address, Skissm__E2eeAddress *group_address, size_t removing_member_num,
+                                         Skissm__E2eeAddress **removing_member_addresses, Skissm__ResponseData **response_data) {
+    Skissm__E2eeGroupSession *group_session = NULL;
     get_ssm_plugin()->load_outbound_group_session(receiver_address, group_address, &group_session);
 
     size_t new_member_num = group_session->n_member_addresses - removing_member_num;
-    Org__E2eelab__Skissm__Proto__E2eeAddress **new_member_addresses = (Org__E2eelab__Skissm__Proto__E2eeAddress **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress *) * new_member_num);
+    Skissm__E2eeAddress **new_member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * new_member_num);
     size_t i = 0, j = 0;
     while (i < group_session->n_member_addresses) {
         if (j < removing_member_num) {
@@ -352,27 +342,27 @@ void handle_remove_group_members_request(Org__E2eelab__Skissm__Proto__E2eeAddres
     create_outbound_group_session(receiver_address, group_address, new_member_addresses, new_member_num, old_session_id);
 
     /* prepare the response payload */
-    *response_data = (Org__E2eelab__Server__Grpc__ResponseData *)malloc(sizeof(Org__E2eelab__Server__Grpc__ResponseData));
-    org__e2eelab__server__grpc__response_data__init(*response_data);
+    *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
+    skissm__response_data__init(*response_data);
 
     /* code */
     (*response_data)->code = OK;
 }
 
-void send_supply_opks_response(uint32_t request_id, Org__E2eelab__Server__Grpc__ResponseData *response_data, supply_opks_handler *handler, Org__E2eelab__Skissm__Proto__E2eeAddress *user_address) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+void send_supply_opks_response(uint32_t request_id, Skissm__ResponseData *response_data, supply_opks_handler *handler, Skissm__E2eeAddress *user_address) {
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__supply_opks_response;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__supply_opks_response;
     e2ee_command_request->id = request_id;
 
-    e2ee_command_request->payload.len = org__e2eelab__server__grpc__response_data__get_packed_size(response_data);
+    e2ee_command_request->payload.len = skissm__response_data__get_packed_size(response_data);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__server__grpc__response_data__pack(response_data, e2ee_command_request->payload.data);
+    skissm__response_data__pack(response_data, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
     int result = get_ssm_plugin()->handle_send(packed_message, packed_message_len);
@@ -382,73 +372,73 @@ void send_supply_opks_response(uint32_t request_id, Org__E2eelab__Server__Grpc__
     }
 
     /* release */
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
     free_mem((void **)&packed_message, packed_message_len);
 }
 
-void send_create_group_response(uint32_t request_id, Org__E2eelab__Server__Grpc__ResponseData *response_data) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+void send_create_group_response(uint32_t request_id, Skissm__ResponseData *response_data) {
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__create_group_response;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__create_group_response;
     e2ee_command_request->id = request_id;
 
-    e2ee_command_request->payload.len = org__e2eelab__server__grpc__response_data__get_packed_size(response_data);
+    e2ee_command_request->payload.len = skissm__response_data__get_packed_size(response_data);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__server__grpc__response_data__pack(response_data, e2ee_command_request->payload.data);
+    skissm__response_data__pack(response_data, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     /* release */
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
     free_mem((void **)&packed_message, packed_message_len);
 }
 
-void send_add_group_members_response(uint32_t request_id, Org__E2eelab__Server__Grpc__ResponseData *response_data) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+void send_add_group_members_response(uint32_t request_id, Skissm__ResponseData *response_data) {
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__add_group_members_response;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__add_group_members_response;
     e2ee_command_request->id = request_id;
 
-    e2ee_command_request->payload.len = org__e2eelab__server__grpc__response_data__get_packed_size(response_data);
+    e2ee_command_request->payload.len = skissm__response_data__get_packed_size(response_data);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__server__grpc__response_data__pack(response_data, e2ee_command_request->payload.data);
+    skissm__response_data__pack(response_data, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     /* release */
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
     free_mem((void **)&packed_message, packed_message_len);
 }
 
-void send_remove_group_members_response(uint32_t request_id, Org__E2eelab__Server__Grpc__ResponseData *response_data) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+void send_remove_group_members_response(uint32_t request_id, Skissm__ResponseData *response_data) {
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__remove_group_members_response;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__remove_group_members_response;
     e2ee_command_request->id = request_id;
 
-    e2ee_command_request->payload.len = org__e2eelab__server__grpc__response_data__get_packed_size(response_data);
+    e2ee_command_request->payload.len = skissm__response_data__get_packed_size(response_data);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__server__grpc__response_data__pack(response_data, e2ee_command_request->payload.data);
+    skissm__response_data__pack(response_data, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     /* release */
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
     free_mem((void **)&packed_message, packed_message_len);
 }
 
@@ -464,302 +454,296 @@ void send_remove_group_members_response(uint32_t request_id, Org__E2eelab__Serve
  *   }
  * }
  */
-void send_get_pre_key_bundle_request(Org__E2eelab__Skissm__Proto__E2eeAddress *e2ee_address, const uint8_t *plaintext, size_t plaintext_len, pre_key_bundle_response_handler *response_handler) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+void send_get_pre_key_bundle_request(Skissm__E2eeAddress *to, pre_key_bundle_response_handler *response_handler) {
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__get_pre_key_bundle;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__get_pre_key_bundle_request;
     e2ee_command_request->id = next_request_id();
-    Org__E2eelab__Skissm__Proto__GetPreKeyBundleRequestPayload *get_pre_key_bundle_message =
-        (Org__E2eelab__Skissm__Proto__GetPreKeyBundleRequestPayload *)malloc(sizeof(Org__E2eelab__Skissm__Proto__GetPreKeyBundleRequestPayload));
-    org__e2eelab__skissm__proto__get_pre_key_bundle_request_payload__init(get_pre_key_bundle_message);
-    copy_address_from_address(&(get_pre_key_bundle_message->peer_address), e2ee_address);
 
-    e2ee_command_request->payload.len = org__e2eelab__skissm__proto__get_pre_key_bundle_request_payload__get_packed_size(get_pre_key_bundle_message);
+    Skissm__GetPreKeyBundleRequestPayload *get_pre_key_bundle_request_payload = produce_get_pre_key_bundle_request_payload(to);
+
+    e2ee_command_request->payload.len = skissm__get_pre_key_bundle_request_payload__get_packed_size(get_pre_key_bundle_request_payload);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__skissm__proto__get_pre_key_bundle_request_payload__pack(get_pre_key_bundle_message, e2ee_command_request->payload.data);
+    skissm__get_pre_key_bundle_request_payload__pack(get_pre_key_bundle_request_payload, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__get_pre_key_bundle_request_payload__free_unpacked(get_pre_key_bundle_request_payload, NULL);
 }
 
 void send_create_group_request(create_group_response_handler *response_handler) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__create_group_request;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__create_group_request;
     e2ee_command_request->id = next_request_id();
 
-    Org__E2eelab__Skissm__Proto__CreateGroupRequestPayload *create_group_msg =
-        (Org__E2eelab__Skissm__Proto__CreateGroupRequestPayload *)malloc(sizeof(Org__E2eelab__Skissm__Proto__CreateGroupRequestPayload));
-    org__e2eelab__skissm__proto__create_group_request_payload__init(create_group_msg);
+    Skissm__CreateGroupRequestPayload *create_group_request_payload = produce_create_group_request_payload(
+        response_handler->sender_address,
+        response_handler->group_name,
+        response_handler->member_num,
+        response_handler->member_addresses);
 
-    copy_address_from_address(&(create_group_msg->sender_address), response_handler->sender_address);
-    copy_protobuf_from_protobuf(&(create_group_msg->group_name), response_handler->group_name);
-    create_group_msg->n_member_addresses = response_handler->member_num;
-    copy_member_addresses_from_member_addresses(&(create_group_msg->member_addresses), (const Org__E2eelab__Skissm__Proto__E2eeAddress **)response_handler->member_addresses,
-                                                response_handler->member_num);
-
-    e2ee_command_request->payload.len = org__e2eelab__skissm__proto__create_group_request_payload__get_packed_size(create_group_msg);
+    e2ee_command_request->payload.len = skissm__create_group_request_payload__get_packed_size(create_group_request_payload);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__skissm__proto__create_group_request_payload__pack(create_group_msg, e2ee_command_request->payload.data);
+    skissm__create_group_request_payload__pack(create_group_request_payload, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__create_group_request_payload__free_unpacked(create_group_request_payload, NULL);
 }
 
 void send_get_group_request(get_group_response_handler *response_handler) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__get_group_request;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__get_group_request;
     e2ee_command_request->id = next_request_id();
 
-    Org__E2eelab__Skissm__Proto__GetGroupRequestPayload *get_group_msg = (Org__E2eelab__Skissm__Proto__GetGroupRequestPayload *)malloc(sizeof(Org__E2eelab__Skissm__Proto__GetGroupRequestPayload));
-    org__e2eelab__skissm__proto__get_group_request_payload__init(get_group_msg);
-    copy_address_from_address(&(get_group_msg->group_address), response_handler->group_address);
+    Skissm__GetGroupRequestPayload *get_group_request_payload = produce_get_group_request_payload(response_handler->group_address);
 
-    e2ee_command_request->payload.len = org__e2eelab__skissm__proto__get_group_request_payload__get_packed_size(get_group_msg);
+    e2ee_command_request->payload.len = skissm__get_group_request_payload__get_packed_size(get_group_request_payload);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__skissm__proto__get_group_request_payload__pack(get_group_msg, e2ee_command_request->payload.data);
+    skissm__get_group_request_payload__pack(get_group_request_payload, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
-    org__e2eelab__skissm__proto__get_group_request_payload__free_unpacked(get_group_msg, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__get_group_request_payload__free_unpacked(get_group_request_payload, NULL);
 }
 
 void send_add_group_members_request(add_group_members_response_handler *response_handler) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__add_group_members_request;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__add_group_members_request;
     e2ee_command_request->id = next_request_id();
 
-    Org__E2eelab__Skissm__Proto__AddGroupMembersRequestPayload *add_group_member_msg =
-        (Org__E2eelab__Skissm__Proto__AddGroupMembersRequestPayload *)malloc(sizeof(Org__E2eelab__Skissm__Proto__AddGroupMembersRequestPayload));
-    org__e2eelab__skissm__proto__add_group_members_request_payload__init(add_group_member_msg);
+    Skissm__AddGroupMembersRequestPayload *add_group_member_msg =
+        (Skissm__AddGroupMembersRequestPayload *)malloc(sizeof(Skissm__AddGroupMembersRequestPayload));
+    skissm__add_group_members_request_payload__init(add_group_member_msg);
 
     copy_address_from_address(&(add_group_member_msg->sender_address), response_handler->outbound_group_session->session_owner);
     copy_address_from_address(&(add_group_member_msg->group_address), response_handler->outbound_group_session->group_address);
     add_group_member_msg->n_member_addresses = response_handler->adding_member_num;
-    copy_member_addresses_from_member_addresses(&(add_group_member_msg->member_addresses), (const Org__E2eelab__Skissm__Proto__E2eeAddress **)response_handler->adding_member_addresses,
+    copy_member_addresses_from_member_addresses(&(add_group_member_msg->member_addresses), (const Skissm__E2eeAddress **)response_handler->adding_member_addresses,
                                                 response_handler->adding_member_num);
 
-    e2ee_command_request->payload.len = org__e2eelab__skissm__proto__add_group_members_request_payload__get_packed_size(add_group_member_msg);
+    e2ee_command_request->payload.len = skissm__add_group_members_request_payload__get_packed_size(add_group_member_msg);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__skissm__proto__add_group_members_request_payload__pack(add_group_member_msg, e2ee_command_request->payload.data);
+    skissm__add_group_members_request_payload__pack(add_group_member_msg, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
-    org__e2eelab__skissm__proto__add_group_members_request_payload__free_unpacked(add_group_member_msg, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__add_group_members_request_payload__free_unpacked(add_group_member_msg, NULL);
 }
 
 void send_remove_group_members_request(remove_group_members_response_handler *response_handler) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_command_request = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_command_request);
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    e2ee_command_request->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__remove_group_members_request;
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__remove_group_members_request;
     e2ee_command_request->id = next_request_id();
 
-    Org__E2eelab__Skissm__Proto__RemoveGroupMembersRequestPayload *remove_group_member_msg =
-        (Org__E2eelab__Skissm__Proto__RemoveGroupMembersRequestPayload *)malloc(sizeof(Org__E2eelab__Skissm__Proto__RemoveGroupMembersRequestPayload));
-    org__e2eelab__skissm__proto__remove_group_members_request_payload__init(remove_group_member_msg);
+    Skissm__RemoveGroupMembersRequestPayload *remove_group_member_msg =
+        (Skissm__RemoveGroupMembersRequestPayload *)malloc(sizeof(Skissm__RemoveGroupMembersRequestPayload));
+    skissm__remove_group_members_request_payload__init(remove_group_member_msg);
 
     copy_address_from_address(&(remove_group_member_msg->sender_address), response_handler->outbound_group_session->session_owner);
     copy_address_from_address(&(remove_group_member_msg->group_address), response_handler->outbound_group_session->group_address);
     remove_group_member_msg->n_member_addresses = response_handler->removing_member_num;
-    copy_member_addresses_from_member_addresses(&(remove_group_member_msg->member_addresses), (const Org__E2eelab__Skissm__Proto__E2eeAddress **)response_handler->removing_member_addresses,
+    copy_member_addresses_from_member_addresses(&(remove_group_member_msg->member_addresses), (const Skissm__E2eeAddress **)response_handler->removing_member_addresses,
                                                 response_handler->removing_member_num);
 
-    e2ee_command_request->payload.len = org__e2eelab__skissm__proto__remove_group_members_request_payload__get_packed_size(remove_group_member_msg);
+    e2ee_command_request->payload.len = skissm__remove_group_members_request_payload__get_packed_size(remove_group_member_msg);
     e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
-    org__e2eelab__skissm__proto__remove_group_members_request_payload__pack(remove_group_member_msg, e2ee_command_request->payload.data);
+    skissm__remove_group_members_request_payload__pack(remove_group_member_msg, e2ee_command_request->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
     insert_response_handler(e2ee_command_request->id, response_handler);
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
-    org__e2eelab__skissm__proto__remove_group_members_request_payload__free_unpacked(remove_group_member_msg, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+    skissm__remove_group_members_request_payload__free_unpacked(remove_group_member_msg, NULL);
 }
 
-static void send_receive_msg_response(uint32_t request_id, Org__E2eelab__Server__Grpc__ResponseData *response_data) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_protocol_msg = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_protocol_msg);
+static void send_receive_msg_response(uint32_t request_id, Skissm__ResponseData *response_data) {
+    Skissm__E2eeProtocolMsg *e2ee_protocol_msg = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_protocol_msg);
 
-    e2ee_protocol_msg->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__send_one2one_msg_response;
+    e2ee_protocol_msg->cmd = SKISSM__E2EE_COMMANDS__send_one2one_msg_response;
     e2ee_protocol_msg->id = request_id;
 
     response_data->code = OK;
 
-    e2ee_protocol_msg->payload.len = org__e2eelab__server__grpc__response_data__get_packed_size(response_data);
+    e2ee_protocol_msg->payload.len = skissm__response_data__get_packed_size(response_data);
     e2ee_protocol_msg->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_protocol_msg->payload.len);
-    org__e2eelab__server__grpc__response_data__pack(response_data, e2ee_protocol_msg->payload.data);
+    skissm__response_data__pack(response_data, e2ee_protocol_msg->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_protocol_msg);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_protocol_msg);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_protocol_msg, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_protocol_msg, packed_message);
 
     /* done */
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     /* release */
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_protocol_msg, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_protocol_msg, NULL);
 }
 
-static void send_receive_group_msg_response(uint32_t request_id, Org__E2eelab__Server__Grpc__ResponseData *response_data) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *e2ee_protocol_msg = (Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg));
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__init(e2ee_protocol_msg);
+static void send_receive_group_msg_response(uint32_t request_id, Skissm__ResponseData *response_data) {
+    Skissm__E2eeProtocolMsg *e2ee_protocol_msg = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_protocol_msg);
 
-    e2ee_protocol_msg->cmd = ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__send_group_msg_response;
+    e2ee_protocol_msg->cmd = SKISSM__E2EE_COMMANDS__send_group_msg_response;
     e2ee_protocol_msg->id = request_id;
 
     response_data->code = OK;
 
-    e2ee_protocol_msg->payload.len = org__e2eelab__server__grpc__response_data__get_packed_size(response_data);
+    e2ee_protocol_msg->payload.len = skissm__response_data__get_packed_size(response_data);
     e2ee_protocol_msg->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_protocol_msg->payload.len);
-    org__e2eelab__server__grpc__response_data__pack(response_data, e2ee_protocol_msg->payload.data);
+    skissm__response_data__pack(response_data, e2ee_protocol_msg->payload.data);
 
-    size_t packed_message_len = org__e2eelab__skissm__proto__e2ee_protocol_msg__get_packed_size(e2ee_protocol_msg);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_protocol_msg);
     uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__pack(e2ee_protocol_msg, packed_message);
+    skissm__e2ee_protocol_msg__pack(e2ee_protocol_msg, packed_message);
 
     /* done */
     get_ssm_plugin()->handle_send(packed_message, packed_message_len);
 
     /* release */
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(e2ee_protocol_msg, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_protocol_msg, NULL);
 }
 
-static void process_request_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *request_msg, Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address) {
+static void process_request_msg(Skissm__E2eeProtocolMsg *request_msg, Skissm__E2eeAddress *receiver_address) {
     void *request_handler = NULL;
     request_handler = get_request_handler(request_msg->cmd);
 
     // handle commands
     switch (request_msg->cmd) {
-    case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__supply_opks_request: {
-        Org__E2eelab__Skissm__Proto__SupplyOpksRequestPayload *request_opks_payload =
-            org__e2eelab__skissm__proto__supply_opks_request_payload__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
+    case SKISSM__E2EE_COMMANDS__supply_opks_request: {
+        Skissm__SupplyOpksRequestPayload *request_opks_payload =
+            skissm__supply_opks_request_payload__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
         uint32_t num = request_opks_payload->opks_num;
-        Org__E2eelab__Skissm__Proto__E2eeAddress *user_address = request_opks_payload->user_address;
-        Org__E2eelab__Server__Grpc__ResponseData *response_data;
+        Skissm__E2eeAddress *user_address = request_opks_payload->user_address;
+        Skissm__ResponseData *response_data;
         handle_supply_opks_request(num, user_address, &response_data);
 
         supply_opks_handler *supply_opks_request_handler = (supply_opks_handler *)request_handler;
         send_supply_opks_response(request_msg->id, response_data, supply_opks_request_handler, user_address);
 
         // release
-        org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
-        org__e2eelab__skissm__proto__supply_opks_request_payload__free_unpacked(request_opks_payload, NULL);
+        skissm__response_data__free_unpacked(response_data, NULL);
+        skissm__supply_opks_request_payload__free_unpacked(request_opks_payload, NULL);
         supply_opks_request_handler->handle_release(supply_opks_request_handler);
     } break;
 
-    case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__create_group_request: {
-        Org__E2eelab__Skissm__Proto__CreateGroupRequestPayload *create_group_payload =
-            org__e2eelab__skissm__proto__create_group_request_payload__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
+    case SKISSM__E2EE_COMMANDS__create_group_request: {
+        Skissm__CreateGroupRequestPayload *create_group_payload =
+            skissm__create_group_request_payload__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
         size_t member_num = create_group_payload->n_member_addresses;
-        Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses = create_group_payload->member_addresses;
-        Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = create_group_payload->group_address;
-        Org__E2eelab__Server__Grpc__ResponseData *response_data;
+        Skissm__E2eeAddress **member_addresses = create_group_payload->member_addresses;
+        Skissm__E2eeAddress *group_address = create_group_payload->group_address;
+        Skissm__ResponseData *response_data;
         handle_create_group_request(receiver_address, group_address, member_addresses, member_num, &response_data);
         send_create_group_response(request_msg->id, response_data);
 
         // release
-        org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
-        org__e2eelab__skissm__proto__create_group_request_payload__free_unpacked(create_group_payload, NULL);
+        skissm__response_data__free_unpacked(response_data, NULL);
+        skissm__create_group_request_payload__free_unpacked(create_group_payload, NULL);
     } break;
 
-    case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__add_group_members_request: {
-        Org__E2eelab__Skissm__Proto__AddGroupMembersRequestPayload *add_group_members_request_payload =
-            org__e2eelab__skissm__proto__add_group_members_request_payload__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
-        Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = add_group_members_request_payload->group_address;
+    case SKISSM__E2EE_COMMANDS__add_group_members_request: {
+        Skissm__AddGroupMembersRequestPayload *add_group_members_request_payload =
+            skissm__add_group_members_request_payload__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
+        Skissm__E2eeAddress *group_address = add_group_members_request_payload->group_address;
         size_t adding_member_num = add_group_members_request_payload->n_member_addresses;
-        Org__E2eelab__Skissm__Proto__E2eeAddress **adding_member_addresses = add_group_members_request_payload->member_addresses;
-        Org__E2eelab__Server__Grpc__ResponseData *response_data;
+        Skissm__E2eeAddress **adding_member_addresses = add_group_members_request_payload->member_addresses;
+        Skissm__ResponseData *response_data;
         handle_add_group_members_request(receiver_address, group_address, adding_member_num, adding_member_addresses, &response_data);
         send_add_group_members_response(request_msg->id, response_data);
 
         // release
-        org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
+        skissm__response_data__free_unpacked(response_data, NULL);
     } break;
 
-    case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__remove_group_members_request: {
-        Org__E2eelab__Skissm__Proto__RemoveGroupMembersRequestPayload *remove_group_members_request_payload =
-            org__e2eelab__skissm__proto__remove_group_members_request_payload__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
-        Org__E2eelab__Skissm__Proto__E2eeAddress *group_address = remove_group_members_request_payload->group_address;
+    case SKISSM__E2EE_COMMANDS__remove_group_members_request: {
+        Skissm__RemoveGroupMembersRequestPayload *remove_group_members_request_payload =
+            skissm__remove_group_members_request_payload__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
+        Skissm__E2eeAddress *group_address = remove_group_members_request_payload->group_address;
         size_t removing_member_num = remove_group_members_request_payload->n_member_addresses;
-        Org__E2eelab__Skissm__Proto__E2eeAddress **removing_member_addresses = remove_group_members_request_payload->member_addresses;
-        Org__E2eelab__Server__Grpc__ResponseData *response_data;
+        Skissm__E2eeAddress **removing_member_addresses = remove_group_members_request_payload->member_addresses;
+        Skissm__ResponseData *response_data;
         handle_remove_group_members_request(receiver_address, group_address, removing_member_num, removing_member_addresses, &response_data);
         send_remove_group_members_response(request_msg->id, response_data);
-        
+
         // release
-        org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
+        skissm__response_data__free_unpacked(response_data, NULL);
     } break;
 
-    case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__send_one2one_msg_request: {
-        Org__E2eelab__Skissm__Proto__E2eeMessage *receive_msg_payload = org__e2eelab__skissm__proto__e2ee_message__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
+    case SKISSM__E2EE_COMMANDS__send_one2one_msg_request: {
+        Skissm__E2eeMessage *receive_msg_payload = skissm__e2ee_message__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
 
         size_t result = decrypt_session(receive_msg_payload);
 
-        Org__E2eelab__Server__Grpc__ResponseData *response_data = (Org__E2eelab__Server__Grpc__ResponseData *)malloc(sizeof(Org__E2eelab__Server__Grpc__ResponseData));
-        org__e2eelab__server__grpc__response_data__init(response_data);
+        Skissm__ResponseData *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
+        skissm__response_data__init(response_data);
 
         send_receive_msg_response(request_msg->id, response_data);
 
         // release
-        org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
+        skissm__response_data__free_unpacked(response_data, NULL);
     } break;
 
-    case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__send_group_msg_request: {
-        Org__E2eelab__Skissm__Proto__E2eeMessage *receive_msg_payload = org__e2eelab__skissm__proto__e2ee_message__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
+    case SKISSM__E2EE_COMMANDS__send_group_msg_request: {
+        Skissm__E2eeMessage *receive_msg_payload = skissm__e2ee_message__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
 
-        Org__E2eelab__Server__Grpc__ResponseData *response_data = (Org__E2eelab__Server__Grpc__ResponseData *)malloc(sizeof(Org__E2eelab__Server__Grpc__ResponseData));
-        org__e2eelab__server__grpc__response_data__init(response_data);
-        
+        Skissm__ResponseData *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
+        skissm__response_data__init(response_data);
+
         decrypt_group_session(receiver_address, receive_msg_payload);
 
         send_receive_group_msg_response(request_msg->id, response_data);
-        
+
         // release
-        org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
+        skissm__response_data__free_unpacked(response_data, NULL);
     } break;
 
     default:
@@ -767,7 +751,7 @@ static void process_request_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *re
     }
 }
 
-static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *response_msg) {
+static void process_response_msg(Skissm__E2eeProtocolMsg *response_msg) {
     void *response_handler = NULL;
 
     response_handler = get_response_handler(response_msg->id);
@@ -776,7 +760,7 @@ static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *r
     }
     delete_response_handler(response_msg->id);
 
-    Org__E2eelab__Server__Grpc__ResponseData *response_data = org__e2eelab__server__grpc__response_data__unpack(NULL, response_msg->payload.len, response_msg->payload.data);
+    Skissm__ResponseData *response_data = skissm__response_data__unpack(NULL, response_msg->payload.len, response_msg->payload.data);
 
     if (response_data == NULL) {
         ssm_notify_error(BAD_SERVER_MESSAGE, "process_response_msg() null response_data");
@@ -786,76 +770,79 @@ static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *r
     if (response_data->code == OK) {
         // handle commands
         switch (response_msg->cmd) {
-        case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__register_user_response: {
-            Org__E2eelab__Skissm__Proto__RegisterUserResponsePayload *payload =
-                org__e2eelab__skissm__proto__register_user_response_payload__unpack(NULL, response_data->data.len, response_data->data.data);
+        case SKISSM__E2EE_COMMANDS__register_user_response: {
+            Skissm__RegisterUserResponsePayload *payload =
+                skissm__register_user_response_payload__unpack(NULL, response_data->data.len, response_data->data.data);
             register_user_response_handler *this_response_handler = (register_user_response_handler *)response_handler;
-            this_response_handler->handle_response(this_response_handler, payload->address);
+            consume_register_response_payload(this_response_handler->account, payload);
             // release
-            org__e2eelab__skissm__proto__register_user_response_payload__free_unpacked(payload, NULL);
-            this_response_handler->handle_release(this_response_handler);
+            skissm__register_user_response_payload__free_unpacked(payload, NULL);
         } break;
 
-        case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__delete_user_response:
+        case SKISSM__E2EE_COMMANDS__delete_user_response:
             /* code */
             break;
 
-        case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__get_pre_key_bundle_response: {
-            Org__E2eelab__Skissm__Proto__GetPreKeyBundleResponsePayload *bundle_payload =
-                org__e2eelab__skissm__proto__get_pre_key_bundle_response_payload__unpack(NULL, response_data->data.len, response_data->data.data);
-            Org__E2eelab__Skissm__Proto__E2eePreKeyBundle *their_pre_key_bundle = bundle_payload->pre_key_bundle;
+        case SKISSM__E2EE_COMMANDS__get_pre_key_bundle_response: {
+            Skissm__GetPreKeyBundleResponsePayload *get_pre_key_bundle_response_payload =
+                skissm__get_pre_key_bundle_response_payload__unpack(NULL, response_data->data.len, response_data->data.data);
 
             pre_key_bundle_response_handler *this_response_handler = (pre_key_bundle_response_handler *)response_handler;
-            this_response_handler->handle_response(this_response_handler, their_pre_key_bundle);
+            Skissm__E2eeAddress *from = this_response_handler->from;
+            Skissm__E2eeAddress *to = this_response_handler->to;
+            uint8_t *context = this_response_handler->context;
+            size_t context_len = this_response_handler->context_len;
+
+            consume_get_pre_key_bundle_response_payload(from, to, context, context_len, get_pre_key_bundle_response_payload);
             // release
-            org__e2eelab__skissm__proto__get_pre_key_bundle_response_payload__free_unpacked(bundle_payload, NULL);
-            this_response_handler->handle_release(this_response_handler);
+            skissm__get_pre_key_bundle_response_payload__free_unpacked(get_pre_key_bundle_response_payload, NULL);
         } break;
 
-        case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__publish_spk_response: {
+        case SKISSM__E2EE_COMMANDS__publish_spk_response: {
             publish_spk_response_handler *this_response_handler = (publish_spk_response_handler *)response_handler;
-            this_response_handler->handle_response(this_response_handler);
-            // release
-            this_response_handler->handle_release(this_response_handler);
+            consume_publish_spk_response_payload(this_response_handler->account);
         } break;
 
-        case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__create_group_response: {
-            Org__E2eelab__Skissm__Proto__CreateGroupResponsePayload *create_group_response_payload =
-                org__e2eelab__skissm__proto__create_group_response_payload__unpack(NULL, response_data->data.len, response_data->data.data);
+        case SKISSM__E2EE_COMMANDS__create_group_response: {
+            Skissm__CreateGroupResponsePayload *create_group_response_payload =
+                skissm__create_group_response_payload__unpack(NULL, response_data->data.len, response_data->data.data);
             create_group_response_handler *this_response_handler = (create_group_response_handler *)response_handler;
-            this_response_handler->handle_response(this_response_handler, create_group_response_payload->group_address);
+            consume_create_group_response_payload(
+                this_response_handler->sender_address,
+                this_response_handler->group_name,
+                this_response_handler->member_num,
+                this_response_handler->member_addresses,
+                create_group_response_payload
+            );
 
             // release
-            org__e2eelab__skissm__proto__create_group_response_payload__free_unpacked(create_group_response_payload, NULL);
-            this_response_handler->handle_release(this_response_handler);
+            skissm__create_group_response_payload__free_unpacked(create_group_response_payload, NULL);
         } break;
 
-        case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__get_group_response: {
-            Org__E2eelab__Skissm__Proto__GetGroupResponsePayload *get_group_response_payload =
-                org__e2eelab__skissm__proto__get_group_response_payload__unpack(NULL, response_data->data.len, response_data->data.data);
+        case SKISSM__E2EE_COMMANDS__get_group_response: {
+            Skissm__GetGroupResponsePayload *get_group_response_payload =
+                skissm__get_group_response_payload__unpack(NULL, response_data->data.len, response_data->data.data);
             get_group_response_handler *this_response_handler = (get_group_response_handler *)response_handler;
-            this_response_handler->handle_response(this_response_handler, &(get_group_response_payload->group_name), get_group_response_payload->n_member_addresses,
-                                                   get_group_response_payload->member_addresses);
+            consume_get_group_response_payload(get_group_response_payload);
             // release
-            org__e2eelab__skissm__proto__get_group_response_payload__free_unpacked(get_group_response_payload, NULL);
-            this_response_handler->handle_release(this_response_handler);
+            skissm__get_group_response_payload__free_unpacked(get_group_response_payload, NULL);
         } break;
 
-        case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__add_group_members_response: {
+        case SKISSM__E2EE_COMMANDS__add_group_members_response: {
             add_group_members_response_handler *this_response_handler = (add_group_members_response_handler *)response_handler;
             this_response_handler->handle_response(this_response_handler);
             // release
             this_response_handler->handle_release(this_response_handler);
         } break;
 
-        case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__remove_group_members_response: {
+        case SKISSM__E2EE_COMMANDS__remove_group_members_response: {
             remove_group_members_response_handler *this_response_handler = (remove_group_members_response_handler *)response_handler;
             this_response_handler->handle_response(this_response_handler);
             // release
             this_response_handler->handle_release(this_response_handler);
         } break;
 
-        case ORG__E2EELAB__SKISSM__PROTO__E2EE_COMMANDS__send_one2one_msg_response: {
+        case SKISSM__E2EE_COMMANDS__send_one2one_msg_response: {
             /* code */
         } break;
 
@@ -866,17 +853,17 @@ static void process_response_msg(Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *r
         ssm_notify_error(BAD_SERVER_MESSAGE, "process_response_msg() response_data->code != OK");
     }
     // release
-    org__e2eelab__server__grpc__response_data__free_unpacked(response_data, NULL);
+    skissm__response_data__free_unpacked(response_data, NULL);
 }
 
-void process_protocol_msg(uint8_t *server_msg, size_t server_msg_len, Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address) {
-    Org__E2eelab__Skissm__Proto__E2eeProtocolMsg *protocol_msg = org__e2eelab__skissm__proto__e2ee_protocol_msg__unpack(NULL, server_msg_len, server_msg);
+void process_protocol_msg(uint8_t *server_msg, size_t server_msg_len, Skissm__E2eeAddress *receiver_address) {
+    Skissm__E2eeProtocolMsg *protocol_msg = skissm__e2ee_protocol_msg__unpack(NULL, server_msg_len, server_msg);
     if (protocol_msg == NULL) {
         ssm_notify_error(BAD_SERVER_MESSAGE, "parse_incoming_message()");
         return;
     }
 
-    Org__E2eelab__Skissm__Proto__E2eeCommands e2ee_command = protocol_msg->cmd;
+    Skissm__E2eeCommands e2ee_command = protocol_msg->cmd;
 
     if (e2ee_command & RESPONSE_CMD_FLAG)
         process_response_msg(protocol_msg);
@@ -884,5 +871,5 @@ void process_protocol_msg(uint8_t *server_msg, size_t server_msg_len, Org__E2eel
         process_request_msg(protocol_msg, receiver_address);
 
     // release
-    org__e2eelab__skissm__proto__e2ee_protocol_msg__free_unpacked(protocol_msg, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(protocol_msg, NULL);
 }

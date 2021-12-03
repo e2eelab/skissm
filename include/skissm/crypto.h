@@ -25,6 +25,10 @@
 #include <string.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "skissm.h"
 
 /** length of a sha256 hash */
@@ -63,11 +67,11 @@ void crypto_curve25519_generate_public_key(
 );
 
 void crypto_curve25519_generate_key_pair(
-    Org__E2eelab__Skissm__Proto__KeyPair *key_pair
+    Skissm__KeyPair *key_pair
 );
 
 void crypto_curve25519_dh(
-    const Org__E2eelab__Skissm__Proto__KeyPair *our_key,
+    const Skissm__KeyPair *our_key,
     const ProtobufCBinaryData *their_key,
     uint8_t *shared_secret
 );
@@ -146,5 +150,9 @@ size_t crypto_aes_decrypt_gcm(
     const uint8_t *key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
     uint8_t *output);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CRYPTO_H_ */

@@ -22,6 +22,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "skissm.h"
 
 /**
@@ -56,7 +60,7 @@ typedef struct cipher_suits {
    *
    * @param key_pair
    */
-  void (*gen_key_pair)(Org__E2eelab__Skissm__Proto__KeyPair *key_pair);
+  void (*gen_key_pair)(Skissm__KeyPair *key_pair);
 
   /**
    * @brief Calculate shared secret by Diffie–Hellman (DH) algorithm
@@ -65,7 +69,7 @@ typedef struct cipher_suits {
    * @param their_key
    * @param shared_secret
    */
-  void (*dh)(const Org__E2eelab__Skissm__Proto__KeyPair *our_key,
+  void (*dh)(const Skissm__KeyPair *our_key,
              const ProtobufCBinaryData *their_key, uint8_t *shared_secret);
 
   /**
@@ -79,7 +83,7 @@ typedef struct cipher_suits {
    * @return Success or not
    */
   size_t (*encrypt)(const uint8_t *ad, const uint8_t *key,
-                    const uint8_t *plaintext, size_t plaintext_length,
+                    const uint8_t *plaintext, size_t plaintext_len,
                     uint8_t **ciphertext);
 
   /**
@@ -171,5 +175,9 @@ extern const struct cipher_suits E2EE_ECDH_X25519_AES256_GCM_SHA256;
 
 #define CIPHER_INIT                                                            \
   { &E2EE_ECDH_X25519_AES256_GCM_SHA256 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CIPHER_H_ */

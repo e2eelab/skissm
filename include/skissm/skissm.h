@@ -22,6 +22,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "error.h"
 
 #include "skissm/add_group_members_request_payload.pb-c.h"
@@ -65,12 +69,12 @@
 #include "skissm/supply_opks_request_payload.pb-c.h"
 #include "skissm/supply_opks_response_payload.pb-c.h"
 
-#include "skissm/service/e2ee_service.pb-c.h"
-#include "skissm/service/dto/connect_request.pb-c.h"
-#include "skissm/service/dto/event_data_request.pb-c.h"
-#include "skissm/service/dto/login_request.pb-c.h"
-#include "skissm/service/dto/logout_request.pb-c.h"
-#include "skissm/service/dto/response_data.pb-c.h"
+#include "skissm/e2ee_service.pb-c.h"
+#include "skissm/connect_request.pb-c.h"
+#include "skissm/event_data_request.pb-c.h"
+#include "skissm/login_request.pb-c.h"
+#include "skissm/logout_request.pb-c.h"
+#include "skissm/response_data.pb-c.h"
 
 #define PROTOCOL_VERSION 0x01
 
@@ -99,46 +103,46 @@ typedef struct skissm_plugin {
      * @brief store account to db
      * @param account
      */
-    void (*store_account)(Org__E2eelab__Skissm__Proto__E2eeAccount *);
+    void (*store_account)(Skissm__E2eeAccount *);
     /**
      * @brief load account from db
      * @param account_id
      * @param account
      */
-    void (*load_account)(ProtobufCBinaryData *, Org__E2eelab__Skissm__Proto__E2eeAccount **);
+    void (*load_account)(ProtobufCBinaryData *, Skissm__E2eeAccount **);
     /**
      * @brief load all accounts from db
      * @param accounts
      * @return number of loaded accounts
      */
-    size_t (*load_accounts)(Org__E2eelab__Skissm__Proto__E2eeAccount ***);
+    size_t (*load_accounts)(Skissm__E2eeAccount ***);
     /**
      * @brief load account from db by giving address
      * @param address
      * @param account
      */
-    void (*load_account_by_address)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                    Org__E2eelab__Skissm__Proto__E2eeAccount **);
+    void (*load_account_by_address)(Skissm__E2eeAddress *,
+                                    Skissm__E2eeAccount **);
     /**
      * @brief update identity key of account to db
      * @param account_id
      * @param identity_key_pair
      */
-    void (*update_identity_key)(ProtobufCBinaryData *, Org__E2eelab__Skissm__Proto__KeyPair *);
+    void (*update_identity_key)(ProtobufCBinaryData *, Skissm__KeyPair *);
     /**
      * @brief update signed pre key of account to db
      * @param account_id
      * @param signed_pre_key
      */
     void (*update_signed_pre_key)(ProtobufCBinaryData *,
-                                  Org__E2eelab__Skissm__Proto__SignedPreKeyPair *);
+                                  Skissm__SignedPreKeyPair *);
     /**
      * @brief load old signed pre key by spk_id
      * @param account_id
      * @param spk_id
      * @param signed_pre_key_pair
      */
-    void (*load_old_signed_pre_key)(ProtobufCBinaryData *, uint32_t, Org__E2eelab__Skissm__Proto__SignedPreKeyPair **);
+    void (*load_old_signed_pre_key)(ProtobufCBinaryData *, uint32_t, Skissm__SignedPreKeyPair **);
     /**
      * @brief remove expired signed pre key of account from db
      * @param account_id
@@ -149,14 +153,14 @@ typedef struct skissm_plugin {
      * @param account_id
      * @param address
      */
-    void (*update_address)(ProtobufCBinaryData *, Org__E2eelab__Skissm__Proto__E2eeAddress *);
+    void (*update_address)(ProtobufCBinaryData *, Skissm__E2eeAddress *);
     /**
      * @brief add an one time pre key of account to db
      * @param account_id
      * @param one_time_pre_key
      */
     void (*add_one_time_pre_key)(ProtobufCBinaryData *,
-                                 Org__E2eelab__Skissm__Proto__OneTimePreKeyPair *);
+                                 Skissm__OneTimePreKeyPair *);
     /**
      * @brief remove an one time pre key of account to db
      * @param account_id
@@ -177,30 +181,30 @@ typedef struct skissm_plugin {
      * @param owner
      * @param inbound_session
      */
-    void (*load_inbound_session)(ProtobufCBinaryData, Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                 Org__E2eelab__Skissm__Proto__E2eeSession **);
+    void (*load_inbound_session)(ProtobufCBinaryData, Skissm__E2eeAddress *,
+                                 Skissm__E2eeSession **);
     /**
      * @brief store session
      * @param session
      */
-    void (*store_session)(Org__E2eelab__Skissm__Proto__E2eeSession *);
+    void (*store_session)(Skissm__E2eeSession *);
     /**
      * @brief find outbound session
      * @param owner
      * @param to
      * @param outbound_session
      */
-    void (*load_outbound_session)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                  Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                  Org__E2eelab__Skissm__Proto__E2eeSession **);
+    void (*load_outbound_session)(Skissm__E2eeAddress *,
+                                  Skissm__E2eeAddress *,
+                                  Skissm__E2eeSession **);
     /**
      * @brief delete old inbound session
      * @param owner
      * @param from
      * @param to
      */
-    void (*unload_session)(Org__E2eelab__Skissm__Proto__E2eeAddress *, Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                           Org__E2eelab__Skissm__Proto__E2eeAddress *);
+    void (*unload_session)(Skissm__E2eeAddress *, Skissm__E2eeAddress *,
+                           Skissm__E2eeAddress *);
 
     // group session related handlers
     /**
@@ -209,33 +213,33 @@ typedef struct skissm_plugin {
      * @param group_address
      * @param inbound_group_session
      */
-    void (*load_outbound_group_session)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                        Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                        Org__E2eelab__Skissm__Proto__E2eeGroupSession **);
+    void (*load_outbound_group_session)(Skissm__E2eeAddress *,
+                                        Skissm__E2eeAddress *,
+                                        Skissm__E2eeGroupSession **);
     /**
      * @brief find inbound group session
      * @param group_session_id
      * @param user_address
      * @param outbound_group_session
      */
-    void (*load_inbound_group_session)(ProtobufCBinaryData, Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                       Org__E2eelab__Skissm__Proto__E2eeGroupSession **);
+    void (*load_inbound_group_session)(ProtobufCBinaryData, Skissm__E2eeAddress *,
+                                       Skissm__E2eeGroupSession **);
     /**
      * @brief store group session
      * @param group_session
      */
-    void (*store_group_session)(Org__E2eelab__Skissm__Proto__E2eeGroupSession *);
+    void (*store_group_session)(Skissm__E2eeGroupSession *);
     /**
      * @brief delete group session
      * @param group_session
      */
-    void (*unload_group_session)(Org__E2eelab__Skissm__Proto__E2eeGroupSession *);
+    void (*unload_group_session)(Skissm__E2eeGroupSession *);
     /**
      * @brief delete old inbound group session
      * @param user_address
      * @param old_session_id
      */
-    void (*unload_inbound_group_session)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *);
+    void (*unload_inbound_group_session)(Skissm__E2eeAddress *, ProtobufCBinaryData *);
 } skissm_plugin;
 
 // callback handlers
@@ -250,7 +254,7 @@ typedef struct skissm_event_handler {
      * @brief notify user registered event
      * @param account
      */
-    void (*on_user_registered)(Org__E2eelab__Skissm__Proto__E2eeAccount *);
+    void (*on_user_registered)(Skissm__E2eeAccount *);
     /**
      * @brief notify one2one msg received event
      * @param from_address
@@ -258,8 +262,8 @@ typedef struct skissm_event_handler {
      * @param plaintext
      * @param plaintext_len
      */
-    void (*on_one2one_msg_received)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                    Org__E2eelab__Skissm__Proto__E2eeAddress *, uint8_t *, size_t);
+    void (*on_one2one_msg_received)(Skissm__E2eeAddress *,
+                                    Skissm__E2eeAddress *, uint8_t *, size_t);
 
     /**
      * @brief notify group msg received event
@@ -268,15 +272,15 @@ typedef struct skissm_event_handler {
      * @param plaintext
      * @param plaintext_len
      */
-    void (*on_group_msg_received)(Org__E2eelab__Skissm__Proto__E2eeAddress *,
-                                  Org__E2eelab__Skissm__Proto__E2eeAddress *, uint8_t *, size_t);
+    void (*on_group_msg_received)(Skissm__E2eeAddress *,
+                                  Skissm__E2eeAddress *, uint8_t *, size_t);
 
     /**
      * @brief notify group created event
      * @param group_address
      * @param group_name
      */
-    void (*on_group_created)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *);
+    void (*on_group_created)(Skissm__E2eeAddress *, ProtobufCBinaryData *);
 
     /**
      * @brief notify group members added
@@ -284,8 +288,8 @@ typedef struct skissm_event_handler {
      * @param group_name
      * @param member_addresses
      */
-    void (*on_group_members_added)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *,
-                                   Org__E2eelab__Skissm__Proto__E2eeAddress **);
+    void (*on_group_members_added)(Skissm__E2eeAddress *, ProtobufCBinaryData *,
+                                   Skissm__E2eeAddress **);
 
     /**
      * @brief notify group members removed
@@ -293,8 +297,8 @@ typedef struct skissm_event_handler {
      * @param group_name
      * @param member_addresses
      */
-    void (*on_group_members_removed)(Org__E2eelab__Skissm__Proto__E2eeAddress *, ProtobufCBinaryData *,
-                                     Org__E2eelab__Skissm__Proto__E2eeAddress **);
+    void (*on_group_members_removed)(Skissm__E2eeAddress *, ProtobufCBinaryData *,
+                                     Skissm__E2eeAddress **);
 } skissm_event_handler;
 
 void set_ssm_plugin(skissm_plugin *plugin);
@@ -305,24 +309,28 @@ void set_skissm_event_handler(skissm_event_handler *event_handler);
 
 void ssm_notify_error(ErrorCode, char *);
 
-void ssm_notify_user_registered(Org__E2eelab__Skissm__Proto__E2eeAccount *account);
+void ssm_notify_user_registered(Skissm__E2eeAccount *account);
 
-void ssm_notify_one2one_msg(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
-                            Org__E2eelab__Skissm__Proto__E2eeAddress *to_address, uint8_t *plaintext,
+void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,
+                            Skissm__E2eeAddress *to_address, uint8_t *plaintext,
                             size_t plaintext_len);
 
-void ssm_notify_group_msg(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
-                          Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, uint8_t *plaintext,
+void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
+                          Skissm__E2eeAddress *group_address, uint8_t *plaintext,
                           size_t plaintext_len);
 
-void ssm_notify_group_created(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, ProtobufCBinaryData *group_name);
+void ssm_notify_group_created(Skissm__E2eeAddress *group_address, ProtobufCBinaryData *group_name);
 
-void ssm_notify_group_members_added(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+void ssm_notify_group_members_added(Skissm__E2eeAddress *group_address,
                                     ProtobufCBinaryData *group_name,
-                                    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses);
+                                    Skissm__E2eeAddress **member_addresses);
 
-void ssm_notify_group_members_removed(Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+void ssm_notify_group_members_removed(Skissm__E2eeAddress *group_address,
                                       ProtobufCBinaryData *group_name,
-                                      Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses);
+                                      Skissm__E2eeAddress **member_addresses);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SKISSM_H_ */

@@ -36,7 +36,7 @@ extern register_user_response_handler register_user_response_handler_store;
 
 #define account_data_max 2
 
-static Org__E2eelab__Skissm__Proto__E2eeAccount *account_data[account_data_max];
+static Skissm__E2eeAccount *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
@@ -54,9 +54,9 @@ static void test_begin(){
 }
 
 static void test_end(){
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account_data[0], NULL);
+    skissm__e2ee_account__free_unpacked(account_data[0], NULL);
     account_data[0] = NULL;
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account_data[1], NULL);
+    skissm__e2ee_account__free_unpacked(account_data[1], NULL);
     account_data[1] = NULL;
     account_data_insert_pos = 0;
 }
@@ -65,14 +65,14 @@ static void on_error(ErrorCode error_code, char *error_msg) {
     print_error(error_msg, error_code);
 }
 
-static void on_user_registered(Org__E2eelab__Skissm__Proto__E2eeAccount *account){
+static void on_user_registered(Skissm__E2eeAccount *account){
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
 }
 
 static void on_one2one_msg_received(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *to_address,
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
@@ -95,15 +95,15 @@ static skissm_event_handler test_event_handler = {
 };
 
 static void test_encryption(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *from_address,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *to_address,
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     uint8_t *context = NULL;
     size_t context_len;
     pack_e2ee_plaintext(
         plaintext, plaintext_len,
-        ORG__E2EELAB__SKISSM__PROTO__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
+        SKISSM__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
         &context, &context_len
     );
     encrypt_session(from_address, to_address, context, context_len);

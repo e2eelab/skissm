@@ -36,7 +36,7 @@ void create_domain(ProtobufCBinaryData *domain);
 void random_id(ProtobufCBinaryData *id, size_t len);
 char *random_chars(size_t len);
 
-void load_account(ProtobufCBinaryData *id, Org__E2eelab__Skissm__Proto__E2eeAccount **account);
-void load_account_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address_p, Org__E2eelab__Skissm__Proto__E2eeAccount **account_pp);
-void store_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account);
+void load_account(ProtobufCBinaryData *id, Skissm__E2eeAccount **account);
+void load_account_by_address(Skissm__E2eeAddress *address_p, Skissm__E2eeAccount **account_pp);
+void store_account(Skissm__E2eeAccount *account);
 #endif /* TEST_ENV_H_ */

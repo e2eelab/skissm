@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package org.e2eelab.server.grpc.auth;
+package skissm;
 
 option java_outer_classname = "LoginRequest";
 

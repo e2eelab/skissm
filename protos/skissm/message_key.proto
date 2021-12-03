@@ -18,7 +18,7 @@
  */
 syntax = "proto3";
 
-package org.e2eelab.skissm.proto;
+package skissm;
 
 option java_outer_classname = "MessageKey";
 

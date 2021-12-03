@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-package org.e2eelab.server.grpc;
+package skissm;
 
+option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "ResponseData";
 option cc_enable_arenas = true;
 

@@ -29,10 +29,10 @@
 #include "test_env.h"
 #include "test_util.h"
 
-static void free_opks(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***opks, uint32_t opk_num){
+static void free_opks(Skissm__OneTimePreKeyPair ***opks, uint32_t opk_num){
     uint32_t i;
     for (i = 0; i < opk_num; i++){
-        org__e2eelab__skissm__proto__one_time_pre_key_pair__free_unpacked((*opks)[i], NULL);
+        skissm__one_time_pre_key_pair__free_unpacked((*opks)[i], NULL);
         (*opks)[i] = NULL;
     }
     free(*opks);
@@ -41,10 +41,10 @@ static void free_opks(Org__E2eelab__Skissm__Proto__OneTimePreKeyPair ***opks, ui
 void test_update_one_time_pre_key(){
     setup();
 
-    Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
+    Skissm__E2eeAccount *account = create_account();
     /* Generate a random address */
-    account->address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-    org__e2eelab__skissm__proto__e2ee_address__init(account->address);
+    account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    skissm__e2ee_address__init(account->address);
     create_domain(&(account->address->domain));
     random_id(&(account->address->user_id), 32);
     random_id(&(account->address->device_id), 32);
@@ -60,14 +60,14 @@ void test_update_one_time_pre_key(){
     update_one_time_pre_key(&(account->account_id), opk_id);
 
     /* load the one-time pre-keys */
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **opk_copy = NULL;
+    Skissm__OneTimePreKeyPair **opk_copy = NULL;
     uint32_t opk_num = load_one_time_pre_keys(&(account->account_id), &opk_copy);
 
     /* assert the opk is used */
     print_result("test_update_one_time_pre_key", (opk_copy[used_opk]->used == true));
 
     // free
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account, NULL);
+    skissm__e2ee_account__free_unpacked(account, NULL);
     free_opks(&opk_copy, opk_num);
 
     tear_down();
@@ -76,10 +76,10 @@ void test_update_one_time_pre_key(){
 void test_remove_one_time_pre_key(){
     setup();
 
-    Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
+    Skissm__E2eeAccount *account = create_account();
     /* Generate a random address */
-    account->address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-    org__e2eelab__skissm__proto__e2ee_address__init(account->address);
+    account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    skissm__e2ee_address__init(account->address);
     create_domain(&(account->address->domain));
     random_id(&(account->address->user_id), 32);
     random_id(&(account->address->device_id), 32);
@@ -97,14 +97,14 @@ void test_remove_one_time_pre_key(){
     }
 
     /* load the one-time pre-keys */
-    Org__E2eelab__Skissm__Proto__OneTimePreKeyPair **opk_copy = NULL;
+    Skissm__OneTimePreKeyPair **opk_copy = NULL;
     uint32_t opk_num = load_one_time_pre_keys(&(account->account_id), &opk_copy);
 
     /* check if the opks are deleted */
     print_result("test_remove_one_time_pre_key", (opk_num == origin_opk_num - used_opk_num));
 
     // free
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account, NULL);
+    skissm__e2ee_account__free_unpacked(account, NULL);
     free_opks(&opk_copy, opk_num);
 
     tear_down();

@@ -19,6 +19,10 @@
 #ifndef ERROR_H_
 #define ERROR_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum ErrorCode {
   SUCCESS = 0,
   BAD_SESSION_KEY = 1,
@@ -50,5 +54,9 @@ typedef enum ErrorCode ErrorCode;
  * @return The error string
  */
 const char *error_string(ErrorCode error_code);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ERROR_H_ */

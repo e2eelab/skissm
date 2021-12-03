@@ -18,8 +18,9 @@
  */
 syntax = "proto3";
 
-package org.e2eelab.skissm.proto;
+package skissm;
 
+option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeCommands";
 
 enum e2ee_commands {
@@ -27,7 +28,7 @@ enum e2ee_commands {
     register_user_response = 4097;
     delete_user_request = 2;
     delete_user_response = 4099;
-    get_pre_key_bundle = 4;
+    get_pre_key_bundle_request = 4;
     get_pre_key_bundle_response = 4101;
     publish_spk_request = 6;
     publish_spk_response = 4103;

@@ -29,13 +29,13 @@
 static const struct cipher CIPHER = CIPHER_INIT;
 
 static void test_alice_to_bob(
-  Org__E2eelab__Skissm__Proto__KeyPair alice_ratchet_key,
-  Org__E2eelab__Skissm__Proto__KeyPair bob_spk,
+  Skissm__KeyPair alice_ratchet_key,
+  Skissm__KeyPair bob_spk,
   ProtobufCBinaryData session_id,
   ProtobufCBinaryData ad,
   uint8_t *shared_secret
 ) {
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
@@ -61,7 +61,7 @@ static void test_alice_to_bob(
     size_t decrypt_length;
 
     /* Alice sends Bob a message */
-    Org__E2eelab__Skissm__Proto__E2eeMsgPayload *message;
+    Skissm__E2eeMsgPayload *message;
 
     encrypt_ratchet(alice_ratchet, ad, plaintext, plaintext_length, &message);
 
@@ -78,19 +78,19 @@ static void test_alice_to_bob(
       print_result("Decryption failed!!!", false);
     }
 
-    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message, NULL);
+    skissm__e2ee_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_bob_to_alice(
-  Org__E2eelab__Skissm__Proto__KeyPair alice_ratchet_key,
-  Org__E2eelab__Skissm__Proto__KeyPair bob_spk,
+  Skissm__KeyPair alice_ratchet_key,
+  Skissm__KeyPair bob_spk,
   ProtobufCBinaryData session_id,
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
@@ -111,7 +111,7 @@ static void test_bob_to_alice(
     size_t decrypt_length;
 
     /* Bob sends Alice a message */
-    Org__E2eelab__Skissm__Proto__E2eeMsgPayload *message;
+    Skissm__E2eeMsgPayload *message;
     encrypt_ratchet(bob_ratchet, ad, plaintext, plaintext_length, &message);
 
     uint8_t *output;
@@ -125,19 +125,19 @@ static void test_bob_to_alice(
       print_result("Decryption failed!!!", false);
     }
 
-    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message, NULL);
+    skissm__e2ee_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_out_of_order(
-  Org__E2eelab__Skissm__Proto__KeyPair alice_ratchet_key,
-  Org__E2eelab__Skissm__Proto__KeyPair bob_spk,
+  Skissm__KeyPair alice_ratchet_key,
+  Skissm__KeyPair bob_spk,
   ProtobufCBinaryData session_id,
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
@@ -156,10 +156,10 @@ static void test_out_of_order(
     size_t message_1_length, message_2_length;
     size_t output_1_length, output_2_length;
 
-    Org__E2eelab__Skissm__Proto__E2eeMsgPayload *message_1;
+    Skissm__E2eeMsgPayload *message_1;
     encrypt_ratchet(alice_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
 
-    Org__E2eelab__Skissm__Proto__E2eeMsgPayload *message_2;
+    Skissm__E2eeMsgPayload *message_2;
     encrypt_ratchet(alice_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
 
     uint8_t *output_1;
@@ -182,21 +182,21 @@ static void test_out_of_order(
       print_result("The second decryption failed!!!!", false);
     }
 
-    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_1, NULL);
-    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_2, NULL);
+    skissm__e2ee_msg_payload__free_unpacked(message_1, NULL);
+    skissm__e2ee_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, output_1_length);
     free_mem((void **)&output_2, output_2_length);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_interaction(
-  Org__E2eelab__Skissm__Proto__KeyPair alice_ratchet_key,
-  Org__E2eelab__Skissm__Proto__KeyPair bob_spk,
+  Skissm__KeyPair alice_ratchet_key,
+  Skissm__KeyPair bob_spk,
   ProtobufCBinaryData session_id,
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
@@ -213,7 +213,7 @@ static void test_interaction(
     size_t decrypt_length_alice;
 
     /* Alice sends Bob a message */
-    Org__E2eelab__Skissm__Proto__E2eeMsgPayload *message_alice;
+    Skissm__E2eeMsgPayload *message_alice;
     encrypt_ratchet(alice_ratchet, ad, plaintext_alice, plaintext_length_alice, &message_alice);
 
     /* Bob received the message from Alice */
@@ -233,7 +233,7 @@ static void test_interaction(
     size_t decrypt_length_bob;
 
     /* Bob sends Alice a message */
-    Org__E2eelab__Skissm__Proto__E2eeMsgPayload *message_bob;
+    Skissm__E2eeMsgPayload *message_bob;
     encrypt_ratchet(bob_ratchet, ad, plaintext_bob, plaintext_length_bob, &message_bob);
 
     assert(memcmp(bob_ratchet->sender_chain->ratchet_key_pair->public_key.data,
@@ -245,24 +245,24 @@ static void test_interaction(
 
     assert(result = is_equal(plaintext_bob, output_bob, plaintext_length_bob));
 
-    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_alice, NULL);
-    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_bob, NULL);
+    skissm__e2ee_msg_payload__free_unpacked(message_alice, NULL);
+    skissm__e2ee_msg_payload__free_unpacked(message_bob, NULL);
     free_mem((void **)&output_alice, decrypt_length_alice);
     free_mem((void **)&output_bob, decrypt_length_bob);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_two_ratchets(
-  Org__E2eelab__Skissm__Proto__KeyPair alice_ratchet_key,
-  Org__E2eelab__Skissm__Proto__KeyPair bob_ratchet_key,
-  Org__E2eelab__Skissm__Proto__KeyPair bob_spk,
-  Org__E2eelab__Skissm__Proto__KeyPair alice_spk,
+  Skissm__KeyPair alice_ratchet_key,
+  Skissm__KeyPair bob_ratchet_key,
+  Skissm__KeyPair bob_spk,
+  Skissm__KeyPair alice_spk,
   ProtobufCBinaryData session_id,
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
     /* This ratchet is used only for Alice to Bob. */
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
@@ -273,7 +273,7 @@ static void test_two_ratchets(
                       &bob_spk);
 
     /* This ratchet is used only for Bob to Alice. */
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *alice_ratchet_2 = NULL, *bob_ratchet_2 = NULL;
+    Skissm__E2eeRatchet *alice_ratchet_2 = NULL, *bob_ratchet_2 = NULL;
     initialise_ratchet(&alice_ratchet_2);
     initialise_ratchet(&bob_ratchet_2);
 
@@ -291,7 +291,7 @@ static void test_two_ratchets(
     size_t decrypt_length_alice;
 
     /* Alice sends Bob a message */
-    Org__E2eelab__Skissm__Proto__E2eeMsgPayload *message_alice;
+    Skissm__E2eeMsgPayload *message_alice;
     encrypt_ratchet(alice_ratchet, ad, plaintext_alice, plaintext_length_alice, &message_alice);
 
     /* Bob received the message from Alice */
@@ -311,7 +311,7 @@ static void test_two_ratchets(
     size_t decrypt_length_bob;
 
     /* Bob sends Alice a message */
-    Org__E2eelab__Skissm__Proto__E2eeMsgPayload *message_bob;
+    Skissm__E2eeMsgPayload *message_bob;
     encrypt_ratchet(bob_ratchet_2, ad, plaintext_bob, plaintext_length_bob, &message_bob);
 
     /* Alice decrypts the message from Bob */
@@ -322,25 +322,25 @@ static void test_two_ratchets(
 
     assert(alice_ratchet_2->sender_chain == NULL);
 
-    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_alice, NULL);
-    org__e2eelab__skissm__proto__e2ee_msg_payload__free_unpacked(message_bob, NULL);
+    skissm__e2ee_msg_payload__free_unpacked(message_alice, NULL);
+    skissm__e2ee_msg_payload__free_unpacked(message_bob, NULL);
     free_mem((void **)&output_alice, decrypt_length_alice);
     free_mem((void **)&output_bob, decrypt_length_bob);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(alice_ratchet_2, NULL);
-    org__e2eelab__skissm__proto__e2ee_ratchet__free_unpacked(bob_ratchet_2, NULL);
+    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
+    skissm__e2ee_ratchet__free_unpacked(alice_ratchet_2, NULL);
+    skissm__e2ee_ratchet__free_unpacked(bob_ratchet_2, NULL);
 }
 
 int main() {
     // test start
     setup();
 
-    Org__E2eelab__Skissm__Proto__KeyPair alice_ratchet_key, bob_ratchet_key;
+    Skissm__KeyPair alice_ratchet_key, bob_ratchet_key;
     CIPHER.suit1->gen_key_pair(&alice_ratchet_key);
     CIPHER.suit1->gen_key_pair(&bob_ratchet_key);
 
-    Org__E2eelab__Skissm__Proto__KeyPair bob_spk, alice_spk;
+    Skissm__KeyPair bob_spk, alice_spk;
     CIPHER.suit1->gen_key_pair(&bob_spk);
     CIPHER.suit1->gen_key_pair(&alice_spk);
 

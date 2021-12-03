@@ -20,6 +20,10 @@
 #ifndef ACCOUNT_MANAGER_H_
 #define ACCOUNT_MANAGER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "e2ee_protocol_handler.h"
 
 /**
@@ -40,6 +44,30 @@ void register_account();
  *
  * @param account The account to be processed
  */
-void publish_spk(Org__E2eelab__Skissm__Proto__E2eeAccount *account);
+void publish_spk(Skissm__E2eeAccount *account);
+
+/**
+ * @brief Produce a register request payload object
+ * Copy all of the public keys stored in the account that will be published
+ * to the messaging server.
+ * @param account The account to be processed
+ * @return The request payload data
+ */
+Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__E2eeAccount *account);
+
+/**
+ * @brief Consume a register response payload object
+ * Keep the address of a registered account to db
+ * @param account The account to be processed
+ * @param payload The response payload data
+ */
+void consume_register_response_payload(Skissm__E2eeAccount *account, Skissm__RegisterUserResponsePayload *payload);
+
+Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__E2eeAccount *account);
+void consume_publish_spk_response_payload(Skissm__E2eeAccount *account);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

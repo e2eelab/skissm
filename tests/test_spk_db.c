@@ -33,10 +33,10 @@
 void test_load_old_signed_pre_key(){
     setup();
 
-    Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
+    Skissm__E2eeAccount *account = create_account();
     /* Generate a random address */
-    account->address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-    org__e2eelab__skissm__proto__e2ee_address__init(account->address);
+    account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    skissm__e2ee_address__init(account->address);
     create_domain(&(account->address->domain));
     random_id(&(account->address->user_id), 32);
     random_id(&(account->address->device_id), 32);
@@ -45,11 +45,11 @@ void test_load_old_signed_pre_key(){
     account->saved = true;
     get_ssm_plugin()->store_account(account);
 
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk = (Org__E2eelab__Skissm__Proto__SignedPreKeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__SignedPreKeyPair));
-    org__e2eelab__skissm__proto__signed_pre_key_pair__init(old_spk);
+    Skissm__SignedPreKeyPair *old_spk = (Skissm__SignedPreKeyPair *) malloc(sizeof(Skissm__SignedPreKeyPair));
+    skissm__signed_pre_key_pair__init(old_spk);
     old_spk->spk_id = account->signed_pre_key_pair->spk_id;
-    old_spk->key_pair = (Org__E2eelab__Skissm__Proto__KeyPair *) malloc(sizeof(Org__E2eelab__Skissm__Proto__KeyPair));
-    org__e2eelab__skissm__proto__key_pair__init(old_spk->key_pair);
+    old_spk->key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+    skissm__key_pair__init(old_spk->key_pair);
     copy_protobuf_from_protobuf(&(old_spk->key_pair->private_key), &(account->signed_pre_key_pair->key_pair->private_key));
     copy_protobuf_from_protobuf(&(old_spk->key_pair->public_key), &(account->signed_pre_key_pair->key_pair->public_key));
     copy_protobuf_from_protobuf(&(old_spk->signature), &(account->signed_pre_key_pair->signature));
@@ -60,16 +60,16 @@ void test_load_old_signed_pre_key(){
     get_ssm_plugin()->update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
 
     /* Load the old signed pre-key */
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk_copy = NULL;
+    Skissm__SignedPreKeyPair *old_spk_copy = NULL;
     load_old_signed_pre_key(&(account->account_id), old_spk->spk_id, &old_spk_copy);
 
     // assert old_spk equals to old_spk_copy
     print_result("test_load_old_signed_pre_key", is_equal_spk(old_spk, old_spk_copy));
 
     // free
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account, NULL);
-    org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(old_spk, NULL);
-    org__e2eelab__skissm__proto__signed_pre_key_pair__free_unpacked(old_spk_copy, NULL);
+    skissm__e2ee_account__free_unpacked(account, NULL);
+    skissm__signed_pre_key_pair__free_unpacked(old_spk, NULL);
+    skissm__signed_pre_key_pair__free_unpacked(old_spk_copy, NULL);
 
     tear_down();
 }
@@ -77,10 +77,10 @@ void test_load_old_signed_pre_key(){
 void test_remove_expired_signed_pre_key(){
     setup();
 
-    Org__E2eelab__Skissm__Proto__E2eeAccount *account = create_account();
+    Skissm__E2eeAccount *account = create_account();
     /* Generate a random address */
-    account->address = (Org__E2eelab__Skissm__Proto__E2eeAddress *) malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAddress));
-    org__e2eelab__skissm__proto__e2ee_address__init(account->address);
+    account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    skissm__e2ee_address__init(account->address);
     create_domain(&(account->address->domain));
     random_id(&(account->address->user_id), 32);
     random_id(&(account->address->device_id), 32);
@@ -101,14 +101,14 @@ void test_remove_expired_signed_pre_key(){
     remove_expired_signed_pre_key(&(account->account_id));
 
     /* Load the old signed pre-key */
-    Org__E2eelab__Skissm__Proto__SignedPreKeyPair *old_spk_copy = NULL;
+    Skissm__SignedPreKeyPair *old_spk_copy = NULL;
     load_old_signed_pre_key(&(account->account_id), old_spk_id, &old_spk_copy);
 
     /* assert old_spk_copy is NULL */
     print_result("test_remove_expired_signed_pre_key", (old_spk_copy == NULL));
 
     // free
-    org__e2eelab__skissm__proto__e2ee_account__free_unpacked(account, NULL);
+    skissm__e2ee_account__free_unpacked(account, NULL);
 
     tear_down();
 }

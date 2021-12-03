@@ -18,12 +18,13 @@
  */
 syntax = "proto3";
 
-package org.e2eelab.skissm.proto;
+package skissm;
 
+option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeMessage";
 
-import "skissm/e2ee_address.proto";
-import "skissm/e2ee_message_type.proto";
+import "e2ee_address.proto";
+import "e2ee_message_type.proto";
 
 message e2ee_message {
     uint32 version = 1;

@@ -22,6 +22,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "skissm.h"
 
 /**
@@ -34,22 +38,22 @@
  * @param old_session_id
  */
 void create_outbound_group_session(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
-    Org__E2eelab__Skissm__Proto__E2eeAddress **member_addresses,
+    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *group_address,
+    Skissm__E2eeAddress **member_addresses,
     size_t member_num,
     ProtobufCBinaryData *old_session_id
 );
 
 /**
  * @brief Create an inbound group session object
- * 
+ *
  * @param group_pre_key_payload
  * @param user_address
  */
 void create_inbound_group_session(
-    Org__E2eelab__Skissm__Proto__E2eeGroupPreKeyPayload *group_pre_key_payload,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address
+    Skissm__E2eeGroupPreKeyPayload *group_pre_key_payload,
+    Skissm__E2eeAddress *user_address
 );
 
 /**
@@ -61,8 +65,8 @@ void create_inbound_group_session(
  * @param plaintext_len
  */
 void encrypt_group_session(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *group_address,
+    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *group_address,
     const uint8_t *plaintext, size_t plaintext_len
 );
 
@@ -74,8 +78,12 @@ void encrypt_group_session(
  * @param group_msg
  */
 void decrypt_group_session(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address,
-    Org__E2eelab__Skissm__Proto__E2eeMessage *group_msg
+    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeMessage *group_msg
 );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* GROUP_SESSION_H_ */

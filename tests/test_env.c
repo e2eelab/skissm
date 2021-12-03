@@ -85,7 +85,7 @@ static int handle_send(uint8_t *msg, size_t msg_len) {
 }
 
 // account related handlers
-void load_account(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__E2eeAccount **account) {
+void load_account(ProtobufCBinaryData *account_id, Skissm__E2eeAccount **account) {
     if (account_id == NULL) {
         load_id(&account_id);
         load_account(account_id, account);
@@ -93,8 +93,8 @@ void load_account(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__
         return;
     }
 
-    *account = (Org__E2eelab__Skissm__Proto__E2eeAccount *)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount));
-    org__e2eelab__skissm__proto__e2ee_account__init((*account));
+    *account = (Skissm__E2eeAccount *)malloc(sizeof(Skissm__E2eeAccount));
+    skissm__e2ee_account__init((*account));
 
     (*account)->version = load_version(account_id);
     (*account)->saved = load_saved(account_id);
@@ -107,7 +107,7 @@ void load_account(ProtobufCBinaryData *account_id, Org__E2eelab__Skissm__Proto__
     (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(account_id);
 }
 
-size_t load_accounts(Org__E2eelab__Skissm__Proto__E2eeAccount ***accounts) {
+size_t load_accounts(Skissm__E2eeAccount ***accounts) {
     // load all account_ids
     ProtobufCBinaryData **account_ids;
     size_t num = load_ids(&account_ids);
@@ -116,7 +116,7 @@ size_t load_accounts(Org__E2eelab__Skissm__Proto__E2eeAccount ***accounts) {
     if (num == 0) {
         *accounts = NULL;
     } else {
-        *accounts = (Org__E2eelab__Skissm__Proto__E2eeAccount **)malloc(sizeof(Org__E2eelab__Skissm__Proto__E2eeAccount *) * num);
+        *accounts = (Skissm__E2eeAccount **)malloc(sizeof(Skissm__E2eeAccount *) * num);
         for (int i = 0; i < num; i++) {
             load_account(account_ids[i], &(*accounts)[i]);
             // release account_ids element
@@ -131,13 +131,13 @@ size_t load_accounts(Org__E2eelab__Skissm__Proto__E2eeAccount ***accounts) {
     return num;
 }
 
-void load_account_by_address(Org__E2eelab__Skissm__Proto__E2eeAddress *address, Org__E2eelab__Skissm__Proto__E2eeAccount **account) {
+void load_account_by_address(Skissm__E2eeAddress *address, Skissm__E2eeAccount **account) {
     ProtobufCBinaryData *account_id;
     load_id_by_address(address, &account_id);
     load_account(account_id, account);
 }
 
-void store_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account) {
+void store_account(Skissm__E2eeAccount *account) {
     // insert address
     sqlite_int64 address_id = insert_address(account->address);
 
@@ -167,11 +167,11 @@ void store_account(Org__E2eelab__Skissm__Proto__E2eeAccount *account) {
 }
 
 // callback handlers
-static void on_one2one_msg_received(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address, Org__E2eelab__Skissm__Proto__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_one2one_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-static void on_group_msg_received(Org__E2eelab__Skissm__Proto__E2eeAddress *from_address, Org__E2eelab__Skissm__Proto__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
 }
 

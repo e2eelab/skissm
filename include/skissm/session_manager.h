@@ -16,14 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-syntax = "proto3";
+#ifndef SESSION_MANAGER_H_
+#define SESSION_MANAGER_H_
 
-package skissm;
+#include <stdbool.h>
 
-option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "ChainKey";
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-message chain_key {
-  uint32 index = 1;
-  bytes shared_key = 2;
+#include "skissm.h"
+
+Skissm__GetPreKeyBundleRequestPayload *produce_get_pre_key_bundle_request_payload(Skissm__E2eeAddress *e2ee_address);
+
+void consume_get_pre_key_bundle_response_payload(
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    uint8_t *context,
+    size_t context_len,
+    Skissm__GetPreKeyBundleResponsePayload *get_pre_key_bundle_response_payload);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* SESSION_MANAGER_H_ */

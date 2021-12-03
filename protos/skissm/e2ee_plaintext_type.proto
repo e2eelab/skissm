@@ -18,8 +18,9 @@
  */
 syntax = "proto3";
 
-package org.e2eelab.skissm.proto;
+package skissm;
 
+option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eePlaintextType";
 
 enum e2ee_plaintext_type {

@@ -22,6 +22,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "skissm.h"
 #include "cipher.h"
 #include "crypto.h"
@@ -34,32 +38,36 @@ typedef struct cipher cipher;
 typedef uint8_t shared_key[SHARED_KEY_LENGTH];
 typedef uint8_t derived_key[MESSAGE_KEY_LENGTH];
 
-void initialise_ratchet(Org__E2eelab__Skissm__Proto__E2eeRatchet **ratchet);
+void initialise_ratchet(Skissm__E2eeRatchet **ratchet);
 
 /** Initialise the session using a shared secret and the public part of the
  * remote's first ratchet key */
 void initialise_as_bob(
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
-    const Org__E2eelab__Skissm__Proto__KeyPair *our_ratchet_key
+    Skissm__E2eeRatchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
+    const Skissm__KeyPair *our_ratchet_key
 );
 
 /** Initialise the session using a shared secret and the public/private key
  * pair for the first ratchet key */
 void initialise_as_alice(
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
-    const Org__E2eelab__Skissm__Proto__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
+    Skissm__E2eeRatchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
+    const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 );
 
 void encrypt_ratchet(
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *ratchet,
+    Skissm__E2eeRatchet *ratchet,
     ProtobufCBinaryData ad,
     const uint8_t *plaintext, size_t plaintext_length,
-    Org__E2eelab__Skissm__Proto__E2eeMsgPayload **e2ee_msg_payload
+    Skissm__E2eeMsgPayload **e2ee_msg_payload
 );
 
 size_t decrypt_ratchet(
-    Org__E2eelab__Skissm__Proto__E2eeRatchet *ratchet, ProtobufCBinaryData ad, Org__E2eelab__Skissm__Proto__E2eeMsgPayload *e2ee_msg_payload,
+    Skissm__E2eeRatchet *ratchet, ProtobufCBinaryData ad, Skissm__E2eeMsgPayload *e2ee_msg_payload,
     uint8_t **plaintext
 );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* RATCHET_H_ */

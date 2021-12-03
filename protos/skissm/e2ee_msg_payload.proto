@@ -18,8 +18,9 @@
  */
 syntax = "proto3";
 
-package org.e2eelab.skissm.proto;
+package skissm;
 
+option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeMsgPayload";
 
 message e2ee_msg_payload {

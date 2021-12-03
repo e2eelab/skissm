@@ -22,6 +22,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "skissm.h"
 #include "e2ee_protocol_handler.h"
 
@@ -72,7 +76,7 @@ void remove_request_handler(handler_entry *entry);
  * @param cmd
  * @return
  */
-void *get_request_handler(Org__E2eelab__Skissm__Proto__E2eeCommands cmd);
+void *get_request_handler(Skissm__E2eeCommands cmd);
 
 /**
  * @brief Insert a response handler with id
@@ -122,7 +126,7 @@ void protocol_end();
  * @param response_handler
  */
 void send_register_user_request(
-    Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+    Skissm__E2eeAccount *account,
     register_user_response_handler *response_handler);
 
 /**
@@ -131,7 +135,7 @@ void send_register_user_request(
  * @param account
  * @param response_handler
  */
-void send_publish_spk_request(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
+void send_publish_spk_request(Skissm__E2eeAccount *account,
                               publish_spk_response_handler *response_handler);
 
 /**
@@ -144,9 +148,9 @@ void send_publish_spk_request(Org__E2eelab__Skissm__Proto__E2eeAccount *account,
  */
 void send_supply_opks_response(
     uint32_t request_id,
-    Org__E2eelab__Server__Grpc__ResponseData *response_data,
+    Skissm__ResponseData *response_data,
     supply_opks_handler *handler,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *user_address);
+    Skissm__E2eeAddress *user_address);
 
 /**
  * @brief Send a create group response to messaging server
@@ -155,7 +159,7 @@ void send_supply_opks_response(
  * @param response_data
  */
 void send_create_group_response(
-    uint32_t request_id, Org__E2eelab__Server__Grpc__ResponseData *response_data);
+    uint32_t request_id, Skissm__ResponseData *response_data);
 
 /**
  * @brief Send an add group members response to messaging server
@@ -165,7 +169,7 @@ void send_create_group_response(
  */
 void send_add_group_members_response(
     uint32_t request_id,
-    Org__E2eelab__Server__Grpc__ResponseData *response_data);
+    Skissm__ResponseData *response_data);
 
 /**
  * @brief Send a remove group members response to messaging server
@@ -175,19 +179,16 @@ void send_add_group_members_response(
  */
 void send_remove_group_members_response(
     uint32_t request_id,
-    Org__E2eelab__Server__Grpc__ResponseData *response_data);
+    Skissm__ResponseData *response_data);
 
 /**
  * @brief Send a get pre-key bundle request to messaging server
  *
- * @param e2ee_address
- * @param plaintext
- * @param plaintext_len
+ * @param to
  * @param response_handler
  */
 void send_get_pre_key_bundle_request(
-    Org__E2eelab__Skissm__Proto__E2eeAddress *e2ee_address,
-    const uint8_t *plaintext, size_t plaintext_len,
+    Skissm__E2eeAddress *to,
     pre_key_bundle_response_handler *response_handler);
 
 /**
@@ -227,6 +228,10 @@ void send_remove_group_members_request(remove_group_members_response_handler *re
  */
 void process_protocol_msg(
     uint8_t *server_msg, size_t server_msg_len,
-    Org__E2eelab__Skissm__Proto__E2eeAddress *receiver_address);
+    Skissm__E2eeAddress *receiver_address);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* E2EE_PROTOCOL_H_ */
