@@ -16,22 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "ratchet.h"
+
 #include <string.h>
 
-#include "skissm.h"
-#include "ratchet.h"
 #include "cipher.h"
 #include "crypto.h"
-#include "mem_util.h"
 #include "error.h"
+#include "mem_util.h"
+#include "skissm.h"
 
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
 static const size_t MAX_RECEIVER_CHAIN_NODES = 4;
 static const size_t MAX_SKIPPED_MESSAGE_KEY_NODES = 32;
 static const size_t MAX_CHAIN_INDEX = 512;
-
-static const struct cipher CIPHER = CIPHER_INIT;
 
 static void copy_receiver_chain_node(
     Skissm__ReceiverChainNode **dest,

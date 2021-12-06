@@ -42,7 +42,26 @@ void create_group(Skissm__E2eeAddress *user_address,
                   Skissm__E2eeAddress **member_addresses,
                   size_t member_num);
 
+/**
+ * @brief Create a create_group_request_payload to be sent to messaging server.
+ *
+ * @param sender_address
+ * @param group_name
+ * @param member_num
+ * @param member_addresses
+ * @return Skissm__CreateGroupRequestPayload*
+ */
 Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__E2eeAddress *sender_address, ProtobufCBinaryData *group_name, size_t member_num, Skissm__E2eeAddress **member_addresses);
+
+/**
+ * @brief Process an imcoming create_group_response_payload.
+ *
+ * @param sender_address
+ * @param group_name
+ * @param member_num
+ * @param member_addresses
+ * @param create_group_response_payload
+ */
 void consume_create_group_response_payload(
     Skissm__E2eeAddress *sender_address,
     ProtobufCBinaryData *group_name,
@@ -51,7 +70,19 @@ void consume_create_group_response_payload(
     Skissm__CreateGroupResponsePayload *create_group_response_payload
 );
 
+/**
+ * @brief Create a get_group_request_payload to be sent to messaging server.
+ *
+ * @param group_address
+ * @return Skissm__GetGroupRequestPayload*
+ */
 Skissm__GetGroupRequestPayload *produce_get_group_request_payload(Skissm__E2eeAddress *group_address);
+
+/**
+ * @brief Process an imcoming get_group_response_payload.
+ *
+ * @param get_group_response_payload
+ */
 void consume_get_group_response_payload(Skissm__GetGroupResponsePayload *get_group_response_payload);
 
 /**
@@ -88,6 +119,24 @@ void remove_group_members(
     Skissm__E2eeAddress *group_address,
     Skissm__E2eeAddress **old_member_addresses,
     size_t old_member_num);
+
+/**
+ * @brief Create a group message to be sent to messaging server.
+ *
+ * @param group_session
+ * @param plaintext
+ * @param plaintext_len
+ * @return Skissm__E2eeMessage*
+ */
+Skissm__E2eeMessage *produce_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len);
+
+/**
+ * @brief Process an imcoming group message
+ *
+ * @param user_address
+ * @param group_msg
+ */
+void consume_group_msg(Skissm__E2eeAddress *user_address, Skissm__E2eeMessage *group_msg);
 
 #ifdef __cplusplus
 }

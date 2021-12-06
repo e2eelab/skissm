@@ -58,6 +58,12 @@ extern "C" {
 /** length of an aes256 gcm tag */
 #define AES256_GCM_TAG_LENGTH 16
 
+/** length of a shared key */
+#define SHARED_KEY_LENGTH SHA256_OUTPUT_LENGTH
+
+/** length of a message key */
+#define MESSAGE_KEY_LENGTH (AES256_KEY_LENGTH + AES256_IV_LENGTH)
+
 void crypto_curve25519_generate_private_key(
     ProtobufCBinaryData *priv_key, size_t priv_key_len
 );

@@ -51,11 +51,6 @@ typedef struct supply_opks_handler{
 typedef struct pre_key_bundle_handler{
     Skissm__E2eeAddress *from;
     Skissm__E2eeAddress *to;
-    uint8_t *context;
-    size_t context_len;
-    void (*handle_response)(
-        struct pre_key_bundle_handler *this_handler,
-        Skissm__E2eePreKeyBundle *pre_key_bundle);
     void (*handle_release)(struct pre_key_bundle_handler *this_handler);
 } pre_key_bundle_response_handler;
 

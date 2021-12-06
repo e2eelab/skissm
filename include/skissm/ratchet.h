@@ -32,9 +32,6 @@ extern "C" {
 
 typedef struct cipher cipher;
 
-#define SHARED_KEY_LENGTH SHA256_OUTPUT_LENGTH
-#define MESSAGE_KEY_LENGTH (AES256_KEY_LENGTH + AES256_IV_LENGTH)
-
 typedef uint8_t shared_key[SHARED_KEY_LENGTH];
 typedef uint8_t derived_key[MESSAGE_KEY_LENGTH];
 

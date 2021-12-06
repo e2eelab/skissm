@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "e2ee_protocol_handler.h"
 #include "group_session_manager.h"
-#include "crypto.h"
-#include "mem_util.h"
-#include "e2ee_protocol.h"
-#include "session.h"
-#include "group_session.h"
 
-static const size_t SHARED_KEY_LENGTH = SHA256_OUTPUT_LENGTH;
+#include "cipher.h"
+#include "crypto.h"
+#include "e2ee_protocol.h"
+#include "e2ee_protocol_handler.h"
+#include "group_session.h"
+#include "mem_util.h"
+#include "session.h"
 
 static void handle_create_group_response(
     create_group_response_handler *response_handler,
@@ -67,11 +67,12 @@ static void handle_get_group_response(
 static void handle_get_group_release(
     get_group_response_handler *this_handler
 ) {
-    this_handler->group_address = NULL;
-    free_mem((void **)&(this_handler->group_name->data), this_handler->group_name->len);
-    free_mem((void **)&(this_handler->group_name), sizeof(ProtobufCBinaryData));
+    //free_mem((void **)&(this_handler->group_name->data), this_handler->group_name->len);
+    //free_mem((void **)&(this_handler->group_name), sizeof(ProtobufCBinaryData));
+    //free_member_addresses(&(this_handler->member_addresses), this_handler->member_num);
+
     this_handler->group_name = NULL;
-    free_member_addresses(&(this_handler->member_addresses), this_handler->member_num);
+    this_handler->group_address = NULL;
     this_handler->member_num = 0;
 }
 
@@ -270,4 +271,137 @@ void remove_group_members(
     remove_group_members_response_handler_store.removing_member_num = removing_member_num;
 
     send_remove_group_members_request(&remove_group_members_response_handler_store);
+}
+
+Skissm__E2eeMessage *produce_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) {
+    /* Create the message key */
+    Skissm__MessageKey *keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
+    skissm__message_key__init(keys);
+    create_group_message_keys(&(group_session->chain_key), keys);
+
+    /* Prepare an e2ee message */
+    Skissm__E2eeMessage *group_message = (Skissm__E2eeMessage *) malloc(sizeof(Skissm__E2eeMessage));
+    skissm__e2ee_message__init(group_message);
+    group_message->msg_type = SKISSM__E2EE_MESSAGE_TYPE__GROUP_MESSAGE;
+    group_message->version = group_session->version;
+    copy_protobuf_from_protobuf(&(group_message->session_id), &(group_session->session_id));
+    copy_address_from_address(&(group_message->from), group_session->session_owner);
+    copy_address_from_address(&(group_message->to), group_session->group_address);
+
+    /* Prepare a group message */
+    Skissm__E2eeGroupMsgPayload *group_msg_payload = (Skissm__E2eeGroupMsgPayload *) malloc(sizeof(Skissm__E2eeGroupMsgPayload));
+    skissm__e2ee_group_msg_payload__init(group_msg_payload);
+    group_msg_payload->sequence = group_session->sequence;
+    uint8_t *ad = group_session->associated_data.data;
+
+    /* Encryption */
+    group_msg_payload->ciphertext.len = CIPHER.suit1->encrypt(
+        ad,
+        keys->derived_key.data,
+        plaintext,
+        plaintext_len,
+        &(group_msg_payload->ciphertext.data)
+    );
+
+    /* Signature */
+    group_msg_payload->signature.len = CURVE_SIGNATURE_LENGTH;
+    group_msg_payload->signature.data = (uint8_t *) malloc(sizeof(uint8_t) * CURVE_SIGNATURE_LENGTH);
+    CIPHER.suit1->sign(
+        group_session->signature_private_key.data,
+        group_msg_payload->ciphertext.data,
+        group_msg_payload->ciphertext.len,
+        group_msg_payload->signature.data
+    );
+
+    /* Pack the group message into the e2ee message */
+    group_message->payload.len = skissm__e2ee_group_msg_payload__get_packed_size(group_msg_payload);
+    group_message->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * group_message->payload.len);
+    skissm__e2ee_group_msg_payload__pack(group_msg_payload, group_message->payload.data);
+
+    /* Prepare a new chain key for next encryption */
+    advance_group_chain_key(&(group_session->chain_key), group_session->sequence);
+    group_session->sequence += 1;
+
+    // release
+    skissm__message_key__free_unpacked(keys, NULL);
+    skissm__e2ee_group_msg_payload__free_unpacked(group_msg_payload, NULL);
+
+    // done
+    return group_message;
+}
+
+void encrypt_group_session(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *group_address,
+    const uint8_t *plaintext, size_t plaintext_len
+) {
+    /* Load the outbound group session */
+    Skissm__E2eeGroupSession *group_session = NULL;
+    get_ssm_plugin()->load_outbound_group_session(sender_address, group_address, &group_session);
+
+    /* Do the encryption */
+    send_group_msg(group_session, plaintext, plaintext_len);
+
+    /* Release the group session */
+    close_group_session(group_session);
+}
+
+void consume_group_msg(Skissm__E2eeAddress *user_address, Skissm__E2eeMessage *group_msg) {
+    /* Load the inbound group session */
+    Skissm__E2eeGroupSession *group_session = NULL;
+    get_ssm_plugin()->load_inbound_group_session(group_msg->session_id, user_address, &group_session);
+
+    if (group_session == NULL){
+        ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_group_msg()");
+        return;
+    }
+
+    Skissm__E2eeGroupMsgPayload *group_msg_payload = NULL;
+    Skissm__MessageKey *keys = NULL;
+
+    /* Unpack the e2ee message */
+    group_msg_payload = skissm__e2ee_group_msg_payload__unpack(NULL, group_msg->payload.len, group_msg->payload.data);
+
+    /* Verify the signature */
+    size_t result = CIPHER.suit1->verify(
+        group_msg_payload->signature.data,
+        group_session->signature_public_key.data,
+        group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len);
+    if (result < 0){
+        ssm_notify_error(BAD_SIGNATURE, "consume_group_msg()");
+        goto complete;
+    }
+
+    /* Advance the chain key */
+    while (group_session->sequence < group_msg_payload->sequence){
+        advance_group_chain_key(&(group_session->chain_key), group_session->sequence);
+        group_session->sequence += 1;
+    }
+
+    /* Create the message key */
+    keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
+    skissm__message_key__init(keys);
+    create_group_message_keys(&(group_session->chain_key), keys);
+
+    /* Decryption */
+    uint8_t *plaintext;
+    size_t plaintext_len = CIPHER.suit1->decrypt(
+        group_session->associated_data.data,
+        keys->derived_key.data,
+        group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len,
+        &plaintext
+    );
+
+    if (plaintext_len == (size_t)(-1)){
+        ssm_notify_error(BAD_MESSAGE_DECRYPTION, "consume_group_msg()");
+    } else {
+        ssm_notify_group_msg(group_msg->from, group_session->group_address, plaintext, plaintext_len);
+        free_mem((void **)&plaintext, plaintext_len);
+    }
+
+complete:
+    /* release */
+    skissm__message_key__free_unpacked(keys, NULL);
+    skissm__e2ee_group_msg_payload__free_unpacked(group_msg_payload, NULL);
+    skissm__e2ee_group_session__free_unpacked(group_session, NULL);
 }

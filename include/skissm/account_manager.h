@@ -47,23 +47,35 @@ void register_account();
 void publish_spk(Skissm__E2eeAccount *account);
 
 /**
- * @brief Produce a register request payload object
+ * @brief Create a register_request_payload to be send to messaging server.
  * Copy all of the public keys stored in the account that will be published
  * to the messaging server.
- * @param account The account to be processed
- * @return The request payload data
+ * @param account
+ * @return Skissm__RegisterUserRequestPayload*
  */
 Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__E2eeAccount *account);
 
 /**
- * @brief Consume a register response payload object
- * Keep the address of a registered account to db
+ * @brief Process an incoming register_response_payload.
+ * Keep the address of the registered account to db
  * @param account The account to be processed
  * @param payload The response payload data
  */
 void consume_register_response_payload(Skissm__E2eeAccount *account, Skissm__RegisterUserResponsePayload *payload);
 
+/**
+ * @brief Create a publish_spk_request_payload to be send to messaging server.
+ *
+ * @param account
+ * @return Skissm__PublishSpkRequestPayload*
+ */
 Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__E2eeAccount *account);
+
+/**
+ * @brief Process an incoming publish_spk_response_payload.
+ *
+ * @param account
+ */
 void consume_publish_spk_response_payload(Skissm__E2eeAccount *account);
 
 #ifdef __cplusplus

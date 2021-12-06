@@ -6,48 +6,48 @@ option java_package = "org.e2eelab.skissm.proto";
 option cc_enable_arenas = true;
 option cc_generic_services = false;
 
-import "e2ee_protocol_msg.proto";
-import "register_user_request_payload.proto";
-import "delete_user_request_payload.proto";
-import "get_pre_key_bundle_request_payload.proto";
-import "publish_spk_request_payload.proto";
-import "e2ee_message.proto";
-import "create_group_request_payload.proto";
-import "add_group_members_request_payload.proto";
-import "remove_group_members_request_payload.proto";
-import "get_group_request_payload.proto";
+import "skissm/e2ee_protocol_msg.proto";
+import "skissm/register_user_request_payload.proto";
+import "skissm/delete_user_request_payload.proto";
+import "skissm/get_pre_key_bundle_request_payload.proto";
+import "skissm/publish_spk_request_payload.proto";
+import "skissm/e2ee_message.proto";
+import "skissm/create_group_request_payload.proto";
+import "skissm/add_group_members_request_payload.proto";
+import "skissm/remove_group_members_request_payload.proto";
+import "skissm/get_group_request_payload.proto";
 
-import "response_data.proto";
-import "event_data_request.proto";
-import "login_request.proto";
-import "logout_request.proto";
-import "connect_request.proto";
+import "skissm/response_data.proto";
+import "skissm/event_data_request.proto";
+import "skissm/login_request.proto";
+import "skissm/logout_request.proto";
+import "skissm/connect_request.proto";
 
 service E2EEService {
     // bidirectional streaming operations
-    rpc communicate(stream e2ee_protocol_msg) returns (stream e2ee_protocol_msg) {
+    rpc communicate(stream skissm.e2ee_protocol_msg) returns (stream skissm.e2ee_protocol_msg) {
     }
 
     // server streaming operations
-    rpc connect(connect_request) returns (stream e2ee_protocol_msg) {
+    rpc connect(skissm.connect_request) returns (stream skissm.e2ee_protocol_msg) {
     }
 
     // unary operations
-    rpc login(login_request) returns (response_data) {}
-    rpc logout(logout_request) returns (response_data) {}
+    rpc login(skissm.login_request) returns (skissm.response_data) {}
+    rpc logout(skissm.logout_request) returns (skissm.response_data) {}
 
-    rpc registerUser(register_user_request_payload) returns (response_data) {}
-    rpc deleteUser(delete_user_request_payload) returns (response_data) {}
+    rpc registerUser(skissm.register_user_request_payload) returns (skissm.response_data) {}
+    rpc deleteUser(skissm.delete_user_request_payload) returns (skissm.response_data) {}
 
-    rpc getPreKeyBundle(get_pre_key_bundle_request_payload) returns (response_data) {}
-    rpc publishSPK(publish_spk_request_payload) returns (response_data) {}
-    rpc sendOne2OneMsg(e2ee_message) returns (response_data) {}
+    rpc getPreKeyBundle(skissm.get_pre_key_bundle_request_payload) returns (skissm.response_data) {}
+    rpc publishSPK(skissm.publish_spk_request_payload) returns (skissm.response_data) {}
+    rpc sendOne2OneMsg(skissm.e2ee_message) returns (skissm.response_data) {}
 
-    rpc createGroup(create_group_request_payload) returns (response_data) {}
-    rpc addGroupMembers(add_group_members_request_payload) returns (response_data) {}
-    rpc removeGroupMembers(remove_group_members_request_payload) returns (response_data) {}
-    rpc getGroup(get_group_request_payload) returns (response_data) {}
-    rpc sendGroupMsg(e2ee_message) returns (response_data) {}
+    rpc createGroup(skissm.create_group_request_payload) returns (skissm.response_data) {}
+    rpc addGroupMembers(skissm.add_group_members_request_payload) returns (skissm.response_data) {}
+    rpc removeGroupMembers(skissm.remove_group_members_request_payload) returns (skissm.response_data) {}
+    rpc getGroup(skissm.get_group_request_payload) returns (skissm.response_data) {}
+    rpc sendGroupMsg(skissm.e2ee_message) returns (skissm.response_data) {}
 
-    rpc getEventData(event_data_request) returns (response_data) {}
+    rpc getEventData(skissm.event_data_request) returns (skissm.response_data) {}
 }

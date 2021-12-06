@@ -23,8 +23,8 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "DeleteUserRequestPayload";
 
-import "e2ee_address.proto";
+import "skissm/e2ee_address.proto";
 
 message delete_user_request_payload {
-  e2ee_address address = 1;
+  skissm.e2ee_address address = 1;
 }

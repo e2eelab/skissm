@@ -19,7 +19,7 @@
 #
 ################################################################################
 
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.5.1)
 project(
   skissm
   VERSION 1.0.1
@@ -114,8 +114,10 @@ set(proto_gen_header "")
 
 FOREACH(proto ${skissm_PROTOS})
     get_filename_component(proto_name ${proto} NAME_WE)
-    message(STATUS "Converting ${proto}")
-    EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${PROTO_SRC_DIR}/skissm --c_out=${PROTO_DIS_DIR}/skissm --plugin=protoc-gen-grpc=grpc_cpp_plugin ${proto_name}.proto RESULT_VARIABLE rv)
+    message(STATUS "  convert => ${proto}")
+    EXECUTE_PROCESS(COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} -I=skissm --proto_path=${PROTO_SRC_DIR} --c_out=${PROTO_DIS_DIR}/skissm --plugin=protoc-gen-grpc=grpc_cpp_plugin ${proto_name}.proto
+        RESULT_VARIABLE rv
+        WORKING_DIRECTORY ${PROTO_SRC_DIR})
     list(APPEND proto_gen_src ${PROTO_DIS_DIR}/skissm/${proto_name}.pb-c.c)
     list(APPEND proto_gen_header ${PROTO_DIS_DIR}/skissm/${proto_name}.pb-c.h)
 
@@ -147,7 +149,7 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
         ${skissm_src}
         ${skissm_headers}
     )
-    
+
     add_dependencies(skissm_framework
     	curve25519
 	mbedtls
@@ -157,7 +159,7 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
     target_include_directories(skissm_framework
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
-	    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+	        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
             ${PROTO_DIS_DIR}
         PRIVATE
             ${skissm_private_include}
@@ -177,7 +179,7 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
         c_std_99
         cxx_std_14
     )
-    
+
     set_xcode_property(skissm_framework DEBUG_INFORMATION_FORMAT
                      "dwarf-with-dsym" All)
     set_xcode_property(skissm_framework CLANG_ENABLE_MODULES ON All)
@@ -207,7 +209,7 @@ else()
         ${skissm_src}
         ${proto_gen_src}
     )
-    
+
     add_dependencies(skissm_static
         curve25519
 	mbedtls
@@ -221,7 +223,7 @@ else()
             $<BUILD_INTERFACE:${protobuf-c_DIR}>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         PRIVATE
-            $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
+            ${PROTO_DIS_DIR}
             ${skissm_private_include}
     )
 
@@ -276,7 +278,7 @@ else()
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
             $<BUILD_INTERFACE:${protobuf-c_DIR}>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-            $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
+            ${PROTO_DIS_DIR}
         PRIVATE
             ${skissm_private_include}
     )

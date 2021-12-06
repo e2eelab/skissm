@@ -17,6 +17,7 @@
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "account_manager.h"
+
 #include "account.h"
 #include "e2ee_protocol.h"
 #include "mem_util.h"

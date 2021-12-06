@@ -23,14 +23,14 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeMessage";
 
-import "e2ee_address.proto";
-import "e2ee_message_type.proto";
+import "skissm/e2ee_address.proto";
+import "skissm/e2ee_message_type.proto";
 
 message e2ee_message {
     uint32 version = 1;
-    e2ee_address from = 2;
-    e2ee_address to = 3;
+    skissm.e2ee_address from = 2;
+    skissm.e2ee_address to = 3;
     bytes session_id = 4;
-    e2ee_message_type msg_type = 5;
+    skissm.e2ee_message_type msg_type = 5;
     bytes payload = 6;
 }

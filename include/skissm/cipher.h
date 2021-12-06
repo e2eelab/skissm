@@ -176,6 +176,8 @@ extern const struct cipher_suits E2EE_ECDH_X25519_AES256_GCM_SHA256;
 #define CIPHER_INIT                                                            \
   { &E2EE_ECDH_X25519_AES256_GCM_SHA256 }
 
+extern const struct cipher CIPHER;
+
 #ifdef __cplusplus
 }
 #endif

@@ -23,10 +23,10 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "PublishSpkRequestPayload";
 
-import "e2ee_address.proto";
-import "signed_pre_key_public.proto";
+import "skissm/e2ee_address.proto";
+import "skissm/signed_pre_key_public.proto";
 
 message publish_spk_request_payload {
-  e2ee_address user_address = 1;
-  signed_pre_key_public signed_pre_key_public = 2;
+  skissm.e2ee_address user_address = 1;
+  skissm.signed_pre_key_public signed_pre_key_public = 2;
 }

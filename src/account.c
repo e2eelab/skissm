@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "account.h"
+
 #include <string.h>
 
-#include "account.h"
 #include "account_manager.h"
 #include "cipher.h"
 #include "crypto.h"
 #include "mem_util.h"
 #include "skissm.h"
 
-static const struct cipher CIPHER = CIPHER_INIT;
 static Skissm__E2eeAccount *local_account = NULL;
 
 void account_begin() {

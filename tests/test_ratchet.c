@@ -26,8 +26,6 @@
 #include "test_util.h"
 #include "test_env.h"
 
-static const struct cipher CIPHER = CIPHER_INIT;
-
 static void test_alice_to_bob(
   Skissm__KeyPair alice_ratchet_key,
   Skissm__KeyPair bob_spk,

@@ -46,7 +46,7 @@ void initialise_session(
 );
 
 void pack_e2ee_plaintext(
-    uint8_t *plaintext, size_t plaintext_len,
+    const uint8_t *plaintext, size_t plaintext_len,
     Skissm__E2eePlaintextType plaintext_type,
     uint8_t **context, size_t *context_len
 );
@@ -64,38 +64,14 @@ size_t new_inbound_session(
 );
 
 /**
- * @brief Encrypt a given plaintext. If there is no engaged outbound
- * session, a new outbound session will try to be created after requesting
- * the pre-key bundle of receipient.
- *
- * @param from From address
- * @param to To Address
- * @param plaintext plaintext to be encrypted
- * @param plaintext_len plaintext length
- */
-void encrypt_session(
-    Skissm__E2eeAddress *from,
-    Skissm__E2eeAddress *to,
-    const uint8_t *plaintext, size_t plaintext_len
-);
-
-/**
  * @brief Encrypt a given plaintext with an initialized outbound session
  *
- * @param session initialized outbound session
+ * @param outbound_session initialized outbound session
  * @param plaintext plaintext to be encrypted
  * @param plaintext_len plaintext length
  * @return size_t encrypted message length
  */
-size_t perform_encrypt_session(Skissm__E2eeSession *session, const uint8_t *plaintext, size_t plaintext_len);
-
-/**
- * @brief Decrypt a received msg_payload by engaging corresponding inbound session.
- *
- * @param receive_msg_payload
- * @return size_t Succcess or not
- */
-size_t decrypt_session(Skissm__E2eeMessage *receive_msg_payload);
+size_t perform_encrypt_session(Skissm__E2eeSession *outbound_session, const uint8_t *plaintext, size_t plaintext_len);
 
 /**
  * @brief Close a session

@@ -26,6 +26,7 @@
 #include "e2ee_protocol.h"
 #include "ratchet.h"
 #include "session.h"
+#include "session_manager.h"
 #include "skissm.h"
 #include "mem_util.h"
 
@@ -99,14 +100,17 @@ static void test_encryption(
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
-    uint8_t *context = NULL;
-    size_t context_len;
+    // pack plaintext into ontext that is in Skissm__E2eePlaintext structure
+    uint8_t *e2ee_plaintext = NULL;
+    size_t e2ee_plaintext_len;
     pack_e2ee_plaintext(
         plaintext, plaintext_len,
         SKISSM__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
-        &context, &context_len
+        &e2ee_plaintext, &e2ee_plaintext_len
     );
-    encrypt_session(from_address, to_address, context, context_len);
+
+    // send encrypted msg
+    encrypt_session(from_address, to_address, e2ee_plaintext, e2ee_plaintext_len);
     assert(plaintext_len == plaintext_store.plaintext_len);
     assert(memcmp(plaintext, plaintext_store.plaintext, plaintext_len) == 0);
 }

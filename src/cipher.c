@@ -23,6 +23,8 @@
 
 #include "crypto.h"
 
+const struct cipher CIPHER = CIPHER_INIT;
+
 static inline size_t aes256_gcm_ciphertext_len(size_t plaintext_length) {
   return plaintext_length + AES256_GCM_TAG_LENGTH;
 }

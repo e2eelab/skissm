@@ -192,6 +192,24 @@ void send_get_pre_key_bundle_request(
     pre_key_bundle_response_handler *response_handler);
 
 /**
+ * @brief Send one-to-one encrypted message to messaging server
+ *
+ * @param outbound_session
+ * @param e2ee_plaintext
+ * @param e2ee_plaintext_len
+ */
+void send_one2one_msg(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len);
+
+/**
+ * @brief Send group encrypted message to messaging server
+ *
+ * @param group_session
+ * @param plaintext
+ * @param plaintext_len
+ */
+void send_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) ;
+
+/**
  * @brief Send a create group request to messaging server
  *
  * @param response_handler

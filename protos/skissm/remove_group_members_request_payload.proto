@@ -23,10 +23,10 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "RemoveGroupMembersRequestPayload";
 
-import "e2ee_address.proto";
+import "skissm/e2ee_address.proto";
 
 message remove_group_members_request_payload {
-  e2ee_address sender_address = 1;
-  e2ee_address group_address = 2;
-  repeated e2ee_address member_addresses = 3;
+  skissm.e2ee_address sender_address = 1;
+  skissm.e2ee_address group_address = 2;
+  repeated skissm.e2ee_address member_addresses = 3;
 }

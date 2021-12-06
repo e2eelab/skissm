@@ -23,11 +23,11 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "SignedPreKeyPair";
 
-import "key_pair.proto";
+import "skissm/key_pair.proto";
 
 message signed_pre_key_pair {
   uint32 spk_id = 1;
-  key_pair key_pair = 2;
+  skissm.key_pair key_pair = 2;
   bytes signature = 3;
   int64 ttl = 4;
 }

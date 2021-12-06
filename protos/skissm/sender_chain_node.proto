@@ -23,10 +23,10 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "SenderChainNode";
 
-import "key_pair.proto";
-import "chain_key.proto";
+import "skissm/key_pair.proto";
+import "skissm/chain_key.proto";
 
 message sender_chain_node {
-  key_pair ratchet_key_pair = 1;
-  chain_key chain_key = 2;
+  skissm.key_pair ratchet_key_pair = 1;
+  skissm.chain_key chain_key = 2;
 }

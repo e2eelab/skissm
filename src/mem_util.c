@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <string.h>
-
 #include "mem_util.h"
+
+#include <string.h>
 
 bool is_equal(const uint8_t *buffer_a, const uint8_t *buffer_b, size_t length) {
     uint8_t volatile result = 0;

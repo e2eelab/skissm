@@ -29,7 +29,7 @@ extern "C" {
 #include "skissm.h"
 
 /**
- * @brief Create an outbound group session
+ * @brief Create an outbound group session.
  *
  * @param user_address
  * @param group_address
@@ -46,7 +46,7 @@ void create_outbound_group_session(
 );
 
 /**
- * @brief Create an inbound group session object
+ * @brief Create an inbound group session.
  *
  * @param group_pre_key_payload
  * @param user_address
@@ -57,7 +57,27 @@ void create_inbound_group_session(
 );
 
 /**
- * @brief  Encrypt group message
+ * @brief Advance the chain key of group session.
+ *
+ * @param chain_key
+ * @param iteration
+ */
+void advance_group_chain_key(ProtobufCBinaryData *chain_key, uint32_t iteration);
+
+
+/**
+ * @brief Create group message keys.
+ *
+ * @param chain_key
+ * @param message_key
+ */
+void create_group_message_keys(
+    const ProtobufCBinaryData *chain_key,
+    Skissm__MessageKey *message_key
+);
+
+/**
+ * @brief Encrypt a group message with engaged group session.
  *
  * @param user_address
  * @param group_address
@@ -70,17 +90,12 @@ void encrypt_group_session(
     const uint8_t *plaintext, size_t plaintext_len
 );
 
-
 /**
- * @brief Decrypt group message
+ * @brief Close a group session.
  *
- * @param user_address
- * @param group_msg
+ * @param group_session
  */
-void decrypt_group_session(
-    Skissm__E2eeAddress *user_address,
-    Skissm__E2eeMessage *group_msg
-);
+void close_group_session(Skissm__E2eeGroupSession *group_session);
 
 #ifdef __cplusplus
 }
