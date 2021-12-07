@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "crypto.h"
+#include "skissm/crypto.h"
 
 #include <string.h>
 
@@ -29,8 +29,8 @@
 #include "mbedtls/platform.h"
 #include "mbedtls/sha256.h"
 
-#include "account.h"
-#include "mem_util.h"
+#include "skissm/account.h"
+#include "skissm/mem_util.h"
 
 static const uint8_t CURVE25519_BASEPOINT[32] = {9};
 static const size_t AES_KEY_SCHEDULE_LENGTH = 60;

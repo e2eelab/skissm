@@ -19,9 +19,9 @@
 #include <assert.h>
 #include <string.h>
 
-#include "cipher.h"
-#include "mem_util.h"
-#include "ratchet.h"
+#include "skissm/cipher.h"
+#include "skissm/mem_util.h"
+#include "skissm/ratchet.h"
 
 #include "test_util.h"
 #include "test_env.h"

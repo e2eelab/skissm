@@ -21,16 +21,13 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "skissm.h"
-#include "e2ee_protocol.h"
-#include "account.h"
-#include "cipher.h"
-#include "mem_util.h"
+#include "skissm/account.h"
+#include "skissm/cipher.h"
+#include "skissm/e2ee_protocol.h"
+#include "skissm/mem_util.h"
+#include "skissm/skissm.h"
 
 #include "test_env.h"
-
-// -----------------
-#include "account.h"
 #include "test_db.h"
 #include "test_env.h"
 #include "test_util.h"

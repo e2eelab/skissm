@@ -19,7 +19,7 @@
 #ifndef TEST_UTIL_H_
 #define TEST_UTIL_H_
 
-#include "skissm.h"
+#include "skissm/skissm.h"
 
 // debug msg to console
 void print_msg(char *title, uint8_t *msg, size_t len);

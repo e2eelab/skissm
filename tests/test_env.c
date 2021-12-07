@@ -26,14 +26,14 @@
 #include <sqlite3.h>
 #include <string.h>
 
-#include "cipher.h"
-#include "crypto.h"
-#include "e2ee_protocol.h"
-#include "e2ee_protocol_simulator.h"
-#include "mem_util.h"
+#include "skissm/cipher.h"
+#include "skissm/crypto.h"
+#include "skissm/e2ee_protocol.h"
+#include "skissm/mem_util.h"
 
-#include "test_util.h"
+#include "e2ee_protocol_simulator.h"
 #include "test_db.h"
+#include "test_util.h"
 
 // utility functions
 void create_domain(ProtobufCBinaryData *domain) {

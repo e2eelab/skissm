@@ -20,13 +20,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "account.h"
-#include "account_manager.h"
-#include "e2ee_protocol.h"
-#include "e2ee_protocol_handler.h"
-#include "group_session.h"
-#include "group_session_manager.h"
-#include "mem_util.h"
+#include "skissm/account.h"
+#include "skissm/account_manager.h"
+#include "skissm/e2ee_protocol.h"
+#include "skissm/e2ee_protocol_handler.h"
+#include "skissm/group_session.h"
+#include "skissm/group_session_manager.h"
+#include "skissm/mem_util.h"
 
 #include "test_util.h"
 #include "test_env.h"
@@ -74,7 +74,7 @@ static void on_error(ErrorCode error_code, char *error_msg) { print_error(error_
 
 static void on_user_registered(Skissm__E2eeAccount *account) {
     print_msg("on_user_registered: user_id", account->address->user_id.data, account->address->user_id.len);
-    
+
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
 }

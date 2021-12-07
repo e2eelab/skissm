@@ -33,7 +33,7 @@ target_include_directories(db
         ${sqlite3_DIR}
         $<BUILD_INTERFACE:${protobuf-c_DIR}>
         $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>)
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
 add_library(test_env STATIC
     e2ee_protocol_simulator.c
@@ -44,7 +44,7 @@ target_include_directories(test_env
         ${sqlite3_DIR}
         $<BUILD_INTERFACE:${protobuf-c_DIR}>
         $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>)
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
 add_library(test_util STATIC
     test_util.c)
@@ -53,7 +53,7 @@ target_include_directories(test_util
     PRIVATE
         $<BUILD_INTERFACE:${protobuf-c_DIR}>
         $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>)
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
 set(TEST_SKISSM
     test_gcm
@@ -81,7 +81,7 @@ foreach(test IN ITEMS ${TEST_SKISSM})
   add_executable(${test} ${test}.c)
   target_include_directories(${test}
     PRIVATE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
         ${sqlite3_DIR}
         $<BUILD_INTERFACE:${protobuf-c_DIR}>
         $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
@@ -93,7 +93,7 @@ foreach(test IN ITEMS ${TEST_WS})
   add_executable(${test} ${test}.cpp)
   target_include_directories(${test}
       PRIVATE
-          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/skissm>
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
           ${sqlite3_DIR}
           $<BUILD_INTERFACE:${protobuf-c_DIR}>
           $<BUILD_INTERFACE:${PROTO_DIS_DIR}>

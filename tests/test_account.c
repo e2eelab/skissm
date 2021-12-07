@@ -21,12 +21,12 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "skissm.h"
-#include "e2ee_protocol.h"
-#include "account.h"
-#include "cipher.h"
-#include "crypto.h"
-#include "mem_util.h"
+#include "skissm/account.h"
+#include "skissm/cipher.h"
+#include "skissm/crypto.h"
+#include "skissm/e2ee_protocol.h"
+#include "skissm/mem_util.h"
+#include "skissm/skissm.h"
 
 #include "test_env.h"
 

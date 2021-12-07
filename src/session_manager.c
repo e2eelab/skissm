@@ -1,16 +1,16 @@
-#include "session_manager.h"
+#include "skissm/session_manager.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#include "account.h"
-#include "e2ee_protocol.h"
-#include "error.h"
-#include "group_session.h"
-#include "mem_util.h"
-#include "ratchet.h"
-#include "session.h"
-#include "skissm.h"
+#include "skissm/account.h"
+#include "skissm/e2ee_protocol.h"
+#include "skissm/error.h"
+#include "skissm/group_session.h"
+#include "skissm/mem_util.h"
+#include "skissm/ratchet.h"
+#include "skissm/session.h"
+#include "skissm/skissm.h"
 
 Skissm__GetPreKeyBundleRequestPayload *produce_get_pre_key_bundle_request_payload(Skissm__E2eeAddress *e2ee_address) {
         Skissm__GetPreKeyBundleRequestPayload *get_pre_key_bundle_request_payload =

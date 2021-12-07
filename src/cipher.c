@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "cipher.h"
+#include "skissm/cipher.h"
 
 #include <stdbool.h>
 #include <string.h>
 
-#include "crypto.h"
+#include "skissm/crypto.h"
 
 const struct cipher CIPHER = CIPHER_INIT;
 

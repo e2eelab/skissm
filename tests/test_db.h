@@ -21,7 +21,7 @@
 
 #include <sqlite3.h>
 
-#include "skissm.h"
+#include "skissm/skissm.h"
 
 void test_db_begin();
 void test_db_end();

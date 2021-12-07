@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-#include "e2ee_protocol_handler.h"
+#include "skissm/e2ee_protocol_handler.h"
 
 /**
  * @brief Handle the request for suplying opks

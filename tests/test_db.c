@@ -20,7 +20,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mem_util.h"
+#include "skissm/mem_util.h"
+
 #include "test_db.h"
 
 // global variable

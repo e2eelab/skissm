@@ -21,14 +21,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "account.h"
-#include "account_manager.h"
-#include "e2ee_protocol.h"
-#include "ratchet.h"
-#include "session.h"
-#include "session_manager.h"
-#include "skissm.h"
-#include "mem_util.h"
+#include "skissm/account.h"
+#include "skissm/account_manager.h"
+#include "skissm/e2ee_protocol.h"
+#include "skissm/mem_util.h"
+#include "skissm/ratchet.h"
+#include "skissm/session.h"
+#include "skissm/session_manager.h"
+#include "skissm/skissm.h"
 
 #include "test_env.h"
 #include "test_util.h"

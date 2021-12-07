@@ -21,8 +21,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include "mem_util.h"
-#include "crypto.h"
+#include "skissm/mem_util.h"
+#include "skissm/crypto.h"
 
 #include "test_util.h"
 

@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "ratchet.h"
+#include "skissm/ratchet.h"
 
 #include <string.h>
 
-#include "cipher.h"
-#include "crypto.h"
-#include "error.h"
-#include "mem_util.h"
-#include "skissm.h"
+#include "skissm/cipher.h"
+#include "skissm/crypto.h"
+#include "skissm/error.h"
+#include "skissm/mem_util.h"
+#include "skissm/skissm.h"
 
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};

@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "group_session.h"
+#include "skissm/group_session.h"
 
-#include "cipher.h"
-#include "crypto.h"
-#include "group_session_manager.h"
-#include "mem_util.h"
-#include "session.h"
-#include "session_manager.h"
+#include "skissm/cipher.h"
+#include "skissm/crypto.h"
+#include "skissm/group_session_manager.h"
+#include "skissm/mem_util.h"
+#include "skissm/session.h"
+#include "skissm/session_manager.h"
 
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";

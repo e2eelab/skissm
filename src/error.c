@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "error.h"
+#include "skissm/error.h"
 
 static const char * ERROR_STRINGS[] = {
   "SUCCESS",

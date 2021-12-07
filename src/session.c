@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "session.h"
+#include "skissm/session.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#include "account.h"
-#include "e2ee_protocol.h"
-#include "error.h"
-#include "group_session.h"
-#include "mem_util.h"
-#include "ratchet.h"
-#include "skissm.h"
+#include "skissm/account.h"
+#include "skissm/e2ee_protocol.h"
+#include "skissm/error.h"
+#include "skissm/group_session.h"
+#include "skissm/mem_util.h"
+#include "skissm/ratchet.h"
+#include "skissm/skissm.h"
 
 static void create_session_id(Skissm__E2eeSession *session) {
     uint8_t tmp[CURVE25519_KEY_LENGTH * 4];

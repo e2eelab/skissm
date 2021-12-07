@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "account_manager.h"
+#include "skissm/account_manager.h"
 
-#include "account.h"
-#include "e2ee_protocol.h"
-#include "mem_util.h"
+#include "skissm/account.h"
+#include "skissm/e2ee_protocol.h"
+#include "skissm/mem_util.h"
 
 /* registration related */
 static void handle_register_user_response(register_user_response_handler *response_handler, Skissm__E2eeAddress *address) {

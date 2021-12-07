@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "account.h"
+#include "skissm/account.h"
 
 #include <string.h>
 
-#include "account_manager.h"
-#include "cipher.h"
-#include "crypto.h"
-#include "mem_util.h"
-#include "skissm.h"
+#include "skissm/account_manager.h"
+#include "skissm/cipher.h"
+#include "skissm/crypto.h"
+#include "skissm/mem_util.h"
+#include "skissm/skissm.h"
 
 static Skissm__E2eeAccount *local_account = NULL;
 

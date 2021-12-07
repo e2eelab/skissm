@@ -21,11 +21,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "skissm.h"
-#include "account.h"
-#include "mem_util.h"
+#include "skissm/account.h"
+#include "skissm/mem_util.h"
+#include "skissm/skissm.h"
 
-// -----------------
 #include "test_db.h"
 #include "test_env.h"
 #include "test_util.h"

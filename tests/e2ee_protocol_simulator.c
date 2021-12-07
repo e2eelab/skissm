@@ -16,13 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "e2ee_protocol_simulator.h"
+
 #include <string.h>
 #include <stdio.h>
 
+#include "skissm/e2ee_protocol.h"
+#include "skissm/mem_util.h"
+
 #include "test_env.h"
-#include "e2ee_protocol_simulator.h"
-#include "e2ee_protocol.h"
-#include "mem_util.h"
 
 typedef struct user_data{
     Skissm__E2eeAddress *address;

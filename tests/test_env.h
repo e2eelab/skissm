@@ -23,7 +23,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include "skissm.h"
+#include "skissm/skissm.h"
 
 #define E2EELAB_DOMAIN      "e2eelab.org"
 

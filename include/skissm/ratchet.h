@@ -26,9 +26,9 @@
 extern "C" {
 #endif
 
-#include "skissm.h"
-#include "cipher.h"
-#include "crypto.h"
+#include "skissm/skissm.h"
+#include "skissm/cipher.h"
+#include "skissm/crypto.h"
 
 typedef struct cipher cipher;
 

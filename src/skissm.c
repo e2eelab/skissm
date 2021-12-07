@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "skissm.h"
+#include "skissm/skissm.h"
 
-#include "account.h"
-#include "e2ee_protocol.h"
+#include "skissm/account.h"
+#include "skissm/e2ee_protocol.h"
 
 static struct skissm_plugin *ssm_plugin;
 static skissm_event_handler *ssm_event_handler = NULL;

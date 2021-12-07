@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "group_session_manager.h"
+#include "skissm/group_session_manager.h"
 
-#include "cipher.h"
-#include "crypto.h"
-#include "e2ee_protocol.h"
-#include "e2ee_protocol_handler.h"
-#include "group_session.h"
-#include "mem_util.h"
-#include "session.h"
+#include "skissm/cipher.h"
+#include "skissm/crypto.h"
+#include "skissm/e2ee_protocol.h"
+#include "skissm/e2ee_protocol_handler.h"
+#include "skissm/group_session.h"
+#include "skissm/mem_util.h"
+#include "skissm/session.h"
 
 static void handle_create_group_response(
     create_group_response_handler *response_handler,

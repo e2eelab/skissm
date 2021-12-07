@@ -152,13 +152,13 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
 
     add_dependencies(skissm_framework
     	curve25519
-	mbedtls
-	protobuf::libprotobuf
-	protobuf-c)
+        mbedtls
+        protobuf::libprotobuf
+        protobuf-c)
 
     target_include_directories(skissm_framework
         PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
             ${PROTO_DIS_DIR}
         PRIVATE
@@ -212,14 +212,14 @@ else()
 
     add_dependencies(skissm_static
         curve25519
-	mbedtls
-	protobuf::libprotobuf
-	protobuf-c
+        mbedtls
+        protobuf::libprotobuf
+        protobuf-c
     )
 
     target_include_directories(skissm_static
         PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
             $<BUILD_INTERFACE:${protobuf-c_DIR}>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         PRIVATE
@@ -236,9 +236,9 @@ else()
         WINDOWS_EXPORT_ALL_SYMBOLS ON
         SOVERSION "${PROJECT_VERSION_SO}"
         VERSION "${CMAKE_PROJECT_VERSION}"
-	ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
-	LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
     )
 
     target_link_options(skissm_static PUBLIC "LINKER:-undefined,dynamic_lookup")
@@ -256,7 +256,7 @@ else()
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+	    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
         PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 
@@ -268,14 +268,14 @@ else()
 
     add_dependencies(skissm_shared
         curve25519
-	mbedtls
-	protobuf::libprotobuf
-	protobuf-c
+        mbedtls
+        protobuf::libprotobuf
+        protobuf-c
     )
 
     target_include_directories(skissm_shared
         PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/skissm>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
             $<BUILD_INTERFACE:${protobuf-c_DIR}>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
             ${PROTO_DIS_DIR}

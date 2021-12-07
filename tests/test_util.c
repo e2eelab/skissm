@@ -23,8 +23,9 @@ typedef int bool;
 #include <stdio.h>
 #include <string.h>
 
-#include "account.h"
-#include "mem_util.h"
+#include "skissm/account.h"
+#include "skissm/mem_util.h"
+
 #include "test_util.h"
 
 void print_hex(char *title, uint8_t *msg, size_t msg_len) {

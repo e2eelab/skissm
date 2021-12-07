@@ -16,22 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "e2ee_protocol.h"
+#include "skissm/e2ee_protocol.h"
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "account.h"
-#include "account_manager.h"
-#include "e2ee_protocol_handler.h"
-#include "group_session.h"
-#include "group_session_manager.h"
-#include "mem_util.h"
-#include "session.h"
-#include "session_manager.h"
-#include "skissm.h"
+#include "skissm/account.h"
+#include "skissm/account_manager.h"
+#include "skissm/e2ee_protocol_handler.h"
+#include "skissm/group_session.h"
+#include "skissm/group_session_manager.h"
+#include "skissm/mem_util.h"
+#include "skissm/session.h"
+#include "skissm/session_manager.h"
+#include "skissm/skissm.h"
 
 #define REQUEST_HANDLERS_NUM 1
 #define RESPONSE_CMD_FLAG 0x1000
