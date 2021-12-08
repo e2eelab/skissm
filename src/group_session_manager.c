@@ -19,7 +19,6 @@
 #include "skissm/group_session_manager.h"
 
 #include "skissm/cipher.h"
-#include "skissm/crypto.h"
 #include "skissm/e2ee_protocol.h"
 #include "skissm/e2ee_protocol_handler.h"
 #include "skissm/group_session.h"
@@ -295,7 +294,7 @@ Skissm__E2eeMessage *produce_group_msg(Skissm__E2eeGroupSession *group_session, 
     uint8_t *ad = group_session->associated_data.data;
 
     /* Encryption */
-    group_msg_payload->ciphertext.len = CIPHER.suit1->encrypt(
+    group_msg_payload->ciphertext.len = CIPHER.suite1->encrypt(
         ad,
         keys->derived_key.data,
         plaintext,
@@ -304,9 +303,10 @@ Skissm__E2eeMessage *produce_group_msg(Skissm__E2eeGroupSession *group_session, 
     );
 
     /* Signature */
-    group_msg_payload->signature.len = CURVE_SIGNATURE_LENGTH;
-    group_msg_payload->signature.data = (uint8_t *) malloc(sizeof(uint8_t) * CURVE_SIGNATURE_LENGTH);
-    CIPHER.suit1->sign(
+    int sig_len = CIPHER.suite1->get_crypto_param().sig_len;
+    group_msg_payload->signature.len = sig_len;
+    group_msg_payload->signature.data = (uint8_t *) malloc(sizeof(uint8_t) * sig_len);
+    CIPHER.suite1->sign(
         group_session->signature_private_key.data,
         group_msg_payload->ciphertext.data,
         group_msg_payload->ciphertext.len,
@@ -363,7 +363,7 @@ void consume_group_msg(Skissm__E2eeAddress *user_address, Skissm__E2eeMessage *g
     group_msg_payload = skissm__e2ee_group_msg_payload__unpack(NULL, group_msg->payload.len, group_msg->payload.data);
 
     /* Verify the signature */
-    size_t result = CIPHER.suit1->verify(
+    size_t result = CIPHER.suite1->verify(
         group_msg_payload->signature.data,
         group_session->signature_public_key.data,
         group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len);
@@ -385,7 +385,7 @@ void consume_group_msg(Skissm__E2eeAddress *user_address, Skissm__E2eeMessage *g
 
     /* Decryption */
     uint8_t *plaintext;
-    size_t plaintext_len = CIPHER.suit1->decrypt(
+    size_t plaintext_len = CIPHER.suite1->decrypt(
         group_session->associated_data.data,
         keys->derived_key.data,
         group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len,

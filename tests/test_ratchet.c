@@ -335,12 +335,12 @@ int main() {
     setup();
 
     Skissm__KeyPair alice_ratchet_key, bob_ratchet_key;
-    CIPHER.suit1->gen_key_pair(&alice_ratchet_key);
-    CIPHER.suit1->gen_key_pair(&bob_ratchet_key);
+    CIPHER.suite1->gen_key_pair(&alice_ratchet_key);
+    CIPHER.suite1->gen_key_pair(&bob_ratchet_key);
 
     Skissm__KeyPair bob_spk, alice_spk;
-    CIPHER.suit1->gen_key_pair(&bob_spk);
-    CIPHER.suit1->gen_key_pair(&alice_spk);
+    CIPHER.suite1->gen_key_pair(&bob_spk);
+    CIPHER.suite1->gen_key_pair(&alice_spk);
 
     uint8_t associated_data[AD_LENGTH] = {0};
     ProtobufCBinaryData ad;

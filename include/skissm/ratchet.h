@@ -30,6 +30,12 @@ extern "C" {
 #include "skissm/cipher.h"
 #include "skissm/crypto.h"
 
+/** length of a shared key */
+#define SHARED_KEY_LENGTH SHA256_OUTPUT_LENGTH
+
+/** length of a message key */
+#define MESSAGE_KEY_LENGTH (AES256_KEY_LENGTH + AES256_IV_LENGTH)
+
 typedef struct cipher cipher;
 
 typedef uint8_t shared_key[SHARED_KEY_LENGTH];

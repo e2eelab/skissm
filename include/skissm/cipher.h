@@ -37,9 +37,15 @@ extern "C" {
 
 struct cipher;
 
-typedef struct cipher_suits {
+typedef struct cipher_suite {
   /**
-   * @brief Generate a random private key
+   * @brief Get the parameters of this cipher suite.
+   * @return crypto_param
+   */
+  crypto_param (*get_crypto_param)();
+
+  /**
+   * @brief Generate a random private key.
    *
    * @param priv_key
    * @param priv_key_len
@@ -47,7 +53,7 @@ typedef struct cipher_suits {
   void (*gen_private_key)(ProtobufCBinaryData *priv_key, size_t priv_key_len);
 
   /**
-   * @brief Generate public key by given private key
+   * @brief Generate public key by given private key.
    *
    * @param pub_key
    * @param priv_key
@@ -56,14 +62,14 @@ typedef struct cipher_suits {
                          ProtobufCBinaryData *priv_key);
 
   /**
-   * @brief Generate a random key pair
+   * @brief Generate a random key pair.
    *
    * @param key_pair
    */
   void (*gen_key_pair)(Skissm__KeyPair *key_pair);
 
   /**
-   * @brief Calculate shared secret by Diffie–Hellman (DH) algorithm
+   * @brief Calculate shared secret by Diffie–Hellman (DH) algorithm.
    *
    * @param our_key
    * @param their_key
@@ -73,7 +79,7 @@ typedef struct cipher_suits {
              const ProtobufCBinaryData *their_key, uint8_t *shared_secret);
 
   /**
-   * @brief Encrypt a given plain text
+   * @brief Encrypt a given plain text.
    *
    * @param ad The associated data
    * @param key The secret key
@@ -87,7 +93,7 @@ typedef struct cipher_suits {
                     uint8_t **ciphertext);
 
   /**
-   * @brief Decrypt a given cipher text
+   * @brief Decrypt a given cipher text.
    *
    * @param ad The associated data
    * @param key The secret key
@@ -101,7 +107,7 @@ typedef struct cipher_suits {
                     uint8_t **plaintext);
 
   /**
-   * @brief Sign a message
+   * @brief Sign a message.
    *
    * @param private_key
    * @param msg
@@ -112,7 +118,7 @@ typedef struct cipher_suits {
     uint8_t *msg, size_t msg_len, uint8_t *signature_out);
 
   /**
-   * @brief Verify a signature with given message
+   * @brief Verify a signature with given message.
    *
    * @param signature_in
    * @param public_key
@@ -124,7 +130,7 @@ typedef struct cipher_suits {
     uint8_t *msg, size_t msg_len);
 
   /**
-   * @brief HMAC-based key derivation function
+   * @brief HMAC-based key derivation function.
    *
    * @param input
    * @param input_len
@@ -142,7 +148,7 @@ typedef struct cipher_suits {
     uint8_t *output, size_t output_len);
 
   /**
-   * @brief Keyed-Hashing for message authentication
+   * @brief Keyed-Hashing for message authentication.
    *
    * @param key
    * @param key_len
@@ -156,7 +162,7 @@ typedef struct cipher_suits {
     uint8_t *output);
 
   /**
-   * @brief Hash function
+   * @brief Hash function.
    *
    * @param msg
    * @param msg_len
@@ -165,13 +171,13 @@ typedef struct cipher_suits {
   void (*hash)(
     const uint8_t *msg, size_t msg_len,
     uint8_t *hash_out);
-} cipher_suits;
+} cipher_suite;
 
 struct cipher {
-  const struct cipher_suits *suit1;
+  const struct cipher_suite *suite1;
 };
 
-extern const struct cipher_suits E2EE_ECDH_X25519_AES256_GCM_SHA256;
+extern const struct cipher_suite E2EE_ECDH_X25519_AES256_GCM_SHA256;
 
 #define CIPHER_INIT                                                            \
   { &E2EE_ECDH_X25519_AES256_GCM_SHA256 }

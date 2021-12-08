@@ -32,12 +32,29 @@
 #include "skissm/account.h"
 #include "skissm/mem_util.h"
 
+/** amount of random data required to create a Curve25519 keypair */
+#define CURVE25519_RANDOM_LENGTH CURVE25519_KEY_LENGTH
+
 static const uint8_t CURVE25519_BASEPOINT[32] = {9};
 static const size_t AES_KEY_SCHEDULE_LENGTH = 60;
 static const size_t AES_KEY_BITS = 8 * AES256_KEY_LENGTH;
 static const size_t AES_BLOCK_LENGTH = 16;
 static const size_t SHA256_BLOCK_LENGTH = 64;
 static const uint8_t HKDF_DEFAULT_SALT[32] = {};
+
+static crypto_param ecdh_x25519_aes256_gcm_sha256_param = {
+    CURVE25519_KEY_LENGTH,
+    CURVE_SIGNATURE_LENGTH,
+    SHA256_OUTPUT_LENGTH,
+    AES256_KEY_LENGTH,
+    AES256_IV_LENGTH,
+    AES256_GCM_TAG_LENGTH,
+    AD_LENGTH
+};
+
+crypto_param get_ecdh_x25519_aes256_gcm_sha256_param() {
+    return ecdh_x25519_aes256_gcm_sha256_param;
+}
 
 void crypto_curve25519_generate_private_key(ProtobufCBinaryData *priv_key,
                                             size_t priv_key_len) {

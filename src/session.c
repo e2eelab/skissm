@@ -29,6 +29,9 @@
 #include "skissm/ratchet.h"
 #include "skissm/skissm.h"
 
+/** length of the shared secret created by a Curve25519 ECDH operation */
+#define CURVE25519_SHARED_SECRET_LENGTH 32
+
 static void create_session_id(Skissm__E2eeSession *session) {
     uint8_t tmp[CURVE25519_KEY_LENGTH * 4];
     uint8_t *pos = tmp;
@@ -39,7 +42,7 @@ static void create_session_id(Skissm__E2eeSession *session) {
 
     session->session_id.data = (uint8_t *)malloc(sizeof(uint8_t) * SHA256_OUTPUT_LENGTH);
     session->session_id.len = SHA256_OUTPUT_LENGTH;
-    CIPHER.suit1->hash(tmp, sizeof(tmp), session->session_id.data);
+    CIPHER.suite1->hash(tmp, sizeof(tmp), session->session_id.data);
 }
 
 void initialise_session(Skissm__E2eeSession *session, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
@@ -82,7 +85,7 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
         ssm_notify_error(BAD_PRE_KEY_BUNDLE, "new_outbound_session()");
         return (size_t)(-1);
     }
-    result = CIPHER.suit1->verify(their_pre_key_bundle->signed_pre_key_public->signature.data, their_pre_key_bundle->identity_key_public.data,
+    result = CIPHER.suite1->verify(their_pre_key_bundle->signed_pre_key_public->signature.data, their_pre_key_bundle->identity_key_public.data,
                                   their_pre_key_bundle->signed_pre_key_public->public_key.data, CURVE25519_KEY_LENGTH);
     if (result < 0) {
         ssm_notify_error(BAD_SIGNATURE, "new_outbound_session()");
@@ -94,11 +97,11 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
 
     // Generate a new random ephemeral key pair
     Skissm__KeyPair my_ephemeral_key;
-    CIPHER.suit1->gen_key_pair(&my_ephemeral_key);
+    CIPHER.suite1->gen_key_pair(&my_ephemeral_key);
 
     // Generate a new random ratchet key pair
     Skissm__KeyPair my_ratchet_key;
-    CIPHER.suit1->gen_key_pair(&my_ratchet_key);
+    CIPHER.suite1->gen_key_pair(&my_ratchet_key);
 
     const Skissm__KeyPair my_identity_key_pair = *(local_account->identity_key_pair);
 
@@ -108,6 +111,7 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
     copy_protobuf_from_protobuf(&(session->alice_ephemeral_key), &(my_ephemeral_key.public_key));
     copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(their_pre_key_bundle->signed_pre_key_public->public_key));
     session->bob_signed_pre_key_id = their_pre_key_bundle->signed_pre_key_public->spk_id;
+
     // server may return empty one-time pre-key(public)
     if (their_pre_key_bundle->one_time_pre_key_public) {
         copy_protobuf_from_protobuf(&(session->bob_one_time_pre_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key));
@@ -124,14 +128,14 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
     uint8_t secret[x3dh_epoch * CURVE25519_SHARED_SECRET_LENGTH];
     uint8_t *pos = secret;
 
-    CIPHER.suit1->dh(&my_identity_key_pair, &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
+    CIPHER.suite1->dh(&my_identity_key_pair, &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
     pos += CURVE25519_SHARED_SECRET_LENGTH;
-    CIPHER.suit1->dh(&my_ephemeral_key, &(their_pre_key_bundle->identity_key_public), pos);
+    CIPHER.suite1->dh(&my_ephemeral_key, &(their_pre_key_bundle->identity_key_public), pos);
     pos += CURVE25519_SHARED_SECRET_LENGTH;
-    CIPHER.suit1->dh(&my_ephemeral_key, &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
+    CIPHER.suite1->dh(&my_ephemeral_key, &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
     if (x3dh_epoch == 4) {
         pos += CURVE25519_SHARED_SECRET_LENGTH;
-        CIPHER.suit1->dh(&my_ephemeral_key, &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
+        CIPHER.suite1->dh(&my_ephemeral_key, &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
     }
 
     // Create the root key and chain keys
@@ -224,14 +228,14 @@ size_t new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *lo
     // Calculate the shared secret S via triple DH
     uint8_t secret[x3dh_epoch * CURVE25519_SHARED_SECRET_LENGTH];
     uint8_t *pos = secret;
-    CIPHER.suit1->dh(bob_signed_pre_key, &session->alice_identity_key, pos);
+    CIPHER.suite1->dh(bob_signed_pre_key, &session->alice_identity_key, pos);
     pos += CURVE25519_SHARED_SECRET_LENGTH;
-    CIPHER.suit1->dh(bob_identity_key, &session->alice_ephemeral_key, pos);
+    CIPHER.suite1->dh(bob_identity_key, &session->alice_ephemeral_key, pos);
     pos += CURVE25519_SHARED_SECRET_LENGTH;
-    CIPHER.suit1->dh(bob_signed_pre_key, &session->alice_ephemeral_key, pos);
+    CIPHER.suite1->dh(bob_signed_pre_key, &session->alice_ephemeral_key, pos);
     if (x3dh_epoch == 4) {
         pos += CURVE25519_SHARED_SECRET_LENGTH;
-        CIPHER.suit1->dh(bob_one_time_pre_key, &session->alice_ephemeral_key, pos);
+        CIPHER.suite1->dh(bob_one_time_pre_key, &session->alice_ephemeral_key, pos);
     }
 
     initialise_as_bob(session->ratchet, secret, sizeof(secret), bob_signed_pre_key);

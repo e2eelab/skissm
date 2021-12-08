@@ -25,6 +25,12 @@
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 
+/** length of a shared key */
+#define GROUP_SHARED_KEY_LENGTH SHA256_OUTPUT_LENGTH
+
+/** length of a message key */
+#define GROUP_MESSAGE_KEY_LENGTH (AES256_KEY_LENGTH + AES256_IV_LENGTH)
+
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 
@@ -36,8 +42,8 @@ void close_group_session(Skissm__E2eeGroupSession *group_session) {
 }
 
 void advance_group_chain_key(ProtobufCBinaryData *chain_key, uint32_t iteration) {
-    uint8_t shared_key[SHARED_KEY_LENGTH];
-    CIPHER.suit1->hmac(
+    uint8_t shared_key[GROUP_SHARED_KEY_LENGTH];
+    CIPHER.suite1->hmac(
         chain_key->data, chain_key->len,
         CHAIN_KEY_SEED, sizeof(CHAIN_KEY_SEED),
         shared_key
@@ -51,11 +57,11 @@ void create_group_message_keys(
     Skissm__MessageKey *message_key
 ) {
     free_protobuf(&(message_key->derived_key));
-    message_key->derived_key.data = (uint8_t *) malloc(sizeof(uint8_t) * MESSAGE_KEY_LENGTH);
-    message_key->derived_key.len = MESSAGE_KEY_LENGTH;
+    message_key->derived_key.data = (uint8_t *) malloc(sizeof(uint8_t) * GROUP_MESSAGE_KEY_LENGTH);
+    message_key->derived_key.len = GROUP_MESSAGE_KEY_LENGTH;
 
     uint8_t salt[SHA256_OUTPUT_LENGTH] = {0};
-    CIPHER.suit1->hkdf(
+    CIPHER.suite1->hkdf(
         chain_key->data, chain_key->len,
         salt, sizeof(salt),
         (uint8_t *)MESSAGE_KEY_SEED, sizeof(MESSAGE_KEY_SEED) - 1,
@@ -79,7 +85,7 @@ void create_outbound_group_session(
 
     copy_address_from_address(&(group_session->group_address), group_address);
 
-    CIPHER.suit1->gen_private_key(&(group_session->session_id), 32);
+    CIPHER.suite1->gen_private_key(&(group_session->session_id), 32);
 
     group_session->n_member_addresses = member_num;
 
@@ -87,11 +93,11 @@ void create_outbound_group_session(
 
     group_session->sequence = 0;
 
-    CIPHER.suit1->gen_private_key(&(group_session->chain_key), SHARED_KEY_LENGTH);
+    CIPHER.suite1->gen_private_key(&(group_session->chain_key), GROUP_SHARED_KEY_LENGTH);
 
-    CIPHER.suit1->gen_private_key(&(group_session->signature_private_key), CURVE25519_KEY_LENGTH);
+    CIPHER.suite1->gen_private_key(&(group_session->signature_private_key), CURVE25519_KEY_LENGTH);
 
-    CIPHER.suit1->gen_public_key(&(group_session->signature_public_key), &(group_session->signature_private_key));
+    CIPHER.suite1->gen_public_key(&(group_session->signature_public_key), &(group_session->signature_private_key));
 
     group_session->associated_data.len = AD_LENGTH;
     group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);

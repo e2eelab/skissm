@@ -37,12 +37,6 @@ extern "C" {
 /** length of a public or private Curve25519 key */
 #define CURVE25519_KEY_LENGTH 32
 
-/** length of the shared secret created by a Curve25519 ECDH operation */
-#define CURVE25519_SHARED_SECRET_LENGTH 32
-
-/** amount of random data required to create a Curve25519 keypair */
-#define CURVE25519_RANDOM_LENGTH CURVE25519_KEY_LENGTH
-
 /** length of a Curve25519 signature */
 #define CURVE_SIGNATURE_LENGTH 64
 
@@ -58,11 +52,7 @@ extern "C" {
 /** length of an aes256 gcm tag */
 #define AES256_GCM_TAG_LENGTH 16
 
-/** length of a shared key */
-#define SHARED_KEY_LENGTH SHA256_OUTPUT_LENGTH
-
-/** length of a message key */
-#define MESSAGE_KEY_LENGTH (AES256_KEY_LENGTH + AES256_IV_LENGTH)
+crypto_param get_ecdh_x25519_aes256_gcm_sha256_param();
 
 void crypto_curve25519_generate_private_key(
     ProtobufCBinaryData *priv_key, size_t priv_key_len

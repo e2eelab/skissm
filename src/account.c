@@ -89,7 +89,7 @@ Skissm__E2eeAccount *create_account() {
     // Generate the identity key pair
     account->identity_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->identity_key_pair);
-    CIPHER.suit1->gen_key_pair(account->identity_key_pair);
+    CIPHER.suite1->gen_key_pair(account->identity_key_pair);
 
     // Generate a signed pre-key pair
     generate_signed_pre_key(account);
@@ -126,13 +126,13 @@ size_t generate_signed_pre_key(Skissm__E2eeAccount *account) {
     // Generate signed pre-key
     account->signed_pre_key_pair->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->signed_pre_key_pair->key_pair);
-    CIPHER.suit1->gen_key_pair(account->signed_pre_key_pair->key_pair);
+    CIPHER.suite1->gen_key_pair(account->signed_pre_key_pair->key_pair);
     account->signed_pre_key_pair->spk_id = (account->next_signed_pre_key_id)++;
 
     // Generate signature
     account->signed_pre_key_pair->signature.data = (uint8_t *)malloc(CURVE_SIGNATURE_LENGTH);
     account->signed_pre_key_pair->signature.len = CURVE_SIGNATURE_LENGTH;
-    CIPHER.suit1->sign(account->identity_key_pair->private_key.data, account->signed_pre_key_pair->key_pair->public_key.data, CURVE25519_KEY_LENGTH, account->signed_pre_key_pair->signature.data);
+    CIPHER.suite1->sign(account->identity_key_pair->private_key.data, account->signed_pre_key_pair->key_pair->public_key.data, CURVE25519_KEY_LENGTH, account->signed_pre_key_pair->signature.data);
 
     int64_t now = get_ssm_plugin()->handle_get_ts();
     account->signed_pre_key_pair->ttl = now + SIGNED_PRE_KEY_EXPIRATION;
@@ -192,7 +192,7 @@ Skissm__OneTimePreKeyPair **generate_opks(size_t number_of_keys, Skissm__E2eeAcc
         node->used = false;
         node->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(node->key_pair);
-        CIPHER.suit1->gen_key_pair(node->key_pair);
+        CIPHER.suite1->gen_key_pair(node->key_pair);
         inserted_one_time_pre_key_list_node[i] = node;
     }
 

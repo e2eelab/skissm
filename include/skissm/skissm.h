@@ -86,6 +86,16 @@ extern "C" {
 
 #define SIGNED_PRE_KEY_EXPIRATION 604800
 
+typedef struct crypto_param {
+    int key_len;
+    int sig_len;
+    int hash_len;
+    int aead_key_len;
+    int aead_iv_len;
+    int aead_tag_len;
+    int aead_ad_len;
+} crypto_param;
+
 void ssm_begin();
 
 void ssm_end();

@@ -100,9 +100,9 @@ static void create_chain_key(
     Skissm__ChainKey *new_chain_key
 ) {
     shared_key secret;
-    CIPHER.suit1->dh(our_key, their_key, secret);
+    CIPHER.suite1->dh(our_key, their_key, secret);
     uint8_t derived_secrets[2 * SHARED_KEY_LENGTH];
-    CIPHER.suit1->hkdf(
+    CIPHER.suite1->hkdf(
         secret, sizeof(secret),
         root_key.data, root_key.len,
         (uint8_t *)KDF_INFO_RATCHET, sizeof(KDF_INFO_RATCHET) - 1,
@@ -126,7 +126,7 @@ static void advance_chain_key(
     Skissm__ChainKey *chain_key
 ) {
     uint8_t shared_key[SHARED_KEY_LENGTH] = {0};
-    CIPHER.suit1->hmac(
+    CIPHER.suite1->hmac(
         chain_key->shared_key.data, chain_key->shared_key.len,
         CHAIN_KEY_SEED, sizeof(CHAIN_KEY_SEED),
         shared_key
@@ -145,7 +145,7 @@ static void create_message_keys(
     message_key->derived_key.len = MESSAGE_KEY_LENGTH;
 
     uint8_t salt[SHA256_OUTPUT_LENGTH] = {0};
-    CIPHER.suit1->hkdf(
+    CIPHER.suite1->hkdf(
         chain_key->shared_key.data, chain_key->shared_key.len,
         salt, sizeof(salt),
         (uint8_t *)MESSAGE_KEY_SEED, sizeof(MESSAGE_KEY_SEED) - 1,
@@ -161,7 +161,7 @@ static size_t verify_and_decrypt(
     const Skissm__E2eeMsgPayload *e2ee_msg_payload,
     uint8_t **plaintext
 ) {
-    size_t result = cipher->suit1->decrypt(
+    size_t result = cipher->suite1->decrypt(
         ad.data,
         message_key->derived_key.data,
         e2ee_msg_payload->ciphertext.data, e2ee_msg_payload->ciphertext.len,
@@ -276,7 +276,7 @@ void initialise_as_bob(
     /* The ssk will be 64 bytes */
     uint8_t derived_secrets[2 * SHARED_KEY_LENGTH];
     uint8_t salt[SHA256_OUTPUT_LENGTH] = {0};
-    CIPHER.suit1->hkdf(
+    CIPHER.suite1->hkdf(
         shared_secret, shared_secret_length,
         salt, sizeof(salt),
         (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
@@ -311,7 +311,7 @@ void initialise_as_alice(
     uint8_t salt[SHA256_OUTPUT_LENGTH] = {0};
 
     /* shared_secret_length may be 128 or 96 */
-    CIPHER.suit1->hkdf(
+    CIPHER.suite1->hkdf(
         shared_secret, shared_secret_length,
         salt, sizeof(salt),
         (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
@@ -367,7 +367,7 @@ void encrypt_ratchet(
         skissm__sender_chain_node__init(ratchet->sender_chain);
         ratchet->sender_chain->ratchet_key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(ratchet->sender_chain->ratchet_key_pair);
-        CIPHER.suit1->gen_key_pair(ratchet->sender_chain->ratchet_key_pair);
+        CIPHER.suite1->gen_key_pair(ratchet->sender_chain->ratchet_key_pair);
         ratchet->sender_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
         skissm__chain_key__init(ratchet->sender_chain->chain_key);
         create_chain_key(
@@ -394,7 +394,7 @@ void encrypt_ratchet(
     (*e2ee_msg_payload)->sequence = sequence;
     (*e2ee_msg_payload)->ratchet_key.data = ratchet_key_data;
     (*e2ee_msg_payload)->ratchet_key.len = CURVE25519_KEY_LENGTH;
-    (*e2ee_msg_payload)->ciphertext.len = CIPHER.suit1->encrypt(
+    (*e2ee_msg_payload)->ciphertext.len = CIPHER.suite1->encrypt(
         ad.data,
         keys->derived_key.data,
         plaintext, plaintext_len,
