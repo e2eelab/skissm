@@ -1,0 +1,6 @@
+[requires]
+protobuf/3.17.1
+mbedtls/3.0.0
+
+[generators]
+cmake
