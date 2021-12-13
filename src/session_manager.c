@@ -10,7 +10,6 @@
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
 #include "skissm/session.h"
-#include "skissm/skissm.h"
 
 Skissm__GetPreKeyBundleRequestPayload *produce_get_pre_key_bundle_request_payload(Skissm__E2eeAddress *e2ee_address) {
         Skissm__GetPreKeyBundleRequestPayload *get_pre_key_bundle_request_payload =

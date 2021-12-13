@@ -42,16 +42,17 @@ static void test_alice_to_bob(
                         &(bob_spk.public_key));
     initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
                       &bob_spk);
+    int key_len = CIPHER.suite1->get_crypto_param().key_len;
     assert(
         memcmp(
             bob_spk.public_key.data,
             bob_ratchet->sender_chain->ratchet_key_pair->public_key.data,
-            CURVE25519_KEY_LENGTH) == 0);
+            key_len) == 0);
     assert(
         memcmp(
             bob_spk.private_key.data,
             bob_ratchet->sender_chain->ratchet_key_pair->private_key.data,
-            CURVE25519_KEY_LENGTH) == 0);
+            key_len) == 0);
 
     uint8_t plaintext[] = "Message";
     size_t plaintext_length = sizeof(plaintext) - 1;
@@ -97,11 +98,12 @@ static void test_bob_to_alice(
                         &(bob_spk.public_key));
     initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
                       &bob_spk);
+    int key_len = CIPHER.suite1->get_crypto_param().key_len;
     assert(
         memcmp(
             bob_spk.public_key.data,
             bob_ratchet->sender_chain->ratchet_key_pair->public_key.data,
-            CURVE25519_KEY_LENGTH) == 0);
+            key_len) == 0);
 
     uint8_t plaintext[] = "Message";
     size_t plaintext_length = sizeof(plaintext) - 1;
@@ -234,8 +236,9 @@ static void test_interaction(
     Skissm__E2eeMsgPayload *message_bob;
     encrypt_ratchet(bob_ratchet, ad, plaintext_bob, plaintext_length_bob, &message_bob);
 
+    int key_len = CIPHER.suite1->get_crypto_param().key_len;
     assert(memcmp(bob_ratchet->sender_chain->ratchet_key_pair->public_key.data,
-                  bob_spk.public_key.data, CURVE25519_KEY_LENGTH) != 0);
+                  bob_spk.public_key.data, key_len) != 0);
 
     /* Alice decrypts the message from Bob */
     uint8_t *output_bob;
@@ -342,17 +345,19 @@ int main() {
     CIPHER.suite1->gen_key_pair(&bob_spk);
     CIPHER.suite1->gen_key_pair(&alice_spk);
 
-    uint8_t associated_data[AD_LENGTH] = {0};
+    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    uint8_t associated_data[ad_len];
+    memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
-    ad.len = AD_LENGTH;
-    ad.data = (uint8_t *) malloc(AD_LENGTH * sizeof(uint8_t));
+    ad.len = ad_len;
+    ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < 64; i++) {
       ad.data[i] = associated_data[i];
     }
 
     ProtobufCBinaryData session_id;
-    random_id(&session_id, SHA256_OUTPUT_LENGTH);
+    random_id(&session_id, CIPHER.suite1->get_crypto_param().hash_len);
 
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 

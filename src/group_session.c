@@ -18,18 +18,19 @@
  */
 #include "skissm/group_session.h"
 
+#include <string.h>
+
 #include "skissm/cipher.h"
-#include "skissm/crypto.h"
 #include "skissm/group_session_manager.h"
 #include "skissm/mem_util.h"
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 
 /** length of a shared key */
-#define GROUP_SHARED_KEY_LENGTH SHA256_OUTPUT_LENGTH
+#define GROUP_SHARED_KEY_LENGTH     CIPHER.suite1->get_crypto_param().hash_len
 
 /** length of a message key */
-#define GROUP_MESSAGE_KEY_LENGTH (AES256_KEY_LENGTH + AES256_IV_LENGTH)
+#define GROUP_MESSAGE_KEY_LENGTH    (CIPHER.suite1->get_crypto_param().aead_key_len + CIPHER.suite1->get_crypto_param().aead_iv_len)
 
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
@@ -60,7 +61,9 @@ void create_group_message_keys(
     message_key->derived_key.data = (uint8_t *) malloc(sizeof(uint8_t) * GROUP_MESSAGE_KEY_LENGTH);
     message_key->derived_key.len = GROUP_MESSAGE_KEY_LENGTH;
 
-    uint8_t salt[SHA256_OUTPUT_LENGTH] = {0};
+    int hash_len = CIPHER.suite1->get_crypto_param().hash_len;
+    uint8_t salt[hash_len];
+    memset(salt, 0, hash_len);
     CIPHER.suite1->hkdf(
         chain_key->data, chain_key->len,
         salt, sizeof(salt),
@@ -76,6 +79,8 @@ void create_outbound_group_session(
     size_t member_num,
     ProtobufCBinaryData *old_session_id
 ) {
+    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+
     Skissm__E2eeGroupSession *group_session = (Skissm__E2eeGroupSession *) malloc(sizeof(Skissm__E2eeGroupSession));
     skissm__e2ee_group_session__init(group_session);
 
@@ -95,14 +100,15 @@ void create_outbound_group_session(
 
     CIPHER.suite1->gen_private_key(&(group_session->chain_key), GROUP_SHARED_KEY_LENGTH);
 
-    CIPHER.suite1->gen_private_key(&(group_session->signature_private_key), CURVE25519_KEY_LENGTH);
+    CIPHER.suite1->gen_private_key(&(group_session->signature_private_key), key_len);
 
     CIPHER.suite1->gen_public_key(&(group_session->signature_public_key), &(group_session->signature_private_key));
 
-    group_session->associated_data.len = AD_LENGTH;
-    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
-    memcpy(group_session->associated_data.data, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
-    memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    group_session->associated_data.len = ad_len;
+    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+    memcpy(group_session->associated_data.data, group_session->signature_public_key.data, key_len);
+    memcpy((group_session->associated_data.data) + key_len, group_session->signature_public_key.data, key_len);
 
     get_ssm_plugin()->store_group_session(group_session);
 
@@ -173,10 +179,12 @@ void create_inbound_group_session(
     copy_protobuf_from_protobuf(&(group_session->chain_key), &(group_pre_key_payload->chain_key));
     copy_protobuf_from_protobuf(&(group_session->signature_public_key), &(group_pre_key_payload->signature_public_key));
 
-    group_session->associated_data.len = AD_LENGTH;
-    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
-    memcpy(group_session->associated_data.data, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
-    memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    group_session->associated_data.len = ad_len;
+    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    memcpy(group_session->associated_data.data, group_session->signature_public_key.data, key_len);
+    memcpy((group_session->associated_data.data) + key_len, group_session->signature_public_key.data, key_len);
 
     get_ssm_plugin()->store_group_session(group_session);
 

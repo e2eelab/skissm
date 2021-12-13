@@ -22,26 +22,29 @@
 #include <string.h>
 
 #include "skissm/account.h"
+#include "skissm/cipher.h"
 #include "skissm/e2ee_protocol.h"
 #include "skissm/error.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
-#include "skissm/skissm.h"
 
 /** length of the shared secret created by a Curve25519 ECDH operation */
 #define CURVE25519_SHARED_SECRET_LENGTH 32
 
 static void create_session_id(Skissm__E2eeSession *session) {
-    uint8_t tmp[CURVE25519_KEY_LENGTH * 4];
-    uint8_t *pos = tmp;
-    memcpy(pos, session->alice_identity_key.data, CURVE25519_KEY_LENGTH);
-    memcpy(pos + CURVE25519_KEY_LENGTH, session->alice_ephemeral_key.data, CURVE25519_KEY_LENGTH);
-    memcpy(pos + CURVE25519_KEY_LENGTH + CURVE25519_KEY_LENGTH, session->bob_signed_pre_key.data, CURVE25519_KEY_LENGTH);
-    memcpy(pos + CURVE25519_KEY_LENGTH + CURVE25519_KEY_LENGTH + CURVE25519_KEY_LENGTH, session->bob_one_time_pre_key.data, CURVE25519_KEY_LENGTH);
+    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int hash_output_len = CIPHER.suite1->get_crypto_param().hash_len;
 
-    session->session_id.data = (uint8_t *)malloc(sizeof(uint8_t) * SHA256_OUTPUT_LENGTH);
-    session->session_id.len = SHA256_OUTPUT_LENGTH;
+    uint8_t tmp[key_len * 4];
+    uint8_t *pos = tmp;
+    memcpy(pos, session->alice_identity_key.data, key_len);
+    memcpy(pos + key_len, session->alice_ephemeral_key.data, key_len);
+    memcpy(pos + key_len + key_len, session->bob_signed_pre_key.data, key_len);
+    memcpy(pos + key_len + key_len + key_len, session->bob_one_time_pre_key.data, key_len);
+
+    session->session_id.data = (uint8_t *)malloc(sizeof(uint8_t) * hash_output_len);
+    session->session_id.len = hash_output_len;
     CIPHER.suite1->hash(tmp, sizeof(tmp), session->session_id.data);
 }
 
@@ -78,15 +81,16 @@ void pack_e2ee_plaintext(const uint8_t *plaintext, size_t plaintext_len, Skissm_
 }
 
 size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAccount *local_account, Skissm__E2eePreKeyBundle *their_pre_key_bundle) {
+    int key_len = CIPHER.suite1->get_crypto_param().key_len;
     // Verify the signature
     size_t result;
-    if ((their_pre_key_bundle->identity_key_public.len != CURVE25519_KEY_LENGTH) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != CURVE25519_KEY_LENGTH) ||
-        (their_pre_key_bundle->signed_pre_key_public->signature.len != CURVE_SIGNATURE_LENGTH)) {
+    if ((their_pre_key_bundle->identity_key_public.len != key_len) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len) ||
+        (their_pre_key_bundle->signed_pre_key_public->signature.len != CIPHER.suite1->get_crypto_param().sig_len)) {
         ssm_notify_error(BAD_PRE_KEY_BUNDLE, "new_outbound_session()");
         return (size_t)(-1);
     }
     result = CIPHER.suite1->verify(their_pre_key_bundle->signed_pre_key_public->signature.data, their_pre_key_bundle->identity_key_public.data,
-                                  their_pre_key_bundle->signed_pre_key_public->public_key.data, CURVE25519_KEY_LENGTH);
+                                  their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len);
     if (result < 0) {
         ssm_notify_error(BAD_SIGNATURE, "new_outbound_session()");
         return (size_t)(-1);
@@ -119,10 +123,11 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
         x3dh_epoch = 4;
     }
 
-    session->associated_data.len = AD_LENGTH;
-    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * AD_LENGTH);
-    memcpy(session->associated_data.data, my_identity_key_pair.public_key.data, CURVE25519_KEY_LENGTH);
-    memcpy((session->associated_data.data) + CURVE25519_KEY_LENGTH, their_pre_key_bundle->identity_key_public.data, CURVE25519_KEY_LENGTH);
+    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    session->associated_data.len = ad_len;
+    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
+    memcpy(session->associated_data.data, my_identity_key_pair.public_key.data, key_len);
+    memcpy((session->associated_data.data) + key_len, their_pre_key_bundle->identity_key_public.data, key_len);
 
     // Calculate the shared secret S via quadruple ECDH
     uint8_t secret[x3dh_epoch * CURVE25519_SHARED_SECRET_LENGTH];
@@ -187,10 +192,12 @@ size_t new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *lo
         x3dh_epoch = 4;
     }
 
-    session->associated_data.len = AD_LENGTH;
-    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * AD_LENGTH);
-    memcpy(session->associated_data.data, pre_key_context->alice_identity_key.data, CURVE25519_KEY_LENGTH);
-    memcpy((session->associated_data.data) + CURVE25519_KEY_LENGTH, local_account->identity_key_pair->public_key.data, CURVE25519_KEY_LENGTH);
+    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    session->associated_data.len = ad_len;
+    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
+    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    memcpy(session->associated_data.data, pre_key_context->alice_identity_key.data, key_len);
+    memcpy((session->associated_data.data) + key_len, local_account->identity_key_pair->public_key.data, key_len);
 
     /* Mark the one-time pre-key as used */
     const Skissm__OneTimePreKeyPair *our_one_time_pre_key;

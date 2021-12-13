@@ -31,7 +31,6 @@
 #include "skissm/mem_util.h"
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
-#include "skissm/skissm.h"
 
 #define REQUEST_HANDLERS_NUM 1
 #define RESPONSE_CMD_FLAG 0x1000

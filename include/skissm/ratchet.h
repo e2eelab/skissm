@@ -28,18 +28,14 @@ extern "C" {
 
 #include "skissm/skissm.h"
 #include "skissm/cipher.h"
-#include "skissm/crypto.h"
 
 /** length of a shared key */
-#define SHARED_KEY_LENGTH SHA256_OUTPUT_LENGTH
+#define SHARED_KEY_LENGTH CIPHER.suite1->get_crypto_param().hash_len
 
 /** length of a message key */
-#define MESSAGE_KEY_LENGTH (AES256_KEY_LENGTH + AES256_IV_LENGTH)
+#define MESSAGE_KEY_LENGTH (CIPHER.suite1->get_crypto_param().aead_key_len + CIPHER.suite1->get_crypto_param().aead_iv_len)
 
 typedef struct cipher cipher;
-
-typedef uint8_t shared_key[SHARED_KEY_LENGTH];
-typedef uint8_t derived_key[MESSAGE_KEY_LENGTH];
 
 void initialise_ratchet(Skissm__E2eeRatchet **ratchet);
 

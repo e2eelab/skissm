@@ -22,9 +22,7 @@
 
 #include "skissm/account_manager.h"
 #include "skissm/cipher.h"
-#include "skissm/crypto.h"
 #include "skissm/mem_util.h"
-#include "skissm/skissm.h"
 
 static Skissm__E2eeAccount *local_account = NULL;
 
@@ -130,9 +128,11 @@ size_t generate_signed_pre_key(Skissm__E2eeAccount *account) {
     account->signed_pre_key_pair->spk_id = (account->next_signed_pre_key_id)++;
 
     // Generate signature
-    account->signed_pre_key_pair->signature.data = (uint8_t *)malloc(CURVE_SIGNATURE_LENGTH);
-    account->signed_pre_key_pair->signature.len = CURVE_SIGNATURE_LENGTH;
-    CIPHER.suite1->sign(account->identity_key_pair->private_key.data, account->signed_pre_key_pair->key_pair->public_key.data, CURVE25519_KEY_LENGTH, account->signed_pre_key_pair->signature.data);
+    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int sig_len = CIPHER.suite1->get_crypto_param().sig_len;
+    account->signed_pre_key_pair->signature.data = (uint8_t *)malloc(sig_len);
+    account->signed_pre_key_pair->signature.len = sig_len;
+    CIPHER.suite1->sign(account->identity_key_pair->private_key.data, account->signed_pre_key_pair->key_pair->public_key.data, key_len, account->signed_pre_key_pair->signature.data);
 
     int64_t now = get_ssm_plugin()->handle_get_ts();
     account->signed_pre_key_pair->ttl = now + SIGNED_PRE_KEY_EXPIRATION;
