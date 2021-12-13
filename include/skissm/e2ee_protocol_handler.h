@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#include "skissm/skissm.h"
+#include "skissm.h"
 
 typedef struct register_user_response_handler{
     Skissm__E2eeAccount *account;

@@ -23,7 +23,7 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eePreKeyPayload";
 
-import "skissm/e2ee_msg_payload.proto";
+import "e2ee_msg_payload.proto";
 
 message e2ee_pre_key_payload {
   bytes alice_identity_key = 1;

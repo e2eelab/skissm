@@ -1,47 +1,21 @@
 {
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    
-    // iOS Config
-    // "cmake.configureSettings": {
-    //     "CMAKE_TOOLCHAIN_FILE": "../cmake/ios.toolchain.cmake",
-    //     "PLATFORM": "OS64",
-    //     "ENABLE_STRICT_TRY_COMPILE": "ON",
-    //     "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED": "NO",
-    //     "DEPLOYMENT_TARGET": "13.0",
-    //     "ENABLE_BITCODE": "ON",
-    //     "ENABLE_ARC": "ON",
-    //     "ENABLE_VISIBILITY": "ON",
-    // },
-    // "cmake.generator": "Xcode",
-
-    // Android Config
-    // "cmake.configureSettings": {
-    //     "ANDROID_ABI": "arm64-v8a",
-    //     "ANDROID_PLATFORM": "android-28",
-    //     "ANDROID_NDK": "${env:ANDROID_NDK_HOME}",
-    //     "CMAKE_TOOLCHAIN_FILE": "${env:ANDROID_NDK_HOME}/build/cmake/android.toolchain.cmake",
-    //     "BUILD_SHARED_LIBS": "ON",
-    //     "gRPC_PROTOBUF_PROVIDER":"package",
-    //     // "gRPC_PROTOBUF_PACKAGE_TYPE": "CONFIG"
-    //     "protobuf_BUILD_TESTS": "OFF"
-    // },
-    // "cmake.generator": "Ninja",
-
-    "files.associations": {
-        "cstring": "c",
-        "locale": "c",
-        "curve_sigs.h": "c",
-        "cipher.h": "c",
-        "crypto.h": "c",
-        "test_env.h": "c",
-        "*.inc": "cpp",
-        "account_manager.h": "c",
-        "add_group_members_request_payload.pb-c.h": "c",
-        "protobuf-c.h": "c"
-    },
-    "cmake.configureEnvironment": {
-        "OPENSSL_ROOT_DIR": "/opt/homebrew/opt/openssl"
-    },
-    "cmake.setBuildTypeOnMultiConfig": true,
     "C_Cpp.errorSquiggles": "Disabled",
+    "files.associations": {
+        "curve_sigs.h": "c",
+        "ge.h": "c",
+        "crypto_uint32.h": "c",
+        "crypto_hash_sha512.h": "c",
+        "crypto_uint64.h": "c",
+        "__bit_reference": "c",
+        "sc.h": "c",
+        "crypto_sign.h": "c",
+        "zeroize.h": "c",
+        "crypto_verify_32.h": "c",
+        "crypto_additions.h": "c",
+        "crypto_int64.h": "c",
+        "curve25519-donna.h": "c",
+        "crypto.h": "c",
+        "mem_util.h": "c"
+    },
 }

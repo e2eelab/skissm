@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#include "skissm/skissm.h"
+#include "skissm.h"
 
 /**
  * The context strings that are used by the HKDF

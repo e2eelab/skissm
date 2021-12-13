@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#include "skissm/error.h"
+#include "error.h"
 
 #include "skissm/add_group_members_request_payload.pb-c.h"
 #include "skissm/chain_key.pb-c.h"

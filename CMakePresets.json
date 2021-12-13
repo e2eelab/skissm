@@ -1,0 +1,78 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "default",
+            "displayName": "Default",
+            "description": "Sets Ninja generator, build and install directory",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
+                "ABSL_NO_XRAY_ATTRIBUTES": "1"
+            }
+        },
+        {
+            "name": "ios",
+            "description": "Build iOS arm64 lib",
+            "displayName": "ios",
+            "generator": "Xcode",
+            "toolchainFile": "${sourceDir}/cmake/ios.toolchain.cmake",
+            "cacheVariables": {
+                "PLATFORM": "OS64",
+                "ENABLE_STRICT_TRY_COMPILE": "ON",
+                "DEPLOYMENT_TARGET": "13.0",
+                "ENABLE_BITCODE": "OFF",
+                "ENABLE_ARC": "ON",
+                "ENABLE_VISIBILITY": "ON",
+                "CARES_INSTALL": "OFF",
+                "CMAKE_MACOSX_RPATH": "1",
+                "ABSL_NO_XRAY_ATTRIBUTES": "1",
+                "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED": "NO",
+                "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED": "NO"
+            },
+            "inherits": "default"
+        },
+        {
+            "name": "ios_SIMULATOR64",
+            "description": "Build iOS x86 simulator lib",
+            "displayName": "ios_SIMULATOR64",
+            "cacheVariables": {
+                "PLATFORM": "SIMULATOR64"
+            },
+            "inherits": "ios"
+        },
+        {
+            "name": "ios_SIMULATORARM64",
+            "description": "Build iOS arm64 simulator lib",
+            "displayName": "ios_SIMULATORARM64",
+            "cacheVariables": {
+                "PLATFORM": "SIMULATORARM64"
+            },
+            "inherits": "ios"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default",
+            "configuration": "Release"
+        },
+        {
+            "name": "ios",
+            "configurePreset": "ios",
+            "configuration": "Release"
+        },
+        {
+            "name": "ios_SIMULATOR64",
+            "configurePreset": "ios_SIMULATOR64",
+            "configuration": "Release"
+        },
+        {
+            "name": "ios_SIMULATORARM64",
+            "configurePreset": "ios_SIMULATORARM64",
+            "configuration": "Release"
+        }
+    ]
+}

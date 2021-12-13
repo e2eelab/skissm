@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-#include "skissm/skissm.h"
+#include "skissm.h"
 
 /** Check if two buffers are equal in constant time. */
 bool is_equal(

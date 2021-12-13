@@ -23,7 +23,7 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "OneTimePreKeyPair";
 
-import "skissm/key_pair.proto";
+import "key_pair.proto";
 
 message one_time_pre_key_pair {
     uint32 opk_id = 1;

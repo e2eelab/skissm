@@ -23,7 +23,7 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "ReceiverChainNode";
 
-import "skissm/chain_key.proto";
+import "chain_key.proto";
 
 message receiver_chain_node {
   bytes ratchet_key_public = 1;

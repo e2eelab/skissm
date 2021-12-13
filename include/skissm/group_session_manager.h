@@ -26,8 +26,7 @@
 extern "C" {
 #endif
 
-#include "skissm/skissm.h"
-#include "skissm/e2ee_protocol_handler.h"
+#include "e2ee_protocol_handler.h"
 
 /**
  * @brief Create a group object

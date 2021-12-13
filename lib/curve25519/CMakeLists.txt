@@ -1,18 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(curve25519)
+include(GNUInstallDirs)
 
-include_directories(
-    ed25519/nacl_includes
-    ed25519/additions
-    ed25519/additions/generalized
-    ed25519/sha512
-    ed25519/tests
-    ed25519
-)
-
-set(curve25519_SRCS
-    curve25519-donna.c
-)
+set(curve25519_SRCS curve25519-donna.c curve25519-donna.h)
 
 set(ed25519_SRCS
     ed25519/fe_0.c
@@ -84,29 +74,65 @@ set(ed25519_SRCS
     ed25519/additions/xeddsa.c
     ed25519/additions/zeroize.c
     ed25519/nacl_sha512/blocks.c
-    ed25519/nacl_sha512/hash.c
-    ed25519/tests/internal_fast_tests.c
+    ed25519/nacl_sha512/hash.c)
+
+set(ed25519_headers
+    ed25519/fe.h
+    ed25519/ge_add.h
+    ed25519/ge_madd.h
+    ed25519/ge_msub.h
+    ed25519/ge_p2_dbl.h
+    ed25519/ge_sub.h
+    ed25519/ge.h
+    ed25519/pow22523.h
+    ed25519/pow225521.h
+    ed25519/sc.h
+    ed25519/sqrtm1.h
+    ed25519/additions/compare.h
+    ed25519/additions/crypto_additions.h
+    ed25519/additions/crypto_hash_sha512.h
+    ed25519/additions/curve_sigs.h
+    ed25519/additions/keygen.h
+    ed25519/additions/utility.h
+    ed25519/additions/xeddsa.h
+    ed25519/additions/zeroize.h
+    ed25519/additions/generalized/gen_crypto_additions.h
+    ed25519/additions/generalized/gen_constants.h
+    ed25519/additions/generalized/gen_eddsa.h
+    ed25519/additions/generalized/gen_labelset.h
+    ed25519/additions/generalized/gen_veddsa.h
+    ed25519/additions/generalized/gen_x.h
 )
+
+add_library(curve25519 OBJECT ${curve25519_SRCS} ${ed25519_SRCS} ${ed25519_headers})
 
 # Add -fPIC flag
 if(BUILD_SHARED_LIBS)
-    add_library(curve25519 OBJECT ${curve25519_SRCS} ${ed25519_SRCS})
-    set_target_properties(curve25519 PROPERTIES POSITION_INDEPENDENT_CODE ON)
+  set_target_properties(curve25519 PROPERTIES POSITION_INDEPENDENT_CODE ON)
 else()
-    add_library(curve25519 STATIC ${curve25519_SRCS} ${ed25519_SRCS})
-    set_target_properties(curve25519 PROPERTIES POSITION_INDEPENDENT_CODE OFF)
+  set_target_properties(curve25519 PROPERTIES POSITION_INDEPENDENT_CODE OFF)
 endif()
 
-target_compile_options(curve25519 PUBLIC 
-"$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-unused-variable>"
-"$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-unused-function>" 
-"$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-shadow>"
-"$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-shorten-64-to-32>" 
-"$<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-sign-compare>")
+target_include_directories(curve25519 
+PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    ${CMAKE_CURRENT_SOURCE_DIR}/ed25519
+    ${CMAKE_CURRENT_SOURCE_DIR}/ed25519/additions
+    ${CMAKE_CURRENT_SOURCE_DIR}/ed25519/nacl_includes
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
 
-IF(GCC_WARN_SIGN_CONVERSION)
-    target_compile_options(curve25519 PUBLIC "$<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-sign-conversion>")
-ENDIF(GCC_WARN_SIGN_CONVERSION)
+target_compile_options(
+  curve25519
+  PUBLIC "$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-unused-variable>"
+         "$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-unused-function>"
+         "$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-shadow>"
+         "$<$<COMPILE_LANG_AND_ID:C,AppleClang,Clang>:-Wno-shorten-64-to-32>"
+         "$<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-sign-compare>")
 
-include(GNUInstallDirs)
+if(GCC_WARN_SIGN_CONVERSION)
+  target_compile_options(
+    curve25519 PUBLIC "$<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-sign-conversion>")
+endif(GCC_WARN_SIGN_CONVERSION)
+
 install(TARGETS curve25519 LIBRARY)

@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 
-#include "skissm/skissm.h"
+#include "skissm.h"
 
 /**
  * @brief Encrypt a given plaintext. 

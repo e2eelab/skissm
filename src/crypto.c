@@ -21,7 +21,7 @@
 #include <string.h>
 
 #include "additions/curve_sigs.h"
-#include "curve25519/curve25519-donna.h"
+#include "curve25519-donna.h"
 
 #include "mbedtls/gcm.h"
 #include "mbedtls/hkdf.h"

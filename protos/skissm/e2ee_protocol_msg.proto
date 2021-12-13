@@ -23,7 +23,7 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeProtocolMsg";
 
-import "skissm/e2ee_commands.proto";
+import "e2ee_commands.proto";
 
 option cc_enable_arenas = true;
 

@@ -23,7 +23,7 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "GetGroupRequestPayload";
 
-import "skissm/e2ee_address.proto";
+import "e2ee_address.proto";
 
 message get_group_request_payload {
   skissm.e2ee_address group_address = 1;
