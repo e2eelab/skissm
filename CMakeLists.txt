@@ -18,7 +18,7 @@
 #
 # ##############################################################################
 
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.15.0)
 project(
   skissm
   VERSION 1.0.1
@@ -34,7 +34,7 @@ option(SKISSM_BUILD_PROTOBUF "Build protobuf" ON)
 option(SKISSM_TESTS "Build tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
-set(PROJECT_VERSION_SO ${CMAKE_PROJECT_VERSION})
+set(PROJECT_VERSION_SO ${PROJECT_VERSION_MAJOR})
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
@@ -97,7 +97,7 @@ set(skissm_src
     src/session_manager.c
     src/skissm.c)
 
-  set(src_headers
+set(src_headers
     include/skissm/account_manager.h
     include/skissm/account.h
     include/skissm/cipher.h
@@ -134,16 +134,13 @@ foreach(proto ${skissm_PROTOS})
   execute_process(
     COMMAND
       ${PROTOC_EXECUTABLE} -I${PROTO_SRC_DIR}/skissm
-      --c_out=${PROTO_DIS_DIR}/skissm
-      --grpc_out=${PROTO_DIS_DIR}/skissm
+      --c_out=${PROTO_DIS_DIR}/skissm --grpc_out=${PROTO_DIS_DIR}/skissm
       --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN} ${proto_name}.proto
     RESULT_VARIABLE rv
     OUTPUT_VARIABLE protoc_output
     WORKING_DIRECTORY ${PROTO_SRC_DIR})
-  list(APPEND proto_gen_src
-       ${PROTO_DIS_DIR}/skissm/${proto_name}.pb-c.c)
-  list(APPEND proto_gen_header
-       ${PROTO_DIS_DIR}/skissm/${proto_name}.pb-c.h)
+  list(APPEND proto_gen_src ${PROTO_DIS_DIR}/skissm/${proto_name}.pb-c.c)
+  list(APPEND proto_gen_header ${PROTO_DIS_DIR}/skissm/${proto_name}.pb-c.h)
 
   # Optional, but that can show the user if something have gone wrong with the
   # proto generation
@@ -160,7 +157,8 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
   set(CMAKE_XCODE_GENERATE_SCHEME ON)
 
-  add_library(skissm_framework STATIC ${skissm_src} ${src_headers} ${proto_gen_src} ${proto_gen_header})
+  add_library(skissm_framework SHARED ${skissm_src} ${src_headers}
+                                      ${proto_gen_src} ${proto_gen_header})
 
   add_dependencies(skissm_framework curve25519 mbedtls protobuf::libprotobuf
                    protobuf-c)
@@ -171,6 +169,8 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
                                                         Headers)
 
   target_compile_features(skissm_framework PRIVATE c_std_99 cxx_std_14)
+  set_xcode_property(skissm_framework GCC_C_LANGUAGE_STANDARD c99 All)
+  set_xcode_property(skissm_framework CLANG_CXX_LANGUAGE_STANDARD c++14 All)
   set_xcode_property(skissm_framework DEBUG_INFORMATION_FORMAT
                      "dwarf-with-dsym" All)
   set_xcode_property(skissm_framework CLANG_ENABLE_MODULES ON All)
@@ -186,7 +186,8 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
                SOVERSION "${PROJECT_VERSION_SO}"
                XCODE_GENERATE_SCHEME ON
                MACOSX_RPATH ON
-               MACOSX_FRAMEWORK_IDENTIFIER "org.e2ee.ski.SKISSM")
+               MACOSX_FRAMEWORK_IDENTIFIER "org.e2ee.ski.SKISSM"
+               POSITION_INDEPENDENT_CODE ON)
 
   target_include_directories(
     skissm_framework
@@ -195,12 +196,11 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
            $<BUILD_INTERFACE:${protobuf-c_DIR}>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     PRIVATE ${SQLITE3_SRC_DIR}
-          ${lib_DIR} 
-          ${lib_DIR}/curve25519
-          ${lib_DIR}/curve25519/ed25519
-          ${lib_DIR}/curve25519/ed25519/additions
-          ${lib_DIR}/curve25519/ed25519/nacl_includes
-  )
+            ${lib_DIR}
+            ${lib_DIR}/curve25519
+            ${lib_DIR}/curve25519/ed25519
+            ${lib_DIR}/curve25519/ed25519/additions
+            ${lib_DIR}/curve25519/ed25519/nacl_includes)
 
   target_link_libraries(skissm_framework mbedtls curve25519
                         protobuf::libprotobuf protobuf-c)
@@ -212,7 +212,8 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
     FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}/Frameworks)
 
 else()
-  add_library(skissm_static STATIC ${skissm_src} ${proto_gen_src})
+  add_library(skissm_static STATIC ${skissm_src} ${src_headers}
+                                   ${proto_gen_src} ${proto_gen_header})
 
   add_dependencies(skissm_static curve25519 mbedtls protobuf::libprotobuf
                    protobuf-c)
@@ -223,7 +224,12 @@ else()
            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
            $<BUILD_INTERFACE:${protobuf-c_DIR}>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${skissm_private_include})
+    PRIVATE ${SQLITE3_SRC_DIR}
+            ${lib_DIR}
+            ${lib_DIR}/curve25519
+            ${lib_DIR}/curve25519/ed25519
+            ${lib_DIR}/curve25519/ed25519/additions
+            ${lib_DIR}/curve25519/ed25519/nacl_includes)
 
   target_compile_features(skissm_static PRIVATE c_std_99 cxx_std_14)
 
@@ -266,7 +272,12 @@ else()
            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
            $<BUILD_INTERFACE:${protobuf-c_DIR}>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${skissm_private_include})
+    PRIVATE ${SQLITE3_SRC_DIR}
+            ${lib_DIR}
+            ${lib_DIR}/curve25519
+            ${lib_DIR}/curve25519/ed25519
+            ${lib_DIR}/curve25519/ed25519/additions
+            ${lib_DIR}/curve25519/ed25519/nacl_includes)
 
   target_compile_features(skissm_shared PRIVATE c_std_99 cxx_std_14)
 
@@ -304,4 +315,15 @@ else()
   if(SKISSM_TESTS)
     add_subdirectory(tests)
   endif()
+
+  # include(CMakePackageConfigHelpers)
+  # write_basic_package_version_file(SkissmConfigVersion.cmake COMPATIBILITY
+  # SameMajorVersion)
+
+  # install( EXPORT SkissmTargets FILE SkissmTargets.cmake NAMESPACE skissm::
+  # DESTINATION lib/cmake/skissm)
+
+  # install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SkissmConfig.cmake"
+  # "${CMAKE_CURRENT_BINARY_DIR}/SkissmConfigVersion.cmake" DESTINATION
+  # lib/cmake/MyLib)
 endif()

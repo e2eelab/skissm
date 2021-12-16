@@ -16,6 +16,13 @@
         "crypto_int64.h": "c",
         "curve25519-donna.h": "c",
         "crypto.h": "c",
-        "mem_util.h": "c"
+        "mem_util.h": "c",
+        "e2ee_protocol.h": "c",
+        "account_manager.h": "c",
+        "e2ee_protocol_handler.h": "c",
+        "group_session_manager.h": "c",
+        "session.h": "c",
+        "account.h": "c",
+        "skissm.h": "c"
     },
 }

@@ -56,23 +56,19 @@
     "buildPresets": [
         {
             "name": "default",
-            "configurePreset": "default",
-            "configuration": "Release"
+            "configurePreset": "default"
         },
         {
             "name": "ios",
-            "configurePreset": "ios",
-            "configuration": "Release"
+            "configurePreset": "ios"
         },
         {
             "name": "ios_SIMULATOR64",
-            "configurePreset": "ios_SIMULATOR64",
-            "configuration": "Release"
+            "configurePreset": "ios_SIMULATOR64"
         },
         {
             "name": "ios_SIMULATORARM64",
-            "configurePreset": "ios_SIMULATORARM64",
-            "configuration": "Release"
+            "configurePreset": "ios_SIMULATORARM64"
         }
     ]
 }
