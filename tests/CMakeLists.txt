@@ -53,7 +53,9 @@ target_include_directories(test_util
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
 set(TEST_SKISSM
+    test_aes
     test_gcm
+    test_sha
     test_account
     test_ratchet
     test_session
@@ -100,7 +102,9 @@ endforeach(test)
 
 file(COPY data DESTINATION .)
 
+add_test(AES test_aes)
 add_test(GCM test_gcm)
+add_test(SHA test_sha)
 add_test(Account test_account)
 add_test(Ratchet test_ratchet)
 add_test(Session test_session)

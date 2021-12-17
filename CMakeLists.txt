@@ -48,11 +48,6 @@ set(sqlite3_DIR "${lib_DIR}/sqlite3")
 set(protobuf_DIR "${lib_DIR}/protobuf")
 set(protobuf-c_DIR "${lib_DIR}/protobuf-c")
 
-# mbedtls flags
-set(ENABLE_TESTING OFF)
-set(ENABLE_PROGRAMS OFF)
-set(USE_SHARED_MBEDTLS_LIBRARY ON)
-
 # protobuf flags
 set(protobuf_BUILD_PROTOC_BINARIES OFF)
 set(protobuf_BUILD_LIBPROTOC OFF)
@@ -217,7 +212,7 @@ else()
   add_library(skissm_static STATIC ${skissm_src} ${src_headers}
                                    ${proto_gen_src} ${proto_gen_header})
 
-  add_dependencies(skissm_static curve25519 mbedtls protobuf::libprotobuf
+  add_dependencies(skissm_static curve25519 mbedcrypto protobuf::libprotobuf
                    protobuf-c)
 
   target_include_directories(
@@ -249,7 +244,7 @@ else()
                ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
   target_link_options(skissm_static PUBLIC "LINKER:-undefined,dynamic_lookup")
-  target_link_libraries(skissm_static PUBLIC mbedtls curve25519
+  target_link_libraries(skissm_static PUBLIC mbedcrypto curve25519
                                              protobuf::libprotobuf protobuf-c)
 
   install(
@@ -266,7 +261,7 @@ else()
   # Target: skissm_shared
   add_library(skissm_shared SHARED ${skissm_src} ${proto_gen_src})
 
-  add_dependencies(skissm_shared curve25519 mbedtls protobuf::libprotobuf
+  add_dependencies(skissm_shared curve25519 mbedcrypto protobuf::libprotobuf
                    protobuf-c)
 
   target_include_directories(
@@ -299,7 +294,7 @@ else()
                ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
   target_link_options(skissm_shared PUBLIC "LINKER:-undefined,dynamic_lookup")
-  target_link_libraries(skissm_shared PUBLIC mbedtls curve25519
+  target_link_libraries(skissm_shared PUBLIC mbedcrypto curve25519
                                              protobuf::libprotobuf protobuf-c)
 
   #

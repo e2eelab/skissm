@@ -23,11 +23,11 @@
 #include "additions/curve_sigs.h"
 #include "curve25519-donna.h"
 
-#include "mbedtls/gcm.h"
-#include "mbedtls/hkdf.h"
-#include "mbedtls/md.h"
-#include "mbedtls/platform.h"
-#include "mbedtls/sha256.h"
+#include "gcm.h"
+#include "hkdf.h"
+#include "md.h"
+#include "platform.h"
+#include "sha256.h"
 
 #include "skissm/account.h"
 #include "skissm/mem_util.h"
@@ -188,9 +188,9 @@ void crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
   mbedtls_sha256_context ctx;
 
   mbedtls_sha256_init(&ctx);
-  ret = mbedtls_sha256_starts(&ctx, 0);
-  ret = mbedtls_sha256_update(&ctx, msg, msg_len);
-  ret = mbedtls_sha256_finish(&ctx, hash_out);
+  ret = mbedtls_sha256_starts_ret(&ctx, 0);
+  ret = mbedtls_sha256_update_ret(&ctx, msg, msg_len);
+  ret = mbedtls_sha256_finish_ret(&ctx, hash_out);
 
   mbedtls_sha256_free(&ctx);
 }
