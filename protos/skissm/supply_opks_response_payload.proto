@@ -23,8 +23,8 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "SupplyOpksResponsePayload";
 
-import "e2ee_address.proto";
-import "one_time_pre_key_public.proto";
+import "skissm/e2ee_address.proto";
+import "skissm/one_time_pre_key_public.proto";
 
 message supply_opks_response_payload {
   skissm.e2ee_address user_address = 1;

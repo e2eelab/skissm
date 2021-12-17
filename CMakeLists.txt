@@ -133,9 +133,10 @@ foreach(proto ${skissm_PROTOS})
   message(STATUS "  convert => ${proto}")
   execute_process(
     COMMAND
-      ${PROTOC_EXECUTABLE} -I${PROTO_SRC_DIR}/skissm
-      --c_out=${PROTO_DIS_DIR}/skissm --grpc_out=${PROTO_DIS_DIR}/skissm
-      --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN} ${proto_name}.proto
+      ${PROTOC_EXECUTABLE} -I=skissm --proto_path=${PROTO_SRC_DIR}
+      --c_out=${PROTO_DIS_DIR}/skissm
+      --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN}
+      ${proto_name}.proto
     RESULT_VARIABLE rv
     OUTPUT_VARIABLE protoc_output
     WORKING_DIRECTORY ${PROTO_SRC_DIR})
@@ -212,6 +213,7 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
     FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}/Frameworks)
 
 else()
+  # Target: skissm_shared
   add_library(skissm_static STATIC ${skissm_src} ${src_headers}
                                    ${proto_gen_src} ${proto_gen_header})
 
@@ -235,7 +237,8 @@ else()
 
   set_target_properties(
     skissm_static
-    PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON
+    PROPERTIES OUTPUT_NAME "skissm"
+               WINDOWS_EXPORT_ALL_SYMBOLS ON
                SOVERSION "${PROJECT_VERSION_SO}"
                VERSION "${CMAKE_PROJECT_VERSION}"
                ARCHIVE_OUTPUT_DIRECTORY
@@ -260,7 +263,7 @@ else()
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-  # skissm_shared
+  # Target: skissm_shared
   add_library(skissm_shared SHARED ${skissm_src} ${proto_gen_src})
 
   add_dependencies(skissm_shared curve25519 mbedtls protobuf::libprotobuf
@@ -283,7 +286,8 @@ else()
 
   set_target_properties(
     skissm_shared
-    PROPERTIES POSITION_INDEPENDENT_CODE ON
+    PROPERTIES OUTPUT_NAME "skissm"
+               POSITION_INDEPENDENT_CODE ON
                WINDOWS_EXPORT_ALL_SYMBOLS ON
                SOVERSION "${PROJECT_VERSION_SO}"
                VERSION "${CMAKE_PROJECT_VERSION}"

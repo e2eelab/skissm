@@ -23,7 +23,7 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "GetPreKeyBundleResponsePayload";
 
-import "e2ee_pre_key_bundle.proto";
+import "skissm/e2ee_pre_key_bundle.proto";
 
 message get_pre_key_bundle_response_payload {
   bytes user_name = 1;

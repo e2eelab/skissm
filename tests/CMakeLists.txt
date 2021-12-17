@@ -20,10 +20,7 @@
 ################################################################################
 enable_testing()
 
-set(websocketpp_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/websocketpp")
-set(asio_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/asio")
-
-add_subdirectory(lib)
+add_subdirectory(${sqlite3_DIR} "${CMAKE_CURRENT_BINARY_DIR}/lib/sqlite3")
 
 add_library(db STATIC
     test_db.c)
@@ -97,9 +94,7 @@ foreach(test IN ITEMS ${TEST_WS})
           ${sqlite3_DIR}
           $<BUILD_INTERFACE:${protobuf-c_DIR}>
           $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
-          ${mbedtls_DIR}
-          ${websocketpp_DIR}
-          ${asio_DIR})
+          ${mbedtls_DIR})
   target_link_libraries(${test} db test_util test_env sqlite3 skissm_static)
 endforeach(test)
 

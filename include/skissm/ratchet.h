@@ -26,8 +26,8 @@
 extern "C" {
 #endif
 
-#include "skissm.h"
-#include "cipher.h"
+#include "skissm/skissm.h"
+#include "skissm/cipher.h"
 
 /** length of a shared key */
 #define SHARED_KEY_LENGTH CIPHER.suite1->get_crypto_param().hash_len

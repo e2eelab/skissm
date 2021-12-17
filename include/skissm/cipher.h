@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#include "skissm.h"
+#include "skissm/skissm.h"
 
 /**
  * The context strings that are used by the HKDF
@@ -37,12 +37,14 @@ extern "C" {
 
 struct cipher;
 
+typedef crypto_param (*get_crypto_param_type)(void);
+
 typedef struct cipher_suite {
   /**
    * @brief Get the parameters of this cipher suite.
    * @return crypto_param
    */
-  crypto_param (*get_crypto_param)();
+  get_crypto_param_type get_crypto_param;
 
   /**
    * @brief Generate a random private key.

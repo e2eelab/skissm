@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#include "e2ee_protocol_handler.h"
+#include "skissm/e2ee_protocol_handler.h"
 
 typedef struct handler_entry {
     uint32_t key;

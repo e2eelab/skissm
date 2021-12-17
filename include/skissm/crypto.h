@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-#include "skissm.h"
+#include "skissm/skissm.h"
 
 /** length of a sha256 hash */
 #define SHA256_OUTPUT_LENGTH 32

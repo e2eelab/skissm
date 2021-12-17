@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 
-#include "skissm.h"
+#include "skissm/skissm.h"
 
 /**
  * @brief Handler for message encryption

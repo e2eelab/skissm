@@ -6,22 +6,22 @@ option java_package = "org.e2eelab.skissm.proto";
 option cc_enable_arenas = true;
 option cc_generic_services = false;
 
-import "e2ee_protocol_msg.proto";
-import "register_user_request_payload.proto";
-import "delete_user_request_payload.proto";
-import "get_pre_key_bundle_request_payload.proto";
-import "publish_spk_request_payload.proto";
-import "e2ee_message.proto";
-import "create_group_request_payload.proto";
-import "add_group_members_request_payload.proto";
-import "remove_group_members_request_payload.proto";
-import "get_group_request_payload.proto";
+import "skissm/e2ee_protocol_msg.proto";
+import "skissm/register_user_request_payload.proto";
+import "skissm/delete_user_request_payload.proto";
+import "skissm/get_pre_key_bundle_request_payload.proto";
+import "skissm/publish_spk_request_payload.proto";
+import "skissm/e2ee_message.proto";
+import "skissm/create_group_request_payload.proto";
+import "skissm/add_group_members_request_payload.proto";
+import "skissm/remove_group_members_request_payload.proto";
+import "skissm/get_group_request_payload.proto";
 
-import "response_data.proto";
-import "event_data_request.proto";
-import "login_request.proto";
-import "logout_request.proto";
-import "connect_request.proto";
+import "skissm/response_data.proto";
+import "skissm/event_data_request.proto";
+import "skissm/login_request.proto";
+import "skissm/logout_request.proto";
+import "skissm/connect_request.proto";
 
 service E2EEService {
     // bidirectional streaming operations

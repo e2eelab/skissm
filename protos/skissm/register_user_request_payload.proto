@@ -23,8 +23,8 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "RegisterUserRequestPayload";
 
-import "signed_pre_key_public.proto";
-import "one_time_pre_key_public.proto";
+import "skissm/signed_pre_key_public.proto";
+import "skissm/one_time_pre_key_public.proto";
 
 message register_user_request_payload {
   string user_name = 1;
