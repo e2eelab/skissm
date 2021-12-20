@@ -43,7 +43,7 @@ endif()
 # library path
 set(lib_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(curve25519_DIR "${lib_DIR}/curve25519")
-set(mbedtls_DIR "${lib_DIR}/mbedtls")
+set(mbedcrypto_DIR "${lib_DIR}/mbedcrypto")
 set(sqlite3_DIR "${lib_DIR}/sqlite3")
 set(protobuf_DIR "${lib_DIR}/protobuf")
 set(protobuf-c_DIR "${lib_DIR}/protobuf-c")
@@ -67,7 +67,7 @@ add_compile_options(-Wno-shorten-64-to-32)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 add_subdirectory(${curve25519_DIR})
-add_subdirectory(${mbedtls_DIR})
+add_subdirectory(${mbedcrypto_DIR})
 if(SKISSM_BUILD_PROTOBUF)
   add_subdirectory(${protobuf_DIR}/cmake)
 endif()
@@ -147,7 +147,7 @@ endforeach(proto)
 
 set(skissm_private_include
     ${libprotobuf_includes} ${protobuf-c_DIR} ${gRPC_INCLUDE_DIRS} ${lib_DIR}
-    ${curve25519_DIR}/ed25519 ${mbedtls_DIR}/include)
+    ${curve25519_DIR}/ed25519 ${mbedcrypto_DIR}/include)
 
 if(CMAKE_SYSTEM_NAME MATCHES iOS)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
@@ -156,7 +156,7 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
   add_library(skissm_framework SHARED ${skissm_src} ${src_headers}
                                       ${proto_gen_src} ${proto_gen_header})
 
-  add_dependencies(skissm_framework curve25519 mbedtls protobuf::libprotobuf
+  add_dependencies(skissm_framework curve25519 mbedcrypto protobuf::libprotobuf
                    protobuf-c)
 
   set_source_files_properties(${proto_gen_header}
@@ -198,7 +198,7 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
             ${lib_DIR}/curve25519/ed25519/additions
             ${lib_DIR}/curve25519/ed25519/nacl_includes)
 
-  target_link_libraries(skissm_framework mbedtls curve25519
+  target_link_libraries(skissm_framework mbedcrypto curve25519
                         protobuf::libprotobuf protobuf-c)
 
   install(
