@@ -111,11 +111,11 @@ Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__E2e
 }
 
 void consume_register_response_payload(Skissm__E2eeAccount *account, Skissm__RegisterUserResponsePayload *payload) {
-        copy_address_from_address(&(account->address), payload->address);
-        // save to db
-        account->saved = true;
-        get_ssm_plugin()->store_account(account);
-        ssm_notify_user_registered(account);
+    copy_address_from_address(&(account->address), payload->address);
+    // save to db
+    account->saved = true;
+    get_ssm_plugin()->store_account(account);
+    ssm_notify_user_registered(account);
 }
 
 Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__E2eeAccount *account) {
