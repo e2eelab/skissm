@@ -23,14 +23,6 @@
 #include "skissm/mem_util.h"
 
 /* registration related */
-static void handle_register_user_response(register_user_response_handler *response_handler, Skissm__E2eeAddress *address) {
-    copy_address_from_address(&(response_handler->account->address), address);
-    // save to db
-    response_handler->account->saved = true;
-    get_ssm_plugin()->store_account(response_handler->account);
-    ssm_notify_user_registered(response_handler->account);
-}
-
 static void handle_register_release(register_user_response_handler *response_handler) {
     // skissm__e2ee_account__free_unpacked(response_handler->account, NULL);
     // response_handler->account = NULL;
@@ -38,24 +30,15 @@ static void handle_register_release(register_user_response_handler *response_han
 
 register_user_response_handler register_user_response_handler_store = {
     NULL,
-    handle_register_user_response,
     handle_register_release
 };
 
 /* spk related */
-static void handle_publish_spk_response(publish_spk_response_handler *response_handler) {
-    // save to db
-    if (response_handler->account->saved == true) {
-        Skissm__SignedPreKeyPair *signed_pre_key_pair = response_handler->account->signed_pre_key_pair;
-        get_ssm_plugin()->update_signed_pre_key(&(response_handler->account->account_id), signed_pre_key_pair);
-    }
-}
-
 static void handle_publish_spk_release(publish_spk_response_handler *response_handler) { 
     response_handler->account = NULL;
 }
 
-publish_spk_response_handler publish_spk_response_handler_store = {NULL, handle_publish_spk_response, handle_publish_spk_release};
+publish_spk_response_handler publish_spk_response_handler_store = {NULL, handle_publish_spk_release};
 
 /* opk related */
 void supply_opks(struct supply_opks_handler *response_handler) {

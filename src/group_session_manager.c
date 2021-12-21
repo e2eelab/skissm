@@ -25,14 +25,6 @@
 #include "skissm/mem_util.h"
 #include "skissm/session.h"
 
-static void handle_create_group_response(
-    create_group_response_handler *response_handler,
-    Skissm__E2eeAddress *group_address
-) {
-    create_outbound_group_session(response_handler->sender_address, group_address, response_handler->member_addresses, response_handler->member_num, NULL);
-    ssm_notify_group_created(group_address, response_handler->group_name);
-}
-
 static void handle_create_group_release(
     create_group_response_handler *this_handler
 ) {
@@ -47,21 +39,8 @@ create_group_response_handler create_group_response_handler_store = {
     NULL,
     NULL,
     0,
-    handle_create_group_response,
     handle_create_group_release
 };
-
-static void handle_get_group_response(
-    get_group_response_handler *this_handler,
-    ProtobufCBinaryData *group_name,
-    size_t member_num,
-    Skissm__E2eeAddress **member_addresses
-) {
-    this_handler->group_name = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData));
-    copy_protobuf_from_protobuf(this_handler->group_name, group_name);
-    this_handler->member_num = member_num;
-    copy_member_addresses_from_member_addresses(&(this_handler->member_addresses), (const Skissm__E2eeAddress **)member_addresses, member_num);
-}
 
 static void handle_get_group_release(
     get_group_response_handler *this_handler
@@ -80,7 +59,6 @@ get_group_response_handler get_group_response_handler_store = {
     NULL,
     0,
     NULL,
-    handle_get_group_response,
     handle_get_group_release
 };
 

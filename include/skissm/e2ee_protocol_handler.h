@@ -30,16 +30,11 @@ extern "C" {
 
 typedef struct register_user_response_handler{
     Skissm__E2eeAccount *account;
-    void (*handle_response)(
-        struct register_user_response_handler *this_handler,
-        Skissm__E2eeAddress *address);
     void (*handle_release)(struct register_user_response_handler *this_handler);
 } register_user_response_handler;
 
 typedef struct publish_spk_response_handler{
     Skissm__E2eeAccount *account;
-    void (*handle_response)(
-        struct publish_spk_response_handler *this_handler);
     void (*handle_release)(struct publish_spk_response_handler *this_handler);
 } publish_spk_response_handler;
 
@@ -59,9 +54,6 @@ typedef struct create_group_response_handler{
     ProtobufCBinaryData *group_name;
     Skissm__E2eeAddress **member_addresses;
     size_t member_num;
-    void (*handle_response)(
-        struct create_group_response_handler *this_handler,
-        Skissm__E2eeAddress *group_address);
     void (*handle_release)(struct create_group_response_handler *this_handler);
 } create_group_response_handler;
 
@@ -70,11 +62,6 @@ typedef struct get_group_response_handler{
     ProtobufCBinaryData *group_name;
     size_t member_num;
     Skissm__E2eeAddress **member_addresses;
-    void (*handle_response)(
-        struct get_group_response_handler *this_handler,
-        ProtobufCBinaryData *group_name,
-        size_t member_num,
-        Skissm__E2eeAddress **member_addresses);
     void (*handle_release)(struct get_group_response_handler *this_handler);
 } get_group_response_handler;
 
