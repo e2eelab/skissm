@@ -20,6 +20,7 @@
             "generator": "Xcode",
             "toolchainFile": "${sourceDir}/cmake/ios.toolchain.cmake",
             "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
                 "PLATFORM": "OS64",
                 "ENABLE_STRICT_TRY_COMPILE": "ON",
                 "DEPLOYMENT_TARGET": "13.0",

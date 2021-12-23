@@ -1,4 +1,6 @@
 # #!/bin/bash
+
+BUILD_TYPE="Debug"
 rm -rf build
 
 cmake -S . --preset ios
@@ -54,11 +56,11 @@ LIB_IOS_SIMULATOR_INDEX=1
 plist_add_library $LIB_IOS_INDEX $IOS_LIB_IDENTIFIER "ios"
 plist_add_library $LIB_IOS_SIMULATOR_INDEX $IOS_SIM_LIB_IDENTIFIER "ios" "simulator"
 
-cp -r build/ios/Release-iphoneos/skissm.framework "${XCFRAMEWORK_DIR}/${IOS_LIB_IDENTIFIER}"
-cp -r build/ios_SIMULATOR64/Release-iphonesimulator/skissm.framework "${XCFRAMEWORK_DIR}/${IOS_SIM_LIB_IDENTIFIER}"
+cp -r build/ios/${BUILD_TYPE}-iphoneos/skissm.framework "${XCFRAMEWORK_DIR}/${IOS_LIB_IDENTIFIER}"
+cp -r build/ios_SIMULATOR64/${BUILD_TYPE}-iphonesimulator/skissm.framework "${XCFRAMEWORK_DIR}/${IOS_SIM_LIB_IDENTIFIER}"
 
-LIPO_IOS_FLAGS="build/ios/Release-iphoneos/skissm.framework/skissm"
-LIPO_IOS_SIM_FLAGS="build/ios_SIMULATOR64/Release-iphonesimulator/skissm.framework/skissm build/ios_SIMULATORARM64/Release-iphonesimulator/skissm.framework/skissm"
+LIPO_IOS_FLAGS="build/ios/${BUILD_TYPE}-iphoneos/skissm.framework/skissm"
+LIPO_IOS_SIM_FLAGS="build/ios_SIMULATOR64/${BUILD_TYPE}-iphonesimulator/skissm.framework/skissm build/ios_SIMULATORARM64/${BUILD_TYPE}-iphonesimulator/skissm.framework/skissm"
 
 plist_add_architecture $LIB_IOS_INDEX "arm64"
 plist_add_architecture $LIB_IOS_SIMULATOR_INDEX "arm64"

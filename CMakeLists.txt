@@ -44,7 +44,6 @@ endif()
 set(lib_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(curve25519_DIR "${lib_DIR}/curve25519")
 set(mbedcrypto_DIR "${lib_DIR}/mbedcrypto")
-set(sqlite3_DIR "${lib_DIR}/sqlite3")
 set(protobuf_DIR "${lib_DIR}/protobuf")
 set(protobuf-c_DIR "${lib_DIR}/protobuf-c")
 
@@ -109,7 +108,7 @@ set(src_headers
 
 set(PROTO_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protos)
 set(PROTO_DIS_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto-src)
-file(MAKE_DIRECTORY ${PROTO_DIS_DIR}/skissm/)
+file(MAKE_DIRECTORY ${PROTO_DIS_DIR}/skissm)
 
 file(GLOB skissm_PROTOS ${PROTO_SRC_DIR}/skissm/*.proto)
 
@@ -153,7 +152,7 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
   set(CMAKE_XCODE_GENERATE_SCHEME ON)
 
-  add_library(skissm_framework SHARED ${skissm_src} ${src_headers}
+  add_library(skissm_framework STATIC ${skissm_src} ${src_headers}
                                       ${proto_gen_src} ${proto_gen_header})
 
   add_dependencies(skissm_framework curve25519 mbedcrypto protobuf::libprotobuf
@@ -191,8 +190,7 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
            $<BUILD_INTERFACE:${protobuf-c_DIR}>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${SQLITE3_SRC_DIR}
-            ${lib_DIR}
+    PRIVATE ${lib_DIR}
             ${lib_DIR}/curve25519
             ${lib_DIR}/curve25519/ed25519
             ${lib_DIR}/curve25519/ed25519/additions
@@ -221,8 +219,7 @@ else()
            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
            $<BUILD_INTERFACE:${protobuf-c_DIR}>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${SQLITE3_SRC_DIR}
-            ${lib_DIR}
+    PRIVATE ${lib_DIR}
             ${lib_DIR}/curve25519
             ${lib_DIR}/curve25519/ed25519
             ${lib_DIR}/curve25519/ed25519/additions
@@ -270,8 +267,7 @@ else()
            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
            $<BUILD_INTERFACE:${protobuf-c_DIR}>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${SQLITE3_SRC_DIR}
-            ${lib_DIR}
+    PRIVATE ${lib_DIR}
             ${lib_DIR}/curve25519
             ${lib_DIR}/curve25519/ed25519
             ${lib_DIR}/curve25519/ed25519/additions

@@ -20,7 +20,11 @@
 ################################################################################
 enable_testing()
 
-add_subdirectory(${sqlite3_DIR} "${CMAKE_CURRENT_BINARY_DIR}/lib/sqlite3")
+set(sqlite3_DIR "${lib_DIR}/sqlite3")
+
+if(NOT sqlite3)
+  add_subdirectory(${sqlite3_DIR} "${CMAKE_CURRENT_BINARY_DIR}/lib/sqlite3")
+endif()
 
 add_library(db STATIC
     test_db.c)
@@ -85,18 +89,6 @@ foreach(test IN ITEMS ${TEST_SKISSM})
         $<BUILD_INTERFACE:${protobuf-c_DIR}>
         $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
         ${mbedtls_DIR})
-  target_link_libraries(${test} db test_util test_env sqlite3 skissm_static)
-endforeach(test)
-
-foreach(test IN ITEMS ${TEST_WS})
-  add_executable(${test} ${test}.cpp)
-  target_include_directories(${test}
-      PRIVATE
-          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-          ${sqlite3_DIR}
-          $<BUILD_INTERFACE:${protobuf-c_DIR}>
-          $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
-          ${mbedtls_DIR})
   target_link_libraries(${test} db test_util test_env sqlite3 skissm_static)
 endforeach(test)
 
