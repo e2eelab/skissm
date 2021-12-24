@@ -39,7 +39,8 @@ target_include_directories(db
 add_library(test_env STATIC
     e2ee_protocol_simulator.c
     test_env.c
-    test_db.c)
+    test_db.c
+    test_util.c)
 
 target_include_directories(test_env
     PRIVATE
