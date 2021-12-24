@@ -38,7 +38,8 @@ target_include_directories(db
 
 add_library(test_env STATIC
     e2ee_protocol_simulator.c
-    test_env.c)
+    test_env.c
+    test_db.c)
 
 target_include_directories(test_env
     PRIVATE
@@ -89,7 +90,11 @@ foreach(test IN ITEMS ${TEST_SKISSM})
         $<BUILD_INTERFACE:${protobuf-c_DIR}>
         $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
         ${mbedtls_DIR})
-  target_link_libraries(${test} db test_util test_env sqlite3 skissm_static)
+  if(CMAKE_SYSTEM_NAME MATCHES iOS)
+    target_link_libraries(${test} db test_util test_env sqlite3 skissm_static)
+  else()
+    target_link_libraries(${test} db test_util test_env sqlite3 skissm_static ${CMAKE_DL_LIBS})
+  endif()
 endforeach(test)
 
 file(COPY data DESTINATION .)

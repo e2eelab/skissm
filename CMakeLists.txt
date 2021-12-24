@@ -62,7 +62,12 @@ if(NOT GRPC_CPP_PLUGIN)
   find_program(GRPC_CPP_PLUGIN grpc_cpp_plugin)
 endif()
 
-add_compile_options(-Wno-shorten-64-to-32)
+if(CMAKE_SYSTEM_NAME MATCHES iOS)
+  add_compile_options(-Wno-shorten-64-to-32)
+else()
+  add_compile_options(-fPIC)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 add_subdirectory(${curve25519_DIR})
