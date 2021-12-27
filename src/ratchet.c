@@ -99,7 +99,7 @@ static void create_chain_key(
 ) {
     uint8_t secret[SHARED_KEY_LENGTH];
     memset(secret, 0, SHARED_KEY_LENGTH);
-    CIPHER.suite1->dh(our_key, their_key, secret);
+    CIPHER.suite1->ss_key_gen(&(our_key->private_key), their_key, secret);
     uint8_t derived_secrets[2 * SHARED_KEY_LENGTH];
     CIPHER.suite1->hkdf(
         secret, sizeof(secret),
@@ -374,7 +374,7 @@ void encrypt_ratchet(
         skissm__sender_chain_node__init(ratchet->sender_chain);
         ratchet->sender_chain->ratchet_key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(ratchet->sender_chain->ratchet_key_pair);
-        CIPHER.suite1->gen_key_pair(ratchet->sender_chain->ratchet_key_pair);
+        CIPHER.suite1->mt_key_gen(ratchet->sender_chain->ratchet_key_pair);
         ratchet->sender_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
         skissm__chain_key__init(ratchet->sender_chain->chain_key);
         create_chain_key(

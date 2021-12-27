@@ -59,6 +59,8 @@ const struct cipher_suite E2EE_ECDH_X25519_AES256_GCM_SHA256 = {
     crypto_curve25519_generate_private_key,
     crypto_curve25519_generate_public_key,
     crypto_curve25519_generate_key_pair,
+    crypto_curve25519_generate_key_pair,
+    crypto_curve25519_generate_key_pair,
     crypto_curve25519_dh,
     aes256_gcm_encrypt,
     aes256_gcm_decrypt,
