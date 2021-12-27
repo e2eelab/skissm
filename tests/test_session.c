@@ -117,10 +117,8 @@ static void test_encryption(
 
 static void test_basic_session(){
     // test start
-    setup();
+    setup(&test_event_handler);
     test_begin();
-
-    set_skissm_event_handler(&test_event_handler);
 
     register_account();
     register_account();
@@ -137,10 +135,8 @@ static void test_basic_session(){
 
 static void test_interaction(){
     // test start
-    setup();
+    setup(&test_event_handler);
     test_begin();
-
-    set_skissm_event_handler(&test_event_handler);
 
     register_account();
     register_account();
@@ -162,10 +158,8 @@ static void test_interaction(){
 
 static void test_continual_messages(){
     // test start
-    setup();
+    setup(&test_event_handler);
     test_begin();
-
-    set_skissm_event_handler(&test_event_handler);
 
     register_account();
     register_account();

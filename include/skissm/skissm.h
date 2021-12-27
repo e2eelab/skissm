@@ -96,10 +96,6 @@ typedef struct crypto_param {
     int aead_ad_len;
 } crypto_param;
 
-void ssm_begin();
-
-void ssm_end();
-
 // skissm_plugin
 typedef struct skissm_plugin {
     // common handlers
@@ -311,7 +307,9 @@ typedef struct skissm_event_handler {
                                      Skissm__E2eeAddress **);
 } skissm_event_handler;
 
-void set_ssm_plugin(skissm_plugin *plugin);
+void skissm_begin(skissm_plugin *plugin, skissm_event_handler *event_handler);
+
+void skissm_end();
 
 skissm_plugin *get_ssm_plugin();
 

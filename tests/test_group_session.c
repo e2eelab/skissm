@@ -85,7 +85,7 @@ static void on_one2one_msg_received(Skissm__E2eeAddress *from_address, Skissm__E
 
 static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
-    
+
     if (plaintext_store.plaintext != NULL) {
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
     }
@@ -128,10 +128,8 @@ static void test_encryption(Skissm__E2eeAddress *sender_address, uint8_t *plaint
 
 static void test_create_group() {
     // test start
-    setup();
+    setup(&test_event_handler);
     test_begin();
-
-    set_skissm_event_handler(&test_event_handler);
 
     // Prepare account
     register_account();
@@ -166,10 +164,8 @@ static void test_create_group() {
 
 static void test_add_group_members() {
     // test start
-    setup();
+    setup(&test_event_handler);
     test_begin();
-
-    set_skissm_event_handler(&test_event_handler);
 
     // Prepare account
     register_account();
@@ -214,10 +210,8 @@ static void test_add_group_members() {
 
 static void test_remove_group_members() {
     // test start
-    setup();
+    setup(&test_event_handler);
     test_begin();
-
-    set_skissm_event_handler(&test_event_handler);
 
     // Prepare account
     register_account();
@@ -264,10 +258,8 @@ static void test_remove_group_members() {
 
 static void test_create_add_remove() {
     // test start
-    setup();
+    setup(&test_event_handler);
     test_begin();
-
-    set_skissm_event_handler(&test_event_handler);
 
     // Prepare account
     register_account();

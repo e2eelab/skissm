@@ -24,26 +24,23 @@
 static struct skissm_plugin *ssm_plugin;
 static skissm_event_handler *ssm_event_handler = NULL;
 
-void ssm_begin() {
+void skissm_begin(skissm_plugin *plugin, skissm_event_handler *event_handler) {
+    ssm_plugin = plugin;
+    ssm_event_handler = event_handler;
+
     account_begin();
     protocol_begin();
 }
 
-void ssm_end() {
+void skissm_end() {
+    ssm_plugin = NULL;
+
     account_end();
     protocol_end();
 }
 
-void set_ssm_plugin(skissm_plugin *plugin) {
-    ssm_plugin = plugin;
-}
-
 skissm_plugin *get_ssm_plugin() {
     return ssm_plugin;
-}
-
-void set_skissm_event_handler(skissm_event_handler *event_handler) {
-    ssm_event_handler = event_handler;
 }
 
 void ssm_notify_error(ErrorCode error_code, char *error_msg) {

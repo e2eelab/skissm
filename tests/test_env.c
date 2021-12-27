@@ -208,15 +208,14 @@ struct skissm_plugin ssm_plugin = {
 
 // test case interface
 
-void setup() {
-    set_ssm_plugin(&ssm_plugin);
+void setup(skissm_event_handler *event_handler) {
     test_db_begin();
-    ssm_begin();
+    skissm_begin(&ssm_plugin, event_handler);
     protocol_simulator_begin();
 }
 
 void tear_down() {
     test_db_end();
-    ssm_end();
+    skissm_end();
     protocol_simulator_end();
 }
