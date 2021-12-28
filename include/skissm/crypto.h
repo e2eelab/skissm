@@ -66,8 +66,8 @@ void crypto_curve25519_generate_key_pair(
     Skissm__KeyPair *key_pair
 );
 
-void crypto_curve25519_dh(
-    const Skissm__KeyPair *our_key,
+uint8_t *crypto_curve25519_dh(
+    const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *their_key,
     uint8_t *shared_secret
 );

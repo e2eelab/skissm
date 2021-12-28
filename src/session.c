@@ -133,14 +133,14 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
     uint8_t secret[x3dh_epoch * CURVE25519_SHARED_SECRET_LENGTH];
     uint8_t *pos = secret;
 
-    CIPHER.suite1->ss_key_gen(&(my_identity_key_pair->private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
+    CIPHER.suite1->ss_key_gen(&(my_identity_key_pair.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
     pos += CURVE25519_SHARED_SECRET_LENGTH;
-    CIPHER.suite1->ss_key_gen(&(my_ephemeral_key->private_key), &(their_pre_key_bundle->identity_key_public), pos);
+    CIPHER.suite1->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->identity_key_public), pos);
     pos += CURVE25519_SHARED_SECRET_LENGTH;
-    CIPHER.suite1->ss_key_gen(&(my_ephemeral_key->private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
+    CIPHER.suite1->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
     if (x3dh_epoch == 4) {
         pos += CURVE25519_SHARED_SECRET_LENGTH;
-        CIPHER.suite1->ss_key_gen(&(my_ephemeral_key->private_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
+        CIPHER.suite1->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
     }
 
     // Create the root key and chain keys

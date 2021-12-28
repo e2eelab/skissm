@@ -89,10 +89,11 @@ void crypto_curve25519_generate_key_pair(
                    CURVE25519_BASEPOINT);
 }
 
-void crypto_curve25519_dh(const ProtobufCBinaryData *our_key,
+uint8_t *crypto_curve25519_dh(const ProtobufCBinaryData *our_key,
                           const ProtobufCBinaryData *their_key,
                           uint8_t *shared_secret) {
   curve25519_donna(shared_secret, our_key->data, their_key->data);
+  return NULL;
 }
 
 void crypto_curve25519_sign(uint8_t *private_key, uint8_t *msg, size_t msg_len,

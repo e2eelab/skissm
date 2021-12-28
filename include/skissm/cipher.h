@@ -75,7 +75,7 @@ typedef struct cipher_suite {
    *
    * @param key_pair
    */
-  void (*md_key_gen)(Skissm__KeyPair *key_pair);
+  void (*mt_key_gen)(Skissm__KeyPair *key_pair);
 
   /**
    * @brief Generate a random short-term key pair.

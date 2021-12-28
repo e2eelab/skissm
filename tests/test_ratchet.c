@@ -338,12 +338,12 @@ int main() {
     setup();
 
     Skissm__KeyPair alice_ratchet_key, bob_ratchet_key;
-    CIPHER.suite1->gen_key_pair(&alice_ratchet_key);
-    CIPHER.suite1->gen_key_pair(&bob_ratchet_key);
+    CIPHER.suite1->mt_key_gen(&alice_ratchet_key);
+    CIPHER.suite1->mt_key_gen(&bob_ratchet_key);
 
     Skissm__KeyPair bob_spk, alice_spk;
-    CIPHER.suite1->gen_key_pair(&bob_spk);
-    CIPHER.suite1->gen_key_pair(&alice_spk);
+    CIPHER.suite1->mt_key_gen(&bob_spk);
+    CIPHER.suite1->mt_key_gen(&alice_spk);
 
     int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
     uint8_t associated_data[ad_len];
