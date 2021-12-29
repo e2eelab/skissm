@@ -54,16 +54,8 @@ extern "C" {
 
 crypto_param get_ecdh_x25519_aes256_gcm_sha256_param();
 
-void crypto_curve25519_generate_private_key(
-    ProtobufCBinaryData *priv_key, size_t priv_key_len
-);
-
-void crypto_curve25519_generate_public_key(
-    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
-);
-
 void crypto_curve25519_generate_key_pair(
-    Skissm__KeyPair *key_pair
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
 uint8_t *crypto_curve25519_dh(

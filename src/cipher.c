@@ -56,8 +56,6 @@ static size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
 
 const struct cipher_suite E2EE_ECDH_X25519_AES256_GCM_SHA256 = {
     get_ecdh_x25519_aes256_gcm_sha256_param,
-    crypto_curve25519_generate_private_key,
-    crypto_curve25519_generate_public_key,
     crypto_curve25519_generate_key_pair,
     crypto_curve25519_generate_key_pair,
     crypto_curve25519_generate_key_pair,

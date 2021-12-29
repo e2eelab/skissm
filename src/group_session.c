@@ -90,7 +90,9 @@ void create_outbound_group_session(
 
     copy_address_from_address(&(group_session->group_address), group_address);
 
-    CIPHER.suite1->gen_private_key(&(group_session->session_id), 32);
+    group_session->session_id.len = 32;
+    group_session->session_id.data = (uint8_t *) malloc(sizeof(uint8_t) * group_session->session_id.len);
+    get_ssm_plugin()->handle_rg(group_session->session_id.data, group_session->session_id.len);
 
     group_session->n_member_addresses = member_num;
 
@@ -98,11 +100,11 @@ void create_outbound_group_session(
 
     group_session->sequence = 0;
 
-    CIPHER.suite1->gen_private_key(&(group_session->chain_key), GROUP_SHARED_KEY_LENGTH);
+    group_session->chain_key.len = GROUP_SHARED_KEY_LENGTH;
+    group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * group_session->chain_key.len);
+    get_ssm_plugin()->handle_rg(group_session->chain_key.data, group_session->chain_key.len);
 
-    CIPHER.suite1->gen_private_key(&(group_session->signature_private_key), key_len);
-
-    CIPHER.suite1->gen_public_key(&(group_session->signature_public_key), &(group_session->signature_private_key));
+    CIPHER.suite1->mt_key_gen(&(group_session->signature_public_key), &(group_session->signature_private_key));
 
     int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
     group_session->associated_data.len = ad_len;

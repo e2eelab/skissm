@@ -374,7 +374,7 @@ void encrypt_ratchet(
         skissm__sender_chain_node__init(ratchet->sender_chain);
         ratchet->sender_chain->ratchet_key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(ratchet->sender_chain->ratchet_key_pair);
-        CIPHER.suite1->mt_key_gen(ratchet->sender_chain->ratchet_key_pair);
+        CIPHER.suite1->mt_key_gen(&(ratchet->sender_chain->ratchet_key_pair->public_key), &(ratchet->sender_chain->ratchet_key_pair->private_key));
         ratchet->sender_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
         skissm__chain_key__init(ratchet->sender_chain->chain_key);
         create_chain_key(

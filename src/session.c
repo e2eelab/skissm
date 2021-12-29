@@ -101,11 +101,11 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
 
     // Generate a new random ephemeral key pair
     Skissm__KeyPair my_ephemeral_key;
-    CIPHER.suite1->st_key_gen(&my_ephemeral_key);
+    CIPHER.suite1->st_key_gen(&(my_ephemeral_key.public_key), &(my_ephemeral_key.private_key));
 
     // Generate a new random ratchet key pair
     Skissm__KeyPair my_ratchet_key;
-    CIPHER.suite1->mt_key_gen(&my_ratchet_key);
+    CIPHER.suite1->mt_key_gen(&(my_ratchet_key.public_key), &(my_ratchet_key.private_key));
 
     const Skissm__KeyPair my_identity_key_pair = *(local_account->identity_key_pair);
 

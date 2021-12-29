@@ -56,36 +56,22 @@ crypto_param get_ecdh_x25519_aes256_gcm_sha256_param() {
     return ecdh_x25519_aes256_gcm_sha256_param;
 }
 
-void crypto_curve25519_generate_private_key(ProtobufCBinaryData *priv_key,
-                                            size_t priv_key_len) {
-  priv_key->len = priv_key_len;
-  priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * priv_key_len);
-  get_ssm_plugin()->handle_rg(priv_key->data, priv_key->len);
-}
-
-void crypto_curve25519_generate_public_key(ProtobufCBinaryData *pub_key,
-                                           ProtobufCBinaryData *priv_key) {
-  pub_key->len = priv_key->len;
-  pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * pub_key->len);
-  curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
-}
-
-void crypto_curve25519_generate_key_pair(
-    Skissm__KeyPair *key_pair) {
-  key_pair->private_key.data =
+void crypto_curve25519_generate_key_pair(ProtobufCBinaryData *pub_key,
+                                         ProtobufCBinaryData *priv_key) {
+  priv_key->data =
       (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
-  key_pair->private_key.len = CURVE25519_KEY_LENGTH;
+  priv_key->len = CURVE25519_KEY_LENGTH;
 
-  key_pair->public_key.data =
+  pub_key->data =
       (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
-  key_pair->public_key.len = CURVE25519_KEY_LENGTH;
+  pub_key->len = CURVE25519_KEY_LENGTH;
 
   uint8_t random[CURVE25519_RANDOM_LENGTH];
   get_ssm_plugin()->handle_rg(random, sizeof(random));
 
-  memcpy(key_pair->private_key.data, random, CURVE25519_KEY_LENGTH);
+  memcpy(priv_key->data, random, CURVE25519_KEY_LENGTH);
 
-  curve25519_donna(key_pair->public_key.data, key_pair->private_key.data,
+  curve25519_donna(pub_key->data, priv_key->data,
                    CURVE25519_BASEPOINT);
 }
 
