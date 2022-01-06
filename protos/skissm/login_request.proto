@@ -4,7 +4,9 @@ package skissm;
 
 option java_outer_classname = "LoginRequest";
 
+import "skissm/e2ee_address.proto";
+
 message login_request {
-    string userId = 1;
-    string userPass = 2;
+    skissm.e2ee_address address = 1;
+    string password = 2;
 }

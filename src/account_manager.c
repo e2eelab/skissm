@@ -18,6 +18,8 @@
  */
 #include "skissm/account_manager.h"
 
+#include <string.h>
+
 #include "skissm/account.h"
 #include "skissm/e2ee_protocol.h"
 #include "skissm/mem_util.h"
@@ -95,8 +97,9 @@ Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__E2e
 
 void consume_register_response_payload(Skissm__E2eeAccount *account, Skissm__RegisterUserResponsePayload *payload) {
     copy_address_from_address(&(account->address), payload->address);
-    // save to db
     account->saved = true;
+    account->password = strdup(payload->password);
+    // save to db
     get_ssm_plugin()->store_account(account);
     ssm_notify_user_registered(account);
 }

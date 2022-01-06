@@ -4,6 +4,8 @@ package skissm;
 
 option java_outer_classname = "LogoutRequest";
 
+import "skissm/e2ee_address.proto";
+
 message logout_request {
-    string userId = 1;
+    skissm.e2ee_address address = 1;
 }

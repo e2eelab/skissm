@@ -47,38 +47,41 @@ typedef struct cipher_suite {
   get_crypto_param_type get_crypto_param;
 
   /**
-   * @brief Generate a random private key.
-   *
-   * @param priv_key
-   * @param priv_key_len
-   */
-  void (*gen_private_key)(ProtobufCBinaryData *priv_key, size_t priv_key_len);
-
-  /**
-   * @brief Generate public key by given private key.
+   * @brief Generate a random long-term key pair.
    *
    * @param pub_key
    * @param priv_key
    */
-  void (*gen_public_key)(ProtobufCBinaryData *pub_key,
-                         ProtobufCBinaryData *priv_key);
+  void (*lt_key_gen)(ProtobufCBinaryData *pub_key,
+                     ProtobufCBinaryData *priv_key);
 
   /**
-   * @brief Generate a random key pair.
+   * @brief Generate a random medium-term key pair.
    *
-   * @param key_pair
+   * @param pub_key
+   * @param priv_key
    */
-  void (*gen_key_pair)(Skissm__KeyPair *key_pair);
+  void (*mt_key_gen)(ProtobufCBinaryData *pub_key,
+                     ProtobufCBinaryData *priv_key);
 
   /**
-   * @brief Calculate shared secret by Diffie–Hellman (DH) algorithm.
+   * @brief Generate a random short-term key pair.
+   *
+   * @param pub_key
+   * @param priv_key
+   */
+  void (*st_key_gen)(ProtobufCBinaryData *pub_key,
+                     ProtobufCBinaryData *priv_key);
+
+  /**
+   * @brief Calculate shared secret key.
    *
    * @param our_key
    * @param their_key
    * @param shared_secret
+   * @return Cipher text (optional) that could be used to calculate shared secret key.
    */
-  void (*dh)(const Skissm__KeyPair *our_key,
-             const ProtobufCBinaryData *their_key, uint8_t *shared_secret);
+  uint8_t *(*ss_key_gen)(const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *their_key, uint8_t *shared_secret);
 
   /**
    * @brief Encrypt a given plain text.

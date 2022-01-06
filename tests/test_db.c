@@ -31,8 +31,18 @@ static sqlite3 *db;
 // util function
 static void sqlite_connect(const char *db_name) {
     int rc = sqlite3_open(db_name, &db);
-    if (rc) {
+    if (rc != SQLITE_OK) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        exit(1);
+    }
+    rc = sqlite3_exec(db, "PRAGMA journal_mode = WAL;", 0, 0, 0);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Can't set PRAGMA journal_mode: %s\n", sqlite3_errmsg(db));
+        exit(1);
+    }
+    rc = sqlite3_exec(db, "PRAGMA synchronous = NORMAL", 0, 0, 0);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Can't set PRAGMA synchronous: %s\n", sqlite3_errmsg(db));
         exit(1);
     }
 }
@@ -203,6 +213,7 @@ static const char *ACCOUNT_CREATE_TABLE = "CREATE TABLE ACCOUNT( "
                                           "VERSION INTEGER NOT NULL, "
                                           "SAVED INTEGER NOT NULL, "
                                           "ADDRESS INTEGER NOT NULL, "
+                                          "PASSWORD TEXT NOT NULL, "
                                           "IDENTITY_KEYPAIR INTEGER NOT NULL, "
                                           "SIGNED_PRE_KEYPAIR INTEGER NOT NULL, "
                                           "NEXT_SIGNED_PRE_KEY_ID INTEGER NOT NULL, "
@@ -255,6 +266,10 @@ static const char *ACCOUNT_LOAD_ADDRESS = "SELECT "
                                           "INNER JOIN ADDRESS "
                                           "ON ACCOUNT.ADDRESS = ADDRESS.ID "
                                           "WHERE ACCOUNT.ACCOUNT_ID = (?);";
+
+static const char *ACCOUNT_LOAD_PASSWORD = "SELECT PASSWORD "
+                                        "FROM ACCOUNT "
+                                        "WHERE ACCOUNT.ACCOUNT_ID = (?);";
 
 static const char *ACCOUNT_LOAD_KEYPAIR = "SELECT KEYPAIR.PUBLIC_KEY, "
                                           "KEYPAIR.PRIVATE_KEY "
@@ -344,6 +359,7 @@ static const char *ACCOUNT_INSERT = "INSERT INTO ACCOUNT "
                                     "VERSION, "
                                     "SAVED, "
                                     "ADDRESS, "
+                                    "PASSWORD, "
                                     "IDENTITY_KEYPAIR, "
                                     "SIGNED_PRE_KEYPAIR, "
                                     "NEXT_SIGNED_PRE_KEY_ID, "
@@ -554,6 +570,22 @@ void load_address(ProtobufCBinaryData *account_id, Skissm__E2eeAddress **address
                              sqlite3_column_bytes(stmt, 1));
     copy_protobuf_from_array(&((*address)->device_id), (uint8_t *)sqlite3_column_blob(stmt, 2),
                              sqlite3_column_bytes(stmt, 2));
+
+    // release
+    sqlite3_finalize(stmt);
+}
+
+void load_password(ProtobufCBinaryData *account_id, char **password) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(ACCOUNT_LOAD_PASSWORD, &stmt);
+    sqlite3_bind_blob(stmt, 1, (const uint8_t *)account_id->data, account_id->len, SQLITE_STATIC);
+
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
+
+    // load
+    *password = (char *)sqlite3_column_text(stmt, 0);
 
     // release
     sqlite3_finalize(stmt);
@@ -829,7 +861,7 @@ sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKeyPair *one_time_pre_key
 }
 
 sqlite_int64 insert_account(ProtobufCBinaryData *account_id, int version, protobuf_c_boolean saved,
-                            sqlite_int64 address_id, sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
+                            sqlite_int64 address_id, const char *password , sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
                             sqlite_int64 next_signed_pre_key_id, sqlite_int64 next_one_time_pre_key_id) {
     // prepare
     sqlite3_stmt *stmt;
@@ -840,10 +872,11 @@ sqlite_int64 insert_account(ProtobufCBinaryData *account_id, int version, protob
     sqlite3_bind_int(stmt, 2, version);
     sqlite3_bind_int(stmt, 3, (int)saved);
     sqlite3_bind_int(stmt, 4, address_id);
-    sqlite3_bind_int(stmt, 5, identity_key_pair_id);
-    sqlite3_bind_int(stmt, 6, signed_pre_key_id);
-    sqlite3_bind_int(stmt, 7, next_signed_pre_key_id);
-    sqlite3_bind_int(stmt, 8, next_one_time_pre_key_id);
+    sqlite3_bind_text(stmt, 5, password, strlen(password), NULL);
+    sqlite3_bind_int(stmt, 6, identity_key_pair_id);
+    sqlite3_bind_int(stmt, 7, signed_pre_key_id);
+    sqlite3_bind_int(stmt, 8, next_signed_pre_key_id);
+    sqlite3_bind_int(stmt, 9, next_one_time_pre_key_id);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

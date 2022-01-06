@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package skissm;
+
+option java_outer_classname = "LoginResponse";
+
+message login_response {
+    string access_token = 2;
+    int64 expires_in = 4;
+}
