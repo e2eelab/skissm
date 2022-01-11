@@ -171,51 +171,6 @@ static void process_register_user_request(
     skissm__register_user_response_payload__free_unpacked(register_user_response_payload, NULL);
 }
 
-static void process_delete_user_request(
-    Skissm__E2eeProtocolMsg *request,
-    Skissm__E2eeProtocolMsg *response
-) {
-    response->cmd = SKISSM__E2EE_COMMANDS__delete_user_response;
-
-    /* unpack */
-    Skissm__DeleteUserRequestPayload *payload = skissm__delete_user_request_payload__unpack(NULL, request->payload.len, request->payload.data);
-
-    uint8_t user_data_find = 0;
-    while (user_data_find < user_data_set_insert_pos)
-    {
-        if ((user_data_set[user_data_find].address) && (payload->address)
-            && compare_address(user_data_set[user_data_find].address, payload->address)
-        ) {
-            break;
-        }
-        user_data_find++;
-    }
-
-    Skissm__ResponseData *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
-    skissm__response_data__init(response_data);
-
-    if (user_data_find == user_data_set_insert_pos){
-        response_data->code = Internal_Server_Error;
-    } else{
-        response_data->code = OK;
-        skissm__register_user_request_payload__free_unpacked(user_data_set[user_data_find].pre_key, NULL);
-        user_data_set[user_data_find].pre_key = NULL;
-        skissm__e2ee_address__free_unpacked(user_data_set[user_data_find].address, NULL);
-        user_data_set[user_data_find].address = NULL;
-        unset((void volatile *)&user_data_set[user_data_find], sizeof(user_data));
-    }
-
-    /* pack */
-    response->id = request->id;
-    response->payload.len = skissm__response_data__get_packed_size(response_data);
-    response->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * response->payload.len);
-    skissm__response_data__pack(response_data, response->payload.data);
-
-    /* release */
-    skissm__response_data__free_unpacked(response_data, NULL);
-    skissm__delete_user_request_payload__free_unpacked(payload, NULL);
-}
-
 static void process_get_pre_key_bundle_request(
     Skissm__E2eeProtocolMsg *request,
     Skissm__E2eeProtocolMsg *response
@@ -748,9 +703,6 @@ void mock_protocol_receive(uint8_t *msg, size_t msg_len){
     {
     case SKISSM__E2EE_COMMANDS__register_user_request:
         process_register_user_request(client_msg, response);
-        break;
-    case SKISSM__E2EE_COMMANDS__delete_user_request:
-        process_delete_user_request(client_msg, response);
         break;
     case SKISSM__E2EE_COMMANDS__get_pre_key_bundle_request:
         process_get_pre_key_bundle_request(client_msg, response);

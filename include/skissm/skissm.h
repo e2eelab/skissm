@@ -32,7 +32,6 @@ extern "C" {
 #include "skissm/chain_key.pb-c.h"
 #include "skissm/create_group_request_payload.pb-c.h"
 #include "skissm/create_group_response_payload.pb-c.h"
-#include "skissm/delete_user_request_payload.pb-c.h"
 #include "skissm/e2ee_account.pb-c.h"
 #include "skissm/e2ee_address.pb-c.h"
 #include "skissm/e2ee_commands.pb-c.h"

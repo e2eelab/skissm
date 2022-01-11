@@ -53,7 +53,7 @@ set(protobuf_BUILD_LIBPROTOC OFF)
 set(protobuf_BUILD_TESTS OFF)
 
 # sqlite flags
-set(SQLITE_THREADSAFE 1)
+#set(SQLITE_THREADSAFE 2)
 
 # set protoc tool path, ex: "/usr/local/bin/protoc"
 find_program(PROTOC_EXECUTABLE protoc REQUIRED)

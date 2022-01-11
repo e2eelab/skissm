@@ -21,10 +21,8 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "DeleteUserRequestPayload";
+option java_outer_classname = "RequestAuthCodePayload";
 
-import "skissm/e2ee_address.proto";
-
-message delete_user_request_payload {
-  skissm.e2ee_address address = 1;
+message request_auth_code_payload {
+  string authenticator = 1;
 }
