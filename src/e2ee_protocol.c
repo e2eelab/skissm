@@ -852,10 +852,6 @@ static void process_response_msg(Skissm__E2eeProtocolMsg *response_msg) {
             skissm__register_user_response_payload__free_unpacked(payload, NULL);
         } break;
 
-        case SKISSM__E2EE_COMMANDS__delete_user_response:
-            /* code */
-            break;
-
         case SKISSM__E2EE_COMMANDS__get_pre_key_bundle_response: {
             Skissm__GetPreKeyBundleResponsePayload *get_pre_key_bundle_response_payload =
                 skissm__get_pre_key_bundle_response_payload__unpack(NULL, response_data->data.len, response_data->data.data);
