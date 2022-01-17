@@ -30,11 +30,27 @@ static sqlite3 *db;
 
 // util function
 static void sqlite_connect(const char *db_name) {
-    int rc = sqlite3_open(db_name, &db);
-    if (rc) {
+    sqlite3_config(SQLITE_CONFIG_MULTITHREAD);
+    int rc = sqlite3_open_v2(db_name, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
+    if (rc != SQLITE_OK) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         exit(1);
     }
+    // rc = sqlite3_exec(db, "PRAGMA journal_mode = WAL;", 0, 0, 0);
+    // if (rc != SQLITE_OK) {
+    //     fprintf(stderr, "Can't set PRAGMA journal_mode: %s\n", sqlite3_errmsg(db));
+    //     exit(1);
+    // }
+    // rc = sqlite3_exec(db, "PRAGMA synchronous = FULL", 0, 0, 0);
+    // if (rc != SQLITE_OK) {
+    //     fprintf(stderr, "Can't set PRAGMA synchronous: %s\n", sqlite3_errmsg(db));
+    //     exit(1);
+    // }
+    // rc = sqlite3_exec(db, "PRAGMA locking_mode=EXCLUSIVE", 0, 0, 0);
+    // if (rc != SQLITE_OK) {
+    //     fprintf(stderr, "Can't set PRAGMA locking_mode: %s\n", sqlite3_errmsg(db));
+    //     exit(1);
+    // }
 }
 
 static int sqlite_callback(void *data, int argc, char **argv, char **azColName) {
@@ -51,15 +67,19 @@ static void sqlite_execute(const char *sql) {
     char *errMsg = NULL;
     const char *data = (char *)"Callback function called";
 
+    sqlite3_exec(db, "BEGIN TRANSACTION;", NULL, NULL, &errMsg);
+
     int rc = sqlite3_exec(db, sql, sqlite_callback, (void *)data, &errMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", errMsg);
         sqlite3_free(errMsg);
     }
+
+    sqlite3_exec(db, "COMMIT TRANSACTION;", NULL, NULL, NULL);
 }
 
 static bool sqlite_prepare(const char *sql, sqlite3_stmt **stmt) {
-    int rc = sqlite3_prepare(db, sql, -1, stmt, NULL);
+    int rc = sqlite3_prepare_v2(db, sql, -1, stmt, NULL);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "Cannot prepare statement: %s\n", sqlite3_errmsg(db));
         return false;
@@ -70,12 +90,7 @@ static bool sqlite_prepare(const char *sql, sqlite3_stmt **stmt) {
 
 static bool sqlite_step(sqlite3_stmt *stmt, int return_code) {
     int rc = sqlite3_step(stmt);
-    if (rc != return_code) {
-        // fprintf(stderr, "Cannot step correctly.");
-        return false;
-    }
-
-    return true;
+    return rc == return_code;
 }
 
 // SQLs
@@ -400,6 +415,8 @@ static const char *ONETIME_PRE_KEYPAIR_UPDATE_USED = "UPDATE ONETIME_PRE_KEYPAIR
                                                      "WHERE ID = (?);";
 
 void test_db_begin() {
+    sqlite3_initialize();
+
     // connect
     sqlite_connect(db_name);
 
@@ -442,6 +459,7 @@ void test_db_begin() {
 
 void test_db_end() {
     sqlite3_close(db);
+    sqlite3_shutdown();
 }
 
 // this function is using for real user to take their id
@@ -1173,6 +1191,9 @@ void load_inbound_session(ProtobufCBinaryData session_id, Skissm__E2eeAddress *o
 }
 
 void store_session(Skissm__E2eeSession *session) {
+    char *errMsg = NULL;
+    sqlite3_exec(db, "BEGIN TRANSACTION;", NULL, NULL, &errMsg);
+    
     // pack
     ProtobufCBinaryData session_id = session->session_id;
     size_t session_data_len = skissm__e2ee_session__get_packed_size(session);
@@ -1200,6 +1221,12 @@ void store_session(Skissm__E2eeSession *session) {
     // release
     sqlite3_finalize(stmt);
     free_mem((void **)(&session_data), session_data_len);
+
+    // debug
+    sqlite3_exec(db, "COMMIT TRANSACTION;", NULL, NULL, &errMsg);
+    if(errMsg) {
+        sqlite3_free(errMsg);
+    }
 }
 
 // return the lastest updated session

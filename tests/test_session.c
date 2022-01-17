@@ -174,7 +174,8 @@ static void test_continual_messages(){
     uint8_t plaintext[] = "This message will be sent a lot of times.";
     size_t plaintext_len = sizeof(plaintext) - 1;
     int i;
-    for (i = 0; i < 1000; i++){
+    for (i = 0; i < 100; i++){
+        printf("===========================\n");
         test_encryption(account_data[0]->address, account_data[1]->address, plaintext, plaintext_len);
     }
 
@@ -184,8 +185,8 @@ static void test_continual_messages(){
 }
 
 int main() {
-    test_basic_session();
-    test_interaction();
+    //test_basic_session();
+    //test_interaction();
     test_continual_messages();
 
     return 0;

@@ -523,35 +523,6 @@ void send_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plai
     skissm__e2ee_protocol_msg__free_unpacked(protocol_msg, NULL);
 }
 
-size_t send_e2ee_protocol_msg(Skissm__E2eeSession *outbound_session, const uint8_t *plaintext, size_t plaintext_len) {
-    Skissm__E2eeMessage *outbound_e2ee_message_payload = produce_e2ee_message_payload(outbound_session, plaintext, plaintext_len);
-    Skissm__E2eeProtocolMsg *protocol_msg = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
-    skissm__e2ee_protocol_msg__init(protocol_msg);
-    protocol_msg->cmd = SKISSM__E2EE_COMMANDS__send_one2one_msg_request;
-
-    protocol_msg->payload.len = skissm__e2ee_message__get_packed_size(outbound_e2ee_message_payload);
-    protocol_msg->payload.data = (uint8_t *)malloc(protocol_msg->payload.len);
-    skissm__e2ee_message__pack(outbound_e2ee_message_payload, protocol_msg->payload.data);
-
-    size_t message_len = skissm__e2ee_protocol_msg__get_packed_size(protocol_msg);
-    uint8_t *message = (uint8_t *)malloc(sizeof(uint8_t) * message_len);
-    skissm__e2ee_protocol_msg__pack(protocol_msg, message);
-
-    // send message to server
-    get_ssm_plugin()->handle_send(message, message_len);
-
-    // store sesson state
-    get_ssm_plugin()->store_session(outbound_session);
-
-    // release
-    free_mem((void **)(&message), message_len);
-    skissm__e2ee_message__free_unpacked(outbound_e2ee_message_payload, NULL);
-    skissm__e2ee_protocol_msg__free_unpacked(protocol_msg, NULL);
-
-    // done
-    return message_len;
-}
-
 void send_create_group_request(create_group_response_handler *response_handler) {
     Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
     skissm__e2ee_protocol_msg__init(e2ee_command_request);

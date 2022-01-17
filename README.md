@@ -32,6 +32,9 @@ cd build/tests
 ctest
 ```
 
+# Release notes
+v1.4.0: adjust cipher suite and make it compatible for pqc
+
 # Doc
 
 [SLISSM Whitepaper](doc/skissm-whitepaper-v1.1.1.pdf)

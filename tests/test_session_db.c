@@ -26,6 +26,7 @@
 #include "skissm/e2ee_protocol.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
+#include "skissm/ratchet.h"
 #include "skissm/session.h"
 #include "skissm/skissm.h"
 
@@ -286,10 +287,87 @@ void test_load_inbound_group_session()
     tear_down();
 }
 
+void test_store_session()
+{
+    setup();
+
+    // create session and two addresses
+    Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
+    Skissm__E2eeAddress *from, *to;
+    mock_address(&from, "alice", "alice's domain", "alice's device");
+    mock_address(&to, "bob", "bob's domain", "bob's device");
+    initialise_session(session, from, to);
+    copy_address_from_address(&(session->session_owner), from);
+
+    // create mock public keys
+    session->alice_identity_key.len = 32;
+    session->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->alice_identity_key.data, "11111111111111111111111111111111", 32);
+    session->alice_ephemeral_key.len = 32;
+    session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    session->bob_signed_pre_key.len = 32;
+    session->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
+    session->bob_one_time_pre_key.len = 32;
+    session->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
+
+    session->associated_data.len = 64;
+    session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
+
+    session->session_id.len = 32;
+    session->session_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->session_id.data, "01234567890123456789012345678901", 32);
+
+    // initialise ratchet
+    initialise_ratchet(&(session->ratchet));
+    uint8_t secret[128] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx";
+    ProtobufCBinaryData their_ratchet_key;
+    their_ratchet_key.len = 32;
+    their_ratchet_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(their_ratchet_key.data, "11111111111111111111111111111111", 32);
+    Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+    skissm__key_pair__init(our_ratchet_key);
+    our_ratchet_key->private_key.len = 32;
+    our_ratchet_key->private_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(our_ratchet_key->private_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    our_ratchet_key->public_key.len = 32;
+    our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
+
+    initialise_as_alice(session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
+
+    // insert to the db
+    store_session(session);
+
+    session->ratchet->sender_chain->chain_key->index += 1;
+    store_session(session);
+
+    // load_outbound_session
+    Skissm__E2eeSession *session_copy;
+    load_outbound_session(from, to, &session_copy);
+
+    // assert session equals to session_copy
+    bool is_equal_index;
+    is_equal_index = (session->ratchet->sender_chain->chain_key->index == session_copy->ratchet->sender_chain->chain_key->index);
+    print_result("test_store_session", is_equal_index);
+
+    // free
+    skissm__e2ee_address__free_unpacked(from, NULL);
+    skissm__e2ee_address__free_unpacked(to, NULL);
+    skissm__e2ee_session__free_unpacked(session, NULL);
+    skissm__e2ee_session__free_unpacked(session_copy, NULL);
+
+    tear_down();
+}
+
 int main(){
     test_find_session();
     test_load_session();
     test_load_outbound_group_session();
     test_load_inbound_group_session();
+    test_store_session();
     return 0;
 }

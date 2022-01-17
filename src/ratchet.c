@@ -19,6 +19,7 @@
 #include "skissm/ratchet.h"
 
 #include <string.h>
+#include <stdio.h>
 
 #include "skissm/cipher.h"
 #include "skissm/error.h"
@@ -389,7 +390,9 @@ void encrypt_ratchet(
     keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
     skissm__message_key__init(keys);
     create_message_keys(ratchet->sender_chain->chain_key, keys);
+    printf("chain_key index: %u", ratchet->sender_chain->chain_key->index);
     advance_chain_key(ratchet->sender_chain->chain_key);
+    printf(" ->  %u\n", ratchet->sender_chain->chain_key->index);
 
     uint32_t sequence = keys->index;
     const ProtobufCBinaryData *ratchet_key = &(ratchet->sender_chain->ratchet_key_pair->public_key);
