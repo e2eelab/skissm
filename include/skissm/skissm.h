@@ -33,12 +33,14 @@ extern "C" {
 #include "skissm/create_group_request_payload.pb-c.h"
 #include "skissm/create_group_response_payload.pb-c.h"
 #include "skissm/delete_user_request_payload.pb-c.h"
+#include "skissm/e2ee_accept_payload.pb-c.h"
 #include "skissm/e2ee_account.pb-c.h"
 #include "skissm/e2ee_address.pb-c.h"
 #include "skissm/e2ee_commands.pb-c.h"
 #include "skissm/e2ee_group_msg_payload.pb-c.h"
 #include "skissm/e2ee_group_pre_key_payload.pb-c.h"
 #include "skissm/e2ee_group_session.pb-c.h"
+#include "skissm/e2ee_invite_payload.pb-c.h"
 #include "skissm/e2ee_message.pb-c.h"
 #include "skissm/e2ee_message_type.pb-c.h"
 #include "skissm/e2ee_msg_payload.pb-c.h"
@@ -53,9 +55,11 @@ extern "C" {
 #include "skissm/get_group_response_payload.pb-c.h"
 #include "skissm/get_pre_key_bundle_request_payload.pb-c.h"
 #include "skissm/get_pre_key_bundle_response_payload.pb-c.h"
+#include "skissm/identity_key_public.pb-c.h"
+#include "skissm/identity_key.pb-c.h"
 #include "skissm/key_pair.pb-c.h"
 #include "skissm/message_key.pb-c.h"
-#include "skissm/one_time_pre_key_pair.pb-c.h"
+#include "skissm/one_time_pre_key.pb-c.h"
 #include "skissm/one_time_pre_key_public.pb-c.h"
 #include "skissm/publish_spk_request_payload.pb-c.h"
 #include "skissm/receiver_chain_node.pb-c.h"
@@ -63,7 +67,7 @@ extern "C" {
 #include "skissm/register_user_response_payload.pb-c.h"
 #include "skissm/remove_group_members_request_payload.pb-c.h"
 #include "skissm/sender_chain_node.pb-c.h"
-#include "skissm/signed_pre_key_pair.pb-c.h"
+#include "skissm/signed_pre_key.pb-c.h"
 #include "skissm/signed_pre_key_public.pb-c.h"
 #include "skissm/skipped_message_key_node.pb-c.h"
 #include "skissm/supply_opks_request_payload.pb-c.h"
@@ -136,23 +140,23 @@ typedef struct skissm_plugin {
     /**
      * @brief update identity key of account to db
      * @param account_id
-     * @param identity_key_pair
+     * @param identity_key
      */
-    void (*update_identity_key)(ProtobufCBinaryData *, Skissm__KeyPair *);
+    void (*update_identity_key)(ProtobufCBinaryData *, Skissm__IdentityKey *);
     /**
      * @brief update signed pre key of account to db
      * @param account_id
      * @param signed_pre_key
      */
     void (*update_signed_pre_key)(ProtobufCBinaryData *,
-                                  Skissm__SignedPreKeyPair *);
+                                  Skissm__SignedPreKey *);
     /**
      * @brief load old signed pre key by spk_id
      * @param account_id
      * @param spk_id
-     * @param signed_pre_key_pair
+     * @param signed_pre_key
      */
-    void (*load_old_signed_pre_key)(ProtobufCBinaryData *, uint32_t, Skissm__SignedPreKeyPair **);
+    void (*load_old_signed_pre_key)(ProtobufCBinaryData *, uint32_t, Skissm__SignedPreKey **);
     /**
      * @brief remove expired signed pre key of account from db
      * @param account_id
@@ -170,7 +174,7 @@ typedef struct skissm_plugin {
      * @param one_time_pre_key
      */
     void (*add_one_time_pre_key)(ProtobufCBinaryData *,
-                                 Skissm__OneTimePreKeyPair *);
+                                 Skissm__OneTimePreKey *);
     /**
      * @brief remove an one time pre key of account to db
      * @param account_id

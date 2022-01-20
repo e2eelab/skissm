@@ -104,7 +104,7 @@ void create_outbound_group_session(
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * group_session->chain_key.len);
     get_ssm_plugin()->handle_rg(group_session->chain_key.data, group_session->chain_key.len);
 
-    CIPHER.suite1->mt_key_gen(&(group_session->signature_public_key), &(group_session->signature_private_key));
+    CIPHER.suite1->asym_key_gen(&(group_session->signature_public_key), &(group_session->signature_private_key));
 
     int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
     group_session->associated_data.len = ad_len;

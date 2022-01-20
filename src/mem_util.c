@@ -106,21 +106,28 @@ void copy_key_pair_from_key_pair(Skissm__KeyPair **dest, Skissm__KeyPair *src) {
     copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
 }
 
-void copy_spk_from_spk(Skissm__SignedPreKeyPair **dest, Skissm__SignedPreKeyPair *src) {
-    *dest = (Skissm__SignedPreKeyPair *)malloc(sizeof(Skissm__SignedPreKeyPair));
-    skissm__signed_pre_key_pair__init(*dest);
+void copy_ik_from_ik(Skissm__IdentityKey **dest, Skissm__IdentityKey *src) {
+    *dest = (Skissm__IdentityKey *)malloc(sizeof(Skissm__IdentityKey));
+    skissm__identity_key__init(*dest);
+    copy_key_pair_from_key_pair(&((*dest)->asym_key_pair), src->asym_key_pair);
+    copy_key_pair_from_key_pair(&((*dest)->sign_key_pair), src->sign_key_pair);
+}
+
+void copy_spk_from_spk(Skissm__SignedPreKey **dest, Skissm__SignedPreKey *src) {
+    *dest = (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
+    skissm__signed_pre_key__init(*dest);
     (*dest)->spk_id = src->spk_id;
     copy_key_pair_from_key_pair(&((*dest)->key_pair), src->key_pair);
     copy_protobuf_from_protobuf(&((*dest)->signature), &(src->signature));
     (*dest)->ttl = src->ttl;
 }
 
-void copy_opks_from_opks(Skissm__OneTimePreKeyPair ***dest, Skissm__OneTimePreKeyPair **src, size_t opk_num) {
-    *dest = (Skissm__OneTimePreKeyPair **)malloc(sizeof(Skissm__OneTimePreKeyPair *) * opk_num);
+void copy_opks_from_opks(Skissm__OneTimePreKey ***dest, Skissm__OneTimePreKey **src, size_t opk_num) {
+    *dest = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * opk_num);
     size_t i;
     for (i = 0; i < opk_num; i++) {
-        (*dest)[i] = (Skissm__OneTimePreKeyPair *)malloc(sizeof(Skissm__OneTimePreKeyPair));
-        skissm__one_time_pre_key_pair__init((*dest)[i]);
+        (*dest)[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
+        skissm__one_time_pre_key__init((*dest)[i]);
         (*dest)[i]->opk_id = src[i]->opk_id;
         (*dest)[i]->used = src[i]->used;
         copy_key_pair_from_key_pair(&((*dest)[i]->key_pair), src[i]->key_pair);
@@ -138,11 +145,11 @@ void copy_account_from_account(Skissm__E2eeAccount **dest, Skissm__E2eeAccount *
     if (src->address) {
         copy_address_from_address(&((*dest)->address), src->address);
     }
-    if (src->identity_key_pair) {
-        copy_key_pair_from_key_pair(&((*dest)->identity_key_pair), src->identity_key_pair);
+    if (src->identity_key) {
+        copy_ik_from_ik(&((*dest)->identity_key), src->identity_key);
     }
-    if (src->signed_pre_key_pair) {
-        copy_spk_from_spk(&((*dest)->signed_pre_key_pair), src->signed_pre_key_pair);
+    if (src->signed_pre_key) {
+        copy_spk_from_spk(&((*dest)->signed_pre_key), src->signed_pre_key);
     }
     if (src->one_time_pre_keys) {
         copy_opks_from_opks(&((*dest)->one_time_pre_keys), src->one_time_pre_keys, src->n_one_time_pre_keys);

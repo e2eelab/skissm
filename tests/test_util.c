@@ -128,7 +128,7 @@ bool is_equal_keypair(Skissm__KeyPair *keypair1, Skissm__KeyPair *keypair2)
   return true;
 }
 
-bool is_equal_spk(Skissm__SignedPreKeyPair *spk1, Skissm__SignedPreKeyPair *spk2)
+bool is_equal_spk(Skissm__SignedPreKey *spk1, Skissm__SignedPreKey *spk2)
 {
   if (spk1->spk_id != spk2->spk_id)
   {
@@ -150,7 +150,7 @@ bool is_equal_spk(Skissm__SignedPreKeyPair *spk1, Skissm__SignedPreKeyPair *spk2
   return true;
 }
 
-bool is_equal_opk(Skissm__OneTimePreKeyPair *opk1, Skissm__OneTimePreKeyPair *opk2)
+bool is_equal_opk(Skissm__OneTimePreKey *opk1, Skissm__OneTimePreKey *opk2)
 {
   if (opk1->opk_id != opk2->opk_id)
   {
@@ -182,12 +182,17 @@ bool is_equal_account(Skissm__E2eeAccount *account1, Skissm__E2eeAccount *accoun
     printf("address not match");
     return false;
   }
-  if (!is_equal_keypair(account1->identity_key_pair, account2->identity_key_pair))
+  if (!is_equal_keypair(account1->identity_key->asym_key_pair, account2->identity_key->asym_key_pair))
   {
     printf("keypair not match");
     return false;
   }
-  if (!is_equal_spk(account1->signed_pre_key_pair, account2->signed_pre_key_pair))
+  if (!is_equal_keypair(account1->identity_key->sign_key_pair, account2->identity_key->sign_key_pair))
+  {
+    printf("keypair not match");
+    return false;
+  }
+  if (!is_equal_spk(account1->signed_pre_key, account2->signed_pre_key))
   {
     printf("spk not match");
     return false;
@@ -354,19 +359,27 @@ void mock_keypair(Skissm__KeyPair **keypair, const char *public_key, const char 
   mock_data(&((*keypair)->private_key), private_key);
 }
 
-void mock_signed_pre_keypair(Skissm__SignedPreKeyPair **signed_pre_keypair, uint32_t spk_id, const char *public_key, const char *private_key, const char *signature)
+void mock_identity_keypair(Skissm__IdentityKey **identity_keypair, const char *public_key, const char *private_key)
 {
-  *signed_pre_keypair = malloc(sizeof(Skissm__SignedPreKeyPair));
-  skissm__signed_pre_key_pair__init(*signed_pre_keypair);
+  *identity_keypair = malloc(sizeof(Skissm__IdentityKey));
+  skissm__identity_key__init(*identity_keypair);
+  mock_keypair(&((*identity_keypair)->asym_key_pair), public_key, private_key);
+  mock_keypair(&((*identity_keypair)->sign_key_pair), public_key, private_key);
+}
+
+void mock_signed_pre_keypair(Skissm__SignedPreKey **signed_pre_keypair, uint32_t spk_id, const char *public_key, const char *private_key, const char *signature)
+{
+  *signed_pre_keypair = malloc(sizeof(Skissm__SignedPreKey));
+  skissm__signed_pre_key__init(*signed_pre_keypair);
   mock_data(&((*signed_pre_keypair)->signature), signature);
   mock_keypair(&((*signed_pre_keypair)->key_pair), public_key, private_key);
   (*signed_pre_keypair)->spk_id = spk_id;
 }
 
-void mock_onetime_pre_keypiar(Skissm__OneTimePreKeyPair **onetime_pre_keypiar, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key)
+void mock_onetime_pre_keypiar(Skissm__OneTimePreKey **onetime_pre_keypiar, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key)
 {
-  *onetime_pre_keypiar = malloc(sizeof(Skissm__OneTimePreKeyPair));
-  skissm__one_time_pre_key_pair__init(*onetime_pre_keypiar);
+  *onetime_pre_keypiar = malloc(sizeof(Skissm__OneTimePreKey));
+  skissm__one_time_pre_key__init(*onetime_pre_keypiar);
   mock_keypair(&((*onetime_pre_keypiar)->key_pair), public_key, private_key);
   (*onetime_pre_keypiar)->opk_id = opk_id;
   (*onetime_pre_keypiar)->used = used;
@@ -384,16 +397,16 @@ void free_keypair(Skissm__KeyPair *keypair)
   keypair = NULL;
 }
 
-void free_signed_pre_keypair(Skissm__SignedPreKeyPair *signed_pre_key_pair)
+void free_signed_pre_keypair(Skissm__SignedPreKey *signed_pre_key)
 {
-  skissm__signed_pre_key_pair__free_unpacked(signed_pre_key_pair, NULL);
-  signed_pre_key_pair = NULL;
+  skissm__signed_pre_key__free_unpacked(signed_pre_key, NULL);
+  signed_pre_key = NULL;
 }
 
-void free_one_time_pre_key_pair(Skissm__OneTimePreKeyPair *one_time_pre_key_pair)
+void free_one_time_pre_key_pair(Skissm__OneTimePreKey *one_time_pre_key)
 {
-  skissm__one_time_pre_key_pair__free_unpacked(one_time_pre_key_pair, NULL);
-  one_time_pre_key_pair = NULL;
+  skissm__one_time_pre_key__free_unpacked(one_time_pre_key, NULL);
+  one_time_pre_key = NULL;
 }
 
 void free_address(Skissm__E2eeAddress *address)

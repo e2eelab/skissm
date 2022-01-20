@@ -51,25 +51,27 @@ int main(){
     // Register test
     Skissm__E2eeAccount *account = create_account();
 
-    assert(account->identity_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->identity_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key_pair->spk_id == 1);
-    assert(account->signed_pre_key_pair->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key_pair->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key_pair->signature.len == CURVE_SIGNATURE_LENGTH);
+    assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
+    assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
+    assert(account->identity_key->sign_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
+    assert(account->identity_key->sign_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
+    assert(account->signed_pre_key->spk_id == 1);
+    assert(account->signed_pre_key->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
+    assert(account->signed_pre_key->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
+    assert(account->signed_pre_key->signature.len == CURVE_SIGNATURE_LENGTH);
     verify_one_time_pre_keys(account, 100);
 
     // Generate a new signed pre-key pair and a new signature
     generate_signed_pre_key(account);
 
-    assert(account->signed_pre_key_pair->spk_id == 2);
-    assert(account->signed_pre_key_pair->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key_pair->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key_pair->signature.len == CURVE_SIGNATURE_LENGTH);
+    assert(account->signed_pre_key->spk_id == 2);
+    assert(account->signed_pre_key->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
+    assert(account->signed_pre_key->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
+    assert(account->signed_pre_key->signature.len == CURVE_SIGNATURE_LENGTH);
 
     // Post some new one-time pre-keys test
     // Generate 80 one-time pre-key pairs
-    Skissm__OneTimePreKeyPair **output = generate_opks(80, account);
+    Skissm__OneTimePreKey **output = generate_opks(80, account);
 
     verify_one_time_pre_keys(account, 180);
 

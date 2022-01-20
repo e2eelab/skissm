@@ -24,18 +24,18 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeAccount";
 
 import "skissm/e2ee_address.proto";
-import "skissm/key_pair.proto";
-import "skissm/signed_pre_key_pair.proto";
-import "skissm/one_time_pre_key_pair.proto";
+import "skissm/identity_key.proto";
+import "skissm/signed_pre_key.proto";
+import "skissm/one_time_pre_key.proto";
 
 message e2ee_account {
     uint32 version = 1;
     bytes account_id = 2;
     bool saved = 3;
     skissm.e2ee_address address = 4;
-    skissm.key_pair identity_key_pair = 5;
-    skissm.signed_pre_key_pair signed_pre_key_pair = 6;
-    repeated skissm.one_time_pre_key_pair one_time_pre_keys = 7;
+    skissm.identity_key identity_key = 5;
+    skissm.signed_pre_key signed_pre_key = 6;
+    repeated skissm.one_time_pre_key one_time_pre_keys = 7;
     uint32 next_signed_pre_key_id = 8;
     uint32 next_one_time_pre_key_id = 9;
 }

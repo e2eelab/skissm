@@ -34,14 +34,14 @@ void load_address(ProtobufCBinaryData *account_id,
                   Skissm__E2eeAddress **address);
 void load_identity_key_pair(
     ProtobufCBinaryData *account_id,
-    Skissm__KeyPair **identity_key_pair);
+    Skissm__IdentityKey **identity_key);
 void load_signed_pre_key_pair(
     ProtobufCBinaryData *account_id,
-    Skissm__SignedPreKeyPair **signed_pre_key_pair);
+    Skissm__SignedPreKey **signed_pre_key);
 int load_n_one_time_pre_keys(ProtobufCBinaryData *account_id);
 uint32_t load_one_time_pre_keys(
     ProtobufCBinaryData *account_id,
-    Skissm__OneTimePreKeyPair ***one_time_pre_keys);
+    Skissm__OneTimePreKey ***one_time_pre_keys);
 uint32_t load_next_signed_pre_key_id(ProtobufCBinaryData *account_id);
 uint32_t load_next_one_time_pre_key_id(ProtobufCBinaryData *account_id);
 void load_id_by_address(Skissm__E2eeAddress *address,
@@ -49,27 +49,29 @@ void load_id_by_address(Skissm__E2eeAddress *address,
 sqlite_int64
 insert_address(Skissm__E2eeAddress *address);
 sqlite_int64 insert_key_pair(Skissm__KeyPair *key_pair);
+sqlite_int64 insert_identity_key(Skissm__IdentityKey *identity_key);
 sqlite_int64 insert_signed_pre_key(
-    Skissm__SignedPreKeyPair *signed_pre_key);
+    Skissm__SignedPreKey *signed_pre_key);
 sqlite_int64 insert_one_time_pre_key(
-    Skissm__OneTimePreKeyPair *one_time_pre_key);
+    Skissm__OneTimePreKey *one_time_pre_key);
 sqlite_int64 insert_account(ProtobufCBinaryData *account_id, int version,
                             protobuf_c_boolean saved, sqlite_int64 address_id,
                             sqlite_int64 identity_key_pair_id,
                             sqlite_int64 signed_pre_key_id,
                             sqlite_int64 next_signed_pre_key_id,
                             sqlite_int64 next_one_time_pre_key_id);
+void insert_account_identity_key_id(sqlite_int64 account_id, sqlite_int64 identity_key_id);
 void insert_account_signed_pre_key_id(sqlite_int64 account_id,
                                       sqlite_int64 signed_pre_key_id);
 void insert_account_one_time_pre_key_id(sqlite_int64 account_id,
                                         sqlite_int64 one_time_pre_key_id);
 void update_identity_key(
     ProtobufCBinaryData *account_id,
-    Skissm__KeyPair *identity_key_pair);
+    Skissm__IdentityKey *identity_key);
 void update_signed_pre_key(
     ProtobufCBinaryData *account_id,
-    Skissm__SignedPreKeyPair *signed_pre_key);
-void load_old_signed_pre_key(ProtobufCBinaryData *account_id, uint32_t spk_id, Skissm__SignedPreKeyPair **signed_pre_key_pair);
+    Skissm__SignedPreKey *signed_pre_key);
+void load_old_signed_pre_key(ProtobufCBinaryData *account_id, uint32_t spk_id, Skissm__SignedPreKey **signed_pre_key);
 void remove_expired_signed_pre_key(ProtobufCBinaryData *account_id);
 void update_address(ProtobufCBinaryData *account_id,
                     Skissm__E2eeAddress *address);
@@ -78,7 +80,7 @@ void update_one_time_pre_key(ProtobufCBinaryData *account_id,
                              uint32_t one_time_pre_key_id);
 void add_one_time_pre_key(
     ProtobufCBinaryData *account_id,
-    Skissm__OneTimePreKeyPair *one_time_pre_key);
+    Skissm__OneTimePreKey *one_time_pre_key);
 void load_inbound_session(ProtobufCBinaryData session_id,
                           Skissm__E2eeAddress *owner,
                           Skissm__E2eeSession **session);

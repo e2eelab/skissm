@@ -119,7 +119,10 @@ static void process_register_user_request(
     user_data_set[user_data_set_insert_pos].pre_key = (Skissm__RegisterUserRequestPayload *) malloc(sizeof(Skissm__RegisterUserRequestPayload));
     skissm__register_user_request_payload__init(user_data_set[user_data_set_insert_pos].pre_key);
 
-    copy_protobuf_from_protobuf(&(user_data_set[user_data_set_insert_pos].pre_key->identity_key_public), &(payload->identity_key_public));
+    user_data_set[user_data_set_insert_pos].pre_key->identity_key_public = (Skissm__IdentityKeyPublic *) malloc(sizeof(Skissm__IdentityKeyPublic));
+    skissm__identity_key_public__init(user_data_set[user_data_set_insert_pos].pre_key->identity_key_public);
+    copy_protobuf_from_protobuf(&(user_data_set[user_data_set_insert_pos].pre_key->identity_key_public->asym_public_key), &(payload->identity_key_public->asym_public_key));
+    copy_protobuf_from_protobuf(&(user_data_set[user_data_set_insert_pos].pre_key->identity_key_public->sign_public_key), &(payload->identity_key_public->sign_public_key));
     user_data_set[user_data_set_insert_pos].pre_key->signed_pre_key_public = (Skissm__SignedPreKeyPublic *) malloc(sizeof(Skissm__SignedPreKeyPublic));
     skissm__signed_pre_key_public__init(user_data_set[user_data_set_insert_pos].pre_key->signed_pre_key_public);
     user_data_set[user_data_set_insert_pos].pre_key->signed_pre_key_public->spk_id = payload->signed_pre_key_public->spk_id;
@@ -252,7 +255,10 @@ static void process_get_pre_key_bundle_request(
     skissm__e2ee_pre_key_bundle__init(get_pre_key_bundle_response_payload->pre_key_bundle);
 
     copy_address_from_address(&(get_pre_key_bundle_response_payload->pre_key_bundle->peer_address), payload->peer_address);
-    copy_protobuf_from_protobuf(&(get_pre_key_bundle_response_payload->pre_key_bundle->identity_key_public), &(user_data_set[user_data_find].pre_key->identity_key_public));
+    get_pre_key_bundle_response_payload->pre_key_bundle->identity_key_public = (Skissm__IdentityKeyPublic *) malloc(sizeof(Skissm__IdentityKeyPublic));
+    skissm__identity_key_public__init(get_pre_key_bundle_response_payload->pre_key_bundle->identity_key_public);
+    copy_protobuf_from_protobuf(&(get_pre_key_bundle_response_payload->pre_key_bundle->identity_key_public->asym_public_key), &(user_data_set[user_data_find].pre_key->identity_key_public->asym_public_key));
+    copy_protobuf_from_protobuf(&(get_pre_key_bundle_response_payload->pre_key_bundle->identity_key_public->sign_public_key), &(user_data_set[user_data_find].pre_key->identity_key_public->sign_public_key));
     get_pre_key_bundle_response_payload->pre_key_bundle->signed_pre_key_public = (Skissm__SignedPreKeyPublic *) malloc(sizeof(Skissm__SignedPreKeyPublic));
     skissm__signed_pre_key_public__init(get_pre_key_bundle_response_payload->pre_key_bundle->signed_pre_key_public);
     get_pre_key_bundle_response_payload->pre_key_bundle->signed_pre_key_public->spk_id = user_data_set[user_data_find].pre_key->signed_pre_key_public->spk_id;

@@ -19,15 +19,11 @@
 syntax = "proto3";
 
 package skissm;
-
+ 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "SignedPreKeyPair";
-
-import "skissm/key_pair.proto";
-
-message signed_pre_key_pair {
-  uint32 spk_id = 1;
-  skissm.key_pair key_pair = 2;
-  bytes signature = 3;
-  int64 ttl = 4;
+option java_outer_classname = "IdentityKeyPublic";
+ 
+message identity_key_public {
+    bytes asym_public_key = 1;
+    bytes sign_public_key = 2;
 }

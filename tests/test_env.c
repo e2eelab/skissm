@@ -100,8 +100,8 @@ void load_account(ProtobufCBinaryData *account_id, Skissm__E2eeAccount **account
     (*account)->saved = load_saved(account_id);
     load_address(account_id, &((*account)->address));
 
-    load_signed_pre_key_pair(account_id, &((*account)->signed_pre_key_pair));
-    load_identity_key_pair(account_id, &((*account)->identity_key_pair));
+    load_signed_pre_key_pair(account_id, &((*account)->signed_pre_key));
+    load_identity_key_pair(account_id, &((*account)->identity_key));
     (*account)->n_one_time_pre_keys = load_one_time_pre_keys(account_id, &((*account)->one_time_pre_keys));
     (*account)->next_signed_pre_key_id = load_next_signed_pre_key_id(account_id);
     (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(account_id);
@@ -141,11 +141,11 @@ void store_account(Skissm__E2eeAccount *account) {
     // insert address
     sqlite_int64 address_id = insert_address(account->address);
 
-    // insert identity_key_pair
-    sqlite_int64 identity_key_pair_id = insert_key_pair(account->identity_key_pair);
+    // insert identity_key
+    sqlite_int64 identity_key_pair_id = insert_identity_key(account->identity_key);
 
-    // insert signed_pre_key_pair
-    sqlite_int64 signed_pre_key_id = insert_signed_pre_key(account->signed_pre_key_pair);
+    // insert signed_pre_key
+    sqlite_int64 signed_pre_key_id = insert_signed_pre_key(account->signed_pre_key);
 
     // insert one_time_pre_keys
     sqlite_int64 one_time_pre_key_ids[account->n_one_time_pre_keys];

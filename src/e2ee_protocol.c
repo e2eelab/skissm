@@ -223,7 +223,7 @@ void send_publish_spk_request(Skissm__E2eeAccount *account, publish_spk_response
 
 void handle_supply_opks_request(uint32_t num, Skissm__E2eeAddress *address, Skissm__ResponseData **response_data) {
     _account = get_local_account(address);
-    Skissm__OneTimePreKeyPair **inserted_one_time_pre_key_pair_list = generate_opks((size_t)num, _account);
+    Skissm__OneTimePreKey **inserted_one_time_pre_key_pair_list = generate_opks((size_t)num, _account);
 
     *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
     skissm__response_data__init(*response_data);

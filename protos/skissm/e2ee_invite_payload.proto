@@ -21,12 +21,13 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "OneTimePreKeyPair";
+option java_outer_classname = "E2eeInvitePayload";
 
-import "skissm/key_pair.proto";
-
-message one_time_pre_key_pair {
-    uint32 opk_id = 1;
-    bool used = 2;
-    skissm.key_pair key_pair = 3;
+message e2ee_invite_payload {
+    bytes alice_identity_key = 1;
+    bytes ciphertext2 = 2;
+    bytes ciphertext3 = 3;
+    bytes ciphertext4 = 4;
+    uint32 bob_signed_pre_key_id = 5;
+    uint32 bob_one_time_pre_key_id = 6;
 }
