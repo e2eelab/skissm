@@ -21,8 +21,8 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "RequestAuthCodePayload";
+option java_outer_classname = "AcquireAuthCodePayload";
 
-message request_auth_code_payload {
+message acquire_auth_code_payload {
   string authenticator = 1;
 }
