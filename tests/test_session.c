@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "skissm/account.h"
 #include "skissm/account_manager.h"
@@ -177,6 +178,7 @@ static void test_continual_messages(){
     for (i = 0; i < 100; i++){
         printf("===========================\n");
         test_encryption(account_data[0]->address, account_data[1]->address, plaintext, plaintext_len);
+        //usleep(500*1000);
     }
 
     // test stop

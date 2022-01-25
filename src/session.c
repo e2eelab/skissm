@@ -33,7 +33,7 @@
 #define CURVE25519_SHARED_SECRET_LENGTH 32
 
 static void create_session_id(Skissm__E2eeSession *session) {
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
     int hash_output_len = CIPHER.suite1->get_crypto_param().hash_len;
 
     uint8_t tmp[key_len * 4];
@@ -81,7 +81,7 @@ void pack_e2ee_plaintext(const uint8_t *plaintext, size_t plaintext_len, Skissm_
 }
 
 size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAccount *local_account, Skissm__E2eePreKeyBundle *their_pre_key_bundle) {
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
     // Verify the signature
     size_t result;
     if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len) ||
@@ -123,7 +123,7 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
         x3dh_epoch = 4;
     }
 
-    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    int ad_len = 2 * key_len;
     session->associated_data.len = ad_len;
     session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
     memcpy(session->associated_data.data, my_identity_key_pair.public_key.data, key_len);
@@ -192,10 +192,10 @@ size_t new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *lo
         x3dh_epoch = 4;
     }
 
-    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
+    int ad_len = 2 * key_len;
     session->associated_data.len = ad_len;
     session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
     memcpy(session->associated_data.data, pre_key_context->alice_identity_key.data, key_len);
     memcpy((session->associated_data.data) + key_len, local_account->identity_key->asym_key_pair->public_key.data, key_len);
 

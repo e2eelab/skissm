@@ -53,7 +53,7 @@ set(protobuf_BUILD_LIBPROTOC OFF)
 set(protobuf_BUILD_TESTS OFF)
 
 # sqlite flags
-# set(SQLITE_THREADSAFE 2)
+#set(SQLITE_THREADSAFE 2)
 
 # set protoc tool path, ex: "/usr/local/bin/protoc"
 find_program(PROTOC_EXECUTABLE protoc REQUIRED)
@@ -151,10 +151,6 @@ foreach(proto ${skissm_PROTOS})
     message("Generation of data model returned ${rv}")
   endif()
 endforeach(proto)
-
-set(skissm_private_include
-    ${libprotobuf_includes} ${protobuf-c_DIR} ${gRPC_INCLUDE_DIRS} ${lib_DIR}
-    ${curve25519_DIR}/ed25519 ${mbedcrypto_DIR}/include)
 
 if(CMAKE_SYSTEM_NAME MATCHES iOS)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")

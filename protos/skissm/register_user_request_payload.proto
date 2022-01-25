@@ -30,7 +30,9 @@ import "skissm/one_time_pre_key_public.proto";
 message register_user_request_payload {
   string user_name = 1;
   string device_id = 2;
-  skissm.identity_key_public identity_key_public = 3;
-  skissm.signed_pre_key_public signed_pre_key_public = 4;
-  repeated skissm.one_time_pre_key_public one_time_pre_keys = 5;
+  string authenticator = 3;
+  string auth_code = 4;
+  skissm.identity_key_public identity_key_public = 5;
+  skissm.signed_pre_key_public signed_pre_key_public = 6;
+  repeated skissm.one_time_pre_key_public one_time_pre_keys = 7;
 }

@@ -133,7 +133,7 @@ size_t generate_signed_pre_key(Skissm__E2eeAccount *account) {
     account->signed_pre_key->spk_id = (account->next_signed_pre_key_id)++;
 
     // Generate signature
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
     int sig_len = CIPHER.suite1->get_crypto_param().sig_len;
     account->signed_pre_key->signature.data = (uint8_t *)malloc(sig_len);
     account->signed_pre_key->signature.len = sig_len;

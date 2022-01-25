@@ -7,8 +7,8 @@ option cc_enable_arenas = true;
 option cc_generic_services = false;
 
 import "skissm/e2ee_protocol_msg.proto";
+import "skissm/request_auth_code_payload.proto";
 import "skissm/register_user_request_payload.proto";
-import "skissm/delete_user_request_payload.proto";
 import "skissm/get_pre_key_bundle_request_payload.proto";
 import "skissm/publish_spk_request_payload.proto";
 import "skissm/e2ee_message.proto";
@@ -33,11 +33,11 @@ service E2EEService {
     }
 
     // unary operations
+    rpc requestAuthCode(skissm.request_auth_code_payload) returns (skissm.response_data) {}
+    rpc registerUser(skissm.register_user_request_payload) returns (skissm.response_data) {}
+
     rpc login(skissm.login_request) returns (skissm.response_data) {}
     rpc logout(skissm.logout_request) returns (skissm.response_data) {}
-
-    rpc registerUser(skissm.register_user_request_payload) returns (skissm.response_data) {}
-    rpc deleteUser(skissm.delete_user_request_payload) returns (skissm.response_data) {}
 
     rpc getPreKeyBundle(skissm.get_pre_key_bundle_request_payload) returns (skissm.response_data) {}
     rpc publishSPK(skissm.publish_spk_request_payload) returns (skissm.response_data) {}

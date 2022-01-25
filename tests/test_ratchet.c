@@ -42,7 +42,7 @@ static void test_alice_to_bob(
                         &(bob_spk.public_key));
     initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
                       &bob_spk);
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
     assert(
         memcmp(
             bob_spk.public_key.data,
@@ -98,7 +98,7 @@ static void test_bob_to_alice(
                         &(bob_spk.public_key));
     initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
                       &bob_spk);
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
     assert(
         memcmp(
             bob_spk.public_key.data,
@@ -236,7 +236,7 @@ static void test_interaction(
     Skissm__E2eeMsgPayload *message_bob;
     encrypt_ratchet(bob_ratchet, ad, plaintext_bob, plaintext_length_bob, &message_bob);
 
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
     assert(memcmp(bob_ratchet->sender_chain->ratchet_key_pair->public_key.data,
                   bob_spk.public_key.data, key_len) != 0);
 
@@ -345,7 +345,7 @@ int main() {
     CIPHER.suite1->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
     CIPHER.suite1->asym_key_gen(&(alice_spk.public_key), &(alice_spk.private_key));
 
-    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    int ad_len = 64;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;

@@ -241,7 +241,7 @@ static size_t verify_and_decrypt_for_new_chain(
         return (size_t)(-1);
     }
 
-    assert(e2ee_msg_payload->ratchet_key.len == CIPHER.suite1->get_crypto_param().key_len);
+    assert(e2ee_msg_payload->ratchet_key.len == CIPHER.suite1->get_crypto_param().asym_key_len);
 
     skissm__receiver_chain_node__init(&new_chain);
     copy_protobuf_from_protobuf(&(new_chain.ratchet_key_public), &(e2ee_msg_payload->ratchet_key));
@@ -384,12 +384,12 @@ void encrypt_ratchet(
     keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
     skissm__message_key__init(keys);
     create_message_keys(ratchet->sender_chain->chain_key, keys);
-    // printf("chain_key index: %u", ratchet->sender_chain->chain_key->index);
+    printf("chain_key index: %u", ratchet->sender_chain->chain_key->index);
     advance_chain_key(ratchet->sender_chain->chain_key);
-    // printf(" ->  %u\n", ratchet->sender_chain->chain_key->index);
+    printf(" ->  %u\n", ratchet->sender_chain->chain_key->index);
 
     uint32_t sequence = keys->index;
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
     uint8_t *ratchet_key_data = (uint8_t *) malloc(key_len);
     memcpy(ratchet_key_data, ratchet->sender_chain->ratchet_key.data, key_len);
 
@@ -416,7 +416,7 @@ size_t decrypt_ratchet(
     Skissm__E2eeRatchet *ratchet, ProtobufCBinaryData ad, Skissm__E2eeMsgPayload *e2ee_msg_payload,
     uint8_t **plaintext
 ) {
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
 
     if (!e2ee_msg_payload->ratchet_key.data
         || !e2ee_msg_payload->ciphertext.data) {

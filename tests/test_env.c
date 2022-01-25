@@ -99,6 +99,7 @@ void load_account(ProtobufCBinaryData *account_id, Skissm__E2eeAccount **account
     (*account)->version = load_version(account_id);
     (*account)->saved = load_saved(account_id);
     load_address(account_id, &((*account)->address));
+    load_password(account_id, &((*account)->password));
 
     load_signed_pre_key_pair(account_id, &((*account)->signed_pre_key));
     load_identity_key_pair(account_id, &((*account)->identity_key));
@@ -154,7 +155,7 @@ void store_account(Skissm__E2eeAccount *account) {
     }
 
     // insert account
-    sqlite_int64 account_id = insert_account(&(account->account_id), account->version, account->saved, address_id, identity_key_pair_id, signed_pre_key_id, account->next_signed_pre_key_id,
+    sqlite_int64 account_id = insert_account(&(account->account_id), account->version, account->saved, address_id, account->password, identity_key_pair_id, signed_pre_key_id, account->next_signed_pre_key_id,
                                              account->next_one_time_pre_key_id);
 
     // insert ACCOUNT_SIGNED_PRE_KEY_PAIR
