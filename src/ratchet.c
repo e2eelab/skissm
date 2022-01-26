@@ -370,6 +370,7 @@ void encrypt_ratchet(
         Skissm__KeyPair *ratchet_key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(ratchet_key_pair);
         CIPHER.suite1->asym_key_gen(&(ratchet_key_pair->public_key), &(ratchet_key_pair->private_key));
+        copy_protobuf_from_protobuf(&(ratchet->sender_chain->ratchet_key), &(ratchet_key_pair->public_key));
         ratchet->sender_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
         skissm__chain_key__init(ratchet->sender_chain->chain_key);
         create_chain_key(
@@ -530,10 +531,6 @@ size_t decrypt_ratchet(
         }
         ratchet->receiver_chains[ratchet->n_receiver_chains] = chain;
         (ratchet->n_receiver_chains)++;
-
-        /* The sender_chain will not be used anymore */
-        skissm__sender_chain_node__free_unpacked(ratchet->sender_chain, NULL);
-        ratchet->sender_chain = NULL;
     }
 
     if (chain->chain_key->index < e2ee_msg_payload->sequence){
