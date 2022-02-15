@@ -120,8 +120,8 @@ static void test_basic_session(){
     setup(&test_event_handler);
     test_begin();
 
-    register_account();
-    register_account();
+    register_account(1);
+    register_account(2);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "Hello, World";
@@ -138,8 +138,8 @@ static void test_interaction(){
     setup(&test_event_handler);
     test_begin();
 
-    register_account();
-    register_account();
+    register_account(1);
+    register_account(2);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "Hi! Bob! This is Alice.";
@@ -161,14 +161,13 @@ static void test_continual_messages(){
     setup(&test_event_handler);
     test_begin();
 
-    register_account();
-    register_account();
+    register_account(1);
+    register_account(2);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    uint8_t plaintext[] = "This message will be sent a lot of times.";
-    size_t plaintext_len = sizeof(plaintext) - 1;
-    int i;
-    for (i = 0; i < 1000; i++){
+    for (int i = 0; i < 1000; i++){
+        uint8_t plaintext[64];
+        size_t plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message will be sent a lot of times.", i);
         test_encryption(account_data[0]->address, account_data[1]->address, plaintext, plaintext_len);
     }
 

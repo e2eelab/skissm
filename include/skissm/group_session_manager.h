@@ -132,10 +132,10 @@ Skissm__E2eeMessage *produce_group_msg(Skissm__E2eeGroupSession *group_session, 
 /**
  * @brief Process an imcoming group message
  *
- * @param user_address
+ * @param receiver_address
  * @param group_msg
  */
-void consume_group_msg(Skissm__E2eeAddress *user_address, Skissm__E2eeMessage *group_msg);
+void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMessage *group_msg);
 
 #ifdef __cplusplus
 }

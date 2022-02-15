@@ -73,7 +73,7 @@ static void test_end() {
 static void on_error(ErrorCode error_code, char *error_msg) { print_error(error_msg, error_code); }
 
 static void on_user_registered(Skissm__E2eeAccount *account) {
-    print_msg("on_user_registered: user_id", account->address->user_id.data, account->address->user_id.len);
+    print_msg("on_user_registered: user_id", (uint8_t *)account->address->user_id, strlen(account->address->user_id));
 
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
@@ -106,7 +106,7 @@ static void on_group_members_added(Skissm__E2eeAddress *group_address, ProtobufC
     size_t n = sizeof(member_addresses);
     print_msg("on_group_members_added: group_name", group_name->data, group_name->len);
     for(int i=0; i<n; i++) {
-        print_msg("    member_id", member_addresses[i]->user_id.data, member_addresses[i]->user_id.len);
+        print_msg("    member_id", (uint8_t *)(member_addresses[i]->user_id), strlen(member_addresses[i]->user_id));
     }
 }
 
@@ -114,7 +114,7 @@ static void on_group_members_removed(Skissm__E2eeAddress *group_address, Protobu
     size_t n = sizeof(member_addresses);
     print_msg("on_group_members_removed: group_name", group_name->data, group_name->len);
     for(int i=0; i<n; i++) {
-        print_msg("    member_id", member_addresses[i]->user_id.data, member_addresses[i]->user_id.len);
+        print_msg("    member_id", (uint8_t *)(member_addresses[i]->user_id), strlen(member_addresses[i]->user_id));
     }
 }
 
@@ -132,8 +132,8 @@ static void test_create_group() {
     test_begin();
 
     // Prepare account
-    register_account();
-    register_account();
+    register_account(1);
+    register_account(2);
 
     // Alice invites Bob to create a group
     Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 2);
@@ -168,9 +168,9 @@ static void test_add_group_members() {
     test_begin();
 
     // Prepare account
-    register_account();
-    register_account();
-    register_account();
+    register_account(1);
+    register_account(2);
+    register_account(3);
 
     // Alice invites Bob to create a group
     Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 2);
@@ -214,9 +214,9 @@ static void test_remove_group_members() {
     test_begin();
 
     // Prepare account
-    register_account();
-    register_account();
-    register_account();
+    register_account(1);
+    register_account(2);
+    register_account(3);
 
     // Alice create a group with Bob and Claire
     Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 3);
@@ -262,9 +262,9 @@ static void test_create_add_remove() {
     test_begin();
 
     // Prepare account
-    register_account();
-    register_account();
-    register_account();
+    register_account(1);
+    register_account(2);
+    register_account(3);
 
     // Alice invites Bob to create a group
     Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 2);
@@ -316,8 +316,8 @@ static void test_create_add_remove() {
 }
 
 int main() {
-    // test_create_group();
-    //test_add_group_members();
+    test_create_group();
+    test_add_group_members();
     test_remove_group_members();
     test_create_add_remove();
 

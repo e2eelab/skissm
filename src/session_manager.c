@@ -44,7 +44,7 @@ Skissm__E2eeMessage *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_
     skissm__e2ee_message__init(outbound_e2ee_message_payload);
 
     outbound_e2ee_message_payload->version = PROTOCOL_VERSION;
-    copy_protobuf_from_protobuf(&(outbound_e2ee_message_payload->session_id), &(outbound_session->session_id));
+    outbound_e2ee_message_payload->session_id = strdup(outbound_session->session_id);
     copy_address_from_address(&(outbound_e2ee_message_payload->from), outbound_session->from);
     copy_address_from_address(&(outbound_e2ee_message_payload->to), outbound_session->to);
 
@@ -89,7 +89,7 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMessage *inbound_e2ee_message_pa
         return (size_t)(-1);
     }
 
-    if (inbound_e2ee_message_payload->session_id.data == NULL) {
+    if (inbound_e2ee_message_payload->session_id == NULL) {
         ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_message_payload()");
         return (size_t)(-1);
     }
@@ -111,7 +111,8 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMessage *inbound_e2ee_message_pa
         Skissm__E2eeAccount *local_account = get_local_account(inbound_e2ee_message_payload->to);
         size_t result = new_inbound_session(inbound_session, local_account, inbound_e2ee_message_payload);
 
-        if (result == (size_t)(-1) || compare_protobuf(&(inbound_session->session_id), &(inbound_e2ee_message_payload->session_id)) == false) {
+        if (result == (size_t)(-1)
+            || safe_strcmp(inbound_session->session_id, inbound_e2ee_message_payload->session_id) == false) {
             close_session(inbound_session);
             ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_message_payload()");
             return (size_t)(-1);
@@ -143,7 +144,7 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMessage *inbound_e2ee_message_pa
                     ssm_notify_one2one_msg(inbound_e2ee_message_payload->from, inbound_e2ee_message_payload->to, e2ee_plaintext->payload.data, e2ee_plaintext->payload.len);
                 } else if (e2ee_plaintext->plaintext_type == SKISSM__E2EE_PLAINTEXT_TYPE__GROUP_PRE_KEY) {
                     Skissm__E2eeGroupPreKeyPayload *group_pre_key_payload = skissm__e2ee_group_pre_key_payload__unpack(NULL, e2ee_plaintext->payload.len, e2ee_plaintext->payload.data);
-                    get_ssm_plugin()->unload_inbound_group_session(inbound_e2ee_message_payload->to, &(group_pre_key_payload->old_session_id));
+                    get_ssm_plugin()->unload_inbound_group_session(inbound_e2ee_message_payload->to, group_pre_key_payload->old_session_id);
                     create_inbound_group_session(group_pre_key_payload, inbound_e2ee_message_payload->to);
                     skissm__e2ee_group_pre_key_payload__free_unpacked(group_pre_key_payload, NULL);
                 }

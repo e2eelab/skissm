@@ -114,7 +114,7 @@ typedef struct skissm_plugin {
      * @param account_id
      * @param account
      */
-    void (*load_account)(ProtobufCBinaryData *, Skissm__E2eeAccount **);
+    void (*load_account)(uint64_t, Skissm__E2eeAccount **);
     /**
      * @brief load all accounts from db
      * @param accounts
@@ -133,13 +133,13 @@ typedef struct skissm_plugin {
      * @param account_id
      * @param identity_key_pair
      */
-    void (*update_identity_key)(ProtobufCBinaryData *, Skissm__KeyPair *);
+    void (*update_identity_key)(uint64_t, Skissm__KeyPair *);
     /**
      * @brief update signed pre key of account to db
      * @param account_id
      * @param signed_pre_key
      */
-    void (*update_signed_pre_key)(ProtobufCBinaryData *,
+    void (*update_signed_pre_key)(uint64_t,
                                   Skissm__SignedPreKeyPair *);
     /**
      * @brief load old signed pre key by spk_id
@@ -147,37 +147,37 @@ typedef struct skissm_plugin {
      * @param spk_id
      * @param signed_pre_key_pair
      */
-    void (*load_old_signed_pre_key)(ProtobufCBinaryData *, uint32_t, Skissm__SignedPreKeyPair **);
+    void (*load_signed_pre_key)(uint64_t, uint32_t, Skissm__SignedPreKeyPair **);
     /**
      * @brief remove expired signed pre key of account from db
      * @param account_id
      */
-    void (*remove_expired_signed_pre_key)(ProtobufCBinaryData *);
+    void (*remove_expired_signed_pre_key)(uint64_t);
     /**
      * @brief update address of account to db
      * @param account_id
      * @param address
      */
-    void (*update_address)(ProtobufCBinaryData *, Skissm__E2eeAddress *);
+    void (*update_address)(uint64_t, Skissm__E2eeAddress *);
     /**
      * @brief add an one time pre key of account to db
      * @param account_id
      * @param one_time_pre_key
      */
-    void (*add_one_time_pre_key)(ProtobufCBinaryData *,
+    void (*add_one_time_pre_key)(uint64_t,
                                  Skissm__OneTimePreKeyPair *);
     /**
      * @brief remove an one time pre key of account to db
      * @param account_id
      * @param one_time_pre_key_id
      */
-    void (*remove_one_time_pre_key)(ProtobufCBinaryData *, uint32_t);
+    void (*remove_one_time_pre_key)(uint64_t, uint32_t);
     /**
      * @brief update an one time pre key of acount from db
      * @param account_id
      * @param one_time_pre_key_id
      */
-    void (*update_one_time_pre_key)(ProtobufCBinaryData *, uint32_t);
+    void (*update_one_time_pre_key)(uint64_t, uint32_t);
 
     // session related handlers
     /**
@@ -186,13 +186,8 @@ typedef struct skissm_plugin {
      * @param owner
      * @param inbound_session
      */
-    void (*load_inbound_session)(ProtobufCBinaryData, Skissm__E2eeAddress *,
+    void (*load_inbound_session)(char *, Skissm__E2eeAddress *,
                                  Skissm__E2eeSession **);
-    /**
-     * @brief store session
-     * @param session
-     */
-    void (*store_session)(Skissm__E2eeSession *);
     /**
      * @brief find outbound session
      * @param owner
@@ -202,6 +197,11 @@ typedef struct skissm_plugin {
     void (*load_outbound_session)(Skissm__E2eeAddress *,
                                   Skissm__E2eeAddress *,
                                   Skissm__E2eeSession **);
+    /**
+     * @brief store session
+     * @param session
+     */
+    void (*store_session)(Skissm__E2eeSession *);
     /**
      * @brief delete old inbound session
      * @param owner
@@ -223,11 +223,12 @@ typedef struct skissm_plugin {
                                         Skissm__E2eeGroupSession **);
     /**
      * @brief find inbound group session
-     * @param group_session_id
-     * @param user_address
+     * @param receiver_address
+     * @param group_address
      * @param outbound_group_session
      */
-    void (*load_inbound_group_session)(ProtobufCBinaryData, Skissm__E2eeAddress *,
+    void (*load_inbound_group_session)(Skissm__E2eeAddress *,
+                                       Skissm__E2eeAddress *,
                                        Skissm__E2eeGroupSession **);
     /**
      * @brief store group session
@@ -244,7 +245,7 @@ typedef struct skissm_plugin {
      * @param user_address
      * @param old_session_id
      */
-    void (*unload_inbound_group_session)(Skissm__E2eeAddress *, ProtobufCBinaryData *);
+    void (*unload_inbound_group_session)(Skissm__E2eeAddress *, char *);
 } skissm_plugin;
 
 // callback handlers

@@ -29,7 +29,7 @@
 static void test_alice_to_bob(
   Skissm__KeyPair alice_ratchet_key,
   Skissm__KeyPair bob_spk,
-  ProtobufCBinaryData session_id,
+  char *session_id,
   ProtobufCBinaryData ad,
   uint8_t *shared_secret
 ) {
@@ -86,7 +86,7 @@ static void test_alice_to_bob(
 static void test_bob_to_alice(
   Skissm__KeyPair alice_ratchet_key,
   Skissm__KeyPair bob_spk,
-  ProtobufCBinaryData session_id,
+  char *session_id,
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
     Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
@@ -134,7 +134,7 @@ static void test_bob_to_alice(
 static void test_out_of_order(
   Skissm__KeyPair alice_ratchet_key,
   Skissm__KeyPair bob_spk,
-  ProtobufCBinaryData session_id,
+  char *session_id,
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
     Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
@@ -193,7 +193,7 @@ static void test_out_of_order(
 static void test_interaction(
   Skissm__KeyPair alice_ratchet_key,
   Skissm__KeyPair bob_spk,
-  ProtobufCBinaryData session_id,
+  char *session_id,
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
     Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
@@ -259,7 +259,7 @@ static void test_two_ratchets(
   Skissm__KeyPair bob_ratchet_key,
   Skissm__KeyPair bob_spk,
   Skissm__KeyPair alice_spk,
-  ProtobufCBinaryData session_id,
+  char *session_id,
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
     /* This ratchet is used only for Alice to Bob. */
@@ -356,19 +356,14 @@ int main() {
       ad.data[i] = associated_data[i];
     }
 
-    ProtobufCBinaryData session_id;
-    random_id(&session_id, CIPHER.suite1->get_crypto_param().hash_len);
+    char *session_id = generate_uuid_str();
 
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
-    // test_alice_to_bob(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
-
-    // test_bob_to_alice(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
-
-    // test_out_of_order(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
-
-    // test_interaction(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
-
+    test_alice_to_bob(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
+    test_bob_to_alice(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
+    test_out_of_order(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
+    test_interaction(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
     test_two_ratchets(alice_ratchet_key, bob_ratchet_key, bob_spk, alice_spk, session_id, ad, shared_secret);
 
     // test stop.

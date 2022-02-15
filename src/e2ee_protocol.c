@@ -279,7 +279,7 @@ void handle_create_group_request(Skissm__E2eeAddress *receiver_address, Skissm__
 void handle_add_group_members_request(Skissm__E2eeAddress *receiver_address, Skissm__E2eeAddress *group_address, size_t adding_member_num,
                                       Skissm__E2eeAddress **adding_member_addresses, Skissm__ResponseData **response_data) {
     Skissm__E2eeGroupSession *group_session = NULL;
-    get_ssm_plugin()->load_outbound_group_session(receiver_address, group_address, &group_session);
+    get_ssm_plugin()->load_inbound_group_session(receiver_address, group_address, &group_session);
 
     // TODO: compare adding_member_addresses
 
@@ -295,10 +295,13 @@ void handle_add_group_members_request(Skissm__E2eeAddress *receiver_address, Ski
         }
         /* delete the old group session */
         get_ssm_plugin()->unload_group_session(group_session);
-        ProtobufCBinaryData *old_session_id = &(group_session->session_id);
+        char *old_session_id = strdup(group_session->session_id);
 
         /* create a new outbound group session */
         create_outbound_group_session(receiver_address, group_address, new_member_addresses, new_member_num, old_session_id);
+
+        // release
+        free_mem((void **)&old_session_id, strlen(old_session_id));
     } else {
         get_group_response_handler *handler = get_group_members(group_address);
         create_outbound_group_session(receiver_address, group_address, handler->member_addresses, handler->member_num, NULL);
@@ -315,7 +318,7 @@ void handle_add_group_members_request(Skissm__E2eeAddress *receiver_address, Ski
 void handle_remove_group_members_request(Skissm__E2eeAddress *receiver_address, Skissm__E2eeAddress *group_address, size_t removing_member_num,
                                          Skissm__E2eeAddress **removing_member_addresses, Skissm__ResponseData **response_data) {
     Skissm__E2eeGroupSession *group_session = NULL;
-    get_ssm_plugin()->load_outbound_group_session(receiver_address, group_address, &group_session);
+    get_ssm_plugin()->load_inbound_group_session(receiver_address, group_address, &group_session);
 
     size_t new_member_num = group_session->n_member_addresses - removing_member_num;
     Skissm__E2eeAddress **new_member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * new_member_num);
@@ -336,10 +339,13 @@ void handle_remove_group_members_request(Skissm__E2eeAddress *receiver_address, 
     }
     /* delete the old group session */
     get_ssm_plugin()->unload_group_session(group_session);
-    ProtobufCBinaryData *old_session_id = &(group_session->session_id);
+    char *old_session_id = strdup(group_session->session_id);
 
     /* create a new outbound group session */
     create_outbound_group_session(receiver_address, group_address, new_member_addresses, new_member_num, old_session_id);
+
+    // release
+    free_mem((void **)&old_session_id, strlen(old_session_id));
 
     /* prepare the response payload */
     *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));

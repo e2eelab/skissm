@@ -32,22 +32,6 @@
 /** length of the shared secret created by a Curve25519 ECDH operation */
 #define CURVE25519_SHARED_SECRET_LENGTH 32
 
-static void create_session_id(Skissm__E2eeSession *session) {
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
-    int hash_output_len = CIPHER.suite1->get_crypto_param().hash_len;
-
-    uint8_t tmp[key_len * 4];
-    uint8_t *pos = tmp;
-    memcpy(pos, session->alice_identity_key.data, key_len);
-    memcpy(pos + key_len, session->alice_ephemeral_key.data, key_len);
-    memcpy(pos + key_len + key_len, session->bob_signed_pre_key.data, key_len);
-    memcpy(pos + key_len + key_len + key_len, session->bob_one_time_pre_key.data, key_len);
-
-    session->session_id.data = (uint8_t *)malloc(sizeof(uint8_t) * hash_output_len);
-    session->session_id.len = hash_output_len;
-    CIPHER.suite1->hash(tmp, sizeof(tmp), session->session_id.data);
-}
-
 void initialise_session(Skissm__E2eeSession *session, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
     skissm__e2ee_session__init(session);
     copy_address_from_address(&(session->from), from);
@@ -145,7 +129,7 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
 
     // Create the root key and chain keys
     initialise_as_alice(session->ratchet, secret, sizeof(secret), &my_ratchet_key, &(their_pre_key_bundle->signed_pre_key_public->public_key));
-    create_session_id(session);
+    session->session_id = generate_uuid_str();
 
     // release
     free_protobuf(&(my_ephemeral_key.private_key));
@@ -162,14 +146,15 @@ size_t new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAcco
 
 size_t new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *local_account, Skissm__E2eeMessage *inbound_message) {
     session->version = inbound_message->version;
-
+    session->session_id = strdup(inbound_message->session_id);
+    
     Skissm__E2eePreKeyPayload *pre_key_context = skissm__e2ee_pre_key_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
 
     /* Verify the signed pre-key */
     bool old_spk = 0;
     Skissm__SignedPreKeyPair *old_spk_data = NULL;
     if (local_account->signed_pre_key_pair->spk_id != pre_key_context->bob_signed_pre_key_id) {
-        get_ssm_plugin()->load_old_signed_pre_key(&(local_account->account_id), pre_key_context->bob_signed_pre_key_id, &old_spk_data);
+        get_ssm_plugin()->load_signed_pre_key(local_account->account_id, pre_key_context->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
             ssm_notify_error(BAD_SIGNED_PRE_KEY, "new_inbound_session()");
             skissm__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
@@ -210,7 +195,7 @@ size_t new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *lo
             return (size_t)(-1);
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
-            get_ssm_plugin()->update_one_time_pre_key(&(local_account->account_id), our_one_time_pre_key->opk_id);
+            get_ssm_plugin()->update_one_time_pre_key(local_account->account_id, our_one_time_pre_key->opk_id);
             copy_protobuf_from_protobuf(&(session->bob_one_time_pre_key), &(our_one_time_pre_key->key_pair->public_key));
             session->bob_one_time_pre_key_id = our_one_time_pre_key->opk_id;
         }
@@ -246,7 +231,6 @@ size_t new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *lo
     }
 
     initialise_as_bob(session->ratchet, secret, sizeof(secret), bob_signed_pre_key);
-    create_session_id(session);
 
     // release
     skissm__signed_pre_key_pair__free_unpacked(old_spk_data, NULL);

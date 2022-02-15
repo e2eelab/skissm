@@ -77,7 +77,7 @@ void create_outbound_group_session(
     Skissm__E2eeAddress *group_address,
     Skissm__E2eeAddress **member_addresses,
     size_t member_num,
-    ProtobufCBinaryData *old_session_id
+    char *old_session_id
 ) {
     int key_len = CIPHER.suite1->get_crypto_param().key_len;
 
@@ -87,13 +87,9 @@ void create_outbound_group_session(
     group_session->version = PROTOCOL_VERSION;
 
     copy_address_from_address(&(group_session->session_owner), user_address);
-
     copy_address_from_address(&(group_session->group_address), group_address);
 
-    group_session->session_id.len = 32;
-    group_session->session_id.data = (uint8_t *) malloc(sizeof(uint8_t) * group_session->session_id.len);
-    get_ssm_plugin()->handle_rg(group_session->session_id.data, group_session->session_id.len);
-
+    group_session->session_id = generate_uuid_str();
     group_session->n_member_addresses = member_num;
 
     copy_member_addresses_from_member_addresses(&(group_session->member_addresses), (const Skissm__E2eeAddress **)member_addresses, member_num);
@@ -120,10 +116,10 @@ void create_outbound_group_session(
 
     group_pre_key_payload->version = GROUP_VERSION;
 
-    copy_protobuf_from_protobuf(&(group_pre_key_payload->session_id), &(group_session->session_id));
+    group_pre_key_payload->session_id = strdup(group_session->session_id);
 
     if (old_session_id != NULL) {
-        copy_protobuf_from_protobuf(&(group_pre_key_payload->old_session_id), old_session_id);
+        group_pre_key_payload->old_session_id = strdup(old_session_id);
     }
 
     copy_address_from_address(&(group_pre_key_payload->group_address), group_address);
@@ -171,7 +167,7 @@ void create_inbound_group_session(
 
     group_session->version = group_pre_key_payload->version;
     copy_address_from_address(&(group_session->session_owner), user_address);
-    copy_protobuf_from_protobuf(&(group_session->session_id), &(group_pre_key_payload->session_id));
+    group_session->session_id = strdup(group_pre_key_payload->session_id);
 
     copy_address_from_address(&(group_session->group_address), group_pre_key_payload->group_address);
     group_session->n_member_addresses = group_pre_key_payload->n_member_addresses;

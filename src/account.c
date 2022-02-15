@@ -49,7 +49,7 @@ void account_begin() {
         }
 
         /* Check and remove signed pre-keys (keep last two) */
-        get_ssm_plugin()->remove_expired_signed_pre_key(&(cur_account->account_id));
+        get_ssm_plugin()->remove_expired_signed_pre_key(cur_account->account_id);
 
         /* Check if there are too many "used" one-time pre-keys */
         free_one_time_pre_key(cur_account);
@@ -68,7 +68,7 @@ void account_end() {
     }
 }
 
-Skissm__E2eeAccount *create_account() {
+Skissm__E2eeAccount *create_account(uint64_t account_id) {
     Skissm__E2eeAccount *account = (Skissm__E2eeAccount *)malloc(sizeof(Skissm__E2eeAccount));
     skissm__e2ee_account__init(account);
 
@@ -76,13 +76,10 @@ Skissm__E2eeAccount *create_account() {
     account->version = PROTOCOL_VERSION;
 
     // Set some initial ids
-    account->next_signed_pre_key_id = 1;
     account->next_one_time_pre_key_id = 1;
 
     // Generate an account ID
-    account->account_id.data = (uint8_t *)malloc(sizeof(uint8_t) * UUID_LEN);
-    account->account_id.len = UUID_LEN;
-    get_ssm_plugin()->handle_generate_uuid(account->account_id.data);
+    account->account_id = account_id;
 
     // Generate the identity key pair
     account->identity_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
@@ -111,8 +108,10 @@ Skissm__E2eeAccount *get_local_account(Skissm__E2eeAddress *address) {
 }
 
 size_t generate_signed_pre_key(Skissm__E2eeAccount *account) {
+    uint32_t next_signed_pre_key_id = 1;
     // Check whether the old signed pre-key exists or not
     if (account->signed_pre_key_pair) {
+        next_signed_pre_key_id = account->signed_pre_key_pair->spk_id + 1;
         skissm__signed_pre_key_pair__free_unpacked(account->signed_pre_key_pair, NULL);
         account->signed_pre_key_pair = NULL;
     }
@@ -125,7 +124,7 @@ size_t generate_signed_pre_key(Skissm__E2eeAccount *account) {
     account->signed_pre_key_pair->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->signed_pre_key_pair->key_pair);
     CIPHER.suite1->mt_key_gen(&(account->signed_pre_key_pair->key_pair->public_key), &(account->signed_pre_key_pair->key_pair->private_key));
-    account->signed_pre_key_pair->spk_id = (account->next_signed_pre_key_id)++;
+    account->signed_pre_key_pair->spk_id = next_signed_pre_key_id;
 
     // Generate signature
     int key_len = CIPHER.suite1->get_crypto_param().key_len;
@@ -251,7 +250,7 @@ void free_one_time_pre_key(Skissm__E2eeAccount *account) {
                 copy_one_time_pre_keys(new_one_time_pre_keys, temp, new_num);
             }
             for (i = 0; i < account->n_one_time_pre_keys; i++) {
-                get_ssm_plugin()->remove_one_time_pre_key(&(account->account_id), account->one_time_pre_keys[i]->opk_id);
+                get_ssm_plugin()->remove_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]->opk_id);
                 skissm__one_time_pre_key_pair__free_unpacked(account->one_time_pre_keys[i], NULL);
                 account->one_time_pre_keys[i] = NULL;
             }

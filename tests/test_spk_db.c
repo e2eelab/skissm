@@ -32,13 +32,13 @@
 void test_load_old_signed_pre_key(){
     setup();
 
-    Skissm__E2eeAccount *account = create_account();
+    Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
-    create_domain(&(account->address->domain));
-    random_id(&(account->address->user_id), 32);
-    random_id(&(account->address->device_id), 32);
+    account->address->domain = create_domain_str();
+    account->address->user_id = generate_uuid_str();
+    account->address->device_id = generate_uuid_str();
 
     /* Save to db */
     account->saved = true;
@@ -56,11 +56,11 @@ void test_load_old_signed_pre_key(){
 
     /* Generate a new signed pre-key pair */
     generate_signed_pre_key(account);
-    get_ssm_plugin()->update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
+    get_ssm_plugin()->update_signed_pre_key(account->account_id, account->signed_pre_key_pair);
 
     /* Load the old signed pre-key */
     Skissm__SignedPreKeyPair *old_spk_copy = NULL;
-    load_old_signed_pre_key(&(account->account_id), old_spk->spk_id, &old_spk_copy);
+    load_signed_pre_key(account->account_id, old_spk->spk_id, &old_spk_copy);
 
     // assert old_spk equals to old_spk_copy
     print_result("test_load_old_signed_pre_key", is_equal_spk(old_spk, old_spk_copy));
@@ -76,13 +76,13 @@ void test_load_old_signed_pre_key(){
 void test_remove_expired_signed_pre_key(){
     setup();
 
-    Skissm__E2eeAccount *account = create_account();
+    Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
-    create_domain(&(account->address->domain));
-    random_id(&(account->address->user_id), 32);
-    random_id(&(account->address->device_id), 32);
+    account->address->domain = create_domain_str();
+    account->address->user_id = generate_uuid_str();
+    account->address->device_id = generate_uuid_str();
 
     /* Save to db */
     account->saved = true;
@@ -92,16 +92,16 @@ void test_remove_expired_signed_pre_key(){
 
     /* Generate a new signed pre-key pair */
     generate_signed_pre_key(account);
-    get_ssm_plugin()->update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
+    get_ssm_plugin()->update_signed_pre_key(account->account_id, account->signed_pre_key_pair);
     generate_signed_pre_key(account);
-    get_ssm_plugin()->update_signed_pre_key(&(account->account_id), account->signed_pre_key_pair);
+    get_ssm_plugin()->update_signed_pre_key(account->account_id, account->signed_pre_key_pair);
 
     /* Remove expired signed pre-keys */
-    remove_expired_signed_pre_key(&(account->account_id));
+    remove_expired_signed_pre_key(account->account_id);
 
     /* Load the old signed pre-key */
     Skissm__SignedPreKeyPair *old_spk_copy = NULL;
-    load_old_signed_pre_key(&(account->account_id), old_spk_id, &old_spk_copy);
+    load_signed_pre_key(account->account_id, old_spk_id, &old_spk_copy);
 
     /* assert old_spk_copy is NULL */
     print_result("test_remove_expired_signed_pre_key", (old_spk_copy == NULL));

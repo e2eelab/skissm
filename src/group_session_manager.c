@@ -18,6 +18,8 @@
  */
 #include "skissm/group_session_manager.h"
 
+#include <string.h>
+
 #include "skissm/cipher.h"
 #include "skissm/e2ee_protocol.h"
 #include "skissm/e2ee_protocol_handler.h"
@@ -81,10 +83,13 @@ static void handle_add_group_members_response(
 
     /* delete the old outbound group session */
     get_ssm_plugin()->unload_group_session(this_handler->outbound_group_session);
-    ProtobufCBinaryData *old_session_id = &(this_handler->outbound_group_session->session_id);
+    char *old_session_id = strdup(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
     create_outbound_group_session(sender_address, group_address, member_addresses, member_num, old_session_id);
+
+    // release
+    free_mem((void **)&old_session_id, strlen(old_session_id));
 }
 
 static void handle_add_group_members_release(
@@ -135,10 +140,13 @@ static void handle_remove_group_members_response(
 
     /* delete the old outbound group session */
     get_ssm_plugin()->unload_group_session(this_handler->outbound_group_session);
-    ProtobufCBinaryData *old_session_id = &(this_handler->outbound_group_session->session_id);
+    char *old_session_id = strdup(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
     create_outbound_group_session(sender_address, group_address, member_addresses, member_num, old_session_id);
+
+    // release
+    free_mem((void **)&old_session_id, strlen(old_session_id));
 }
 
 static void handle_remove_group_members_release(
@@ -261,7 +269,7 @@ Skissm__E2eeMessage *produce_group_msg(Skissm__E2eeGroupSession *group_session, 
     skissm__e2ee_message__init(group_message);
     group_message->msg_type = SKISSM__E2EE_MESSAGE_TYPE__GROUP_MESSAGE;
     group_message->version = group_session->version;
-    copy_protobuf_from_protobuf(&(group_message->session_id), &(group_session->session_id));
+    group_message->session_id = strdup(group_session->session_id);
     copy_address_from_address(&(group_message->from), group_session->session_owner);
     copy_address_from_address(&(group_message->to), group_session->group_address);
 
@@ -324,10 +332,10 @@ void encrypt_group_session(
     close_group_session(group_session);
 }
 
-void consume_group_msg(Skissm__E2eeAddress *user_address, Skissm__E2eeMessage *group_msg) {
+void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMessage *group_msg) {
     /* Load the inbound group session */
     Skissm__E2eeGroupSession *group_session = NULL;
-    get_ssm_plugin()->load_inbound_group_session(group_msg->session_id, user_address, &group_session);
+    get_ssm_plugin()->load_inbound_group_session(receiver_address, group_msg->to, &group_session);
 
     if (group_session == NULL){
         ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_group_msg()");

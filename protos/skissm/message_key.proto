@@ -20,6 +20,7 @@ syntax = "proto3";
 
 package skissm;
 
+option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "MessageKey";
 
 message message_key {

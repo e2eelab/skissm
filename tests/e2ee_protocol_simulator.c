@@ -141,10 +141,9 @@ static void process_register_user_request(
     /* Generate a random address */
     Skissm__E2eeAddress *random_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(random_address);
-    create_domain(&(random_address->domain));
-    random_id(&(random_address->user_id), 32);
-    random_id(&(random_address->device_id), 32);
-
+    random_address->domain = create_domain_str();
+    random_address->user_id = generate_uuid_str();
+    random_address->device_id = generate_uuid_str();
     copy_address_from_address(&(user_data_set[user_data_set_insert_pos].address), random_address);
 
     user_data_set_insert_pos++;
@@ -362,8 +361,8 @@ static void process_create_group_request(
     /* Generate a random address */
     Skissm__E2eeAddress *random_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(random_address);
-    create_domain(&(random_address->domain));
-    random_id(&(random_address->group_id), 32);
+    random_address->domain = create_domain_str();
+    random_address->group_id = generate_uuid_str();
     copy_address_from_address(&(group_data_set[group_data_set_insert_pos].group_address), random_address);
 
     Skissm__CreateGroupResponsePayload *create_group_response_payload = (Skissm__CreateGroupResponsePayload *) malloc(sizeof(Skissm__CreateGroupResponsePayload));

@@ -36,8 +36,9 @@ void supply_opks(supply_opks_handler *response_handler);
 /**
  * @brief Register an account
  *
+ * @param account_id The unique account id
  */
-void register_account();
+void register_account(uint64_t account_id);
 
 /**
  * @brief Publish new spk to messaging server
