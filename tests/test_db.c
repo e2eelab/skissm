@@ -19,7 +19,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
 
 #include "skissm/mem_util.h"
 
@@ -28,7 +27,6 @@
 // global variable
 static const char *db_name = (char *)"test.db";
 static sqlite3 *db;
-static pthread_mutex_t lock;
 
 // util function
 static void sqlite_connect(const char *db_name) {
@@ -145,14 +143,14 @@ static const char *GROUP_SESSION_CREATE_TABLE = "CREATE TABLE GROUP_SESSION( "
                                                 "ADDRESS INTEGER NOT NULL, "
                                                 "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
                                                 "GROUP_DATA BLOB NOT NULL, "
-                                                "HAS_SIGNATURE_PRIVATE_KEY INTEGER NOT NULL, "
+                                                "IS_OUTBOUND INTEGER NOT NULL, "
                                                 "FOREIGN KEY(OWNER) REFERENCES ADDRESS(ID), "
                                                 "FOREIGN KEY(ADDRESS) REFERENCES ADDRESS(ID), "
                                                 "PRIMARY KEY (ADDRESS, OWNER), "
                                                 "UNIQUE (ID, OWNER));";
 
 static const char *GROUP_SESSION_INSERT_OR_REPLACE = "INSERT OR REPLACE INTO GROUP_SESSION "
-                                                     "(ID, OWNER, ADDRESS, GROUP_DATA, HAS_SIGNATURE_PRIVATE_KEY) "
+                                                     "(ID, OWNER, ADDRESS, GROUP_DATA, IS_OUTBOUND) "
                                                      "VALUES (?, ?, ?, ?, ?);";
 
 static const char *GROUP_SESSION_LOAD_DATA_BY_ID_AND_OWNER =
@@ -169,7 +167,7 @@ static const char *GROUP_SESSION_LOAD_OUTBOUND =
     "INNER JOIN ADDRESS as a2 "
     "ON GROUP_SESSION.ADDRESS = a2.ID "
     "WHERE a1.USER_ID = (?) AND a1.DOMAIN = (?) AND a1.DEVICE_ID = (?) AND "
-    "a2.GROUP_ID = (?) AND HAS_SIGNATURE_PRIVATE_KEY = 1 "
+    "a2.GROUP_ID = (?) AND IS_OUTBOUND = 1 "
     "LIMIT 1;";
 
 static const char *GROUP_SESSION_LOAD_INBOUND =
@@ -179,7 +177,7 @@ static const char *GROUP_SESSION_LOAD_INBOUND =
     "INNER JOIN ADDRESS as a2 "
     "ON GROUP_SESSION.ADDRESS = a2.ID "
     "WHERE a1.USER_ID = (?) AND a1.DOMAIN = (?) AND a1.DEVICE_ID = (?) AND "
-    "a2.GROUP_ID = (?) AND HAS_SIGNATURE_PRIVATE_KEY = 0 "
+    "a2.GROUP_ID = (?) AND IS_OUTBOUND = 0 "
     "LIMIT 1;";
 
 static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS = "DELETE FROM GROUP_SESSION "
@@ -432,13 +430,6 @@ static const char *ONETIME_PRE_KEYPAIR_UPDATE_USED = "UPDATE ONETIME_PRE_KEYPAIR
                                                      "WHERE ID = (?);";
 
 void test_db_begin() {
-    // thread, mutex
-    if (pthread_mutex_init(&lock, NULL) != 0)
-    {
-        //mutex init failed
-        exit(-1);
-    }
-
     // connect
     sqlite_connect(db_name);
 
@@ -481,7 +472,6 @@ void test_db_begin() {
 
 void test_db_end() {
     sqlite3_close(db);
-    pthread_mutex_destroy(&lock);
 }
 
 size_t load_ids(sqlite_int64 **account_ids) {
@@ -1348,10 +1338,6 @@ void load_outbound_group_session(Skissm__E2eeAddress *sender_address,
     return;
 }
 
-// signature_private_key is null
-//void load_inbound_group_session(char *group_session_id,
-//                                Skissm__E2eeAddress *receiver_address,
-//                                Skissm__E2eeGroupSession **group_session) {
 void load_inbound_group_session(Skissm__E2eeAddress *receiver_address,
                                 Skissm__E2eeAddress *group_address,
                                 Skissm__E2eeGroupSession **group_session) {
