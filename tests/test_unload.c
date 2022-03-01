@@ -49,8 +49,8 @@ void test_unload_inbound_group_session(){
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
-    create_domain(&(group_address->domain));
-    random_id(&(group_address->group_id), 32);
+    group_address->domain = create_domain_str();
+    group_address->group_id = generate_uuid_str();
 
     // create inbound group session
     Skissm__E2eeGroupSession *group_session = (Skissm__E2eeGroupSession *) malloc(sizeof(Skissm__E2eeGroupSession));
@@ -62,9 +62,7 @@ void test_unload_inbound_group_session(){
 
     copy_address_from_address(&(group_session->group_address), group_address);
 
-    group_session->session_id.len = 32;
-    group_session->session_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(group_session->session_id.data, "01234567890123456789012345678901", 32);
+    group_session->session_id = generate_uuid_str();
 
     group_session->n_member_addresses = 2;
 
@@ -74,7 +72,7 @@ void test_unload_inbound_group_session(){
 
     group_session->chain_key.len = 32;
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(group_session->chain_key.data, "01234567890123456789012345678901", 32);
+    get_ssm_plugin()->handle_rg(group_session->chain_key.data, 32);
 
     crypto_curve25519_generate_key_pair(&(group_session->signature_public_key), &(group_session->signature_private_key));
 
@@ -87,11 +85,11 @@ void test_unload_inbound_group_session(){
     store_group_session(group_session);
 
     // unload the group session
-    unload_inbound_group_session(Alice, &(group_session->session_id));
+    unload_inbound_group_session(Alice, group_session->session_id);
 
     // try to load the unloaded group session
     Skissm__E2eeGroupSession *group_session_copy = NULL;
-    load_inbound_group_session(group_session->session_id, Alice, &group_session_copy);
+    load_inbound_group_session(Alice, group_session->group_address, &group_session_copy);
 
     // assert group_session_copy is NULL
     print_result("test_unload_inbound_group_session", (group_session_copy == NULL));

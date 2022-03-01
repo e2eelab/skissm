@@ -208,6 +208,12 @@ void send_one2one_msg(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee
  */
 void send_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) ;
 
+void send_invite_request(Skissm__E2eeSession *outbound_session, ProtobufCBinaryData *ciphertext_2,
+                         ProtobufCBinaryData *ciphertext_3, ProtobufCBinaryData *ciphertext_4
+);
+
+void send_accept_request(ProtobufCBinaryData *ciphertext_1);
+
 /**
  * @brief Send a create group request to messaging server
  *

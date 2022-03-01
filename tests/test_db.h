@@ -26,51 +26,52 @@
 void test_db_begin();
 void test_db_end();
 void load_id(ProtobufCBinaryData **account_id);
-size_t load_ids(ProtobufCBinaryData ***account_ids);
-uint32_t load_version(ProtobufCBinaryData *account_id);
-protobuf_c_boolean load_saved(ProtobufCBinaryData *account_id);
-
-void load_address(ProtobufCBinaryData *account_id, Skissm__E2eeAddress **address);
-void load_password(ProtobufCBinaryData *account_id, char **password);
-void load_identity_key_pair(ProtobufCBinaryData *account_id, Skissm__IdentityKey **identity_key);
+size_t load_ids(sqlite_int64 **account_ids);
+uint32_t load_version(uint64_t account_id);
+protobuf_c_boolean load_saved(uint64_t account_id);
+void load_address(uint64_t account_id, Skissm__E2eeAddress **address);
+void load_password(uint64_t account_id, char *password);
+uint32_t load_cipher_suite_id(uint64_t account_id);
+void load_identity_key_pair(uint64_t account_id, Skissm__IdentityKey **identity_key_pair);
 void load_signed_pre_key_pair(
-    ProtobufCBinaryData *account_id,
+    uint64_t account_id,
     Skissm__SignedPreKey **signed_pre_key);
-int load_n_one_time_pre_keys(ProtobufCBinaryData *account_id);
+int load_n_one_time_pre_keys(uint64_t account_id);
 uint32_t load_one_time_pre_keys(
-    ProtobufCBinaryData *account_id,
+    uint64_t account_id,
     Skissm__OneTimePreKey ***one_time_pre_keys);
-uint32_t load_next_signed_pre_key_id(ProtobufCBinaryData *account_id);
-uint32_t load_next_one_time_pre_key_id(ProtobufCBinaryData *account_id);
-void load_id_by_address(Skissm__E2eeAddress *address, ProtobufCBinaryData **account_id);
+uint32_t load_next_signed_pre_key_id(uint64_t account_id);
+uint32_t load_next_one_time_pre_key_id(uint64_t account_id);
+void load_id_by_address(Skissm__E2eeAddress *address, sqlite_int64 *account_id);
 sqlite_int64 insert_address(Skissm__E2eeAddress *address);
 sqlite_int64 insert_key_pair(Skissm__KeyPair *key_pair);
 sqlite_int64 insert_identity_key(Skissm__IdentityKey *identity_key);
 sqlite_int64 insert_signed_pre_key(Skissm__SignedPreKey *signed_pre_key);
 sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key);
-sqlite_int64 insert_account(ProtobufCBinaryData *account_id, int version, protobuf_c_boolean saved,
-                            sqlite_int64 address_id, const char *password, sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
-                            sqlite_int64 next_signed_pre_key_id, sqlite_int64 next_one_time_pre_key_id);
-void insert_account_identity_key_id(sqlite_int64 account_id, sqlite_int64 identity_key_id);
-void insert_account_signed_pre_key_id(sqlite_int64 account_id,
+sqlite_int64 insert_account(uint64_t account_id, int version, protobuf_c_boolean saved,
+                            sqlite_int64 address_id, const char *password, int cipher_suite_id,
+                            sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
+                            sqlite_int64 next_one_time_pre_key_id);
+void insert_account_identity_key_id(uint64_t account_id, sqlite_int64 identity_key_id);
+void insert_account_signed_pre_key_id(uint64_t account_id,
                                       sqlite_int64 signed_pre_key_id);
-void insert_account_one_time_pre_key_id(sqlite_int64 account_id,
+void insert_account_one_time_pre_key_id(uint64_t account_id,
                                         sqlite_int64 one_time_pre_key_id);
-void update_identity_key(ProtobufCBinaryData *account_id, Skissm__IdentityKey *identity_key);
-void update_signed_pre_key(ProtobufCBinaryData *account_id, Skissm__SignedPreKey *signed_pre_key);
-void load_old_signed_pre_key(ProtobufCBinaryData *account_id, uint32_t spk_id, Skissm__SignedPreKey **signed_pre_key);
-void remove_expired_signed_pre_key(ProtobufCBinaryData *account_id);
-void update_address(ProtobufCBinaryData *account_id, Skissm__E2eeAddress *address);
-void remove_one_time_pre_key(ProtobufCBinaryData *account_id, uint32_t one_time_pre_key_id);
-void update_one_time_pre_key(ProtobufCBinaryData *account_id, uint32_t one_time_pre_key_id);
-void add_one_time_pre_key(ProtobufCBinaryData *account_id, Skissm__OneTimePreKey *one_time_pre_key);
-void load_inbound_session(ProtobufCBinaryData session_id,
+void update_identity_key(uint64_t account_id, Skissm__IdentityKey *identity_key_pair);
+void update_signed_pre_key(uint64_t account_id, Skissm__SignedPreKey *signed_pre_key);
+void load_signed_pre_key(uint64_t account_id, uint32_t spk_id, Skissm__SignedPreKey **signed_pre_key_pair);
+void remove_expired_signed_pre_key(uint64_t account_id);
+void update_address(uint64_t account_id, Skissm__E2eeAddress *address);
+void remove_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id);
+void update_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id);
+void add_one_time_pre_key(uint64_t account_id, Skissm__OneTimePreKey *one_time_pre_key);
+void load_inbound_session(char *session_id,
                           Skissm__E2eeAddress *owner,
                           Skissm__E2eeSession **session);
-void store_session(Skissm__E2eeSession *session);
 void load_outbound_session(Skissm__E2eeAddress *owner,
                            Skissm__E2eeAddress *to,
                            Skissm__E2eeSession **session);
+void store_session(Skissm__E2eeSession *session);
 void unload_session(
     Skissm__E2eeAddress *owner,
     Skissm__E2eeAddress *from,
@@ -81,16 +82,16 @@ void load_outbound_group_session(
     Skissm__E2eeAddress *group_address,
     Skissm__E2eeGroupSession **group_session);
 void load_inbound_group_session(
-    ProtobufCBinaryData group_session_id,
-    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__E2eeAddress *group_address,
     Skissm__E2eeGroupSession **group_session);
 void store_group_session(
     Skissm__E2eeGroupSession *group_session);
 void unload_group_session(
     Skissm__E2eeGroupSession *group_session);
 void unload_inbound_group_session(
-    Skissm__E2eeAddress *user_address,
-    ProtobufCBinaryData *old_session_id
+    Skissm__E2eeAddress *receiver_address,
+    char *session_id
 );
 
 #endif /* TEST_DB_H_ */

@@ -30,4 +30,5 @@
         "string_view": "c",
         "ranges": "c"
     },
+    "cmake.configureOnOpen": true,
 }

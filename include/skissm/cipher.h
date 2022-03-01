@@ -171,14 +171,27 @@ typedef struct cipher_suite {
 
 struct cipher {
   const struct cipher_suite *suite1;
+  const struct cipher_suite *suite2;
 };
 
 extern const struct cipher_suite E2EE_ECDH_X25519_AES256_GCM_SHA256;
 
+extern const struct cipher_suite E2EE_PQC_AES256_GCM_SHA256;
+
 #define CIPHER_INIT                                                            \
-  { &E2EE_ECDH_X25519_AES256_GCM_SHA256 }
+  { &E2EE_ECDH_X25519_AES256_GCM_SHA256, &E2EE_PQC_AES256_GCM_SHA256 }
 
 extern const struct cipher CIPHER;
+
+size_t aes256_gcm_encrypt(const uint8_t *ad, const uint8_t *aes_key,
+    const uint8_t *plaintext, size_t plaintext_len, uint8_t **ciphertext
+);
+
+size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
+    const uint8_t *ciphertext, size_t ciphertext_len, uint8_t **plaintext
+);
+
+const cipher_suite *get_cipher_suite(uint32_t cipher_suite_id);
 
 #ifdef __cplusplus
 }

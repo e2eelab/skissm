@@ -144,10 +144,9 @@ static void process_register_user_request(
     /* Generate a random address */
     Skissm__E2eeAddress *random_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(random_address);
-    create_domain(&(random_address->domain));
-    random_id(&(random_address->user_id), 32);
-    random_id(&(random_address->device_id), 32);
-
+    random_address->domain = create_domain_str();
+    random_address->user_id = generate_uuid_str();
+    random_address->device_id = generate_uuid_str();
     copy_address_from_address(&(user_data_set[user_data_set_insert_pos].address), random_address);
 
     user_data_set_insert_pos++;
@@ -351,6 +350,52 @@ complete:
     skissm__supply_opks_response_payload__free_unpacked(payload, NULL);
 }
 
+static void process_invite_request(
+    Skissm__E2eeProtocolMsg *request,
+    Skissm__E2eeProtocolMsg *response
+) {
+    response->cmd = SKISSM__E2EE_COMMANDS__invite_response;
+
+    /* prepare response payload */
+    Skissm__ResponseData *response_data = (Skissm__ResponseData *) malloc(sizeof(Skissm__ResponseData));
+    skissm__response_data__init(response_data);
+
+    /* sending */
+    mock_protocol_send(request, NULL);
+
+    response_data->code = OK;
+    response->id = request->id;
+    response->payload.len = skissm__response_data__get_packed_size(response_data);
+    response->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * response->payload.len);
+    skissm__response_data__pack(response_data, response->payload.data);
+
+    /* release */
+    skissm__response_data__free_unpacked(response_data, NULL);
+}
+
+static void process_accept_request(
+    Skissm__E2eeProtocolMsg *request,
+    Skissm__E2eeProtocolMsg *response
+) {
+    response->cmd = SKISSM__E2EE_COMMANDS__accept_response;
+
+    /* prepare response payload */
+    Skissm__ResponseData *response_data = (Skissm__ResponseData *) malloc(sizeof(Skissm__ResponseData));
+    skissm__response_data__init(response_data);
+
+    /* sending */
+    mock_protocol_send(request, NULL);
+
+    response_data->code = OK;
+    response->id = request->id;
+    response->payload.len = skissm__response_data__get_packed_size(response_data);
+    response->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * response->payload.len);
+    skissm__response_data__pack(response_data, response->payload.data);
+
+    /* release */
+    skissm__response_data__free_unpacked(response_data, NULL);
+}
+
 static void process_create_group_request(
     Skissm__E2eeProtocolMsg *request,
     Skissm__E2eeProtocolMsg *response
@@ -368,8 +413,8 @@ static void process_create_group_request(
     /* Generate a random address */
     Skissm__E2eeAddress *random_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(random_address);
-    create_domain(&(random_address->domain));
-    random_id(&(random_address->group_id), 32);
+    random_address->domain = create_domain_str();
+    random_address->group_id = generate_uuid_str();
     copy_address_from_address(&(group_data_set[group_data_set_insert_pos].group_address), random_address);
 
     Skissm__CreateGroupResponsePayload *create_group_response_payload = (Skissm__CreateGroupResponsePayload *) malloc(sizeof(Skissm__CreateGroupResponsePayload));
@@ -719,6 +764,12 @@ void mock_protocol_receive(uint8_t *msg, size_t msg_len){
     case SKISSM__E2EE_COMMANDS__supply_opks_response:
         process_supply_opks_response(client_msg);
         return;
+        break;
+    case SKISSM__E2EE_COMMANDS__invite_request:
+        process_invite_request(client_msg, response);
+        break;
+    case SKISSM__E2EE_COMMANDS__accept_request:
+        process_accept_request(client_msg, response);
         break;
     case SKISSM__E2EE_COMMANDS__create_group_request:
         process_create_group_request(client_msg, response);

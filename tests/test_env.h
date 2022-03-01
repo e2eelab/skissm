@@ -19,24 +19,23 @@
 #ifndef TEST_ENV_H_
 #define TEST_ENV_H_
 
-#include <stdint.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #include "skissm/skissm.h"
 
-#define E2EELAB_DOMAIN      "e2eelab.org"
+#define E2EELAB_DOMAIN "e2eelab.org"
 
 extern const char *db_name;
 
 void setup();
 void tear_down();
 
+char *create_domain_str();
 void create_domain(ProtobufCBinaryData *domain);
-void random_id(ProtobufCBinaryData *id, size_t len);
-char *random_chars(size_t len);
 
-void load_account(ProtobufCBinaryData *id, Skissm__E2eeAccount **account);
-void load_account_by_address(Skissm__E2eeAddress *address_p, Skissm__E2eeAccount **account_pp);
+void load_account(uint64_t account_id, Skissm__E2eeAccount **account);
+void load_account_by_address(Skissm__E2eeAddress *address, Skissm__E2eeAccount **account);
 void store_account(Skissm__E2eeAccount *account);
 #endif /* TEST_ENV_H_ */

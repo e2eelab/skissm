@@ -42,7 +42,7 @@ void create_outbound_group_session(
     Skissm__E2eeAddress *group_address,
     Skissm__E2eeAddress **member_addresses,
     size_t member_num,
-    ProtobufCBinaryData *old_session_id
+    char *old_session_id
 );
 
 /**

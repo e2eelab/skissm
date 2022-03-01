@@ -41,13 +41,13 @@ static void free_opks(Skissm__OneTimePreKey ***opks, uint32_t opk_num){
 void test_update_one_time_pre_key(){
     setup();
 
-    Skissm__E2eeAccount *account = create_account();
+    Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
-    create_domain(&(account->address->domain));
-    random_id(&(account->address->user_id), 32);
-    random_id(&(account->address->device_id), 32);
+    account->address->domain = create_domain_str();
+    account->address->user_id = generate_uuid_str();
+    account->address->device_id = generate_uuid_str();
 
     /* Save to db */
     account->saved = true;
@@ -57,11 +57,11 @@ void test_update_one_time_pre_key(){
     uint32_t opk_id = account->one_time_pre_keys[used_opk]->opk_id;
 
     mark_opk_as_used(account, opk_id);
-    update_one_time_pre_key(&(account->account_id), opk_id);
+    update_one_time_pre_key(account->account_id, opk_id);
 
     /* load the one-time pre-keys */
     Skissm__OneTimePreKey **opk_copy = NULL;
-    uint32_t opk_num = load_one_time_pre_keys(&(account->account_id), &opk_copy);
+    uint32_t opk_num = load_one_time_pre_keys(account->account_id, &opk_copy);
 
     /* assert the opk is used */
     print_result("test_update_one_time_pre_key", (opk_copy[used_opk]->used == true));
@@ -76,13 +76,13 @@ void test_update_one_time_pre_key(){
 void test_remove_one_time_pre_key(){
     setup();
 
-    Skissm__E2eeAccount *account = create_account();
+    Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
-    create_domain(&(account->address->domain));
-    random_id(&(account->address->user_id), 32);
-    random_id(&(account->address->device_id), 32);
+    account->address->domain = create_domain_str();
+    account->address->user_id = generate_uuid_str();
+    account->address->device_id = generate_uuid_str();
 
     /* Save to db */
     account->saved = true;
@@ -93,12 +93,12 @@ void test_remove_one_time_pre_key(){
     int used_opk_num = 80;
     int i;
     for (i = 0; i < used_opk_num; i++){
-        remove_one_time_pre_key(&(account->account_id), account->one_time_pre_keys[i]->opk_id);
+        remove_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]->opk_id);
     }
 
     /* load the one-time pre-keys */
     Skissm__OneTimePreKey **opk_copy = NULL;
-    uint32_t opk_num = load_one_time_pre_keys(&(account->account_id), &opk_copy);
+    uint32_t opk_num = load_one_time_pre_keys(account->account_id, &opk_copy);
 
     /* check if the opks are deleted */
     print_result("test_remove_one_time_pre_key", (opk_num == origin_opk_num - used_opk_num));

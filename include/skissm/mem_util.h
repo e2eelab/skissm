@@ -36,6 +36,8 @@ bool is_equal(
     size_t length
 );
 
+char *generate_uuid_str();
+
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2);
 
 bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *address_2);

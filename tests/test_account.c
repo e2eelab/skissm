@@ -49,7 +49,7 @@ int main(){
     setup();
 
     // Register test
-    Skissm__E2eeAccount *account = create_account();
+    Skissm__E2eeAccount *account = create_account(1);
 
     assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);

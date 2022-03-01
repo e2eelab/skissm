@@ -139,6 +139,25 @@ size_t crypto_aes_decrypt_gcm(
     const uint8_t *add, size_t add_len,
     uint8_t *output);
 
+/**
+ * @brief Encode to base64 string
+ *
+ * @param msg
+ * @param msg_len
+ * @return char*
+ */
+char *crypto_base64_encode(const uint8_t *msg, size_t msg_len);
+
+/**
+ * @brief Decode from base64 string
+ *
+ * @param base64_msg
+ * @param base64_msg_len
+ * @return char*
+ */
+char *crypto_base64_decode(const uint8_t *base64_msg, size_t base64_msg_len);
+
+
 #ifdef __cplusplus
 }
 #endif

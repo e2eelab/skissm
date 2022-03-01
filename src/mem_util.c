@@ -20,12 +20,21 @@
 
 #include <string.h>
 
+#include "skissm/crypto.h"
+
 bool is_equal(const uint8_t *buffer_a, const uint8_t *buffer_b, size_t length) {
     uint8_t volatile result = 0;
     while (length--) {
         result |= (*(buffer_a++)) ^ (*(buffer_b++));
     }
     return result == 0;
+}
+
+char *generate_uuid_str() {
+    uint8_t uuid[UUID_LEN];
+    get_ssm_plugin()->handle_generate_uuid(uuid);
+    // to base64
+    return crypto_base64_encode(uuid, UUID_LEN);
 }
 
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
@@ -47,17 +56,13 @@ bool safe_strcmp(char *str1, char *str2) {
 }
 
 bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *address_2) {
-    if ((address_1->user_id.len == address_2->user_id.len) && (address_1->domain.len == address_2->domain.len) && (address_1->device_id.len == address_2->device_id.len) &&
-        (address_1->group_id.len == address_2->group_id.len)) {
-        if ((memcmp(address_1->user_id.data, address_2->user_id.data, address_1->user_id.len) == 0) && (memcmp(address_1->domain.data, address_2->domain.data, address_1->domain.len) == 0) &&
-            (memcmp(address_1->device_id.data, address_2->device_id.data, address_1->device_id.len) == 0) &&
-            (memcmp(address_1->group_id.data, address_2->group_id.data, address_1->group_id.len) == 0)) {
-            return true;
-        }
+    if (address_1 == NULL || address_2 == NULL)
         return false;
-    }
 
-    return false;
+    return safe_strcmp(address_1->user_id, address_2->user_id)
+        && safe_strcmp(address_1->domain, address_2->domain)
+        && safe_strcmp(address_1->device_id, address_2->device_id)
+        && safe_strcmp(address_1->group_id, address_2->group_id);
 }
 
 void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src) {
@@ -77,25 +82,17 @@ void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src
 void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAddress *src) {
     *dest = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(*dest);
-    if (src->user_id.data) {
-        (*dest)->user_id.len = src->user_id.len;
-        (*dest)->user_id.data = (uint8_t *)malloc(sizeof(uint8_t) * src->user_id.len);
-        memcpy((*dest)->user_id.data, src->user_id.data, src->user_id.len);
+    if (src->user_id != NULL){
+        (*dest)->user_id = strdup(src->user_id);
     }
-    if (src->domain.data) {
-        (*dest)->domain.len = src->domain.len;
-        (*dest)->domain.data = (uint8_t *)malloc(sizeof(uint8_t) * src->domain.len);
-        memcpy((*dest)->domain.data, src->domain.data, src->domain.len);
+    if (src->domain != NULL){
+        (*dest)->domain = strdup(src->domain);
     }
-    if (src->device_id.data) {
-        (*dest)->device_id.len = src->device_id.len;
-        (*dest)->device_id.data = (uint8_t *)malloc(sizeof(uint8_t) * src->device_id.len);
-        memcpy((*dest)->device_id.data, src->device_id.data, src->device_id.len);
+    if (src->device_id != NULL){
+        (*dest)->device_id = strdup(src->device_id);
     }
-    if (src->group_id.data) {
-        (*dest)->group_id.len = src->group_id.len;
-        (*dest)->group_id.data = (uint8_t *)malloc(sizeof(uint8_t) * src->group_id.len);
-        memcpy((*dest)->group_id.data, src->group_id.data, src->group_id.len);
+    if (src->group_id != NULL){
+        (*dest)->group_id = strdup(src->group_id);
     }
 }
 
@@ -138,9 +135,7 @@ void copy_account_from_account(Skissm__E2eeAccount **dest, Skissm__E2eeAccount *
     *dest = (Skissm__E2eeAccount *)malloc(sizeof(Skissm__E2eeAccount));
     skissm__e2ee_account__init(*dest);
     (*dest)->version = src->version;
-    if (src->account_id.data) {
-        copy_protobuf_from_protobuf(&((*dest)->account_id), &(src->account_id));
-    }
+    (*dest)->account_id = src->account_id;
     (*dest)->saved = src->saved;
     if (src->address) {
         copy_address_from_address(&((*dest)->address), src->address);
@@ -155,7 +150,6 @@ void copy_account_from_account(Skissm__E2eeAccount **dest, Skissm__E2eeAccount *
         copy_opks_from_opks(&((*dest)->one_time_pre_keys), src->one_time_pre_keys, src->n_one_time_pre_keys);
     }
     (*dest)->n_one_time_pre_keys = src->n_one_time_pre_keys;
-    (*dest)->next_signed_pre_key_id = src->next_signed_pre_key_id;
     (*dest)->next_one_time_pre_key_id = src->next_one_time_pre_key_id;
 }
 

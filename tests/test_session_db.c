@@ -65,9 +65,7 @@ void test_find_session()
     session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
     memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
-    session->session_id.len = 32;
-    session->session_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->session_id.data, "01234567890123456789012345678901", 32);
+    session->session_id = generate_uuid_str();
 
     // insert to the db
     store_session(session);
@@ -120,9 +118,7 @@ void test_load_session()
     session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
     memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
-    session->session_id.len = 32;
-    session->session_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->session_id.data, "01234567890123456789012345678901", 32);
+    session->session_id = generate_uuid_str();
 
     // insert to the db
     store_session(session);
@@ -160,8 +156,8 @@ void test_load_outbound_group_session()
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
-    create_domain(&(group_address->domain));
-    random_id(&(group_address->group_id), 32);
+    group_address->domain = create_domain_str();
+    group_address->group_id = generate_uuid_str();
 
     // create outbound group session
     Skissm__E2eeGroupSession *group_session = (Skissm__E2eeGroupSession *) malloc(sizeof(Skissm__E2eeGroupSession));
@@ -173,9 +169,7 @@ void test_load_outbound_group_session()
 
     copy_address_from_address(&(group_session->group_address), group_address);
 
-    group_session->session_id.len = 32;
-    group_session->session_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(group_session->session_id.data, "01234567890123456789012345678901", 32);
+    group_session->session_id = generate_uuid_str();
 
     group_session->n_member_addresses = 2;
 
@@ -232,8 +226,8 @@ void test_load_inbound_group_session()
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
-    create_domain(&(group_address->domain));
-    random_id(&(group_address->group_id), 32);
+    group_address->domain = create_domain_str();
+    group_address->group_id = generate_uuid_str();
 
     // create inbound group session
     Skissm__E2eeGroupSession *group_session = (Skissm__E2eeGroupSession *) malloc(sizeof(Skissm__E2eeGroupSession));
@@ -245,9 +239,7 @@ void test_load_inbound_group_session()
 
     copy_address_from_address(&(group_session->group_address), group_address);
 
-    group_session->session_id.len = 32;
-    group_session->session_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(group_session->session_id.data, "01234567890123456789012345678901", 32);
+    group_session->session_id = generate_uuid_str();
 
     group_session->n_member_addresses = 2;
 
@@ -259,19 +251,23 @@ void test_load_inbound_group_session()
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(group_session->chain_key.data, "01234567890123456789012345678901", 32);
 
+    // inbound group session has no signature_private_key
     crypto_curve25519_generate_key_pair(&(group_session->signature_public_key), &(group_session->signature_private_key));
+    free_mem((void **)&(group_session->signature_private_key.data), group_session->signature_private_key.len);
+    group_session->signature_private_key.data = NULL;
+    group_session->signature_private_key.len = 0;
 
     group_session->associated_data.len = AD_LENGTH;
     group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
-    memcpy(group_session->associated_data.data, group_session->chain_key.data, 32);
-    memcpy((group_session->associated_data.data) + 32, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    memcpy(group_session->associated_data.data, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
 
     // insert to the db
     store_group_session(group_session);
 
     // load_inbound_group_session for owner: Alice
     Skissm__E2eeGroupSession *group_session_copy = NULL;
-    load_inbound_group_session(group_session->session_id, Alice, &group_session_copy);
+    load_inbound_group_session(Alice, group_session->group_address, &group_session_copy);
 
     // assert session equals to session_copy
     print_result("test_load_inbound_group_session", is_equal_group_session(group_session, group_session_copy));
@@ -317,9 +313,7 @@ void test_store_session()
     session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
     memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
-    session->session_id.len = 32;
-    session->session_id.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->session_id.data, "01234567890123456789012345678901", 32);
+    session->session_id = generate_uuid_str();
 
     // initialise ratchet
     initialise_ratchet(&(session->ratchet));

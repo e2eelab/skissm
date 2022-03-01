@@ -88,6 +88,8 @@ set(skissm_src
     src/account_manager.c
     src/account.c
     src/cipher.c
+    src/cipher_ecc.c
+    src/cipher_pqc.c
     src/crypto.c
     src/e2ee_protocol.c
     src/error.c
@@ -96,6 +98,8 @@ set(skissm_src
     src/mem_util.c
     src/ratchet.c
     src/session.c
+    src/session_ecc.c
+    src/session_pqc.c
     src/session_manager.c
     src/skissm.c)
 

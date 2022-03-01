@@ -13,6 +13,7 @@ endif()
 set(src_crypto
     aes.c
     aesni.c
+    base64.c
     cipher.c
     cipher_wrap.c
     gcm.c

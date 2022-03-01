@@ -28,6 +28,7 @@
 #include "md.h"
 #include "platform.h"
 #include "sha256.h"
+#include "base64.h"
 
 #include "skissm/account.h"
 #include "skissm/mem_util.h"
@@ -180,4 +181,19 @@ void crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
   ret = mbedtls_sha256_finish_ret(&ctx, hash_out);
 
   mbedtls_sha256_free(&ctx);
+}
+
+char *crypto_base64_encode(const uint8_t *msg, size_t msg_len) {
+    size_t len = 4 * ((msg_len + 2) / 3) + 1;
+    char* output = (char*)malloc(sizeof(char) * len);
+    mbedtls_base64_encode((unsigned char *)output, len, &len, (const unsigned char *)msg, msg_len);
+    return output;
+}
+
+char *crypto_base64_decode(const uint8_t *base64_msg, size_t base64_msg_len) {
+    int pad = base64_msg_len > 0 && (base64_msg_len % 4 || base64_msg[base64_msg_len - 1] == '=');
+    size_t len = ((len + 3) / 4 - pad) * 4 + 1;
+    char* output = (char*)malloc(sizeof(char) * len);
+    mbedtls_base64_decode((unsigned char*)output, len, &len, (const unsigned char *)base64_msg, base64_msg_len);
+    return output;
 }

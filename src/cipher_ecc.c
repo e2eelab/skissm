@@ -16,30 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-syntax = "proto3";
+#include "skissm/cipher.h"
 
-package skissm;
+#include <stdbool.h>
+#include <string.h>
 
-option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeSession";
+#include "skissm/crypto.h"
 
-import "skissm/e2ee_address.proto";
-import "skissm/e2ee_ratchet.proto";
-
-message e2ee_session {
-    uint32 version = 1;
-    string session_id = 2;
-    skissm.e2ee_address session_owner = 3;
-    skissm.e2ee_address from = 4;
-    skissm.e2ee_address to = 5;
-    skissm.e2ee_ratchet ratchet = 6;
-    bytes alice_identity_key = 7;
-    bytes alice_ephemeral_key = 8;
-    bytes bob_signed_pre_key = 9;
-    uint32 bob_signed_pre_key_id = 10;
-    bytes bob_one_time_pre_key = 11;
-    uint32 bob_one_time_pre_key_id = 12;
-
-    bool responded = 13;
-    bytes associated_data = 14;
-}
+const struct cipher_suite E2EE_ECDH_X25519_AES256_GCM_SHA256 = {
+    get_ecdh_x25519_aes256_gcm_sha256_param,
+    crypto_curve25519_generate_key_pair,
+    crypto_curve25519_generate_key_pair,
+    crypto_curve25519_dh,
+    aes256_gcm_encrypt,
+    aes256_gcm_decrypt,
+    crypto_curve25519_sign,
+    crypto_curve25519_verify,
+    crypto_hkdf_sha256,
+    crypto_hmac_sha256,
+    crypto_sha256
+};

@@ -27,7 +27,7 @@ import "skissm/e2ee_address.proto";
 
 message e2ee_group_session {
     uint32 version = 1;
-    bytes session_id = 2;
+    string session_id = 2;
     skissm.e2ee_address session_owner = 3;
     skissm.e2ee_address group_address = 4;
     repeated skissm.e2ee_address member_addresses = 5;

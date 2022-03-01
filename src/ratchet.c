@@ -172,7 +172,7 @@ static size_t verify_and_decrypt(
     );
 
     if (result == (size_t)(-1))
-        ssm_notify_error(BAD_MESSAGE_DECRYPTION, "verify_mac_and_decrypt()");
+        ssm_notify_error(BAD_MESSAGE_DECRYPTION, "verify_and_decrypt()");
 
     return result;
 }
@@ -184,13 +184,13 @@ static size_t verify_and_decrypt_for_existing_chain(
     uint8_t **plaintext
 ) {
     if (e2ee_msg_payload->sequence < chain->index) {
-        ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_mac_and_decrypt_for_existing_chain()");
+        ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
         return (size_t)(-1);
     }
 
     /* Limit the number of hashes we're prepared to compute */
     if (e2ee_msg_payload->sequence - chain->index > MAX_CHAIN_INDEX) {
-        ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_mac_and_decrypt_for_existing_chain()");
+        ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
         return (size_t)(-1);
     }
 
@@ -227,17 +227,16 @@ static size_t verify_and_decrypt_for_new_chain(
     ProtobufCBinaryData new_root_key = {0, NULL};
     Skissm__ReceiverChainNode new_chain;
 
-    /** The sendind chain will be released only when they used a new ratchet key
-     * and we have "finished" decrypting the first message.
-     * We are just trying to decrypt the first message at the moment. */
+    /** The sender_chain will not be released since we need our ratchet key
+     * for ECDH or Decaps. */
     if (ratchet->sender_chain == NULL) {
-        ssm_notify_error(BAD_MESSAGE_DECRYPTION, "verify_mac_and_decrypt_for_new_chain()");
+        ssm_notify_error(BAD_MESSAGE_DECRYPTION, "verify_and_decrypt_for_new_chain()");
         return (size_t)(-1);
     }
 
     /* Limit the number of hashes we're prepared to compute */
     if (e2ee_msg_payload->sequence > MAX_CHAIN_INDEX) {
-        ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_mac_and_decrypt_for_new_chain()");
+        ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
         return (size_t)(-1);
     }
 

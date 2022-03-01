@@ -37,9 +37,10 @@ void account_end();
  * @brief Create a new account object
  * This will generate an identity key pair, a signed pre-key pair,
  * a signature, and 100 one-time pre-key pairs.
+ * @param account_id a unique account id start form 1
  * @return Skissm__E2eeAccount*
  */
-Skissm__E2eeAccount *create_account();
+Skissm__E2eeAccount *create_account(uint64_t account_id);
 
 /**
  * @brief Get the local account object

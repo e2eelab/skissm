@@ -32,7 +32,8 @@ message register_user_request_payload {
   string device_id = 2;
   string authenticator = 3;
   string auth_code = 4;
-  skissm.identity_key_public identity_key_public = 5;
-  skissm.signed_pre_key_public signed_pre_key_public = 6;
-  repeated skissm.one_time_pre_key_public one_time_pre_keys = 7;
+  uint32 cipher_suite_id = 5;
+  skissm.identity_key_public identity_key_public = 6;
+  skissm.signed_pre_key_public signed_pre_key_public = 7;
+  repeated skissm.one_time_pre_key_public one_time_pre_keys = 8;
 }

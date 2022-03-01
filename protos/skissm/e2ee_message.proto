@@ -30,7 +30,7 @@ message e2ee_message {
     uint32 version = 1;
     skissm.e2ee_address from = 2;
     skissm.e2ee_address to = 3;
-    bytes session_id = 4;
+    string session_id = 4;
     skissm.e2ee_message_type msg_type = 5;
     bytes payload = 6;
 }
