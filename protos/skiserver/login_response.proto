@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-package skissm;
+package skiserver;
 
+option java_package = "org.e2eelab.skiserver.proto";
 option java_outer_classname = "LoginResponse";
 
 message login_response {

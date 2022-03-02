@@ -67,12 +67,6 @@ extern "C" {
 #include "skissm/skipped_message_key_node.pb-c.h"
 #include "skissm/supply_opks_request_payload.pb-c.h"
 #include "skissm/supply_opks_response_payload.pb-c.h"
-
-#include "skissm/e2ee_service.pb-c.h"
-#include "skissm/connect_request.pb-c.h"
-#include "skissm/event_data_request.pb-c.h"
-#include "skissm/login_request.pb-c.h"
-#include "skissm/logout_request.pb-c.h"
 #include "skissm/response_data.pb-c.h"
 
 #define PROTOCOL_VERSION 0x01
