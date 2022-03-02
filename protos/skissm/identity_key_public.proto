@@ -19,14 +19,11 @@
 syntax = "proto3";
 
 package skissm;
-
+ 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeMessageType";
-
-enum e2ee_message_type {
-  PRE_KEY = 0;
-  INVITE = 1;
-  ACCEPT = 2;
-  MESSAGE = 3;
-  GROUP_MESSAGE = 4;
+option java_outer_classname = "IdentityKeyPublic";
+ 
+message identity_key_public {
+    bytes asym_public_key = 1;
+    bytes sign_public_key = 2;
 }

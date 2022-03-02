@@ -47,31 +47,22 @@ typedef struct cipher_suite {
   get_crypto_param_type get_crypto_param;
 
   /**
-   * @brief Generate a random long-term key pair.
+   * @brief Generate a random key pair that will be used to calculate shared secret keys.
    *
    * @param pub_key
    * @param priv_key
    */
-  void (*lt_key_gen)(ProtobufCBinaryData *pub_key,
-                     ProtobufCBinaryData *priv_key);
+  void (*asym_key_gen)(ProtobufCBinaryData *pub_key,
+                       ProtobufCBinaryData *priv_key);
 
   /**
-   * @brief Generate a random medium-term key pair.
+   * @brief Generate a random key pair that will be used to generate or verity a signature.
    *
    * @param pub_key
    * @param priv_key
    */
-  void (*mt_key_gen)(ProtobufCBinaryData *pub_key,
-                     ProtobufCBinaryData *priv_key);
-
-  /**
-   * @brief Generate a random short-term key pair.
-   *
-   * @param pub_key
-   * @param priv_key
-   */
-  void (*st_key_gen)(ProtobufCBinaryData *pub_key,
-                     ProtobufCBinaryData *priv_key);
+  void (*sign_key_gen)(ProtobufCBinaryData *pub_key,
+                       ProtobufCBinaryData *priv_key);
 
   /**
    * @brief Calculate shared secret key.
@@ -180,14 +171,27 @@ typedef struct cipher_suite {
 
 struct cipher {
   const struct cipher_suite *suite1;
+  const struct cipher_suite *suite2;
 };
 
 extern const struct cipher_suite E2EE_ECDH_X25519_AES256_GCM_SHA256;
 
+extern const struct cipher_suite E2EE_PQC_AES256_GCM_SHA256;
+
 #define CIPHER_INIT                                                            \
-  { &E2EE_ECDH_X25519_AES256_GCM_SHA256 }
+  { &E2EE_ECDH_X25519_AES256_GCM_SHA256, &E2EE_PQC_AES256_GCM_SHA256 }
 
 extern const struct cipher CIPHER;
+
+size_t aes256_gcm_encrypt(const uint8_t *ad, const uint8_t *aes_key,
+    const uint8_t *plaintext, size_t plaintext_len, uint8_t **ciphertext
+);
+
+size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
+    const uint8_t *ciphertext, size_t ciphertext_len, uint8_t **plaintext
+);
+
+const cipher_suite *get_cipher_suite(uint32_t cipher_suite_id);
 
 #ifdef __cplusplus
 }

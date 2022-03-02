@@ -33,8 +33,18 @@
 #include "test_db.h"
 #include "test_util.h"
 
+static skissm_event_handler test_event_handler = {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
 void test_unload_inbound_group_session(){
-    setup();
+    setup(&test_event_handler);
 
     // create two addresses
     Skissm__E2eeAddress *Alice, *Bob;

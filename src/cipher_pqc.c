@@ -16,17 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-syntax = "proto3";
+#include "skissm/cipher.h"
 
-package skissm;
+#include <stdbool.h>
+#include <string.h>
 
-option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeMessageType";
+#include "skissm/crypto.h"
 
-enum e2ee_message_type {
-  PRE_KEY = 0;
-  INVITE = 1;
-  ACCEPT = 2;
-  MESSAGE = 3;
-  GROUP_MESSAGE = 4;
-}
+const struct cipher_suite E2EE_PQC_AES256_GCM_SHA256 = {
+    NULL, // not determined yet(get param)
+    NULL, // not determined yet(gen kem key)
+    NULL, // not determined yet(gen sign key)
+    NULL, // not determined yet(dh)
+    aes256_gcm_encrypt,
+    aes256_gcm_decrypt,
+    NULL, // not determined yet(sign)
+    NULL, // not determined yet(verify)
+    crypto_hkdf_sha256,
+    crypto_hmac_sha256,
+    crypto_sha256
+};

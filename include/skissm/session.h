@@ -27,18 +27,51 @@ extern "C" {
 
 #include "skissm/skissm.h"
 
-/**
- * @brief Handler for message encryption
- *
- */
-typedef struct encryption_handler {
+typedef struct session_suite{
     /**
-     * @param msg
-     * @param msg_len
+     * @brief Create a new outbound session.
+     *
+     * @param session The outbound session
+     * @param local_account Our account
+     * @param their_pre_key_bundle Their pre-key bundle
+     * @return Success or not
      */
-    void (*on_encrypted)(uint8_t **, size_t);
-} encryption_handler;
+    size_t (*new_outbound_session)(
+        Skissm__E2eeSession *session,
+        const Skissm__E2eeAccount *local_account,
+        Skissm__E2eePreKeyBundle *their_pre_key_bundle
+    );
 
+    /**
+     * @brief Create a new inbound session.
+     *
+     * @param session The inbound session
+     * @param local_account Our account
+     * @param inbound_message The inbound message
+     * @return Success or not
+     */
+    size_t (*new_inbound_session)(
+        Skissm__E2eeSession *session,
+        Skissm__E2eeAccount *local_account,
+        Skissm__E2eeMessage *inbound_message
+    );
+} session_suite;
+
+struct session_cipher {
+    const struct session_suite *suite1;
+    const struct session_suite *suite2;
+};
+
+extern const struct session_suite ECDH_X25519_AES256_GCM_SHA256;
+
+extern const struct session_suite PQC_AES256_GCM_SHA256;
+
+#define SESSION_CIPHER_INIT                                                            \
+    { &ECDH_X25519_AES256_GCM_SHA256, &PQC_AES256_GCM_SHA256 }
+
+extern const struct session_cipher SESSION_CIPHER;
+
+/* common */
 void initialise_session(
     Skissm__E2eeSession *session,
     Skissm__E2eeAddress *from,
@@ -51,27 +84,38 @@ void pack_e2ee_plaintext(
     uint8_t **context, size_t *context_len
 );
 
-size_t new_outbound_session(
+const session_suite *get_session_suite(uint32_t cipher_suite_id);
+
+/* ECC-related */
+size_t crypto_curve25519_new_outbound_session(
     Skissm__E2eeSession *session,
     const Skissm__E2eeAccount *local_account,
     Skissm__E2eePreKeyBundle *their_pre_key_bundle
 );
 
-size_t new_inbound_session(
+size_t crypto_curve25519_new_inbound_session(
     Skissm__E2eeSession *session,
     Skissm__E2eeAccount *local_account,
     Skissm__E2eeMessage *inbound_prekey_message
 );
 
-/**
- * @brief Encrypt a given plaintext with an initialized outbound session
- *
- * @param outbound_session initialized outbound session
- * @param plaintext plaintext to be encrypted
- * @param plaintext_len plaintext length
- * @return size_t encrypted message length
- */
-size_t perform_encrypt_session(Skissm__E2eeSession *outbound_session, const uint8_t *plaintext, size_t plaintext_len);
+/* PQC-related */
+size_t pqc_new_outbound_session(
+    Skissm__E2eeSession *session,
+    const Skissm__E2eeAccount *local_account,
+    Skissm__E2eePreKeyBundle *their_pre_key_bundle
+);
+
+size_t pqc_new_inbound_session(
+    Skissm__E2eeSession *session,
+    Skissm__E2eeAccount *local_account,
+    Skissm__E2eeMessage *inbound_message
+);
+
+size_t pqc_complete_outbound_session(
+    Skissm__E2eeSession *outbound_session,
+    Skissm__E2eeAcceptPayload *e2ee_accept_payload
+);
 
 /**
  * @brief Close a session

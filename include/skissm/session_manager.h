@@ -80,6 +80,21 @@ Skissm__E2eeMessage *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_
  */
 size_t consume_e2ee_message_payload(Skissm__E2eeMessage *inbound_e2ee_message_payload);
 
+Skissm__E2eeInvitePayload *produce_e2ee_invite_payload(
+    Skissm__E2eeSession *outbound_session, ProtobufCBinaryData *ciphertext_2,
+    ProtobufCBinaryData *ciphertext_3, ProtobufCBinaryData *ciphertext_4
+);
+
+size_t consume_e2ee_invite_payload(Skissm__E2eeMessage *invite_msg_payload);
+
+Skissm__E2eeAcceptPayload *produce_e2ee_accept_payload(ProtobufCBinaryData *ciphertext_1);
+
+void consume_e2ee_accept_payload(Skissm__E2eeMessage *accept_msg_payload);
+
+Skissm__E2eeMessage *produce_invite_message_payload(Skissm__E2eeSession *outbound_session, Skissm__E2eeInvitePayload *e2ee_invite_payload);
+
+Skissm__E2eeMessage *produce_accept_message_payload(Skissm__E2eeAcceptPayload *e2ee_accept_payload);
+
 #ifdef __cplusplus
 }
 #endif

@@ -24,12 +24,14 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eePreKeyBundle";
 
 import "skissm/e2ee_address.proto";
+import "skissm/identity_key_public.proto";
 import "skissm/signed_pre_key_public.proto";
 import "skissm/one_time_pre_key_public.proto";
 
 message e2ee_pre_key_bundle {
     skissm.e2ee_address peer_address = 1;
-    bytes identity_key_public = 2;
-    skissm.signed_pre_key_public signed_pre_key_public = 3;
-    skissm.one_time_pre_key_public one_time_pre_key_public = 4;
+    uint32 cipher_suite_id = 2;
+    skissm.identity_key_public identity_key_public = 3;
+    skissm.signed_pre_key_public signed_pre_key_public = 4;
+    skissm.one_time_pre_key_public one_time_pre_key_public = 5;
 }

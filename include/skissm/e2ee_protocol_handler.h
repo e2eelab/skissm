@@ -49,6 +49,12 @@ typedef struct pre_key_bundle_handler{
     void (*handle_release)(struct pre_key_bundle_handler *this_handler);
 } pre_key_bundle_response_handler;
 
+typedef struct invite_handler{
+    Skissm__E2eeAddress *from;
+    Skissm__E2eeAddress *to;
+    void (*handle_release)(struct invite_handler *this_handler);
+} invite_handler;
+
 typedef struct create_group_response_handler{
     Skissm__E2eeAddress *sender_address;
     ProtobufCBinaryData *group_name;

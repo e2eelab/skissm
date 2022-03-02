@@ -29,7 +29,7 @@
 
 extern const char *db_name;
 
-void setup();
+void setup(skissm_event_handler *event_handler);
 void tear_down();
 
 char *create_domain_str();

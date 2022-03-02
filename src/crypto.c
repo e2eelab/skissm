@@ -45,12 +45,12 @@ static const uint8_t HKDF_DEFAULT_SALT[32] = {};
 
 static crypto_param ecdh_x25519_aes256_gcm_sha256_param = {
     CURVE25519_KEY_LENGTH,
+    CURVE25519_KEY_LENGTH,
     CURVE_SIGNATURE_LENGTH,
     SHA256_OUTPUT_LENGTH,
     AES256_KEY_LENGTH,
     AES256_IV_LENGTH,
-    AES256_GCM_TAG_LENGTH,
-    AD_LENGTH
+    AES256_GCM_TAG_LENGTH
 };
 
 crypto_param get_ecdh_x25519_aes256_gcm_sha256_param() {

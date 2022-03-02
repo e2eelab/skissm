@@ -29,17 +29,27 @@
 #include "test_env.h"
 #include "test_util.h"
 
-static void free_opks(Skissm__OneTimePreKeyPair ***opks, uint32_t opk_num){
+static skissm_event_handler test_event_handler = {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static void free_opks(Skissm__OneTimePreKey ***opks, uint32_t opk_num){
     uint32_t i;
     for (i = 0; i < opk_num; i++){
-        skissm__one_time_pre_key_pair__free_unpacked((*opks)[i], NULL);
+        skissm__one_time_pre_key__free_unpacked((*opks)[i], NULL);
         (*opks)[i] = NULL;
     }
     free(*opks);
 }
 
 void test_update_one_time_pre_key(){
-    setup();
+    setup(&test_event_handler);
 
     Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
@@ -60,7 +70,7 @@ void test_update_one_time_pre_key(){
     update_one_time_pre_key(account->account_id, opk_id);
 
     /* load the one-time pre-keys */
-    Skissm__OneTimePreKeyPair **opk_copy = NULL;
+    Skissm__OneTimePreKey **opk_copy = NULL;
     uint32_t opk_num = load_one_time_pre_keys(account->account_id, &opk_copy);
 
     /* assert the opk is used */
@@ -74,7 +84,7 @@ void test_update_one_time_pre_key(){
 }
 
 void test_remove_one_time_pre_key(){
-    setup();
+    setup(&test_event_handler);
 
     Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
@@ -97,7 +107,7 @@ void test_remove_one_time_pre_key(){
     }
 
     /* load the one-time pre-keys */
-    Skissm__OneTimePreKeyPair **opk_copy = NULL;
+    Skissm__OneTimePreKey **opk_copy = NULL;
     uint32_t opk_num = load_one_time_pre_keys(account->account_id, &opk_copy);
 
     /* check if the opks are deleted */

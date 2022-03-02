@@ -61,13 +61,13 @@ void copy_key_pair_from_key_pair(
 );
 
 void copy_spk_from_spk(
-    Skissm__SignedPreKeyPair **dest,
-    Skissm__SignedPreKeyPair *src
+    Skissm__SignedPreKey **dest,
+    Skissm__SignedPreKey *src
 );
 
 void copy_opks_from_opks(
-    Skissm__OneTimePreKeyPair ***dest,
-    Skissm__OneTimePreKeyPair **src,
+    Skissm__OneTimePreKey ***dest,
+    Skissm__OneTimePreKey **src,
     size_t opk_num
 );
 

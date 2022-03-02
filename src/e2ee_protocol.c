@@ -223,7 +223,7 @@ void send_publish_spk_request(Skissm__E2eeAccount *account, publish_spk_response
 
 void handle_supply_opks_request(uint32_t num, Skissm__E2eeAddress *address, Skissm__ResponseData **response_data) {
     _account = get_local_account(address);
-    Skissm__OneTimePreKeyPair **inserted_one_time_pre_key_pair_list = generate_opks((size_t)num, _account);
+    Skissm__OneTimePreKey **inserted_one_time_pre_key_pair_list = generate_opks((size_t)num, _account);
 
     *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
     skissm__response_data__init(*response_data);
@@ -344,7 +344,7 @@ void handle_remove_group_members_request(Skissm__E2eeAddress *receiver_address, 
     /* create a new outbound group session */
     create_outbound_group_session(receiver_address, group_address, new_member_addresses, new_member_num, old_session_id);
 
-    // release
+    /* release */
     free_mem((void **)&old_session_id, strlen(old_session_id));
 
     /* prepare the response payload */
@@ -529,33 +529,64 @@ void send_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plai
     skissm__e2ee_protocol_msg__free_unpacked(protocol_msg, NULL);
 }
 
-size_t send_e2ee_protocol_msg(Skissm__E2eeSession *outbound_session, const uint8_t *plaintext, size_t plaintext_len) {
-    Skissm__E2eeMessage *outbound_e2ee_message_payload = produce_e2ee_message_payload(outbound_session, plaintext, plaintext_len);
-    Skissm__E2eeProtocolMsg *protocol_msg = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
-    skissm__e2ee_protocol_msg__init(protocol_msg);
-    protocol_msg->cmd = SKISSM__E2EE_COMMANDS__send_one2one_msg_request;
+void send_invite_request(Skissm__E2eeSession *outbound_session, ProtobufCBinaryData *ciphertext_2,
+                         ProtobufCBinaryData *ciphertext_3, ProtobufCBinaryData *ciphertext_4) {
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
 
-    protocol_msg->payload.len = skissm__e2ee_message__get_packed_size(outbound_e2ee_message_payload);
-    protocol_msg->payload.data = (uint8_t *)malloc(protocol_msg->payload.len);
-    skissm__e2ee_message__pack(outbound_e2ee_message_payload, protocol_msg->payload.data);
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__invite_request;
+    e2ee_command_request->id = next_request_id();
 
-    size_t message_len = skissm__e2ee_protocol_msg__get_packed_size(protocol_msg);
-    uint8_t *message = (uint8_t *)malloc(sizeof(uint8_t) * message_len);
-    skissm__e2ee_protocol_msg__pack(protocol_msg, message);
+    Skissm__E2eeInvitePayload *e2ee_invite_payload
+        = produce_e2ee_invite_payload(outbound_session, ciphertext_2, ciphertext_3, ciphertext_4);
 
-    // send message to server
-    get_ssm_plugin()->handle_send(message, message_len);
+    Skissm__E2eeMessage *e2ee_message_payload = produce_invite_message_payload(outbound_session, e2ee_invite_payload);
 
-    // store sesson state
-    get_ssm_plugin()->store_session(outbound_session);
+    e2ee_command_request->payload.len = skissm__e2ee_message__get_packed_size(e2ee_message_payload);
+    e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
+    skissm__e2ee_message__pack(e2ee_message_payload, e2ee_command_request->payload.data);
 
-    // release
-    free_mem((void **)(&message), message_len);
-    skissm__e2ee_message__free_unpacked(outbound_e2ee_message_payload, NULL);
-    skissm__e2ee_protocol_msg__free_unpacked(protocol_msg, NULL);
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
 
     // done
-    return message_len;
+    // insert_response_handler(e2ee_command_request->id, response_handler);
+    get_ssm_plugin()->handle_send(packed_message, packed_message_len);
+
+    // release
+    skissm__e2ee_invite_payload__free_unpacked(e2ee_invite_payload, NULL);
+    skissm__e2ee_message__free_unpacked(e2ee_message_payload, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
+}
+
+void send_accept_request(ProtobufCBinaryData *ciphertext_1) {
+    Skissm__E2eeProtocolMsg *e2ee_command_request = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_command_request);
+
+    e2ee_command_request->cmd = SKISSM__E2EE_COMMANDS__accept_request;
+    e2ee_command_request->id = next_request_id();
+
+    Skissm__E2eeAcceptPayload *e2ee_accept_payload = produce_e2ee_accept_payload(ciphertext_1);
+
+    Skissm__E2eeMessage *e2ee_message_payload = produce_accept_message_payload(e2ee_accept_payload);
+
+    e2ee_command_request->payload.len = skissm__e2ee_message__get_packed_size(e2ee_message_payload);
+    e2ee_command_request->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_command_request->payload.len);
+    skissm__e2ee_message__pack(e2ee_message_payload, e2ee_command_request->payload.data);
+
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_command_request);
+    uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
+    skissm__e2ee_protocol_msg__pack(e2ee_command_request, packed_message);
+
+    // done
+    // insert_response_handler(e2ee_command_request->id, response_handler);
+    get_ssm_plugin()->handle_send(packed_message, packed_message_len);
+
+    // release
+    skissm__e2ee_accept_payload__free_unpacked(e2ee_accept_payload, NULL);
+    skissm__e2ee_message__free_unpacked(e2ee_message_payload, NULL);
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_command_request, NULL);
 }
 
 void send_create_group_request(create_group_response_handler *response_handler) {
@@ -682,6 +713,54 @@ void send_remove_group_members_request(remove_group_members_response_handler *re
     skissm__remove_group_members_request_payload__free_unpacked(remove_group_member_msg, NULL);
 }
 
+static void send_invite_response(uint32_t request_id, Skissm__ResponseData *response_data) {
+    Skissm__E2eeProtocolMsg *e2ee_protocol_msg = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_protocol_msg);
+
+    e2ee_protocol_msg->cmd = SKISSM__E2EE_COMMANDS__invite_response;
+    e2ee_protocol_msg->id = request_id;
+
+    response_data->code = OK;
+
+    e2ee_protocol_msg->payload.len = skissm__response_data__get_packed_size(response_data);
+    e2ee_protocol_msg->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_protocol_msg->payload.len);
+    skissm__response_data__pack(response_data, e2ee_protocol_msg->payload.data);
+
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_protocol_msg);
+    uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
+    skissm__e2ee_protocol_msg__pack(e2ee_protocol_msg, packed_message);
+
+    /* done */
+    get_ssm_plugin()->handle_send(packed_message, packed_message_len);
+
+    /* release */
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_protocol_msg, NULL);
+}
+
+static void send_accept_response(uint32_t request_id, Skissm__ResponseData *response_data) {
+    Skissm__E2eeProtocolMsg *e2ee_protocol_msg = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
+    skissm__e2ee_protocol_msg__init(e2ee_protocol_msg);
+
+    e2ee_protocol_msg->cmd = SKISSM__E2EE_COMMANDS__accept_response;
+    e2ee_protocol_msg->id = request_id;
+
+    response_data->code = OK;
+
+    e2ee_protocol_msg->payload.len = skissm__response_data__get_packed_size(response_data);
+    e2ee_protocol_msg->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * e2ee_protocol_msg->payload.len);
+    skissm__response_data__pack(response_data, e2ee_protocol_msg->payload.data);
+
+    size_t packed_message_len = skissm__e2ee_protocol_msg__get_packed_size(e2ee_protocol_msg);
+    uint8_t *packed_message = (uint8_t *)malloc(sizeof(uint8_t) * packed_message_len);
+    skissm__e2ee_protocol_msg__pack(e2ee_protocol_msg, packed_message);
+
+    /* done */
+    get_ssm_plugin()->handle_send(packed_message, packed_message_len);
+
+    /* release */
+    skissm__e2ee_protocol_msg__free_unpacked(e2ee_protocol_msg, NULL);
+}
+
 static void send_receive_msg_response(uint32_t request_id, Skissm__ResponseData *response_data) {
     Skissm__E2eeProtocolMsg *e2ee_protocol_msg = (Skissm__E2eeProtocolMsg *)malloc(sizeof(Skissm__E2eeProtocolMsg));
     skissm__e2ee_protocol_msg__init(e2ee_protocol_msg);
@@ -752,6 +831,32 @@ static void process_request_msg(Skissm__E2eeProtocolMsg *request_msg, Skissm__E2
         skissm__supply_opks_request_payload__free_unpacked(request_opks_payload, NULL);
         supply_opks_request_handler->handle_release(supply_opks_request_handler);
     } break;
+
+    case SKISSM__E2EE_COMMANDS__invite_request: {
+        Skissm__E2eeMessage *invite_msg_payload = skissm__e2ee_message__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
+        consume_e2ee_invite_payload(invite_msg_payload);
+
+        Skissm__ResponseData *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
+        skissm__response_data__init(response_data);
+
+        send_invite_response(request_msg->id, response_data);
+
+        // release
+        skissm__response_data__free_unpacked(response_data, NULL);
+    }
+
+    case SKISSM__E2EE_COMMANDS__accept_request: {
+        Skissm__E2eeMessage *accept_msg_payload = skissm__e2ee_message__unpack(NULL, request_msg->payload.len, request_msg->payload.data);
+        consume_e2ee_accept_payload(accept_msg_payload);
+
+        Skissm__ResponseData *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
+        skissm__response_data__init(response_data);
+
+        send_accept_response(request_msg->id, response_data);
+
+        // release
+        skissm__response_data__free_unpacked(response_data, NULL);
+    }
 
     case SKISSM__E2EE_COMMANDS__create_group_request: {
         Skissm__CreateGroupRequestPayload *create_group_payload =

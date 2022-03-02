@@ -16,17 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-syntax = "proto3";
+#include "skissm/cipher.h"
 
-package skissm;
+#include <stdbool.h>
+#include <string.h>
 
-option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "OneTimePreKeyPair";
+#include "skissm/crypto.h"
 
-import "skissm/key_pair.proto";
-
-message one_time_pre_key_pair {
-    uint32 opk_id = 1;
-    bool used = 2;
-    skissm.key_pair key_pair = 3;
-}
+const struct cipher_suite E2EE_ECDH_X25519_AES256_GCM_SHA256 = {
+    get_ecdh_x25519_aes256_gcm_sha256_param,
+    crypto_curve25519_generate_key_pair,
+    crypto_curve25519_generate_key_pair,
+    crypto_curve25519_dh,
+    aes256_gcm_encrypt,
+    aes256_gcm_decrypt,
+    crypto_curve25519_sign,
+    crypto_curve25519_verify,
+    crypto_hkdf_sha256,
+    crypto_hmac_sha256,
+    crypto_sha256
+};

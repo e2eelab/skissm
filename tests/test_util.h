@@ -32,8 +32,8 @@ bool is_equal_data(ProtobufCBinaryData *data1, ProtobufCBinaryData *data2);
 bool is_equal_str(char *str1, char *str2);
 bool is_equal_address(Skissm__E2eeAddress *address1, Skissm__E2eeAddress *address2);
 bool is_equal_keypair(Skissm__KeyPair *keypair1, Skissm__KeyPair *keypair2);
-bool is_equal_spk(Skissm__SignedPreKeyPair *spk1, Skissm__SignedPreKeyPair *spk2);
-bool is_equal_opk(Skissm__OneTimePreKeyPair *opk1, Skissm__OneTimePreKeyPair *opk2);
+bool is_equal_spk(Skissm__SignedPreKey *spk1, Skissm__SignedPreKey *spk2);
+bool is_equal_opk(Skissm__OneTimePreKey *opk1, Skissm__OneTimePreKey *opk2);
 bool is_equal_account(Skissm__E2eeAccount *account1, Skissm__E2eeAccount *account2);
 bool is_equal_session(Skissm__E2eeSession *session_1, Skissm__E2eeSession *session_2);
 bool is_equal_group_session(Skissm__E2eeGroupSession *group_session_1, Skissm__E2eeGroupSession *group_session_2);
@@ -43,14 +43,15 @@ void mock_data(ProtobufCBinaryData *to, const char *from);
 void mock_string(char **to, const char *from);
 void mock_address(Skissm__E2eeAddress **address_pp, const char *user_id, const char *domain, const char *device_id);
 void mock_keypair(Skissm__KeyPair **keypair, const char *public_key, const char *private_key);
-void mock_signed_pre_keypair(Skissm__SignedPreKeyPair **signed_pre_keypair, uint32_t spk_id, const char *public_key, const char *private_key, const char *signature);
-void mock_onetime_pre_keypiar(Skissm__OneTimePreKeyPair **onetime_pre_keypiar, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key);
+void mock_identity_keypair(Skissm__IdentityKey **identity_keypair, const char *public_key, const char *private_key);
+void mock_signed_pre_keypair(Skissm__SignedPreKey **signed_pre_keypair, uint32_t spk_id, const char *public_key, const char *private_key, const char *signature);
+void mock_onetime_pre_keypiar(Skissm__OneTimePreKey **onetime_pre_keypiar, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key);
 
 // free
 void free_account(Skissm__E2eeAccount *account);
 void free_keypair(Skissm__KeyPair *keypair);
-void free_signed_pre_keypair(Skissm__SignedPreKeyPair *signed_pre_keypair);
-void free_one_time_pre_key_pair(Skissm__OneTimePreKeyPair *onetime_pre_keypiar);
+void free_signed_pre_keypair(Skissm__SignedPreKey *signed_pre_keypair);
+void free_one_time_pre_key_pair(Skissm__OneTimePreKey *onetime_pre_keypiar);
 void free_address(Skissm__E2eeAddress *address);
 
 #endif /* TEST_UTIL_H_ */

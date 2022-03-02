@@ -60,7 +60,7 @@ get_local_account(Skissm__E2eeAddress *address);
  * @param one_time_pre_key_id The one-time pre-key id to be matched
  * @return The matched one-time pre-key.
  */
-const Skissm__OneTimePreKeyPair *
+const Skissm__OneTimePreKey *
 lookup_one_time_pre_key(Skissm__E2eeAccount *account,
                         uint32_t one_time_pre_key_id);
 
@@ -81,9 +81,9 @@ generate_signed_pre_key(Skissm__E2eeAccount *account);
  * @param number_of_keys The given number
  * @param account The account to be appended with new generated one-time
  * pre-keys
- * @return Skissm__OneTimePreKeyPair**
+ * @return Skissm__OneTimePreKey**
  */
-Skissm__OneTimePreKeyPair **
+Skissm__OneTimePreKey **
 generate_opks(size_t number_of_keys,
               Skissm__E2eeAccount *account);
 

@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "skissm/account.h"
 #include "skissm/account_manager.h"
@@ -169,6 +170,7 @@ static void test_continual_messages(){
         uint8_t plaintext[64];
         size_t plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message will be sent a lot of times.", i);
         test_encryption(account_data[0]->address, account_data[1]->address, plaintext, plaintext_len);
+        //usleep(500*1000);
     }
 
     // test stop
@@ -177,8 +179,8 @@ static void test_continual_messages(){
 }
 
 int main() {
-    test_basic_session();
-    test_interaction();
+    //test_basic_session();
+    //test_interaction();
     test_continual_messages();
 
     return 0;

@@ -80,8 +80,8 @@ void load_account(uint64_t account_id, Skissm__E2eeAccount **account) {
     load_address(account_id, &((*account)->address));
     load_password(account_id, (*account)->password);
 
-    load_signed_pre_key_pair(account_id, &((*account)->signed_pre_key_pair));
-    load_identity_key_pair(account_id, &((*account)->identity_key_pair));
+    load_signed_pre_key_pair(account_id, &((*account)->signed_pre_key));
+    load_identity_key_pair(account_id, &((*account)->identity_key));
     (*account)->n_one_time_pre_keys = load_one_time_pre_keys(account_id, &((*account)->one_time_pre_keys));
     (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(account_id);
 }
@@ -118,11 +118,11 @@ void store_account(Skissm__E2eeAccount *account) {
     // insert address
     sqlite_int64 address_id = insert_address(account->address);
 
-    // insert identity_key_pair
-    sqlite_int64 identity_key_pair_id = insert_key_pair(account->identity_key_pair);
+    // insert identity_key
+    sqlite_int64 identity_key_pair_id = insert_identity_key(account->identity_key);
 
-    // insert signed_pre_key_pair
-    sqlite_int64 signed_pre_key_id = insert_signed_pre_key(account->signed_pre_key_pair);
+    // insert signed_pre_key
+    sqlite_int64 signed_pre_key_id = insert_signed_pre_key(account->signed_pre_key);
 
     // insert one_time_pre_keys
     sqlite_int64 one_time_pre_key_ids[account->n_one_time_pre_keys];
@@ -132,8 +132,8 @@ void store_account(Skissm__E2eeAccount *account) {
 
     // insert account
     sqlite_int64 account_id = account->account_id;
-    insert_account(account_id, account->version, account->saved, address_id, account->password, identity_key_pair_id, signed_pre_key_id,
-                                             account->next_one_time_pre_key_id);
+    insert_account(account_id, account->version, account->saved, address_id, account->password, account->cipher_suite_id,
+                   identity_key_pair_id, signed_pre_key_id, account->next_one_time_pre_key_id);
 
     // insert ACCOUNT_SIGNED_PRE_KEY_PAIR
     insert_account_signed_pre_key_id(account_id, signed_pre_key_id);

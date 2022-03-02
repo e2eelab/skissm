@@ -26,6 +26,16 @@
 #include "test_util.h"
 #include "test_env.h"
 
+static skissm_event_handler test_event_handler = {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
 static void test_alice_to_bob(
   Skissm__KeyPair alice_ratchet_key,
   Skissm__KeyPair bob_spk,
@@ -42,16 +52,11 @@ static void test_alice_to_bob(
                         &(bob_spk.public_key));
     initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
                       &bob_spk);
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
-    assert(
-        memcmp(
-            bob_spk.public_key.data,
-            bob_ratchet->sender_chain->ratchet_key_pair->public_key.data,
-            key_len) == 0);
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
     assert(
         memcmp(
             bob_spk.private_key.data,
-            bob_ratchet->sender_chain->ratchet_key_pair->private_key.data,
+            bob_ratchet->sender_chain->ratchet_key.data,
             key_len) == 0);
 
     uint8_t plaintext[] = "Message";
@@ -71,54 +76,6 @@ static void test_alice_to_bob(
     bool result;
     assert(result = is_equal(plaintext, output, plaintext_length));
 
-    if (result) {
-      print_result("Decryption success!!!", true);
-    } else {
-      print_result("Decryption failed!!!", false);
-    }
-
-    skissm__e2ee_msg_payload__free_unpacked(message, NULL);
-    free_mem((void **)&output, decrypt_length);
-    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
-}
-
-static void test_bob_to_alice(
-  Skissm__KeyPair alice_ratchet_key,
-  Skissm__KeyPair bob_spk,
-  char *session_id,
-  ProtobufCBinaryData ad, uint8_t *shared_secret
-) {
-    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
-
-    initialise_as_alice(alice_ratchet, shared_secret,
-                        strlen((const char *)shared_secret), &alice_ratchet_key,
-                        &(bob_spk.public_key));
-    initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
-                      &bob_spk);
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
-    assert(
-        memcmp(
-            bob_spk.public_key.data,
-            bob_ratchet->sender_chain->ratchet_key_pair->public_key.data,
-            key_len) == 0);
-
-    uint8_t plaintext[] = "Message";
-    size_t plaintext_length = sizeof(plaintext) - 1;
-
-    size_t decrypt_length;
-
-    /* Bob sends Alice a message */
-    Skissm__E2eeMsgPayload *message;
-    encrypt_ratchet(bob_ratchet, ad, plaintext, plaintext_length, &message);
-
-    uint8_t *output;
-    decrypt_length = decrypt_ratchet(alice_ratchet, ad, message, &output);
-
-    bool result;
-    assert(result = is_equal(plaintext, output, plaintext_length));
     if (result) {
       print_result("Decryption success!!!", true);
     } else {
@@ -190,70 +147,6 @@ static void test_out_of_order(
     skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
-static void test_interaction(
-  Skissm__KeyPair alice_ratchet_key,
-  Skissm__KeyPair bob_spk,
-  char *session_id,
-  ProtobufCBinaryData ad, uint8_t *shared_secret
-) {
-    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
-
-    initialise_as_alice(alice_ratchet, shared_secret,
-                        strlen((const char *)shared_secret), &alice_ratchet_key,
-                        &(bob_spk.public_key));
-    initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
-                      &bob_spk);
-
-    uint8_t plaintext_alice[] = "This is a message from Alice.";
-    size_t plaintext_length_alice = sizeof(plaintext_alice) - 1;
-
-    size_t message_length_alice;
-    size_t decrypt_length_alice;
-
-    /* Alice sends Bob a message */
-    Skissm__E2eeMsgPayload *message_alice;
-    encrypt_ratchet(alice_ratchet, ad, plaintext_alice, plaintext_length_alice, &message_alice);
-
-    /* Bob received the message from Alice */
-    uint8_t *output_alice;
-    decrypt_length_alice = decrypt_ratchet(bob_ratchet, ad, message_alice, &output_alice);
-
-    bool result;
-    assert(result = is_equal(plaintext_alice, output_alice, plaintext_length_alice));
-
-    assert(bob_ratchet->sender_chain == NULL);
-
-    /* Bob prepares to reply to Alice */
-    uint8_t plaintext_bob[] = "This is a message from Bob.";
-    size_t plaintext_length_bob = sizeof(plaintext_bob) - 1;
-
-    size_t message_length_bob;
-    size_t decrypt_length_bob;
-
-    /* Bob sends Alice a message */
-    Skissm__E2eeMsgPayload *message_bob;
-    encrypt_ratchet(bob_ratchet, ad, plaintext_bob, plaintext_length_bob, &message_bob);
-
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
-    assert(memcmp(bob_ratchet->sender_chain->ratchet_key_pair->public_key.data,
-                  bob_spk.public_key.data, key_len) != 0);
-
-    /* Alice decrypts the message from Bob */
-    uint8_t *output_bob;
-    decrypt_length_bob = decrypt_ratchet(alice_ratchet, ad, message_bob, &output_bob);
-
-    assert(result = is_equal(plaintext_bob, output_bob, plaintext_length_bob));
-
-    skissm__e2ee_msg_payload__free_unpacked(message_alice, NULL);
-    skissm__e2ee_msg_payload__free_unpacked(message_bob, NULL);
-    free_mem((void **)&output_alice, decrypt_length_alice);
-    free_mem((void **)&output_bob, decrypt_length_bob);
-    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
-}
-
 static void test_two_ratchets(
   Skissm__KeyPair alice_ratchet_key,
   Skissm__KeyPair bob_ratchet_key,
@@ -302,8 +195,6 @@ static void test_two_ratchets(
     bool result;
     assert(result = is_equal(plaintext_alice, output_alice, plaintext_length_alice));
 
-    assert(bob_ratchet->sender_chain == NULL);
-
     /* Bob prepares to reply to Alice */
     uint8_t plaintext_bob[] = "Hey, Alice!";
     size_t plaintext_length_bob = sizeof(plaintext_bob) - 1;
@@ -321,8 +212,6 @@ static void test_two_ratchets(
 
     assert(result = is_equal(plaintext_bob, output_bob, plaintext_length_bob));
 
-    assert(alice_ratchet_2->sender_chain == NULL);
-
     skissm__e2ee_msg_payload__free_unpacked(message_alice, NULL);
     skissm__e2ee_msg_payload__free_unpacked(message_bob, NULL);
     free_mem((void **)&output_alice, decrypt_length_alice);
@@ -335,17 +224,17 @@ static void test_two_ratchets(
 
 int main() {
     // test start
-    setup();
+    setup(&test_event_handler);;
 
     Skissm__KeyPair alice_ratchet_key, bob_ratchet_key;
-    CIPHER.suite1->mt_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
-    CIPHER.suite1->mt_key_gen(&(bob_ratchet_key.public_key), &(bob_ratchet_key.private_key));
+    CIPHER.suite1->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    CIPHER.suite1->asym_key_gen(&(bob_ratchet_key.public_key), &(bob_ratchet_key.private_key));
 
     Skissm__KeyPair bob_spk, alice_spk;
-    CIPHER.suite1->mt_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
-    CIPHER.suite1->mt_key_gen(&(alice_spk.public_key), &(alice_spk.private_key));
+    CIPHER.suite1->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    CIPHER.suite1->asym_key_gen(&(alice_spk.public_key), &(alice_spk.private_key));
 
-    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    int ad_len = 64;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
@@ -361,9 +250,7 @@ int main() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     test_alice_to_bob(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
-    test_bob_to_alice(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
     test_out_of_order(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
-    test_interaction(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
     test_two_ratchets(alice_ratchet_key, bob_ratchet_key, bob_spk, alice_spk, session_id, ad, shared_secret);
 
     // test stop.

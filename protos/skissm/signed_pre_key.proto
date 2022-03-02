@@ -21,12 +21,13 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeMessageType";
+option java_outer_classname = "SignedPreKey";
 
-enum e2ee_message_type {
-  PRE_KEY = 0;
-  INVITE = 1;
-  ACCEPT = 2;
-  MESSAGE = 3;
-  GROUP_MESSAGE = 4;
+import "skissm/key_pair.proto";
+
+message signed_pre_key {
+  uint32 spk_id = 1;
+  skissm.key_pair key_pair = 2;
+  bytes signature = 3;
+  int64 ttl = 4;
 }

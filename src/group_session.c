@@ -79,7 +79,7 @@ void create_outbound_group_session(
     size_t member_num,
     char *old_session_id
 ) {
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
+    int key_len = CIPHER.suite1->get_crypto_param().sign_key_len;
 
     Skissm__E2eeGroupSession *group_session = (Skissm__E2eeGroupSession *) malloc(sizeof(Skissm__E2eeGroupSession));
     skissm__e2ee_group_session__init(group_session);
@@ -100,9 +100,9 @@ void create_outbound_group_session(
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * group_session->chain_key.len);
     get_ssm_plugin()->handle_rg(group_session->chain_key.data, group_session->chain_key.len);
 
-    CIPHER.suite1->mt_key_gen(&(group_session->signature_public_key), &(group_session->signature_private_key));
+    CIPHER.suite1->sign_key_gen(&(group_session->signature_public_key), &(group_session->signature_private_key));
 
-    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    int ad_len = 2 * key_len;
     group_session->associated_data.len = ad_len;
     group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
     memcpy(group_session->associated_data.data, group_session->signature_public_key.data, key_len);
@@ -177,10 +177,10 @@ void create_inbound_group_session(
     copy_protobuf_from_protobuf(&(group_session->chain_key), &(group_pre_key_payload->chain_key));
     copy_protobuf_from_protobuf(&(group_session->signature_public_key), &(group_pre_key_payload->signature_public_key));
 
-    int ad_len = CIPHER.suite1->get_crypto_param().aead_ad_len;
+    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
+    int ad_len = 2 * key_len;
     group_session->associated_data.len = ad_len;
     group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
-    int key_len = CIPHER.suite1->get_crypto_param().key_len;
     memcpy(group_session->associated_data.data, group_session->signature_public_key.data, key_len);
     memcpy((group_session->associated_data.data) + key_len, group_session->signature_public_key.data, key_len);
 

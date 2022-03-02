@@ -74,14 +74,17 @@ Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__E2e
 
     unsigned int i;
 
-    copy_protobuf_from_protobuf(&(payload->identity_key_public), &(account->identity_key_pair->public_key));
+    payload->identity_key_public = (Skissm__IdentityKeyPublic *) malloc(sizeof(Skissm__IdentityKeyPublic));
+    skissm__identity_key_public__init(payload->identity_key_public);
+    copy_protobuf_from_protobuf(&(payload->identity_key_public->asym_public_key), &(account->identity_key->asym_key_pair->public_key));
+    copy_protobuf_from_protobuf(&(payload->identity_key_public->sign_public_key), &(account->identity_key->sign_key_pair->public_key));
 
     payload->signed_pre_key_public = (Skissm__SignedPreKeyPublic *)malloc(sizeof(Skissm__SignedPreKeyPublic));
     skissm__signed_pre_key_public__init(payload->signed_pre_key_public);
-    payload->signed_pre_key_public->spk_id = account->signed_pre_key_pair->spk_id;
-    copy_protobuf_from_protobuf(&(payload->signed_pre_key_public->public_key), &(account->signed_pre_key_pair->key_pair->public_key));
+    payload->signed_pre_key_public->spk_id = account->signed_pre_key->spk_id;
+    copy_protobuf_from_protobuf(&(payload->signed_pre_key_public->public_key), &(account->signed_pre_key->key_pair->public_key));
 
-    copy_protobuf_from_protobuf(&(payload->signed_pre_key_public->signature), &(account->signed_pre_key_pair->signature));
+    copy_protobuf_from_protobuf(&(payload->signed_pre_key_public->signature), &(account->signed_pre_key->signature));
 
     payload->n_one_time_pre_keys = account->n_one_time_pre_keys;
     payload->one_time_pre_keys = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * payload->n_one_time_pre_keys);
@@ -114,9 +117,9 @@ Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__E2
     copy_address_from_address(&(publish_spk_message->user_address), account->address);
     publish_spk_message->signed_pre_key_public = (Skissm__SignedPreKeyPublic *)malloc(sizeof(Skissm__SignedPreKeyPublic));
     skissm__signed_pre_key_public__init(publish_spk_message->signed_pre_key_public);
-    publish_spk_message->signed_pre_key_public->spk_id = account->signed_pre_key_pair->spk_id;
-    copy_protobuf_from_protobuf(&(publish_spk_message->signed_pre_key_public->public_key), &(account->signed_pre_key_pair->key_pair->public_key));
-    copy_protobuf_from_protobuf(&(publish_spk_message->signed_pre_key_public->signature), &(account->signed_pre_key_pair->signature));
+    publish_spk_message->signed_pre_key_public->spk_id = account->signed_pre_key->spk_id;
+    copy_protobuf_from_protobuf(&(publish_spk_message->signed_pre_key_public->public_key), &(account->signed_pre_key->key_pair->public_key));
+    copy_protobuf_from_protobuf(&(publish_spk_message->signed_pre_key_public->signature), &(account->signed_pre_key->signature));
 
     return publish_spk_message;
 }
@@ -124,7 +127,7 @@ Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__E2
 void consume_publish_spk_response_payload(Skissm__E2eeAccount *account) {
     // save to db
     if (account->saved == true) {
-        Skissm__SignedPreKeyPair *signed_pre_key_pair = account->signed_pre_key_pair;
-        get_ssm_plugin()->update_signed_pre_key(account->account_id, signed_pre_key_pair);
+        Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;
+        get_ssm_plugin()->update_signed_pre_key(account->account_id, signed_pre_key);
     }
 }
