@@ -36,31 +36,6 @@ static void sqlite_connect(const char *db_name) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         exit(1);
     }
-    rc = sqlite3_exec(db, "PRAGMA journal_mode = WAL;", 0, 0, 0);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "Can't set PRAGMA journal_mode: %s\n", sqlite3_errmsg(db));
-        exit(1);
-    }
-    rc = sqlite3_exec(db, "PRAGMA synchronous = NORMAL", 0, 0, 0);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "Can't set PRAGMA synchronous: %s\n", sqlite3_errmsg(db));
-        exit(1);
-    }
-    // rc = sqlite3_exec(db, "PRAGMA journal_mode = WAL;", 0, 0, 0);
-    // if (rc != SQLITE_OK) {
-    //     fprintf(stderr, "Can't set PRAGMA journal_mode: %s\n", sqlite3_errmsg(db));
-    //     exit(1);
-    // }
-    // rc = sqlite3_exec(db, "PRAGMA synchronous = FULL", 0, 0, 0);
-    // if (rc != SQLITE_OK) {
-    //     fprintf(stderr, "Can't set PRAGMA synchronous: %s\n", sqlite3_errmsg(db));
-    //     exit(1);
-    // }
-    // rc = sqlite3_exec(db, "PRAGMA locking_mode=EXCLUSIVE", 0, 0, 0);
-    // if (rc != SQLITE_OK) {
-    //     fprintf(stderr, "Can't set PRAGMA locking_mode: %s\n", sqlite3_errmsg(db));
-    //     exit(1);
-    // }
 }
 
 static int sqlite_callback(void *data, int argc, char **argv, char **azColName) {
@@ -289,10 +264,6 @@ static const char *ACCOUNT_ONETIME_PRE_KEY_CREATE_TABLE =
     "FOREIGN KEY(ONETIME_PRE_KEY) REFERENCES ONETIME_PRE_KEY(ID));";
 
 static const char *ACCOUNTS_NUM = "SELECT COUNT(*) FROM ACCOUNT;";
-
-static const char *ACCOUNT_LOAD_ID = "SELECT ID "
-                                     "FROM ACCOUNT "
-                                     "WHERE ACCOUNT_ID = (?);";
 
 static const char *ACCOUNT_LOAD_ALL_ACCOUNT_IDS = "SELECT ACCOUNT_ID FROM ACCOUNT;";
 
@@ -678,23 +649,6 @@ uint32_t load_cipher_suite_id(uint64_t account_id) {
     sqlite_finalize(stmt);
 
     return cipher_suite_id;
-}
-
-static sqlite_int64 load_account_id(uint64_t account_id) {
-    // prepare
-    sqlite3_stmt *stmt;
-    sqlite_prepare(ACCOUNT_LOAD_ID, &stmt);
-    sqlite3_bind_int64(stmt, 1, account_id);
-
-    // step
-    sqlite_step(stmt, SQLITE_ROW);
-    sqlite_int64 id = sqlite3_column_int(stmt, 0);
-
-    // release
-    sqlite_finalize(stmt);
-
-    // done
-    return id;
 }
 
 static void load_identity_key_asym(sqlite_int64 identity_key_id, Skissm__KeyPair **asym_key_pair) {
@@ -1211,14 +1165,13 @@ void remove_expired_signed_pre_key(uint64_t account_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_SIGNED_PRE_KEY_SELECT_MORE_THAN_2, &stmt);
-    sqlite_int64 id = load_account_id(account_id);
-    sqlite3_bind_int(stmt, 1, id);
+    sqlite3_bind_int(stmt, 1, account_id);
 
     // step
     while (sqlite3_step(stmt) != SQLITE_DONE) {
         sqlite_int64 signed_pre_key_id = sqlite3_column_int(stmt, 0);
         delete_signed_pre_key(signed_pre_key_id);
-        delete_account_signed_pre_key(id, signed_pre_key_id);
+        delete_account_signed_pre_key(account_id, signed_pre_key_id);
     }
 
     // release
@@ -1293,7 +1246,6 @@ void remove_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id){
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_LOAD_ONETIME_PRE_KEY, &stmt);
-    sqlite_int64 a_id = load_account_id(account_id);
 
     // bind
     sqlite3_bind_int64(stmt, 1, account_id);
@@ -1303,7 +1255,7 @@ void remove_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id){
     if ((sqlite3_step(stmt) != SQLITE_DONE)){
         sqlite_int64 id = sqlite3_column_int(stmt, 0);
         delete_one_time_pre_key(id);
-        delete_account_one_time_pre_key(a_id, id);
+        delete_account_one_time_pre_key(account_id, id);
     }
 
     // release
