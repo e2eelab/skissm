@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package skiserver;
+
+option java_package = "org.e2eelab.skiserver.proto";
+option java_outer_classname = "LoginRequest";
+
+import "skissm/e2ee_address.proto";
+
+message login_request {
+    skissm.e2ee_address address = 1;
+    string password = 2;
+}

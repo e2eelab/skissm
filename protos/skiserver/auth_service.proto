@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package skiserver;
+
+option java_package = "org.e2eelab.skiserver.proto";
+
+import "skiserver/auth_acquire_email_auth_code_request.proto";
+import "skiserver/auth_acquire_email_auth_code_response.proto";
+import "skiserver/auth_verify_email_auth_code_request.proto";
+import "skiserver/auth_verify_email_auth_code_response.proto";
+import "skiserver/auth_get_user_info_request.proto";
+import "skiserver/auth_get_user_info_response.proto";
+import "skiserver/auth_renew_access_token_request.proto";
+import "skiserver/auth_renew_access_token_response.proto";
+import "skiserver/auth_logout_request.proto";
+import "skiserver/auth_logout_response.proto";
+
+service AuthService {
+    // unary operations
+    rpc acquireEmailAuthCode(skiserver.auth_acquire_email_auth_code_request) returns (skiserver.auth_acquire_email_auth_code_response) {}
+    rpc verifyEmailAuthCode(skiserver.auth_verify_email_auth_code_request) returns (skiserver.auth_verify_email_auth_code_response) {}
+
+    rpc getUserInfo(skiserver.auth_get_user_info_request) returns (skiserver.auth_get_user_info_response) {}
+    rpc renewAccessToken(skiserver.auth_renew_access_token_request) returns (skiserver.auth_renew_access_token_response) {}
+    rpc logout(skiserver.auth_logout_request) returns (skiserver.auth_logout_response) {}
+}

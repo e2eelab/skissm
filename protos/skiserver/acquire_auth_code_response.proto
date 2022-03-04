@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package skiserver;
+
+option java_package = "org.e2eelab.skiserver.proto";
+
+message acquire_auth_code_response {
+  int32 ttl = 1;
+}

@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package skiserver;
+
+option java_package = "org.e2eelab.skiserver.proto";
+option java_outer_classname = "ConnectRequest";
+
+message connect_request {
+  string access_token = 1;
+}

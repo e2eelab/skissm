@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package skiserver;
+
+option java_package = "org.e2eelab.skiserver.proto";
+
+message acquire_server_info_response {
+    string hostname = 1;
+    int64 server_t = 2;
+}
