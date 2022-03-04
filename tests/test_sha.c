@@ -26,8 +26,6 @@
 #include "sha256.h"
 #include "sha512.h"
 
-#define MBEDTLS_SELF_TEST
-
 #if defined(MBEDTLS_SELF_TEST)
 /*
  * FIPS-180-2 test vectors
