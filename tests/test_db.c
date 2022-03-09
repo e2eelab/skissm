@@ -100,7 +100,7 @@ static const char *SESSION_CREATE_TABLE = "CREATE TABLE SESSION( "
                                           "DATA BLOB NOT NULL, "
                                           "FOREIGN KEY(FROM_ADDRESS) REFERENCES ADDRESS(ID), "
                                           "FOREIGN KEY(TO_ADDRESS) REFERENCES ADDRESS(ID), "
-                                          "PRIMARY KEY (ID, TO_ADDRESS));";
+                                          "PRIMARY KEY (ID, OWNER, FROM_ADDRESS, TO_ADDRESS));";
 
 static const char *SESSION_LOAD_DATA_BY_OWNER_AND_TO = "SELECT DATA FROM SESSION "
                                                        "INNER JOIN ADDRESS AS a1 "
