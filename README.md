@@ -37,7 +37,7 @@ v1.4.1: add pqc into this version
 
 # Doc
 
-[SLISSM Whitepaper](doc/skissm-whitepaper-v1.1.1.pdf)
+[SLISSM Whitepaper](doc/skissm-whitepaper-v1.2.0.pdf)
 
 # Licensing
 

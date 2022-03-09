@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package skiserver;
-
-option java_package = "org.e2eelab.skiserver.proto";
-
-message auth_get_user_info_request {
-    string accessToken = 1;
-}
