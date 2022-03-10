@@ -6,6 +6,9 @@ option java_package = "org.e2eelab.skiserver.proto";
 option java_outer_classname = "LoginResponse";
 
 message login_response {
-    string access_token = 2;
+    uint32 code = 1;
+    string msg = 2;
+
+    string access_token = 3;
     int64 expires_in = 4;
 }
