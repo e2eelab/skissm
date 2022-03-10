@@ -5,6 +5,9 @@ package skiserver;
 option java_package = "org.e2eelab.skiserver.proto";
 
 message acquire_server_info_response {
-    string hostname = 1;
-    int64 server_t = 2;
+    uint32 code = 1;
+    string msg = 2;
+
+    string hostname = 3;
+    int64 server_t = 4;
 }

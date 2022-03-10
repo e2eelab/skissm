@@ -82,17 +82,19 @@ void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src
 void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAddress *src) {
     *dest = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(*dest);
-    if (src->user_id != NULL){
-        (*dest)->user_id = strdup(src->user_id);
-    }
-    if (src->domain != NULL){
-        (*dest)->domain = strdup(src->domain);
-    }
-    if (src->device_id != NULL){
-        (*dest)->device_id = strdup(src->device_id);
-    }
-    if (src->group_id != NULL){
-        (*dest)->group_id = strdup(src->group_id);
+    if (src != NULL) {
+        if (src->user_id != NULL) {
+            (*dest)->user_id = strdup(src->user_id);
+        }
+        if (src->domain != NULL) {
+            (*dest)->domain = strdup(src->domain);
+        }
+        if (src->device_id != NULL) {
+            (*dest)->device_id = strdup(src->device_id);
+        }
+        if (src->group_id != NULL) {
+            (*dest)->group_id = strdup(src->group_id);
+        }
     }
 }
 

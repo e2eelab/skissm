@@ -3,6 +3,7 @@ syntax = "proto3";
 package skiserver;
 
 option java_package = "org.e2eelab.skiserver.proto";
+option java_outer_classname = "E2EeService";
 
 import "skissm/e2ee_protocol_msg.proto";
 import "skissm/response_data.proto";
@@ -16,10 +17,15 @@ import "skissm/remove_group_members_request_payload.proto";
 import "skissm/get_group_request_payload.proto";
 
 import "skiserver/acquire_auth_code_request.proto";
+import "skiserver/acquire_auth_code_response.proto";
 import "skiserver/login_request.proto";
+import "skiserver/login_response.proto";
 import "skiserver/logout_request.proto";
-import "skiserver/connect_request.proto";
+import "skiserver/logout_response.proto";
 import "skiserver/acquire_server_info_request.proto";
+import "skiserver/acquire_server_info_response.proto";
+
+import "skiserver/connect_request.proto";
 import "skiserver/event_data_request.proto";
 
 service E2EEService {
@@ -32,11 +38,12 @@ service E2EEService {
     }
 
     // unary operations
-    rpc acquireAuthCode(skiserver.acquire_auth_code_request) returns (skissm.response_data) {}
-    rpc login(skiserver.login_request) returns (skissm.response_data) {}
-    rpc logout(skiserver.logout_request) returns (skissm.response_data) {}
-    rpc acquireServerInfo(skiserver.acquire_server_info_request) returns (skissm.response_data) {}
-    rpc getEventData(skiserver.event_data_request) returns (skissm.response_data) {}
+    rpc acquireAuthCode(skiserver.acquire_auth_code_request) returns (skiserver.acquire_auth_code_response) {}
+    rpc login(skiserver.login_request) returns (skiserver.login_response) {}
+    rpc logout(skiserver.logout_request) returns (skiserver.logout_response) {}
+    rpc acquireServerInfo(skiserver.acquire_server_info_request) returns (skiserver.acquire_server_info_response) {}
+
+    rpc getEventData(skiserver.event_data_request) returns (skissm.e2ee_protocol_msg) {}
 
     rpc registerUser(skissm.register_user_request_payload) returns (skissm.response_data) {}
     rpc getPreKeyBundle(skissm.get_pre_key_bundle_request_payload) returns (skissm.response_data) {}
