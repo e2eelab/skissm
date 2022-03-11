@@ -384,9 +384,9 @@ void encrypt_ratchet(
     keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
     skissm__message_key__init(keys);
     create_message_keys(ratchet->sender_chain->chain_key, keys);
-    printf("chain_key index: %u", ratchet->sender_chain->chain_key->index);
+    //printf("chain_key index: %u", ratchet->sender_chain->chain_key->index);
     advance_chain_key(ratchet->sender_chain->chain_key);
-    printf(" ->  %u\n", ratchet->sender_chain->chain_key->index);
+    //printf(" ->  %u\n", ratchet->sender_chain->chain_key->index);
 
     uint32_t sequence = keys->index;
     int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
