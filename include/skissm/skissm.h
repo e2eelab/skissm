@@ -79,7 +79,7 @@ extern "C" {
 
 #define PLAINTEXT_VERSION 0x01
 
-#define UUID_LEN 64
+#define UUID_LEN 16
 
 #define SIGNED_PRE_KEY_EXPIRATION 604800
 
