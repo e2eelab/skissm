@@ -45,7 +45,7 @@ static skissm_event_handler test_event_handler = {
     NULL
 };
 
-void test_find_session()
+void test_load_outbound_session()
 {
     setup(&test_event_handler);;
 
@@ -85,7 +85,7 @@ void test_find_session()
     load_outbound_session(from, to, &session_copy);
 
     // assert session equals to session_copy
-    print_result("test_find_session", is_equal_session(session, session_copy));
+    print_result("test_load_outbound_session", is_equal_session(session, session_copy));
 
     // free
     skissm__e2ee_address__free_unpacked(from, NULL);
@@ -96,7 +96,7 @@ void test_find_session()
     tear_down();
 }
 
-void test_load_session()
+void test_load_inbound_session()
 {
     setup(&test_event_handler);;
 
@@ -138,7 +138,7 @@ void test_load_session()
     load_inbound_session(session->session_id, to, &session_copy);
 
     // assert session equals to session_copy
-    print_result("test_load_session", is_equal_session(session, session_copy));
+    print_result("test_load_inbound_session", is_equal_session(session, session_copy));
 
     // free
     skissm__e2ee_address__free_unpacked(from, NULL);
@@ -367,11 +367,166 @@ void test_store_session()
     tear_down();
 }
 
+void test_equal_ratchet_outbound()
+{
+    setup(&test_event_handler);;
+
+    // create session and two addresses
+    Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
+    Skissm__E2eeAddress *from, *to;
+    mock_address(&from, "alice", "alice's domain", "alice's device");
+    mock_address(&to, "bob", "bob's domain", "bob's device");
+    initialise_session(session, from, to);
+    copy_address_from_address(&(session->session_owner), from);
+
+    // create mock public keys
+    session->alice_identity_key.len = 32;
+    session->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->alice_identity_key.data, "11111111111111111111111111111111", 32);
+    session->alice_ephemeral_key.len = 32;
+    session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    session->bob_signed_pre_key.len = 32;
+    session->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
+    session->bob_one_time_pre_key.len = 32;
+    session->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
+
+    session->associated_data.len = 64;
+    session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
+
+    session->session_id = generate_uuid_str();
+
+    // initialise ratchet
+    initialise_ratchet(&(session->ratchet));
+    uint8_t secret[128] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx";
+    ProtobufCBinaryData their_ratchet_key;
+    their_ratchet_key.len = 32;
+    their_ratchet_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(their_ratchet_key.data, "11111111111111111111111111111111", 32);
+    Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+    skissm__key_pair__init(our_ratchet_key);
+    our_ratchet_key->private_key.len = 32;
+    our_ratchet_key->private_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(our_ratchet_key->private_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    our_ratchet_key->public_key.len = 32;
+    our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
+
+    initialise_as_alice(session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
+
+    // insert to the db
+    store_session(session);
+
+    // load_outbound_session
+    Skissm__E2eeSession *session_copy;
+    load_outbound_session(from, to, &session_copy);
+
+    // assert session equals to session_copy
+    print_result("test_equal_ratchet_outbound", is_equal_ratchet(session->ratchet, session_copy->ratchet));
+
+    // free
+    skissm__e2ee_address__free_unpacked(from, NULL);
+    skissm__e2ee_address__free_unpacked(to, NULL);
+    skissm__e2ee_session__free_unpacked(session, NULL);
+    skissm__e2ee_session__free_unpacked(session_copy, NULL);
+
+    tear_down();
+}
+
+void test_equal_ratchet_inbound()
+{
+    setup(&test_event_handler);;
+
+    // create session and two addresses
+    Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
+    Skissm__E2eeAddress *from, *to;
+    mock_address(&from, "alice", "alice's domain", "alice's device");
+    mock_address(&to, "bob", "bob's domain", "bob's device");
+    initialise_session(session, from, to);
+    copy_address_from_address(&(session->session_owner), to);
+
+    // create mock public keys
+    session->alice_identity_key.len = 32;
+    session->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->alice_identity_key.data, "11111111111111111111111111111111", 32);
+    session->alice_ephemeral_key.len = 32;
+    session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    session->bob_signed_pre_key.len = 32;
+    session->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
+    session->bob_one_time_pre_key.len = 32;
+    session->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
+
+    session->associated_data.len = 64;
+    session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
+
+    session->session_id = generate_uuid_str();
+
+    // initialise ratchet
+    initialise_ratchet(&(session->ratchet));
+    uint8_t secret[128] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx";
+    Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+    skissm__key_pair__init(our_ratchet_key);
+    our_ratchet_key->private_key.len = 32;
+    our_ratchet_key->private_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(our_ratchet_key->private_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    our_ratchet_key->public_key.len = 32;
+    our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
+
+    initialise_as_bob(session->ratchet, secret, 128, our_ratchet_key);
+
+    // insert to the db
+    store_session(session);
+
+    // create mock receiver chain
+    session->ratchet->receiver_chains = (Skissm__ReceiverChainNode **) malloc(sizeof(Skissm__ReceiverChainNode *));
+    Skissm__ReceiverChainNode *chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
+    skissm__receiver_chain_node__init(chain);
+    chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
+    skissm__chain_key__init(chain->chain_key);
+    chain->chain_key->index = 0;
+    chain->chain_key->shared_key.len = 32;
+    chain->chain_key->shared_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(chain->chain_key->shared_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    chain->ratchet_key_public.len = 32;
+    chain->ratchet_key_public.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(chain->ratchet_key_public.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
+    session->ratchet->receiver_chains[0] = chain;
+    session->ratchet->n_receiver_chains = 1;
+
+    // store session again
+    store_session(session);
+
+    // load_outbound_session
+    Skissm__E2eeSession *session_copy;
+    load_inbound_session(session->session_id, to, &session_copy);
+
+    // assert session equals to session_copy
+    print_result("test_equal_ratchet_inbound", is_equal_ratchet(session->ratchet, session_copy->ratchet));
+
+    // free
+    skissm__e2ee_address__free_unpacked(from, NULL);
+    skissm__e2ee_address__free_unpacked(to, NULL);
+    skissm__e2ee_session__free_unpacked(session, NULL);
+    skissm__e2ee_session__free_unpacked(session_copy, NULL);
+
+    tear_down();
+}
+
 int main(){
-    test_find_session();
-    test_load_session();
+    test_load_outbound_session();
+    test_load_inbound_session();
     test_load_outbound_group_session();
     test_load_inbound_group_session();
     test_store_session();
+    test_equal_ratchet_outbound();
+    test_equal_ratchet_inbound();
     return 0;
 }

@@ -121,14 +121,14 @@ void test_insert_one_time_pre_key()
   setup(&test_event_handler);;
 
   // create opk
-  Skissm__OneTimePreKey *onetime_pre_keypiar;
-  mock_onetime_pre_keypiar(&onetime_pre_keypiar, 0, 0, "hello public key", "hello private key");
+  Skissm__OneTimePreKey *one_time_pre_keypair;
+  mock_one_time_pre_keypair(&one_time_pre_keypair, 0, 0, "hello public key", "hello private key");
 
   // insert to the db
-  insert_one_time_pre_key(onetime_pre_keypiar);
+  insert_one_time_pre_key(one_time_pre_keypair);
 
   // free
-  free_one_time_pre_key_pair(onetime_pre_keypiar);
+  free_one_time_pre_key_pair(one_time_pre_keypair);
 
   tear_down();
 }
@@ -251,15 +251,15 @@ void test_add_one_time_pre_key()
   store_account(account);
 
   // create opk
-  Skissm__OneTimePreKey *onetime_pre_key;
-  mock_onetime_pre_keypiar(&onetime_pre_key, 101, 0, "hello public key", "hello private key");
+  Skissm__OneTimePreKey *one_time_pre_key;
+  mock_one_time_pre_keypair(&one_time_pre_key, 101, 0, "hello public key", "hello private key");
 
   // add_one_time_pre_key
-  add_one_time_pre_key(account->account_id, onetime_pre_key);
+  add_one_time_pre_key(account->account_id, one_time_pre_key);
 
   // free
   free_account(account);
-  free_one_time_pre_key_pair(onetime_pre_key);
+  free_one_time_pre_key_pair(one_time_pre_key);
 
   tear_down();
 }

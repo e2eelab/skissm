@@ -101,6 +101,9 @@ static void test_encryption(
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
+    if (plaintext_store.plaintext != NULL){
+        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
+    }
     // pack plaintext into ontext that is in Skissm__E2eePlaintext structure
     uint8_t *e2ee_plaintext = NULL;
     size_t e2ee_plaintext_len;
@@ -112,6 +115,10 @@ static void test_encryption(
 
     // send encrypted msg
     encrypt_session(from_address, to_address, e2ee_plaintext, e2ee_plaintext_len);
+    if (plaintext_store.plaintext == NULL){
+        printf("Test failed!!!\n");
+        return;
+    }
     assert(plaintext_len == plaintext_store.plaintext_len);
     assert(memcmp(plaintext, plaintext_store.plaintext, plaintext_len) == 0);
 }
@@ -178,8 +185,8 @@ static void test_continual_messages(){
 }
 
 int main() {
-    //test_basic_session();
-    //test_interaction();
+    test_basic_session();
+    test_interaction();
     test_continual_messages();
 
     return 0;

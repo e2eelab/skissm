@@ -57,6 +57,24 @@ void print_result(char *title, bool success) {
         printf("%s: failed\n", title);
 }
 
+bool is_null(void *pointer_1, void *pointer_2)
+{
+  if ((pointer_1 == NULL) && (pointer_2 == NULL))
+  {
+    return true;
+  }
+  return false;
+}
+
+bool is_not_null(void *pointer_1, void *pointer_2)
+{
+  if ((pointer_1 != NULL) && (pointer_2 != NULL))
+  {
+    return true;
+  }
+  return false;
+}
+
 bool is_equal_data(ProtobufCBinaryData *data1, ProtobufCBinaryData *data2)
 {
   if (data1->len != data2->len)
@@ -134,9 +152,17 @@ bool is_equal_spk(Skissm__SignedPreKey *spk1, Skissm__SignedPreKey *spk2)
   {
     return false;
   }
-  if (!is_equal_keypair(spk1->key_pair, spk2->key_pair))
+  if (is_not_null(spk1->key_pair, spk2->key_pair))
   {
-    return false;
+    if (!is_equal_keypair(spk1->key_pair, spk2->key_pair))
+    {
+      return false;
+    }
+  } else{
+    if (!is_null(spk1->key_pair, spk2->key_pair))
+    {
+      return false;
+    }
   }
   if (!is_equal_data(&(spk1->signature), &(spk2->signature)))
   {
@@ -156,10 +182,17 @@ bool is_equal_opk(Skissm__OneTimePreKey *opk1, Skissm__OneTimePreKey *opk2)
   {
     return false;
   }
-  if (!is_equal_keypair(opk1->key_pair, opk2->key_pair))
+  if (is_not_null(opk1->key_pair, opk2->key_pair))
   {
-
-    return false;
+    if (!is_equal_keypair(opk1->key_pair, opk2->key_pair))
+    {
+      return false;
+    }
+  } else{
+    if (!is_null(opk1->key_pair, opk2->key_pair))
+    {
+      return false;
+    }
   }
 
   return true;
@@ -177,25 +210,70 @@ bool is_equal_account(Skissm__E2eeAccount *account1, Skissm__E2eeAccount *accoun
     printf("saved not match");
     return false;
   }
-  if (!is_equal_address(account1->address, account2->address))
+  if (is_not_null(account1->address, account2->address))
   {
-    printf("address not match");
-    return false;
+    if (!is_equal_address(account1->address, account2->address))
+    {
+      printf("address not match");
+      return false;
+    }
+  } else{
+    if (!is_null(account1->address, account2->address))
+    {
+      printf("address not match");
+      return false;
+    }
   }
-  if (!is_equal_keypair(account1->identity_key->asym_key_pair, account2->identity_key->asym_key_pair))
+  if (is_not_null(account1->identity_key, account2->identity_key))
   {
-    printf("keypair not match");
-    return false;
+    if (is_not_null(account1->identity_key->asym_key_pair, account2->identity_key->asym_key_pair))
+    {
+      if (!is_equal_keypair(account1->identity_key->asym_key_pair, account2->identity_key->asym_key_pair))
+      {
+        printf("keypair not match");
+        return false;
+      }
+    } else{
+      if (!is_null(account1->identity_key->asym_key_pair, account2->identity_key->asym_key_pair))
+      {
+        printf("keypair not match");
+        return false;
+      }
+    }
+    if (is_not_null(account1->identity_key->sign_key_pair, account2->identity_key->sign_key_pair))
+    {
+      if (!is_equal_keypair(account1->identity_key->sign_key_pair, account2->identity_key->sign_key_pair))
+      {
+        printf("keypair not match");
+        return false;
+      }
+    } else{
+      if (!is_null(account1->identity_key->sign_key_pair, account2->identity_key->sign_key_pair))
+      {
+        printf("keypair not match");
+        return false;
+      }
+    }
+  } else{
+    if (!is_null(account1->identity_key, account2->identity_key))
+    {
+      printf("keypair not match");
+      return false;
+    }
   }
-  if (!is_equal_keypair(account1->identity_key->sign_key_pair, account2->identity_key->sign_key_pair))
+  if (is_not_null(account1->signed_pre_key, account2->signed_pre_key))
   {
-    printf("keypair not match");
-    return false;
-  }
-  if (!is_equal_spk(account1->signed_pre_key, account2->signed_pre_key))
-  {
-    printf("spk not match");
-    return false;
+    if (!is_equal_spk(account1->signed_pre_key, account2->signed_pre_key))
+    {
+      printf("spk not match");
+      return false;
+    }
+  } else{
+    if (!is_null(account1->signed_pre_key, account2->signed_pre_key))
+    {
+      printf("spk not match");
+      return false;
+    }
   }
   if (account1->n_one_time_pre_keys != account2->n_one_time_pre_keys)
   {
@@ -223,6 +301,163 @@ bool is_equal_account(Skissm__E2eeAccount *account1, Skissm__E2eeAccount *accoun
   return true;
 }
 
+bool is_equal_message_key(Skissm__MessageKey *message_key_1, Skissm__MessageKey *message_key_2)
+{
+  if (message_key_1->index != message_key_2->index)
+  {
+    printf("index of message_key not match");
+    return false;
+  }
+  if (!is_equal_data(&(message_key_1->derived_key), &(message_key_2->derived_key)))
+  {
+    printf("derived_key not match");
+    return false;
+  }
+
+  return true;
+}
+
+bool is_equal_chain(Skissm__ChainKey *chain_key_1, Skissm__ChainKey *chain_key_2)
+{
+  if (chain_key_1->index != chain_key_2->index)
+  {
+    printf("index of chain_key not match");
+    return false;
+  }
+  if (!is_equal_data(&(chain_key_1->shared_key), &(chain_key_2->shared_key)))
+  {
+    printf("shared_key not match");
+    return false;
+  }
+
+  return true;
+}
+
+bool is_equal_sender_chain(Skissm__SenderChainNode *sender_chain_1, Skissm__SenderChainNode *sender_chain_2)
+{
+  if (!is_equal_data(&(sender_chain_1->ratchet_key), &(sender_chain_2->ratchet_key)))
+  {
+    printf("ratchet_key not match");
+    return false;
+  }
+  if (is_not_null(sender_chain_1->chain_key, sender_chain_2->chain_key))
+  {
+    if (!is_equal_chain(sender_chain_1->chain_key, sender_chain_2->chain_key))
+    {
+      printf("chain_key not match");
+      return false;
+    }
+  } else{
+    if (!is_null(sender_chain_1->chain_key, sender_chain_2->chain_key))
+    {
+      printf("chain_key not match");
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool is_equal_receiver_chain(Skissm__ReceiverChainNode *receiver_chain_node_1, Skissm__ReceiverChainNode *receiver_chain_node_2)
+{
+  if (!is_equal_data(&(receiver_chain_node_1->ratchet_key_public), &(receiver_chain_node_2->ratchet_key_public)))
+  {
+    printf("ratchet_key_public not match");
+    return false;
+  }
+  if (is_not_null(receiver_chain_node_1->chain_key, receiver_chain_node_2->chain_key))
+  {
+    if (!is_equal_chain(receiver_chain_node_1->chain_key, receiver_chain_node_2->chain_key))
+    {
+      printf("chain_key not match");
+      return false;
+    }
+  } else{
+    if (!is_null(receiver_chain_node_1->chain_key, receiver_chain_node_2->chain_key))
+    {
+      printf("chain_key not match");
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool is_equal_skipped_message_key(Skissm__SkippedMessageKeyNode *skipped_message_key_node_1, Skissm__SkippedMessageKeyNode *skipped_message_key_node_2)
+{
+  if (!is_equal_data(&(skipped_message_key_node_1->ratchet_key_public), &(skipped_message_key_node_2->ratchet_key_public)))
+  {
+    printf("ratchet_key_public not match");
+    return false;
+  }
+  if (is_not_null(skipped_message_key_node_1->message_key, skipped_message_key_node_2->message_key))
+  {
+    if (!is_equal_message_key(skipped_message_key_node_1->message_key, skipped_message_key_node_2->message_key))
+    {
+      printf("message_key not match");
+      return false;
+    }
+  } else{
+    if (!is_null(skipped_message_key_node_1->message_key, skipped_message_key_node_2->message_key))
+    {
+      printf("message_key not match");
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool is_equal_ratchet(Skissm__E2eeRatchet *ratchet_1, Skissm__E2eeRatchet *ratchet_2)
+{
+  if (!is_equal_data(&(ratchet_1->root_key), &(ratchet_2->root_key)))
+  {
+    printf("root_key not match");
+    return false;
+  }
+  if (is_not_null(ratchet_1->sender_chain, ratchet_2->sender_chain))
+  {
+    if (!is_equal_sender_chain(ratchet_1->sender_chain, ratchet_2->sender_chain))
+    {
+      printf("sender_chain not match");
+      return false;
+    }
+  } else{
+    if (!is_null(ratchet_1->sender_chain, ratchet_2->sender_chain))
+    {
+      printf("sender_chain not match");
+      return false;
+    }
+  }
+  if (ratchet_1->n_receiver_chains != ratchet_2->n_receiver_chains)
+  {
+    printf("n_receiver_chains not match");
+    return false;
+  }
+  int i;
+  for (i = 0; i < ratchet_1->n_receiver_chains; i++){
+    if (!is_equal_receiver_chain(ratchet_1->receiver_chains[i], ratchet_2->receiver_chains[i]))
+    {
+      printf("receiver_chains not match");
+      return false;
+    }
+  }
+  if (ratchet_1->n_skipped_message_keys != ratchet_2->n_skipped_message_keys)
+  {
+    printf("n_skipped_message_keys not match");
+    return false;
+  }
+  for (i = 0; i < ratchet_1->n_skipped_message_keys; i++){
+    if (!is_equal_skipped_message_key(ratchet_1->skipped_message_keys[i], ratchet_2->skipped_message_keys[i]))
+    {
+      printf("skipped_message_keys not match");
+      return false;
+    }
+  }
+
+  return true;
+}
+
 bool is_equal_session(Skissm__E2eeSession *session_1, Skissm__E2eeSession *session_2)
 {
   if (session_1->version != session_2->version)
@@ -235,15 +470,33 @@ bool is_equal_session(Skissm__E2eeSession *session_1, Skissm__E2eeSession *sessi
     printf("session_id not match");
     return false;
   }
-  if (!is_equal_address(session_1->from, session_2->from))
+  if (is_not_null(session_1->from, session_2->from))
   {
-    printf("from not match");
-    return false;
+    if (!is_equal_address(session_1->from, session_2->from))
+    {
+      printf("from not match");
+      return false;
+    }
+  } else{
+    if (!is_null(session_1->from, session_2->from))
+    {
+      printf("from not match");
+      return false;
+    }
   }
-  if (!is_equal_address(session_1->to, session_2->to))
+  if (is_not_null(session_1->to, session_2->to))
   {
-    printf("to not match");
-    return false;
+    if (!is_equal_address(session_1->to, session_2->to))
+    {
+      printf("to not match");
+      return false;
+    }
+  } else{
+    if (!is_null(session_1->to, session_2->to))
+    {
+      printf("to not match");
+      return false;
+    }
   }
   if (!is_equal_data(&(session_1->alice_identity_key), &(session_2->alice_identity_key)))
   {
@@ -286,15 +539,33 @@ bool is_equal_group_session(Skissm__E2eeGroupSession *group_session_1, Skissm__E
     printf("session_id not match");
     return false;
   }
-  if (!is_equal_address(group_session_1->session_owner, group_session_2->session_owner))
+  if (is_not_null(group_session_1->session_owner, group_session_2->session_owner))
   {
-    printf("session_owner not match");
-    return false;
+    if (!is_equal_address(group_session_1->session_owner, group_session_2->session_owner))
+    {
+      printf("session_owner not match");
+      return false;
+    }
+  } else{
+    if (!is_null(group_session_1->session_owner, group_session_2->session_owner))
+    {
+      printf("session_owner not match");
+      return false;
+    }
   }
-  if (!is_equal_address(group_session_1->group_address, group_session_2->group_address))
+  if (is_not_null(group_session_1->group_address, group_session_2->group_address))
   {
-    printf("group_address not match");
-    return false;
+    if (!is_equal_address(group_session_1->group_address, group_session_2->group_address))
+    {
+      printf("group_address not match");
+      return false;
+    }
+  } else{
+    if (!is_null(group_session_1->group_address, group_session_2->group_address))
+    {
+      printf("group_address not match");
+      return false;
+    }
   }
   if (!is_equal_data(&(group_session_1->chain_key), &(group_session_2->chain_key)))
   {
@@ -371,13 +642,13 @@ void mock_signed_pre_keypair(Skissm__SignedPreKey **signed_pre_keypair, uint32_t
   (*signed_pre_keypair)->spk_id = spk_id;
 }
 
-void mock_onetime_pre_keypiar(Skissm__OneTimePreKey **onetime_pre_keypiar, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key)
+void mock_one_time_pre_keypair(Skissm__OneTimePreKey **one_time_pre_keypair, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key)
 {
-  *onetime_pre_keypiar = malloc(sizeof(Skissm__OneTimePreKey));
-  skissm__one_time_pre_key__init(*onetime_pre_keypiar);
-  mock_keypair(&((*onetime_pre_keypiar)->key_pair), public_key, private_key);
-  (*onetime_pre_keypiar)->opk_id = opk_id;
-  (*onetime_pre_keypiar)->used = used;
+  *one_time_pre_keypair = malloc(sizeof(Skissm__OneTimePreKey));
+  skissm__one_time_pre_key__init(*one_time_pre_keypair);
+  mock_keypair(&((*one_time_pre_keypair)->key_pair), public_key, private_key);
+  (*one_time_pre_keypair)->opk_id = opk_id;
+  (*one_time_pre_keypair)->used = used;
 }
 
 void free_account(Skissm__E2eeAccount *account)
