@@ -67,21 +67,20 @@ void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
         ssm_event_handler->on_group_msg_received(from_address, group_address, plaintext, plaintext_len);
 }
 
-void ssm_notify_group_created(Skissm__E2eeAddress *group_address,
-                              ProtobufCBinaryData *group_name) {
+void ssm_notify_group_created(Skissm__E2eeAddress *group_address, char *group_name) {
     if (ssm_event_handler != NULL)
         ssm_event_handler->on_group_created(group_address, group_name);
 }
 
 void ssm_notify_group_members_added(Skissm__E2eeAddress *group_address,
-                                    ProtobufCBinaryData *group_name,
+                                    char *group_name,
                                     Skissm__E2eeAddress **member_addresses) {
     if (ssm_event_handler != NULL)
         ssm_event_handler->on_group_members_added(group_address, group_name, member_addresses);
 }
 
 void ssm_notify_group_members_removed(Skissm__E2eeAddress *group_address,
-                                      ProtobufCBinaryData *group_name,
+                                      char *group_name,
                                       Skissm__E2eeAddress **member_addresses) {
     if (ssm_event_handler != NULL)
         ssm_event_handler->on_group_members_removed(group_address, group_name, member_addresses);

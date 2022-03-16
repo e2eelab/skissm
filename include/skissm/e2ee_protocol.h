@@ -245,13 +245,10 @@ void send_remove_group_members_request(remove_group_members_response_handler *re
 /**
  * @brief Process a protocol msg received from messaging server
  *
- * @param server_msg
- * @param server_msg_len
- * @param receiver_address
+ * @param protocol_msg_data
+ * @param protocol_msg_data_len
  */
-void process_protocol_msg(
-    uint8_t *server_msg, size_t server_msg_len,
-    Skissm__E2eeAddress *receiver_address);
+void process_protocol_msg(uint8_t *protocol_msg_data, size_t protocol_msg_data_len);
 
 #ifdef __cplusplus
 }

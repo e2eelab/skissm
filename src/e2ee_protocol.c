@@ -1038,13 +1038,14 @@ static void process_response_msg(Skissm__E2eeProtocolMsg *response_msg) {
     skissm__response_data__free_unpacked(response_data, NULL);
 }
 
-void process_protocol_msg(uint8_t *server_msg, size_t server_msg_len, Skissm__E2eeAddress *receiver_address) {
-    Skissm__E2eeProtocolMsg *protocol_msg = skissm__e2ee_protocol_msg__unpack(NULL, server_msg_len, server_msg);
+void process_protocol_msg(uint8_t *protocol_msg_data, size_t protocol_msg_data_len) {
+    Skissm__E2eeProtocolMsg *protocol_msg = skissm__e2ee_protocol_msg__unpack(NULL, protocol_msg_data_len, protocol_msg_data);
     if (protocol_msg == NULL) {
         ssm_notify_error(BAD_SERVER_MESSAGE, "parse_incoming_message()");
         return;
     }
 
+    Skissm__E2eeAddress *receiver_address = protocol_msg->to;
     Skissm__E2eeCommands e2ee_command = protocol_msg->cmd;
 
     if (e2ee_command & RESPONSE_CMD_FLAG)

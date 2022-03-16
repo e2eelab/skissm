@@ -284,7 +284,7 @@ typedef struct skissm_event_handler {
      * @param group_address
      * @param group_name
      */
-    void (*on_group_created)(Skissm__E2eeAddress *, ProtobufCBinaryData *);
+    void (*on_group_created)(Skissm__E2eeAddress *, char *);
 
     /**
      * @brief notify group members added
@@ -292,8 +292,7 @@ typedef struct skissm_event_handler {
      * @param group_name
      * @param member_addresses
      */
-    void (*on_group_members_added)(Skissm__E2eeAddress *, ProtobufCBinaryData *,
-                                   Skissm__E2eeAddress **);
+    void (*on_group_members_added)(Skissm__E2eeAddress *, char *, Skissm__E2eeAddress **);
 
     /**
      * @brief notify group members removed
@@ -301,8 +300,7 @@ typedef struct skissm_event_handler {
      * @param group_name
      * @param member_addresses
      */
-    void (*on_group_members_removed)(Skissm__E2eeAddress *, ProtobufCBinaryData *,
-                                     Skissm__E2eeAddress **);
+    void (*on_group_members_removed)(Skissm__E2eeAddress *, char *, Skissm__E2eeAddress **);
 } skissm_event_handler;
 
 void skissm_begin(skissm_plugin *plugin, skissm_event_handler *event_handler);
@@ -325,14 +323,14 @@ void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
                           Skissm__E2eeAddress *group_address, uint8_t *plaintext,
                           size_t plaintext_len);
 
-void ssm_notify_group_created(Skissm__E2eeAddress *group_address, ProtobufCBinaryData *group_name);
+void ssm_notify_group_created(Skissm__E2eeAddress *group_address, char *group_name);
 
 void ssm_notify_group_members_added(Skissm__E2eeAddress *group_address,
-                                    ProtobufCBinaryData *group_name,
+                                    char *group_name,
                                     Skissm__E2eeAddress **member_addresses);
 
 void ssm_notify_group_members_removed(Skissm__E2eeAddress *group_address,
-                                      ProtobufCBinaryData *group_name,
+                                      char *group_name,
                                       Skissm__E2eeAddress **member_addresses);
 
 #ifdef __cplusplus

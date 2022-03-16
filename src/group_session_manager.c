@@ -47,10 +47,6 @@ create_group_response_handler create_group_response_handler_store = {
 static void handle_get_group_release(
     get_group_response_handler *this_handler
 ) {
-    //free_mem((void **)&(this_handler->group_name->data), this_handler->group_name->len);
-    //free_mem((void **)&(this_handler->group_name), sizeof(ProtobufCBinaryData));
-    //free_member_addresses(&(this_handler->member_addresses), this_handler->member_num);
-
     this_handler->group_name = NULL;
     this_handler->group_address = NULL;
     this_handler->member_num = 0;
@@ -168,24 +164,24 @@ remove_group_members_response_handler remove_group_members_response_handler_stor
 
 void create_group(
     Skissm__E2eeAddress *user_address,
-    ProtobufCBinaryData *group_name,
+    char *group_name,
     Skissm__E2eeAddress **member_addresses,
     size_t member_num
 ) {
     create_group_response_handler_store.sender_address = user_address;
-    create_group_response_handler_store.group_name = group_name;
+    create_group_response_handler_store.group_name = strdup(group_name);
     create_group_response_handler_store.member_addresses = member_addresses;
     create_group_response_handler_store.member_num = member_num;
     send_create_group_request(&create_group_response_handler_store);
 }
 
-Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__E2eeAddress *sender_address, ProtobufCBinaryData *group_name, size_t member_num, Skissm__E2eeAddress **member_addresses) {
+Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__E2eeAddress *sender_address, char *group_name, size_t member_num, Skissm__E2eeAddress **member_addresses) {
     Skissm__CreateGroupRequestPayload *create_group_request_payload =
         (Skissm__CreateGroupRequestPayload *)malloc(sizeof(Skissm__CreateGroupRequestPayload));
     skissm__create_group_request_payload__init(create_group_request_payload);
 
     copy_address_from_address(&(create_group_request_payload->sender_address), sender_address);
-    copy_protobuf_from_protobuf(&(create_group_request_payload->group_name), group_name);
+    create_group_request_payload->group_name = strdup(group_name);
     create_group_request_payload->n_member_addresses = member_num;
     copy_member_addresses_from_member_addresses(&(create_group_request_payload->member_addresses), (const Skissm__E2eeAddress **)member_addresses, member_num);
 
@@ -194,7 +190,7 @@ Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__
 
 void consume_create_group_response_payload(
     Skissm__E2eeAddress *sender_address,
-    ProtobufCBinaryData *group_name,
+    char *group_name,
     size_t member_num,
     Skissm__E2eeAddress **member_addresses,
     Skissm__CreateGroupResponsePayload *create_group_response_payload
@@ -212,7 +208,7 @@ Skissm__GetGroupRequestPayload *produce_get_group_request_payload(Skissm__E2eeAd
 }
 
 void consume_get_group_response_payload(Skissm__GetGroupResponsePayload *get_group_response_payload) {
-    ProtobufCBinaryData *group_name = &(get_group_response_payload->group_name);
+    char *group_name = get_group_response_payload->group_name;
     size_t member_num = get_group_response_payload->n_member_addresses;
     Skissm__E2eeAddress **member_addresses = get_group_response_payload->member_addresses;
 

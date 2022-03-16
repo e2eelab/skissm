@@ -33,7 +33,7 @@ typedef struct user_data{
 
 typedef struct group_data{
     Skissm__E2eeAddress *group_address;
-    ProtobufCBinaryData group_name;
+    char *group_name;
     size_t member_num;
     Skissm__E2eeAddress **member_addresses;
 } group_data;
@@ -79,8 +79,8 @@ void protocol_simulator_end(){
     for (i = 0; i < group_data_set_insert_pos; i++){
         skissm__e2ee_address__free_unpacked(group_data_set[i].group_address, NULL);
         group_data_set[i].group_address = NULL;
-        free_mem((void **)&(group_data_set[i].group_name.data), group_data_set[i].group_name.len);
-        group_data_set[i].group_name.len = 0;
+        free(group_data_set[i].group_name);
+        group_data_set[i].group_name = NULL;
         for (j = 0; j < group_data_set[i].member_num; j++){
             skissm__e2ee_address__free_unpacked(group_data_set[i].member_addresses[j], NULL);
             group_data_set[i].member_addresses[j] = NULL;
@@ -90,20 +90,14 @@ void protocol_simulator_end(){
     group_data_set_insert_pos = 0;
 }
 
-static void mock_protocol_send(
-    Skissm__E2eeProtocolMsg *response,
-    Skissm__E2eeAddress *receiver_address
-) {
-    /* pack response */
-    size_t server_msg_len = skissm__e2ee_protocol_msg__get_packed_size(response);
-    uint8_t *server_msg = (uint8_t *) malloc(sizeof(uint8_t) * server_msg_len);
-    skissm__e2ee_protocol_msg__pack(response, server_msg);
+static void mock_protocol_send(Skissm__E2eeProtocolMsg *protocol_msg) {
+    /* pack protocol_msg */
+    size_t protocol_msg_data_len = skissm__e2ee_protocol_msg__get_packed_size(protocol_msg);
+    uint8_t protocol_msg_data[protocol_msg_data_len];
+    skissm__e2ee_protocol_msg__pack(protocol_msg, protocol_msg_data);
 
     /* send to client */
-    process_protocol_msg(server_msg, server_msg_len, receiver_address);
-
-    /* release */
-    free_mem((void **)&server_msg, server_msg_len);
+    process_protocol_msg(protocol_msg_data, protocol_msg_data_len);
 }
 
 static void process_register_user_request(
@@ -361,7 +355,7 @@ static void process_invite_request(
     skissm__response_data__init(response_data);
 
     /* sending */
-    mock_protocol_send(request, NULL);
+    mock_protocol_send(request);
 
     response_data->code = OK;
     response->id = request->id;
@@ -384,7 +378,7 @@ static void process_accept_request(
     skissm__response_data__init(response_data);
 
     /* sending */
-    mock_protocol_send(request, NULL);
+    mock_protocol_send(request);
 
     response_data->code = OK;
     response->id = request->id;
@@ -406,7 +400,7 @@ static void process_create_group_request(
     Skissm__CreateGroupRequestPayload *payload = skissm__create_group_request_payload__unpack(NULL, request->payload.len, request->payload.data);
 
     /* prepare to store */
-    copy_protobuf_from_protobuf(&(group_data_set[group_data_set_insert_pos].group_name), &(payload->group_name));
+    group_data_set[group_data_set_insert_pos].group_name = strdup(payload->group_name);
     group_data_set[group_data_set_insert_pos].member_num = payload->n_member_addresses;
     copy_member_addresses_from_member_addresses(&(group_data_set[group_data_set_insert_pos].member_addresses), (const Skissm__E2eeAddress **)payload->member_addresses, payload->n_member_addresses);
 
@@ -452,7 +446,8 @@ static void process_create_group_request(
     size_t i;
     for (i = 0; i < group_data_set[group_data_set_insert_pos].member_num; i++){
         if (compare_address(payload->sender_address, group_data_set[group_data_set_insert_pos].member_addresses[i]) == false){
-            mock_protocol_send(new_request, group_data_set[group_data_set_insert_pos].member_addresses[i]);
+            new_request->to = group_data_set[group_data_set_insert_pos].member_addresses[i];
+            mock_protocol_send(new_request);
         }
     }
 
@@ -569,7 +564,8 @@ static void process_add_group_members_request(
     /* send the message to all the other members in the group */
     for (i = 0; i < group_data_set[group_data_find].member_num; i++){
         if (compare_address(payload->sender_address, group_data_set[group_data_find].member_addresses[i]) == false){
-            mock_protocol_send(request, group_data_set[group_data_find].member_addresses[i]);
+            request->to = group_data_set[group_data_find].member_addresses[i];
+            mock_protocol_send(request);
         }
     }
 
@@ -654,7 +650,8 @@ static void process_remove_group_members_request(
     /* send the message to all the other members in the group */
     for (i = 0; i < group_data_set[group_data_find].member_num; i++){
         if (compare_address(payload->sender_address, group_data_set[group_data_find].member_addresses[i]) == false){
-            mock_protocol_send(request, group_data_set[group_data_find].member_addresses[i]);
+            request->to = group_data_set[group_data_find].member_addresses[i];
+            mock_protocol_send(request);
         }
     }
 
@@ -682,7 +679,7 @@ static void process_send_msg_request(
     skissm__response_data__init(response_data);
 
     /* sending */
-    mock_protocol_send(request, NULL);
+    mock_protocol_send(request);
 
     response_data->code = OK;
     response->id = request->id;
@@ -727,7 +724,8 @@ static void process_send_group_msg_request(
     size_t i;
     for (i = 0; i < group_data_set[group_data_find].member_num; i++){
         if (compare_address(e2ee_msg->from, group_data_set[group_data_find].member_addresses[i]) == false){
-            mock_protocol_send(request, group_data_set[group_data_find].member_addresses[i]);
+            request->to = group_data_set[group_data_find].member_addresses[i];
+            mock_protocol_send(request);
         }
     }
 
@@ -809,7 +807,7 @@ void mock_protocol_receive(uint8_t *msg, size_t msg_len){
         break;
     }
 
-    mock_protocol_send(response, NULL);
+    mock_protocol_send(response);
 
     /* release */
     skissm__e2ee_protocol_msg__free_unpacked(client_msg, NULL);

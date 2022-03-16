@@ -57,7 +57,7 @@ typedef struct invite_handler{
 
 typedef struct create_group_response_handler{
     Skissm__E2eeAddress *sender_address;
-    ProtobufCBinaryData *group_name;
+    char *group_name;
     Skissm__E2eeAddress **member_addresses;
     size_t member_num;
     void (*handle_release)(struct create_group_response_handler *this_handler);
@@ -65,7 +65,7 @@ typedef struct create_group_response_handler{
 
 typedef struct get_group_response_handler{
     Skissm__E2eeAddress *group_address;
-    ProtobufCBinaryData *group_name;
+    char *group_name;
     size_t member_num;
     Skissm__E2eeAddress **member_addresses;
     void (*handle_release)(struct get_group_response_handler *this_handler);

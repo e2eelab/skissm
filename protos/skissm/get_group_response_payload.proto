@@ -26,6 +26,6 @@ option java_outer_classname = "GetGroupResponsePayload";
 import "skissm/e2ee_address.proto";
 
 message get_group_response_payload {
-  bytes group_name = 1;
+  string group_name = 1;
   repeated skissm.e2ee_address member_addresses = 2;
 }

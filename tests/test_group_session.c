@@ -46,7 +46,7 @@ typedef struct store_plaintext {
 
 typedef struct store_group {
     Skissm__E2eeAddress *group_address;
-    ProtobufCBinaryData *group_name;
+    char *group_name;
 } store_group;
 
 store_plaintext plaintext_store = {NULL, 0};
@@ -94,25 +94,24 @@ static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2e
     plaintext_store.plaintext_len = plaintext_len;
 }
 
-static void on_group_created(Skissm__E2eeAddress *group_address, ProtobufCBinaryData *group_name) {
-    print_msg("on_group_created: group_name", group_name->data, group_name->len);
+static void on_group_created(Skissm__E2eeAddress *group_address, char *group_name) {
+    print_msg("on_group_created: group_name", (uint8_t *)group_name, strlen(group_name));
 
     copy_address_from_address(&(group.group_address), group_address);
-    group.group_name = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-    copy_protobuf_from_protobuf(group.group_name, group_name);
+    group.group_name = strdup(group_name);
 }
 
-static void on_group_members_added(Skissm__E2eeAddress *group_address, ProtobufCBinaryData *group_name, Skissm__E2eeAddress **member_addresses) {
+static void on_group_members_added(Skissm__E2eeAddress *group_address, char *group_name, Skissm__E2eeAddress **member_addresses) {
     size_t n = sizeof(member_addresses);
-    print_msg("on_group_members_added: group_name", group_name->data, group_name->len);
+    print_msg("on_group_members_added: group_name", (uint8_t *)group_name, strlen(group_name));
     for(int i=0; i<n; i++) {
         print_msg("    member_id", (uint8_t *)(member_addresses[i]->user_id), strlen(member_addresses[i]->user_id));
     }
 }
 
-static void on_group_members_removed(Skissm__E2eeAddress *group_address, ProtobufCBinaryData *group_name, Skissm__E2eeAddress **member_addresses) {
+static void on_group_members_removed(Skissm__E2eeAddress *group_address, char *group_name, Skissm__E2eeAddress **member_addresses) {
     size_t n = sizeof(member_addresses);
-    print_msg("on_group_members_removed: group_name", group_name->data, group_name->len);
+    print_msg("on_group_members_removed: group_name", (uint8_t *)group_name, strlen(group_name));
     for(int i=0; i<n; i++) {
         print_msg("    member_id", (uint8_t *)(member_addresses[i]->user_id), strlen(member_addresses[i]->user_id));
     }
@@ -140,11 +139,7 @@ static void test_create_group() {
     copy_address_from_address(&(member_addresses[0]), account_data[0]->address);
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
 
-    ProtobufCBinaryData *group_name = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-    group_name->len = strlen("Group name");
-    group_name->data = (uint8_t *)malloc(sizeof(uint8_t) * group_name->len);
-    memcpy(group_name->data, "Group name", group_name->len);
-    create_group(account_data[0]->address, group_name, member_addresses, 2);
+    create_group(account_data[0]->address, "Group name", member_addresses, 2);
 
     // Alice sends a message to the group
     uint8_t plaintext[] = "This is the group session test.";
@@ -155,7 +150,6 @@ static void test_create_group() {
     skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
     skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
-    free_protobuf(group_name);
 
     // test stop
     test_end();
@@ -177,11 +171,7 @@ static void test_add_group_members() {
     copy_address_from_address(&(member_addresses[0]), account_data[0]->address);
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
 
-    ProtobufCBinaryData *group_name = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-    group_name->len = strlen("Group name");
-    group_name->data = (uint8_t *)malloc(sizeof(uint8_t) * group_name->len);
-    memcpy(group_name->data, "Group name", group_name->len);
-    create_group(account_data[0]->address, group_name, member_addresses, 2);
+    create_group(account_data[0]->address, "Group name", member_addresses, 2);
 
     // Alice invites Claire to join the group
     Skissm__E2eeAddress **new_member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *));
@@ -199,7 +189,6 @@ static void test_add_group_members() {
     skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
     skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
-    free_protobuf(group_name);
     skissm__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
     free(new_member_addresses);
 
@@ -224,11 +213,7 @@ static void test_remove_group_members() {
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
     copy_address_from_address(&(member_addresses[2]), account_data[2]->address);
 
-    ProtobufCBinaryData *group_name = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-    group_name->len = strlen("Group name");
-    group_name->data = (uint8_t *)malloc(sizeof(uint8_t) * group_name->len);
-    memcpy(group_name->data, "Group name", group_name->len);
-    create_group(account_data[0]->address, group_name, member_addresses, 3);
+    create_group(account_data[0]->address, "Group name", member_addresses, 3);
 
     Skissm__E2eeAddress **removing_member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *));
     copy_address_from_address(&(removing_member_addresses[0]), account_data[2]->address);
@@ -247,7 +232,6 @@ static void test_remove_group_members() {
     skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     skissm__e2ee_address__free_unpacked(member_addresses[2], NULL);
     free(member_addresses);
-    free_protobuf(group_name);
     skissm__e2ee_address__free_unpacked(removing_member_addresses[0], NULL);
     free(removing_member_addresses);
 
@@ -271,11 +255,7 @@ static void test_create_add_remove() {
     copy_address_from_address(&(member_addresses[0]), account_data[0]->address);
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
 
-    ProtobufCBinaryData *group_name = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-    group_name->len = strlen("Group name");
-    group_name->data = (uint8_t *)malloc(sizeof(uint8_t) * group_name->len);
-    memcpy(group_name->data, "Group name", group_name->len);
-    create_group(account_data[0]->address, group_name, member_addresses, 2);
+    create_group(account_data[0]->address, "Group name", member_addresses, 2);
 
     // Alice sends a message to the group
     uint8_t plaintext[] = "This is the group session test.";
@@ -306,7 +286,6 @@ static void test_create_add_remove() {
     skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
     skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
-    free_protobuf(group_name);
     skissm__e2ee_address__free_unpacked(new_member_addresses[0], NULL);
     free(new_member_addresses);
 

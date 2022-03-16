@@ -37,7 +37,7 @@ extern "C" {
  * @param member_num
  */
 void create_group(Skissm__E2eeAddress *user_address,
-                  ProtobufCBinaryData *group_name,
+                  char *group_name,
                   Skissm__E2eeAddress **member_addresses,
                   size_t member_num);
 
@@ -50,7 +50,7 @@ void create_group(Skissm__E2eeAddress *user_address,
  * @param member_addresses
  * @return Skissm__CreateGroupRequestPayload*
  */
-Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__E2eeAddress *sender_address, ProtobufCBinaryData *group_name, size_t member_num, Skissm__E2eeAddress **member_addresses);
+Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__E2eeAddress *sender_address, char *group_name, size_t member_num, Skissm__E2eeAddress **member_addresses);
 
 /**
  * @brief Process an imcoming create_group_response_payload.
@@ -63,7 +63,7 @@ Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__
  */
 void consume_create_group_response_payload(
     Skissm__E2eeAddress *sender_address,
-    ProtobufCBinaryData *group_name,
+    char *group_name,
     size_t member_num,
     Skissm__E2eeAddress **member_addresses,
     Skissm__CreateGroupResponsePayload *create_group_response_payload
