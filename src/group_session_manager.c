@@ -261,13 +261,14 @@ Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, cons
     create_group_message_keys(&(group_session->chain_key), keys);
 
     /* Prepare an e2ee message */
-    Skissm__E2eeMsg *group_message = (Skissm__E2eeMsg *) malloc(sizeof(Skissm__E2eeMsg));
-    skissm__e2ee_msg__init(group_message);
-    group_message->e2ee_msg_type = SKISSM__E2EE_MSG_TYPE__GROUP_MESSAGE;
-    group_message->version = group_session->version;
-    group_message->session_id = strdup(group_session->session_id);
-    copy_address_from_address(&(group_message->from), group_session->session_owner);
-    copy_address_from_address(&(group_message->to), group_session->group_address);
+    Skissm__E2eeMsg *group_msg = (Skissm__E2eeMsg *) malloc(sizeof(Skissm__E2eeMsg));
+    skissm__e2ee_msg__init(group_msg);
+    group_msg->e2ee_msg_type = SKISSM__E2EE_MSG_TYPE__GROUP_MESSAGE;
+    group_msg->version = group_session->version;
+    group_msg->session_id = strdup(group_session->session_id);
+    group_msg->msg_id = generate_uuid_str();
+    copy_address_from_address(&(group_msg->from), group_session->session_owner);
+    copy_address_from_address(&(group_msg->to), group_session->group_address);
 
     /* Prepare a group message */
     Skissm__E2eeGroupMsgPayload *group_msg_payload = (Skissm__E2eeGroupMsgPayload *) malloc(sizeof(Skissm__E2eeGroupMsgPayload));
@@ -296,9 +297,9 @@ Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, cons
     );
 
     /* Pack the group message into the e2ee message */
-    group_message->payload.len = skissm__e2ee_group_msg_payload__get_packed_size(group_msg_payload);
-    group_message->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * group_message->payload.len);
-    skissm__e2ee_group_msg_payload__pack(group_msg_payload, group_message->payload.data);
+    group_msg->payload.len = skissm__e2ee_group_msg_payload__get_packed_size(group_msg_payload);
+    group_msg->payload.data = (uint8_t *) malloc(sizeof(uint8_t) * group_msg->payload.len);
+    skissm__e2ee_group_msg_payload__pack(group_msg_payload, group_msg->payload.data);
 
     /* Prepare a new chain key for next encryption */
     advance_group_chain_key(&(group_session->chain_key), group_session->sequence);
@@ -309,7 +310,7 @@ Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, cons
     skissm__e2ee_group_msg_payload__free_unpacked(group_msg_payload, NULL);
 
     // done
-    return group_message;
+    return group_msg;
 }
 
 void encrypt_group_session(

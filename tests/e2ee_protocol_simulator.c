@@ -51,14 +51,14 @@ static user_data user_data_set[user_data_max] = {{NULL, NULL},
                                                  {NULL, NULL},
                                                  {NULL, NULL}};
 
-static group_data group_data_set[user_data_max] = {{NULL, {0, NULL}, 0, NULL},
-                                                   {NULL, {0, NULL}, 0, NULL},
-                                                   {NULL, {0, NULL}, 0, NULL},
-                                                   {NULL, {0, NULL}, 0, NULL},
-                                                   {NULL, {0, NULL}, 0, NULL},
-                                                   {NULL, {0, NULL}, 0, NULL},
-                                                   {NULL, {0, NULL}, 0, NULL},
-                                                   {NULL, {0, NULL}, 0, NULL}};
+static group_data group_data_set[user_data_max] = {{NULL, NULL, 0, NULL},
+                                                   {NULL, NULL, 0, NULL},
+                                                   {NULL, NULL, 0, NULL},
+                                                   {NULL, NULL, 0, NULL},
+                                                   {NULL, NULL, 0, NULL},
+                                                   {NULL, NULL, 0, NULL},
+                                                   {NULL, NULL, 0, NULL},
+                                                   {NULL, NULL, 0, NULL}};
 
 static uint8_t user_data_set_insert_pos = 0;
 
