@@ -53,7 +53,7 @@ typedef struct session_suite{
     size_t (*new_inbound_session)(
         Skissm__E2eeSession *session,
         Skissm__E2eeAccount *local_account,
-        Skissm__E2eeMessage *inbound_message
+        Skissm__E2eeMsg *inbound_message
     );
 } session_suite;
 
@@ -96,7 +96,7 @@ size_t crypto_curve25519_new_outbound_session(
 size_t crypto_curve25519_new_inbound_session(
     Skissm__E2eeSession *session,
     Skissm__E2eeAccount *local_account,
-    Skissm__E2eeMessage *inbound_prekey_message
+    Skissm__E2eeMsg *inbound_prekey_message
 );
 
 /* PQC-related */
@@ -109,7 +109,7 @@ size_t pqc_new_outbound_session(
 size_t pqc_new_inbound_session(
     Skissm__E2eeSession *session,
     Skissm__E2eeAccount *local_account,
-    Skissm__E2eeMessage *inbound_message
+    Skissm__E2eeMsg *inbound_message
 );
 
 size_t pqc_complete_outbound_session(

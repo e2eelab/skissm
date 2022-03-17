@@ -39,20 +39,21 @@ void consume_get_pre_key_bundle_response_payload(
     close_session(outbound_session);
 }
 
-Skissm__E2eeMessage *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len) {
-    Skissm__E2eeMessage *outbound_e2ee_message_payload;
-    outbound_e2ee_message_payload = (Skissm__E2eeMessage *)malloc(sizeof(Skissm__E2eeMessage));
-    skissm__e2ee_message__init(outbound_e2ee_message_payload);
+Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len) {
+    Skissm__E2eeMsg *outbound_e2ee_message_payload;
+    outbound_e2ee_message_payload = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
+    skissm__e2ee_msg__init(outbound_e2ee_message_payload);
 
     outbound_e2ee_message_payload->version = PROTOCOL_VERSION;
     outbound_e2ee_message_payload->session_id = strdup(outbound_session->session_id);
+    outbound_e2ee_message_payload->msg_id = generate_uuid_str();
     copy_address_from_address(&(outbound_e2ee_message_payload->from), outbound_session->from);
     copy_address_from_address(&(outbound_e2ee_message_payload->to), outbound_session->to);
 
     Skissm__E2eeMsgPayload *msg_context = NULL;
 
     if (outbound_session->responded) {
-        outbound_e2ee_message_payload->msg_type = SKISSM__E2EE_MESSAGE_TYPE__MESSAGE;
+        outbound_e2ee_message_payload->e2ee_msg_type = SKISSM__E2EE_MSG_TYPE__MESSAGE;
         encrypt_ratchet(outbound_session->ratchet, outbound_session->associated_data, e2ee_plaintext, e2ee_plaintext_len, &msg_context);
 
         size_t msg_len = skissm__e2ee_msg_payload__get_packed_size(msg_context);
@@ -60,7 +61,7 @@ Skissm__E2eeMessage *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_
         outbound_e2ee_message_payload->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * msg_len);
         skissm__e2ee_msg_payload__pack(msg_context, outbound_e2ee_message_payload->payload.data);
     } else {
-        outbound_e2ee_message_payload->msg_type = SKISSM__E2EE_MESSAGE_TYPE__PRE_KEY;
+        outbound_e2ee_message_payload->e2ee_msg_type = SKISSM__E2EE_MSG_TYPE__PRE_KEY;
         Skissm__E2eePreKeyPayload *pre_key_context = (Skissm__E2eePreKeyPayload *)malloc(sizeof(Skissm__E2eePreKeyPayload));
         skissm__e2ee_pre_key_payload__init(pre_key_context);
         copy_protobuf_from_protobuf(&pre_key_context->alice_identity_key, &outbound_session->alice_identity_key);
@@ -81,11 +82,11 @@ Skissm__E2eeMessage *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_
     return outbound_e2ee_message_payload;
 }
 
-size_t consume_e2ee_message_payload(Skissm__E2eeMessage *inbound_e2ee_message_payload) {
+size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payload) {
     Skissm__E2eePreKeyPayload *pre_key_context = NULL;
     Skissm__E2eeMsgPayload *msg_payload = NULL;
 
-    if (inbound_e2ee_message_payload->msg_type != SKISSM__E2EE_MESSAGE_TYPE__PRE_KEY && inbound_e2ee_message_payload->msg_type != SKISSM__E2EE_MESSAGE_TYPE__MESSAGE) {
+    if (inbound_e2ee_message_payload->e2ee_msg_type != SKISSM__E2EE_MSG_TYPE__PRE_KEY && inbound_e2ee_message_payload->e2ee_msg_type != SKISSM__E2EE_MSG_TYPE__MESSAGE) {
         ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_message_payload()");
         return (size_t)(-1);
     }
@@ -99,7 +100,7 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMessage *inbound_e2ee_message_pa
     Skissm__E2eeSession *inbound_session = NULL;
     get_ssm_plugin()->load_inbound_session(inbound_e2ee_message_payload->session_id, inbound_e2ee_message_payload->to, &inbound_session);
     if (inbound_session == NULL) {
-        if (inbound_e2ee_message_payload->msg_type != SKISSM__E2EE_MESSAGE_TYPE__PRE_KEY) {
+        if (inbound_e2ee_message_payload->e2ee_msg_type != SKISSM__E2EE_MSG_TYPE__PRE_KEY) {
             ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_message_payload()");
             return (size_t)(-1);
         }
@@ -123,9 +124,9 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMessage *inbound_e2ee_message_pa
 
     uint8_t *context = NULL;
     size_t context_len = -1;
-    if (inbound_e2ee_message_payload->msg_type == SKISSM__E2EE_MESSAGE_TYPE__MESSAGE) {
+    if (inbound_e2ee_message_payload->e2ee_msg_type == SKISSM__E2EE_MSG_TYPE__MESSAGE) {
         msg_payload = skissm__e2ee_msg_payload__unpack(NULL, inbound_e2ee_message_payload->payload.len, inbound_e2ee_message_payload->payload.data);
-    } else if (inbound_e2ee_message_payload->msg_type == SKISSM__E2EE_MESSAGE_TYPE__PRE_KEY) {
+    } else if (inbound_e2ee_message_payload->e2ee_msg_type == SKISSM__E2EE_MSG_TYPE__PRE_KEY) {
         pre_key_context = skissm__e2ee_pre_key_payload__unpack(NULL, inbound_e2ee_message_payload->payload.len, inbound_e2ee_message_payload->payload.data);
         msg_payload = pre_key_context->msg_payload;
     }
@@ -173,9 +174,9 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMessage *inbound_e2ee_message_pa
 
 complete:
     // release
-    if (inbound_e2ee_message_payload->msg_type == SKISSM__E2EE_MESSAGE_TYPE__MESSAGE) {
+    if (inbound_e2ee_message_payload->e2ee_msg_type == SKISSM__E2EE_MSG_TYPE__MESSAGE) {
         skissm__e2ee_msg_payload__free_unpacked(msg_payload, NULL);
-    } else if (inbound_e2ee_message_payload->msg_type == SKISSM__E2EE_MESSAGE_TYPE__PRE_KEY) {
+    } else if (inbound_e2ee_message_payload->e2ee_msg_type == SKISSM__E2EE_MSG_TYPE__PRE_KEY) {
         skissm__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
     }
     close_session(inbound_session);
@@ -201,7 +202,7 @@ Skissm__E2eeInvitePayload *produce_e2ee_invite_payload(
     return e2ee_invite_payload;
 }
 
-size_t consume_e2ee_invite_payload(Skissm__E2eeMessage *invite_msg_payload){
+size_t consume_e2ee_invite_payload(Skissm__E2eeMsg *invite_msg_payload){
     //?????????????
     /* create a new inbound session */
     Skissm__E2eeSession *inbound_session = (Skissm__E2eeSession *)malloc(sizeof(Skissm__E2eeSession));
@@ -231,7 +232,7 @@ Skissm__E2eeAcceptPayload *produce_e2ee_accept_payload(ProtobufCBinaryData *ciph
     return e2ee_accept_payload;
 }
 
-void consume_e2ee_accept_payload(Skissm__E2eeMessage *accept_msg_payload){
+void consume_e2ee_accept_payload(Skissm__E2eeMsg *accept_msg_payload){
     Skissm__E2eeSession *outbound_session = NULL;
     // Is it unique?
     get_ssm_plugin()->load_outbound_session(accept_msg_payload->to, accept_msg_payload->from, &outbound_session);
@@ -246,12 +247,12 @@ static void handle_invite_release(){}
 
 static invite_handler invite_handler_store = {NULL, NULL, handle_invite_release};
 
-Skissm__E2eeMessage *produce_invite_message_payload(Skissm__E2eeSession *outbound_session, Skissm__E2eeInvitePayload *e2ee_invite_payload){
-    Skissm__E2eeMessage *invite_message_payload;
-    invite_message_payload = (Skissm__E2eeMessage *)malloc(sizeof(Skissm__E2eeMessage));
-    skissm__e2ee_message__init(invite_message_payload);
+Skissm__E2eeMsg *produce_invite_message_payload(Skissm__E2eeSession *outbound_session, Skissm__E2eeInvitePayload *e2ee_invite_payload){
+    Skissm__E2eeMsg *invite_message_payload;
+    invite_message_payload = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
+    skissm__e2ee_msg__init(invite_message_payload);
 
-    invite_message_payload->msg_type = SKISSM__E2EE_MESSAGE_TYPE__INVITE;
+    invite_message_payload->e2ee_msg_type = SKISSM__E2EE_MSG_TYPE__INVITE;
     invite_message_payload->version = outbound_session->version;
     copy_address_from_address(&(invite_message_payload->from), invite_handler_store.from);
     copy_address_from_address(&(invite_message_payload->to), invite_handler_store.to);
@@ -264,12 +265,12 @@ Skissm__E2eeMessage *produce_invite_message_payload(Skissm__E2eeSession *outboun
     return invite_message_payload;
 }
 
-Skissm__E2eeMessage *produce_accept_message_payload(Skissm__E2eeAcceptPayload *e2ee_accept_payload){
-    Skissm__E2eeMessage *accept_message_payload;
-    accept_message_payload = (Skissm__E2eeMessage *)malloc(sizeof(Skissm__E2eeMessage));
-    skissm__e2ee_message__init(accept_message_payload);
+Skissm__E2eeMsg *produce_accept_message_payload(Skissm__E2eeAcceptPayload *e2ee_accept_payload){
+    Skissm__E2eeMsg *accept_message_payload;
+    accept_message_payload = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
+    skissm__e2ee_msg__init(accept_message_payload);
 
-    accept_message_payload->msg_type = SKISSM__E2EE_MESSAGE_TYPE__ACCEPT;
+    accept_message_payload->e2ee_msg_type = SKISSM__E2EE_MSG_TYPE__ACCEPT;
     // ??????????????
     copy_address_from_address(&(accept_message_payload->from), invite_handler_store.from);
     copy_address_from_address(&(accept_message_payload->to), invite_handler_store.to);

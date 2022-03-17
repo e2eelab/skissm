@@ -140,17 +140,17 @@ static void test_create_group() {
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
 
     create_group(account_data[0]->address, "Group name", member_addresses, 2);
-
+    
     // Alice sends a message to the group
     uint8_t plaintext[] = "This is the group session test.";
     size_t plaintext_len = sizeof(plaintext) - 1;
     test_encryption(account_data[0]->address, plaintext, plaintext_len);
-
+    
     // release
     skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
     skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
-
+    
     // test stop
     test_end();
     tear_down();

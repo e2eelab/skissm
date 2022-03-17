@@ -21,16 +21,17 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeMessage";
+option java_outer_classname = "E2eeMsg";
 
 import "skissm/e2ee_address.proto";
-import "skissm/e2ee_message_type.proto";
+import "skissm/e2ee_msg_type.proto";
 
-message e2ee_message {
+message e2ee_msg {
     uint32 version = 1;
     skissm.e2ee_address from = 2;
     skissm.e2ee_address to = 3;
-    string session_id = 4;
-    skissm.e2ee_message_type msg_type = 5;
-    bytes payload = 6;
+    string msg_id = 4;
+    string session_id = 5;
+    skissm.e2ee_msg_type e2ee_msg_type = 6;
+    bytes payload = 7;
 }

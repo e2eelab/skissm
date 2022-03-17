@@ -21,9 +21,9 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeMessageType";
+option java_outer_classname = "E2eeMsgType";
 
-enum e2ee_message_type {
+enum e2ee_msg_type {
     PRE_KEY = 0;
     INVITE = 1;
     ACCEPT = 2;

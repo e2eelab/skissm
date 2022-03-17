@@ -446,7 +446,7 @@ static void process_create_group_request(
     size_t i;
     for (i = 0; i < group_data_set[group_data_set_insert_pos].member_num; i++){
         if (compare_address(payload->sender_address, group_data_set[group_data_set_insert_pos].member_addresses[i]) == false){
-            new_request->to = group_data_set[group_data_set_insert_pos].member_addresses[i];
+            copy_address_from_address(&(new_request->to), group_data_set[group_data_set_insert_pos].member_addresses[i]);
             mock_protocol_send(new_request);
         }
     }
@@ -491,7 +491,7 @@ static void process_get_group_request(
         goto complete;
     }
 
-    copy_protobuf_from_protobuf(&(get_group_response_payload->group_name), &(group_data_set[group_data_find].group_name));
+    get_group_response_payload->group_name = strdup(group_data_set[group_data_find].group_name);
     get_group_response_payload->n_member_addresses = group_data_set[group_data_find].member_num;
     copy_member_addresses_from_member_addresses(&(get_group_response_payload->member_addresses), (const Skissm__E2eeAddress **)group_data_set[group_data_find].member_addresses, get_group_response_payload->n_member_addresses);
 
@@ -564,7 +564,7 @@ static void process_add_group_members_request(
     /* send the message to all the other members in the group */
     for (i = 0; i < group_data_set[group_data_find].member_num; i++){
         if (compare_address(payload->sender_address, group_data_set[group_data_find].member_addresses[i]) == false){
-            request->to = group_data_set[group_data_find].member_addresses[i];
+            copy_address_from_address(&(request->to), group_data_set[group_data_find].member_addresses[i]);
             mock_protocol_send(request);
         }
     }
@@ -650,7 +650,7 @@ static void process_remove_group_members_request(
     /* send the message to all the other members in the group */
     for (i = 0; i < group_data_set[group_data_find].member_num; i++){
         if (compare_address(payload->sender_address, group_data_set[group_data_find].member_addresses[i]) == false){
-            request->to = group_data_set[group_data_find].member_addresses[i];
+            copy_address_from_address(&(request->to), group_data_set[group_data_find].member_addresses[i]);
             mock_protocol_send(request);
         }
     }
@@ -702,7 +702,7 @@ static void process_send_group_msg_request(
     skissm__response_data__init(response_data);
 
     /* unpack */
-    Skissm__E2eeMessage *e2ee_msg = skissm__e2ee_message__unpack(NULL, request->payload.len, request->payload.data);
+    Skissm__E2eeMsg *e2ee_msg = skissm__e2ee_msg__unpack(NULL, request->payload.len, request->payload.data);
 
     /* find the group */
     uint8_t group_data_find = 0;
@@ -724,7 +724,7 @@ static void process_send_group_msg_request(
     size_t i;
     for (i = 0; i < group_data_set[group_data_find].member_num; i++){
         if (compare_address(e2ee_msg->from, group_data_set[group_data_find].member_addresses[i]) == false){
-            request->to = group_data_set[group_data_find].member_addresses[i];
+            copy_address_from_address(&(request->to), group_data_set[group_data_find].member_addresses[i]);
             mock_protocol_send(request);
         }
     }
@@ -739,7 +739,7 @@ complete:
 
     /* release */
     skissm__response_data__free_unpacked(response_data, NULL);
-    skissm__e2ee_message__free_unpacked(e2ee_msg, NULL);
+    skissm__e2ee_msg__free_unpacked(e2ee_msg, NULL);
 }
 
 void mock_protocol_receive(uint8_t *msg, size_t msg_len){

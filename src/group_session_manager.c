@@ -254,16 +254,16 @@ void remove_group_members(
     send_remove_group_members_request(&remove_group_members_response_handler_store);
 }
 
-Skissm__E2eeMessage *produce_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) {
+Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) {
     /* Create the message key */
     Skissm__MessageKey *keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
     skissm__message_key__init(keys);
     create_group_message_keys(&(group_session->chain_key), keys);
 
     /* Prepare an e2ee message */
-    Skissm__E2eeMessage *group_message = (Skissm__E2eeMessage *) malloc(sizeof(Skissm__E2eeMessage));
-    skissm__e2ee_message__init(group_message);
-    group_message->msg_type = SKISSM__E2EE_MESSAGE_TYPE__GROUP_MESSAGE;
+    Skissm__E2eeMsg *group_message = (Skissm__E2eeMsg *) malloc(sizeof(Skissm__E2eeMsg));
+    skissm__e2ee_msg__init(group_message);
+    group_message->e2ee_msg_type = SKISSM__E2EE_MSG_TYPE__GROUP_MESSAGE;
     group_message->version = group_session->version;
     group_message->session_id = strdup(group_session->session_id);
     copy_address_from_address(&(group_message->from), group_session->session_owner);
@@ -328,7 +328,7 @@ void encrypt_group_session(
     close_group_session(group_session);
 }
 
-void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMessage *group_msg) {
+void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *group_msg) {
     /* Load the inbound group session */
     Skissm__E2eeGroupSession *group_session = NULL;
     get_ssm_plugin()->load_inbound_group_session(receiver_address, group_msg->to, &group_session);

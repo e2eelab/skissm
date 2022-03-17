@@ -112,7 +112,7 @@ size_t crypto_curve25519_new_outbound_session(Skissm__E2eeSession *session, cons
     return (size_t)(0);
 }
 
-size_t crypto_curve25519_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *local_account, Skissm__E2eeMessage *inbound_message) {
+size_t crypto_curve25519_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *local_account, Skissm__E2eeMsg *inbound_message) {
     session->version = inbound_message->version;
     session->session_id = strdup(inbound_message->session_id);
 

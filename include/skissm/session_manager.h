@@ -68,9 +68,9 @@ void consume_get_pre_key_bundle_response_payload(
  * @param outbound_session
  * @param e2ee_plaintext bytes array packed from 
  * @param e2ee_plaintext_len
- * @return Skissm__E2eeMessage*
+ * @return Skissm__E2eeMsg*
  */
-Skissm__E2eeMessage *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len);
+Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len);
 
 /**
  * @brief Process an inbound e2ee_message_payload with corresponding inbound session.
@@ -78,22 +78,22 @@ Skissm__E2eeMessage *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_
  * @param inbound_e2ee_message_payload
  * @return size_t 0 for Succcess
  */
-size_t consume_e2ee_message_payload(Skissm__E2eeMessage *inbound_e2ee_message_payload);
+size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payload);
 
 Skissm__E2eeInvitePayload *produce_e2ee_invite_payload(
     Skissm__E2eeSession *outbound_session, ProtobufCBinaryData *ciphertext_2,
     ProtobufCBinaryData *ciphertext_3, ProtobufCBinaryData *ciphertext_4
 );
 
-size_t consume_e2ee_invite_payload(Skissm__E2eeMessage *invite_msg_payload);
+size_t consume_e2ee_invite_payload(Skissm__E2eeMsg *invite_msg_payload);
 
 Skissm__E2eeAcceptPayload *produce_e2ee_accept_payload(ProtobufCBinaryData *ciphertext_1);
 
-void consume_e2ee_accept_payload(Skissm__E2eeMessage *accept_msg_payload);
+void consume_e2ee_accept_payload(Skissm__E2eeMsg *accept_msg_payload);
 
-Skissm__E2eeMessage *produce_invite_message_payload(Skissm__E2eeSession *outbound_session, Skissm__E2eeInvitePayload *e2ee_invite_payload);
+Skissm__E2eeMsg *produce_invite_message_payload(Skissm__E2eeSession *outbound_session, Skissm__E2eeInvitePayload *e2ee_invite_payload);
 
-Skissm__E2eeMessage *produce_accept_message_payload(Skissm__E2eeAcceptPayload *e2ee_accept_payload);
+Skissm__E2eeMsg *produce_accept_message_payload(Skissm__E2eeAcceptPayload *e2ee_accept_payload);
 
 #ifdef __cplusplus
 }
