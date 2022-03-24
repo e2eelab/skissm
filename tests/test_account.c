@@ -30,16 +30,6 @@
 
 #include "test_env.h"
 
-static skissm_event_handler test_event_handler = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
 static void verify_one_time_pre_keys(Skissm__E2eeAccount *account, unsigned int n_one_time_pre_keys) {
     unsigned int i;
 
@@ -56,7 +46,7 @@ static void verify_one_time_pre_keys(Skissm__E2eeAccount *account, unsigned int 
 
 int main(){
     // test start
-    setup(&test_event_handler);;
+    setup();
 
     // Register test
     Skissm__E2eeAccount *account = create_account(1);

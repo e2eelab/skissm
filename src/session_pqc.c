@@ -121,7 +121,7 @@ size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount
     bool old_spk = 0;
     Skissm__SignedPreKey *old_spk_data = NULL;
     if (local_account->signed_pre_key->spk_id != e2ee_invite_payload->bob_signed_pre_key_id) {
-        get_ssm_plugin()->load_signed_pre_key(local_account->account_id, e2ee_invite_payload->bob_signed_pre_key_id, &old_spk_data);
+        get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->account_id, e2ee_invite_payload->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
             ssm_notify_error(BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
             skissm__e2ee_invite_payload__free_unpacked(e2ee_invite_payload, NULL);
@@ -161,7 +161,7 @@ size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount
             return (size_t)(-1);
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
-            get_ssm_plugin()->update_one_time_pre_key(local_account->account_id, our_one_time_pre_key->opk_id);
+            get_skissm_plugin()->db_handler.update_one_time_pre_key(local_account->account_id, our_one_time_pre_key->opk_id);
             copy_protobuf_from_protobuf(&(session->bob_one_time_pre_key), &(our_one_time_pre_key->key_pair->public_key));
             session->bob_one_time_pre_key_id = our_one_time_pre_key->opk_id;
         }

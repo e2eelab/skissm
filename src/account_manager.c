@@ -48,7 +48,7 @@ void supply_opks(struct supply_opks_handler *response_handler) {
     unsigned int i;
     if (response_handler->account->saved == true) {
         for (i = 0; i < response_handler->account->n_one_time_pre_keys; i++) {
-            get_ssm_plugin()->add_one_time_pre_key(response_handler->account->account_id, response_handler->account->one_time_pre_keys[i]);
+            get_skissm_plugin()->db_handler.add_one_time_pre_key(response_handler->account->account_id, response_handler->account->one_time_pre_keys[i]);
         }
     }
 }
@@ -103,7 +103,7 @@ void consume_register_response_payload(Skissm__E2eeAccount *account, Skissm__Reg
     account->saved = true;
     account->password = strdup(payload->password);
     // save to db
-    get_ssm_plugin()->store_account(account);
+    get_skissm_plugin()->db_handler.store_account(account);
     ssm_notify_user_registered(account);
 }
 
@@ -128,6 +128,6 @@ void consume_publish_spk_response_payload(Skissm__E2eeAccount *account) {
     // save to db
     if (account->saved == true) {
         Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;
-        get_ssm_plugin()->update_signed_pre_key(account->account_id, signed_pre_key);
+        get_skissm_plugin()->db_handler.update_signed_pre_key(account->account_id, signed_pre_key);
     }
 }

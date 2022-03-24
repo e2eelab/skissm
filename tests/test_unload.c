@@ -33,18 +33,8 @@
 #include "test_db.h"
 #include "test_util.h"
 
-static skissm_event_handler test_event_handler = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
 void test_unload_inbound_group_session(){
-    setup(&test_event_handler);
+    setup();
 
     // create two addresses
     Skissm__E2eeAddress *Alice, *Bob;
@@ -82,7 +72,7 @@ void test_unload_inbound_group_session(){
 
     group_session->chain_key.len = 32;
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    get_ssm_plugin()->handle_rg(group_session->chain_key.data, 32);
+    get_skissm_plugin()->common_handler.handle_rg(group_session->chain_key.data, 32);
 
     crypto_curve25519_generate_key_pair(&(group_session->signature_public_key), &(group_session->signature_private_key));
 

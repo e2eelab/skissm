@@ -98,7 +98,7 @@ void create_outbound_group_session(
 
     group_session->chain_key.len = GROUP_SHARED_KEY_LENGTH;
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * group_session->chain_key.len);
-    get_ssm_plugin()->handle_rg(group_session->chain_key.data, group_session->chain_key.len);
+    get_skissm_plugin()->common_handler.handle_rg(group_session->chain_key.data, group_session->chain_key.len);
 
     CIPHER.suite1->sign_key_gen(&(group_session->signature_public_key), &(group_session->signature_private_key));
 
@@ -108,7 +108,7 @@ void create_outbound_group_session(
     memcpy(group_session->associated_data.data, group_session->signature_public_key.data, key_len);
     memcpy((group_session->associated_data.data) + key_len, group_session->signature_public_key.data, key_len);
 
-    get_ssm_plugin()->store_group_session(group_session);
+    get_skissm_plugin()->db_handler.store_group_session(group_session);
 
     /* pack the group pre-key message */
     Skissm__E2eeGroupPreKeyPayload *group_pre_key_payload = (Skissm__E2eeGroupPreKeyPayload *) malloc(sizeof(Skissm__E2eeGroupPreKeyPayload));
@@ -184,7 +184,7 @@ void create_inbound_group_session(
     memcpy(group_session->associated_data.data, group_session->signature_public_key.data, key_len);
     memcpy((group_session->associated_data.data) + key_len, group_session->signature_public_key.data, key_len);
 
-    get_ssm_plugin()->store_group_session(group_session);
+    get_skissm_plugin()->db_handler.store_group_session(group_session);
 
     /* release */
     skissm__e2ee_group_session__free_unpacked(group_session, NULL);

@@ -244,7 +244,7 @@ static size_t verify_and_decrypt_for_new_chain(
 
     skissm__receiver_chain_node__init(&new_chain);
     copy_protobuf_from_protobuf(&(new_chain.ratchet_key_public), &(e2ee_msg_payload->ratchet_key));
-    
+
     new_chain.chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
     skissm__chain_key__init(new_chain.chain_key);
 

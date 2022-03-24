@@ -21,67 +21,65 @@
 #include "skissm/account.h"
 #include "skissm/e2ee_protocol.h"
 
-static struct skissm_plugin *ssm_plugin;
-static skissm_event_handler *ssm_event_handler = NULL;
+static skissm_plugin_t *skissm_plugin;
 
-void skissm_begin(skissm_plugin *plugin, skissm_event_handler *event_handler) {
-    ssm_plugin = plugin;
-    ssm_event_handler = event_handler;
+void skissm_begin(skissm_plugin_t *ssm_plugin) {
+    skissm_plugin = ssm_plugin;
 
     account_begin();
     protocol_begin();
 }
 
 void skissm_end() {
-    ssm_plugin = NULL;
+    skissm_plugin = NULL;
 
     account_end();
     protocol_end();
 }
 
-skissm_plugin *get_ssm_plugin() {
-    return ssm_plugin;
+skissm_plugin_t *get_skissm_plugin() {
+    return skissm_plugin;
 }
 
 void ssm_notify_error(ErrorCode error_code, char *error_msg) {
-    if (ssm_event_handler != NULL)
-        ssm_event_handler->on_error(error_code, error_msg);
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_error(error_code, error_msg);
 }
 
 void ssm_notify_user_registered(Skissm__E2eeAccount *account){
-    if (ssm_event_handler != NULL)
-        ssm_event_handler->on_user_registered(account);
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_user_registered(account);
 }
 
 void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,
                             Skissm__E2eeAddress *to_address, uint8_t *plaintext,
                             size_t plaintext_len) {
-    if (ssm_event_handler != NULL)
-        ssm_event_handler->on_one2one_msg_received(from_address, to_address, plaintext, plaintext_len);
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_one2one_msg_received(from_address, to_address, plaintext, plaintext_len);
 }
 
 void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
                           Skissm__E2eeAddress *group_address, uint8_t *plaintext,
                           size_t plaintext_len) {
-    if (ssm_event_handler != NULL)
-        ssm_event_handler->on_group_msg_received(from_address, group_address, plaintext, plaintext_len);
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_msg_received(from_address, group_address, plaintext, plaintext_len);
 }
 
 void ssm_notify_group_created(Skissm__E2eeAddress *group_address, char *group_name) {
-    if (ssm_event_handler != NULL)
-        ssm_event_handler->on_group_created(group_address, group_name);
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_created(group_address, group_name);
 }
 
 void ssm_notify_group_members_added(Skissm__E2eeAddress *group_address,
                                     char *group_name,
                                     Skissm__E2eeAddress **member_addresses) {
-    if (ssm_event_handler != NULL)
-        ssm_event_handler->on_group_members_added(group_address, group_name, member_addresses);
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_members_added(group_address, group_name, member_addresses);
 }
 
 void ssm_notify_group_members_removed(Skissm__E2eeAddress *group_address,
                                       char *group_name,
                                       Skissm__E2eeAddress **member_addresses) {
-    if (ssm_event_handler != NULL)
-        ssm_event_handler->on_group_members_removed(group_address, group_name, member_addresses);
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_members_removed(group_address, group_name, member_addresses);
 }

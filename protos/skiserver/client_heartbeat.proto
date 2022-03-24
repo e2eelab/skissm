@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package skiserver;
+
+option java_package = "org.e2eelab.skiserver.proto";
+option java_outer_classname = "ClientHeartbeat";
+
+message client_heartbeat {
+    int64 client_t = 1;
+}

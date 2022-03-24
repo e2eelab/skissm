@@ -78,7 +78,7 @@ static void handle_add_group_members_response(
     }
 
     /* delete the old outbound group session */
-    get_ssm_plugin()->unload_group_session(this_handler->outbound_group_session);
+    get_skissm_plugin()->db_handler.unload_group_session(this_handler->outbound_group_session);
     char *old_session_id = strdup(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
@@ -135,7 +135,7 @@ static void handle_remove_group_members_response(
     }
 
     /* delete the old outbound group session */
-    get_ssm_plugin()->unload_group_session(this_handler->outbound_group_session);
+    get_skissm_plugin()->db_handler.unload_group_session(this_handler->outbound_group_session);
     char *old_session_id = strdup(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
@@ -228,7 +228,7 @@ size_t add_group_members(
     Skissm__E2eeAddress **adding_member_addresses,
     size_t adding_member_num
 ) {
-    get_ssm_plugin()->load_outbound_group_session(sender_address, group_address, &(add_group_members_response_handler_store.outbound_group_session));
+    get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &(add_group_members_response_handler_store.outbound_group_session));
     if (add_group_members_response_handler_store.outbound_group_session == NULL){
         ssm_notify_error(BAD_GROUP_SESSION, "add_group_members()");
         return (size_t)(-1);
@@ -247,7 +247,7 @@ void remove_group_members(
     Skissm__E2eeAddress **removing_member_addresses,
     size_t removing_member_num
 ) {
-    get_ssm_plugin()->load_outbound_group_session(sender_address, group_address, &(remove_group_members_response_handler_store.outbound_group_session));
+    get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &(remove_group_members_response_handler_store.outbound_group_session));
     remove_group_members_response_handler_store.removing_member_addresses = removing_member_addresses;
     remove_group_members_response_handler_store.removing_member_num = removing_member_num;
 
@@ -320,7 +320,7 @@ void encrypt_group_session(
 ) {
     /* Load the outbound group session */
     Skissm__E2eeGroupSession *group_session = NULL;
-    get_ssm_plugin()->load_outbound_group_session(sender_address, group_address, &group_session);
+    get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &group_session);
 
     /* Do the encryption */
     send_group_msg(group_session, plaintext, plaintext_len);
@@ -332,7 +332,7 @@ void encrypt_group_session(
 void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *group_msg) {
     /* Load the inbound group session */
     Skissm__E2eeGroupSession *group_session = NULL;
-    get_ssm_plugin()->load_inbound_group_session(receiver_address, group_msg->to, &group_session);
+    get_skissm_plugin()->db_handler.load_inbound_group_session(receiver_address, group_msg->to, &group_session);
 
     if (group_session == NULL){
         ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_group_msg()");

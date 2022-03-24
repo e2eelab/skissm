@@ -52,7 +52,7 @@ extern "C" {
 /** length of an aes256 gcm tag */
 #define AES256_GCM_TAG_LENGTH 16
 
-crypto_param get_ecdh_x25519_aes256_gcm_sha256_param();
+crypto_param_t get_ecdh_x25519_aes256_gcm_sha256_param();
 
 void crypto_curve25519_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key

@@ -33,7 +33,7 @@ void consume_get_pre_key_bundle_response_payload(
     suite->new_outbound_session(outbound_session, local_account, their_pre_key_bundle);
 
     // store sesson state
-    get_ssm_plugin()->store_session(outbound_session);
+    get_skissm_plugin()->db_handler.store_session(outbound_session);
 
     // release
     close_session(outbound_session);
@@ -98,14 +98,14 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payloa
 
     /* load the corresponding inbound session */
     Skissm__E2eeSession *inbound_session = NULL;
-    get_ssm_plugin()->load_inbound_session(inbound_e2ee_message_payload->session_id, inbound_e2ee_message_payload->to, &inbound_session);
+    get_skissm_plugin()->db_handler.load_inbound_session(inbound_e2ee_message_payload->session_id, inbound_e2ee_message_payload->to, &inbound_session);
     if (inbound_session == NULL) {
         if (inbound_e2ee_message_payload->e2ee_msg_type != SKISSM__E2EE_MSG_TYPE__PRE_KEY) {
             ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_message_payload()");
             return (size_t)(-1);
         }
         /* delete the old inbound session if it exists */
-        get_ssm_plugin()->unload_session(inbound_e2ee_message_payload->to, inbound_e2ee_message_payload->from, inbound_e2ee_message_payload->to);
+        get_skissm_plugin()->db_handler.unload_session(inbound_e2ee_message_payload->to, inbound_e2ee_message_payload->from, inbound_e2ee_message_payload->to);
         /* create a new inbound session */
         inbound_session = (Skissm__E2eeSession *)malloc(sizeof(Skissm__E2eeSession));
         initialise_session(inbound_session, inbound_e2ee_message_payload->from, inbound_e2ee_message_payload->to);
@@ -135,7 +135,7 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payloa
         context_len = decrypt_ratchet(inbound_session->ratchet, inbound_session->associated_data, msg_payload, &context);
 
         // store sesson state
-        get_ssm_plugin()->store_session(inbound_session);
+        get_skissm_plugin()->db_handler.store_session(inbound_session);
 
         if (context_len == (size_t)(-1)) {
             ssm_notify_error(BAD_MESSAGE_DECRYPTION, "consume_e2ee_message_payload()");
@@ -147,7 +147,7 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payloa
                     ssm_notify_one2one_msg(inbound_e2ee_message_payload->from, inbound_e2ee_message_payload->to, e2ee_plaintext->payload.data, e2ee_plaintext->payload.len);
                 } else if (e2ee_plaintext->plaintext_type == SKISSM__E2EE_PLAINTEXT_TYPE__GROUP_PRE_KEY) {
                     Skissm__E2eeGroupPreKeyPayload *group_pre_key_payload = skissm__e2ee_group_pre_key_payload__unpack(NULL, e2ee_plaintext->payload.len, e2ee_plaintext->payload.data);
-                    get_ssm_plugin()->unload_inbound_group_session(inbound_e2ee_message_payload->to, group_pre_key_payload->old_session_id);
+                    get_skissm_plugin()->db_handler.unload_inbound_group_session(inbound_e2ee_message_payload->to, group_pre_key_payload->old_session_id);
                     create_inbound_group_session(group_pre_key_payload, inbound_e2ee_message_payload->to);
                     skissm__e2ee_group_pre_key_payload__free_unpacked(group_pre_key_payload, NULL);
                 }
@@ -159,11 +159,11 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payloa
 
         // try to find outbound session, and mark it's state as responded
         Skissm__E2eeSession *outbound_session = NULL;
-        get_ssm_plugin()->load_outbound_session(inbound_e2ee_message_payload->to, inbound_e2ee_message_payload->from, &outbound_session);
+        get_skissm_plugin()->db_handler.load_outbound_session(inbound_e2ee_message_payload->to, inbound_e2ee_message_payload->from, &outbound_session);
         if (outbound_session != NULL) {
             if (outbound_session->responded == false) {
                 outbound_session->responded = true;
-                get_ssm_plugin()->store_session(outbound_session);
+                get_skissm_plugin()->db_handler.store_session(outbound_session);
             }
         }
 
@@ -235,7 +235,7 @@ Skissm__E2eeAcceptPayload *produce_e2ee_accept_payload(ProtobufCBinaryData *ciph
 void consume_e2ee_accept_payload(Skissm__E2eeMsg *accept_msg_payload){
     Skissm__E2eeSession *outbound_session = NULL;
     // Is it unique?
-    get_ssm_plugin()->load_outbound_session(accept_msg_payload->to, accept_msg_payload->from, &outbound_session);
+    get_skissm_plugin()->db_handler.load_outbound_session(accept_msg_payload->to, accept_msg_payload->from, &outbound_session);
     if (outbound_session == NULL){
         //error
     }
@@ -299,10 +299,10 @@ static void create_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddre
 
 size_t encrypt_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len) {
     Skissm__E2eeSession *outbound_session = NULL;
-    get_ssm_plugin()->load_outbound_session(from, to, &outbound_session);
+    get_skissm_plugin()->db_handler.load_outbound_session(from, to, &outbound_session);
     if (outbound_session == NULL) {
         create_outbound_session(from, to);
-        get_ssm_plugin()->load_outbound_session(from, to, &outbound_session);
+        get_skissm_plugin()->db_handler.load_outbound_session(from, to, &outbound_session);
     }
 
     send_one2one_msg(outbound_session, e2ee_plaintext, e2ee_plaintext_len);
@@ -316,7 +316,7 @@ size_t invite_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to){
     invite_handler_store.from = from;
     invite_handler_store.to = to;
     create_outbound_session(from, to);
-    get_ssm_plugin()->load_outbound_session(from, to, &outbound_session);
+    get_skissm_plugin()->db_handler.load_outbound_session(from, to, &outbound_session);
 
     close_session(outbound_session);
 

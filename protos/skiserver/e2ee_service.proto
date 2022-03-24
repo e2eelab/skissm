@@ -3,7 +3,6 @@ syntax = "proto3";
 package skiserver;
 
 option java_package = "org.e2eelab.skiserver.proto";
-//option java_outer_classname = "E2eeService";
 
 import "skissm/e2ee_protocol_msg.proto";
 import "skissm/response_data.proto";
@@ -30,12 +29,10 @@ import "skiserver/event_data_request.proto";
 
 service E2EEService {
     // bidirectional streaming operations
-    rpc communicate(stream skissm.e2ee_protocol_msg) returns (stream skissm.e2ee_protocol_msg) {
-    }
+    rpc communicate(stream skissm.e2ee_protocol_msg) returns (stream skissm.e2ee_protocol_msg) {}
 
     // server streaming operations
-    rpc connect(skiserver.connect_request) returns (stream skissm.e2ee_protocol_msg) {
-    }
+    rpc connect(skiserver.connect_request) returns (stream skissm.e2ee_protocol_msg) {}
 
     // unary operations
     rpc acquireAuthCode(skiserver.acquire_auth_code_request) returns (skiserver.acquire_auth_code_response) {}

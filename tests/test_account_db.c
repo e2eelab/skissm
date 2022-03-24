@@ -32,39 +32,27 @@
 #include "test_env.h"
 #include "test_util.h"
 
-// i haven't release the memory after testing yet
-
-static skissm_event_handler test_event_handler = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
 // test about account db
 void test_setup()
 {
   fprintf(stderr, "test_setup\n");
-  setup(&test_event_handler);;
+  setup();
   tear_down();
 }
 
 void test_setup_call_twice()
 {
   fprintf(stderr, "test_setup_call_twice\n");
-  setup(&test_event_handler);;
+  setup();;
   tear_down();
-  setup(&test_event_handler);;
+  setup();;
   tear_down();
 }
 
 void test_insert_address()
 {
   fprintf(stderr, "test_insert_address\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create address
   Skissm__E2eeAddress *address;
@@ -82,7 +70,7 @@ void test_insert_address()
 void test_insert_key_pair()
 {
   fprintf(stderr, "test_insert_key_pair\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create keypair
   Skissm__KeyPair *keypair;
@@ -100,7 +88,7 @@ void test_insert_key_pair()
 void test_insert_signed_pre_key()
 {
   fprintf(stderr, "test_insert_signed_pre_key\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create spk
   Skissm__SignedPreKey *signed_pre_keypair;
@@ -118,7 +106,7 @@ void test_insert_signed_pre_key()
 void test_insert_one_time_pre_key()
 {
   fprintf(stderr, "test_insert_one_time_pre_key\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create opk
   Skissm__OneTimePreKey *one_time_pre_keypair;
@@ -146,7 +134,7 @@ void test_insert_account_one_time_pre_key_id()
 void test_init_account()
 {
   fprintf(stderr, "test_init_account\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create account
   Skissm__E2eeAccount *account = create_account(1);
@@ -164,7 +152,7 @@ void test_init_account()
 void test_update_identity_key()
 {
   fprintf(stderr, "test_update_identity_key\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create account
   Skissm__E2eeAccount *account = create_account(1);
@@ -189,7 +177,7 @@ void test_update_identity_key()
 void test_update_signed_pre_key()
 {
   fprintf(stderr, "test_update_signed_pre_key\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create account
   Skissm__E2eeAccount *account = create_account(1);
@@ -215,7 +203,7 @@ void test_update_signed_pre_key()
 void test_update_address()
 {
   fprintf(stderr, "test_update_address\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create account
   Skissm__E2eeAccount *account = create_account(1);
@@ -241,7 +229,7 @@ void test_update_address()
 void test_add_one_time_pre_key()
 {
   fprintf(stderr, "test_add_one_time_pre_key\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create account
   Skissm__E2eeAccount *account = create_account(1);
@@ -267,7 +255,7 @@ void test_add_one_time_pre_key()
 void test_load_account()
 {
   fprintf(stderr, "test_load_account\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create account
   Skissm__E2eeAccount *account = create_account(1);
@@ -293,7 +281,7 @@ void test_load_account()
 void test_two_accounts()
 {
   fprintf(stderr, "test_two_accounts\n");
-  setup(&test_event_handler);;
+  setup();
 
   // create the first account
   Skissm__E2eeAccount *account_1 = create_account(1);

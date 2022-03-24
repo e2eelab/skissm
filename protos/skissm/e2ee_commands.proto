@@ -48,4 +48,8 @@ enum e2ee_commands {
     send_one2one_msg_response = 4117;
     send_group_msg_request = 22;
     send_group_msg_response = 4119;
+    get_client_heartbeat_request = 96;
+    get_client_heartbeat_response = 4193;
+    get_server_heartbeat_request = 98;
+    get_server_heartbeat_response = 4195;
 }

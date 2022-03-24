@@ -49,20 +49,6 @@ typedef struct store_plaintext {
 
 store_plaintext plaintext_store = {NULL, 0};
 
-static void test_begin(){
-    account_data[0] = NULL;
-    account_data[1] = NULL;
-    account_data_insert_pos = 0;
-}
-
-static void test_end(){
-    skissm__e2ee_account__free_unpacked(account_data[0], NULL);
-    account_data[0] = NULL;
-    skissm__e2ee_account__free_unpacked(account_data[1], NULL);
-    account_data[1] = NULL;
-    account_data_insert_pos = 0;
-}
-
 static void on_error(ErrorCode error_code, char *error_msg) {
     print_error(error_msg, error_code);
 }
@@ -86,7 +72,7 @@ static void on_one2one_msg_received(
     plaintext_store.plaintext_len = plaintext_len;
 }
 
-static skissm_event_handler test_event_handler = {
+static skissm_event_handler_t test_event_handler = {
     on_error,
     on_user_registered,
     on_one2one_msg_received,
@@ -95,6 +81,22 @@ static skissm_event_handler test_event_handler = {
     NULL,
     NULL
 };
+
+static void test_begin(){
+    account_data[0] = NULL;
+    account_data[1] = NULL;
+    account_data_insert_pos = 0;
+
+    get_skissm_plugin()->event_handler = test_event_handler;
+}
+
+static void test_end(){
+    skissm__e2ee_account__free_unpacked(account_data[0], NULL);
+    account_data[0] = NULL;
+    skissm__e2ee_account__free_unpacked(account_data[1], NULL);
+    account_data[1] = NULL;
+    account_data_insert_pos = 0;
+}
 
 static void test_encryption(
     Skissm__E2eeAddress *from_address,
@@ -125,7 +127,7 @@ static void test_encryption(
 
 static void test_basic_session(){
     // test start
-    setup(&test_event_handler);
+    setup();
     test_begin();
 
     register_account(1);
@@ -143,7 +145,7 @@ static void test_basic_session(){
 
 static void test_interaction(){
     // test start
-    setup(&test_event_handler);
+    setup();
     test_begin();
 
     register_account(1);
@@ -166,7 +168,7 @@ static void test_interaction(){
 
 static void test_continual_messages(){
     // test start
-    setup(&test_event_handler);
+    setup();
     test_begin();
 
     register_account(1);

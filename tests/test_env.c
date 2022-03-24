@@ -153,42 +153,55 @@ static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2e
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-struct skissm_plugin ssm_plugin = {
+struct skissm_plugin_t ssm_plugin = {
     // common
-    handle_get_ts,
-    handle_rg,
-    handle_generate_uuid,
-    handle_send,
-    // account
-    store_account,
-    load_account,
-    load_accounts,
-    load_account_by_address,
-    update_identity_key,
-    update_signed_pre_key,
-    load_signed_pre_key,
-    remove_expired_signed_pre_key,
-    update_address,
-    add_one_time_pre_key,
-    remove_one_time_pre_key,
-    update_one_time_pre_key,
-    // session
-    load_inbound_session,
-    load_outbound_session,
-    store_session,
-    unload_session,
-    load_outbound_group_session,
-    load_inbound_group_session,
-    store_group_session,
-    unload_group_session,
-    unload_inbound_group_session,
+    {
+        handle_get_ts,
+        handle_rg,
+        handle_generate_uuid,
+        handle_send
+    },
+    {
+        // account
+        store_account,
+        load_account,
+        load_accounts,
+        load_account_by_address,
+        update_identity_key,
+        update_signed_pre_key,
+        load_signed_pre_key,
+        remove_expired_signed_pre_key,
+        update_address,
+        add_one_time_pre_key,
+        remove_one_time_pre_key,
+        update_one_time_pre_key,
+        // session
+        load_inbound_session,
+        load_outbound_session,
+        store_session,
+        unload_session,
+        load_outbound_group_session,
+        load_inbound_group_session,
+        store_group_session,
+        unload_group_session,
+        unload_inbound_group_session
+    },
+    {
+        NULL,
+        NULL,
+        on_one2one_msg_received,
+        on_group_msg_received,
+        NULL,
+        NULL,
+        NULL
+    }
 };
 
 // test case interface
 
-void setup(skissm_event_handler *event_handler) {
+void setup() {
     test_db_begin();
-    skissm_begin(&ssm_plugin, event_handler);
+    skissm_begin(&ssm_plugin);
     protocol_simulator_begin();
 }
 

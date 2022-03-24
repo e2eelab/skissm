@@ -29,16 +29,6 @@
 #include "test_env.h"
 #include "test_util.h"
 
-static skissm_event_handler test_event_handler = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
 static void free_opks(Skissm__OneTimePreKey ***opks, uint32_t opk_num){
     uint32_t i;
     for (i = 0; i < opk_num; i++){
@@ -49,7 +39,7 @@ static void free_opks(Skissm__OneTimePreKey ***opks, uint32_t opk_num){
 }
 
 void test_update_one_time_pre_key(){
-    setup(&test_event_handler);
+    setup();
 
     Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
@@ -61,7 +51,7 @@ void test_update_one_time_pre_key(){
 
     /* Save to db */
     account->saved = true;
-    get_ssm_plugin()->store_account(account);
+    get_skissm_plugin()->db_handler.store_account(account);
 
     int used_opk = 10;
     uint32_t opk_id = account->one_time_pre_keys[used_opk]->opk_id;
@@ -84,7 +74,7 @@ void test_update_one_time_pre_key(){
 }
 
 void test_remove_one_time_pre_key(){
-    setup(&test_event_handler);
+    setup();
 
     Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
@@ -96,7 +86,7 @@ void test_remove_one_time_pre_key(){
 
     /* Save to db */
     account->saved = true;
-    get_ssm_plugin()->store_account(account);
+    get_skissm_plugin()->db_handler.store_account(account);
 
     int origin_opk_num = account->n_one_time_pre_keys;
 

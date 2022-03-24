@@ -23,7 +23,7 @@
 
 #include "skissm/crypto.h"
 
-const struct cipher_suite E2EE_PQC_AES256_GCM_SHA256 = {
+const struct cipher_suite_t E2EE_PQC_AES256_GCM_SHA256 = {
     NULL, // not determined yet(get param)
     NULL, // not determined yet(gen kem key)
     NULL, // not determined yet(gen sign key)

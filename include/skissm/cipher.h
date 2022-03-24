@@ -37,14 +37,12 @@ extern "C" {
 
 struct cipher;
 
-typedef crypto_param (*get_crypto_param_type)(void);
-
-typedef struct cipher_suite {
+typedef struct cipher_suite_t {
   /**
    * @brief Get the parameters of this cipher suite.
-   * @return crypto_param
+   * @return crypto_param_t
    */
-  get_crypto_param_type get_crypto_param;
+  crypto_param_t (*get_crypto_param)(void);
 
   /**
    * @brief Generate a random key pair that will be used to calculate shared secret keys.
@@ -167,16 +165,16 @@ typedef struct cipher_suite {
   void (*hash)(
     const uint8_t *msg, size_t msg_len,
     uint8_t *hash_out);
-} cipher_suite;
+} cipher_suite_t;
 
 struct cipher {
-  const struct cipher_suite *suite1;
-  const struct cipher_suite *suite2;
+  const struct cipher_suite_t *suite1;
+  const struct cipher_suite_t *suite2;
 };
 
-extern const struct cipher_suite E2EE_ECDH_X25519_AES256_GCM_SHA256;
+extern const struct cipher_suite_t E2EE_ECDH_X25519_AES256_GCM_SHA256;
 
-extern const struct cipher_suite E2EE_PQC_AES256_GCM_SHA256;
+extern const struct cipher_suite_t E2EE_PQC_AES256_GCM_SHA256;
 
 #define CIPHER_INIT                                                            \
   { &E2EE_ECDH_X25519_AES256_GCM_SHA256, &E2EE_PQC_AES256_GCM_SHA256 }
@@ -191,7 +189,7 @@ size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
     const uint8_t *ciphertext, size_t ciphertext_len, uint8_t **plaintext
 );
 
-const cipher_suite *get_cipher_suite(uint32_t cipher_suite_id);
+const cipher_suite_t *get_cipher_suite(uint32_t cipher_suite_id);
 
 #ifdef __cplusplus
 }

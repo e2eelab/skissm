@@ -24,7 +24,7 @@
                 "PLATFORM": "OS64",
                 "ENABLE_STRICT_TRY_COMPILE": "ON",
                 "DEPLOYMENT_TARGET": "13.0",
-                "ENABLE_BITCODE": "OFF",
+                "ENABLE_BITCODE": "ON",
                 "ENABLE_ARC": "ON",
                 "ENABLE_VISIBILITY": "ON",
                 "CARES_INSTALL": "OFF",

@@ -29,18 +29,8 @@
 #include "test_env.h"
 #include "test_util.h"
 
-static skissm_event_handler test_event_handler = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
 void test_load_old_signed_pre_key(){
-    setup(&test_event_handler);
+    setup();
 
     Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
@@ -52,7 +42,7 @@ void test_load_old_signed_pre_key(){
 
     /* Save to db */
     account->saved = true;
-    get_ssm_plugin()->store_account(account);
+    get_skissm_plugin()->db_handler.store_account(account);
 
     Skissm__SignedPreKey *old_spk = (Skissm__SignedPreKey *) malloc(sizeof(Skissm__SignedPreKey));
     skissm__signed_pre_key__init(old_spk);
@@ -66,7 +56,7 @@ void test_load_old_signed_pre_key(){
 
     /* Generate a new signed pre-key pair */
     generate_signed_pre_key(account);
-    get_ssm_plugin()->update_signed_pre_key(account->account_id, account->signed_pre_key);
+    get_skissm_plugin()->db_handler.update_signed_pre_key(account->account_id, account->signed_pre_key);
 
     /* Load the old signed pre-key */
     Skissm__SignedPreKey *old_spk_copy = NULL;
@@ -84,7 +74,7 @@ void test_load_old_signed_pre_key(){
 }
 
 void test_remove_expired_signed_pre_key(){
-    setup(&test_event_handler);
+    setup();
 
     Skissm__E2eeAccount *account = create_account(1);
     /* Generate a random address */
@@ -96,15 +86,15 @@ void test_remove_expired_signed_pre_key(){
 
     /* Save to db */
     account->saved = true;
-    get_ssm_plugin()->store_account(account);
+    get_skissm_plugin()->db_handler.store_account(account);
 
     uint32_t old_spk_id = account->signed_pre_key->spk_id;
 
     /* Generate a new signed pre-key pair */
     generate_signed_pre_key(account);
-    get_ssm_plugin()->update_signed_pre_key(account->account_id, account->signed_pre_key);
+    get_skissm_plugin()->db_handler.update_signed_pre_key(account->account_id, account->signed_pre_key);
     generate_signed_pre_key(account);
-    get_ssm_plugin()->update_signed_pre_key(account->account_id, account->signed_pre_key);
+    get_skissm_plugin()->db_handler.update_signed_pre_key(account->account_id, account->signed_pre_key);
 
     /* Remove expired signed pre-keys */
     remove_expired_signed_pre_key(account->account_id);

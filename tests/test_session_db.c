@@ -35,19 +35,9 @@
 #include "test_env.h"
 #include "test_util.h"
 
-static skissm_event_handler test_event_handler = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
 void test_load_outbound_session()
 {
-    setup(&test_event_handler);;
+    setup();;
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
@@ -98,7 +88,7 @@ void test_load_outbound_session()
 
 void test_load_inbound_session()
 {
-    setup(&test_event_handler);;
+    setup();
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
@@ -151,7 +141,7 @@ void test_load_inbound_session()
 
 void test_load_outbound_group_session()
 {
-    setup(&test_event_handler);;
+    setup();
 
     // create two addresses
     Skissm__E2eeAddress *Alice, *Bob;
@@ -221,7 +211,7 @@ void test_load_outbound_group_session()
 
 void test_load_inbound_group_session()
 {
-    setup(&test_event_handler);;
+    setup();
 
     // create two addresses
     Skissm__E2eeAddress *Alice, *Bob;
@@ -295,7 +285,7 @@ void test_load_inbound_group_session()
 
 void test_store_session()
 {
-    setup(&test_event_handler);;
+    setup();
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
@@ -369,7 +359,7 @@ void test_store_session()
 
 void test_equal_ratchet_outbound()
 {
-    setup(&test_event_handler);;
+    setup();
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
@@ -438,7 +428,7 @@ void test_equal_ratchet_outbound()
 
 void test_equal_ratchet_inbound()
 {
-    setup(&test_event_handler);;
+    setup();
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));

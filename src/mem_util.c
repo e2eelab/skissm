@@ -27,12 +27,13 @@ bool is_equal(const uint8_t *buffer_a, const uint8_t *buffer_b, size_t length) {
     while (length--) {
         result |= (*(buffer_a++)) ^ (*(buffer_b++));
     }
+    
     return result == 0;
 }
 
 char *generate_uuid_str() {
     uint8_t uuid[UUID_LEN];
-    get_ssm_plugin()->handle_generate_uuid(uuid);
+    get_skissm_plugin()->common_handler.handle_generate_uuid(uuid);
     // to base64
     return crypto_base64_encode(uuid, UUID_LEN);
 }

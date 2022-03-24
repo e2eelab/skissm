@@ -83,7 +83,7 @@ extern "C" {
 
 #define SIGNED_PRE_KEY_EXPIRATION 604800
 
-typedef struct crypto_param {
+typedef struct crypto_param_t {
     int asym_key_len;
     int sign_key_len;
     int sig_len;
@@ -91,16 +91,16 @@ typedef struct crypto_param {
     int aead_key_len;
     int aead_iv_len;
     int aead_tag_len;
-} crypto_param;
+} crypto_param_t;
 
-// skissm_plugin
-typedef struct skissm_plugin {
-    // common handlers
+typedef struct skissm_common_handler_t {
     int64_t (*handle_get_ts)();
     void (*handle_rg)(uint8_t *, size_t);
     void (*handle_generate_uuid)(uint8_t uuid[UUID_LEN]);
     int (*handle_send)(uint8_t *, size_t);
+} skissm_common_handler_t;
 
+typedef struct skissm_db_handler_t {
     // account related handlers
     /**
      * @brief store account to db
@@ -244,10 +244,9 @@ typedef struct skissm_plugin {
      * @param old_session_id
      */
     void (*unload_inbound_group_session)(Skissm__E2eeAddress *, char *);
-} skissm_plugin;
+} skissm_db_handler_t;
 
-// callback handlers
-typedef struct skissm_event_handler {
+typedef struct skissm_event_handler_t {
     /**
      * @brief notify error
      * @param error_code
@@ -301,34 +300,33 @@ typedef struct skissm_event_handler {
      * @param member_addresses
      */
     void (*on_group_members_removed)(Skissm__E2eeAddress *, char *, Skissm__E2eeAddress **);
-} skissm_event_handler;
+} skissm_event_handler_t;
 
-void skissm_begin(skissm_plugin *plugin, skissm_event_handler *event_handler);
+typedef struct skissm_plugin_t {
+    skissm_common_handler_t common_handler;
+    skissm_db_handler_t db_handler;
+    skissm_event_handler_t event_handler;
+} skissm_plugin_t;
+
+
+void skissm_begin(skissm_plugin_t *ssm_plugin);
 
 void skissm_end();
 
-skissm_plugin *get_ssm_plugin();
-
-void set_skissm_event_handler(skissm_event_handler *event_handler);
+skissm_plugin_t *get_skissm_plugin();
 
 void ssm_notify_error(ErrorCode, char *);
-
 void ssm_notify_user_registered(Skissm__E2eeAccount *account);
-
 void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,
                             Skissm__E2eeAddress *to_address, uint8_t *plaintext,
                             size_t plaintext_len);
-
 void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
                           Skissm__E2eeAddress *group_address, uint8_t *plaintext,
                           size_t plaintext_len);
-
 void ssm_notify_group_created(Skissm__E2eeAddress *group_address, char *group_name);
-
 void ssm_notify_group_members_added(Skissm__E2eeAddress *group_address,
                                     char *group_name,
                                     Skissm__E2eeAddress **member_addresses);
-
 void ssm_notify_group_members_removed(Skissm__E2eeAddress *group_address,
                                       char *group_name,
                                       Skissm__E2eeAddress **member_addresses);

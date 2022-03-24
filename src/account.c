@@ -28,7 +28,7 @@ static Skissm__E2eeAccount *local_account = NULL;
 
 void account_begin() {
     Skissm__E2eeAccount **accounts = NULL;
-    size_t account_num = get_ssm_plugin()->load_accounts(&accounts);
+    size_t account_num = get_skissm_plugin()->db_handler.load_accounts(&accounts);
 
     if (account_num == 0) {
         if (accounts != NULL) {
@@ -42,14 +42,14 @@ void account_begin() {
     for (i = 0; i < account_num; i++) {
         cur_account = accounts[i];
         /* Check if the signed pre-key expired */
-        now = get_ssm_plugin()->handle_get_ts();
+        now = get_skissm_plugin()->common_handler.handle_get_ts();
         if (now > cur_account->signed_pre_key->ttl) {
             generate_signed_pre_key(cur_account);
             publish_spk(cur_account);
         }
 
         /* Check and remove signed pre-keys (keep last two) */
-        get_ssm_plugin()->remove_expired_signed_pre_key(cur_account->account_id);
+        get_skissm_plugin()->db_handler.remove_expired_signed_pre_key(cur_account->account_id);
 
         /* Check if there are too many "used" one-time pre-keys */
         free_one_time_pre_key(cur_account);
@@ -108,7 +108,7 @@ Skissm__E2eeAccount *get_local_account(Skissm__E2eeAddress *address) {
         skissm__e2ee_account__free_unpacked(local_account, NULL);
         local_account = NULL;
     }
-    get_ssm_plugin()->load_account_by_address(address, &local_account);
+    get_skissm_plugin()->db_handler.load_account_by_address(address, &local_account);
     return local_account;
 }
 
@@ -138,7 +138,7 @@ size_t generate_signed_pre_key(Skissm__E2eeAccount *account) {
     account->signed_pre_key->signature.len = sig_len;
     CIPHER.suite1->sign(account->identity_key->sign_key_pair->private_key.data, account->signed_pre_key->key_pair->public_key.data, key_len, account->signed_pre_key->signature.data);
 
-    int64_t now = get_ssm_plugin()->handle_get_ts();
+    int64_t now = get_skissm_plugin()->common_handler.handle_get_ts();
     account->signed_pre_key->ttl = now + SIGNED_PRE_KEY_EXPIRATION;
 
     return 0;
@@ -255,7 +255,7 @@ void free_one_time_pre_key(Skissm__E2eeAccount *account) {
                 copy_one_time_pre_keys(new_one_time_pre_keys, temp, new_num);
             }
             for (i = 0; i < account->n_one_time_pre_keys; i++) {
-                get_ssm_plugin()->remove_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]->opk_id);
+                get_skissm_plugin()->db_handler.remove_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]->opk_id);
                 skissm__one_time_pre_key__free_unpacked(account->one_time_pre_keys[i], NULL);
                 account->one_time_pre_keys[i] = NULL;
             }

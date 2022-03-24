@@ -4,6 +4,8 @@ package skiserver;
 
 option java_package = "org.e2eelab.skiserver.proto";
 
+import "skiserver/client_heartbeat.proto";
+
 message acquire_server_info_request {
-    int64 client_t = 1;
+    client_heartbeat heartbeat = 1;
 }

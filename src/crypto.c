@@ -43,7 +43,7 @@ static const size_t AES_BLOCK_LENGTH = 16;
 static const size_t SHA256_BLOCK_LENGTH = 64;
 static const uint8_t HKDF_DEFAULT_SALT[32] = {};
 
-static crypto_param ecdh_x25519_aes256_gcm_sha256_param = {
+static crypto_param_t ecdh_x25519_aes256_gcm_sha256_param = {
     CURVE25519_KEY_LENGTH,
     CURVE25519_KEY_LENGTH,
     CURVE_SIGNATURE_LENGTH,
@@ -53,7 +53,7 @@ static crypto_param ecdh_x25519_aes256_gcm_sha256_param = {
     AES256_GCM_TAG_LENGTH
 };
 
-crypto_param get_ecdh_x25519_aes256_gcm_sha256_param() {
+crypto_param_t get_ecdh_x25519_aes256_gcm_sha256_param() {
     return ecdh_x25519_aes256_gcm_sha256_param;
 }
 
@@ -68,7 +68,7 @@ void crypto_curve25519_generate_key_pair(ProtobufCBinaryData *pub_key,
   pub_key->len = CURVE25519_KEY_LENGTH;
 
   uint8_t random[CURVE25519_RANDOM_LENGTH];
-  get_ssm_plugin()->handle_rg(random, sizeof(random));
+  get_skissm_plugin()->common_handler.handle_rg(random, sizeof(random));
 
   memcpy(priv_key->data, random, CURVE25519_KEY_LENGTH);
 
@@ -86,7 +86,7 @@ uint8_t *crypto_curve25519_dh(const ProtobufCBinaryData *our_key,
 void crypto_curve25519_sign(uint8_t *private_key, uint8_t *msg, size_t msg_len,
                             uint8_t *signature_out) {
   uint8_t nonce[CURVE_SIGNATURE_LENGTH];
-  get_ssm_plugin()->handle_rg(nonce, sizeof(nonce));
+  get_skissm_plugin()->common_handler.handle_rg(nonce, sizeof(nonce));
   curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
 }
 

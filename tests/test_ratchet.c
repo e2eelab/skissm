@@ -26,16 +26,6 @@
 #include "test_util.h"
 #include "test_env.h"
 
-static skissm_event_handler test_event_handler = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
 static void test_alice_to_bob(
   Skissm__KeyPair alice_ratchet_key,
   Skissm__KeyPair bob_spk,
@@ -71,10 +61,9 @@ static void test_alice_to_bob(
 
     uint8_t *output;
     decrypt_length = decrypt_ratchet(bob_ratchet, ad, message, &output);
-    print_msg("output: ", output, decrypt_length);
-
-    bool result;
-    assert(result = is_equal(plaintext, output, plaintext_length));
+    assert(decrypt_length == plaintext_length);
+    bool result = is_equal(plaintext, output, plaintext_length);
+    assert(result);
 
     if (result) {
       print_result("Decryption success!!!", true);
@@ -121,9 +110,9 @@ static void test_out_of_order(
 
     uint8_t *output_1;
     output_1_length = decrypt_ratchet(bob_ratchet, ad, message_2, &output_1);
-
-    bool result;
-    assert(result = is_equal(plaintext_2, output_1, plaintext_2_length));
+    assert(output_1_length == plaintext_2_length);
+    bool result = is_equal(plaintext_2, output_1, plaintext_2_length);
+    assert(result);
     if (result) {
       print_result("The first decryption success!!!", true);
     } else {
@@ -191,9 +180,9 @@ static void test_two_ratchets(
     /* Bob received the message from Alice */
     uint8_t *output_alice;
     decrypt_length_alice = decrypt_ratchet(bob_ratchet, ad, message_alice, &output_alice);
-
-    bool result;
-    assert(result = is_equal(plaintext_alice, output_alice, plaintext_length_alice));
+    assert(decrypt_length_alice == plaintext_length_alice);
+    bool result = is_equal(plaintext_alice, output_alice, plaintext_length_alice);
+    assert(result);
 
     /* Bob prepares to reply to Alice */
     uint8_t plaintext_bob[] = "Hey, Alice!";
@@ -224,7 +213,7 @@ static void test_two_ratchets(
 
 int main() {
     // test start
-    setup(&test_event_handler);;
+    setup();
 
     Skissm__KeyPair alice_ratchet_key, bob_ratchet_key;
     CIPHER.suite1->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));

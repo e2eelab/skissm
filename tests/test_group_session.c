@@ -53,23 +53,6 @@ store_plaintext plaintext_store = {NULL, 0};
 
 store_group group = {NULL, NULL};
 
-static void test_begin() {
-    account_data[0] = NULL;
-    account_data[1] = NULL;
-    account_data[2] = NULL;
-    account_data_insert_pos = 0;
-}
-
-static void test_end() {
-    skissm__e2ee_account__free_unpacked(account_data[0], NULL);
-    account_data[0] = NULL;
-    skissm__e2ee_account__free_unpacked(account_data[1], NULL);
-    account_data[1] = NULL;
-    skissm__e2ee_account__free_unpacked(account_data[2], NULL);
-    account_data[2] = NULL;
-    account_data_insert_pos = 0;
-}
-
 static void on_error(ErrorCode error_code, char *error_msg) { print_error(error_msg, error_code); }
 
 static void on_user_registered(Skissm__E2eeAccount *account) {
@@ -117,7 +100,34 @@ static void on_group_members_removed(Skissm__E2eeAddress *group_address, char *g
     }
 }
 
-static skissm_event_handler test_event_handler = {on_error, on_user_registered, on_one2one_msg_received, on_group_msg_received, on_group_created, on_group_members_added, on_group_members_removed};
+static skissm_event_handler_t test_event_handler = {
+    on_error,
+    on_user_registered,
+    on_one2one_msg_received,
+    on_group_msg_received,
+    on_group_created,
+    on_group_members_added,
+    on_group_members_removed
+};
+
+static void test_begin() {
+    account_data[0] = NULL;
+    account_data[1] = NULL;
+    account_data[2] = NULL;
+    account_data_insert_pos = 0;
+
+    get_skissm_plugin()->event_handler = test_event_handler;
+}
+
+static void test_end() {
+    skissm__e2ee_account__free_unpacked(account_data[0], NULL);
+    account_data[0] = NULL;
+    skissm__e2ee_account__free_unpacked(account_data[1], NULL);
+    account_data[1] = NULL;
+    skissm__e2ee_account__free_unpacked(account_data[2], NULL);
+    account_data[2] = NULL;
+    account_data_insert_pos = 0;
+}
 
 static void test_encryption(Skissm__E2eeAddress *sender_address, uint8_t *plaintext, size_t plaintext_len) {
     encrypt_group_session(sender_address, group.group_address, plaintext, plaintext_len);
@@ -127,7 +137,7 @@ static void test_encryption(Skissm__E2eeAddress *sender_address, uint8_t *plaint
 
 static void test_create_group() {
     // test start
-    setup(&test_event_handler);
+    setup();
     test_begin();
 
     // Prepare account
@@ -140,17 +150,17 @@ static void test_create_group() {
     copy_address_from_address(&(member_addresses[1]), account_data[1]->address);
 
     create_group(account_data[0]->address, "Group name", member_addresses, 2);
-    
+
     // Alice sends a message to the group
     uint8_t plaintext[] = "This is the group session test.";
     size_t plaintext_len = sizeof(plaintext) - 1;
     test_encryption(account_data[0]->address, plaintext, plaintext_len);
-    
+
     // release
     skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
     skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
-    
+
     // test stop
     test_end();
     tear_down();
@@ -158,7 +168,7 @@ static void test_create_group() {
 
 static void test_add_group_members() {
     // test start
-    setup(&test_event_handler);
+    setup();
     test_begin();
 
     // Prepare account
@@ -199,7 +209,7 @@ static void test_add_group_members() {
 
 static void test_remove_group_members() {
     // test start
-    setup(&test_event_handler);
+    setup();
     test_begin();
 
     // Prepare account
@@ -242,7 +252,7 @@ static void test_remove_group_members() {
 
 static void test_create_add_remove() {
     // test start
-    setup(&test_event_handler);
+    setup();
     test_begin();
 
     // Prepare account
