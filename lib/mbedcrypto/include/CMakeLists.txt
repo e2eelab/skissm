@@ -1,0 +1,15 @@
+set(src_headers
+    ${CMAKE_CURRENT_SOURCE_DIR}/aes.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/aesni.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/base64.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/cipher.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/config.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/error.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gcm.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/hkdf.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/md.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/platform_util.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/platform.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/sha256.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/sha512.h
+    PARENT_SCOPE)

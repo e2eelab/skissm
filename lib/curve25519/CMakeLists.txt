@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
-project(curve25519)
+project(curve25519 LANGUAGES C)
 include(GNUInstallDirs)
 
-set(curve25519_SRCS curve25519-donna.c curve25519-donna.h)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_STANDARD 11)
 
 set(ed25519_SRCS
+    curve25519-donna.c
     ed25519/fe_0.c
     ed25519/fe_1.c
     ed25519/fe_add.c
@@ -77,6 +79,7 @@ set(ed25519_SRCS
     ed25519/nacl_sha512/hash.c)
 
 set(ed25519_headers
+    curve25519-donna.h
     ed25519/fe.h
     ed25519/ge_add.h
     ed25519/ge_madd.h
@@ -101,26 +104,20 @@ set(ed25519_headers
     ed25519/additions/generalized/gen_eddsa.h
     ed25519/additions/generalized/gen_labelset.h
     ed25519/additions/generalized/gen_veddsa.h
-    ed25519/additions/generalized/gen_x.h
-)
+    ed25519/additions/generalized/gen_x.h)
 
-add_library(curve25519 OBJECT ${curve25519_SRCS} ${ed25519_SRCS} ${ed25519_headers})
+add_library(curve25519)
 
-# Add -fPIC flag
-if(BUILD_SHARED_LIBS)
-  set_target_properties(curve25519 PROPERTIES POSITION_INDEPENDENT_CODE ON)
-else()
-  set_target_properties(curve25519 PROPERTIES POSITION_INDEPENDENT_CODE OFF)
-endif()
+target_sources(curve25519 PRIVATE ${ed25519_SRCS})
+target_sources(curve25519 PUBLIC ${ed25519_headers})
 
-target_include_directories(curve25519 
-PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    ${CMAKE_CURRENT_SOURCE_DIR}/ed25519
-    ${CMAKE_CURRENT_SOURCE_DIR}/ed25519/additions
-    ${CMAKE_CURRENT_SOURCE_DIR}/ed25519/nacl_includes
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
+target_include_directories(
+  curve25519
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ed25519>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ed25519/additions>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ed25519/nacl_includes>
+         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_compile_options(
   curve25519
@@ -135,4 +132,13 @@ if(GCC_WARN_SIGN_CONVERSION)
     curve25519 PUBLIC "$<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-sign-conversion>")
 endif(GCC_WARN_SIGN_CONVERSION)
 
-install(TARGETS curve25519 LIBRARY)
+install(
+  TARGETS curve25519
+  EXPORT curve25519Targets
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  INCLUDES
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(DIRECTORY . DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/curve25519 FILES_MATCHING PATTERN "*.h")

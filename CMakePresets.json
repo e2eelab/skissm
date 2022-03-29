@@ -8,9 +8,9 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}",
-                "ABSL_NO_XRAY_ATTRIBUTES": "1"
+                "CMAKE_CONFIGURATION_TYPES": "Debug",
+                "BUILD_SHARED_LIBS": "OFF",
+                "CMAKE_POSITION_INDEPENDENT_CODE": "ON"
             }
         },
         {
@@ -20,7 +20,6 @@
             "generator": "Xcode",
             "toolchainFile": "${sourceDir}/cmake/ios.toolchain.cmake",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
                 "PLATFORM": "OS64",
                 "ENABLE_STRICT_TRY_COMPILE": "ON",
                 "DEPLOYMENT_TARGET": "13.0",
@@ -31,7 +30,9 @@
                 "CMAKE_MACOSX_RPATH": "1",
                 "ABSL_NO_XRAY_ATTRIBUTES": "1",
                 "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED": "NO",
-                "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED": "NO"
+                "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED": "NO",
+                "SKISSM_BUILD_PROTOBUF": "OFF",
+                "skissm_find_path": "${sourceDir}/../Product/ios"
             },
             "inherits": "default"
         },
@@ -40,7 +41,8 @@
             "description": "Build iOS x86 simulator lib",
             "displayName": "ios_SIMULATOR64",
             "cacheVariables": {
-                "PLATFORM": "SIMULATOR64"
+                "PLATFORM": "SIMULATOR64",
+                "skissm_find_path": "${sourceDir}/../Product/ios_SIMULATOR64"
             },
             "inherits": "ios"
         },
@@ -49,7 +51,8 @@
             "description": "Build iOS arm64 simulator lib",
             "displayName": "ios_SIMULATORARM64",
             "cacheVariables": {
-                "PLATFORM": "SIMULATORARM64"
+                "PLATFORM": "SIMULATORARM64",
+                "skissm_find_path": "${sourceDir}/../Product/ios_SIMULATORARM64"
             },
             "inherits": "ios"
         }

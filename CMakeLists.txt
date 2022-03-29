@@ -28,6 +28,9 @@ cmake_policy(SET CMP0009 NEW)
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(CMAKE_POLICY_DEFAULT_CMP0079 NEW)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_STANDARD 11)
+
 include(GNUInstallDirs)
 
 option(SKISSM_BUILD_PROTOBUF "Build protobuf" ON)
@@ -36,9 +39,7 @@ option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
 set(PROJECT_VERSION_SO ${PROJECT_VERSION_MAJOR})
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
-endif()
+set(EXTERNAL_LIB_DIR "${CMAKE_CURRENT_BINARY_DIR}/lib")
 
 # library path
 set(lib_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
@@ -52,8 +53,7 @@ set(protobuf_BUILD_PROTOC_BINARIES OFF)
 set(protobuf_BUILD_LIBPROTOC OFF)
 set(protobuf_BUILD_TESTS OFF)
 
-# sqlite flags
-# add_definitions(-DSQLITE_THREADSAFE=1)
+# sqlite flags add_definitions(-DSQLITE_THREADSAFE=1)
 
 # set protoc tool path, ex: "/usr/local/bin/protoc"
 find_program(PROTOC_EXECUTABLE protoc REQUIRED)
@@ -73,16 +73,21 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-add_subdirectory(${curve25519_DIR})
-add_subdirectory(${mbedcrypto_DIR})
+add_subdirectory(${curve25519_DIR} ${EXTERNAL_LIB_DIR}/curve25519)
+add_subdirectory(${mbedcrypto_DIR} ${EXTERNAL_LIB_DIR}/mbedcrypto)
 if(SKISSM_BUILD_PROTOBUF)
   add_subdirectory(${protobuf_DIR}/cmake)
+else()
+  set(skissm_find_path "" CACHE STRING "../Product/ios")
+  list(APPEND CMAKE_PREFIX_PATH ${skissm_find_path})
+  message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+  find_package(protobuf REQUIRED CONFIG)
 endif()
 
 # Patch Protobuf-c bug https://github.com/protobuf-c/protobuf-c/pull/482
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/protobuf-c.cmake
                ${protobuf-c_DIR}/CMakeLists.txt COPYONLY)
-add_subdirectory(${protobuf-c_DIR})
+add_subdirectory(${protobuf-c_DIR} ${EXTERNAL_LIB_DIR}/protobuf-c)
 
 set(skissm_src
     src/account_manager.c
@@ -141,8 +146,7 @@ foreach(proto ${skissm_PROTOS})
     COMMAND
       ${PROTOC_EXECUTABLE} -I=skissm --proto_path=${PROTO_SRC_DIR}
       --c_out=${PROTO_DIS_DIR}/skissm
-      --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN}
-      ${proto_name}.proto
+      --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN} ${proto_name}.proto
     RESULT_VARIABLE rv
     OUTPUT_VARIABLE protoc_output
     WORKING_DIRECTORY ${PROTO_SRC_DIR})
@@ -160,8 +164,11 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
   set(CMAKE_XCODE_GENERATE_SCHEME ON)
 
-  add_library(skissm_framework STATIC ${skissm_src} ${src_headers}
-                                      ${proto_gen_src} ${proto_gen_header})
+  add_library(skissm_framework)
+
+  target_sources(skissm_framework PRIVATE ${skissm_src} ${proto_gen_src})
+  target_sources(skissm_framework PUBLIC ${src_headers})
+  target_sources(skissm_framework PUBLIC ${proto_gen_header})
 
   add_dependencies(skissm_framework curve25519 mbedcrypto protobuf::libprotobuf
                    protobuf-c)
@@ -171,8 +178,8 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
   set_source_files_properties(${src_headers} PROPERTIES MACOSX_PACKAGE_LOCATION
                                                         Headers)
 
-  target_compile_features(skissm_framework PRIVATE c_std_99 cxx_std_14)
-  set_xcode_property(skissm_framework GCC_C_LANGUAGE_STANDARD c99 All)
+  target_compile_features(skissm_framework PRIVATE c_std_11 cxx_std_14)
+  set_xcode_property(skissm_framework GCC_C_LANGUAGE_STANDARD c11 All)
   set_xcode_property(skissm_framework CLANG_CXX_LANGUAGE_STANDARD c++14 All)
   set_xcode_property(skissm_framework DEBUG_INFORMATION_FORMAT
                      "dwarf-with-dsym" All)
@@ -198,9 +205,7 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
            $<BUILD_INTERFACE:${protobuf-c_DIR}>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${lib_DIR}
-            ${lib_DIR}/curve25519
-            ${lib_DIR}/curve25519/ed25519
+    PRIVATE ${lib_DIR} ${lib_DIR}/curve25519 ${lib_DIR}/curve25519/ed25519
             ${lib_DIR}/curve25519/ed25519/additions
             ${lib_DIR}/curve25519/ed25519/nacl_includes)
 
@@ -209,10 +214,15 @@ if(CMAKE_SYSTEM_NAME MATCHES iOS)
 
   install(
     TARGETS skissm_framework
+    EXPORT skissmTargets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}/Frameworks)
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    INCLUDES
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
+  install(FILES ${src_headers} ${proto_gen_header} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/skissm)
 else()
   # Target: skissm_shared
   add_library(skissm_static STATIC ${skissm_src} ${src_headers}
@@ -227,13 +237,11 @@ else()
            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
            $<BUILD_INTERFACE:${protobuf-c_DIR}>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${lib_DIR}
-            ${lib_DIR}/curve25519
-            ${lib_DIR}/curve25519/ed25519
+    PRIVATE ${lib_DIR} ${lib_DIR}/curve25519 ${lib_DIR}/curve25519/ed25519
             ${lib_DIR}/curve25519/ed25519/additions
             ${lib_DIR}/curve25519/ed25519/nacl_includes)
 
-  target_compile_features(skissm_static PRIVATE c_std_99 cxx_std_14)
+  target_compile_features(skissm_static PRIVATE c_std_11 cxx_std_14)
 
   set_target_properties(
     skissm_static
@@ -275,13 +283,11 @@ else()
            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
            $<BUILD_INTERFACE:${protobuf-c_DIR}>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${lib_DIR}
-            ${lib_DIR}/curve25519
-            ${lib_DIR}/curve25519/ed25519
+    PRIVATE ${lib_DIR} ${lib_DIR}/curve25519 ${lib_DIR}/curve25519/ed25519
             ${lib_DIR}/curve25519/ed25519/additions
             ${lib_DIR}/curve25519/ed25519/nacl_includes)
 
-  target_compile_features(skissm_shared PRIVATE c_std_99 cxx_std_14)
+  target_compile_features(skissm_shared PRIVATE c_std_11 cxx_std_14)
 
   set_target_properties(
     skissm_shared
