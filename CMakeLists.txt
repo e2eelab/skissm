@@ -34,7 +34,7 @@ set(CMAKE_C_STANDARD 11)
 include(GNUInstallDirs)
 
 option(SKISSM_BUILD_PROTOBUF "Build protobuf" ON)
-option(SKISSM_TESTS "Build tests" ON)
+option(SKISSM_TESTS "Build skissm tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
 set(PROJECT_VERSION_SO ${PROJECT_VERSION_MAJOR})
@@ -52,8 +52,6 @@ set(protobuf-c_DIR "${lib_DIR}/protobuf-c")
 set(protobuf_BUILD_PROTOC_BINARIES OFF)
 set(protobuf_BUILD_LIBPROTOC OFF)
 set(protobuf_BUILD_TESTS OFF)
-
-# sqlite flags add_definitions(-DSQLITE_THREADSAFE=1)
 
 # set protoc tool path, ex: "/usr/local/bin/protoc"
 find_program(PROTOC_EXECUTABLE protoc REQUIRED)
@@ -77,11 +75,6 @@ add_subdirectory(${curve25519_DIR} ${EXTERNAL_LIB_DIR}/curve25519)
 add_subdirectory(${mbedcrypto_DIR} ${EXTERNAL_LIB_DIR}/mbedcrypto)
 if(SKISSM_BUILD_PROTOBUF)
   add_subdirectory(${protobuf_DIR}/cmake)
-else()
-  set(skissm_find_path "" CACHE STRING "../Product/ios")
-  list(APPEND CMAKE_PREFIX_PATH ${skissm_find_path})
-  message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-  find_package(protobuf REQUIRED CONFIG)
 endif()
 
 # Patch Protobuf-c bug https://github.com/protobuf-c/protobuf-c/pull/482
@@ -160,179 +153,53 @@ foreach(proto ${skissm_PROTOS})
   endif()
 endforeach(proto)
 
-if(CMAKE_SYSTEM_NAME MATCHES iOS)
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
-  set(CMAKE_XCODE_GENERATE_SCHEME ON)
+# Target: skissm_static
+add_library(skissm_static STATIC ${skissm_src} ${src_headers}
+                                  ${proto_gen_src} ${proto_gen_header})
 
-  add_library(skissm_framework)
+add_dependencies(skissm_static curve25519 mbedcrypto protobuf::libprotobuf
+                  protobuf-c)
 
-  target_sources(skissm_framework PRIVATE ${skissm_src} ${proto_gen_src})
-  target_sources(skissm_framework PUBLIC ${src_headers})
-  target_sources(skissm_framework PUBLIC ${proto_gen_header})
+target_include_directories(
+  skissm_static
+  PUBLIC $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+          $<BUILD_INTERFACE:${protobuf-c_DIR}>
+          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  PRIVATE ${lib_DIR} ${lib_DIR}/curve25519 ${lib_DIR}/curve25519/ed25519
+          ${lib_DIR}/curve25519/ed25519/additions
+          ${lib_DIR}/curve25519/ed25519/nacl_includes)
 
-  add_dependencies(skissm_framework curve25519 mbedcrypto protobuf::libprotobuf
-                   protobuf-c)
+target_compile_features(skissm_static PRIVATE c_std_11 cxx_std_14)
 
-  set_source_files_properties(${proto_gen_header}
-                              PROPERTIES MACOSX_PACKAGE_LOCATION Headers/skissm)
-  set_source_files_properties(${src_headers} PROPERTIES MACOSX_PACKAGE_LOCATION
-                                                        Headers)
+set_target_properties(
+  skissm_static
+  PROPERTIES OUTPUT_NAME "skissm"
+              WINDOWS_EXPORT_ALL_SYMBOLS ON
+              #VERSION "${CMAKE_PROJECT_VERSION}"
+              #SOVERSION "${PROJECT_VERSION_SO}"
+              ARCHIVE_OUTPUT_DIRECTORY
+              ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
+              LIBRARY_OUTPUT_DIRECTORY
+              ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+              RUNTIME_OUTPUT_DIRECTORY
+              ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
-  target_compile_features(skissm_framework PRIVATE c_std_11 cxx_std_14)
-  set_xcode_property(skissm_framework GCC_C_LANGUAGE_STANDARD c11 All)
-  set_xcode_property(skissm_framework CLANG_CXX_LANGUAGE_STANDARD c++14 All)
-  set_xcode_property(skissm_framework DEBUG_INFORMATION_FORMAT
-                     "dwarf-with-dsym" All)
-  set_xcode_property(skissm_framework CLANG_ENABLE_MODULES ON All)
-  set_xcode_property(skissm_framework PRODUCT_BUNDLE_IDENTIFIER
-                     "org.e2ee.ski.SKISSM" All)
+target_link_options(skissm_static PUBLIC "LINKER:-undefined,dynamic_lookup")
+target_link_libraries(skissm_static PUBLIC mbedcrypto curve25519
+                                            protobuf::libprotobuf protobuf-c)
 
-  set_target_properties(
-    skissm_framework
-    PROPERTIES OUTPUT_NAME skissm
-               FRAMEWORK TRUE
-               FRAMEWORK_VERSION C
-               VERSION "${CMAKE_PROJECT_VERSION}"
-               SOVERSION "${PROJECT_VERSION_SO}"
-               XCODE_GENERATE_SCHEME ON
-               MACOSX_RPATH ON
-               MACOSX_FRAMEWORK_IDENTIFIER "org.e2ee.ski.SKISSM"
-               POSITION_INDEPENDENT_CODE ON)
+install(
+  TARGETS skissm_static
+  EXPORT skissm-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  INCLUDES
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-  target_include_directories(
-    skissm_framework
-    PUBLIC $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-           $<BUILD_INTERFACE:${protobuf-c_DIR}>
-           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${lib_DIR} ${lib_DIR}/curve25519 ${lib_DIR}/curve25519/ed25519
-            ${lib_DIR}/curve25519/ed25519/additions
-            ${lib_DIR}/curve25519/ed25519/nacl_includes)
-
-  target_link_libraries(skissm_framework mbedcrypto curve25519
-                        protobuf::libprotobuf protobuf-c)
-
-  install(
-    TARGETS skissm_framework
-    EXPORT skissmTargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    INCLUDES
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-  install(FILES ${src_headers} ${proto_gen_header} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/skissm)
-else()
-  # Target: skissm_shared
-  add_library(skissm_static STATIC ${skissm_src} ${src_headers}
-                                   ${proto_gen_src} ${proto_gen_header})
-
-  add_dependencies(skissm_static curve25519 mbedcrypto protobuf::libprotobuf
-                   protobuf-c)
-
-  target_include_directories(
-    skissm_static
-    PUBLIC $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-           $<BUILD_INTERFACE:${protobuf-c_DIR}>
-           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${lib_DIR} ${lib_DIR}/curve25519 ${lib_DIR}/curve25519/ed25519
-            ${lib_DIR}/curve25519/ed25519/additions
-            ${lib_DIR}/curve25519/ed25519/nacl_includes)
-
-  target_compile_features(skissm_static PRIVATE c_std_11 cxx_std_14)
-
-  set_target_properties(
-    skissm_static
-    PROPERTIES OUTPUT_NAME "skissm"
-               WINDOWS_EXPORT_ALL_SYMBOLS ON
-               SOVERSION "${PROJECT_VERSION_SO}"
-               VERSION "${CMAKE_PROJECT_VERSION}"
-               ARCHIVE_OUTPUT_DIRECTORY
-               ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
-               LIBRARY_OUTPUT_DIRECTORY
-               ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-               RUNTIME_OUTPUT_DIRECTORY
-               ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
-
-  target_link_options(skissm_static PUBLIC "LINKER:-undefined,dynamic_lookup")
-  target_link_libraries(skissm_static PUBLIC mbedcrypto curve25519
-                                             protobuf::libprotobuf protobuf-c)
-
-  install(
-    TARGETS skissm_static
-    EXPORT skissm-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-  # Target: skissm_shared
-  add_library(skissm_shared SHARED ${skissm_src} ${proto_gen_src})
-
-  add_dependencies(skissm_shared curve25519 mbedcrypto protobuf::libprotobuf
-                   protobuf-c)
-
-  target_include_directories(
-    skissm_shared
-    PUBLIC $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-           $<BUILD_INTERFACE:${protobuf-c_DIR}>
-           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    PRIVATE ${lib_DIR} ${lib_DIR}/curve25519 ${lib_DIR}/curve25519/ed25519
-            ${lib_DIR}/curve25519/ed25519/additions
-            ${lib_DIR}/curve25519/ed25519/nacl_includes)
-
-  target_compile_features(skissm_shared PRIVATE c_std_11 cxx_std_14)
-
-  set_target_properties(
-    skissm_shared
-    PROPERTIES OUTPUT_NAME "skissm"
-               POSITION_INDEPENDENT_CODE ON
-               WINDOWS_EXPORT_ALL_SYMBOLS ON
-               SOVERSION "${PROJECT_VERSION_SO}"
-               VERSION "${CMAKE_PROJECT_VERSION}"
-               ARCHIVE_OUTPUT_DIRECTORY
-               ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
-               LIBRARY_OUTPUT_DIRECTORY
-               ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-               RUNTIME_OUTPUT_DIRECTORY
-               ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
-
-  target_link_options(skissm_shared PUBLIC "LINKER:-undefined,dynamic_lookup")
-  target_link_libraries(skissm_shared PUBLIC mbedcrypto curve25519
-                                             protobuf::libprotobuf protobuf-c)
-
-  #
-  # Installation
-  #
-  install(
-    TARGETS skissm_shared
-    EXPORT skissm-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    PRIVATE_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-  if(SKISSM_TESTS)
-    add_subdirectory(tests)
-  endif()
-
-  # include(CMakePackageConfigHelpers)
-  # write_basic_package_version_file(SkissmConfigVersion.cmake COMPATIBILITY
-  # SameMajorVersion)
-
-  # install( EXPORT SkissmTargets FILE SkissmTargets.cmake NAMESPACE skissm::
-  # DESTINATION lib/cmake/skissm)
-
-  # install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SkissmConfig.cmake"
-  # "${CMAKE_CURRENT_BINARY_DIR}/SkissmConfigVersion.cmake" DESTINATION
-  # lib/cmake/MyLib)
+if(SKISSM_TESTS)
+  add_subdirectory(tests)
 endif()
