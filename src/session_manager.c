@@ -72,7 +72,6 @@ Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_sess
 }
 
 size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payload) {
-    //Skissm__E2eePreKeyPayload *pre_key_context = NULL;
     Skissm__E2eeMsgPayload *msg_payload = NULL;
 
     if (inbound_e2ee_message_payload->e2ee_msg_type != SKISSM__E2EE_MSG_TYPE__PRE_KEY && inbound_e2ee_message_payload->e2ee_msg_type != SKISSM__E2EE_MSG_TYPE__MESSAGE) {

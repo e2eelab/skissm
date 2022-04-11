@@ -28,14 +28,6 @@ extern "C" {
 #include "skissm/skissm.h"
 
 /**
- * @brief Invite someone to create a session. 
- * @param from From address
- * @param to To Address
- * @return size_t 0 for Succcess
- */
-size_t invite_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
-
-/**
  * @brief Get an outbound session.
  * @param from From address
  * @param to To Address
