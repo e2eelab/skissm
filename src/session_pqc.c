@@ -53,6 +53,8 @@ size_t pqc_new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2ee
 
     // Set the version
     session->version = PROTOCOL_VERSION;
+    // Set the cipher suite id
+    session->cipher_suite_id = 1;
 
     // Store some information into the session
     const Skissm__KeyPair my_identity_key_pair = *(local_account->identity_key->asym_key_pair);
@@ -112,11 +114,7 @@ size_t pqc_new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2ee
     return (size_t)(0);
 }
 
-size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *local_account, Skissm__E2eeMsg *inbound_message) {
-    session->version = inbound_message->version;
-    session->session_id = strdup(inbound_message->session_id);
-
-    Skissm__E2eeInvitePayload *e2ee_invite_payload = skissm__e2ee_invite_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
+size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *local_account, Skissm__E2eeInvitePayload *e2ee_invite_payload) {
     /* Verify the signed pre-key */
     bool old_spk = 0;
     Skissm__SignedPreKey *old_spk_data = NULL;
@@ -187,16 +185,18 @@ size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount
     uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY];
     uint8_t *pos = secret;
     ProtobufCBinaryData *ciphertext_1;
+    // ?????????????
+    size_t pre_shared_key_len = e2ee_invite_payload->pre_shared_key->len;
 
     ciphertext_1->len = CRYPTO_CIPHERTEXTBYTES;
     ciphertext_1->data = CIPHER.suite2->ss_key_gen(NULL, &(session->alice_identity_key), pos);
     pos += CRYPTO_BYTES_KEY;
-    CIPHER.suite2->ss_key_gen(&(bob_identity_key->private_key), &(e2ee_invite_payload->ciphertext2), pos);
+    CIPHER.suite2->ss_key_gen(&(bob_identity_key->private_key), e2ee_invite_payload->pre_shared_key, pos);
     pos += CRYPTO_BYTES_KEY;
-    CIPHER.suite2->ss_key_gen(&(bob_signed_pre_key->private_key), &(e2ee_invite_payload->ciphertext3), pos);
+    CIPHER.suite2->ss_key_gen(&(bob_signed_pre_key->private_key), e2ee_invite_payload->pre_shared_key + pre_shared_key_len, pos);
     if (x3dh_epoch == 4) {
         pos += CRYPTO_BYTES_KEY;
-        CIPHER.suite2->ss_key_gen(&(bob_one_time_pre_key->private_key), &(e2ee_invite_payload->ciphertext4), pos);
+        CIPHER.suite2->ss_key_gen(&(bob_one_time_pre_key->private_key), e2ee_invite_payload->pre_shared_key + pre_shared_key_len + pre_shared_key_len, pos);
     }
 
     session->alice_ephemeral_key.len = x3dh_epoch * CRYPTO_BYTES_KEY;
@@ -205,7 +205,12 @@ size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount
 
     initialise_as_bob(session->ratchet, secret, sizeof(secret), bob_signed_pre_key);
 
-    send_accept_request(ciphertext_1);
+    // store sesson state
+    get_skissm_plugin()->db_handler.store_session(session);
+
+    /** The one who sends the acception message will be the one who received the invitation message.
+     *  Thus, the "from" and "to" of acception message will be different from those in the session. */
+    send_accept_request(session->cipher_suite_id, session->to, session->from, ciphertext_1);
 
     // release
     skissm__signed_pre_key__free_unpacked(old_spk_data, NULL);
@@ -216,8 +221,10 @@ size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount
 }
 
 size_t pqc_complete_outbound_session(Skissm__E2eeSession *outbound_session, Skissm__E2eeAcceptPayload *e2ee_accept_payload) {
+    outbound_session->responded = true;
+
     uint8_t *pos = outbound_session->alice_ephemeral_key.data;
-    CIPHER.suite2->ss_key_gen(&(outbound_session->alice_identity_key), &(e2ee_accept_payload->ciphertext1), pos);
+    CIPHER.suite2->ss_key_gen(&(outbound_session->alice_identity_key), e2ee_accept_payload->pre_shared_key, pos);
 
     // Create the root key and chain keys(????????????????)
     initialise_as_alice(outbound_session->ratchet, pos, outbound_session->alice_ephemeral_key.len, NULL, NULL);
@@ -228,5 +235,6 @@ size_t pqc_complete_outbound_session(Skissm__E2eeSession *outbound_session, Skis
 
 const struct session_suite PQC_AES256_GCM_SHA256 = {
     pqc_new_outbound_session,
-    pqc_new_inbound_session
+    pqc_new_inbound_session,
+    pqc_complete_outbound_session
 };

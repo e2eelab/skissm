@@ -25,7 +25,7 @@ extern "C" {
 
 enum ErrorCode {
   SUCCESS = 0,
-  BAD_SESSION_KEY = 1,
+  BAD_SESSION = 1,
   BAD_SIGNATURE = 2,
   BAD_PRE_KEY_BUNDLE = 3,
   BAD_SERVER_MESSAGE = 4,

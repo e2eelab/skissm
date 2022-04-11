@@ -62,6 +62,14 @@ static void on_user_registered(Skissm__E2eeAccount *account) {
     account_data_insert_pos++;
 }
 
+static void on_inbound_session_ready(Skissm__E2eeSession *inbound_session){
+    printf("on_inbound_session_ready\n");
+}
+
+static void on_outbound_session_ready(Skissm__E2eeSession *outbound_session){
+    printf("on_outbound_session_ready\n");
+}
+
 static void on_one2one_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
@@ -103,6 +111,8 @@ static void on_group_members_removed(Skissm__E2eeAddress *group_address, char *g
 static skissm_event_handler_t test_event_handler = {
     on_error,
     on_user_registered,
+    on_inbound_session_ready,
+    on_outbound_session_ready,
     on_one2one_msg_received,
     on_group_msg_received,
     on_group_created,

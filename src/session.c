@@ -68,9 +68,9 @@ void pack_e2ee_plaintext(const uint8_t *plaintext, size_t plaintext_len, Skissm_
 
 const session_suite *get_session_suite(uint32_t cipher_suite_id) {
     // cipher_suite_id = 0 for testing
-    if (cipher_suite_id == 1 || cipher_suite_id == 0){
+    if (cipher_suite_id == 0){
         return SESSION_CIPHER.suite1;
-    } else if (cipher_suite_id == 2){
+    } else if (cipher_suite_id == 1){
         return SESSION_CIPHER.suite2;
     } else{
         return NULL;

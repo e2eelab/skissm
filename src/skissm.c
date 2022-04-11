@@ -51,6 +51,16 @@ void ssm_notify_user_registered(Skissm__E2eeAccount *account){
         skissm_plugin->event_handler.on_user_registered(account);
 }
 
+void ssm_notify_inbound_session_ready(Skissm__E2eeSession *inbound_session) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_inbound_session_ready(inbound_session);
+}
+
+void ssm_notify_outbound_session_ready(Skissm__E2eeSession *outbound_session) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_outbound_session_ready(outbound_session);
+}
+
 void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,
                             Skissm__E2eeAddress *to_address, uint8_t *plaintext,
                             size_t plaintext_len) {

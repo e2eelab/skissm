@@ -196,8 +196,9 @@ void send_get_pre_key_bundle_request(
  * @param outbound_session
  * @param e2ee_plaintext
  * @param e2ee_plaintext_len
+ * @return Success or not
  */
-void send_one2one_msg(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len);
+size_t send_one2one_msg(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len);
 
 /**
  * @brief Send group encrypted message to messaging server
@@ -208,11 +209,11 @@ void send_one2one_msg(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee
  */
 void send_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) ;
 
-void send_invite_request(Skissm__E2eeSession *outbound_session, ProtobufCBinaryData *ciphertext_2,
-                         ProtobufCBinaryData *ciphertext_3, ProtobufCBinaryData *ciphertext_4
+void send_invite_request(Skissm__E2eeSession *outbound_session, ProtobufCBinaryData *pre_shared_key_1,
+                         ProtobufCBinaryData *pre_shared_key_2, ProtobufCBinaryData *pre_shared_key_3
 );
 
-void send_accept_request(ProtobufCBinaryData *ciphertext_1);
+void send_accept_request(uint32_t cipher_suite_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1);
 
 /**
  * @brief Send a create group request to messaging server

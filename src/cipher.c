@@ -56,9 +56,9 @@ size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
 
 const cipher_suite_t *get_cipher_suite(uint32_t cipher_suite_id){
   // cipher_suite_id = 0 for testing
-  if (cipher_suite_id == 1 || cipher_suite_id == 0){
+  if (cipher_suite_id == 0){
     return CIPHER.suite1;
-  } else if (cipher_suite_id == 2){
+  } else if (cipher_suite_id == 1){
     return CIPHER.suite2;
   } else{
     return NULL;

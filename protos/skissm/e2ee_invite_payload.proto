@@ -24,10 +24,9 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeInvitePayload";
 
 message e2ee_invite_payload {
-    bytes alice_identity_key = 1;
-    bytes ciphertext2 = 2;
-    bytes ciphertext3 = 3;
-    bytes ciphertext4 = 4;
-    uint32 bob_signed_pre_key_id = 5;
-    uint32 bob_one_time_pre_key_id = 6;
+    uint32 cipher_suite_id = 1;
+    bytes alice_identity_key = 2;
+    repeated bytes pre_shared_key = 3;
+    uint32 bob_signed_pre_key_id = 4;
+    uint32 bob_one_time_pre_key_id = 5;
 }

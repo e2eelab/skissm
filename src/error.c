@@ -20,7 +20,7 @@
 
 static const char * ERROR_STRINGS[] = {
   "SUCCESS",
-  "BAD_SESSION_KEY",
+  "BAD_SESSION",
   "BAD_SIGNATURE",
   "BAD_PRE_KEY_BUNDLE",
   "BAD_SERVER_MESSAGE",

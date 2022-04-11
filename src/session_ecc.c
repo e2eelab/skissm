@@ -50,6 +50,8 @@ size_t crypto_curve25519_new_outbound_session(Skissm__E2eeSession *session, cons
 
     // Set the version
     session->version = PROTOCOL_VERSION;
+    // Set the cipher suite id
+    session->cipher_suite_id = 0;
 
     // Generate a new random ephemeral key pair
     Skissm__KeyPair my_ephemeral_key;
@@ -99,6 +101,11 @@ size_t crypto_curve25519_new_outbound_session(Skissm__E2eeSession *session, cons
     initialise_as_alice(session->ratchet, secret, sizeof(secret), &my_ratchet_key, &(their_pre_key_bundle->signed_pre_key_public->public_key));
     session->session_id = generate_uuid_str();
 
+    // store sesson state
+    get_skissm_plugin()->db_handler.store_session(session);
+
+    send_invite_request(session, &(session->alice_ephemeral_key), NULL, NULL);
+
     // release
     free_protobuf(&(my_ephemeral_key.private_key));
     free_protobuf(&(my_ephemeral_key.public_key));
@@ -112,20 +119,15 @@ size_t crypto_curve25519_new_outbound_session(Skissm__E2eeSession *session, cons
     return (size_t)(0);
 }
 
-size_t crypto_curve25519_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *local_account, Skissm__E2eeMsg *inbound_message) {
-    session->version = inbound_message->version;
-    session->session_id = strdup(inbound_message->session_id);
-
-    Skissm__E2eePreKeyPayload *pre_key_context = skissm__e2ee_pre_key_payload__unpack(NULL, inbound_message->payload.len, inbound_message->payload.data);
-
+size_t crypto_curve25519_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *local_account, Skissm__E2eeInvitePayload *e2ee_invite_payload) {
     /* Verify the signed pre-key */
     bool old_spk = 0;
     Skissm__SignedPreKey *old_spk_data = NULL;
-    if (local_account->signed_pre_key->spk_id != pre_key_context->bob_signed_pre_key_id) {
-        get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->account_id, pre_key_context->bob_signed_pre_key_id, &old_spk_data);
+    if (local_account->signed_pre_key->spk_id != e2ee_invite_payload->bob_signed_pre_key_id) {
+        get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->account_id, e2ee_invite_payload->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
             ssm_notify_error(BAD_SIGNED_PRE_KEY, "crypto_curve25519_new_inbound_session()");
-            skissm__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
+            skissm__e2ee_invite_payload__free_unpacked(e2ee_invite_payload, NULL);
             return (size_t)(-1);
         } else {
             old_spk = 1;
@@ -133,15 +135,15 @@ size_t crypto_curve25519_new_inbound_session(Skissm__E2eeSession *session, Skiss
     }
 
     uint8_t x3dh_epoch = 3;
-    copy_protobuf_from_protobuf(&(session->alice_identity_key), &(pre_key_context->alice_identity_key));
-    copy_protobuf_from_protobuf(&(session->alice_ephemeral_key), &(pre_key_context->alice_ephemeral_key));
-    session->bob_signed_pre_key_id = pre_key_context->bob_signed_pre_key_id;
+    copy_protobuf_from_protobuf(&(session->alice_identity_key), &(e2ee_invite_payload->alice_identity_key));
+    copy_protobuf_from_protobuf(&(session->alice_ephemeral_key), e2ee_invite_payload->pre_shared_key);
+    session->bob_signed_pre_key_id = e2ee_invite_payload->bob_signed_pre_key_id;
     if (old_spk == 0) {
         copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(local_account->signed_pre_key->key_pair->public_key));
     } else {
         copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(old_spk_data->key_pair->public_key));
     }
-    if (pre_key_context->bob_one_time_pre_key_id != 0) {
+    if (e2ee_invite_payload->bob_one_time_pre_key_id != 0) {
         x3dh_epoch = 4;
     }
 
@@ -149,17 +151,17 @@ size_t crypto_curve25519_new_inbound_session(Skissm__E2eeSession *session, Skiss
     int ad_len = 2 * key_len;
     session->associated_data.len = ad_len;
     session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
-    memcpy(session->associated_data.data, pre_key_context->alice_identity_key.data, key_len);
+    memcpy(session->associated_data.data, e2ee_invite_payload->alice_identity_key.data, key_len);
     memcpy((session->associated_data.data) + key_len, local_account->identity_key->asym_key_pair->public_key.data, key_len);
 
     /* Mark the one-time pre-key as used */
     const Skissm__OneTimePreKey *our_one_time_pre_key;
     if (x3dh_epoch == 4) {
-        our_one_time_pre_key = lookup_one_time_pre_key(local_account, pre_key_context->bob_one_time_pre_key_id);
+        our_one_time_pre_key = lookup_one_time_pre_key(local_account, e2ee_invite_payload->bob_one_time_pre_key_id);
 
         if (!our_one_time_pre_key) {
             ssm_notify_error(BAD_ONE_TIME_PRE_KEY, "crypto_curve25519_new_inbound_session()");
-            skissm__e2ee_pre_key_payload__free_unpacked(pre_key_context, NULL);
+            skissm__e2ee_invite_payload__free_unpacked(e2ee_invite_payload, NULL);
             return (size_t)(-1);
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
@@ -200,6 +202,10 @@ size_t crypto_curve25519_new_inbound_session(Skissm__E2eeSession *session, Skiss
 
     initialise_as_bob(session->ratchet, secret, sizeof(secret), bob_signed_pre_key);
 
+    /** The one who sends the acception message will be the one who received the invitation message.
+     *  Thus, the "from" and "to" of acception message will be different from those in the session. */
+    send_accept_request(session->cipher_suite_id, session->to, session->from, NULL);
+
     // release
     skissm__signed_pre_key__free_unpacked(old_spk_data, NULL);
     unset(secret, sizeof(secret));
@@ -208,7 +214,15 @@ size_t crypto_curve25519_new_inbound_session(Skissm__E2eeSession *session, Skiss
     return (size_t)(0);
 }
 
+size_t crypto_curve25519_complete_outbound_session(Skissm__E2eeSession *outbound_session, Skissm__E2eeAcceptPayload *e2ee_accept_payload) {
+    outbound_session->responded = true;
+
+    // done
+    return (size_t)(0);
+}
+
 const struct session_suite ECDH_X25519_AES256_GCM_SHA256 = {
     crypto_curve25519_new_outbound_session,
-    crypto_curve25519_new_inbound_session
+    crypto_curve25519_new_inbound_session,
+    crypto_curve25519_complete_outbound_session
 };

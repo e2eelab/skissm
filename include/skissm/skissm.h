@@ -259,6 +259,16 @@ typedef struct skissm_event_handler_t {
      */
     void (*on_user_registered)(Skissm__E2eeAccount *);
     /**
+     * @brief notify inbound session ready
+     * @param inbound_session
+     */
+    void (*on_inbound_session_ready)(Skissm__E2eeSession *);
+    /**
+     * @brief notify outbound session ready
+     * @param outbound_session
+     */
+    void (*on_outbound_session_ready)(Skissm__E2eeSession *);
+    /**
      * @brief notify one2one msg received event
      * @param from_address
      * @param to_address
@@ -317,6 +327,8 @@ skissm_plugin_t *get_skissm_plugin();
 
 void ssm_notify_error(ErrorCode, char *);
 void ssm_notify_user_registered(Skissm__E2eeAccount *account);
+void ssm_notify_inbound_session_ready(Skissm__E2eeSession *inbound_session);
+void ssm_notify_outbound_session_ready(Skissm__E2eeSession *outbound_session);
 void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,
                             Skissm__E2eeAddress *to_address, uint8_t *plaintext,
                             size_t plaintext_len);

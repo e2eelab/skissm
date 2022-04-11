@@ -47,13 +47,25 @@ typedef struct session_suite{
      *
      * @param session The inbound session
      * @param local_account Our account
-     * @param inbound_message The inbound message
+     * @param e2ee_invite_payload The inbound message
      * @return Success or not
      */
     size_t (*new_inbound_session)(
         Skissm__E2eeSession *session,
         Skissm__E2eeAccount *local_account,
-        Skissm__E2eeMsg *inbound_message
+        Skissm__E2eeInvitePayload *e2ee_invite_payload
+    );
+
+    /**
+     * @brief Complete an outbound session.
+     *
+     * @param session The inbound session
+     * @param e2ee_accept_payload The e2ee_accept_payload
+     * @return Success or not
+     */
+    size_t (*complete_outbound_session)(
+        Skissm__E2eeSession *outbound_session,
+        Skissm__E2eeAcceptPayload *e2ee_accept_payload
     );
 } session_suite;
 
@@ -96,7 +108,12 @@ size_t crypto_curve25519_new_outbound_session(
 size_t crypto_curve25519_new_inbound_session(
     Skissm__E2eeSession *session,
     Skissm__E2eeAccount *local_account,
-    Skissm__E2eeMsg *inbound_prekey_message
+    Skissm__E2eeInvitePayload *e2ee_invite_payload
+);
+
+size_t crypto_curve25519_complete_outbound_session(
+    Skissm__E2eeSession *outbound_session,
+    Skissm__E2eeAcceptPayload *e2ee_accept_payload
 );
 
 /* PQC-related */
@@ -109,7 +126,7 @@ size_t pqc_new_outbound_session(
 size_t pqc_new_inbound_session(
     Skissm__E2eeSession *session,
     Skissm__E2eeAccount *local_account,
-    Skissm__E2eeMsg *inbound_message
+    Skissm__E2eeInvitePayload *e2ee_invite_payload
 );
 
 size_t pqc_complete_outbound_session(
