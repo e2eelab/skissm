@@ -128,6 +128,7 @@ static void test_encryption(
     send_one2one_msg(outbound_session, e2ee_plaintext, e2ee_plaintext_len);
     if (plaintext_store.plaintext == NULL){
         printf("Test failed!!!\n");
+        assert(false);
         return;
     }
     assert(plaintext_len == plaintext_store.plaintext_len);
@@ -159,6 +160,7 @@ static void test_basic_session(){
     test_encryption(outbound_session, plaintext, plaintext_len);
 
     // test stop
+    skissm__e2ee_session__free_unpacked(outbound_session, NULL);
     test_end();
     tear_down();
 }
@@ -171,30 +173,39 @@ static void test_interaction(){
     register_account(1);
     register_account(2);
 
-    Skissm__E2eeSession *outbound_session;
+    Skissm__E2eeSession *outbound_session_a, *outbound_session_b;
 
     // Alice invites Bob to create a session
-    outbound_session = get_outbound_session(account_data[0]->address, account_data[1]->address);
-    assert(outbound_session == NULL);
+    outbound_session_a = get_outbound_session(account_data[0]->address, account_data[1]->address);
+    assert(outbound_session_a == NULL);
 
     // Alice loads the outbound session
-    outbound_session = get_outbound_session(account_data[0]->address, account_data[1]->address);
-    assert(outbound_session != NULL);
-    assert(outbound_session->responded == true);
+    outbound_session_a = get_outbound_session(account_data[0]->address, account_data[1]->address);
+    assert(outbound_session_a != NULL);
+    assert(outbound_session_a->responded == true);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "Hi! Bob! This is Alice.";
     size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(outbound_session, plaintext, plaintext_len);
+    test_encryption(outbound_session_a, plaintext, plaintext_len);
+
+    // Bob invites Alice to create a session
+    outbound_session_b = get_outbound_session(account_data[1]->address, account_data[0]->address);
+    assert(outbound_session_b == NULL);
 
     // Bob loads the outbound session
+    outbound_session_b = get_outbound_session(account_data[1]->address, account_data[0]->address);
+    assert(outbound_session_b != NULL);
+    assert(outbound_session_b->responded == true);
 
     // Bob sends an encrypted message to Alice, and Alice decrypts the message
-    // uint8_t plaintext_2[] = "Hello! This is Bob.";
-    // size_t plaintext_len_2 = sizeof(plaintext_2) - 1;
-    // test_encryption(account_data[1]->address, account_data[0]->address, plaintext_2, plaintext_len_2);
+    uint8_t plaintext_2[] = "Hello! This is Bob.";
+    size_t plaintext_len_2 = sizeof(plaintext_2) - 1;
+    test_encryption(outbound_session_b, plaintext_2, plaintext_len_2);
 
     // test stop
+    skissm__e2ee_session__free_unpacked(outbound_session_a, NULL);
+    skissm__e2ee_session__free_unpacked(outbound_session_b, NULL);
     test_end();
     tear_down();
 }
@@ -226,13 +237,14 @@ static void test_continual_messages(){
     }
 
     // test stop
+    skissm__e2ee_session__free_unpacked(outbound_session, NULL);
     test_end();
     tear_down();
 }
 
 int main() {
     test_basic_session();
-    //test_interaction();
+    test_interaction();
     test_continual_messages();
 
     return 0;

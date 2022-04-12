@@ -24,9 +24,8 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeMsgType";
 
 enum e2ee_msg_type {
-    PRE_KEY = 0;
-    INVITE = 1;
-    ACCEPT = 2;
-    MESSAGE = 3;
-    GROUP_MESSAGE = 4;
+    INVITE = 0;
+    ACCEPT = 1;
+    MESSAGE = 2;
+    GROUP_MESSAGE = 3;
 }

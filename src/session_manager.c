@@ -74,7 +74,7 @@ Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_sess
 size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payload) {
     Skissm__E2eeMsgPayload *msg_payload = NULL;
 
-    if (inbound_e2ee_message_payload->e2ee_msg_type != SKISSM__E2EE_MSG_TYPE__PRE_KEY && inbound_e2ee_message_payload->e2ee_msg_type != SKISSM__E2EE_MSG_TYPE__MESSAGE) {
+    if (inbound_e2ee_message_payload->e2ee_msg_type != SKISSM__E2EE_MSG_TYPE__MESSAGE) {
         ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_message_payload()");
         return (size_t)(-1);
     }
