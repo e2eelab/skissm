@@ -93,5 +93,15 @@ void unload_inbound_group_session(
     Skissm__E2eeAddress *receiver_address,
     char *session_id
 );
+void store_group_pre_key(char *outbound_group_session_id,
+                         Skissm__E2eeAddress *member_address,
+                         uint8_t *group_pre_key_plaintext,
+                         size_t group_pre_key_plaintext_len
+);
+void load_group_pre_key(char *outbound_group_session_id,
+                        Skissm__E2eeAddress *member_address,
+                        Skissm__PendingGroupPreKey **pending_group_pre_key
+);
+void unload_group_pre_key(char *outbound_group_session_id, Skissm__E2eeAddress *member_address);
 
 #endif /* TEST_DB_H_ */

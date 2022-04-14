@@ -46,7 +46,6 @@ extern "C" {
 #include "skissm/e2ee_plaintext.pb-c.h"
 #include "skissm/e2ee_plaintext_type.pb-c.h"
 #include "skissm/e2ee_pre_key_bundle.pb-c.h"
-#include "skissm/e2ee_pre_key_payload.pb-c.h"
 #include "skissm/e2ee_protocol_msg.pb-c.h"
 #include "skissm/e2ee_ratchet.pb-c.h"
 #include "skissm/e2ee_session.pb-c.h"
@@ -60,6 +59,7 @@ extern "C" {
 #include "skissm/message_key.pb-c.h"
 #include "skissm/one_time_pre_key.pb-c.h"
 #include "skissm/one_time_pre_key_public.pb-c.h"
+#include "skissm/pending_group_pre_key.pb-c.h"
 #include "skissm/publish_spk_request_payload.pb-c.h"
 #include "skissm/receiver_chain_node.pb-c.h"
 #include "skissm/register_user_request_payload.pb-c.h"
@@ -244,6 +244,29 @@ typedef struct skissm_db_handler_t {
      * @param old_session_id
      */
     void (*unload_inbound_group_session)(Skissm__E2eeAddress *, char *);
+
+    // group pre-key related handlers
+    /**
+     * @brief store group pre-key
+     * @param outbound_group_session_id
+     * @param member_address
+     * @param group_pre_key_plaintext
+     * @param group_pre_key_plaintext_len
+     */
+    void (*store_group_pre_key)(char *, Skissm__E2eeAddress *, uint8_t *, size_t);
+    /**
+     * @brief load group pre-key
+     * @param outbound_group_session_id
+     * @param member_address
+     * @param pending_group_pre_key
+     */
+    void (*load_group_pre_key)(char *, Skissm__E2eeAddress *, Skissm__PendingGroupPreKey **);
+    /**
+     * @brief delete group pre-key
+     * @param outbound_group_session_id
+     * @param member_address
+     */
+    void (*unload_group_pre_key)(char *, Skissm__E2eeAddress *);
 } skissm_db_handler_t;
 
 typedef struct skissm_event_handler_t {

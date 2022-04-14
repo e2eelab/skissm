@@ -36,21 +36,6 @@ extern "C" {
 Skissm__E2eeSession *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
 
 /**
- * @brief Encrypt a given plaintext. 
- * An outbound session should have be initialized already.
- * @param from From address
- * @param to To Address
- * @param plaintext plaintext to be encrypted
- * @param plaintext_len plaintext length
- * @return size_t 0 for Succcess
- */
-size_t encrypt_session(
-    Skissm__E2eeAddress *from,
-    Skissm__E2eeAddress *to,
-    const uint8_t *plaintext, size_t plaintext_len
-);
-
-/**
  * @brief Create a get_pre_key_bundle_request_payload to be sent to messaging server.
  *
  * @param e2ee_address

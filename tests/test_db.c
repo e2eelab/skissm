@@ -183,6 +183,32 @@ static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ID = "DELETE FROM GROU
                                                                "(SELECT ID FROM ADDRESS WHERE USER_ID = (?)) "
                                                                "AND ID = (?);";
 
+static const char *PENDING_GROUP_PRE_KEY_DROP_TABLE = "DROP TABLE IF EXISTS PENDING_GROUP_PRE_KEY;";
+static const char *PENDING_GROUP_PRE_KEY_CREATE_TABLE = "CREATE TABLE PENDING_GROUP_PRE_KEY( "
+                                                        "ID TEXT NOT NULL, "
+                                                        "MEMBER_ADDRESS INTEGER NOT NULL, "
+                                                        "GROUP_PRE_KEY_DATA BLOB NOT NULL, "
+                                                        "FOREIGN KEY(MEMBER_ADDRESS) REFERENCES ADDRESS(ID), "
+                                                        "PRIMARY KEY (ID, MEMBER_ADDRESS));";
+
+static const char *PENDING_GROUP_PRE_KEY_INSERT = "INSERT INTO PENDING_GROUP_PRE_KEY "
+                                                  "(ID, MEMBER_ADDRESS, GROUP_PRE_KEY_DATA) "
+                                                  "VALUES (?, ?, ?);";
+
+static const char *PENDING_GROUP_PRE_KEY_LOAD = "SELECT GROUP_PRE_KEY_DATA "
+                                                "FROM PENDING_GROUP_PRE_KEY "
+                                                "INNER JOIN ADDRESS "
+                                                "ON PENDING_GROUP_PRE_KEY.MEMBER_ADDRESS = ADDRESS.ID "
+                                                "WHERE PENDING_GROUP_PRE_KEY.ID = (?) AND "
+                                                "ADDRESS.USER_ID = (?) AND "
+                                                "ADDRESS.DOMAIN = (?) AND "
+                                                "ADDRESS.DEVICE_ID = (?);";
+
+static const char *PENDING_GROUP_PRE_KEY_DELETE_DATA = "DELETE FROM PENDING_GROUP_PRE_KEY "
+                                                       "WHERE ID = (?) "
+                                                       "AND MEMBER_ADDRESS IN "
+                                                       "(SELECT ID FROM ADDRESS WHERE USER_ID = (?));";
+
 // account related
 static const char *ADDRESS_DROP_TABLE = "DROP TABLE IF EXISTS ADDRESS;";
 static const char *ADDRESS_CREATE_TABLE = "CREATE TABLE ADDRESS( "
@@ -482,6 +508,10 @@ void test_db_begin() {
     // group_session
     sqlite_execute(GROUP_SESSION_DROP_TABLE);
     sqlite_execute(GROUP_SESSION_CREATE_TABLE);
+
+    // group_pre_key
+    sqlite_execute(PENDING_GROUP_PRE_KEY_DROP_TABLE);
+    sqlite_execute(PENDING_GROUP_PRE_KEY_CREATE_TABLE);
 
     // address
     sqlite_execute(ADDRESS_DROP_TABLE);
@@ -1572,6 +1602,92 @@ void unload_inbound_group_session(Skissm__E2eeAddress *receiver_address,
     // bind
     sqlite3_bind_text(stmt, 1, receiver_address->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, session_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
+
+    // release
+    sqlite_finalize(stmt);
+}
+
+void store_group_pre_key(char *outbound_group_session_id,
+                         Skissm__E2eeAddress *member_address,
+                         uint8_t *group_pre_key_plaintext,
+                         size_t group_pre_key_plaintext_len) {
+    // insert member's address
+    int member_address_id = insert_address(member_address);
+
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(PENDING_GROUP_PRE_KEY_INSERT, &stmt);
+
+    // bind
+    sqlite3_bind_text(stmt, 1, outbound_group_session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 2, member_address_id);
+    sqlite3_bind_blob(stmt, 3, group_pre_key_plaintext, group_pre_key_plaintext_len, SQLITE_STATIC);
+
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
+
+    // release
+    sqlite_finalize(stmt);
+}
+
+void load_group_pre_key(char *outbound_group_session_id,
+                        Skissm__E2eeAddress *member_address,
+                        Skissm__PendingGroupPreKey **pending_group_pre_key) {
+    // prepare
+    sqlite3_stmt *stmt;
+    if (!sqlite_prepare(PENDING_GROUP_PRE_KEY_LOAD, &stmt)) {
+        *pending_group_pre_key = NULL;
+        return;
+    }
+
+    // bind
+    sqlite3_bind_text(stmt, 1, outbound_group_session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, member_address->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, member_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, member_address->device_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    if (!sqlite_step(stmt, SQLITE_ROW)) {
+        *pending_group_pre_key = NULL;
+        sqlite_finalize(stmt);
+        return;
+    }
+
+    // load
+    size_t pending_group_pre_key_data_len = sqlite3_column_bytes(stmt, 0);
+    uint8_t *pending_group_pre_key_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+    // no data
+    if (pending_group_pre_key_data_len == 0) {
+        *pending_group_pre_key = NULL;
+        sqlite_finalize(stmt);
+        return;
+    }
+
+    // unpack
+    *pending_group_pre_key =
+        skissm__pending_group_pre_key__unpack(NULL, pending_group_pre_key_data_len, pending_group_pre_key_data);
+
+    // release
+    sqlite_finalize(stmt);
+
+    return;
+}
+
+void unload_group_pre_key(char *outbound_group_session_id, Skissm__E2eeAddress *member_address) {
+    if (outbound_group_session_id == NULL){
+        return;
+    }
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(PENDING_GROUP_PRE_KEY_DELETE_DATA, &stmt);
+
+    // bind
+    sqlite3_bind_text(stmt, 1, outbound_group_session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, member_address->user_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
