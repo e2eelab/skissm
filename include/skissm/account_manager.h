@@ -34,11 +34,12 @@ extern "C" {
 void supply_opks(supply_opks_handler *response_handler);
 
 /**
- * @brief Register an account
+ * @brief Register an new account.
  *
- * @param account_id The unique account id
+ * @param account_id The unique account id.
+ * @param e2ee_pack_id The e2ee package id to be used.
  */
-void register_account(uint64_t account_id);
+void register_account(uint64_t account_id, uint32_t e2ee_pack_id);
 
 /**
  * @brief Publish new spk to messaging server

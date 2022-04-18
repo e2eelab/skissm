@@ -28,7 +28,18 @@ extern "C" {
 #include "skissm/skissm.h"
 
 /**
- * @brief Get an outbound session.
+ * @brief Initialize before using an outbound session
+ * that is waiting for being responded.
+ * @param from From address
+ * @param to To Address
+ * @return  0 outbound session initialized, wait for being responded.
+ *         -1 outbound session is already responded and ready to use.
+ *         -2 outbound session is wait for responding.
+ */
+size_t init_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
+
+/**
+ * @brief Get an outbound session that is responded and ready for use.
  * @param from From address
  * @param to To Address
  * @return Outbound session or NULL
@@ -52,6 +63,7 @@ Skissm__GetPreKeyBundleRequestPayload *produce_get_pre_key_bundle_request_payloa
  * @return size_t 0 for Succcess
  */
 size_t consume_get_pre_key_bundle_response_payload(
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     Skissm__GetPreKeyBundleResponsePayload *get_pre_key_bundle_response_payload);
@@ -60,11 +72,11 @@ size_t consume_get_pre_key_bundle_response_payload(
  * @brief Create an outbound e2ee_message_payload to be sent to messaging server.
  *
  * @param outbound_session
- * @param e2ee_plaintext bytes array packed from 
+ * @param e2ee_plaintext_data bytes array packed from
  * @param e2ee_plaintext_len
  * @return Skissm__E2eeMsg*
  */
-Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len);
+Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext_data, size_t e2ee_plaintext_len);
 
 /**
  * @brief Process an inbound e2ee_message_payload with corresponding inbound session.
@@ -81,7 +93,7 @@ Skissm__E2eeInvitePayload *produce_e2ee_invite_payload(
 
 size_t consume_e2ee_invite_payload(Skissm__E2eeMsg *invite_msg_payload);
 
-Skissm__E2eeAcceptPayload *produce_e2ee_accept_payload(uint32_t cipher_suite_id, ProtobufCBinaryData *ciphertext_1);
+Skissm__E2eeAcceptPayload *produce_e2ee_accept_payload(uint32_t e2ee_pack_id, ProtobufCBinaryData *ciphertext_1);
 
 size_t consume_e2ee_accept_payload(Skissm__E2eeMsg *accept_msg_payload);
 

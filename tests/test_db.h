@@ -31,7 +31,7 @@ uint32_t load_version(uint64_t account_id);
 protobuf_c_boolean load_saved(uint64_t account_id);
 void load_address(uint64_t account_id, Skissm__E2eeAddress **address);
 void load_password(uint64_t account_id, char *password);
-uint32_t load_cipher_suite_id(uint64_t account_id);
+uint32_t load_e2ee_pack_id(uint64_t account_id);
 void load_identity_key_pair(uint64_t account_id, Skissm__IdentityKey **identity_key_pair);
 void load_signed_pre_key_pair(
     uint64_t account_id,
@@ -98,8 +98,9 @@ void store_group_pre_key(Skissm__E2eeAddress *member_address,
                          size_t group_pre_key_plaintext_len
 );
 uint32_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
-                             Skissm__E2eePlaintext ***e2ee_plaintext
-);
+    uint8_t ***e2ee_plaintext_data_list,
+    size_t **e2ee_plaintext_data_len_list);
+
 void unload_group_pre_key(Skissm__E2eeAddress *member_address);
 
 #endif /* TEST_DB_H_ */

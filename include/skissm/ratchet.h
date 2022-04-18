@@ -30,10 +30,10 @@ extern "C" {
 #include "skissm/cipher.h"
 
 /** length of a shared key */
-#define SHARED_KEY_LENGTH CIPHER.suite1->get_crypto_param().hash_len
+//#define SHARED_KEY_LENGTH CIPHER.suite1->get_crypto_param().hash_len
 
 /** length of a message key */
-#define MESSAGE_KEY_LENGTH (CIPHER.suite1->get_crypto_param().aead_key_len + CIPHER.suite1->get_crypto_param().aead_iv_len)
+//#define MESSAGE_KEY_LENGTH (CIPHER.suite1->get_crypto_param().aead_key_len + CIPHER.suite1->get_crypto_param().aead_iv_len)
 
 typedef struct cipher cipher;
 
@@ -42,6 +42,7 @@ void initialise_ratchet(Skissm__E2eeRatchet **ratchet);
 /** Initialise the session using a shared secret and the public part of the
  * remote's first ratchet key */
 void initialise_as_bob(
+    const cipher_suite_t *cipher_suite,
     Skissm__E2eeRatchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key
 );
@@ -49,11 +50,13 @@ void initialise_as_bob(
 /** Initialise the session using a shared secret and the public/private key
  * pair for the first ratchet key */
 void initialise_as_alice(
+    const cipher_suite_t *cipher_suite,
     Skissm__E2eeRatchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 );
 
 void encrypt_ratchet(
+    const cipher_suite_t *cipher_suite,
     Skissm__E2eeRatchet *ratchet,
     ProtobufCBinaryData ad,
     const uint8_t *plaintext, size_t plaintext_length,
@@ -61,6 +64,7 @@ void encrypt_ratchet(
 );
 
 size_t decrypt_ratchet(
+    const cipher_suite_t *cipher_suite,
     Skissm__E2eeRatchet *ratchet, ProtobufCBinaryData ad, Skissm__E2eeMsgPayload *e2ee_msg_payload,
     uint8_t **plaintext
 );

@@ -38,6 +38,8 @@ extern register_user_response_handler register_user_response_handler_store;
 
 #define account_data_max 2
 
+static const cipher_suite_t *test_cipher_suite;
+
 static Skissm__E2eeAccount *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
@@ -56,6 +58,10 @@ static void on_error(ErrorCode error_code, char *error_msg) {
 static void on_user_registered(Skissm__E2eeAccount *account){
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
+}
+
+static void on_inbound_session_invited(Skissm__E2eeAddress *from) {
+    printf("on_inbound_session_invited\n");
 }
 
 static void on_inbound_session_ready(Skissm__E2eeSession *inbound_session){
@@ -83,6 +89,7 @@ static void on_one2one_msg_received(
 static skissm_event_handler_t test_event_handler = {
     on_error,
     on_user_registered,
+    on_inbound_session_invited,
     on_inbound_session_ready,
     on_outbound_session_ready,
     on_one2one_msg_received,
@@ -137,17 +144,17 @@ static void test_encryption(
 
 static void test_basic_session(){
     // test start
-    setup();
+    tear_up();
     test_begin();
 
-    register_account(1);
-    register_account(2);
+    register_account(1, TEST_E2EE_PACK_ID);
+    register_account(2, TEST_E2EE_PACK_ID);
 
     Skissm__E2eeSession *outbound_session;
 
     // Alice invites Bob to create a session
-    outbound_session = get_outbound_session(account_data[0]->address, account_data[1]->address);
-    assert(outbound_session == NULL);
+    size_t success = init_outbound_session(account_data[0]->address, account_data[1]->address);
+    assert (success == 0); // waiting Accept
 
     // Load the outbound session
     outbound_session = get_outbound_session(account_data[0]->address, account_data[1]->address);
@@ -167,17 +174,17 @@ static void test_basic_session(){
 
 static void test_interaction(){
     // test start
-    setup();
+    tear_up();
     test_begin();
 
-    register_account(1);
-    register_account(2);
+    register_account(1, TEST_E2EE_PACK_ID);
+    register_account(2, TEST_E2EE_PACK_ID);
 
     Skissm__E2eeSession *outbound_session_a, *outbound_session_b;
 
     // Alice invites Bob to create a session
-    outbound_session_a = get_outbound_session(account_data[0]->address, account_data[1]->address);
-    assert(outbound_session_a == NULL);
+    size_t success = init_outbound_session(account_data[0]->address, account_data[1]->address);
+    assert (success == 0); // waiting Accept
 
     // Alice loads the outbound session
     outbound_session_a = get_outbound_session(account_data[0]->address, account_data[1]->address);
@@ -190,8 +197,8 @@ static void test_interaction(){
     test_encryption(outbound_session_a, plaintext, plaintext_len);
 
     // Bob invites Alice to create a session
-    outbound_session_b = get_outbound_session(account_data[1]->address, account_data[0]->address);
-    assert(outbound_session_b == NULL);
+    size_t success1 = init_outbound_session(account_data[1]->address, account_data[0]->address);
+    assert (success1 == 0); // waiting Accept
 
     // Bob loads the outbound session
     outbound_session_b = get_outbound_session(account_data[1]->address, account_data[0]->address);
@@ -212,17 +219,17 @@ static void test_interaction(){
 
 static void test_continual_messages(){
     // test start
-    setup();
+    tear_up();
     test_begin();
 
-    register_account(1);
-    register_account(2);
+    register_account(1, TEST_E2EE_PACK_ID);
+    register_account(2, TEST_E2EE_PACK_ID);
 
     Skissm__E2eeSession *outbound_session;
 
     // Alice invites Bob to create a session
-    outbound_session = get_outbound_session(account_data[0]->address, account_data[1]->address);
-    assert(outbound_session == NULL);
+    size_t success = init_outbound_session(account_data[0]->address, account_data[1]->address);
+    assert (success == 0); // waiting Accept
 
     // Load the outbound session
     outbound_session = get_outbound_session(account_data[0]->address, account_data[1]->address);
@@ -243,6 +250,8 @@ static void test_continual_messages(){
 }
 
 int main() {
+    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
+
     test_basic_session();
     test_interaction();
     test_continual_messages();

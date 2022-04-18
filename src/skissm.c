@@ -21,6 +21,32 @@
 #include "skissm/account.h"
 #include "skissm/e2ee_protocol.h"
 
+#include "skissm/cipher.h"
+#include "skissm/session.h"
+
+extern const struct cipher_suite_t E2EE_CIPHER_ECDH_X25519_AES256_GCM_SHA256;
+extern const struct cipher_suite_t E2EE_CIPHER_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256;
+
+extern const struct session_suite_t E2EE_SESSION_ECDH_X25519_AES256_GCM_SHA256;
+extern const struct session_suite_t E2EE_SESSION_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256;
+
+const struct e2ee_pack_t E2EE_PACK_ECDH_X25519_AES256_GCM_SHA256 = {
+    0,
+    &E2EE_CIPHER_ECDH_X25519_AES256_GCM_SHA256,
+    &E2EE_SESSION_ECDH_X25519_AES256_GCM_SHA256
+};
+
+const struct e2ee_pack_t E2EE_PACK_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256 = {
+    1,
+    &E2EE_CIPHER_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256,
+    &E2EE_SESSION_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256
+};
+
+const struct e2ee_pack_list_t E2EE_PACK_LIST = {
+    &E2EE_PACK_ECDH_X25519_AES256_GCM_SHA256,
+    &E2EE_PACK_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256
+};
+
 static skissm_plugin_t *skissm_plugin;
 
 void skissm_begin(skissm_plugin_t *ssm_plugin) {
@@ -49,6 +75,11 @@ void ssm_notify_error(ErrorCode error_code, char *error_msg) {
 void ssm_notify_user_registered(Skissm__E2eeAccount *account){
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_user_registered(account);
+}
+
+void ssm_notify_inbound_session_invited(Skissm__E2eeAddress *from) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_inbound_session_invited(from);
 }
 
 void ssm_notify_inbound_session_ready(Skissm__E2eeSession *inbound_session) {
@@ -92,4 +123,14 @@ void ssm_notify_group_members_removed(Skissm__E2eeAddress *group_address,
                                       Skissm__E2eeAddress **member_addresses) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_group_members_removed(group_address, group_name, member_addresses);
+}
+
+const e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id) {
+  if (e2ee_pack_id == 0){
+    return E2EE_PACK_LIST.e2ee_pack_0;
+  } else if (e2ee_pack_id == 1){
+    return E2EE_PACK_LIST.e2ee_pack_1;
+  } else{
+    return NULL;
+  }
 }

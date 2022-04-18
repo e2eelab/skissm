@@ -35,16 +35,18 @@
 #include "test_env.h"
 #include "test_util.h"
 
+static const cipher_suite_t *test_cipher_suite;
+
 void test_load_outbound_session()
 {
-    setup();;
+    tear_up();;
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
     copy_address_from_address(&(session->session_owner), from);
 
     // create mock public keys
@@ -88,7 +90,7 @@ void test_load_outbound_session()
 
 void test_load_inbound_session()
 {
-    setup();
+    tear_up();
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
@@ -97,7 +99,7 @@ void test_load_inbound_session()
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
     copy_address_from_address(&(session->session_owner), to);
 
     // create mock public keys
@@ -141,7 +143,7 @@ void test_load_inbound_session()
 
 void test_load_outbound_group_session()
 {
-    setup();
+    tear_up();
 
     // create two addresses
     Skissm__E2eeAddress *Alice, *Bob;
@@ -211,7 +213,7 @@ void test_load_outbound_group_session()
 
 void test_load_inbound_group_session()
 {
-    setup();
+    tear_up();
 
     // create two addresses
     Skissm__E2eeAddress *Alice, *Bob;
@@ -285,14 +287,14 @@ void test_load_inbound_group_session()
 
 void test_store_session()
 {
-    setup();
+    tear_up();
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
     copy_address_from_address(&(session->session_owner), from);
 
     // create mock public keys
@@ -331,7 +333,7 @@ void test_store_session()
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_alice(session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
+    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
 
     // insert to the db
     store_session(session);
@@ -359,14 +361,14 @@ void test_store_session()
 
 void test_equal_ratchet_outbound()
 {
-    setup();
+    tear_up();
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
     copy_address_from_address(&(session->session_owner), from);
 
     // create mock public keys
@@ -405,7 +407,7 @@ void test_equal_ratchet_outbound()
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_alice(session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
+    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
 
     // insert to the db
     store_session(session);
@@ -428,14 +430,14 @@ void test_equal_ratchet_outbound()
 
 void test_equal_ratchet_inbound()
 {
-    setup();
+    tear_up();
 
     // create session and two addresses
     Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
     copy_address_from_address(&(session->session_owner), to);
 
     // create mock public keys
@@ -470,7 +472,7 @@ void test_equal_ratchet_inbound()
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_bob(session->ratchet, secret, 128, our_ratchet_key);
+    initialise_as_bob(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key);
 
     // insert to the db
     store_session(session);
@@ -494,7 +496,7 @@ void test_equal_ratchet_inbound()
     // store session again
     store_session(session);
 
-    // load_outbound_session
+    // load_inbound_session
     Skissm__E2eeSession *session_copy;
     load_inbound_session(session->session_id, to, &session_copy);
 
@@ -511,6 +513,8 @@ void test_equal_ratchet_inbound()
 }
 
 int main(){
+    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
+
     test_load_outbound_session();
     test_load_inbound_session();
     test_load_outbound_group_session();

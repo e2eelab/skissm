@@ -68,7 +68,7 @@ void account_end() {
     }
 }
 
-Skissm__E2eeAccount *create_account(uint64_t account_id) {
+Skissm__E2eeAccount *create_account(uint64_t account_id, uint32_t e2ee_pack_id) {
     Skissm__E2eeAccount *account = (Skissm__E2eeAccount *)malloc(sizeof(Skissm__E2eeAccount));
     skissm__e2ee_account__init(account);
 
@@ -86,10 +86,13 @@ Skissm__E2eeAccount *create_account(uint64_t account_id) {
     skissm__identity_key__init(account->identity_key);
     account->identity_key->asym_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->identity_key->asym_key_pair);
-    CIPHER.suite1->asym_key_gen(&(account->identity_key->asym_key_pair->public_key), &(account->identity_key->asym_key_pair->private_key));
+
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+
+    cipher_suite->asym_key_gen(&(account->identity_key->asym_key_pair->public_key), &(account->identity_key->asym_key_pair->private_key));
     account->identity_key->sign_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->identity_key->sign_key_pair);
-    CIPHER.suite1->sign_key_gen(&(account->identity_key->sign_key_pair->public_key), &(account->identity_key->sign_key_pair->private_key));
+    cipher_suite->sign_key_gen(&(account->identity_key->sign_key_pair->public_key), &(account->identity_key->sign_key_pair->private_key));
 
     // Generate a signed pre-key pair
     generate_signed_pre_key(account);
@@ -125,18 +128,20 @@ size_t generate_signed_pre_key(Skissm__E2eeAccount *account) {
     account->signed_pre_key = (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
     skissm__signed_pre_key__init(account->signed_pre_key);
 
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(account->e2ee_pack_id)->cipher_suite;
+
     // Generate signed pre-key
     account->signed_pre_key->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->signed_pre_key->key_pair);
-    CIPHER.suite1->asym_key_gen(&(account->signed_pre_key->key_pair->public_key), &(account->signed_pre_key->key_pair->private_key));
+    cipher_suite->asym_key_gen(&(account->signed_pre_key->key_pair->public_key), &(account->signed_pre_key->key_pair->private_key));
     account->signed_pre_key->spk_id = next_signed_pre_key_id;
 
     // Generate signature
-    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
-    int sig_len = CIPHER.suite1->get_crypto_param().sig_len;
+    int key_len = cipher_suite->get_crypto_param().asym_key_len;
+    int sig_len = cipher_suite->get_crypto_param().sig_len;
     account->signed_pre_key->signature.data = (uint8_t *)malloc(sig_len);
     account->signed_pre_key->signature.len = sig_len;
-    CIPHER.suite1->sign(account->identity_key->sign_key_pair->private_key.data, account->signed_pre_key->key_pair->public_key.data, key_len, account->signed_pre_key->signature.data);
+    cipher_suite->sign(account->identity_key->sign_key_pair->private_key.data, account->signed_pre_key->key_pair->public_key.data, key_len, account->signed_pre_key->signature.data);
 
     int64_t now = get_skissm_plugin()->common_handler.handle_get_ts();
     account->signed_pre_key->ttl = now + SIGNED_PRE_KEY_EXPIRATION;
@@ -187,6 +192,7 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__E2eeAccount
         inserted_one_time_pre_key_list_node = &((account->one_time_pre_keys)[n]);
     }
 
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(account->e2ee_pack_id)->cipher_suite;
     unsigned i;
     for (i = 0; i < number_of_keys; i++) {
         Skissm__OneTimePreKey *node;
@@ -196,7 +202,7 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__E2eeAccount
         node->used = false;
         node->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(node->key_pair);
-        CIPHER.suite1->asym_key_gen(&(node->key_pair->public_key), &(node->key_pair->private_key));
+        cipher_suite->asym_key_gen(&(node->key_pair->public_key), &(node->key_pair->private_key));
         inserted_one_time_pre_key_list_node[i] = node;
     }
 

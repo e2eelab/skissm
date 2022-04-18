@@ -73,15 +73,27 @@ extern "C" {
 #include "skissm/supply_opks_response_payload.pb-c.h"
 #include "skissm/response_data.pb-c.h"
 
+#include "skissm/session.h"
+#include "skissm/cipher.h"
+
 #define PROTOCOL_VERSION 0x01
-
 #define GROUP_VERSION 0x01
-
 #define PLAINTEXT_VERSION 0x01
-
 #define UUID_LEN 16
-
 #define SIGNED_PRE_KEY_EXPIRATION 604800
+
+typedef struct e2ee_pack_t {
+    uint32_t e2ee_pack_id;
+    const struct cipher_suite_t *cipher_suite;
+    const struct session_suite_t *session_suite;
+} e2ee_pack_t;
+
+struct e2ee_pack_list_t {
+  const struct e2ee_pack_t *e2ee_pack_0;
+  const struct e2ee_pack_t *e2ee_pack_1;
+} e2ee_pack_list_t;
+
+const struct e2ee_pack_list_t E2EE_PACK_LIST;
 
 typedef struct crypto_param_t {
     int asym_key_len;
@@ -92,11 +104,10 @@ typedef struct crypto_param_t {
     int aead_iv_len;
     int aead_tag_len;
 } crypto_param_t;
-
 typedef struct skissm_common_handler_t {
     int64_t (*handle_get_ts)();
-    void (*handle_rg)(uint8_t *, size_t);
-    void (*handle_generate_uuid)(uint8_t uuid[UUID_LEN]);
+    void (*handle_gen_rand)(uint8_t *, size_t);
+    void (*handle_gen_uuid)(uint8_t uuid[UUID_LEN]);
     int (*handle_send)(uint8_t *, size_t);
 } skissm_common_handler_t;
 
@@ -256,10 +267,11 @@ typedef struct skissm_db_handler_t {
     /**
      * @brief load group pre-keys
      * @param member_address
-     * @param e2ee_plaintext
+     * @param e2ee_plaintext_data_list
+     * @param e2ee_plaintext_data_len_list
      * @return number of loaded group pre-keys
      */
-    uint32_t (*load_group_pre_keys)(Skissm__E2eeAddress *, Skissm__E2eePlaintext ***);
+    uint32_t (*load_group_pre_keys)(Skissm__E2eeAddress *, uint8_t ***, size_t **);
     /**
      * @brief delete group pre-key
      * @param member_address
@@ -279,6 +291,11 @@ typedef struct skissm_event_handler_t {
      * @param account
      */
     void (*on_user_registered)(Skissm__E2eeAccount *);
+    /**
+     * @brief notify inbound session invited
+     * @param from
+     */
+    void (*on_inbound_session_invited)(Skissm__E2eeAddress *);
     /**
      * @brief notify inbound session ready
      * @param inbound_session
@@ -339,6 +356,7 @@ typedef struct skissm_plugin_t {
     skissm_event_handler_t event_handler;
 } skissm_plugin_t;
 
+const e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id);
 
 void skissm_begin(skissm_plugin_t *ssm_plugin);
 
@@ -348,6 +366,7 @@ skissm_plugin_t *get_skissm_plugin();
 
 void ssm_notify_error(ErrorCode, char *);
 void ssm_notify_user_registered(Skissm__E2eeAccount *account);
+void ssm_notify_inbound_session_invited(Skissm__E2eeAddress *from);
 void ssm_notify_inbound_session_ready(Skissm__E2eeSession *inbound_session);
 void ssm_notify_outbound_session_ready(Skissm__E2eeSession *outbound_session);
 void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,

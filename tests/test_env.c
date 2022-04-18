@@ -132,7 +132,7 @@ void store_account(Skissm__E2eeAccount *account) {
 
     // insert account
     sqlite_int64 account_id = account->account_id;
-    insert_account(account_id, account->version, account->saved, address_id, account->password, account->cipher_suite_id,
+    insert_account(account_id, account->version, account->saved, address_id, account->password, account->e2ee_pack_id,
                    identity_key_pair_id, signed_pre_key_id, account->next_one_time_pre_key_id);
 
     // insert ACCOUNT_SIGNED_PRE_KEY_PAIR
@@ -195,6 +195,7 @@ struct skissm_plugin_t ssm_plugin = {
         NULL,
         NULL,
         NULL,
+        NULL,
         on_one2one_msg_received,
         on_group_msg_received,
         NULL,
@@ -205,7 +206,7 @@ struct skissm_plugin_t ssm_plugin = {
 
 // test case interface
 
-void setup() {
+void tear_up() {
     test_db_begin();
     skissm_begin(&ssm_plugin);
     protocol_simulator_begin();

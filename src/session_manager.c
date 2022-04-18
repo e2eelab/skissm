@@ -14,22 +14,20 @@
 static void send_group_pre_key(Skissm__E2eeSession *outbound_session){
     // load group pre-key
     uint32_t n_group_pre_keys;
-    Skissm__E2eePlaintext **e2ee_plaintext;
-    n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(outbound_session->to, &e2ee_plaintext);
+    uint8_t **group_pre_key_plaintext_data_list;
+    size_t *group_pre_key_plaintext_data_len_list;
+    n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(outbound_session->to, &group_pre_key_plaintext_data_list, &group_pre_key_plaintext_data_len_list);
     int i;
     for (i = 0; i < n_group_pre_keys; i++){
-        uint8_t *group_pre_key_plaintext;
-        size_t group_pre_key_plaintext_len = skissm__e2ee_plaintext__get_packed_size(e2ee_plaintext[i]);
-        group_pre_key_plaintext = (uint8_t *)malloc(sizeof(uint8_t) * group_pre_key_plaintext_len);
-        skissm__e2ee_plaintext__pack(e2ee_plaintext[i], group_pre_key_plaintext);
-        send_one2one_msg(outbound_session, group_pre_key_plaintext, group_pre_key_plaintext_len);
+        send_one2one_msg(outbound_session, group_pre_key_plaintext_data_list[i], group_pre_key_plaintext_data_len_list[i]);
     }
 
     // release
     for (i = 0; i < n_group_pre_keys; i++){
-        skissm__e2ee_plaintext__free_unpacked(e2ee_plaintext[i], NULL);
+        free_mem((void **)(&(group_pre_key_plaintext_data_list[i])), group_pre_key_plaintext_data_len_list[i]);
     }
-    free(e2ee_plaintext);
+    free_mem((void **)(&group_pre_key_plaintext_data_list), n_group_pre_keys);
+    free_mem((void **)(&group_pre_key_plaintext_data_len_list), n_group_pre_keys);
 }
 
 Skissm__GetPreKeyBundleRequestPayload *produce_get_pre_key_bundle_request_payload(Skissm__E2eeAddress *e2ee_address) {
@@ -41,17 +39,18 @@ Skissm__GetPreKeyBundleRequestPayload *produce_get_pre_key_bundle_request_payloa
 }
 
 size_t consume_get_pre_key_bundle_response_payload(
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     Skissm__GetPreKeyBundleResponsePayload *get_pre_key_bundle_response_payload) {
     Skissm__E2eePreKeyBundle *their_pre_key_bundle = get_pre_key_bundle_response_payload->pre_key_bundle;
 
     Skissm__E2eeSession *outbound_session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
-    initialise_session(outbound_session, from, to);
+    initialise_session(outbound_session, e2ee_pack_id, from, to);
     copy_address_from_address(&(outbound_session->session_owner), from);
     Skissm__E2eeAccount *local_account = get_local_account(from);
-    const session_suite *suite = get_session_suite(their_pre_key_bundle->cipher_suite_id);
-    size_t result = suite->new_outbound_session(outbound_session, local_account, their_pre_key_bundle);
+    const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
+    size_t result = session_suite->new_outbound_session(outbound_session, local_account, their_pre_key_bundle);
 
     if (result == (size_t)(-1)) {
         close_session(outbound_session);
@@ -68,7 +67,9 @@ size_t consume_get_pre_key_bundle_response_payload(
     return (size_t)(0);
 }
 
-Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext, size_t e2ee_plaintext_len) {
+Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext_data, size_t e2ee_plaintext_len) {
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+
     Skissm__E2eeMsg *outbound_e2ee_message_payload;
     outbound_e2ee_message_payload = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
     skissm__e2ee_msg__init(outbound_e2ee_message_payload);
@@ -82,7 +83,7 @@ Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_sess
     Skissm__E2eeMsgPayload *msg_context = NULL;
 
     outbound_e2ee_message_payload->e2ee_msg_type = SKISSM__E2EE_MSG_TYPE__MESSAGE;
-    encrypt_ratchet(outbound_session->ratchet, outbound_session->associated_data, e2ee_plaintext, e2ee_plaintext_len, &msg_context);
+    encrypt_ratchet(cipher_suite, outbound_session->ratchet, outbound_session->associated_data, e2ee_plaintext_data, e2ee_plaintext_len, &msg_context);
 
     size_t msg_len = skissm__e2ee_msg_payload__get_packed_size(msg_context);
     outbound_e2ee_message_payload->payload.len = msg_len;
@@ -122,7 +123,8 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payloa
     }
 
     if (msg_payload != NULL) {
-        context_len = decrypt_ratchet(inbound_session->ratchet, inbound_session->associated_data, msg_payload, &context);
+        const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
+        context_len = decrypt_ratchet(cipher_suite, inbound_session->ratchet, inbound_session->associated_data, msg_payload, &context);
 
         // store sesson state
         get_skissm_plugin()->db_handler.store_session(inbound_session);
@@ -138,7 +140,7 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payloa
                 } else if (e2ee_plaintext->plaintext_type == SKISSM__E2EE_PLAINTEXT_TYPE__GROUP_PRE_KEY) {
                     Skissm__E2eeGroupPreKeyPayload *group_pre_key_payload = skissm__e2ee_group_pre_key_payload__unpack(NULL, e2ee_plaintext->payload.len, e2ee_plaintext->payload.data);
                     get_skissm_plugin()->db_handler.unload_inbound_group_session(inbound_e2ee_message_payload->to, group_pre_key_payload->old_session_id);
-                    create_inbound_group_session(group_pre_key_payload, inbound_e2ee_message_payload->to);
+                    create_inbound_group_session(inbound_session->e2ee_pack_id, group_pre_key_payload, inbound_e2ee_message_payload->to);
                     skissm__e2ee_group_pre_key_payload__free_unpacked(group_pre_key_payload, NULL);
                 }
                 skissm__e2ee_plaintext__free_unpacked(e2ee_plaintext, NULL);
@@ -148,6 +150,7 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payloa
         }
 
         // try to find outbound session, and mark it's state as responded
+        // not here, now this is handled on accept request received.
         Skissm__E2eeSession *outbound_session = NULL;
         get_skissm_plugin()->db_handler.load_outbound_session(inbound_e2ee_message_payload->to, inbound_e2ee_message_payload->from, &outbound_session);
         if (outbound_session != NULL) {
@@ -183,7 +186,7 @@ Skissm__E2eeInvitePayload *produce_e2ee_invite_payload(
     Skissm__E2eeInvitePayload *e2ee_invite_payload = (Skissm__E2eeInvitePayload *) malloc(sizeof(Skissm__E2eeInvitePayload));
     skissm__e2ee_invite_payload__init(e2ee_invite_payload);
 
-    e2ee_invite_payload->cipher_suite_id = outbound_session->cipher_suite_id;
+    e2ee_invite_payload->e2ee_pack_id = outbound_session->e2ee_pack_id;
 
     copy_protobuf_from_protobuf(&(e2ee_invite_payload->alice_identity_key), &(outbound_session->alice_identity_key));
     if (pre_shared_key_2 == NULL){
@@ -207,18 +210,25 @@ Skissm__E2eeInvitePayload *produce_e2ee_invite_payload(
 }
 
 size_t consume_e2ee_invite_payload(Skissm__E2eeMsg *invite_msg_payload){
+    Skissm__E2eeInvitePayload *e2ee_invite_payload = skissm__e2ee_invite_payload__unpack(NULL, invite_msg_payload->payload.len, invite_msg_payload->payload.data);
+    uint32_t e2ee_pack_id = e2ee_invite_payload->e2ee_pack_id;
+
+    // notify
+    ssm_notify_inbound_session_invited(invite_msg_payload->from);
+    
+    //automatic create inbound session and send accept request
+    
     /* create a new inbound session */
     Skissm__E2eeSession *inbound_session = (Skissm__E2eeSession *)malloc(sizeof(Skissm__E2eeSession));
-    initialise_session(inbound_session, invite_msg_payload->from, invite_msg_payload->to);
+    initialise_session(inbound_session, e2ee_pack_id, invite_msg_payload->from, invite_msg_payload->to);
     copy_address_from_address(&(inbound_session->session_owner), invite_msg_payload->to);
     Skissm__E2eeAccount *local_account = get_local_account(invite_msg_payload->to);
-    Skissm__E2eeInvitePayload *e2ee_invite_payload = skissm__e2ee_invite_payload__unpack(NULL, invite_msg_payload->payload.len, invite_msg_payload->payload.data);
-    const session_suite *suite = get_session_suite(e2ee_invite_payload->cipher_suite_id);
+    const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
     // Set the version and session id
     inbound_session->version = invite_msg_payload->version;
     inbound_session->session_id = strdup(invite_msg_payload->session_id);
     // create a new inbound session
-    size_t result = suite->new_inbound_session(inbound_session, local_account, e2ee_invite_payload);
+    size_t result = session_suite->new_inbound_session(inbound_session, local_account, e2ee_invite_payload);
 
     if (result == (size_t)(-1)
         || safe_strcmp(inbound_session->session_id, invite_msg_payload->session_id) == false) {
@@ -236,11 +246,11 @@ size_t consume_e2ee_invite_payload(Skissm__E2eeMsg *invite_msg_payload){
     return (size_t)(0);
 }
 
-Skissm__E2eeAcceptPayload *produce_e2ee_accept_payload(uint32_t cipher_suite_id, ProtobufCBinaryData *ciphertext_1) {
+Skissm__E2eeAcceptPayload *produce_e2ee_accept_payload(uint32_t e2ee_pack_id, ProtobufCBinaryData *ciphertext_1) {
     Skissm__E2eeAcceptPayload *e2ee_accept_payload = (Skissm__E2eeAcceptPayload *) malloc(sizeof(Skissm__E2eeAcceptPayload));
     skissm__e2ee_accept_payload__init(e2ee_accept_payload);
 
-    e2ee_accept_payload->cipher_suite_id = cipher_suite_id;
+    e2ee_accept_payload->e2ee_pack_id = e2ee_pack_id;
 
     if (ciphertext_1 == NULL){
         e2ee_accept_payload->n_pre_shared_key = 0;
@@ -263,11 +273,11 @@ size_t consume_e2ee_accept_payload(Skissm__E2eeMsg *accept_msg_payload){
         return (size_t)(-1);
     }
     Skissm__E2eeAcceptPayload *e2ee_accept_payload = skissm__e2ee_accept_payload__unpack(NULL, accept_msg_payload->payload.len, accept_msg_payload->payload.data);
-    const session_suite *suite = get_session_suite(e2ee_accept_payload->cipher_suite_id);
-    size_t result = suite->complete_outbound_session(outbound_session, e2ee_accept_payload);
+    const session_suite_t *session_suite = get_e2ee_pack(e2ee_accept_payload->e2ee_pack_id)->session_suite;
+    size_t result = session_suite->complete_outbound_session(outbound_session, e2ee_accept_payload);
 
     // try to send group pre-keys if necessary
-    // send_group_pre_key(outbound_session);
+    send_group_pre_key(outbound_session);
 
     // store sesson state
     get_skissm_plugin()->db_handler.store_session(outbound_session);
@@ -327,13 +337,35 @@ static void create_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddre
     send_get_pre_key_bundle_request(to, &pre_key_bundle_handler);
 }
 
+size_t init_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
+    Skissm__E2eeSession *outbound_session = NULL;
+    get_skissm_plugin()->db_handler.load_outbound_session(from, to, &outbound_session);
+    if (outbound_session == NULL) {
+        create_outbound_session(from, to);
+        return (size_t)(0);
+    } else {
+        if (outbound_session->responded) {
+            // outbound session is already responded and ready to use
+            return (size_t)(-1);
+        } else {
+            // outbound session is wait for responding
+            return (size_t)(-2);
+        }
+    }
+}
+
 Skissm__E2eeSession *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
     Skissm__E2eeSession *outbound_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_session(from, to, &outbound_session);
-    if (outbound_session != NULL) {
-        return outbound_session;
-    } else {
-        create_outbound_session(from, to);
+    if (outbound_session == NULL) {
         return NULL;
+    } else {
+        if (outbound_session->responded)
+            return outbound_session;
+        else {
+            // outbound_session can't be used if is is not responded
+            close_session(outbound_session);
+            return NULL;
+        }
     }
 }

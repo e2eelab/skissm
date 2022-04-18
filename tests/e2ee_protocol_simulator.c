@@ -354,7 +354,7 @@ static void process_invite_request(
     Skissm__ResponseData *response_data = (Skissm__ResponseData *) malloc(sizeof(Skissm__ResponseData));
     skissm__response_data__init(response_data);
 
-    /* sending */
+    /* forwarding */
     mock_protocol_send(request);
 
     response_data->code = OK;

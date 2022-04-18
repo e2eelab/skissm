@@ -28,7 +28,7 @@ import "skissm/e2ee_ratchet.proto";
 
 message e2ee_session {
     uint32 version = 1;
-    uint32 cipher_suite_id = 2;
+    uint32 e2ee_pack_id = 2;
     string session_id = 3;
     skissm.e2ee_address session_owner = 4;
     skissm.e2ee_address from = 5;

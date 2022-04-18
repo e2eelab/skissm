@@ -27,7 +27,7 @@ extern "C" {
 
 #include "skissm/skissm.h"
 
-typedef struct session_suite{
+typedef struct session_suite_t {
     /**
      * @brief Create a new outbound session.
      *
@@ -67,36 +67,21 @@ typedef struct session_suite{
         Skissm__E2eeSession *outbound_session,
         Skissm__E2eeAcceptPayload *e2ee_accept_payload
     );
-} session_suite;
-
-struct session_cipher {
-    const struct session_suite *suite1;
-    const struct session_suite *suite2;
-};
-
-extern const struct session_suite ECDH_X25519_AES256_GCM_SHA256;
-
-extern const struct session_suite PQC_AES256_GCM_SHA256;
-
-#define SESSION_CIPHER_INIT                                                            \
-    { &ECDH_X25519_AES256_GCM_SHA256, &PQC_AES256_GCM_SHA256 }
-
-extern const struct session_cipher SESSION_CIPHER;
+} session_suite_t;
 
 /* common */
 void initialise_session(
     Skissm__E2eeSession *session,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to
 );
 
 void pack_e2ee_plaintext(
-    const uint8_t *plaintext, size_t plaintext_len,
+    const uint8_t *plaintext_data, size_t plaintext_len,
     Skissm__E2eePlaintextType plaintext_type,
-    uint8_t **context, size_t *context_len
+    uint8_t **e2ee_plaintext_data, size_t *e2ee_plaintext_data_len
 );
-
-const session_suite *get_session_suite(uint32_t cipher_suite_id);
 
 /* ECC-related */
 size_t crypto_curve25519_new_outbound_session(

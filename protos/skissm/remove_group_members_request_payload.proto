@@ -26,7 +26,8 @@ option java_outer_classname = "RemoveGroupMembersRequestPayload";
 import "skissm/e2ee_address.proto";
 
 message remove_group_members_request_payload {
-  skissm.e2ee_address sender_address = 1;
-  skissm.e2ee_address group_address = 2;
-  repeated skissm.e2ee_address member_addresses = 3;
+  uint32 e2ee_pack_id = 1;
+  skissm.e2ee_address sender_address = 2;
+  skissm.e2ee_address group_address = 3;
+  repeated skissm.e2ee_address member_addresses = 4;
 }

@@ -23,8 +23,6 @@
 
 #include "skissm/crypto.h"
 
-const struct cipher CIPHER = CIPHER_INIT;
-
 static inline size_t aes256_gcm_ciphertext_len(size_t plaintext_length) {
   return plaintext_length + AES256_GCM_TAG_LENGTH;
 }
@@ -52,15 +50,4 @@ size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
   *plaintext = (uint8_t *)malloc(plaintext_len);
   return crypto_aes_decrypt_gcm(ciphertext, ciphertext_len, aes_key, iv, ad,
                                 AD_LENGTH, *plaintext);
-}
-
-const cipher_suite_t *get_cipher_suite(uint32_t cipher_suite_id){
-  // cipher_suite_id = 0 for testing
-  if (cipher_suite_id == 0){
-    return CIPHER.suite1;
-  } else if (cipher_suite_id == 1){
-    return CIPHER.suite2;
-  } else{
-    return NULL;
-  }
 }

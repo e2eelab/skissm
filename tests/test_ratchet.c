@@ -26,6 +26,8 @@
 #include "test_util.h"
 #include "test_env.h"
 
+static const cipher_suite_t *test_cipher_suite;
+
 static void test_alice_to_bob(
   Skissm__KeyPair alice_ratchet_key,
   Skissm__KeyPair bob_spk,
@@ -37,12 +39,13 @@ static void test_alice_to_bob(
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
-    initialise_as_alice(alice_ratchet, shared_secret,
+    initialise_as_alice(test_cipher_suite,
+                        alice_ratchet, shared_secret,
                         strlen((const char *)shared_secret), &alice_ratchet_key,
                         &(bob_spk.public_key));
-    initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
+    initialise_as_bob(test_cipher_suite, bob_ratchet, shared_secret, strlen((const char *)shared_secret),
                       &bob_spk);
-    int key_len = CIPHER.suite1->get_crypto_param().asym_key_len;
+    int key_len = test_cipher_suite->get_crypto_param().asym_key_len;
     assert(
         memcmp(
             bob_spk.private_key.data,
@@ -57,10 +60,10 @@ static void test_alice_to_bob(
     /* Alice sends Bob a message */
     Skissm__E2eeMsgPayload *message;
 
-    encrypt_ratchet(alice_ratchet, ad, plaintext, plaintext_length, &message);
+    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_length, &message);
 
     uint8_t *output;
-    decrypt_length = decrypt_ratchet(bob_ratchet, ad, message, &output);
+    decrypt_length = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message, &output);
     assert(decrypt_length == plaintext_length);
     bool result = is_equal(plaintext, output, plaintext_length);
     assert(result);
@@ -87,10 +90,10 @@ static void test_out_of_order(
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
-    initialise_as_alice(alice_ratchet, shared_secret,
+    initialise_as_alice(test_cipher_suite, alice_ratchet, shared_secret,
                         strlen((const char *)shared_secret), &alice_ratchet_key,
                         &(bob_spk.public_key));
-    initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
+    initialise_as_bob(test_cipher_suite, bob_ratchet, shared_secret, strlen((const char *)shared_secret),
                       &bob_spk);
 
     uint8_t plaintext_1[] = "First Message";
@@ -103,13 +106,13 @@ static void test_out_of_order(
     size_t output_1_length, output_2_length;
 
     Skissm__E2eeMsgPayload *message_1;
-    encrypt_ratchet(alice_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
+    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
 
     Skissm__E2eeMsgPayload *message_2;
-    encrypt_ratchet(alice_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
+    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
 
     uint8_t *output_1;
-    output_1_length = decrypt_ratchet(bob_ratchet, ad, message_2, &output_1);
+    output_1_length = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_2, &output_1);
     assert(output_1_length == plaintext_2_length);
     bool result = is_equal(plaintext_2, output_1, plaintext_2_length);
     assert(result);
@@ -120,7 +123,7 @@ static void test_out_of_order(
     }
 
     uint8_t *output_2;
-    output_2_length = decrypt_ratchet(bob_ratchet, ad, message_1, &output_2);
+    output_2_length = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_1, &output_2);
     assert(result = is_equal(plaintext_1, output_2, plaintext_1_length));
     if (result) {
       print_result("The second decryption success!!!", true);
@@ -149,10 +152,10 @@ static void test_two_ratchets(
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
-    initialise_as_alice(alice_ratchet, shared_secret,
+    initialise_as_alice(test_cipher_suite, alice_ratchet, shared_secret,
                         strlen((const char *)shared_secret), &alice_ratchet_key,
                         &(bob_spk.public_key));
-    initialise_as_bob(bob_ratchet, shared_secret, strlen((const char *)shared_secret),
+    initialise_as_bob(test_cipher_suite, bob_ratchet, shared_secret, strlen((const char *)shared_secret),
                       &bob_spk);
 
     /* This ratchet is used only for Bob to Alice. */
@@ -160,10 +163,10 @@ static void test_two_ratchets(
     initialise_ratchet(&alice_ratchet_2);
     initialise_ratchet(&bob_ratchet_2);
 
-    initialise_as_alice(bob_ratchet_2, shared_secret,
+    initialise_as_alice(test_cipher_suite, bob_ratchet_2, shared_secret,
                         strlen((const char *)shared_secret), &bob_ratchet_key,
                         &(alice_spk.public_key));
-    initialise_as_bob(alice_ratchet_2, shared_secret, strlen((const char *)shared_secret),
+    initialise_as_bob(test_cipher_suite, alice_ratchet_2, shared_secret, strlen((const char *)shared_secret),
                       &alice_spk);
 
     /* Alice prepares a message */
@@ -175,11 +178,11 @@ static void test_two_ratchets(
 
     /* Alice sends Bob a message */
     Skissm__E2eeMsgPayload *message_alice;
-    encrypt_ratchet(alice_ratchet, ad, plaintext_alice, plaintext_length_alice, &message_alice);
+    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_alice, plaintext_length_alice, &message_alice);
 
     /* Bob received the message from Alice */
     uint8_t *output_alice;
-    decrypt_length_alice = decrypt_ratchet(bob_ratchet, ad, message_alice, &output_alice);
+    decrypt_length_alice = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_alice, &output_alice);
     assert(decrypt_length_alice == plaintext_length_alice);
     bool result = is_equal(plaintext_alice, output_alice, plaintext_length_alice);
     assert(result);
@@ -193,11 +196,11 @@ static void test_two_ratchets(
 
     /* Bob sends Alice a message */
     Skissm__E2eeMsgPayload *message_bob;
-    encrypt_ratchet(bob_ratchet_2, ad, plaintext_bob, plaintext_length_bob, &message_bob);
+    encrypt_ratchet(test_cipher_suite, bob_ratchet_2, ad, plaintext_bob, plaintext_length_bob, &message_bob);
 
     /* Alice decrypts the message from Bob */
     uint8_t *output_bob;
-    decrypt_length_bob = decrypt_ratchet(alice_ratchet_2, ad, message_bob, &output_bob);
+    decrypt_length_bob = decrypt_ratchet(test_cipher_suite, alice_ratchet_2, ad, message_bob, &output_bob);
 
     assert(result = is_equal(plaintext_bob, output_bob, plaintext_length_bob));
 
@@ -213,15 +216,16 @@ static void test_two_ratchets(
 
 int main() {
     // test start
-    setup();
+    tear_up();
+    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key, bob_ratchet_key;
-    CIPHER.suite1->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
-    CIPHER.suite1->asym_key_gen(&(bob_ratchet_key.public_key), &(bob_ratchet_key.private_key));
+    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->asym_key_gen(&(bob_ratchet_key.public_key), &(bob_ratchet_key.private_key));
 
     Skissm__KeyPair bob_spk, alice_spk;
-    CIPHER.suite1->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
-    CIPHER.suite1->asym_key_gen(&(alice_spk.public_key), &(alice_spk.private_key));
+    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->asym_key_gen(&(alice_spk.public_key), &(alice_spk.private_key));
 
     int ad_len = 64;
     uint8_t associated_data[ad_len];

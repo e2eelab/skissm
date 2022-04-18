@@ -56,6 +56,7 @@ typedef struct invite_handler{
 } invite_handler;
 
 typedef struct create_group_response_handler{
+    uint32_t e2ee_pack_id;
     Skissm__E2eeAddress *sender_address;
     char *group_name;
     Skissm__E2eeAddress **member_addresses;

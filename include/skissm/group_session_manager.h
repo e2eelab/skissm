@@ -31,15 +31,18 @@ extern "C" {
 /**
  * @brief Create a group object
  *
+ * @param e2ee_pack_id
  * @param user_address
  * @param group_name
  * @param member_addresses
  * @param member_num
  */
-void create_group(Skissm__E2eeAddress *user_address,
-                  char *group_name,
-                  Skissm__E2eeAddress **member_addresses,
-                  size_t member_num);
+void create_group(
+    uint32_t e2ee_pack_id,
+    Skissm__E2eeAddress *user_address,
+    char *group_name,
+    Skissm__E2eeAddress **member_addresses,
+    size_t member_num);
 
 /**
  * @brief Create a create_group_request_payload to be sent to messaging server.
@@ -55,6 +58,7 @@ Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__
 /**
  * @brief Process an imcoming create_group_response_payload.
  *
+ * @param e2ee_pack_id
  * @param sender_address
  * @param group_name
  * @param member_num
@@ -62,6 +66,7 @@ Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__
  * @param create_group_response_payload
  */
 void consume_create_group_response_payload(
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *sender_address,
     char *group_name,
     size_t member_num,

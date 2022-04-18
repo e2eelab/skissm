@@ -262,7 +262,7 @@ static const char *ACCOUNT_CREATE_TABLE = "CREATE TABLE ACCOUNT( "
                                           "SAVED INTEGER NOT NULL, "
                                           "ADDRESS INTEGER NOT NULL, "
                                           "PASSWORD TEXT NOT NULL, "
-                                          "CIPHER_SUITE_ID INTEGER NOT NULL, "
+                                          "E2EE_PACK_ID INTEGER NOT NULL, "
                                           "IDENTITY_KEY INTEGER NOT NULL, "
                                           "SIGNED_PRE_KEY INTEGER NOT NULL, "
                                           "NEXT_ONETIME_PRE_KEY_ID INTEGER NOT NULL, "
@@ -319,7 +319,7 @@ static const char *ACCOUNT_LOAD_PASSWORD = "SELECT PASSWORD "
                                            "FROM ACCOUNT "
                                            "WHERE ACCOUNT.ACCOUNT_ID = (?);";
 
-static const char *ACCOUNT_LOAD_CIPHER_SUITE_ID = "SELECT CIPHER_SUITE_ID "
+static const char *ACCOUNT_LOAD_E2EE_PACK_ID = "SELECT E2EE_PACK_ID "
                                                   "FROM ACCOUNT "
                                                   "WHERE ACCOUNT_ID = (?);";
 
@@ -441,7 +441,7 @@ static const char *ACCOUNT_INSERT = "INSERT INTO ACCOUNT "
                                     "SAVED, "
                                     "ADDRESS, "
                                     "PASSWORD, "
-                                    "CIPHER_SUITE_ID, "
+                                    "E2EE_PACK_ID, "
                                     "IDENTITY_KEY, "
                                     "SIGNED_PRE_KEY, "
                                     "NEXT_ONETIME_PRE_KEY_ID) "
@@ -668,22 +668,22 @@ void load_password(uint64_t account_id, char *password) {
     sqlite_finalize(stmt);
 }
 
-uint32_t load_cipher_suite_id(uint64_t account_id) {
+uint32_t load_e2ee_pack_id(uint64_t account_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ACCOUNT_LOAD_CIPHER_SUITE_ID, &stmt);
+    sqlite_prepare(ACCOUNT_LOAD_E2EE_PACK_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, account_id);
 
     // step
     sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    uint32_t cipher_suite_id = (uint32_t)sqlite3_column_int(stmt, 0);
+    uint32_t e2ee_pack_id = (uint32_t)sqlite3_column_int(stmt, 0);
 
     // release
     sqlite_finalize(stmt);
 
-    return cipher_suite_id;
+    return e2ee_pack_id;
 }
 
 static void load_identity_key_asym(sqlite_int64 identity_key_id, Skissm__KeyPair **asym_key_pair) {
@@ -1013,7 +1013,7 @@ sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key) {
 }
 
 sqlite_int64 insert_account(uint64_t account_id, int version, protobuf_c_boolean saved,
-                            sqlite_int64 address_id, const char *password, int cipher_suite_id,
+                            sqlite_int64 address_id, const char *password, int e2ee_pack_id,
                             sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
                             sqlite_int64 next_one_time_pre_key_id) {
     // prepare
@@ -1026,7 +1026,7 @@ sqlite_int64 insert_account(uint64_t account_id, int version, protobuf_c_boolean
     sqlite3_bind_int(stmt, 3, (int)saved);
     sqlite3_bind_int(stmt, 4, address_id);
     sqlite3_bind_text(stmt, 5, password, strlen(password), NULL);
-    sqlite3_bind_int(stmt, 6, cipher_suite_id);
+    sqlite3_bind_int(stmt, 6, e2ee_pack_id);
     sqlite3_bind_int(stmt, 7, identity_key_pair_id);
     sqlite3_bind_int(stmt, 8, signed_pre_key_id);
     sqlite3_bind_int(stmt, 9, next_one_time_pre_key_id);
@@ -1657,13 +1657,18 @@ int load_n_group_pre_keys(Skissm__E2eeAddress *member_address) {
 }
 
 uint32_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
-                             Skissm__E2eePlaintext ***e2ee_plaintext) {
+    uint8_t ***e2ee_plaintext_data_list,
+    size_t **e2ee_plaintext_data_len_list) {
     // allocate memory
     size_t n_group_pre_keys = load_n_group_pre_keys(member_address);
     if (n_group_pre_keys == 0){
+        *e2ee_plaintext_data_list = NULL;
+        *e2ee_plaintext_data_len_list = NULL;
         return 0;
     }
-    (*e2ee_plaintext) = (Skissm__E2eePlaintext **)malloc(n_group_pre_keys * sizeof(Skissm__E2eePlaintext *));
+    (*e2ee_plaintext_data_list) = (uint8_t **)malloc(n_group_pre_keys * sizeof(uint8_t *));
+
+    *e2ee_plaintext_data_len_list = (size_t *)malloc(n_group_pre_keys * sizeof(size_t));
 
     // prepare
     sqlite3_stmt *stmt;
@@ -1680,8 +1685,10 @@ uint32_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
         size_t e2ee_plaintext_data_len = sqlite3_column_bytes(stmt, 0);
         uint8_t *e2ee_plaintext_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
 
-        // unpack
-        (*e2ee_plaintext)[i] = skissm__e2ee_plaintext__unpack(NULL, e2ee_plaintext_data_len, e2ee_plaintext_data);
+        // assign
+        (*e2ee_plaintext_data_list)[i] = (uint8_t *)malloc(e2ee_plaintext_data_len * sizeof(uint8_t));
+        memcpy((*e2ee_plaintext_data_list)[i], e2ee_plaintext_data, e2ee_plaintext_data_len);
+        *e2ee_plaintext_data_len_list[i] = e2ee_plaintext_data_len;
     }
 
     // release

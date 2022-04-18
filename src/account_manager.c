@@ -54,8 +54,8 @@ void supply_opks(struct supply_opks_handler *response_handler) {
 }
 
 /* send to the server */
-void register_account(uint64_t account_id) {
-    Skissm__E2eeAccount *account = create_account(account_id);
+void register_account(uint64_t account_id, uint32_t e2ee_pack_id) {
+    Skissm__E2eeAccount *account = create_account(account_id, e2ee_pack_id);
 
     // register account to server
     register_user_response_handler_store.account = account;

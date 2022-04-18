@@ -24,6 +24,6 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeAcceptPayload";
 
 message e2ee_accept_payload {
-    uint32 cipher_suite_id = 1;
+    uint32 e2ee_pack_id = 1;
     repeated bytes pre_shared_key = 2;
 }

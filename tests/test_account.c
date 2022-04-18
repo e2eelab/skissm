@@ -46,10 +46,10 @@ static void verify_one_time_pre_keys(Skissm__E2eeAccount *account, unsigned int 
 
 int main(){
     // test start
-    setup();
+    tear_up();
 
     // Register test
-    Skissm__E2eeAccount *account = create_account(1);
+    Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
 
     assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);

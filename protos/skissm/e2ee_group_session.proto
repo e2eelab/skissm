@@ -27,13 +27,14 @@ import "skissm/e2ee_address.proto";
 
 message e2ee_group_session {
     uint32 version = 1;
-    string session_id = 2;
-    skissm.e2ee_address session_owner = 3;
-    skissm.e2ee_address group_address = 4;
-    repeated skissm.e2ee_address member_addresses = 5;
-    uint32 sequence = 6;
-    bytes chain_key = 7;
-    bytes signature_private_key = 8;
-    bytes signature_public_key = 9;
-    bytes associated_data = 10;
+    uint32 e2ee_pack_id = 2;
+    string session_id = 3;
+    skissm.e2ee_address session_owner = 4;
+    skissm.e2ee_address group_address = 5;
+    repeated skissm.e2ee_address member_addresses = 6;
+    uint32 sequence = 7;
+    bytes chain_key = 8;
+    bytes signature_private_key = 9;
+    bytes signature_public_key = 10;
+    bytes associated_data = 11;
 }

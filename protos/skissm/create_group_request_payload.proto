@@ -26,8 +26,9 @@ option java_outer_classname = "CreateGroupRequestPayload";
 import "skissm/e2ee_address.proto";
 
 message create_group_request_payload {
-    skissm.e2ee_address sender_address = 1;
-    repeated skissm.e2ee_address member_addresses = 2;
-    string group_name = 3;
-    skissm.e2ee_address group_address = 4;
+    uint32 e2ee_pack_id = 1;
+    skissm.e2ee_address sender_address = 2;
+    repeated skissm.e2ee_address member_addresses = 3;
+    string group_name = 4;
+    skissm.e2ee_address group_address = 5;
 }

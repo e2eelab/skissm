@@ -33,10 +33,10 @@ static void handle_create_group_release(
     this_handler->sender_address = NULL;
     this_handler->group_name = NULL;
     this_handler->member_addresses = NULL;
-    this_handler->member_num = 0;
 }
 
 create_group_response_handler create_group_response_handler_store = {
+    0,
     NULL,
     NULL,
     NULL,
@@ -63,6 +63,7 @@ get_group_response_handler get_group_response_handler_store = {
 static void handle_add_group_members_response(
     add_group_members_response_handler *this_handler
 ) {
+    uint32_t e2ee_pack_id = this_handler->outbound_group_session->e2ee_pack_id;
     Skissm__E2eeAddress *sender_address = this_handler->outbound_group_session->session_owner;
     Skissm__E2eeAddress *group_address = this_handler->outbound_group_session->group_address;
 
@@ -82,7 +83,7 @@ static void handle_add_group_members_response(
     char *old_session_id = strdup(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
-    create_outbound_group_session(sender_address, group_address, member_addresses, member_num, old_session_id);
+    create_outbound_group_session(e2ee_pack_id, sender_address, group_address, member_addresses, member_num, old_session_id);
 
     // release
     free_mem((void **)&old_session_id, strlen(old_session_id));
@@ -108,6 +109,7 @@ add_group_members_response_handler add_group_members_response_handler_store = {
 static void handle_remove_group_members_response(
     remove_group_members_response_handler *this_handler
 ) {
+    uint32_t e2ee_pack_id = this_handler->outbound_group_session->e2ee_pack_id;
     Skissm__E2eeAddress *sender_address = this_handler->outbound_group_session->session_owner;
     Skissm__E2eeAddress *group_address = this_handler->outbound_group_session->group_address;
 
@@ -139,7 +141,7 @@ static void handle_remove_group_members_response(
     char *old_session_id = strdup(this_handler->outbound_group_session->session_id);
 
     /* generate a new outbound group session */
-    create_outbound_group_session(sender_address, group_address, member_addresses, member_num, old_session_id);
+    create_outbound_group_session(e2ee_pack_id, sender_address, group_address, member_addresses, member_num, old_session_id);
 
     // release
     free_mem((void **)&old_session_id, strlen(old_session_id));
@@ -163,11 +165,13 @@ remove_group_members_response_handler remove_group_members_response_handler_stor
 };
 
 void create_group(
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     char *group_name,
     Skissm__E2eeAddress **member_addresses,
     size_t member_num
 ) {
+    create_group_response_handler_store.e2ee_pack_id = e2ee_pack_id;
     create_group_response_handler_store.sender_address = user_address;
     create_group_response_handler_store.group_name = strdup(group_name);
     create_group_response_handler_store.member_addresses = member_addresses;
@@ -189,6 +193,7 @@ Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__
 }
 
 void consume_create_group_response_payload(
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *sender_address,
     char *group_name,
     size_t member_num,
@@ -196,7 +201,7 @@ void consume_create_group_response_payload(
     Skissm__CreateGroupResponsePayload *create_group_response_payload
 ) {
     Skissm__E2eeAddress *group_address = create_group_response_payload->group_address;
-    create_outbound_group_session(sender_address, group_address, member_addresses, member_num, NULL);
+    create_outbound_group_session(e2ee_pack_id, sender_address, group_address, member_addresses, member_num, NULL);
     ssm_notify_group_created(group_address, group_name);
 }
 
@@ -255,10 +260,12 @@ void remove_group_members(
 }
 
 Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) {
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(group_session->e2ee_pack_id)->cipher_suite;
+
     /* Create the message key */
     Skissm__MessageKey *keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
     skissm__message_key__init(keys);
-    create_group_message_keys(&(group_session->chain_key), keys);
+    create_group_message_keys(cipher_suite, &(group_session->chain_key), keys);
 
     /* Prepare an e2ee message */
     Skissm__E2eeMsg *group_msg = (Skissm__E2eeMsg *) malloc(sizeof(Skissm__E2eeMsg));
@@ -277,7 +284,7 @@ Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, cons
     uint8_t *ad = group_session->associated_data.data;
 
     /* Encryption */
-    group_msg_payload->ciphertext.len = CIPHER.suite1->encrypt(
+    group_msg_payload->ciphertext.len = cipher_suite->encrypt(
         ad,
         keys->derived_key.data,
         plaintext,
@@ -286,10 +293,10 @@ Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, cons
     );
 
     /* Signature */
-    int sig_len = CIPHER.suite1->get_crypto_param().sig_len;
+    int sig_len = cipher_suite->get_crypto_param().sig_len;
     group_msg_payload->signature.len = sig_len;
     group_msg_payload->signature.data = (uint8_t *) malloc(sizeof(uint8_t) * sig_len);
-    CIPHER.suite1->sign(
+    cipher_suite->sign(
         group_session->signature_private_key.data,
         group_msg_payload->ciphertext.data,
         group_msg_payload->ciphertext.len,
@@ -302,7 +309,7 @@ Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, cons
     skissm__e2ee_group_msg_payload__pack(group_msg_payload, group_msg->payload.data);
 
     /* Prepare a new chain key for next encryption */
-    advance_group_chain_key(&(group_session->chain_key), group_session->sequence);
+    advance_group_chain_key(cipher_suite, &(group_session->chain_key), group_session->sequence);
     group_session->sequence += 1;
 
     // release
@@ -339,6 +346,8 @@ void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *g
         return;
     }
 
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(group_session->e2ee_pack_id)->cipher_suite;
+
     Skissm__E2eeGroupMsgPayload *group_msg_payload = NULL;
     Skissm__MessageKey *keys = NULL;
 
@@ -346,7 +355,7 @@ void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *g
     group_msg_payload = skissm__e2ee_group_msg_payload__unpack(NULL, group_msg->payload.len, group_msg->payload.data);
 
     /* Verify the signature */
-    size_t result = CIPHER.suite1->verify(
+    size_t result = cipher_suite->verify(
         group_msg_payload->signature.data,
         group_session->signature_public_key.data,
         group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len);
@@ -357,18 +366,18 @@ void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *g
 
     /* Advance the chain key */
     while (group_session->sequence < group_msg_payload->sequence){
-        advance_group_chain_key(&(group_session->chain_key), group_session->sequence);
+        advance_group_chain_key(cipher_suite, &(group_session->chain_key), group_session->sequence);
         group_session->sequence += 1;
     }
 
     /* Create the message key */
     keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
     skissm__message_key__init(keys);
-    create_group_message_keys(&(group_session->chain_key), keys);
+    create_group_message_keys(cipher_suite, &(group_session->chain_key), keys);
 
     /* Decryption */
     uint8_t *plaintext;
-    size_t plaintext_len = CIPHER.suite1->decrypt(
+    size_t plaintext_len = cipher_suite->decrypt(
         group_session->associated_data.data,
         keys->derived_key.data,
         group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len,

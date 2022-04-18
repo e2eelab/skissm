@@ -29,13 +29,12 @@
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
 
-const struct session_cipher SESSION_CIPHER = SESSION_CIPHER_INIT;
-
 /** length of the shared secret created by a Curve25519 ECDH operation */
 #define CURVE25519_SHARED_SECRET_LENGTH 32
 
-void initialise_session(Skissm__E2eeSession *session, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
+void initialise_session(Skissm__E2eeSession *session, uint32_t e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
     skissm__e2ee_session__init(session);
+    session->e2ee_pack_id = e2ee_pack_id;
     copy_address_from_address(&(session->from), from);
     copy_address_from_address(&(session->to), to);
     initialise_ratchet(&(session->ratchet));
@@ -48,31 +47,20 @@ void close_session(Skissm__E2eeSession *session) {
     }
 }
 
-void pack_e2ee_plaintext(const uint8_t *plaintext, size_t plaintext_len, Skissm__E2eePlaintextType plaintext_type, uint8_t **e2ee_plaintext, size_t *e2ee_plaintext_len) {
+void pack_e2ee_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_len, Skissm__E2eePlaintextType plaintext_type, uint8_t **e2ee_plaintext_data, size_t *e2ee_plaintext_data_len) {
     Skissm__E2eePlaintext *ssm_e2ee_plaintext = (Skissm__E2eePlaintext *)malloc(sizeof(Skissm__E2eePlaintext));
     skissm__e2ee_plaintext__init(ssm_e2ee_plaintext);
     ssm_e2ee_plaintext->version = PLAINTEXT_VERSION;
     ssm_e2ee_plaintext->plaintext_type = plaintext_type;
-    ssm_e2ee_plaintext->payload.len = plaintext_len;
-    ssm_e2ee_plaintext->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_len);
-    memcpy(ssm_e2ee_plaintext->payload.data, plaintext, plaintext_len);
+    ssm_e2ee_plaintext->payload.len = plaintext_data_len;
+    ssm_e2ee_plaintext->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_data_len);
+    memcpy(ssm_e2ee_plaintext->payload.data, plaintext_data, plaintext_data_len);
 
     size_t len = skissm__e2ee_plaintext__get_packed_size(ssm_e2ee_plaintext);
-    *e2ee_plaintext_len = len;
-    *e2ee_plaintext = (uint8_t *)malloc(sizeof(uint8_t) * len);
-    skissm__e2ee_plaintext__pack(ssm_e2ee_plaintext, *e2ee_plaintext);
+    *e2ee_plaintext_data_len = len;
+    *e2ee_plaintext_data = (uint8_t *)malloc(sizeof(uint8_t) * len);
+    skissm__e2ee_plaintext__pack(ssm_e2ee_plaintext, *e2ee_plaintext_data);
 
     // release
     skissm__e2ee_plaintext__free_unpacked(ssm_e2ee_plaintext, NULL);
-}
-
-const session_suite *get_session_suite(uint32_t cipher_suite_id) {
-    // cipher_suite_id = 0 for testing
-    if (cipher_suite_id == 0){
-        return SESSION_CIPHER.suite1;
-    } else if (cipher_suite_id == 1){
-        return SESSION_CIPHER.suite2;
-    } else{
-        return NULL;
-    }
 }

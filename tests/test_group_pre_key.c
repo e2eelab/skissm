@@ -27,12 +27,12 @@
 #include "test_util.h"
 #include "test_env.h"
 
-/** length of a shared key */
-#define GROUP_SHARED_KEY_LENGTH     CIPHER.suite1->get_crypto_param().hash_len
+static const cipher_suite_t *test_cipher_suite;
 
 int main(){
     // test start
-    setup();
+    tear_up();
+    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
 
     // mock address
     Skissm__E2eeAddress *user_address, *member_address;
@@ -43,7 +43,7 @@ int main(){
     copy_address_from_address(&(member_addresses[0]), user_address);
     copy_address_from_address(&(member_addresses[1]), member_address);
 
-    int key_len = CIPHER.suite1->get_crypto_param().sign_key_len;
+    int key_len = test_cipher_suite->get_crypto_param().sign_key_len;
     size_t member_num = 2;
 
     // mock group address
@@ -68,11 +68,11 @@ int main(){
 
     outbound_group_session->sequence = 0;
 
-    outbound_group_session->chain_key.len = GROUP_SHARED_KEY_LENGTH;
+    outbound_group_session->chain_key.len = test_cipher_suite->get_crypto_param().hash_len;
     outbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
-    get_skissm_plugin()->common_handler.handle_rg(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
+    get_skissm_plugin()->common_handler.handle_gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
 
-    CIPHER.suite1->sign_key_gen(&(outbound_group_session->signature_public_key), &(outbound_group_session->signature_private_key));
+    test_cipher_suite->sign_key_gen(&(outbound_group_session->signature_public_key), &(outbound_group_session->signature_private_key));
 
     int ad_len = 2 * key_len;
     outbound_group_session->associated_data.len = ad_len;
@@ -89,18 +89,20 @@ int main(){
     get_skissm_plugin()->db_handler.store_group_pre_key(outbound_group_session->member_addresses[1], group_pre_key_plaintext, group_pre_key_plaintext_len);
 
     // load group pre-key
-    Skissm__E2eePlaintext **e2ee_plaintext;
-    uint32_t n_e2ee_plaintext;
-    n_e2ee_plaintext = get_skissm_plugin()->db_handler.load_group_pre_keys(member_address, &e2ee_plaintext);
-    Skissm__E2eePlaintext *e2ee_plaintext_org = skissm__e2ee_plaintext__unpack(NULL, group_pre_key_plaintext_len, group_pre_key_plaintext);
-    assert(e2ee_plaintext_org->payload.len == e2ee_plaintext[0]->payload.len);
-    assert(memcmp(e2ee_plaintext_org->payload.data, e2ee_plaintext[0]->payload.data, e2ee_plaintext[0]->payload.len) == 0);
+    uint32_t n_group_pre_keys;
+    uint8_t **group_pre_key_plaintext_data_list;
+    size_t *group_pre_key_plaintext_data_len_list;
+    n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(member_address, &group_pre_key_plaintext_data_list, &group_pre_key_plaintext_data_len_list);
+    assert(group_pre_key_plaintext_len == group_pre_key_plaintext_data_len_list[0]);
+    assert(memcmp(group_pre_key_plaintext, group_pre_key_plaintext_data_list[0], group_pre_key_plaintext_data_len_list[0]) == 0);
 
     // unload group pre-key
     get_skissm_plugin()->db_handler.unload_group_pre_key(member_address);
-    Skissm__E2eePlaintext **e2ee_plaintext_null = NULL;
-    get_skissm_plugin()->db_handler.load_group_pre_keys(member_address, &e2ee_plaintext_null);
-    assert(e2ee_plaintext_null == NULL);
+    uint8_t **group_pre_key_plaintext_data_list_null;
+    size_t *group_pre_key_plaintext_data_len_list_null;
+    get_skissm_plugin()->db_handler.load_group_pre_keys(member_address, &group_pre_key_plaintext_data_list_null, &group_pre_key_plaintext_data_len_list_null);
+    assert(group_pre_key_plaintext_data_list_null == NULL);
+    assert(group_pre_key_plaintext_data_len_list_null == NULL);
 
     // release
     skissm__e2ee_address__free_unpacked(user_address, NULL);

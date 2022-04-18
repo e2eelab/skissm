@@ -39,9 +39,9 @@ static void free_opks(Skissm__OneTimePreKey ***opks, uint32_t opk_num){
 }
 
 void test_update_one_time_pre_key(){
-    setup();
+    tear_up();
 
-    Skissm__E2eeAccount *account = create_account(1);
+    Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
     /* Generate a random address */
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
@@ -74,9 +74,9 @@ void test_update_one_time_pre_key(){
 }
 
 void test_remove_one_time_pre_key(){
-    setup();
+    tear_up();
 
-    Skissm__E2eeAccount *account = create_account(1);
+    Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
     /* Generate a random address */
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
