@@ -77,6 +77,19 @@ void create_group_message_keys(
 );
 
 /**
+ * @brief Pack group pre-keys.
+ *
+ * @param outbound_group_session
+ * @param group_pre_key_plaintext
+ * @param old_session_id
+ */
+size_t pack_group_pre_key_plaintext(
+    Skissm__E2eeGroupSession *outbound_group_session,
+    uint8_t **group_pre_key_plaintext,
+    char *old_session_id
+);
+
+/**
  * @brief Encrypt a group message with engaged group session.
  *
  * @param user_address

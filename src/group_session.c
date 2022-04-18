@@ -165,7 +165,7 @@ void create_outbound_group_session(
             if (outbound_session != NULL){
                 send_one2one_msg(outbound_session, group_pre_key_plaintext, group_pre_key_plaintext_len);
             } else{
-                // get_skissm_plugin()->db_handler.store_group_pre_key(outbound_group_session->session_id, outbound_group_session->member_addresses[i], group_pre_key_plaintext, group_pre_key_plaintext_len);
+                // get_skissm_plugin()->db_handler.store_group_pre_key(outbound_group_session->member_addresses[i], group_pre_key_plaintext, group_pre_key_plaintext_len);
                 // TODO
                 outbound_session = get_outbound_session(outbound_group_session->session_owner, outbound_group_session->member_addresses[i]);
                 send_one2one_msg(outbound_session, group_pre_key_plaintext, group_pre_key_plaintext_len);

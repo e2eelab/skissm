@@ -187,7 +187,7 @@ struct skissm_plugin_t ssm_plugin = {
         unload_inbound_group_session,
         // group pre-key
         store_group_pre_key,
-        load_group_pre_key,
+        load_group_pre_keys,
         unload_group_pre_key
     },
     {

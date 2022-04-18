@@ -185,28 +185,33 @@ static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ID = "DELETE FROM GROU
 
 static const char *PENDING_GROUP_PRE_KEY_DROP_TABLE = "DROP TABLE IF EXISTS PENDING_GROUP_PRE_KEY;";
 static const char *PENDING_GROUP_PRE_KEY_CREATE_TABLE = "CREATE TABLE PENDING_GROUP_PRE_KEY( "
-                                                        "ID TEXT NOT NULL, "
+                                                        "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                                                         "MEMBER_ADDRESS INTEGER NOT NULL, "
                                                         "GROUP_PRE_KEY_DATA BLOB NOT NULL, "
-                                                        "FOREIGN KEY(MEMBER_ADDRESS) REFERENCES ADDRESS(ID), "
-                                                        "PRIMARY KEY (ID, MEMBER_ADDRESS));";
+                                                        "FOREIGN KEY(MEMBER_ADDRESS) REFERENCES ADDRESS(ID));";
 
 static const char *PENDING_GROUP_PRE_KEY_INSERT = "INSERT INTO PENDING_GROUP_PRE_KEY "
-                                                  "(ID, MEMBER_ADDRESS, GROUP_PRE_KEY_DATA) "
-                                                  "VALUES (?, ?, ?);";
+                                                  "(MEMBER_ADDRESS, GROUP_PRE_KEY_DATA) "
+                                                  "VALUES (?, ?);";
+
+static const char *N_PENDING_GROUP_PRE_KEY_LOAD = "SELECT COUNT(*) "
+                                                  "FROM PENDING_GROUP_PRE_KEY "
+                                                  "INNER JOIN ADDRESS "
+                                                  "ON PENDING_GROUP_PRE_KEY.MEMBER_ADDRESS = ADDRESS.ID "
+                                                  "WHERE ADDRESS.USER_ID = (?) AND "
+                                                  "ADDRESS.DOMAIN = (?) AND "
+                                                  "ADDRESS.DEVICE_ID = (?);";
 
 static const char *PENDING_GROUP_PRE_KEY_LOAD = "SELECT GROUP_PRE_KEY_DATA "
                                                 "FROM PENDING_GROUP_PRE_KEY "
                                                 "INNER JOIN ADDRESS "
                                                 "ON PENDING_GROUP_PRE_KEY.MEMBER_ADDRESS = ADDRESS.ID "
-                                                "WHERE PENDING_GROUP_PRE_KEY.ID = (?) AND "
-                                                "ADDRESS.USER_ID = (?) AND "
+                                                "WHERE ADDRESS.USER_ID = (?) AND "
                                                 "ADDRESS.DOMAIN = (?) AND "
                                                 "ADDRESS.DEVICE_ID = (?);";
 
 static const char *PENDING_GROUP_PRE_KEY_DELETE_DATA = "DELETE FROM PENDING_GROUP_PRE_KEY "
-                                                       "WHERE ID = (?) "
-                                                       "AND MEMBER_ADDRESS IN "
+                                                       "WHERE MEMBER_ADDRESS IN "
                                                        "(SELECT ID FROM ADDRESS WHERE USER_ID = (?));";
 
 // account related
@@ -1610,8 +1615,7 @@ void unload_inbound_group_session(Skissm__E2eeAddress *receiver_address,
     sqlite_finalize(stmt);
 }
 
-void store_group_pre_key(char *outbound_group_session_id,
-                         Skissm__E2eeAddress *member_address,
+void store_group_pre_key(Skissm__E2eeAddress *member_address,
                          uint8_t *group_pre_key_plaintext,
                          size_t group_pre_key_plaintext_len) {
     // insert member's address
@@ -1622,9 +1626,8 @@ void store_group_pre_key(char *outbound_group_session_id,
     sqlite_prepare(PENDING_GROUP_PRE_KEY_INSERT, &stmt);
 
     // bind
-    sqlite3_bind_text(stmt, 1, outbound_group_session_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_int(stmt, 2, member_address_id);
-    sqlite3_bind_blob(stmt, 3, group_pre_key_plaintext, group_pre_key_plaintext_len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 1, member_address_id);
+    sqlite3_bind_blob(stmt, 2, group_pre_key_plaintext, group_pre_key_plaintext_len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -1633,61 +1636,67 @@ void store_group_pre_key(char *outbound_group_session_id,
     sqlite_finalize(stmt);
 }
 
-void load_group_pre_key(char *outbound_group_session_id,
-                        Skissm__E2eeAddress *member_address,
-                        Skissm__PendingGroupPreKey **pending_group_pre_key) {
+int load_n_group_pre_keys(Skissm__E2eeAddress *member_address) {
     // prepare
     sqlite3_stmt *stmt;
-    if (!sqlite_prepare(PENDING_GROUP_PRE_KEY_LOAD, &stmt)) {
-        *pending_group_pre_key = NULL;
-        return;
-    }
-
-    // bind
-    sqlite3_bind_text(stmt, 1, outbound_group_session_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, member_address->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, member_address->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, member_address->device_id, -1, SQLITE_TRANSIENT);
+    sqlite_prepare(N_PENDING_GROUP_PRE_KEY_LOAD, &stmt);
+    sqlite3_bind_text(stmt, 1, member_address->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, member_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, member_address->device_id, -1, SQLITE_TRANSIENT);
 
     // step
-    if (!sqlite_step(stmt, SQLITE_ROW)) {
-        *pending_group_pre_key = NULL;
-        sqlite_finalize(stmt);
-        return;
-    }
+    sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    size_t pending_group_pre_key_data_len = sqlite3_column_bytes(stmt, 0);
-    uint8_t *pending_group_pre_key_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
-
-    // no data
-    if (pending_group_pre_key_data_len == 0) {
-        *pending_group_pre_key = NULL;
-        sqlite_finalize(stmt);
-        return;
-    }
-
-    // unpack
-    *pending_group_pre_key =
-        skissm__pending_group_pre_key__unpack(NULL, pending_group_pre_key_data_len, pending_group_pre_key_data);
+    int n_group_pre_keys = (int)sqlite3_column_int(stmt, 0);
 
     // release
     sqlite_finalize(stmt);
 
-    return;
+    return n_group_pre_keys;
 }
 
-void unload_group_pre_key(char *outbound_group_session_id, Skissm__E2eeAddress *member_address) {
-    if (outbound_group_session_id == NULL){
-        return;
+uint32_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
+                             Skissm__E2eePlaintext ***e2ee_plaintext) {
+    // allocate memory
+    size_t n_group_pre_keys = load_n_group_pre_keys(member_address);
+    if (n_group_pre_keys == 0){
+        return 0;
     }
+    (*e2ee_plaintext) = (Skissm__E2eePlaintext **)malloc(n_group_pre_keys * sizeof(Skissm__E2eePlaintext *));
+
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(PENDING_GROUP_PRE_KEY_LOAD, &stmt);
+    sqlite3_bind_text(stmt, 1, member_address->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, member_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, member_address->device_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    for (int i = 0; i < n_group_pre_keys; i++) {
+        sqlite3_step(stmt);
+
+        // load
+        size_t e2ee_plaintext_data_len = sqlite3_column_bytes(stmt, 0);
+        uint8_t *e2ee_plaintext_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+        // unpack
+        (*e2ee_plaintext)[i] = skissm__e2ee_plaintext__unpack(NULL, e2ee_plaintext_data_len, e2ee_plaintext_data);
+    }
+
+    // release
+    sqlite_finalize(stmt);
+
+    return n_group_pre_keys;
+}
+
+void unload_group_pre_key(Skissm__E2eeAddress *member_address) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(PENDING_GROUP_PRE_KEY_DELETE_DATA, &stmt);
 
     // bind
-    sqlite3_bind_text(stmt, 1, outbound_group_session_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, member_address->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, member_address->user_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

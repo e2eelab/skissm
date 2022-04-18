@@ -248,25 +248,23 @@ typedef struct skissm_db_handler_t {
     // group pre-key related handlers
     /**
      * @brief store group pre-key
-     * @param outbound_group_session_id
      * @param member_address
      * @param group_pre_key_plaintext
      * @param group_pre_key_plaintext_len
      */
-    void (*store_group_pre_key)(char *, Skissm__E2eeAddress *, uint8_t *, size_t);
+    void (*store_group_pre_key)(Skissm__E2eeAddress *, uint8_t *, size_t);
     /**
-     * @brief load group pre-key
-     * @param outbound_group_session_id
+     * @brief load group pre-keys
      * @param member_address
-     * @param pending_group_pre_key
+     * @param e2ee_plaintext
+     * @return number of loaded group pre-keys
      */
-    void (*load_group_pre_key)(char *, Skissm__E2eeAddress *, Skissm__PendingGroupPreKey **);
+    uint32_t (*load_group_pre_keys)(Skissm__E2eeAddress *, Skissm__E2eePlaintext ***);
     /**
      * @brief delete group pre-key
-     * @param outbound_group_session_id
      * @param member_address
      */
-    void (*unload_group_pre_key)(char *, Skissm__E2eeAddress *);
+    void (*unload_group_pre_key)(Skissm__E2eeAddress *);
 } skissm_db_handler_t;
 
 typedef struct skissm_event_handler_t {

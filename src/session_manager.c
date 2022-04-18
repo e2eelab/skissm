@@ -11,6 +11,27 @@
 #include "skissm/ratchet.h"
 #include "skissm/session.h"
 
+static void send_group_pre_key(Skissm__E2eeSession *outbound_session){
+    // load group pre-key
+    uint32_t n_group_pre_keys;
+    Skissm__E2eePlaintext **e2ee_plaintext;
+    n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(outbound_session->to, &e2ee_plaintext);
+    int i;
+    for (i = 0; i < n_group_pre_keys; i++){
+        uint8_t *group_pre_key_plaintext;
+        size_t group_pre_key_plaintext_len = skissm__e2ee_plaintext__get_packed_size(e2ee_plaintext[i]);
+        group_pre_key_plaintext = (uint8_t *)malloc(sizeof(uint8_t) * group_pre_key_plaintext_len);
+        skissm__e2ee_plaintext__pack(e2ee_plaintext[i], group_pre_key_plaintext);
+        send_one2one_msg(outbound_session, group_pre_key_plaintext, group_pre_key_plaintext_len);
+    }
+
+    // release
+    for (i = 0; i < n_group_pre_keys; i++){
+        skissm__e2ee_plaintext__free_unpacked(e2ee_plaintext[i], NULL);
+    }
+    free(e2ee_plaintext);
+}
+
 Skissm__GetPreKeyBundleRequestPayload *produce_get_pre_key_bundle_request_payload(Skissm__E2eeAddress *e2ee_address) {
     Skissm__GetPreKeyBundleRequestPayload *get_pre_key_bundle_request_payload =
         (Skissm__GetPreKeyBundleRequestPayload *)malloc(sizeof(Skissm__GetPreKeyBundleRequestPayload));
@@ -244,6 +265,9 @@ size_t consume_e2ee_accept_payload(Skissm__E2eeMsg *accept_msg_payload){
     Skissm__E2eeAcceptPayload *e2ee_accept_payload = skissm__e2ee_accept_payload__unpack(NULL, accept_msg_payload->payload.len, accept_msg_payload->payload.data);
     const session_suite *suite = get_session_suite(e2ee_accept_payload->cipher_suite_id);
     size_t result = suite->complete_outbound_session(outbound_session, e2ee_accept_payload);
+
+    // try to send group pre-keys if necessary
+    // send_group_pre_key(outbound_session);
 
     // store sesson state
     get_skissm_plugin()->db_handler.store_session(outbound_session);
