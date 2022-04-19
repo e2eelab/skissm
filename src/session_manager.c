@@ -149,20 +149,8 @@ size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payloa
             }
         }
 
-        // try to find outbound session, and mark it's state as responded
-        // not here, now this is handled on accept request received.
-        Skissm__E2eeSession *outbound_session = NULL;
-        get_skissm_plugin()->db_handler.load_outbound_session(inbound_e2ee_message_payload->to, inbound_e2ee_message_payload->from, &outbound_session);
-        if (outbound_session != NULL) {
-            if (outbound_session->responded == false) {
-                outbound_session->responded = true;
-                get_skissm_plugin()->db_handler.store_session(outbound_session);
-            }
-        }
-
         // release
         free_mem((void **)&context, context_len);
-        close_session(outbound_session);
     }
 
 complete:
@@ -238,7 +226,7 @@ size_t consume_e2ee_invite_payload(Skissm__E2eeMsg *invite_msg_payload){
     }
 
     // store sesson state
-    get_skissm_plugin()->db_handler.store_session(inbound_session);
+    // get_skissm_plugin()->db_handler.store_session(inbound_session);
 
     // notify
     ssm_notify_inbound_session_ready(inbound_session);

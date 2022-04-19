@@ -205,6 +205,9 @@ size_t crypto_curve25519_new_inbound_session(Skissm__E2eeSession *session, Skiss
 
     initialise_as_bob(cipher_suite, session->ratchet, secret, sizeof(secret), bob_signed_pre_key);
 
+    // store sesson state
+    get_skissm_plugin()->db_handler.store_session(session);
+
     /** The one who sends the acception message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */    
     send_accept_request(session->e2ee_pack_id, session->to, session->from, NULL);
