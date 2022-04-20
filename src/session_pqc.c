@@ -35,8 +35,8 @@
 /** length of the ciphertext created by a PQC operation */
 #define CRYPTO_CIPHERTEXTBYTES 1039
 
-size_t pqc_new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2eeAccount *local_account, Skissm__E2eePreKeyBundle *their_pre_key_bundle) {
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(session->e2ee_pack_id)->cipher_suite;
+size_t pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
     // Verify the signature
     size_t result;
@@ -53,31 +53,31 @@ size_t pqc_new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2ee
     }
 
     // Set the version
-    session->version = PROTOCOL_VERSION;
+    outbound_session->version = PROTOCOL_VERSION;
     // Set the cipher suite id
-    session->e2ee_pack_id = 1;
+    outbound_session->e2ee_pack_id = 1;
 
     // Store some information into the session
     const Skissm__KeyPair my_identity_key_pair = *(local_account->identity_key->asym_key_pair);
 
     uint8_t x3dh_epoch = 2;
-    session->responded = false;
-    copy_protobuf_from_protobuf(&(session->alice_identity_key), &(my_identity_key_pair.public_key));
-    copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(their_pre_key_bundle->signed_pre_key_public->public_key));
-    session->bob_signed_pre_key_id = their_pre_key_bundle->signed_pre_key_public->spk_id;
+    outbound_session->responded = false;
+    copy_protobuf_from_protobuf(&(outbound_session->alice_identity_key), &(my_identity_key_pair.public_key));
+    copy_protobuf_from_protobuf(&(outbound_session->bob_signed_pre_key), &(their_pre_key_bundle->signed_pre_key_public->public_key));
+    outbound_session->bob_signed_pre_key_id = their_pre_key_bundle->signed_pre_key_public->spk_id;
 
     // Server may return empty one-time pre-key(public)
     if (their_pre_key_bundle->one_time_pre_key_public) {
-        copy_protobuf_from_protobuf(&(session->bob_one_time_pre_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key));
-        session->bob_one_time_pre_key_id = their_pre_key_bundle->one_time_pre_key_public->opk_id;
+        copy_protobuf_from_protobuf(&(outbound_session->bob_one_time_pre_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key));
+        outbound_session->bob_one_time_pre_key_id = their_pre_key_bundle->one_time_pre_key_public->opk_id;
         x3dh_epoch = 3;
     }
 
     int ad_len = 2 * key_len;
-    session->associated_data.len = ad_len;
-    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
-    memcpy(session->associated_data.data, my_identity_key_pair.public_key.data, key_len);
-    memcpy((session->associated_data.data) + key_len, their_pre_key_bundle->identity_key_public->asym_public_key.data, key_len);
+    outbound_session->associated_data.len = ad_len;
+    outbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
+    memcpy(outbound_session->associated_data.data, my_identity_key_pair.public_key.data, key_len);
+    memcpy((outbound_session->associated_data.data) + key_len, their_pre_key_bundle->identity_key_public->asym_public_key.data, key_len);
 
     // Calculate the shared secret S via encapsulation
     uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY];
@@ -98,15 +98,15 @@ size_t pqc_new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2ee
     }
 
     // The first part of the shared secret will be determined after receiving the acception message
-    session->alice_ephemeral_key.len = (x3dh_epoch + 1) * CRYPTO_BYTES_KEY;
-    session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * session->alice_ephemeral_key.len);
-    memcpy(session->alice_ephemeral_key.data + CRYPTO_BYTES_KEY, secret, x3dh_epoch * CRYPTO_BYTES_KEY);
+    outbound_session->alice_ephemeral_key.len = (x3dh_epoch + 1) * CRYPTO_BYTES_KEY;
+    outbound_session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_session->alice_ephemeral_key.len);
+    memcpy(outbound_session->alice_ephemeral_key.data + CRYPTO_BYTES_KEY, secret, x3dh_epoch * CRYPTO_BYTES_KEY);
 
     // Set the session ID
-    session->session_id = generate_uuid_str();
+    outbound_session->session_id = generate_uuid_str();
 
     // Send the invitation message to the other
-    send_invite_request(session, ciphertext_2, ciphertext_3, ciphertext_4);
+    send_invite_request(outbound_session, ciphertext_2, ciphertext_3, ciphertext_4);
 
     // release
     unset(secret, sizeof(secret));
@@ -115,17 +115,17 @@ size_t pqc_new_outbound_session(Skissm__E2eeSession *session, const Skissm__E2ee
     return (size_t)(0);
 }
 
-size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount *local_account, Skissm__E2eeInvitePayload *e2ee_invite_payload) {
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(session->e2ee_pack_id)->cipher_suite;
+size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *local_account, Skissm__InvitePayload *invite_payload) {
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
 
     /* Verify the signed pre-key */
     bool old_spk = 0;
     Skissm__SignedPreKey *old_spk_data = NULL;
-    if (local_account->signed_pre_key->spk_id != e2ee_invite_payload->bob_signed_pre_key_id) {
-        get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->account_id, e2ee_invite_payload->bob_signed_pre_key_id, &old_spk_data);
+    if (local_account->signed_pre_key->spk_id != invite_payload->bob_signed_pre_key_id) {
+        get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->account_id, invite_payload->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
             ssm_notify_error(BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
-            skissm__e2ee_invite_payload__free_unpacked(e2ee_invite_payload, NULL);
+            skissm__invite_payload__free_unpacked(invite_payload, NULL);
             return (size_t)(-1);
         } else {
             old_spk = 1;
@@ -133,38 +133,38 @@ size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount
     }
 
     uint8_t x3dh_epoch = 3;
-    copy_protobuf_from_protobuf(&(session->alice_identity_key), &(e2ee_invite_payload->alice_identity_key));
-    session->bob_signed_pre_key_id = e2ee_invite_payload->bob_signed_pre_key_id;
+    copy_protobuf_from_protobuf(&(inbound_session->alice_identity_key), &(invite_payload->alice_identity_key));
+    inbound_session->bob_signed_pre_key_id = invite_payload->bob_signed_pre_key_id;
     if (old_spk == 0) {
-        copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(local_account->signed_pre_key->key_pair->public_key));
+        copy_protobuf_from_protobuf(&(inbound_session->bob_signed_pre_key), &(local_account->signed_pre_key->key_pair->public_key));
     } else {
-        copy_protobuf_from_protobuf(&(session->bob_signed_pre_key), &(old_spk_data->key_pair->public_key));
+        copy_protobuf_from_protobuf(&(inbound_session->bob_signed_pre_key), &(old_spk_data->key_pair->public_key));
     }
-    if (e2ee_invite_payload->bob_one_time_pre_key_id != 0) {
+    if (invite_payload->bob_one_time_pre_key_id != 0) {
         x3dh_epoch = 4;
     }
 
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
     int ad_len = 2 * key_len;
-    session->associated_data.len = ad_len;
-    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
-    memcpy(session->associated_data.data, e2ee_invite_payload->alice_identity_key.data, key_len);
-    memcpy((session->associated_data.data) + key_len, local_account->identity_key->asym_key_pair->public_key.data, key_len);
+    inbound_session->associated_data.len = ad_len;
+    inbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
+    memcpy(inbound_session->associated_data.data, invite_payload->alice_identity_key.data, key_len);
+    memcpy((inbound_session->associated_data.data) + key_len, local_account->identity_key->asym_key_pair->public_key.data, key_len);
 
     /* Mark the one-time pre-key as used */
     const Skissm__OneTimePreKey *our_one_time_pre_key;
     if (x3dh_epoch == 4) {
-        our_one_time_pre_key = lookup_one_time_pre_key(local_account, e2ee_invite_payload->bob_one_time_pre_key_id);
+        our_one_time_pre_key = lookup_one_time_pre_key(local_account, invite_payload->bob_one_time_pre_key_id);
 
         if (!our_one_time_pre_key) {
             ssm_notify_error(BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
-            skissm__e2ee_invite_payload__free_unpacked(e2ee_invite_payload, NULL);
+            skissm__invite_payload__free_unpacked(invite_payload, NULL);
             return (size_t)(-1);
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
             get_skissm_plugin()->db_handler.update_one_time_pre_key(local_account->account_id, our_one_time_pre_key->opk_id);
-            copy_protobuf_from_protobuf(&(session->bob_one_time_pre_key), &(our_one_time_pre_key->key_pair->public_key));
-            session->bob_one_time_pre_key_id = our_one_time_pre_key->opk_id;
+            copy_protobuf_from_protobuf(&(inbound_session->bob_one_time_pre_key), &(our_one_time_pre_key->key_pair->public_key));
+            inbound_session->bob_one_time_pre_key_id = our_one_time_pre_key->opk_id;
         }
     } else {
         our_one_time_pre_key = NULL;
@@ -189,31 +189,31 @@ size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount
     uint8_t *pos = secret;
     ProtobufCBinaryData *ciphertext_1;
     // ?????????????
-    size_t pre_shared_key_len = e2ee_invite_payload->pre_shared_key->len;
+    size_t pre_shared_key_len = invite_payload->pre_shared_key->len;
 
     ciphertext_1->len = CRYPTO_CIPHERTEXTBYTES;
-    ciphertext_1->data = cipher_suite->ss_key_gen(NULL, &(session->alice_identity_key), pos);
+    ciphertext_1->data = cipher_suite->ss_key_gen(NULL, &(inbound_session->alice_identity_key), pos);
     pos += CRYPTO_BYTES_KEY;
-    cipher_suite->ss_key_gen(&(bob_identity_key->private_key), e2ee_invite_payload->pre_shared_key, pos);
+    cipher_suite->ss_key_gen(&(bob_identity_key->private_key), invite_payload->pre_shared_key, pos);
     pos += CRYPTO_BYTES_KEY;
-    cipher_suite->ss_key_gen(&(bob_signed_pre_key->private_key), e2ee_invite_payload->pre_shared_key + pre_shared_key_len, pos);
+    cipher_suite->ss_key_gen(&(bob_signed_pre_key->private_key), invite_payload->pre_shared_key + pre_shared_key_len, pos);
     if (x3dh_epoch == 4) {
         pos += CRYPTO_BYTES_KEY;
-        cipher_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), e2ee_invite_payload->pre_shared_key + pre_shared_key_len + pre_shared_key_len, pos);
+        cipher_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), invite_payload->pre_shared_key + pre_shared_key_len + pre_shared_key_len, pos);
     }
 
-    session->alice_ephemeral_key.len = x3dh_epoch * CRYPTO_BYTES_KEY;
-    session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * session->alice_ephemeral_key.len);
-    memcpy(session->alice_ephemeral_key.data, secret, x3dh_epoch * CRYPTO_BYTES_KEY);
+    inbound_session->alice_ephemeral_key.len = x3dh_epoch * CRYPTO_BYTES_KEY;
+    inbound_session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * inbound_session->alice_ephemeral_key.len);
+    memcpy(inbound_session->alice_ephemeral_key.data, secret, x3dh_epoch * CRYPTO_BYTES_KEY);
 
-    initialise_as_bob(cipher_suite, session->ratchet, secret, sizeof(secret), bob_signed_pre_key);
+    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key);
 
     // store sesson state
-    get_skissm_plugin()->db_handler.store_session(session);
+    get_skissm_plugin()->db_handler.store_session(inbound_session);
 
     /** The one who sends the acception message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    send_accept_request(session->e2ee_pack_id, session->to, session->from, ciphertext_1);
+    send_accept_request(inbound_session->e2ee_pack_id, inbound_session->to, inbound_session->from, ciphertext_1);
 
     // release
     skissm__signed_pre_key__free_unpacked(old_spk_data, NULL);
@@ -223,13 +223,13 @@ size_t pqc_new_inbound_session(Skissm__E2eeSession *session, Skissm__E2eeAccount
     return (size_t)(0);
 }
 
-size_t pqc_complete_outbound_session(Skissm__E2eeSession *outbound_session, Skissm__E2eeAcceptPayload *e2ee_accept_payload) {
+size_t pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__AcceptPayload *accept_payload) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
 
     outbound_session->responded = true;
 
     uint8_t *pos = outbound_session->alice_ephemeral_key.data;
-    cipher_suite->ss_key_gen(&(outbound_session->alice_identity_key), e2ee_accept_payload->pre_shared_key, pos);
+    cipher_suite->ss_key_gen(&(outbound_session->alice_identity_key), accept_payload->pre_shared_key, pos);
 
     // Create the root key and chain keys(????????????????)
     initialise_as_alice(cipher_suite, outbound_session->ratchet, pos, outbound_session->alice_ephemeral_key.len, NULL, NULL);

@@ -21,12 +21,26 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eePlaintext";
+option java_outer_classname = "Session";
 
-import "skissm/e2ee_plaintext_type.proto";
+import "skissm/e2ee_address.proto";
+import "skissm/ratchet.proto";
 
-message e2ee_plaintext {
+message session {
     uint32 version = 1;
-    skissm.e2ee_plaintext_type plaintext_type = 2;
-    bytes payload = 3;
+    uint32 e2ee_pack_id = 2;
+    string session_id = 3;
+    skissm.e2ee_address session_owner = 4;
+    skissm.e2ee_address from = 5;
+    skissm.e2ee_address to = 6;
+    skissm.ratchet ratchet = 7;
+    bytes alice_identity_key = 8;
+    bytes alice_ephemeral_key = 9;
+    bytes bob_signed_pre_key = 10;
+    uint32 bob_signed_pre_key_id = 11;
+    bytes bob_one_time_pre_key = 12;
+    uint32 bob_one_time_pre_key_id = 13;
+
+    bool responded = 14;
+    bytes associated_data = 15;
 }

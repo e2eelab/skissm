@@ -46,7 +46,7 @@ void register_account(uint64_t account_id, uint32_t e2ee_pack_id);
  *
  * @param account The account to be processed
  */
-void publish_spk(Skissm__E2eeAccount *account);
+void publish_spk(Skissm__Account *account);
 
 /**
  * @brief Create a register_request_payload to be send to messaging server.
@@ -55,7 +55,7 @@ void publish_spk(Skissm__E2eeAccount *account);
  * @param account
  * @return Skissm__RegisterUserRequestPayload*
  */
-Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__E2eeAccount *account);
+Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__Account *account);
 
 /**
  * @brief Process an incoming register_response_payload.
@@ -63,7 +63,7 @@ Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__E2e
  * @param account The account to be processed
  * @param payload The response payload data
  */
-void consume_register_response_payload(Skissm__E2eeAccount *account, Skissm__RegisterUserResponsePayload *payload);
+void consume_register_response_payload(Skissm__Account *account, Skissm__RegisterUserResponsePayload *payload);
 
 /**
  * @brief Create a publish_spk_request_payload to be send to messaging server.
@@ -71,14 +71,14 @@ void consume_register_response_payload(Skissm__E2eeAccount *account, Skissm__Reg
  * @param account
  * @return Skissm__PublishSpkRequestPayload*
  */
-Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__E2eeAccount *account);
+Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__Account *account);
 
 /**
  * @brief Process an incoming publish_spk_response_payload.
  *
  * @param account
  */
-void consume_publish_spk_response_payload(Skissm__E2eeAccount *account);
+void consume_publish_spk_response_payload(Skissm__Account *account);
 
 #ifdef __cplusplus
 }

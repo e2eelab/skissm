@@ -44,7 +44,7 @@ size_t init_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to)
  * @param to To Address
  * @return Outbound session or NULL
  */
-Skissm__E2eeSession *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
+Skissm__Session *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
 
 /**
  * @brief Create a get_pre_key_bundle_request_payload to be sent to messaging server.
@@ -76,7 +76,7 @@ size_t consume_get_pre_key_bundle_response_payload(
  * @param e2ee_plaintext_len
  * @return Skissm__E2eeMsg*
  */
-Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext_data, size_t e2ee_plaintext_len);
+Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__Session *outbound_session, const uint8_t *e2ee_plaintext_data, size_t e2ee_plaintext_len);
 
 /**
  * @brief Process an inbound e2ee_message_payload with corresponding inbound session.
@@ -86,20 +86,20 @@ Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__E2eeSession *outbound_sess
  */
 size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payload);
 
-Skissm__E2eeInvitePayload *produce_e2ee_invite_payload(
-    Skissm__E2eeSession *outbound_session, ProtobufCBinaryData *pre_shared_key_1,
+Skissm__InvitePayload *produce_e2ee_invite_payload(
+    Skissm__Session *outbound_session, ProtobufCBinaryData *pre_shared_key_1,
     ProtobufCBinaryData *pre_shared_key_2, ProtobufCBinaryData *pre_shared_key_3
 );
 
 size_t consume_e2ee_invite_payload(Skissm__E2eeMsg *invite_msg_payload);
 
-Skissm__E2eeAcceptPayload *produce_e2ee_accept_payload(uint32_t e2ee_pack_id, ProtobufCBinaryData *ciphertext_1);
+Skissm__AcceptPayload *produce_e2ee_accept_payload(uint32_t e2ee_pack_id, ProtobufCBinaryData *ciphertext_1);
 
 size_t consume_e2ee_accept_payload(Skissm__E2eeMsg *accept_msg_payload);
 
-Skissm__E2eeMsg *produce_invite_message_payload(Skissm__E2eeSession *outbound_session, Skissm__E2eeInvitePayload *e2ee_invite_payload);
+Skissm__E2eeMsg *produce_invite_message_payload(Skissm__Session *outbound_session, Skissm__InvitePayload *invite_payload);
 
-Skissm__E2eeMsg *produce_accept_message_payload(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, Skissm__E2eeAcceptPayload *e2ee_accept_payload);
+Skissm__E2eeMsg *produce_accept_message_payload(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, Skissm__AcceptPayload *accept_payload);
 
 #ifdef __cplusplus
 }

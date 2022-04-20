@@ -132,7 +132,7 @@ void remove_group_members(
  * @param plaintext_len
  * @return Skissm__E2eeMsg*
  */
-Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len);
+Skissm__E2eeMsg *produce_group_msg(Skissm__GroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len);
 
 /**
  * @brief Process an imcoming group message

@@ -21,12 +21,15 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeInvitePayload";
+option java_outer_classname = "ProtoMsg";
 
-message e2ee_invite_payload {
-    uint32 e2ee_pack_id = 1;
-    bytes alice_identity_key = 2;
-    repeated bytes pre_shared_key = 3;
-    uint32 bob_signed_pre_key_id = 4;
-    uint32 bob_one_time_pre_key_id = 5;
+import "skissm/e2ee_address.proto";
+import "skissm/proto_cmds.proto";
+
+message proto_msg {
+  uint32 id = 1;
+  skissm.proto_cmds cmd = 2;
+  skissm.e2ee_address from = 3;
+  skissm.e2ee_address to = 4;
+  bytes payload = 5;
 }

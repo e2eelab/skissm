@@ -21,9 +21,12 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eePlaintextType";
+option java_outer_classname = "InvitePayload";
 
-enum e2ee_plaintext_type {
-    COMMON_MSG = 0;
-    GROUP_PRE_KEY = 1;
+message invite_payload {
+    uint32 e2ee_pack_id = 1;
+    bytes alice_identity_key = 2;
+    repeated bytes pre_shared_key = 3;
+    uint32 bob_signed_pre_key_id = 4;
+    uint32 bob_one_time_pre_key_id = 5;
 }

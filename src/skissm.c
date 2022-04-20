@@ -72,7 +72,7 @@ void ssm_notify_error(ErrorCode error_code, char *error_msg) {
         skissm_plugin->event_handler.on_error(error_code, error_msg);
 }
 
-void ssm_notify_user_registered(Skissm__E2eeAccount *account){
+void ssm_notify_user_registered(Skissm__Account *account){
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_user_registered(account);
 }
@@ -82,12 +82,12 @@ void ssm_notify_inbound_session_invited(Skissm__E2eeAddress *from) {
         skissm_plugin->event_handler.on_inbound_session_invited(from);
 }
 
-void ssm_notify_inbound_session_ready(Skissm__E2eeSession *inbound_session) {
+void ssm_notify_inbound_session_ready(Skissm__Session *inbound_session) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_inbound_session_ready(inbound_session);
 }
 
-void ssm_notify_outbound_session_ready(Skissm__E2eeSession *outbound_session) {
+void ssm_notify_outbound_session_ready(Skissm__Session *outbound_session) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_outbound_session_ready(outbound_session);
 }

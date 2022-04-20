@@ -26,7 +26,7 @@
 
 /* registration related */
 static void handle_register_release(register_user_response_handler *response_handler) {
-    // skissm__e2ee_account__free_unpacked(response_handler->account, NULL);
+    // skissm__account__free_unpacked(response_handler->account, NULL);
     // response_handler->account = NULL;
 }
 
@@ -55,20 +55,20 @@ void supply_opks(struct supply_opks_handler *response_handler) {
 
 /* send to the server */
 void register_account(uint64_t account_id, uint32_t e2ee_pack_id) {
-    Skissm__E2eeAccount *account = create_account(account_id, e2ee_pack_id);
+    Skissm__Account *account = create_account(account_id, e2ee_pack_id);
 
     // register account to server
     register_user_response_handler_store.account = account;
     send_register_user_request(account, &register_user_response_handler_store);
 }
 
-void publish_spk(Skissm__E2eeAccount *account) {
+void publish_spk(Skissm__Account *account) {
     // publish account spk to server
     publish_spk_response_handler_store.account = account;
     send_publish_spk_request(account, &publish_spk_response_handler_store);
 }
 
-Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__E2eeAccount *account) {
+Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__Account *account) {
     Skissm__RegisterUserRequestPayload *payload = (Skissm__RegisterUserRequestPayload *)malloc(sizeof(Skissm__RegisterUserRequestPayload));
     skissm__register_user_request_payload__init(payload);
 
@@ -98,7 +98,7 @@ Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__E2e
     return payload;
 }
 
-void consume_register_response_payload(Skissm__E2eeAccount *account, Skissm__RegisterUserResponsePayload *payload) {
+void consume_register_response_payload(Skissm__Account *account, Skissm__RegisterUserResponsePayload *payload) {
     copy_address_from_address(&(account->address), payload->address);
     account->saved = true;
     account->password = strdup(payload->password);
@@ -107,7 +107,7 @@ void consume_register_response_payload(Skissm__E2eeAccount *account, Skissm__Reg
     ssm_notify_user_registered(account);
 }
 
-Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__E2eeAccount *account) {
+Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__Account *account) {
     generate_signed_pre_key(account);
 
     Skissm__PublishSpkRequestPayload *publish_spk_message =
@@ -124,7 +124,7 @@ Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__E2
     return publish_spk_message;
 }
 
-void consume_publish_spk_response_payload(Skissm__E2eeAccount *account) {
+void consume_publish_spk_response_payload(Skissm__Account *account) {
     // save to db
     if (account->saved == true) {
         Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;

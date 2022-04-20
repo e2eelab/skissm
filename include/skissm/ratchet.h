@@ -37,13 +37,13 @@ extern "C" {
 
 typedef struct cipher cipher;
 
-void initialise_ratchet(Skissm__E2eeRatchet **ratchet);
+void initialise_ratchet(Skissm__Ratchet **ratchet);
 
 /** Initialise the session using a shared secret and the public part of the
  * remote's first ratchet key */
 void initialise_as_bob(
     const cipher_suite_t *cipher_suite,
-    Skissm__E2eeRatchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
+    Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key
 );
 
@@ -51,13 +51,13 @@ void initialise_as_bob(
  * pair for the first ratchet key */
 void initialise_as_alice(
     const cipher_suite_t *cipher_suite,
-    Skissm__E2eeRatchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
+    Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 );
 
 void encrypt_ratchet(
     const cipher_suite_t *cipher_suite,
-    Skissm__E2eeRatchet *ratchet,
+    Skissm__Ratchet *ratchet,
     ProtobufCBinaryData ad,
     const uint8_t *plaintext, size_t plaintext_length,
     Skissm__E2eeMsgPayload **e2ee_msg_payload
@@ -65,7 +65,7 @@ void encrypt_ratchet(
 
 size_t decrypt_ratchet(
     const cipher_suite_t *cipher_suite,
-    Skissm__E2eeRatchet *ratchet, ProtobufCBinaryData ad, Skissm__E2eeMsgPayload *e2ee_msg_payload,
+    Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__E2eeMsgPayload *e2ee_msg_payload,
     uint8_t **plaintext
 );
 

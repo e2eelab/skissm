@@ -67,11 +67,11 @@ void update_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id);
 void add_one_time_pre_key(uint64_t account_id, Skissm__OneTimePreKey *one_time_pre_key);
 void load_inbound_session(char *session_id,
                           Skissm__E2eeAddress *owner,
-                          Skissm__E2eeSession **session);
+                          Skissm__Session **session);
 void load_outbound_session(Skissm__E2eeAddress *owner,
                            Skissm__E2eeAddress *to,
-                           Skissm__E2eeSession **session);
-void store_session(Skissm__E2eeSession *session);
+                           Skissm__Session **session);
+void store_session(Skissm__Session *session);
 void unload_session(
     Skissm__E2eeAddress *owner,
     Skissm__E2eeAddress *from,
@@ -80,15 +80,15 @@ void unload_session(
 void load_outbound_group_session(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
-    Skissm__E2eeGroupSession **group_session);
+    Skissm__GroupSession **group_session);
 void load_inbound_group_session(
     Skissm__E2eeAddress *receiver_address,
     Skissm__E2eeAddress *group_address,
-    Skissm__E2eeGroupSession **group_session);
+    Skissm__GroupSession **group_session);
 void store_group_session(
-    Skissm__E2eeGroupSession *group_session);
+    Skissm__GroupSession *group_session);
 void unload_group_session(
-    Skissm__E2eeGroupSession *group_session);
+    Skissm__GroupSession *group_session);
 void unload_inbound_group_session(
     Skissm__E2eeAddress *receiver_address,
     char *session_id

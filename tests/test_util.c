@@ -114,24 +114,6 @@ bool is_equal_str(char *str1, char *str2)
   return true;
 }
 
-bool is_equal_address(Skissm__E2eeAddress *address1, Skissm__E2eeAddress *address2)
-{
-  if (!safe_strcmp(address1->user_id, address2->user_id))
-  {
-    return false;
-  }
-  if (!safe_strcmp(address1->domain, address2->domain))
-  {
-    return false;
-  }
-  if (!safe_strcmp(address1->device_id, address2->device_id))
-  {
-    return false;
-  }
-
-  return true;
-}
-
 bool is_equal_keypair(Skissm__KeyPair *keypair1, Skissm__KeyPair *keypair2)
 {
   if (!is_equal_data(&(keypair1->public_key), &(keypair2->public_key)))
@@ -198,7 +180,7 @@ bool is_equal_opk(Skissm__OneTimePreKey *opk1, Skissm__OneTimePreKey *opk2)
   return true;
 }
 
-bool is_equal_account(Skissm__E2eeAccount *account1, Skissm__E2eeAccount *account2)
+bool is_equal_account(Skissm__Account *account1, Skissm__Account *account2)
 {
   if (account1->version != account2->version)
   {
@@ -212,7 +194,7 @@ bool is_equal_account(Skissm__E2eeAccount *account1, Skissm__E2eeAccount *accoun
   }
   if (is_not_null(account1->address, account2->address))
   {
-    if (!is_equal_address(account1->address, account2->address))
+    if (!compare_address(account1->address, account2->address))
     {
       printf("address not match");
       return false;
@@ -301,7 +283,7 @@ bool is_equal_account(Skissm__E2eeAccount *account1, Skissm__E2eeAccount *accoun
   return true;
 }
 
-bool is_equal_message_key(Skissm__MessageKey *message_key_1, Skissm__MessageKey *message_key_2)
+bool is_equal_message_key(Skissm__MsgKey *message_key_1, Skissm__MsgKey *message_key_2)
 {
   if (message_key_1->index != message_key_2->index)
   {
@@ -390,15 +372,15 @@ bool is_equal_skipped_message_key(Skissm__SkippedMessageKeyNode *skipped_message
     printf("ratchet_key_public not match");
     return false;
   }
-  if (is_not_null(skipped_message_key_node_1->message_key, skipped_message_key_node_2->message_key))
+  if (is_not_null(skipped_message_key_node_1->msg_key, skipped_message_key_node_2->msg_key))
   {
-    if (!is_equal_message_key(skipped_message_key_node_1->message_key, skipped_message_key_node_2->message_key))
+    if (!is_equal_message_key(skipped_message_key_node_1->msg_key, skipped_message_key_node_2->msg_key))
     {
       printf("message_key not match");
       return false;
     }
   } else{
-    if (!is_null(skipped_message_key_node_1->message_key, skipped_message_key_node_2->message_key))
+    if (!is_null(skipped_message_key_node_1->msg_key, skipped_message_key_node_2->msg_key))
     {
       printf("message_key not match");
       return false;
@@ -408,7 +390,7 @@ bool is_equal_skipped_message_key(Skissm__SkippedMessageKeyNode *skipped_message
   return true;
 }
 
-bool is_equal_ratchet(Skissm__E2eeRatchet *ratchet_1, Skissm__E2eeRatchet *ratchet_2)
+bool is_equal_ratchet(Skissm__Ratchet *ratchet_1, Skissm__Ratchet *ratchet_2)
 {
   if (!is_equal_data(&(ratchet_1->root_key), &(ratchet_2->root_key)))
   {
@@ -458,7 +440,7 @@ bool is_equal_ratchet(Skissm__E2eeRatchet *ratchet_1, Skissm__E2eeRatchet *ratch
   return true;
 }
 
-bool is_equal_session(Skissm__E2eeSession *session_1, Skissm__E2eeSession *session_2)
+bool is_equal_session(Skissm__Session *session_1, Skissm__Session *session_2)
 {
   if (session_1->version != session_2->version)
   {
@@ -472,7 +454,7 @@ bool is_equal_session(Skissm__E2eeSession *session_1, Skissm__E2eeSession *sessi
   }
   if (is_not_null(session_1->from, session_2->from))
   {
-    if (!is_equal_address(session_1->from, session_2->from))
+    if (!compare_address(session_1->from, session_2->from))
     {
       printf("from not match");
       return false;
@@ -486,7 +468,7 @@ bool is_equal_session(Skissm__E2eeSession *session_1, Skissm__E2eeSession *sessi
   }
   if (is_not_null(session_1->to, session_2->to))
   {
-    if (!is_equal_address(session_1->to, session_2->to))
+    if (!compare_address(session_1->to, session_2->to))
     {
       printf("to not match");
       return false;
@@ -527,7 +509,7 @@ bool is_equal_session(Skissm__E2eeSession *session_1, Skissm__E2eeSession *sessi
   return true;
 }
 
-bool is_equal_group_session(Skissm__E2eeGroupSession *group_session_1, Skissm__E2eeGroupSession *group_session_2)
+bool is_equal_group_session(Skissm__GroupSession *group_session_1, Skissm__GroupSession *group_session_2)
 {
   if (group_session_1->version != group_session_2->version)
   {
@@ -541,7 +523,7 @@ bool is_equal_group_session(Skissm__E2eeGroupSession *group_session_1, Skissm__E
   }
   if (is_not_null(group_session_1->session_owner, group_session_2->session_owner))
   {
-    if (!is_equal_address(group_session_1->session_owner, group_session_2->session_owner))
+    if (!compare_address(group_session_1->session_owner, group_session_2->session_owner))
     {
       printf("session_owner not match");
       return false;
@@ -555,7 +537,7 @@ bool is_equal_group_session(Skissm__E2eeGroupSession *group_session_1, Skissm__E
   }
   if (is_not_null(group_session_1->group_address, group_session_2->group_address))
   {
-    if (!is_equal_address(group_session_1->group_address, group_session_2->group_address))
+    if (!compare_address(group_session_1->group_address, group_session_2->group_address))
     {
       printf("group_address not match");
       return false;
@@ -609,11 +591,13 @@ void mock_string(char **to, const char *from)
 void mock_address(Skissm__E2eeAddress **address, const char *user_id, const char *domain, const char *device_id)
 {
   *address = malloc(sizeof(Skissm__E2eeAddress));
-  skissm__e2ee_address__init((*address));
-
+  skissm__e2ee_address__init(*address);
+  (*address)->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
+  skissm__peer_user__init((*address)->user);
+  (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
   (*address)->domain = strdup(domain);
-  (*address)->user_id = strdup(user_id);
-  (*address)->device_id = strdup(device_id);
+  (*address)->user->user_id = strdup(user_id);
+  (*address)->user->device_id = strdup(device_id);
 }
 
 void mock_keypair(Skissm__KeyPair **keypair, const char *public_key, const char *private_key)
@@ -651,9 +635,9 @@ void mock_one_time_pre_keypair(Skissm__OneTimePreKey **one_time_pre_keypair, uin
   (*one_time_pre_keypair)->used = used;
 }
 
-void free_account(Skissm__E2eeAccount *account)
+void free_account(Skissm__Account *account)
 {
-  skissm__e2ee_account__free_unpacked(account, NULL);
+  skissm__account__free_unpacked(account, NULL);
   account = NULL;
 }
 

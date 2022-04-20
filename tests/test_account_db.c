@@ -137,7 +137,7 @@ void test_init_account()
   tear_up();
 
   // create account
-  Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
+  Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
@@ -155,7 +155,7 @@ void test_update_identity_key()
   tear_up();
 
   // create account
-  Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
+  Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
@@ -180,7 +180,7 @@ void test_update_signed_pre_key()
   tear_up();
 
   // create account
-  Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
+  Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
@@ -206,7 +206,7 @@ void test_update_address()
   tear_up();
 
   // create account
-  Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
+  Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
@@ -232,7 +232,7 @@ void test_add_one_time_pre_key()
   tear_up();
 
   // create account
-  Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
+  Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
@@ -258,14 +258,14 @@ void test_load_account()
   tear_up();
 
   // create account
-  Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
+  Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
   mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
   store_account(account);
 
   // load_account
-  Skissm__E2eeAccount *account_copy;
+  Skissm__Account *account_copy;
   load_account(account->account_id, &account_copy);
 
   // assert account equals to account_copy
@@ -284,28 +284,28 @@ void test_two_accounts()
   tear_up();
 
   // create the first account
-  Skissm__E2eeAccount *account_1 = create_account(1, TEST_E2EE_PACK_ID);
+  Skissm__Account *account_1 = create_account(1, TEST_E2EE_PACK_ID);
   mock_address(&(account_1->address), "alice", "alice's domain", "alice's device");
 
   // insert to the db
   store_account(account_1);
 
   // create the first account
-  Skissm__E2eeAccount *account_2 = create_account(2, TEST_E2EE_PACK_ID);
+  Skissm__Account *account_2 = create_account(2, TEST_E2EE_PACK_ID);
   mock_address(&(account_2->address), "bob", "bob's domain", "bob's device");
 
   // insert to the db
   store_account(account_2);
 
   // load the first account
-  Skissm__E2eeAccount *account_copy_1;
+  Skissm__Account *account_copy_1;
   load_account(account_1->account_id, &account_copy_1);
 
   // assert account_1 equals to account_copy_1
   printf("%d\n", is_equal_account(account_1, account_copy_1));
 
   // load the second account
-  Skissm__E2eeAccount *account_copy_2;
+  Skissm__Account *account_copy_2;
   load_account(account_2->account_id, &account_copy_2);
 
   // assert account_2 equals to account_copy_2

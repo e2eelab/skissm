@@ -21,9 +21,9 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeCommands";
+option java_outer_classname = "ProtoCmds";
 
-enum e2ee_commands {
+enum proto_cmds {
     register_user_request = 0;
     register_user_response = 4097;
     get_pre_key_bundle_request = 2;

@@ -56,7 +56,7 @@ void create_outbound_group_session(
  */
 void create_inbound_group_session(
     uint32_t e2ee_pack_id,
-    Skissm__E2eeGroupPreKeyPayload *group_pre_key_payload,
+    Skissm__GroupPreKeyPayload *group_pre_key_payload,
     Skissm__E2eeAddress *user_address
 );
 
@@ -80,7 +80,7 @@ void advance_group_chain_key(const cipher_suite_t *cipher_suite, ProtobufCBinary
 void create_group_message_keys(
     const cipher_suite_t *cipher_suite,
     const ProtobufCBinaryData *chain_key,
-    Skissm__MessageKey *message_key
+    Skissm__MsgKey *message_key
 );
 
 /**
@@ -91,7 +91,7 @@ void create_group_message_keys(
  * @param old_session_id
  */
 size_t pack_group_pre_key_plaintext(
-    Skissm__E2eeGroupSession *outbound_group_session,
+    Skissm__GroupSession *outbound_group_session,
     uint8_t **group_pre_key_plaintext,
     char *old_session_id
 );
@@ -115,7 +115,7 @@ void encrypt_group_session(
  *
  * @param group_session
  */
-void close_group_session(Skissm__E2eeGroupSession *group_session);
+void close_group_session(Skissm__GroupSession *group_session);
 
 #ifdef __cplusplus
 }

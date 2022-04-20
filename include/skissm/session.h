@@ -37,9 +37,9 @@ typedef struct session_suite_t {
      * @return Success or not
      */
     size_t (*new_outbound_session)(
-        Skissm__E2eeSession *session,
-        const Skissm__E2eeAccount *local_account,
-        Skissm__E2eePreKeyBundle *their_pre_key_bundle
+        Skissm__Session *session,
+        const Skissm__Account *local_account,
+        Skissm__PreKeyBundle *their_pre_key_bundle
     );
 
     /**
@@ -47,31 +47,31 @@ typedef struct session_suite_t {
      *
      * @param session The inbound session
      * @param local_account Our account
-     * @param e2ee_invite_payload The inbound message
+     * @param invite_payload The inbound message
      * @return Success or not
      */
     size_t (*new_inbound_session)(
-        Skissm__E2eeSession *session,
-        Skissm__E2eeAccount *local_account,
-        Skissm__E2eeInvitePayload *e2ee_invite_payload
+        Skissm__Session *session,
+        Skissm__Account *local_account,
+        Skissm__InvitePayload *invite_payload
     );
 
     /**
      * @brief Complete an outbound session.
      *
      * @param session The inbound session
-     * @param e2ee_accept_payload The e2ee_accept_payload
+     * @param accept_payload The accept_payload
      * @return Success or not
      */
     size_t (*complete_outbound_session)(
-        Skissm__E2eeSession *outbound_session,
-        Skissm__E2eeAcceptPayload *e2ee_accept_payload
+        Skissm__Session *outbound_session,
+        Skissm__AcceptPayload *accept_payload
     );
 } session_suite_t;
 
 /* common */
 void initialise_session(
-    Skissm__E2eeSession *session,
+    Skissm__Session *session,
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to
@@ -79,44 +79,44 @@ void initialise_session(
 
 void pack_e2ee_plaintext(
     const uint8_t *plaintext_data, size_t plaintext_len,
-    Skissm__E2eePlaintextType plaintext_type,
+    Skissm__PlaintextType plaintext_type,
     uint8_t **e2ee_plaintext_data, size_t *e2ee_plaintext_data_len
 );
 
 /* ECC-related */
 size_t crypto_curve25519_new_outbound_session(
-    Skissm__E2eeSession *session,
-    const Skissm__E2eeAccount *local_account,
-    Skissm__E2eePreKeyBundle *their_pre_key_bundle
+    Skissm__Session *session,
+    const Skissm__Account *local_account,
+    Skissm__PreKeyBundle *their_pre_key_bundle
 );
 
 size_t crypto_curve25519_new_inbound_session(
-    Skissm__E2eeSession *session,
-    Skissm__E2eeAccount *local_account,
-    Skissm__E2eeInvitePayload *e2ee_invite_payload
+    Skissm__Session *session,
+    Skissm__Account *local_account,
+    Skissm__InvitePayload *invite_payload
 );
 
 size_t crypto_curve25519_complete_outbound_session(
-    Skissm__E2eeSession *outbound_session,
-    Skissm__E2eeAcceptPayload *e2ee_accept_payload
+    Skissm__Session *outbound_session,
+    Skissm__AcceptPayload *accept_payload
 );
 
 /* PQC-related */
 size_t pqc_new_outbound_session(
-    Skissm__E2eeSession *session,
-    const Skissm__E2eeAccount *local_account,
-    Skissm__E2eePreKeyBundle *their_pre_key_bundle
+    Skissm__Session *session,
+    const Skissm__Account *local_account,
+    Skissm__PreKeyBundle *their_pre_key_bundle
 );
 
 size_t pqc_new_inbound_session(
-    Skissm__E2eeSession *session,
-    Skissm__E2eeAccount *local_account,
-    Skissm__E2eeInvitePayload *e2ee_invite_payload
+    Skissm__Session *session,
+    Skissm__Account *local_account,
+    Skissm__InvitePayload *invite_payload
 );
 
 size_t pqc_complete_outbound_session(
-    Skissm__E2eeSession *outbound_session,
-    Skissm__E2eeAcceptPayload *e2ee_accept_payload
+    Skissm__Session *outbound_session,
+    Skissm__AcceptPayload *accept_payload
 );
 
 /**
@@ -124,7 +124,7 @@ size_t pqc_complete_outbound_session(
  *
  * @param session
  */
-void close_session(Skissm__E2eeSession *session);
+void close_session(Skissm__Session *session);
 
 #ifdef __cplusplus
 }

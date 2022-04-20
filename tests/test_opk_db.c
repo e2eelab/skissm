@@ -41,13 +41,16 @@ static void free_opks(Skissm__OneTimePreKey ***opks, uint32_t opk_num){
 void test_update_one_time_pre_key(){
     tear_up();
 
-    Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
+    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
     /* Generate a random address */
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
+    account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
+    skissm__peer_user__init(account->address->user);
+    account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
     account->address->domain = create_domain_str();
-    account->address->user_id = generate_uuid_str();
-    account->address->device_id = generate_uuid_str();
+    account->address->user->user_id = generate_uuid_str();
+    account->address->user->device_id = generate_uuid_str();
 
     /* Save to db */
     account->saved = true;
@@ -67,7 +70,7 @@ void test_update_one_time_pre_key(){
     print_result("test_update_one_time_pre_key", (opk_copy[used_opk]->used == true));
 
     // free
-    skissm__e2ee_account__free_unpacked(account, NULL);
+    skissm__account__free_unpacked(account, NULL);
     free_opks(&opk_copy, opk_num);
 
     tear_down();
@@ -76,13 +79,16 @@ void test_update_one_time_pre_key(){
 void test_remove_one_time_pre_key(){
     tear_up();
 
-    Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
+    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
     /* Generate a random address */
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
+    account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
+    skissm__peer_user__init(account->address->user);
+    account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
     account->address->domain = create_domain_str();
-    account->address->user_id = generate_uuid_str();
-    account->address->device_id = generate_uuid_str();
+    account->address->user->user_id = generate_uuid_str();
+    account->address->user->device_id = generate_uuid_str();
 
     /* Save to db */
     account->saved = true;
@@ -104,7 +110,7 @@ void test_remove_one_time_pre_key(){
     print_result("test_remove_one_time_pre_key", (opk_num == origin_opk_num - used_opk_num));
 
     // free
-    skissm__e2ee_account__free_unpacked(account, NULL);
+    skissm__account__free_unpacked(account, NULL);
     free_opks(&opk_copy, opk_num);
 
     tear_down();

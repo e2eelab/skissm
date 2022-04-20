@@ -29,17 +29,17 @@ extern "C" {
 #include "skissm/skissm.h"
 
 typedef struct register_user_response_handler{
-    Skissm__E2eeAccount *account;
+    Skissm__Account *account;
     void (*handle_release)(struct register_user_response_handler *this_handler);
 } register_user_response_handler;
 
 typedef struct publish_spk_response_handler{
-    Skissm__E2eeAccount *account;
+    Skissm__Account *account;
     void (*handle_release)(struct publish_spk_response_handler *this_handler);
 } publish_spk_response_handler;
 
 typedef struct supply_opks_handler{
-    Skissm__E2eeAccount *account;
+    Skissm__Account *account;
     void (*handle_release)(struct supply_opks_handler *this_handler);
 } supply_opks_handler;
 
@@ -73,7 +73,7 @@ typedef struct get_group_response_handler{
 } get_group_response_handler;
 
 typedef struct add_group_members_response_handler{
-    Skissm__E2eeGroupSession *outbound_group_session;
+    Skissm__GroupSession *outbound_group_session;
     Skissm__E2eeAddress **adding_member_addresses;
     size_t adding_member_num;
     void (*handle_response)(
@@ -82,7 +82,7 @@ typedef struct add_group_members_response_handler{
 } add_group_members_response_handler;
 
 typedef struct remove_group_members_response_handler{
-    Skissm__E2eeGroupSession *outbound_group_session;
+    Skissm__GroupSession *outbound_group_session;
     Skissm__E2eeAddress **removing_member_addresses;
     size_t removing_member_num;
     void (*handle_response)(

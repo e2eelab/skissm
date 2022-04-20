@@ -36,7 +36,7 @@ void tear_down();
 char *create_domain_str();
 void create_domain(ProtobufCBinaryData *domain);
 
-void load_account(uint64_t account_id, Skissm__E2eeAccount **account);
-void load_account_by_address(Skissm__E2eeAddress *address, Skissm__E2eeAccount **account);
-void store_account(Skissm__E2eeAccount *account);
+void load_account(uint64_t account_id, Skissm__Account **account);
+void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **account);
+void store_account(Skissm__Account *account);
 #endif /* TEST_ENV_H_ */

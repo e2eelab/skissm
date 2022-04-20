@@ -37,7 +37,7 @@ extern register_user_response_handler register_user_response_handler_store;
 
 static const cipher_suite_t *test_cipher_suite;
 
-static Skissm__E2eeAccount *account_data[account_data_max];
+static Skissm__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
@@ -57,8 +57,8 @@ store_group group = {NULL, NULL};
 
 static void on_error(ErrorCode error_code, char *error_msg) { print_error(error_msg, error_code); }
 
-static void on_user_registered(Skissm__E2eeAccount *account) {
-    print_msg("on_user_registered: user_id", (uint8_t *)account->address->user_id, strlen(account->address->user_id));
+static void on_user_registered(Skissm__Account *account) {
+    print_msg("on_user_registered: user_id", (uint8_t *)account->address->user->user_id, strlen(account->address->user->user_id));
 
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
@@ -68,11 +68,11 @@ static void on_inbound_session_invited(Skissm__E2eeAddress *from){
     printf("on_inbound_session_invited\n");
 }
 
-static void on_inbound_session_ready(Skissm__E2eeSession *inbound_session){
+static void on_inbound_session_ready(Skissm__Session *inbound_session){
     printf("on_inbound_session_ready\n");
 }
 
-static void on_outbound_session_ready(Skissm__E2eeSession *outbound_session){
+static void on_outbound_session_ready(Skissm__Session *outbound_session){
     printf("on_outbound_session_ready\n");
 }
 
@@ -102,7 +102,7 @@ static void on_group_members_added(Skissm__E2eeAddress *group_address, char *gro
     size_t n = sizeof(member_addresses);
     print_msg("on_group_members_added: group_name", (uint8_t *)group_name, strlen(group_name));
     for(int i=0; i<n; i++) {
-        print_msg("    member_id", (uint8_t *)(member_addresses[i]->user_id), strlen(member_addresses[i]->user_id));
+        print_msg("    member_id", (uint8_t *)(member_addresses[i]->user->user_id), strlen(member_addresses[i]->user->user_id));
     }
 }
 
@@ -110,7 +110,7 @@ static void on_group_members_removed(Skissm__E2eeAddress *group_address, char *g
     size_t n = sizeof(member_addresses);
     print_msg("on_group_members_removed: group_name", (uint8_t *)group_name, strlen(group_name));
     for(int i=0; i<n; i++) {
-        print_msg("    member_id", (uint8_t *)(member_addresses[i]->user_id), strlen(member_addresses[i]->user_id));
+        print_msg("    member_id", (uint8_t *)(member_addresses[i]->user->user_id), strlen(member_addresses[i]->user->user_id));
     }
 }
 
@@ -137,11 +137,11 @@ static void test_begin() {
 }
 
 static void test_end() {
-    skissm__e2ee_account__free_unpacked(account_data[0], NULL);
+    skissm__account__free_unpacked(account_data[0], NULL);
     account_data[0] = NULL;
-    skissm__e2ee_account__free_unpacked(account_data[1], NULL);
+    skissm__account__free_unpacked(account_data[1], NULL);
     account_data[1] = NULL;
-    skissm__e2ee_account__free_unpacked(account_data[2], NULL);
+    skissm__account__free_unpacked(account_data[2], NULL);
     account_data[2] = NULL;
     account_data_insert_pos = 0;
 }

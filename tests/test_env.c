@@ -70,9 +70,9 @@ static int handle_send(uint8_t *msg, size_t msg_len) {
 }
 
 // account related handlers
-void load_account(uint64_t account_id, Skissm__E2eeAccount **account) {
-    *account = (Skissm__E2eeAccount *)malloc(sizeof(Skissm__E2eeAccount));
-    skissm__e2ee_account__init((*account));
+void load_account(uint64_t account_id, Skissm__Account **account) {
+    *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
+    skissm__account__init((*account));
 
     (*account)->account_id = account_id;
     (*account)->version = load_version(account_id);
@@ -86,7 +86,7 @@ void load_account(uint64_t account_id, Skissm__E2eeAccount **account) {
     (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(account_id);
 }
 
-size_t load_accounts(Skissm__E2eeAccount ***accounts) {
+size_t load_accounts(Skissm__Account ***accounts) {
     // load all account_ids
     sqlite_int64 *account_ids;
     size_t num = load_ids(&account_ids);
@@ -95,7 +95,7 @@ size_t load_accounts(Skissm__E2eeAccount ***accounts) {
     if (num == 0) {
         *accounts = NULL;
     } else {
-        *accounts = (Skissm__E2eeAccount **)malloc(sizeof(Skissm__E2eeAccount *) * num);
+        *accounts = (Skissm__Account **)malloc(sizeof(Skissm__Account *) * num);
         for (int i = 0; i < num; i++) {
             load_account(account_ids[i], &(*accounts)[i]);
         }
@@ -108,13 +108,13 @@ size_t load_accounts(Skissm__E2eeAccount ***accounts) {
     return num;
 }
 
-void load_account_by_address(Skissm__E2eeAddress *address, Skissm__E2eeAccount **account) {
+void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **account) {
     sqlite_int64 account_id;
     load_id_by_address(address, &account_id);
     load_account(account_id, account);
 }
 
-void store_account(Skissm__E2eeAccount *account) {
+void store_account(Skissm__Account *account) {
     // insert address
     sqlite_int64 address_id = insert_address(account->address);
 

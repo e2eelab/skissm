@@ -92,7 +92,7 @@ static void handle_add_group_members_response(
 static void handle_add_group_members_release(
     add_group_members_response_handler *this_handler
 ) {
-    skissm__e2ee_group_session__free_unpacked(this_handler->outbound_group_session, NULL);
+    skissm__group_session__free_unpacked(this_handler->outbound_group_session, NULL);
     this_handler->outbound_group_session = NULL;
     this_handler->adding_member_addresses = NULL;
     this_handler->adding_member_num = 0;
@@ -150,7 +150,7 @@ static void handle_remove_group_members_response(
 static void handle_remove_group_members_release(
     remove_group_members_response_handler *this_handler
 ) {
-    skissm__e2ee_group_session__free_unpacked(this_handler->outbound_group_session, NULL);
+    skissm__group_session__free_unpacked(this_handler->outbound_group_session, NULL);
     this_handler->outbound_group_session = NULL;
     this_handler->removing_member_addresses = NULL;
     this_handler->removing_member_num = 0;
@@ -259,18 +259,18 @@ void remove_group_members(
     send_remove_group_members_request(&remove_group_members_response_handler_store);
 }
 
-Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) {
+Skissm__E2eeMsg *produce_group_msg(Skissm__GroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(group_session->e2ee_pack_id)->cipher_suite;
 
     /* Create the message key */
-    Skissm__MessageKey *keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
-    skissm__message_key__init(keys);
+    Skissm__MsgKey *keys = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+    skissm__msg_key__init(keys);
     create_group_message_keys(cipher_suite, &(group_session->chain_key), keys);
 
     /* Prepare an e2ee message */
     Skissm__E2eeMsg *group_msg = (Skissm__E2eeMsg *) malloc(sizeof(Skissm__E2eeMsg));
     skissm__e2ee_msg__init(group_msg);
-    group_msg->e2ee_msg_type = SKISSM__E2EE_MSG_TYPE__GROUP_MESSAGE;
+    group_msg->msg_type = SKISSM__E2EE_MSG_TYPE__GROUP_MESSAGE;
     group_msg->version = group_session->version;
     group_msg->session_id = strdup(group_session->session_id);
     group_msg->msg_id = generate_uuid_str();
@@ -313,7 +313,7 @@ Skissm__E2eeMsg *produce_group_msg(Skissm__E2eeGroupSession *group_session, cons
     group_session->sequence += 1;
 
     // release
-    skissm__message_key__free_unpacked(keys, NULL);
+    skissm__msg_key__free_unpacked(keys, NULL);
     skissm__e2ee_group_msg_payload__free_unpacked(group_msg_payload, NULL);
 
     // done
@@ -326,7 +326,7 @@ void encrypt_group_session(
     const uint8_t *plaintext, size_t plaintext_len
 ) {
     /* Load the outbound group session */
-    Skissm__E2eeGroupSession *group_session = NULL;
+    Skissm__GroupSession *group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &group_session);
 
     /* Do the encryption */
@@ -338,7 +338,7 @@ void encrypt_group_session(
 
 void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *group_msg) {
     /* Load the inbound group session */
-    Skissm__E2eeGroupSession *group_session = NULL;
+    Skissm__GroupSession *group_session = NULL;
     get_skissm_plugin()->db_handler.load_inbound_group_session(receiver_address, group_msg->to, &group_session);
 
     if (group_session == NULL){
@@ -349,7 +349,7 @@ void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *g
     const cipher_suite_t *cipher_suite = get_e2ee_pack(group_session->e2ee_pack_id)->cipher_suite;
 
     Skissm__E2eeGroupMsgPayload *group_msg_payload = NULL;
-    Skissm__MessageKey *keys = NULL;
+    Skissm__MsgKey *keys = NULL;
 
     /* Unpack the e2ee message */
     group_msg_payload = skissm__e2ee_group_msg_payload__unpack(NULL, group_msg->payload.len, group_msg->payload.data);
@@ -371,8 +371,8 @@ void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *g
     }
 
     /* Create the message key */
-    keys = (Skissm__MessageKey *) malloc(sizeof(Skissm__MessageKey));
-    skissm__message_key__init(keys);
+    keys = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+    skissm__msg_key__init(keys);
     create_group_message_keys(cipher_suite, &(group_session->chain_key), keys);
 
     /* Decryption */
@@ -393,7 +393,7 @@ void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *g
 
 complete:
     /* release */
-    skissm__message_key__free_unpacked(keys, NULL);
+    skissm__msg_key__free_unpacked(keys, NULL);
     skissm__e2ee_group_msg_payload__free_unpacked(group_msg_payload, NULL);
-    skissm__e2ee_group_session__free_unpacked(group_session, NULL);
+    skissm__group_session__free_unpacked(group_session, NULL);
 }

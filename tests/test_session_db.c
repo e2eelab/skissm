@@ -42,7 +42,7 @@ void test_load_outbound_session()
     tear_up();;
 
     // create session and two addresses
-    Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
+    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
@@ -73,7 +73,7 @@ void test_load_outbound_session()
     store_session(session);
 
     // load_outbound_session
-    Skissm__E2eeSession *session_copy;
+    Skissm__Session *session_copy;
     load_outbound_session(from, to, &session_copy);
 
     // assert session equals to session_copy
@@ -82,8 +82,8 @@ void test_load_outbound_session()
     // free
     skissm__e2ee_address__free_unpacked(from, NULL);
     skissm__e2ee_address__free_unpacked(to, NULL);
-    skissm__e2ee_session__free_unpacked(session, NULL);
-    skissm__e2ee_session__free_unpacked(session_copy, NULL);
+    skissm__session__free_unpacked(session, NULL);
+    skissm__session__free_unpacked(session_copy, NULL);
 
     tear_down();
 }
@@ -93,8 +93,8 @@ void test_load_inbound_session()
     tear_up();
 
     // create session and two addresses
-    Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
-    skissm__e2ee_session__init(session);
+    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    skissm__session__init(session);
 
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
@@ -126,7 +126,7 @@ void test_load_inbound_session()
     store_session(session);
 
     // load_inbound_session
-    Skissm__E2eeSession *session_copy;
+    Skissm__Session *session_copy;
     load_inbound_session(session->session_id, to, &session_copy);
 
     // assert session equals to session_copy
@@ -135,8 +135,8 @@ void test_load_inbound_session()
     // free
     skissm__e2ee_address__free_unpacked(from, NULL);
     skissm__e2ee_address__free_unpacked(to, NULL);
-    skissm__e2ee_session__free_unpacked(session, NULL);
-    skissm__e2ee_session__free_unpacked(session_copy, NULL);
+    skissm__session__free_unpacked(session, NULL);
+    skissm__session__free_unpacked(session_copy, NULL);
 
     tear_down();
 }
@@ -158,12 +158,15 @@ void test_load_outbound_group_session()
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
+    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    skissm__peer_group__init(group_address->group);
+    group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = create_domain_str();
-    group_address->group_id = generate_uuid_str();
+    group_address->group->group_id = generate_uuid_str();
 
     // create outbound group session
-    Skissm__E2eeGroupSession *group_session = (Skissm__E2eeGroupSession *) malloc(sizeof(Skissm__E2eeGroupSession));
-    skissm__e2ee_group_session__init(group_session);
+    Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    skissm__group_session__init(group_session);
 
     group_session->version = PROTOCOL_VERSION;
 
@@ -194,7 +197,7 @@ void test_load_outbound_group_session()
     store_group_session(group_session);
 
     // load_outbound_group_session
-    Skissm__E2eeGroupSession *group_session_copy;
+    Skissm__GroupSession *group_session_copy;
     load_outbound_group_session(Alice, group_address, &group_session_copy);
 
     // assert session equals to session_copy
@@ -205,8 +208,8 @@ void test_load_outbound_group_session()
     skissm__e2ee_address__free_unpacked(Bob, NULL);
     free(member_addresses);
     skissm__e2ee_address__free_unpacked(group_address, NULL);
-    skissm__e2ee_group_session__free_unpacked(group_session, NULL);
-    skissm__e2ee_group_session__free_unpacked(group_session_copy, NULL);
+    skissm__group_session__free_unpacked(group_session, NULL);
+    skissm__group_session__free_unpacked(group_session_copy, NULL);
 
     tear_down();
 }
@@ -228,12 +231,15 @@ void test_load_inbound_group_session()
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
+    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    skissm__peer_group__init(group_address->group);
+    group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = create_domain_str();
-    group_address->group_id = generate_uuid_str();
+    group_address->group->group_id = generate_uuid_str();
 
     // create inbound group session
-    Skissm__E2eeGroupSession *group_session = (Skissm__E2eeGroupSession *) malloc(sizeof(Skissm__E2eeGroupSession));
-    skissm__e2ee_group_session__init(group_session);
+    Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    skissm__group_session__init(group_session);
 
     group_session->version = PROTOCOL_VERSION;
 
@@ -268,7 +274,7 @@ void test_load_inbound_group_session()
     store_group_session(group_session);
 
     // load_inbound_group_session for owner: Alice
-    Skissm__E2eeGroupSession *group_session_copy = NULL;
+    Skissm__GroupSession *group_session_copy = NULL;
     load_inbound_group_session(Alice, group_session->group_address, &group_session_copy);
 
     // assert session equals to session_copy
@@ -279,8 +285,8 @@ void test_load_inbound_group_session()
     skissm__e2ee_address__free_unpacked(Bob, NULL);
     free(member_addresses);
     skissm__e2ee_address__free_unpacked(group_address, NULL);
-    skissm__e2ee_group_session__free_unpacked(group_session, NULL);
-    skissm__e2ee_group_session__free_unpacked(group_session_copy, NULL);
+    skissm__group_session__free_unpacked(group_session, NULL);
+    skissm__group_session__free_unpacked(group_session_copy, NULL);
 
     tear_down();
 }
@@ -290,7 +296,7 @@ void test_store_session()
     tear_up();
 
     // create session and two addresses
-    Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
+    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
@@ -342,7 +348,7 @@ void test_store_session()
     store_session(session);
 
     // load_outbound_session
-    Skissm__E2eeSession *session_copy;
+    Skissm__Session *session_copy;
     load_outbound_session(from, to, &session_copy);
 
     // assert session equals to session_copy
@@ -353,8 +359,8 @@ void test_store_session()
     // free
     skissm__e2ee_address__free_unpacked(from, NULL);
     skissm__e2ee_address__free_unpacked(to, NULL);
-    skissm__e2ee_session__free_unpacked(session, NULL);
-    skissm__e2ee_session__free_unpacked(session_copy, NULL);
+    skissm__session__free_unpacked(session, NULL);
+    skissm__session__free_unpacked(session_copy, NULL);
 
     tear_down();
 }
@@ -364,7 +370,7 @@ void test_equal_ratchet_outbound()
     tear_up();
 
     // create session and two addresses
-    Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
+    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
@@ -413,7 +419,7 @@ void test_equal_ratchet_outbound()
     store_session(session);
 
     // load_outbound_session
-    Skissm__E2eeSession *session_copy;
+    Skissm__Session *session_copy;
     load_outbound_session(from, to, &session_copy);
 
     // assert session equals to session_copy
@@ -422,8 +428,8 @@ void test_equal_ratchet_outbound()
     // free
     skissm__e2ee_address__free_unpacked(from, NULL);
     skissm__e2ee_address__free_unpacked(to, NULL);
-    skissm__e2ee_session__free_unpacked(session, NULL);
-    skissm__e2ee_session__free_unpacked(session_copy, NULL);
+    skissm__session__free_unpacked(session, NULL);
+    skissm__session__free_unpacked(session_copy, NULL);
 
     tear_down();
 }
@@ -433,7 +439,7 @@ void test_equal_ratchet_inbound()
     tear_up();
 
     // create session and two addresses
-    Skissm__E2eeSession *session = (Skissm__E2eeSession *) malloc(sizeof(Skissm__E2eeSession));
+    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
@@ -497,7 +503,7 @@ void test_equal_ratchet_inbound()
     store_session(session);
 
     // load_inbound_session
-    Skissm__E2eeSession *session_copy;
+    Skissm__Session *session_copy;
     load_inbound_session(session->session_id, to, &session_copy);
 
     // assert session equals to session_copy
@@ -506,8 +512,8 @@ void test_equal_ratchet_inbound()
     // free
     skissm__e2ee_address__free_unpacked(from, NULL);
     skissm__e2ee_address__free_unpacked(to, NULL);
-    skissm__e2ee_session__free_unpacked(session, NULL);
-    skissm__e2ee_session__free_unpacked(session_copy, NULL);
+    skissm__session__free_unpacked(session, NULL);
+    skissm__session__free_unpacked(session_copy, NULL);
 
     tear_down();
 }

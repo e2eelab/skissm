@@ -49,12 +49,15 @@ int main(){
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
+    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    skissm__peer_group__init(group_address->group);
+    group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = create_domain_str();
-    group_address->group_id = generate_uuid_str();
+    group_address->group->group_id = generate_uuid_str();
 
     // create an outbound group session
-    Skissm__E2eeGroupSession *outbound_group_session = (Skissm__E2eeGroupSession *) malloc(sizeof(Skissm__E2eeGroupSession));
-    skissm__e2ee_group_session__init(outbound_group_session);
+    Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    skissm__group_session__init(outbound_group_session);
 
     outbound_group_session->version = PROTOCOL_VERSION;
 
@@ -111,7 +114,7 @@ int main(){
     skissm__e2ee_address__free_unpacked(member_addresses[0], NULL);
     skissm__e2ee_address__free_unpacked(member_addresses[1], NULL);
     free(member_addresses);
-    skissm__e2ee_group_session__free_unpacked(outbound_group_session, NULL);
+    skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
     // test stop
     tear_down();

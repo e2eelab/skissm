@@ -35,7 +35,7 @@ static void test_alice_to_bob(
   ProtobufCBinaryData ad,
   uint8_t *shared_secret
 ) {
-    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
@@ -76,8 +76,8 @@ static void test_alice_to_bob(
 
     skissm__e2ee_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
-    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
+    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
+    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_out_of_order(
@@ -86,7 +86,7 @@ static void test_out_of_order(
   char *session_id,
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
-    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
@@ -135,8 +135,8 @@ static void test_out_of_order(
     skissm__e2ee_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, output_1_length);
     free_mem((void **)&output_2, output_2_length);
-    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
+    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
+    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
 }
 
 static void test_two_ratchets(
@@ -148,7 +148,7 @@ static void test_two_ratchets(
   ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
     /* This ratchet is used only for Alice to Bob. */
-    Skissm__E2eeRatchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
@@ -159,7 +159,7 @@ static void test_two_ratchets(
                       &bob_spk);
 
     /* This ratchet is used only for Bob to Alice. */
-    Skissm__E2eeRatchet *alice_ratchet_2 = NULL, *bob_ratchet_2 = NULL;
+    Skissm__Ratchet *alice_ratchet_2 = NULL, *bob_ratchet_2 = NULL;
     initialise_ratchet(&alice_ratchet_2);
     initialise_ratchet(&bob_ratchet_2);
 
@@ -208,10 +208,10 @@ static void test_two_ratchets(
     skissm__e2ee_msg_payload__free_unpacked(message_bob, NULL);
     free_mem((void **)&output_alice, decrypt_length_alice);
     free_mem((void **)&output_bob, decrypt_length_bob);
-    skissm__e2ee_ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__e2ee_ratchet__free_unpacked(bob_ratchet, NULL);
-    skissm__e2ee_ratchet__free_unpacked(alice_ratchet_2, NULL);
-    skissm__e2ee_ratchet__free_unpacked(bob_ratchet_2, NULL);
+    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
+    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+    skissm__ratchet__free_unpacked(alice_ratchet_2, NULL);
+    skissm__ratchet__free_unpacked(bob_ratchet_2, NULL);
 }
 
 int main() {

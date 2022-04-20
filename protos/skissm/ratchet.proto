@@ -21,20 +21,15 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeGroupSession";
+option java_outer_classname = "Ratchet";
 
-import "skissm/e2ee_address.proto";
+import "skissm/sender_chain_node.proto";
+import "skissm/receiver_chain_node.proto";
+import "skissm/skipped_message_key_node.proto";
 
-message e2ee_group_session {
-    uint32 version = 1;
-    uint32 e2ee_pack_id = 2;
-    string session_id = 3;
-    skissm.e2ee_address session_owner = 4;
-    skissm.e2ee_address group_address = 5;
-    repeated skissm.e2ee_address member_addresses = 6;
-    uint32 sequence = 7;
-    bytes chain_key = 8;
-    bytes signature_private_key = 9;
-    bytes signature_public_key = 10;
-    bytes associated_data = 11;
+message ratchet {
+  bytes root_key = 1;
+  skissm.sender_chain_node sender_chain = 2;
+  repeated skissm.receiver_chain_node receiver_chains = 3;
+  repeated skissm.skipped_message_key_node skipped_message_keys = 4;
 }

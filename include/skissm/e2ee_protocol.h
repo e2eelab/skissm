@@ -75,7 +75,7 @@ void remove_request_handler(handler_entry *entry);
  * @param cmd
  * @return
  */
-void *get_request_handler(Skissm__E2eeCommands cmd);
+void *get_request_handler(Skissm__ProtoCmds cmd);
 
 /**
  * @brief Insert a response handler with id
@@ -125,7 +125,7 @@ void protocol_end();
  * @param response_handler
  */
 void send_register_user_request(
-    Skissm__E2eeAccount *account,
+    Skissm__Account *account,
     register_user_response_handler *response_handler);
 
 /**
@@ -134,7 +134,7 @@ void send_register_user_request(
  * @param account
  * @param response_handler
  */
-void send_publish_spk_request(Skissm__E2eeAccount *account,
+void send_publish_spk_request(Skissm__Account *account,
                               publish_spk_response_handler *response_handler);
 
 /**
@@ -198,7 +198,7 @@ void send_get_pre_key_bundle_request(
  * @param e2ee_plaintext_len
  * @return Success or not
  */
-size_t send_one2one_msg(Skissm__E2eeSession *outbound_session, const uint8_t *e2ee_plaintext_data, size_t e2ee_plaintext_len);
+size_t send_one2one_msg(Skissm__Session *outbound_session, const uint8_t *e2ee_plaintext_data, size_t e2ee_plaintext_len);
 
 /**
  * @brief Send group encrypted message to messaging server
@@ -207,9 +207,9 @@ size_t send_one2one_msg(Skissm__E2eeSession *outbound_session, const uint8_t *e2
  * @param plaintext
  * @param plaintext_len
  */
-void send_group_msg(Skissm__E2eeGroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) ;
+void send_group_msg(Skissm__GroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len) ;
 
-void send_invite_request(Skissm__E2eeSession *outbound_session, ProtobufCBinaryData *pre_shared_key_1,
+void send_invite_request(Skissm__Session *outbound_session, ProtobufCBinaryData *pre_shared_key_1,
                          ProtobufCBinaryData *pre_shared_key_2, ProtobufCBinaryData *pre_shared_key_3
 );
 

@@ -39,9 +39,9 @@ void account_end();
  * a signature, and 100 one-time pre-key pairs.
  * @param account_id a unique account id start form 1
  * @param e2ee_pack_id an id (0, 1) of e2ee package
- * @return Skissm__E2eeAccount*
+ * @return Skissm__Account*
  */
-Skissm__E2eeAccount *create_account(uint64_t account_id, uint32_t e2ee_pack_id);
+Skissm__Account *create_account(uint64_t account_id, uint32_t e2ee_pack_id);
 
 /**
  * @brief Get the local account object
@@ -49,7 +49,7 @@ Skissm__E2eeAccount *create_account(uint64_t account_id, uint32_t e2ee_pack_id);
  * @param address the peer address that is related to an account
  * @return The local account object
  */
-Skissm__E2eeAccount *
+Skissm__Account *
 get_local_account(Skissm__E2eeAddress *address);
 
 /**  */
@@ -62,7 +62,7 @@ get_local_account(Skissm__E2eeAddress *address);
  * @return The matched one-time pre-key.
  */
 const Skissm__OneTimePreKey *
-lookup_one_time_pre_key(Skissm__E2eeAccount *account,
+lookup_one_time_pre_key(Skissm__Account *account,
                         uint32_t one_time_pre_key_id);
 
 /**
@@ -72,7 +72,7 @@ lookup_one_time_pre_key(Skissm__E2eeAccount *account,
  * @return Success or not
  */
 size_t
-generate_signed_pre_key(Skissm__E2eeAccount *account);
+generate_signed_pre_key(Skissm__Account *account);
 
 /** Generates a number of new one time keys. */
 
@@ -86,7 +86,7 @@ generate_signed_pre_key(Skissm__E2eeAccount *account);
  */
 Skissm__OneTimePreKey **
 generate_opks(size_t number_of_keys,
-              Skissm__E2eeAccount *account);
+              Skissm__Account *account);
 
 /**
  * @brief Mark one of the one-time pre-key pairs as used given by ID
@@ -95,7 +95,7 @@ generate_opks(size_t number_of_keys,
  * @param id The id of one-time pre-key that will be marked as used.
  * @return Success or not
  */
-size_t mark_opk_as_used(Skissm__E2eeAccount *account,
+size_t mark_opk_as_used(Skissm__Account *account,
                         uint32_t id);
 
 /**
@@ -103,7 +103,7 @@ size_t mark_opk_as_used(Skissm__E2eeAccount *account,
  *
  * @param account The account to be processed
  */
-void free_one_time_pre_key(Skissm__E2eeAccount *account);
+void free_one_time_pre_key(Skissm__Account *account);
 
 #ifdef __cplusplus
 }

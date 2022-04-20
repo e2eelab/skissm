@@ -21,15 +21,17 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeRatchet";
+option java_outer_classname = "PreKeyBundle";
 
-import "skissm/sender_chain_node.proto";
-import "skissm/receiver_chain_node.proto";
-import "skissm/skipped_message_key_node.proto";
+import "skissm/e2ee_address.proto";
+import "skissm/identity_key_public.proto";
+import "skissm/signed_pre_key_public.proto";
+import "skissm/one_time_pre_key_public.proto";
 
-message e2ee_ratchet {
-  bytes root_key = 1;
-  skissm.sender_chain_node sender_chain = 2;
-  repeated skissm.receiver_chain_node receiver_chains = 3;
-  repeated skissm.skipped_message_key_node skipped_message_keys = 4;
+message pre_key_bundle {
+    skissm.e2ee_address peer_address = 1;
+    uint32 e2ee_pack_id = 2;
+    skissm.identity_key_public identity_key_public = 3;
+    skissm.signed_pre_key_public signed_pre_key_public = 4;
+    skissm.one_time_pre_key_public one_time_pre_key_public = 5;
 }

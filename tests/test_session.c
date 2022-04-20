@@ -40,7 +40,7 @@ extern register_user_response_handler register_user_response_handler_store;
 
 static const cipher_suite_t *test_cipher_suite;
 
-static Skissm__E2eeAccount *account_data[account_data_max];
+static Skissm__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
@@ -55,7 +55,7 @@ static void on_error(ErrorCode error_code, char *error_msg) {
     print_error(error_msg, error_code);
 }
 
-static void on_user_registered(Skissm__E2eeAccount *account){
+static void on_user_registered(Skissm__Account *account){
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
 }
@@ -64,11 +64,11 @@ static void on_inbound_session_invited(Skissm__E2eeAddress *from) {
     printf("on_inbound_session_invited\n");
 }
 
-static void on_inbound_session_ready(Skissm__E2eeSession *inbound_session){
+static void on_inbound_session_ready(Skissm__Session *inbound_session){
     printf("on_inbound_session_ready\n");
 }
 
-static void on_outbound_session_ready(Skissm__E2eeSession *outbound_session){
+static void on_outbound_session_ready(Skissm__Session *outbound_session){
     printf("on_outbound_session_ready\n");
 }
 
@@ -108,26 +108,26 @@ static void test_begin(){
 }
 
 static void test_end(){
-    skissm__e2ee_account__free_unpacked(account_data[0], NULL);
+    skissm__account__free_unpacked(account_data[0], NULL);
     account_data[0] = NULL;
-    skissm__e2ee_account__free_unpacked(account_data[1], NULL);
+    skissm__account__free_unpacked(account_data[1], NULL);
     account_data[1] = NULL;
     account_data_insert_pos = 0;
 }
 
 static void test_encryption(
-    Skissm__E2eeSession *outbound_session,
+    Skissm__Session *outbound_session,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     if (plaintext_store.plaintext != NULL){
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
     }
-    // pack plaintext into ontext that is in Skissm__E2eePlaintext structure
+    // pack plaintext into ontext that is in Skissm__Plaintext structure
     uint8_t *e2ee_plaintext = NULL;
     size_t e2ee_plaintext_len;
     pack_e2ee_plaintext(
         plaintext, plaintext_len,
-        SKISSM__E2EE_PLAINTEXT_TYPE__COMMON_MSG,
+        SKISSM__PLAINTEXT_TYPE__COMMON_MSG,
         &e2ee_plaintext, &e2ee_plaintext_len
     );
 
@@ -150,7 +150,7 @@ static void test_basic_session(){
     register_account(1, TEST_E2EE_PACK_ID);
     register_account(2, TEST_E2EE_PACK_ID);
 
-    Skissm__E2eeSession *outbound_session;
+    Skissm__Session *outbound_session;
 
     // Alice invites Bob to create a session
     size_t success = init_outbound_session(account_data[0]->address, account_data[1]->address);
@@ -167,7 +167,7 @@ static void test_basic_session(){
     test_encryption(outbound_session, plaintext, plaintext_len);
 
     // test stop
-    skissm__e2ee_session__free_unpacked(outbound_session, NULL);
+    skissm__session__free_unpacked(outbound_session, NULL);
     test_end();
     tear_down();
 }
@@ -180,7 +180,7 @@ static void test_interaction(){
     register_account(1, TEST_E2EE_PACK_ID);
     register_account(2, TEST_E2EE_PACK_ID);
 
-    Skissm__E2eeSession *outbound_session_a, *outbound_session_b;
+    Skissm__Session *outbound_session_a, *outbound_session_b;
 
     // Alice invites Bob to create a session
     size_t success = init_outbound_session(account_data[0]->address, account_data[1]->address);
@@ -211,8 +211,8 @@ static void test_interaction(){
     test_encryption(outbound_session_b, plaintext_2, plaintext_len_2);
 
     // test stop
-    skissm__e2ee_session__free_unpacked(outbound_session_a, NULL);
-    skissm__e2ee_session__free_unpacked(outbound_session_b, NULL);
+    skissm__session__free_unpacked(outbound_session_a, NULL);
+    skissm__session__free_unpacked(outbound_session_b, NULL);
     test_end();
     tear_down();
 }
@@ -225,7 +225,7 @@ static void test_continual_messages(){
     register_account(1, TEST_E2EE_PACK_ID);
     register_account(2, TEST_E2EE_PACK_ID);
 
-    Skissm__E2eeSession *outbound_session;
+    Skissm__Session *outbound_session;
 
     // Alice invites Bob to create a session
     size_t success = init_outbound_session(account_data[0]->address, account_data[1]->address);
@@ -244,7 +244,7 @@ static void test_continual_messages(){
     }
 
     // test stop
-    skissm__e2ee_session__free_unpacked(outbound_session, NULL);
+    skissm__session__free_unpacked(outbound_session, NULL);
     test_end();
     tear_down();
 }

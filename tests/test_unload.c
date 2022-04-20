@@ -49,12 +49,15 @@ void test_unload_inbound_group_session(){
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
+    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    skissm__peer_group__init(group_address->group);
+    group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = create_domain_str();
-    group_address->group_id = generate_uuid_str();
+    group_address->group->group_id = generate_uuid_str();
 
     // create inbound group session
-    Skissm__E2eeGroupSession *group_session = (Skissm__E2eeGroupSession *) malloc(sizeof(Skissm__E2eeGroupSession));
-    skissm__e2ee_group_session__init(group_session);
+    Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    skissm__group_session__init(group_session);
 
     group_session->version = PROTOCOL_VERSION;
 
@@ -88,7 +91,7 @@ void test_unload_inbound_group_session(){
     unload_inbound_group_session(Alice, group_session->session_id);
 
     // try to load the unloaded group session
-    Skissm__E2eeGroupSession *group_session_copy = NULL;
+    Skissm__GroupSession *group_session_copy = NULL;
     load_inbound_group_session(Alice, group_session->group_address, &group_session_copy);
 
     // assert group_session_copy is NULL
@@ -99,8 +102,8 @@ void test_unload_inbound_group_session(){
     skissm__e2ee_address__free_unpacked(Bob, NULL);
     free(member_addresses);
     skissm__e2ee_address__free_unpacked(group_address, NULL);
-    skissm__e2ee_group_session__free_unpacked(group_session, NULL);
-    skissm__e2ee_group_session__free_unpacked(group_session_copy, NULL);
+    skissm__group_session__free_unpacked(group_session, NULL);
+    skissm__group_session__free_unpacked(group_session_copy, NULL);
 
     tear_down();
 }

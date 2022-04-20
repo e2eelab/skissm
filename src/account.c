@@ -24,10 +24,10 @@
 #include "skissm/cipher.h"
 #include "skissm/mem_util.h"
 
-static Skissm__E2eeAccount *local_account = NULL;
+static Skissm__Account *local_account = NULL;
 
 void account_begin() {
-    Skissm__E2eeAccount **accounts = NULL;
+    Skissm__Account **accounts = NULL;
     size_t account_num = get_skissm_plugin()->db_handler.load_accounts(&accounts);
 
     if (account_num == 0) {
@@ -36,7 +36,7 @@ void account_begin() {
         }
         return;
     }
-    Skissm__E2eeAccount *cur_account = NULL;
+    Skissm__Account *cur_account = NULL;
     int64_t now;
     size_t i;
     for (i = 0; i < account_num; i++) {
@@ -55,7 +55,7 @@ void account_begin() {
         free_one_time_pre_key(cur_account);
 
         /* Release */
-        skissm__e2ee_account__free_unpacked(cur_account, NULL);
+        skissm__account__free_unpacked(cur_account, NULL);
         cur_account = NULL;
     }
     free(accounts);
@@ -63,14 +63,14 @@ void account_begin() {
 
 void account_end() {
     if (local_account != NULL) {
-        skissm__e2ee_account__free_unpacked(local_account, NULL);
+        skissm__account__free_unpacked(local_account, NULL);
         local_account = NULL;
     }
 }
 
-Skissm__E2eeAccount *create_account(uint64_t account_id, uint32_t e2ee_pack_id) {
-    Skissm__E2eeAccount *account = (Skissm__E2eeAccount *)malloc(sizeof(Skissm__E2eeAccount));
-    skissm__e2ee_account__init(account);
+Skissm__Account *create_account(uint64_t account_id, uint32_t e2ee_pack_id) {
+    Skissm__Account *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
+    skissm__account__init(account);
 
     // Set the version
     account->version = PROTOCOL_VERSION;
@@ -103,19 +103,19 @@ Skissm__E2eeAccount *create_account(uint64_t account_id, uint32_t e2ee_pack_id) 
     return account;
 }
 
-Skissm__E2eeAccount *get_local_account(Skissm__E2eeAddress *address) {
+Skissm__Account *get_local_account(Skissm__E2eeAddress *address) {
     if (local_account != NULL) {
         if ((local_account->address) && compare_address(local_account->address, address)) {
             return local_account;
         }
-        skissm__e2ee_account__free_unpacked(local_account, NULL);
+        skissm__account__free_unpacked(local_account, NULL);
         local_account = NULL;
     }
     get_skissm_plugin()->db_handler.load_account_by_address(address, &local_account);
     return local_account;
 }
 
-size_t generate_signed_pre_key(Skissm__E2eeAccount *account) {
+size_t generate_signed_pre_key(Skissm__Account *account) {
     uint32_t next_signed_pre_key_id = 1;
     // Check whether the old signed pre-key exists or not
     if (account->signed_pre_key) {
@@ -149,7 +149,7 @@ size_t generate_signed_pre_key(Skissm__E2eeAccount *account) {
     return 0;
 }
 
-const Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__E2eeAccount *account, uint32_t one_time_pre_key_id) {
+const Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__Account *account, uint32_t one_time_pre_key_id) {
     Skissm__OneTimePreKey **cur = account->one_time_pre_keys;
     size_t i;
     for (i = 0; i < account->n_one_time_pre_keys; i++) {
@@ -160,7 +160,7 @@ const Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__E2eeAccount *accoun
     return NULL;
 }
 
-Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__E2eeAccount *account) {
+Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *account) {
     // Generate a number of one-time pre-key pairs
 
     Skissm__OneTimePreKey **inserted_one_time_pre_key_list_node;
@@ -209,7 +209,7 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__E2eeAccount
     return inserted_one_time_pre_key_list_node;
 }
 
-size_t mark_opk_as_used(Skissm__E2eeAccount *account, uint32_t id) {
+size_t mark_opk_as_used(Skissm__Account *account, uint32_t id) {
     Skissm__OneTimePreKey **cur = account->one_time_pre_keys;
     unsigned int i;
     for (i = 0; i < account->n_one_time_pre_keys; i++) {
@@ -238,7 +238,7 @@ static void copy_one_time_pre_keys(Skissm__OneTimePreKey **dest, Skissm__OneTime
 }
 
 /* TODO: Need to be checked */
-void free_one_time_pre_key(Skissm__E2eeAccount *account) {
+void free_one_time_pre_key(Skissm__Account *account) {
     size_t used_num = 0;
     size_t new_num;
     unsigned int i;

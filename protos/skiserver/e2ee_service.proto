@@ -6,8 +6,8 @@ option java_package = "org.e2eelab.skiserver.proto";
 
 import "skissm/add_group_members_request_payload.proto";
 import "skissm/create_group_request_payload.proto";
-import "skissm/e2ee_accept_payload.proto";
-import "skissm/e2ee_invite_payload.proto";
+import "skissm/accept_payload.proto";
+import "skissm/invite_payload.proto";
 import "skissm/e2ee_msg.proto";
 import "skissm/e2ee_protocol_msg.proto";
 import "skissm/get_pre_key_bundle_request_payload.proto";
@@ -46,8 +46,8 @@ service E2EEService {
 
     rpc registerUser(skissm.register_user_request_payload) returns (skissm.response_data) {}
     rpc getPreKeyBundle(skissm.get_pre_key_bundle_request_payload) returns (skissm.response_data) {}
-    rpc invite(skissm.e2ee_invite_payload) returns (skissm.response_data) {}
-    rpc accept(skissm.e2ee_accept_payload) returns (skissm.response_data) {}
+    rpc invite(skissm.invite_payload) returns (skissm.response_data) {}
+    rpc accept(skissm.accept_payload) returns (skissm.response_data) {}
     rpc publishSPK(skissm.publish_spk_request_payload) returns (skissm.response_data) {}
     rpc sendOne2OneMsg(skissm.e2ee_msg) returns (skissm.response_data) {}
 

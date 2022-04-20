@@ -30,7 +30,7 @@
 
 #include "test_env.h"
 
-static void verify_one_time_pre_keys(Skissm__E2eeAccount *account, unsigned int n_one_time_pre_keys) {
+static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_one_time_pre_keys) {
     unsigned int i;
 
     assert(account->n_one_time_pre_keys == n_one_time_pre_keys);
@@ -49,7 +49,7 @@ int main(){
     tear_up();
 
     // Register test
-    Skissm__E2eeAccount *account = create_account(1, TEST_E2EE_PACK_ID);
+    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
 
     assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
@@ -76,7 +76,7 @@ int main(){
     verify_one_time_pre_keys(account, 180);
 
     // release
-    skissm__e2ee_account__free_unpacked(account, NULL);
+    skissm__account__free_unpacked(account, NULL);
 
     // test stop.
     tear_down();

@@ -19,28 +19,11 @@
 syntax = "proto3";
 
 package skissm;
-
+ 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeSession";
+option java_outer_classname = "E2eeAcceptPayload";
 
-import "skissm/e2ee_address.proto";
-import "skissm/e2ee_ratchet.proto";
-
-message e2ee_session {
-    uint32 version = 1;
-    uint32 e2ee_pack_id = 2;
-    string session_id = 3;
-    skissm.e2ee_address session_owner = 4;
-    skissm.e2ee_address from = 5;
-    skissm.e2ee_address to = 6;
-    skissm.e2ee_ratchet ratchet = 7;
-    bytes alice_identity_key = 8;
-    bytes alice_ephemeral_key = 9;
-    bytes bob_signed_pre_key = 10;
-    uint32 bob_signed_pre_key_id = 11;
-    bytes bob_one_time_pre_key = 12;
-    uint32 bob_one_time_pre_key_id = 13;
-
-    bool responded = 14;
-    bytes associated_data = 15;
+message accept_payload {
+    uint32 e2ee_pack_id = 1;
+    repeated bytes pre_shared_key = 2;
 }

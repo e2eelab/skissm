@@ -72,8 +72,8 @@ void copy_opks_from_opks(
 );
 
 void copy_account_from_account(
-    Skissm__E2eeAccount **dest,
-    Skissm__E2eeAccount *src
+    Skissm__Account **dest,
+    Skissm__Account *src
 );
 
 void copy_member_addresses_from_member_addresses(

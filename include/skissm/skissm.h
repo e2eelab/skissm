@@ -28,50 +28,50 @@ extern "C" {
 
 #include "error.h"
 
+#include "skissm/accept_payload.pb-c.h"
+#include "skissm/account.pb-c.h"
 #include "skissm/add_group_members_request_payload.pb-c.h"
 #include "skissm/chain_key.pb-c.h"
 #include "skissm/create_group_request_payload.pb-c.h"
 #include "skissm/create_group_response_payload.pb-c.h"
-#include "skissm/e2ee_accept_payload.pb-c.h"
-#include "skissm/e2ee_account.pb-c.h"
 #include "skissm/e2ee_address.pb-c.h"
-#include "skissm/e2ee_commands.pb-c.h"
 #include "skissm/e2ee_group_msg_payload.pb-c.h"
-#include "skissm/e2ee_group_pre_key_payload.pb-c.h"
-#include "skissm/e2ee_group_session.pb-c.h"
-#include "skissm/e2ee_invite_payload.pb-c.h"
 #include "skissm/e2ee_msg.pb-c.h"
-#include "skissm/e2ee_msg_type.pb-c.h"
 #include "skissm/e2ee_msg_payload.pb-c.h"
-#include "skissm/e2ee_plaintext.pb-c.h"
-#include "skissm/e2ee_plaintext_type.pb-c.h"
-#include "skissm/e2ee_pre_key_bundle.pb-c.h"
-#include "skissm/e2ee_protocol_msg.pb-c.h"
-#include "skissm/e2ee_ratchet.pb-c.h"
-#include "skissm/e2ee_session.pb-c.h"
+#include "skissm/e2ee_msg_type.pb-c.h"
 #include "skissm/get_group_request_payload.pb-c.h"
 #include "skissm/get_group_response_payload.pb-c.h"
 #include "skissm/get_pre_key_bundle_request_payload.pb-c.h"
 #include "skissm/get_pre_key_bundle_response_payload.pb-c.h"
-#include "skissm/identity_key_public.pb-c.h"
+#include "skissm/group_pre_key_payload.pb-c.h"
+#include "skissm/group_session.pb-c.h"
 #include "skissm/identity_key.pb-c.h"
+#include "skissm/identity_key_public.pb-c.h"
+#include "skissm/invite_payload.pb-c.h"
 #include "skissm/key_pair.pb-c.h"
-#include "skissm/message_key.pb-c.h"
+#include "skissm/msg_key.pb-c.h"
 #include "skissm/one_time_pre_key.pb-c.h"
 #include "skissm/one_time_pre_key_public.pb-c.h"
 #include "skissm/pending_group_pre_key.pb-c.h"
+#include "skissm/plaintext.pb-c.h"
+#include "skissm/plaintext_type.pb-c.h"
+#include "skissm/pre_key_bundle.pb-c.h"
+#include "skissm/proto_cmds.pb-c.h"
+#include "skissm/proto_msg.pb-c.h"
 #include "skissm/publish_spk_request_payload.pb-c.h"
+#include "skissm/ratchet.pb-c.h"
 #include "skissm/receiver_chain_node.pb-c.h"
 #include "skissm/register_user_request_payload.pb-c.h"
 #include "skissm/register_user_response_payload.pb-c.h"
 #include "skissm/remove_group_members_request_payload.pb-c.h"
+#include "skissm/response_data.pb-c.h"
 #include "skissm/sender_chain_node.pb-c.h"
+#include "skissm/session.pb-c.h"
 #include "skissm/signed_pre_key.pb-c.h"
 #include "skissm/signed_pre_key_public.pb-c.h"
 #include "skissm/skipped_message_key_node.pb-c.h"
 #include "skissm/supply_opks_request_payload.pb-c.h"
 #include "skissm/supply_opks_response_payload.pb-c.h"
-#include "skissm/response_data.pb-c.h"
 
 #include "skissm/session.h"
 #include "skissm/cipher.h"
@@ -91,9 +91,7 @@ typedef struct e2ee_pack_t {
 struct e2ee_pack_list_t {
   const struct e2ee_pack_t *e2ee_pack_0;
   const struct e2ee_pack_t *e2ee_pack_1;
-} e2ee_pack_list_t;
-
-const struct e2ee_pack_list_t E2EE_PACK_LIST;
+};
 
 typedef struct crypto_param_t {
     int asym_key_len;
@@ -117,26 +115,26 @@ typedef struct skissm_db_handler_t {
      * @brief store account to db
      * @param account
      */
-    void (*store_account)(Skissm__E2eeAccount *);
+    void (*store_account)(Skissm__Account *);
     /**
      * @brief load account from db
      * @param account_id
      * @param account
      */
-    void (*load_account)(uint64_t, Skissm__E2eeAccount **);
+    void (*load_account)(uint64_t, Skissm__Account **);
     /**
      * @brief load all accounts from db
      * @param accounts
      * @return number of loaded accounts
      */
-    size_t (*load_accounts)(Skissm__E2eeAccount ***);
+    size_t (*load_accounts)(Skissm__Account ***);
     /**
      * @brief load account from db by giving address
      * @param address
      * @param account
      */
     void (*load_account_by_address)(Skissm__E2eeAddress *,
-                                    Skissm__E2eeAccount **);
+                                    Skissm__Account **);
     /**
      * @brief update identity key of account to db
      * @param account_id
@@ -196,7 +194,7 @@ typedef struct skissm_db_handler_t {
      * @param inbound_session
      */
     void (*load_inbound_session)(char *, Skissm__E2eeAddress *,
-                                 Skissm__E2eeSession **);
+                                 Skissm__Session **);
     /**
      * @brief find outbound session
      * @param owner
@@ -205,12 +203,12 @@ typedef struct skissm_db_handler_t {
      */
     void (*load_outbound_session)(Skissm__E2eeAddress *,
                                   Skissm__E2eeAddress *,
-                                  Skissm__E2eeSession **);
+                                  Skissm__Session **);
     /**
      * @brief store session
      * @param session
      */
-    void (*store_session)(Skissm__E2eeSession *);
+    void (*store_session)(Skissm__Session *);
     /**
      * @brief delete old inbound session
      * @param owner
@@ -229,7 +227,7 @@ typedef struct skissm_db_handler_t {
      */
     void (*load_outbound_group_session)(Skissm__E2eeAddress *,
                                         Skissm__E2eeAddress *,
-                                        Skissm__E2eeGroupSession **);
+                                        Skissm__GroupSession **);
     /**
      * @brief find inbound group session
      * @param receiver_address
@@ -238,17 +236,17 @@ typedef struct skissm_db_handler_t {
      */
     void (*load_inbound_group_session)(Skissm__E2eeAddress *,
                                        Skissm__E2eeAddress *,
-                                       Skissm__E2eeGroupSession **);
+                                       Skissm__GroupSession **);
     /**
      * @brief store group session
      * @param group_session
      */
-    void (*store_group_session)(Skissm__E2eeGroupSession *);
+    void (*store_group_session)(Skissm__GroupSession *);
     /**
      * @brief delete group session
      * @param group_session
      */
-    void (*unload_group_session)(Skissm__E2eeGroupSession *);
+    void (*unload_group_session)(Skissm__GroupSession *);
     /**
      * @brief delete old inbound group session
      * @param user_address
@@ -290,7 +288,7 @@ typedef struct skissm_event_handler_t {
      * @brief notify user registered event
      * @param account
      */
-    void (*on_user_registered)(Skissm__E2eeAccount *);
+    void (*on_user_registered)(Skissm__Account *);
     /**
      * @brief notify inbound session invited
      * @param from
@@ -300,12 +298,12 @@ typedef struct skissm_event_handler_t {
      * @brief notify inbound session ready
      * @param inbound_session
      */
-    void (*on_inbound_session_ready)(Skissm__E2eeSession *);
+    void (*on_inbound_session_ready)(Skissm__Session *);
     /**
      * @brief notify outbound session ready
      * @param outbound_session
      */
-    void (*on_outbound_session_ready)(Skissm__E2eeSession *);
+    void (*on_outbound_session_ready)(Skissm__Session *);
     /**
      * @brief notify one2one msg received event
      * @param from_address
@@ -365,10 +363,10 @@ void skissm_end();
 skissm_plugin_t *get_skissm_plugin();
 
 void ssm_notify_error(ErrorCode, char *);
-void ssm_notify_user_registered(Skissm__E2eeAccount *account);
+void ssm_notify_user_registered(Skissm__Account *account);
 void ssm_notify_inbound_session_invited(Skissm__E2eeAddress *from);
-void ssm_notify_inbound_session_ready(Skissm__E2eeSession *inbound_session);
-void ssm_notify_outbound_session_ready(Skissm__E2eeSession *outbound_session);
+void ssm_notify_inbound_session_ready(Skissm__Session *inbound_session);
+void ssm_notify_outbound_session_ready(Skissm__Session *outbound_session);
 void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,
                             Skissm__E2eeAddress *to_address, uint8_t *plaintext,
                             size_t plaintext_len);

@@ -32,6 +32,6 @@ message e2ee_msg {
     skissm.e2ee_address to = 3;
     string msg_id = 4;
     string session_id = 5;
-    skissm.e2ee_msg_type e2ee_msg_type = 6;
+    skissm.e2ee_msg_type msg_type = 6;
     bytes payload = 7;
 }

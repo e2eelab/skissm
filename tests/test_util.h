@@ -33,19 +33,18 @@ bool is_not_null(void *pointer_1, void *pointer_2);
 // is_equal
 bool is_equal_data(ProtobufCBinaryData *data1, ProtobufCBinaryData *data2);
 bool is_equal_str(char *str1, char *str2);
-bool is_equal_address(Skissm__E2eeAddress *address1, Skissm__E2eeAddress *address2);
 bool is_equal_keypair(Skissm__KeyPair *keypair1, Skissm__KeyPair *keypair2);
 bool is_equal_spk(Skissm__SignedPreKey *spk1, Skissm__SignedPreKey *spk2);
 bool is_equal_opk(Skissm__OneTimePreKey *opk1, Skissm__OneTimePreKey *opk2);
-bool is_equal_account(Skissm__E2eeAccount *account1, Skissm__E2eeAccount *account2);
-bool is_equal_message_key(Skissm__MessageKey *message_key_1, Skissm__MessageKey *message_key_2);
+bool is_equal_account(Skissm__Account *account1, Skissm__Account *account2);
+bool is_equal_message_key(Skissm__MsgKey *message_key_1, Skissm__MsgKey *message_key_2);
 bool is_equal_chain(Skissm__ChainKey *chain_key_1, Skissm__ChainKey *chain_key_2);
 bool is_equal_sender_chain(Skissm__SenderChainNode *sender_chain_1, Skissm__SenderChainNode *sender_chain_2);
 bool is_equal_receiver_chain(Skissm__ReceiverChainNode *receiver_chain_node_1, Skissm__ReceiverChainNode *receiver_chain_node_2);
 bool is_equal_skipped_message_key(Skissm__SkippedMessageKeyNode *skipped_message_key_node_1, Skissm__SkippedMessageKeyNode *skipped_message_key_node_2);
-bool is_equal_ratchet(Skissm__E2eeRatchet *ratchet_1, Skissm__E2eeRatchet *ratchet_2);
-bool is_equal_session(Skissm__E2eeSession *session_1, Skissm__E2eeSession *session_2);
-bool is_equal_group_session(Skissm__E2eeGroupSession *group_session_1, Skissm__E2eeGroupSession *group_session_2);
+bool is_equal_ratchet(Skissm__Ratchet *ratchet_1, Skissm__Ratchet *ratchet_2);
+bool is_equal_session(Skissm__Session *session_1, Skissm__Session *session_2);
+bool is_equal_group_session(Skissm__GroupSession *group_session_1, Skissm__GroupSession *group_session_2);
 
 // mock
 void mock_data(ProtobufCBinaryData *to, const char *from);
@@ -57,7 +56,7 @@ void mock_signed_pre_keypair(Skissm__SignedPreKey **signed_pre_keypair, uint32_t
 void mock_one_time_pre_keypair(Skissm__OneTimePreKey **one_time_pre_keypair, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key);
 
 // free
-void free_account(Skissm__E2eeAccount *account);
+void free_account(Skissm__Account *account);
 void free_keypair(Skissm__KeyPair *keypair);
 void free_signed_pre_keypair(Skissm__SignedPreKey *signed_pre_keypair);
 void free_one_time_pre_key_pair(Skissm__OneTimePreKey *one_time_pre_keypair);

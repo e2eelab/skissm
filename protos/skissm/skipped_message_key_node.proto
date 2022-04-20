@@ -23,9 +23,9 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "SkippedMessageKeyNode";
 
-import "skissm/message_key.proto";
+import "skissm/msg_key.proto";
 
 message skipped_message_key_node {
   bytes ratchet_key_public = 1;
-  skissm.message_key message_key = 2;
+  skissm.msg_key msg_key = 2;
 }
