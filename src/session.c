@@ -23,7 +23,7 @@
 
 #include "skissm/account.h"
 #include "skissm/cipher.h"
-#include "skissm/e2ee_protocol.h"
+#include "skissm/e2ee_client.h"
 #include "skissm/error.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
@@ -40,27 +40,20 @@ void initialise_session(Skissm__Session *session, uint32_t e2ee_pack_id, Skissm_
     initialise_ratchet(&(session->ratchet));
 }
 
-void close_session(Skissm__Session *session) {
-    if (session != NULL) {
-        skissm__session__free_unpacked(session, NULL);
-        session = NULL;
-    }
-}
+void pack_common_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **common_plaintext_data, size_t *common_plaintext_data_len) {
+    Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
+    skissm__plaintext__init(plaintext);
+    plaintext->version = PLAINTEXT_VERSION;
+    plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG;
+    plaintext->common_msg.len = plaintext_data_len;
+    plaintext->common_msg.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_data_len);
+    memcpy(plaintext->common_msg.data, plaintext_data, plaintext_data_len);
 
-void pack_e2ee_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_len, Skissm__PlaintextType plaintext_type, uint8_t **e2ee_plaintext_data, size_t *e2ee_plaintext_data_len) {
-    Skissm__Plaintext *ssm_e2ee_plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
-    skissm__plaintext__init(ssm_e2ee_plaintext);
-    ssm_e2ee_plaintext->version = PLAINTEXT_VERSION;
-    ssm_e2ee_plaintext->type = plaintext_type;
-    ssm_e2ee_plaintext->payload.len = plaintext_data_len;
-    ssm_e2ee_plaintext->payload.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_data_len);
-    memcpy(ssm_e2ee_plaintext->payload.data, plaintext_data, plaintext_data_len);
-
-    size_t len = skissm__plaintext__get_packed_size(ssm_e2ee_plaintext);
-    *e2ee_plaintext_data_len = len;
-    *e2ee_plaintext_data = (uint8_t *)malloc(sizeof(uint8_t) * len);
-    skissm__plaintext__pack(ssm_e2ee_plaintext, *e2ee_plaintext_data);
+    size_t len = skissm__plaintext__get_packed_size(plaintext);
+    *common_plaintext_data_len = len;
+    *common_plaintext_data = (uint8_t *)malloc(sizeof(uint8_t) * len);
+    skissm__plaintext__pack(plaintext, *common_plaintext_data);
 
     // release
-    skissm__plaintext__free_unpacked(ssm_e2ee_plaintext, NULL);
+    skissm__plaintext__free_unpacked(plaintext, NULL);
 }

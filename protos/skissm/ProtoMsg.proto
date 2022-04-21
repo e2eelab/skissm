@@ -1,0 +1,48 @@
+/*
+ * Copyright © 2020-2021 by Academia Sinica
+ *
+ * This file is part of SKISSM.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SKISSM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ */
+syntax = "proto3";
+
+package skissm;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "ProtoMsgProto";
+
+import "skissm/E2eeAddress.proto";
+import "skissm/AcceptMsg.proto";
+import "skissm/AddGroupMembersMsg.proto";
+import "skissm/CreateGroupMsg.proto";
+import "skissm/E2eeMsg.proto";
+import "skissm/InviteMsg.proto";
+import "skissm/RemoveGroupMembersMsg.proto";
+import "skissm/SupplyOpksMsg.proto";
+
+message ProtoMsg {
+    string msg_id = 1;
+    skissm.E2eeAddress from = 2;
+    skissm.E2eeAddress to = 3;
+    oneof payload {
+        skissm.AcceptMsg accept_msg = 4;
+        skissm.AddGroupMembersMsg add_group_members_msg = 5;
+        skissm.CreateGroupMsg create_group_msg = 6;
+        skissm.E2eeMsg e2ee_msg = 7;
+        skissm.InviteMsg invite_msg = 8;
+        skissm.RemoveGroupMembersMsg remove_group_members_msg = 9;
+        skissm.SupplyOpksMsg supply_opks_msg = 10;
+    };
+}

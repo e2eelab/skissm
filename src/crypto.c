@@ -97,32 +97,35 @@ size_t crypto_curve25519_verify(uint8_t *signature_in, uint8_t *public_key,
   return (size_t)(result);
 }
 
-void crypto_aes_encrypt_gcm(const uint8_t *input, size_t input_length,
+void crypto_aes_encrypt_gcm(const uint8_t *plaintext_data,
+                            size_t plaintext_data_len,
                             const uint8_t *key, const uint8_t *iv,
-                            const uint8_t *add, size_t add_length,
-                            uint8_t *ciphertext) {
+                            const uint8_t *add, size_t add_len,
+                            uint8_t *ciphertext_data) {
   mbedtls_gcm_context ctx;
-  unsigned char *tag_buf = ciphertext + input_length;
+  unsigned char *tag_buf = ciphertext_data + plaintext_data_len;
   int ret;
   mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
   int key_len = 256;
 
   mbedtls_gcm_init(&ctx);
   ret = mbedtls_gcm_setkey(&ctx, cipher, key, key_len);
-  ret = mbedtls_gcm_crypt_and_tag(&ctx, MBEDTLS_GCM_ENCRYPT, input_length, iv,
-                                  AES256_IV_LENGTH, add, add_length, input,
-                                  ciphertext, AES256_GCM_TAG_LENGTH, tag_buf);
+  ret = mbedtls_gcm_crypt_and_tag(&ctx, MBEDTLS_GCM_ENCRYPT,
+                                  plaintext_data_len, iv,
+                                  AES256_IV_LENGTH, add, add_len, plaintext_data,
+                                  ciphertext_data, AES256_GCM_TAG_LENGTH, tag_buf);
 
   mbedtls_gcm_free(&ctx);
 }
 
-size_t crypto_aes_decrypt_gcm(const uint8_t *input, size_t input_length,
+size_t crypto_aes_decrypt_gcm(const uint8_t *ciphertext_data,
+                              size_t ciphertext_data_len,
                               const uint8_t *key, const uint8_t *iv,
-                              const uint8_t *add, size_t add_length,
-                              uint8_t *output) {
+                              const uint8_t *add, size_t add_len,
+                              uint8_t *plaintext_data) {
   mbedtls_gcm_context ctx;
   unsigned char *input_tag_buf =
-      (unsigned char *)(input + input_length - AES256_GCM_TAG_LENGTH);
+      (unsigned char *)(ciphertext_data + ciphertext_data_len - AES256_GCM_TAG_LENGTH);
   unsigned char tag_buf[AES256_GCM_TAG_LENGTH];
   int ret;
   mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
@@ -131,9 +134,9 @@ size_t crypto_aes_decrypt_gcm(const uint8_t *input, size_t input_length,
   mbedtls_gcm_init(&ctx);
   ret = mbedtls_gcm_setkey(&ctx, cipher, key, key_len);
   ret = mbedtls_gcm_crypt_and_tag(&ctx, MBEDTLS_GCM_DECRYPT,
-                                  input_length - AES256_GCM_TAG_LENGTH, iv,
-                                  AES256_IV_LENGTH, add, add_length, input,
-                                  output, AES256_GCM_TAG_LENGTH, tag_buf);
+                                  ciphertext_data_len - AES256_GCM_TAG_LENGTH, iv,
+                                  AES256_IV_LENGTH, add, add_len, ciphertext_data,
+                                  plaintext_data, AES256_GCM_TAG_LENGTH, tag_buf);
   mbedtls_gcm_free(&ctx);
 
   // verify tag in "constant-time"
@@ -141,7 +144,7 @@ size_t crypto_aes_decrypt_gcm(const uint8_t *input, size_t input_length,
   for (i = 0; i < AES256_GCM_TAG_LENGTH; i++)
     diff |= input_tag_buf[i] ^ tag_buf[i];
   if (diff == 0) {
-    return (input_length - AES256_GCM_TAG_LENGTH);
+    return (ciphertext_data_len - AES256_GCM_TAG_LENGTH);
   } else {
     return (size_t)(-1);
   }
@@ -190,10 +193,10 @@ char *crypto_base64_encode(const uint8_t *msg, size_t msg_len) {
     return output;
 }
 
-char *crypto_base64_decode(const uint8_t *base64_msg, size_t base64_msg_len) {
-    int pad = base64_msg_len > 0 && (base64_msg_len % 4 || base64_msg[base64_msg_len - 1] == '=');
+char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len) {
+    int pad = base64_data_len > 0 && (base64_data_len % 4 || base64_data[base64_data_len - 1] == '=');
     size_t len = ((len + 3) / 4 - pad) * 4 + 1;
     char* output = (char*)malloc(sizeof(char) * len);
-    mbedtls_base64_decode((unsigned char*)output, len, &len, (const unsigned char *)base64_msg, base64_msg_len);
+    mbedtls_base64_decode((unsigned char*)output, len, &len, (const unsigned char *)base64_data, base64_data_len);
     return output;
 }

@@ -24,64 +24,69 @@
 extern "C" {
 #endif
 
-#include "skissm/e2ee_protocol_handler.h"
+#include "skissm/skissm.h"
 
 /**
- * @brief Handle the request for suplying opks
- *
- * @param response_handler The response handler
- */
-void supply_opks(supply_opks_handler *response_handler);
-
-/**
- * @brief Register an new account.
- *
- * @param account_id The unique account id.
- * @param e2ee_pack_id The e2ee package id to be used.
- */
-void register_account(uint64_t account_id, uint32_t e2ee_pack_id);
-
-/**
- * @brief Publish new spk to messaging server
- *
- * @param account The account to be processed
- */
-void publish_spk(Skissm__Account *account);
-
-/**
- * @brief Create a register_request_payload to be send to messaging server.
- * Copy all of the public keys stored in the account that will be published
- * to the messaging server.
- * @param account
- * @return Skissm__RegisterUserRequestPayload*
- */
-Skissm__RegisterUserRequestPayload *produce_register_request_payload(Skissm__Account *account);
-
-/**
- * @brief Process an incoming register_response_payload.
- * Keep the address of the registered account to db
- * @param account The account to be processed
- * @param payload The response payload data
- */
-void consume_register_response_payload(Skissm__Account *account, Skissm__RegisterUserResponsePayload *payload);
-
-/**
- * @brief Create a publish_spk_request_payload to be send to messaging server.
+ * @brief Create a RegisterUserRequest message to be sent to server.
  *
  * @param account
- * @return Skissm__PublishSpkRequestPayload*
+ * @return Skissm__RegisterUserRequest*
  */
-Skissm__PublishSpkRequestPayload *produce_publish_spk_request_payload(Skissm__Account *account);
+Skissm__RegisterUserRequest *produce_register_request(Skissm__Account *account);
 
 /**
- * @brief Process an incoming publish_spk_response_payload.
+ * @brief Process an incoming RegisterUserResponse message.
  *
  * @param account
+ * @param payload
  */
-void consume_publish_spk_response_payload(Skissm__Account *account);
+void consume_register_response(Skissm__Account *account, Skissm__RegisterUserResponse *payload);
+
+/**
+ * @brief Create a PublishSpkRequest message to be sent to server.
+ *
+ * @param account
+ * @return Skissm__PublishSpkRequest*
+ */
+Skissm__PublishSpkRequest *produce_publish_spk_request(Skissm__Account *account);
+
+/**
+ * @brief Process an incoming PublishSpkResponse message.
+ *
+ * @param account
+ * @param response
+ */
+void consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkResponse *response);
+
+/**
+ * @brief Create a SupplyOpksRequest message to be sent to server.
+ *
+ * @param account
+ * @param opks_num
+ * @return Skissm__SupplyOpksRequest*
+ */
+Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account, uint32_t opks_num);
+
+/**
+ * @brief Process an incoming SupplyOpksResponse message.
+ *
+ * @param account
+ * @param response
+ */
+void consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response);
+
+/**
+ * @brief Process an incoming SupplyOpksMsg message.
+ *
+ * @param receiver_address
+ * @param msg
+ * @return true
+ * @return false
+ */
+bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__SupplyOpksMsg *msg);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif // ACCOUNT_MANAGER_H_

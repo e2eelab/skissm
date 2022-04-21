@@ -48,15 +48,15 @@ static void copy_receiver_chain_node(
     }
 }
 
-static void copy_skipped_message_key_node(
-    Skissm__SkippedMessageKeyNode **dest,
-    Skissm__SkippedMessageKeyNode **src,
+static void copy_skipped_msg_key_node(
+    Skissm__SkippedMsgKeyNode **dest,
+    Skissm__SkippedMsgKeyNode **src,
     size_t num
 ) {
     size_t i;
     for (i = 0; i < num; i++){
-        dest[i] = (Skissm__SkippedMessageKeyNode *) malloc(sizeof(Skissm__SkippedMessageKeyNode));
-        skissm__skipped_message_key_node__init(dest[i]);
+        dest[i] = (Skissm__SkippedMsgKeyNode *) malloc(sizeof(Skissm__SkippedMsgKeyNode));
+        skissm__skipped_msg_key_node__init(dest[i]);
         copy_protobuf_from_protobuf(&(dest[i]->ratchet_key_public), &(src[i]->ratchet_key_public));
         dest[i]->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
         skissm__msg_key__init(dest[i]->msg_key);
@@ -79,12 +79,12 @@ static void free_receiver_chain(
 }
 
 static void free_skipped_message_key(
-    Skissm__SkippedMessageKeyNode ***src,
+    Skissm__SkippedMsgKeyNode ***src,
     size_t num
 ) {
     size_t i;
     for (i = 0; i < num; i++){
-        skissm__skipped_message_key_node__free_unpacked((*src)[i], NULL);
+        skissm__skipped_msg_key_node__free_unpacked((*src)[i], NULL);
         (*src)[i] = NULL;
     }
     free(*src);
@@ -142,15 +142,15 @@ static void advance_chain_key(
     overwrite_protobuf_from_array(&chain_key->shared_key, shared_key);
 }
 
-static void create_message_keys(
+static void create_msg_keys(
     const cipher_suite_t *cipher_suite,
     const Skissm__ChainKey *chain_key,
-    Skissm__MsgKey *message_key
+    Skissm__MsgKey *msg_key
 ) {
-    free_protobuf(&(message_key->derived_key));
+    free_protobuf(&(msg_key->derived_key));
     int msg_key_len = cipher_suite->get_crypto_param().aead_key_len + cipher_suite->get_crypto_param().aead_iv_len;
-    message_key->derived_key.data = (uint8_t *) malloc(sizeof(uint8_t) * msg_key_len);
-    message_key->derived_key.len = msg_key_len;
+    msg_key->derived_key.data = (uint8_t *) malloc(sizeof(uint8_t) * msg_key_len);
+    msg_key->derived_key.len = msg_key_len;
 
     int hash_len = cipher_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
@@ -159,23 +159,23 @@ static void create_message_keys(
         chain_key->shared_key.data, chain_key->shared_key.len,
         salt, sizeof(salt),
         (uint8_t *)MESSAGE_KEY_SEED, sizeof(MESSAGE_KEY_SEED) - 1,
-        message_key->derived_key.data, message_key->derived_key.len
+        msg_key->derived_key.data, msg_key->derived_key.len
     );
-    message_key->index = chain_key->index;
+    msg_key->index = chain_key->index;
 }
 
 static size_t verify_and_decrypt(
     const cipher_suite_t *cipher_suite,
     ProtobufCBinaryData ad,
     const Skissm__MsgKey *message_key,
-    const Skissm__E2eeMsgPayload *e2ee_msg_payload,
-    uint8_t **plaintext
+    const Skissm__One2oneMsgPayload *payload,
+    uint8_t **plaintext_data
 ) {
     size_t result = cipher_suite->decrypt(
         ad.data,
         message_key->derived_key.data,
-        e2ee_msg_payload->ciphertext.data, e2ee_msg_payload->ciphertext.len,
-        plaintext
+        payload->ciphertext.data, payload->ciphertext.len,
+        plaintext_data
     );
 
     if (result == (size_t)(-1))
@@ -188,18 +188,18 @@ static size_t verify_and_decrypt_for_existing_chain(
     const cipher_suite_t *cipher_suite,
     ProtobufCBinaryData ad,
     const Skissm__ChainKey *chain,
-    const Skissm__E2eeMsgPayload *e2ee_msg_payload,
-    uint8_t **plaintext
+    const Skissm__One2oneMsgPayload *payload,
+    uint8_t **plaintext_data
 ) {
-    if (e2ee_msg_payload->sequence < chain->index) {
+    if (payload->sequence < chain->index) {
         ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
         return (size_t)(-1);
     }
 
     /* Limit the number of hashes we're prepared to compute */
-    if (e2ee_msg_payload->sequence - chain->index > MAX_CHAIN_INDEX) {
+    if (payload->sequence - chain->index > MAX_CHAIN_INDEX) {
         ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
-        return (size_t)(-1);
+        return (size_t)(-2);
     }
 
     Skissm__ChainKey *new_chain = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
@@ -207,18 +207,18 @@ static size_t verify_and_decrypt_for_existing_chain(
     new_chain->index = chain->index;
     copy_protobuf_from_protobuf(&new_chain->shared_key, &chain->shared_key);
 
-    while (new_chain->index < e2ee_msg_payload->sequence) {
+    while (new_chain->index < payload->sequence) {
         advance_chain_key(cipher_suite, new_chain);
     }
-    assert(new_chain->index == e2ee_msg_payload->sequence);
+    assert(new_chain->index == payload->sequence);
 
     Skissm__MsgKey *mk = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
     skissm__msg_key__init(mk);
-    create_message_keys(cipher_suite, new_chain, mk);
+    create_msg_keys(cipher_suite, new_chain, mk);
 
     size_t result = verify_and_decrypt(
-        cipher_suite, ad, mk, e2ee_msg_payload,
-        plaintext
+        cipher_suite, ad, mk, payload,
+        plaintext_data
     );
 
     skissm__chain_key__free_unpacked(new_chain, NULL);
@@ -230,8 +230,8 @@ static size_t verify_and_decrypt_for_existing_chain(
 static size_t verify_and_decrypt_for_new_chain(
     const cipher_suite_t *cipher_suite,
     const Skissm__Ratchet *ratchet, ProtobufCBinaryData ad,
-    const Skissm__E2eeMsgPayload *e2ee_msg_payload,
-    uint8_t **plaintext
+    const Skissm__One2oneMsgPayload *payload,
+    uint8_t **plaintext_data
 ) {
     ProtobufCBinaryData new_root_key = {0, NULL};
     Skissm__ReceiverChainNode new_chain;
@@ -244,15 +244,15 @@ static size_t verify_and_decrypt_for_new_chain(
     }
 
     /* Limit the number of hashes we're prepared to compute */
-    if (e2ee_msg_payload->sequence > MAX_CHAIN_INDEX) {
+    if (payload->sequence > MAX_CHAIN_INDEX) {
         ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
-        return (size_t)(-1);
+        return (size_t)(-2);
     }
 
-    assert(e2ee_msg_payload->ratchet_key.len == cipher_suite->get_crypto_param().asym_key_len);
+    assert(payload->ratchet_key.len == cipher_suite->get_crypto_param().asym_key_len);
 
     skissm__receiver_chain_node__init(&new_chain);
-    copy_protobuf_from_protobuf(&(new_chain.ratchet_key_public), &(e2ee_msg_payload->ratchet_key));
+    copy_protobuf_from_protobuf(&(new_chain.ratchet_key_public), &(payload->ratchet_key));
 
     new_chain.chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
     skissm__chain_key__init(new_chain.chain_key);
@@ -264,8 +264,8 @@ static size_t verify_and_decrypt_for_new_chain(
     );
     size_t result = verify_and_decrypt_for_existing_chain(
         cipher_suite,
-        ad, new_chain.chain_key, e2ee_msg_payload,
-        plaintext
+        ad, new_chain.chain_key, payload,
+        plaintext_data
     );
 
     free_protobuf(&new_root_key);
@@ -369,8 +369,8 @@ void encrypt_ratchet(
     const cipher_suite_t *cipher_suite,
     Skissm__Ratchet *ratchet,
     ProtobufCBinaryData ad,
-    const uint8_t *plaintext, size_t plaintext_len,
-    Skissm__E2eeMsgPayload **e2ee_msg_payload
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    Skissm__One2oneMsgPayload **payload
 ) {
     if (ratchet->sender_chain != NULL){
         if (ratchet->sender_chain->chain_key->index > MAX_CHAIN_INDEX){
@@ -397,52 +397,52 @@ void encrypt_ratchet(
         );
     }
 
-    Skissm__MsgKey *keys;
-    keys = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
-    skissm__msg_key__init(keys);
-    create_message_keys(cipher_suite, ratchet->sender_chain->chain_key, keys);
+    Skissm__MsgKey *msg_key;
+    msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+    skissm__msg_key__init(msg_key);
+    create_msg_keys(cipher_suite, ratchet->sender_chain->chain_key, msg_key);
     advance_chain_key(cipher_suite, ratchet->sender_chain->chain_key);
 
-    uint32_t sequence = keys->index;
+    uint32_t sequence = msg_key->index;
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
     uint8_t *ratchet_key_data = (uint8_t *) malloc(key_len);
     memcpy(ratchet_key_data, ratchet->sender_chain->ratchet_key.data, key_len);
 
-    *e2ee_msg_payload = (Skissm__E2eeMsgPayload *) malloc(sizeof(Skissm__E2eeMsgPayload));
-    skissm__e2ee_msg_payload__init(*e2ee_msg_payload);
-    (*e2ee_msg_payload)->sequence = sequence;
-    (*e2ee_msg_payload)->ratchet_key.data = ratchet_key_data;
-    (*e2ee_msg_payload)->ratchet_key.len = key_len;
-    (*e2ee_msg_payload)->ciphertext.len = cipher_suite->encrypt(
+    *payload = (Skissm__One2oneMsgPayload *) malloc(sizeof(Skissm__One2oneMsgPayload));
+    skissm__one2one_msg_payload__init(*payload);
+    (*payload)->sequence = sequence;
+    (*payload)->ratchet_key.data = ratchet_key_data;
+    (*payload)->ratchet_key.len = key_len;
+    (*payload)->ciphertext.len = cipher_suite->encrypt(
         ad.data,
-        keys->derived_key.data,
-        plaintext, plaintext_len,
-        &((*e2ee_msg_payload)->ciphertext.data)
+        msg_key->derived_key.data,
+        plaintext_data, plaintext_data_len,
+        &((*payload)->ciphertext.data)
     );
 
     // release
-    skissm__msg_key__free_unpacked(keys, NULL);
+    skissm__msg_key__free_unpacked(msg_key, NULL);
 
     // done
     return;
 }
 
-size_t decrypt_ratchet(
+bool decrypt_ratchet(
     const cipher_suite_t *cipher_suite,
-    Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__E2eeMsgPayload *e2ee_msg_payload,
-    uint8_t **plaintext
+    Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload,
+    uint8_t **plaintext_data
 ) {
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
 
-    if (!e2ee_msg_payload->ratchet_key.data
-        || !e2ee_msg_payload->ciphertext.data) {
+    if (!payload->ratchet_key.data
+        || !payload->ciphertext.data) {
         ssm_notify_error(BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
         return (size_t)(-1);
     }
 
-    if (e2ee_msg_payload->ratchet_key.len != key_len) {
+    if (payload->ratchet_key.len != key_len) {
         ssm_notify_error(BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
-        return (size_t)(-1);
+        return (size_t)(-2);
     }
 
     Skissm__ReceiverChainNode *chain = NULL;
@@ -452,7 +452,7 @@ size_t decrypt_ratchet(
     if (cur){
         unsigned int i;
         for (i = 0; i < ratchet->n_receiver_chains; i++){
-            if (0 == memcmp(cur[i]->ratchet_key_public.data, e2ee_msg_payload->ratchet_key.data, key_len)){
+            if (0 == memcmp(cur[i]->ratchet_key_public.data, payload->ratchet_key.data, key_len)){
                 chain = cur[i];
                 break;
             }
@@ -460,7 +460,6 @@ size_t decrypt_ratchet(
     }
 
     size_t result = (size_t)(-1);
-
     if (!chain) {
         /* They have started using a new ephemeral ratchet key.
          * We will check if we can decrypt the message correctly.
@@ -468,47 +467,47 @@ size_t decrypt_ratchet(
          * We will store our new chain key later when decrypting the message correctly. */
         result = verify_and_decrypt_for_new_chain(
             cipher_suite,
-            ratchet, ad, e2ee_msg_payload, plaintext
+            ratchet, ad, payload, plaintext_data
         );
-        if (result == (size_t)(-1)) {
+        if (result < (size_t)(0)) {
             ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
-            return (size_t)(-1);
+            return (size_t)(-3);
         }
-    } else if (chain->chain_key->index > e2ee_msg_payload->sequence) {
+    } else if (chain->chain_key->index > payload->sequence) {
         /* Chain already advanced beyond the key for this message
          * Check if the message keys are in the skipped key list. */
         unsigned int i;
-        for (i = 0; i < ratchet->n_skipped_message_keys; i++){
-            if (e2ee_msg_payload->sequence == ratchet->skipped_message_keys[i]->msg_key->index
-                && 0 == memcmp(ratchet->skipped_message_keys[i]->ratchet_key_public.data, e2ee_msg_payload->ratchet_key.data,
+        for (i = 0; i < ratchet->n_skipped_msg_keys; i++){
+            if (payload->sequence == ratchet->skipped_msg_keys[i]->msg_key->index
+                && 0 == memcmp(ratchet->skipped_msg_keys[i]->ratchet_key_public.data, payload->ratchet_key.data,
                 key_len
                 )
             ){
                 result = verify_and_decrypt(
-                    cipher_suite, ad, ratchet->skipped_message_keys[i]->msg_key, e2ee_msg_payload,
-                    plaintext
+                    cipher_suite, ad, ratchet->skipped_msg_keys[i]->msg_key, payload,
+                    plaintext_data
                 );
 
-                if (result != (size_t)(-1)){
-                    skissm__skipped_message_key_node__free_unpacked(ratchet->skipped_message_keys[i], NULL);
-                    ratchet->skipped_message_keys[i] = NULL;
+                if (result >= 0){
+                    skissm__skipped_msg_key_node__free_unpacked(ratchet->skipped_msg_keys[i], NULL);
+                    ratchet->skipped_msg_keys[i] = NULL;
                 }
             }
         }
-        if (result == (size_t)(-1)) {
+        if (result < (size_t)(0)) {
             ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
-            return (size_t)(-1);
+            return (size_t)(-4);
         }
     } else {
         /* They use the same ratchet key. */
         result = verify_and_decrypt_for_existing_chain(
             cipher_suite,
             ad, chain->chain_key,
-            e2ee_msg_payload, plaintext
+            payload, plaintext_data
         );
-        if (result == (size_t)(-1)) {
+        if (result < (size_t)(0)) {
             ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
-            return (size_t)(-1);
+            return (size_t)(-5);
         }
     }
 
@@ -521,7 +520,7 @@ size_t decrypt_ratchet(
         chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
         skissm__receiver_chain_node__init(chain);
 
-        copy_protobuf_from_protobuf(&(chain->ratchet_key_public), &(e2ee_msg_payload->ratchet_key));
+        copy_protobuf_from_protobuf(&(chain->ratchet_key_public), &(payload->ratchet_key));
 
         /* Create a new chain key */
         chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
@@ -551,35 +550,35 @@ size_t decrypt_ratchet(
         (ratchet->n_receiver_chains)++;
     }
 
-    if (chain->chain_key->index < e2ee_msg_payload->sequence){
+    if (chain->chain_key->index < payload->sequence){
         /* We skipped some messages.
          * We will generate the corresponding message keys and store them
          * together with their ratchet key in the skipped message key list. */
-        while (chain->chain_key->index < e2ee_msg_payload->sequence){
-            Skissm__SkippedMessageKeyNode *key = (Skissm__SkippedMessageKeyNode *) malloc(sizeof(Skissm__SkippedMessageKeyNode));
-            skissm__skipped_message_key_node__init(key);
+        while (chain->chain_key->index < payload->sequence){
+            Skissm__SkippedMsgKeyNode *key = (Skissm__SkippedMsgKeyNode *) malloc(sizeof(Skissm__SkippedMsgKeyNode));
+            skissm__skipped_msg_key_node__init(key);
             key->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
             skissm__msg_key__init(key->msg_key);
-            create_message_keys(cipher_suite, chain->chain_key, key->msg_key);
+            create_msg_keys(cipher_suite, chain->chain_key, key->msg_key);
             copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(chain->ratchet_key_public));
-            if (ratchet->skipped_message_keys == NULL){
-                ratchet->skipped_message_keys = (Skissm__SkippedMessageKeyNode **) malloc(sizeof(Skissm__SkippedMessageKeyNode *));
+            if (ratchet->skipped_msg_keys == NULL){
+                ratchet->skipped_msg_keys = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *));
             } else{
-                Skissm__SkippedMessageKeyNode **temp_skipped_message_keys;
-                if (ratchet->n_skipped_message_keys == MAX_SKIPPED_MESSAGE_KEY_NODES){
-                    temp_skipped_message_keys = (Skissm__SkippedMessageKeyNode **) malloc(sizeof(Skissm__SkippedMessageKeyNode *) * MAX_SKIPPED_MESSAGE_KEY_NODES);
-                    copy_skipped_message_key_node(temp_skipped_message_keys, &(ratchet->skipped_message_keys[1]), MAX_SKIPPED_MESSAGE_KEY_NODES - 1);
-                    free_skipped_message_key(&(ratchet->skipped_message_keys), ratchet->n_skipped_message_keys);
-                    (ratchet->n_skipped_message_keys)--;
+                Skissm__SkippedMsgKeyNode **temp_skipped_message_keys;
+                if (ratchet->n_skipped_msg_keys == MAX_SKIPPED_MESSAGE_KEY_NODES){
+                    temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *) * MAX_SKIPPED_MESSAGE_KEY_NODES);
+                    copy_skipped_msg_key_node(temp_skipped_message_keys, &(ratchet->skipped_msg_keys[1]), MAX_SKIPPED_MESSAGE_KEY_NODES - 1);
+                    free_skipped_message_key(&(ratchet->skipped_msg_keys), ratchet->n_skipped_msg_keys);
+                    (ratchet->n_skipped_msg_keys)--;
                 } else{
-                    temp_skipped_message_keys = (Skissm__SkippedMessageKeyNode **) malloc(sizeof(Skissm__SkippedMessageKeyNode *) * (ratchet->n_skipped_message_keys + 1));
-                    copy_skipped_message_key_node(temp_skipped_message_keys, ratchet->skipped_message_keys, ratchet->n_skipped_message_keys);
-                    free_skipped_message_key(&(ratchet->skipped_message_keys), ratchet->n_skipped_message_keys);
+                    temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_keys + 1));
+                    copy_skipped_msg_key_node(temp_skipped_message_keys, ratchet->skipped_msg_keys, ratchet->n_skipped_msg_keys);
+                    free_skipped_message_key(&(ratchet->skipped_msg_keys), ratchet->n_skipped_msg_keys);
                 }
-                ratchet->skipped_message_keys = temp_skipped_message_keys;
+                ratchet->skipped_msg_keys = temp_skipped_message_keys;
             }
-            ratchet->skipped_message_keys[ratchet->n_skipped_message_keys] = key;
-            (ratchet->n_skipped_message_keys)++;
+            ratchet->skipped_msg_keys[ratchet->n_skipped_msg_keys] = key;
+            (ratchet->n_skipped_msg_keys)++;
             advance_chain_key(cipher_suite, chain->chain_key);
         }
     }

@@ -26,37 +26,21 @@
 extern "C" {
 #endif
 
-#include "skissm/e2ee_protocol_handler.h"
+#include "skissm/skissm.h"
 
 /**
- * @brief Create a group object
- *
- * @param e2ee_pack_id
- * @param user_address
- * @param group_name
- * @param member_addresses
- * @param member_num
- */
-void create_group(
-    uint32_t e2ee_pack_id,
-    Skissm__E2eeAddress *user_address,
-    char *group_name,
-    Skissm__E2eeAddress **member_addresses,
-    size_t member_num);
-
-/**
- * @brief Create a create_group_request_payload to be sent to messaging server.
+ * @brief Create a CreateGroupRequest message to be sent to server.
  *
  * @param sender_address
  * @param group_name
  * @param member_num
  * @param member_addresses
- * @return Skissm__CreateGroupRequestPayload*
+ * @return Skissm__CreateGroupRequest*
  */
-Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__E2eeAddress *sender_address, char *group_name, size_t member_num, Skissm__E2eeAddress **member_addresses);
+Skissm__CreateGroupRequest *produce_create_group_request(Skissm__E2eeAddress *sender_address, char *group_name, size_t member_num, Skissm__E2eeAddress **member_addresses) ;
 
 /**
- * @brief Process an imcoming create_group_response_payload.
+ * @brief Process an incoming CreateGroupResponse message.
  *
  * @param e2ee_pack_id
  * @param sender_address
@@ -65,82 +49,135 @@ Skissm__CreateGroupRequestPayload *produce_create_group_request_payload(Skissm__
  * @param member_addresses
  * @param create_group_response_payload
  */
-void consume_create_group_response_payload(
+void consume_create_group_response(
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *sender_address,
     char *group_name,
     size_t member_num,
     Skissm__E2eeAddress **member_addresses,
-    Skissm__CreateGroupResponsePayload *create_group_response_payload
+    Skissm__CreateGroupResponse *response
 );
 
 /**
- * @brief Create a get_group_request_payload to be sent to messaging server.
- *
- * @param group_address
- * @return Skissm__GetGroupRequestPayload*
- */
-Skissm__GetGroupRequestPayload *produce_get_group_request_payload(Skissm__E2eeAddress *group_address);
-
-/**
- * @brief Process an imcoming get_group_response_payload.
- *
- * @param get_group_response_payload
- */
-void consume_get_group_response_payload(Skissm__GetGroupResponsePayload *get_group_response_payload);
-
-/**
- * @brief Get the group members
- *
- * @param group_address
- */
-get_group_response_handler *get_group_members(Skissm__E2eeAddress *group_address);
-
-/**
- * @brief Add group members
- *
- * @param sender_address
- * @param group_address
- * @param new_member_addresses
- * @param new_member_num
- */
-size_t add_group_members(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *group_address,
-    Skissm__E2eeAddress **new_member_addresses,
-    size_t new_member_num);
-
-/**
- * @brief Remove group members
- *
- * @param sender_address
- * @param group_address
- * @param old_member_addresses
- * @param old_member_num
- */
-void remove_group_members(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *group_address,
-    Skissm__E2eeAddress **old_member_addresses,
-    size_t old_member_num);
-
-/**
- * @brief Create a group message to be sent to messaging server.
- *
- * @param group_session
- * @param plaintext
- * @param plaintext_len
- * @return Skissm__E2eeMsg*
- */
-Skissm__E2eeMsg *produce_group_msg(Skissm__GroupSession *group_session, const uint8_t *plaintext, size_t plaintext_len);
-
-/**
- * @brief Process an imcoming group message
+ * @brief Create a CreateGroupMsg message to be sent to server.
  *
  * @param receiver_address
- * @param group_msg
+ * @param msg
+ * @return true
+ * @return false
  */
-void consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *group_msg);
+bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg);
+
+/**
+ * @brief Create a GetGroupRequest message to be sent to server.
+ *
+ * @param group_address
+ * @return Skissm__GetGroupRequest*
+ */
+Skissm__GetGroupRequest *produce_get_group_request(Skissm__E2eeAddress *group_address);
+
+/**
+ * @brief Process an incoming GetGroupResponse message.
+ *
+ * @param response
+ */
+void consume_get_group_response(Skissm__GetGroupResponse *response);
+
+/**
+ * @brief Create a AddGroupMembersRequest message to be sent to server.
+ *
+ * @param outbound_group_session
+ * @param adding_member_addresses
+ * @param adding_member_num
+ * @return Skissm__AddGroupMembersRequest*
+ */
+Skissm__AddGroupMembersRequest *produce_add_group_members_request(Skissm__GroupSession *outbound_group_session, const Skissm__E2eeAddress **adding_member_addresses, size_t adding_member_num);
+
+/**
+ * @brief Process an incoming AddGroupMembersResponse message.
+ *
+ * @param outbound_group_session
+ * @param adding_member_addresses
+ * @param adding_member_num
+ * @param response
+ */
+void consume_add_group_members_response(
+    Skissm__GroupSession *outbound_group_session,
+    const Skissm__E2eeAddress **adding_member_addresses,
+    size_t adding_member_num,
+    Skissm__AddGroupMembersResponse *response);
+
+/**
+ * @brief Process an incoming AddGroupMembersMsg message.
+ *
+ * @param receiver_address
+ * @param msg
+ * @return true
+ * @return false
+ */
+bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddGroupMembersMsg *msg);
+
+/**
+ * @brief Create a RemoveGroupMembersRequest message to be sent to server.
+ *
+ * @param outbound_group_session
+ * @param removing_member_addresses
+ * @param removing_member_num
+ * @return Skissm__RemoveGroupMembersRequest*
+ */
+Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(Skissm__GroupSession *outbound_group_session, const Skissm__E2eeAddress **removing_member_addresses, size_t removing_member_num);
+
+/**
+ * @brief Process an incoming RemoveGroupMembersResponse message.
+ *
+ * @param outbound_group_session
+ * @param removing_member_addresses
+ * @param removing_member_num
+ * @param response
+ */
+void consume_remove_group_members_response(
+    Skissm__GroupSession *outbound_group_session,
+    const Skissm__E2eeAddress **removing_member_addresses,
+    size_t removing_member_num,
+    Skissm__RemoveGroupMembersResponse *response);
+
+/**
+ * @brief Process an incoming RemoveGroupMembersMsg message.
+ *
+ * @param receiver_address
+ * @param msg
+ * @return true
+ * @return false
+ */
+bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveGroupMembersMsg *msg);
+
+/**
+ * @brief Create a SendGroupMsgRequest message to be sent to server.
+ *
+ * @param group_session
+ * @param plaintext_data
+ * @param plaintext_data_len
+ * @return Skissm__SendGroupMsgRequest*
+ */
+Skissm__SendGroupMsgRequest *produce_send_group_msg_request(Skissm__GroupSession *group_session, const uint8_t *plaintext_data, size_t plaintext_data_len);
+
+/**
+ * @brief Process an incoming SendGroupMsgResponse message.
+ *
+ * @param outbound_group_session
+ * @param response
+ */
+void consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session, Skissm__SendGroupMsgResponse *response);
+
+/**
+ * @brief Process an incoming E2eeMsg message.
+ *
+ * @param receiver_address
+ * @param e2ee_msg
+ * @return true
+ * @return false
+ */
+bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg);
 
 #ifdef __cplusplus
 }

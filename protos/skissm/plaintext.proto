@@ -21,12 +21,14 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eePlaintext";
+option java_outer_classname = "PlaintextProto";
 
-import "skissm/plaintext_type.proto";
+import "skissm/GroupPreKeyPayload.proto";
 
-message plaintext {
+message Plaintext {
     uint32 version = 1;
-    skissm.plaintext_type type = 2;
-    bytes payload = 3;
+    oneof payload {
+        bytes common_msg = 2;
+        skissm.GroupPreKeyPayload group_pre_key = 3;
+    };
 }

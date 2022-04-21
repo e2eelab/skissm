@@ -23,31 +23,31 @@
 
 #include "skissm/crypto.h"
 
-static inline size_t aes256_gcm_ciphertext_len(size_t plaintext_length) {
-  return plaintext_length + AES256_GCM_TAG_LENGTH;
+static inline size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length) {
+  return plaintext_data_length + AES256_GCM_TAG_LENGTH;
 }
 
-static inline size_t aes256_gcm_plaintext_len(size_t ciphertext_len) {
-  return ciphertext_len - AES256_GCM_TAG_LENGTH;
+static inline size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len) {
+  return ciphertext_data_len - AES256_GCM_TAG_LENGTH;
 }
 
 size_t aes256_gcm_encrypt(const uint8_t *ad, const uint8_t *aes_key,
-                          const uint8_t *plaintext, size_t plaintext_len,
-                          uint8_t **ciphertext) {
+                          const uint8_t *plaintext_data, size_t plaintext_data_len,
+                          uint8_t **ciphertext_data) {
   uint8_t *iv = (uint8_t *)aes_key + AES256_KEY_LENGTH;
-  size_t ciphertext_len = aes256_gcm_ciphertext_len(plaintext_len);
-  *ciphertext = (uint8_t *)malloc(ciphertext_len);
-  crypto_aes_encrypt_gcm(plaintext, plaintext_len, aes_key, iv, ad, AD_LENGTH,
-                         *ciphertext);
-  return ciphertext_len;
+  size_t ciphertext_data_len = aes256_gcm_ciphertext_data_len(plaintext_data_len);
+  *ciphertext_data = (uint8_t *)malloc(ciphertext_data_len);
+  crypto_aes_encrypt_gcm(plaintext_data, plaintext_data_len, aes_key, iv, ad, AD_LENGTH,
+                         *ciphertext_data);
+  return ciphertext_data_len;
 }
 
 size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
-                          const uint8_t *ciphertext,
-                          size_t ciphertext_len, uint8_t **plaintext) {
+                          const uint8_t *ciphertext_data,
+                          size_t ciphertext_data_len, uint8_t **plaintext_data) {
   uint8_t *iv = (uint8_t *)aes_key + AES256_KEY_LENGTH;
-  size_t plaintext_len = aes256_gcm_plaintext_len(ciphertext_len);
-  *plaintext = (uint8_t *)malloc(plaintext_len);
-  return crypto_aes_decrypt_gcm(ciphertext, ciphertext_len, aes_key, iv, ad,
-                                AD_LENGTH, *plaintext);
+  size_t plaintext_data_len = aes256_gcm_plaintext_data_len(ciphertext_data_len);
+  *plaintext_data = (uint8_t *)malloc(plaintext_data_len);
+  return crypto_aes_decrypt_gcm(ciphertext_data, ciphertext_data_len, aes_key, iv, ad,
+                                AD_LENGTH, *plaintext_data);
 }

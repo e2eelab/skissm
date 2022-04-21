@@ -21,15 +21,15 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "Ratchet";
+option java_outer_classname = "RatchetProto";
 
-import "skissm/sender_chain_node.proto";
-import "skissm/receiver_chain_node.proto";
-import "skissm/skipped_message_key_node.proto";
+import "skissm/SenderChainNode.proto";
+import "skissm/ReceiverChainNode.proto";
+import "skissm/SkippedMsgKeyNode.proto";
 
-message ratchet {
+message Ratchet {
   bytes root_key = 1;
-  skissm.sender_chain_node sender_chain = 2;
-  repeated skissm.receiver_chain_node receiver_chains = 3;
-  repeated skissm.skipped_message_key_node skipped_message_keys = 4;
+  skissm.SenderChainNode sender_chain = 2;
+  repeated skissm.ReceiverChainNode receiver_chains = 3;
+  repeated skissm.SkippedMsgKeyNode skipped_msg_keys = 4;
 }

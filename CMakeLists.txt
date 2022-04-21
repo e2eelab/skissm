@@ -34,7 +34,7 @@ set(CMAKE_C_STANDARD 11)
 include(GNUInstallDirs)
 
 option(SKISSM_BUILD_PROTOBUF "Build protobuf" ON)
-option(SKISSM_TESTS "Build skissm tests" ON)
+option(SKISSM_TESTS "Build skissm tests" OFF)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
 set(PROJECT_VERSION_SO ${PROJECT_VERSION_MAJOR})
@@ -89,7 +89,8 @@ set(skissm_src
     src/cipher_ecc.c
     src/cipher_pqc.c
     src/crypto.c
-    src/e2ee_protocol.c
+    src/e2ee_client_internal.c
+    src/e2ee_client.c
     src/error.c
     src/group_session.c
     src/group_session_manager.c
@@ -106,7 +107,8 @@ set(src_headers
     include/skissm/account.h
     include/skissm/cipher.h
     include/skissm/crypto.h
-    include/skissm/e2ee_protocol.h
+    include/skissm/e2ee_client_internal.h
+    include/skissm/e2ee_client.h
     include/skissm/error.h
     include/skissm/group_session.h
     include/skissm/group_session_manager.h

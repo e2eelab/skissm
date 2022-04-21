@@ -50,8 +50,8 @@ typedef struct cipher_suite_t {
    * @param pub_key
    * @param priv_key
    */
-  void (*asym_key_gen)(ProtobufCBinaryData *pub_key,
-                       ProtobufCBinaryData *priv_key);
+  void (*asym_key_gen)(ProtobufCBinaryData *,
+                       ProtobufCBinaryData *);
 
   /**
    * @brief Generate a random key pair that will be used to generate or verity a signature.
@@ -59,8 +59,8 @@ typedef struct cipher_suite_t {
    * @param pub_key
    * @param priv_key
    */
-  void (*sign_key_gen)(ProtobufCBinaryData *pub_key,
-                       ProtobufCBinaryData *priv_key);
+  void (*sign_key_gen)(ProtobufCBinaryData *,
+                       ProtobufCBinaryData *);
 
   /**
    * @brief Calculate shared secret key.
@@ -70,35 +70,39 @@ typedef struct cipher_suite_t {
    * @param shared_secret
    * @return Cipher text (optional) that could be used to calculate shared secret key.
    */
-  uint8_t *(*ss_key_gen)(const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *their_key, uint8_t *shared_secret);
+  uint8_t *(*ss_key_gen)(const ProtobufCBinaryData *,
+                         const ProtobufCBinaryData *,
+                         uint8_t *);
 
   /**
-   * @brief Encrypt a given plain text.
+   * @brief Encrypt a given plaintext.
    *
    * @param ad The associated data
    * @param key The secret key
-   * @param plaintext The plain text to encrypt
-   * @param plaintext_len The plain text length
-   * @param ciphertext The output cipher text
+   * @param plaintext_data The plain text to encrypt
+   * @param plaintext_data_len The plain text length
+   * @param ciphertext_data The output cipher text
    * @return Success or not
    */
-  size_t (*encrypt)(const uint8_t *ad, const uint8_t *key,
-                    const uint8_t *plaintext, size_t plaintext_len,
-                    uint8_t **ciphertext);
+  size_t (*encrypt)(const uint8_t *,
+                    const uint8_t *,
+                    const uint8_t *, size_t,
+                    uint8_t **);
 
   /**
-   * @brief Decrypt a given cipher text.
+   * @brief Decrypt a given ciphertext.
    *
    * @param ad The associated data
    * @param key The secret key
-   * @param ciphertext The cipher text to decrypt
-   * @param ciphertext_len The plain text length
-   * @param plaintext The output plain text
-   * @return The length of plaintext or -1 for decryption error
+   * @param ciphertext_data The cipher text to decrypt
+   * @param ciphertext_data_len The cipher text length
+   * @param plaintext_data The output plain text
+   * @return The length of plaintext_data or -1 for decryption error
    */
-  size_t (*decrypt)(const uint8_t *ad, const uint8_t *key,
-                    const uint8_t *ciphertext, size_t ciphertext_len,
-                    uint8_t **plaintext);
+  size_t (*decrypt)(const uint8_t *,
+                    const uint8_t *,
+                    const uint8_t *, size_t,
+                    uint8_t **);
 
   /**
    * @brief Sign a message.
@@ -108,20 +112,22 @@ typedef struct cipher_suite_t {
    * @param msg_len
    * @param signature_out
    */
-  void (*sign)(uint8_t *private_key,
-    uint8_t *msg, size_t msg_len, uint8_t *signature_out);
+  void (*sign)(uint8_t *,
+               uint8_t *,
+               size_t,
+               uint8_t *);
 
   /**
-   * @brief Verify a signature with given message.
+   * @brief Verify a signature with a given message.
    *
    * @param signature_in
    * @param public_key
    * @param msg
    * @param msg_len
    */
-  size_t (*verify)(
-    uint8_t *signature_in, uint8_t *public_key,
-    uint8_t *msg, size_t msg_len);
+  size_t (*verify)(uint8_t *,
+                   uint8_t *,
+                   uint8_t *, size_t);
 
   /**
    * @brief HMAC-based key derivation function.
@@ -135,11 +141,10 @@ typedef struct cipher_suite_t {
    * @param output
    * @param output_len
    */
-  void (*hkdf)(
-    const uint8_t *input, size_t input_len,
-    const uint8_t *salt, size_t salt_len,
-    const uint8_t *info, size_t info_len,
-    uint8_t *output, size_t output_len);
+  void (*hkdf)(const uint8_t *, size_t,
+               const uint8_t *, size_t,
+               const uint8_t *, size_t,
+               uint8_t *, size_t);
 
   /**
    * @brief Keyed-Hashing for message authentication.
@@ -150,10 +155,9 @@ typedef struct cipher_suite_t {
    * @param input_len
    * @param output
    */
-  void (*hmac)(
-    const uint8_t *key, size_t key_len,
-    const uint8_t *input, size_t input_len,
-    uint8_t *output);
+  void (*hmac)(const uint8_t *, size_t,
+               const uint8_t *, size_t,
+               uint8_t *);
 
   /**
    * @brief Hash function.
@@ -162,17 +166,37 @@ typedef struct cipher_suite_t {
    * @param msg_len
    * @param hash_out
    */
-  void (*hash)(
-    const uint8_t *msg, size_t msg_len,
-    uint8_t *hash_out);
+  void (*hash)(const uint8_t *,
+               size_t,
+               uint8_t *);
 } cipher_suite_t;
 
+/**
+ * @brief Encrypt plaintext with AES GCM.
+ *
+ * @param ad
+ * @param aes_key
+ * @param plaintext_data
+ * @param plaintext_data_len
+ * @param ciphertext_data
+ * @return size_t length of ciphertext_data
+ */
 size_t aes256_gcm_encrypt(const uint8_t *ad, const uint8_t *aes_key,
-    const uint8_t *plaintext, size_t plaintext_len, uint8_t **ciphertext
+    const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **ciphertext_data
 );
 
+/**
+ * @brief Decrypt a ciphertex with AES GCM.
+ *
+ * @param ad
+ * @param aes_key
+ * @param ciphertext_data
+ * @param ciphertext_data_len
+ * @param plaintext_data
+ * @return size_t length of plaintext_data
+ */
 size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
-    const uint8_t *ciphertext, size_t ciphertext_len, uint8_t **plaintext
+    const uint8_t *ciphertext_data, size_t ciphertext_data_len, uint8_t **plaintext_data
 );
 
 #ifdef __cplusplus

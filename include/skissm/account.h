@@ -52,10 +52,8 @@ Skissm__Account *create_account(uint64_t account_id, uint32_t e2ee_pack_id);
 Skissm__Account *
 get_local_account(Skissm__E2eeAddress *address);
 
-/**  */
-
 /**
- * @brief Lookup a one-time pre-key with a given public key
+ * @brief Lookup an one-time pre-key with a given public key
  *
  * @param account The account for looking up the one-time pre-key
  * @param one_time_pre_key_id The one-time pre-key id to be matched
@@ -73,8 +71,6 @@ lookup_one_time_pre_key(Skissm__Account *account,
  */
 size_t
 generate_signed_pre_key(Skissm__Account *account);
-
-/** Generates a number of new one time keys. */
 
 /**
  * @brief Generates a number of new one-time pre-keys

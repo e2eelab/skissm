@@ -21,19 +21,19 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "Session";
+option java_outer_classname = "SessionProto";
 
-import "skissm/e2ee_address.proto";
-import "skissm/ratchet.proto";
+import "skissm/E2eeAddress.proto";
+import "skissm/Ratchet.proto";
 
-message session {
+message Session {
     uint32 version = 1;
     uint32 e2ee_pack_id = 2;
     string session_id = 3;
-    skissm.e2ee_address session_owner = 4;
-    skissm.e2ee_address from = 5;
-    skissm.e2ee_address to = 6;
-    skissm.ratchet ratchet = 7;
+    skissm.E2eeAddress session_owner = 4;
+    skissm.E2eeAddress from = 5;
+    skissm.E2eeAddress to = 6;
+    skissm.Ratchet ratchet = 7;
     bytes alice_identity_key = 8;
     bytes alice_ephemeral_key = 9;
     bytes bob_signed_pre_key = 10;

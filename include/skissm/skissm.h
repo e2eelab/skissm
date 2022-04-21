@@ -22,59 +22,71 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "skissm/AcceptMsg.pb-c.h"
+#include "skissm/AcceptRequest.pb-c.h"
+#include "skissm/AcceptResponse.pb-c.h"
+#include "skissm/Account.pb-c.h"
+#include "skissm/AddGroupMembersMsg.pb-c.h"
+#include "skissm/AddGroupMembersRequest.pb-c.h"
+#include "skissm/AddGroupMembersResponse.pb-c.h"
+#include "skissm/ChainKey.pb-c.h"
+#include "skissm/ConsumeProtoMsgRequest.pb-c.h"
+#include "skissm/ConsumeProtoMsgResponse.pb-c.h"
+#include "skissm/CreateGroupMsg.pb-c.h"
+#include "skissm/CreateGroupRequest.pb-c.h"
+#include "skissm/CreateGroupResponse.pb-c.h"
+#include "skissm/E2eeAddress.pb-c.h"
+#include "skissm/E2eeMsg.pb-c.h"
+#include "skissm/GetGroupRequest.pb-c.h"
+#include "skissm/GetGroupResponse.pb-c.h"
+#include "skissm/GetPreKeyBundleRequest.pb-c.h"
+#include "skissm/GetPreKeyBundleResponse.pb-c.h"
+#include "skissm/GroupMsgPayload.pb-c.h"
+#include "skissm/GroupPreKeyPayload.pb-c.h"
+#include "skissm/GroupSession.pb-c.h"
+#include "skissm/IdentityKey.pb-c.h"
+#include "skissm/IdentityKeyPublic.pb-c.h"
+#include "skissm/InviteMsg.pb-c.h"
+#include "skissm/InviteRequest.pb-c.h"
+#include "skissm/InviteResponse.pb-c.h"
+#include "skissm/KeyPair.pb-c.h"
+#include "skissm/MsgKey.pb-c.h"
+#include "skissm/One2oneMsgPayload.pb-c.h"
+#include "skissm/OneTimePreKey.pb-c.h"
+#include "skissm/OneTimePreKeyPublic.pb-c.h"
+#include "skissm/PendingGroupPreKey.pb-c.h"
+#include "skissm/Plaintext.pb-c.h"
+#include "skissm/PreKeyBundle.pb-c.h"
+#include "skissm/ProtoMsg.pb-c.h"
+#include "skissm/PublishSpkRequest.pb-c.h"
+#include "skissm/PublishSpkResponse.pb-c.h"
+#include "skissm/Ratchet.pb-c.h"
+#include "skissm/ReceiverChainNode.pb-c.h"
+#include "skissm/RegisterUserRequest.pb-c.h"
+#include "skissm/RegisterUserResponse.pb-c.h"
+#include "skissm/RemoveGroupMembersMsg.pb-c.h"
+#include "skissm/RemoveGroupMembersRequest.pb-c.h"
+#include "skissm/RemoveGroupMembersResponse.pb-c.h"
+#include "skissm/SendGroupMsgRequest.pb-c.h"
+#include "skissm/SendGroupMsgResponse.pb-c.h"
+#include "skissm/SendOne2oneMsgRequest.pb-c.h"
+#include "skissm/SendOne2oneMsgResponse.pb-c.h"
+#include "skissm/SenderChainNode.pb-c.h"
+#include "skissm/Session.pb-c.h"
+#include "skissm/SignedPreKey.pb-c.h"
+#include "skissm/SignedPreKeyPublic.pb-c.h"
+#include "skissm/SkippedMsgKeyNode.pb-c.h"
+#include "skissm/SupplyOpksMsg.pb-c.h"
+#include "skissm/SupplyOpksRequest.pb-c.h"
+#include "skissm/SupplyOpksResponse.pb-c.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "error.h"
-
-#include "skissm/accept_payload.pb-c.h"
-#include "skissm/account.pb-c.h"
-#include "skissm/add_group_members_request_payload.pb-c.h"
-#include "skissm/chain_key.pb-c.h"
-#include "skissm/create_group_request_payload.pb-c.h"
-#include "skissm/create_group_response_payload.pb-c.h"
-#include "skissm/e2ee_address.pb-c.h"
-#include "skissm/e2ee_group_msg_payload.pb-c.h"
-#include "skissm/e2ee_msg.pb-c.h"
-#include "skissm/e2ee_msg_payload.pb-c.h"
-#include "skissm/e2ee_msg_type.pb-c.h"
-#include "skissm/get_group_request_payload.pb-c.h"
-#include "skissm/get_group_response_payload.pb-c.h"
-#include "skissm/get_pre_key_bundle_request_payload.pb-c.h"
-#include "skissm/get_pre_key_bundle_response_payload.pb-c.h"
-#include "skissm/group_pre_key_payload.pb-c.h"
-#include "skissm/group_session.pb-c.h"
-#include "skissm/identity_key.pb-c.h"
-#include "skissm/identity_key_public.pb-c.h"
-#include "skissm/invite_payload.pb-c.h"
-#include "skissm/key_pair.pb-c.h"
-#include "skissm/msg_key.pb-c.h"
-#include "skissm/one_time_pre_key.pb-c.h"
-#include "skissm/one_time_pre_key_public.pb-c.h"
-#include "skissm/pending_group_pre_key.pb-c.h"
-#include "skissm/plaintext.pb-c.h"
-#include "skissm/plaintext_type.pb-c.h"
-#include "skissm/pre_key_bundle.pb-c.h"
-#include "skissm/proto_cmds.pb-c.h"
-#include "skissm/proto_msg.pb-c.h"
-#include "skissm/publish_spk_request_payload.pb-c.h"
-#include "skissm/ratchet.pb-c.h"
-#include "skissm/receiver_chain_node.pb-c.h"
-#include "skissm/register_user_request_payload.pb-c.h"
-#include "skissm/register_user_response_payload.pb-c.h"
-#include "skissm/remove_group_members_request_payload.pb-c.h"
-#include "skissm/response_data.pb-c.h"
-#include "skissm/sender_chain_node.pb-c.h"
-#include "skissm/session.pb-c.h"
-#include "skissm/signed_pre_key.pb-c.h"
-#include "skissm/signed_pre_key_public.pb-c.h"
-#include "skissm/skipped_message_key_node.pb-c.h"
-#include "skissm/supply_opks_request_payload.pb-c.h"
-#include "skissm/supply_opks_response_payload.pb-c.h"
-
 #include "skissm/session.h"
 #include "skissm/cipher.h"
+#include "skissm/error.h"
 
 #define PROTOCOL_VERSION 0x01
 #define GROUP_VERSION 0x01
@@ -94,14 +106,15 @@ struct e2ee_pack_list_t {
 };
 
 typedef struct crypto_param_t {
-    int asym_key_len;
-    int sign_key_len;
-    int sig_len;
-    int hash_len;
-    int aead_key_len;
-    int aead_iv_len;
-    int aead_tag_len;
+    uint32_t asym_key_len;
+    uint32_t sign_key_len;
+    uint32_t sig_len;
+    uint32_t hash_len;
+    uint32_t aead_key_len;
+    uint32_t aead_iv_len;
+    uint32_t aead_tag_len;
 } crypto_param_t;
+
 typedef struct skissm_common_handler_t {
     int64_t (*handle_get_ts)();
     void (*handle_gen_rand)(uint8_t *, size_t);
@@ -146,8 +159,7 @@ typedef struct skissm_db_handler_t {
      * @param account_id
      * @param signed_pre_key
      */
-    void (*update_signed_pre_key)(uint64_t,
-                                  Skissm__SignedPreKey *);
+    void (*update_signed_pre_key)(uint64_t, Skissm__SignedPreKey *);
     /**
      * @brief load old signed pre key by spk_id
      * @param account_id
@@ -277,6 +289,38 @@ typedef struct skissm_db_handler_t {
     void (*unload_group_pre_key)(Skissm__E2eeAddress *);
 } skissm_db_handler_t;
 
+typedef struct e2ee_proto_handler_t {
+    /**
+     * @brief send_register
+     * @param request
+     * @return response
+     */
+    Skissm__RegisterUserResponse * (*register_user)(Skissm__RegisterUserRequest *);
+
+    Skissm__GetPreKeyBundleResponse * (*get_pre_key_bundle)(Skissm__GetPreKeyBundleRequest *);
+
+    Skissm__InviteResponse * (*invite)(Skissm__InviteRequest *);
+
+    Skissm__AcceptResponse * (*accept)(Skissm__AcceptRequest *);
+
+    Skissm__PublishSpkResponse * (*publish_spk)(Skissm__PublishSpkRequest *);
+
+    Skissm__SupplyOpksResponse * (*supply_opks)(Skissm__SupplyOpksRequest *);
+
+    Skissm__SendOne2oneMsgResponse * (*send_one2one_msg)(Skissm__SendOne2oneMsgRequest *);
+
+    Skissm__CreateGroupResponse * (*create_group)(Skissm__CreateGroupRequest *);
+
+    Skissm__AddGroupMembersResponse * (*add_group_members)(Skissm__AddGroupMembersRequest *);
+
+    Skissm__RemoveGroupMembersResponse * (*remove_group_members)(Skissm__RemoveGroupMembersRequest *);
+
+    Skissm__SendGroupMsgResponse * (*send_group_msg)(Skissm__SendGroupMsgRequest *);
+
+    Skissm__ConsumeProtoMsgResponse * (*consume_proto_msg)(Skissm__ConsumeProtoMsgRequest *);
+
+} e2ee_proto_handler_t;
+
 typedef struct skissm_event_handler_t {
     /**
      * @brief notify error
@@ -351,6 +395,7 @@ typedef struct skissm_event_handler_t {
 typedef struct skissm_plugin_t {
     skissm_common_handler_t common_handler;
     skissm_db_handler_t db_handler;
+    e2ee_proto_handler_t proto_handler;
     skissm_event_handler_t event_handler;
 } skissm_plugin_t;
 

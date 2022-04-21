@@ -37,9 +37,9 @@ typedef struct session_suite_t {
      * @return Success or not
      */
     size_t (*new_outbound_session)(
-        Skissm__Session *session,
-        const Skissm__Account *local_account,
-        Skissm__PreKeyBundle *their_pre_key_bundle
+        Skissm__Session *,
+        const Skissm__Account *,
+        Skissm__PreKeyBundle *
     );
 
     /**
@@ -47,25 +47,25 @@ typedef struct session_suite_t {
      *
      * @param session The inbound session
      * @param local_account Our account
-     * @param invite_payload The inbound message
+     * @param request The invite message
      * @return Success or not
      */
     size_t (*new_inbound_session)(
-        Skissm__Session *session,
-        Skissm__Account *local_account,
-        Skissm__InvitePayload *invite_payload
+        Skissm__Session *,
+        Skissm__Account *,
+        Skissm__InviteMsg *
     );
 
     /**
      * @brief Complete an outbound session.
      *
-     * @param session The inbound session
-     * @param accept_payload The accept_payload
+     * @param outbound_session The inbound session
+     * @param msg The accept message
      * @return Success or not
      */
     size_t (*complete_outbound_session)(
-        Skissm__Session *outbound_session,
-        Skissm__AcceptPayload *accept_payload
+        Skissm__Session *,
+        Skissm__AcceptMsg *
     );
 } session_suite_t;
 
@@ -77,11 +77,15 @@ void initialise_session(
     Skissm__E2eeAddress *to
 );
 
-void pack_e2ee_plaintext(
-    const uint8_t *plaintext_data, size_t plaintext_len,
-    Skissm__PlaintextType plaintext_type,
-    uint8_t **e2ee_plaintext_data, size_t *e2ee_plaintext_data_len
-);
+/**
+ * @brief Packaging a common plaintext to common_plaintext_data.
+ *
+ * @param plaintext_data
+ * @param plaintext_data_len
+ * @param common_plaintext_data
+ * @param common_plaintext_data_len
+ */
+void pack_common_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **common_plaintext_data, size_t *common_plaintext_data_len);
 
 /* ECC-related */
 size_t crypto_curve25519_new_outbound_session(
@@ -93,12 +97,12 @@ size_t crypto_curve25519_new_outbound_session(
 size_t crypto_curve25519_new_inbound_session(
     Skissm__Session *session,
     Skissm__Account *local_account,
-    Skissm__InvitePayload *invite_payload
+    Skissm__InviteMsg *msg
 );
 
 size_t crypto_curve25519_complete_outbound_session(
     Skissm__Session *outbound_session,
-    Skissm__AcceptPayload *accept_payload
+    Skissm__AcceptMsg *msg
 );
 
 /* PQC-related */
@@ -111,20 +115,13 @@ size_t pqc_new_outbound_session(
 size_t pqc_new_inbound_session(
     Skissm__Session *session,
     Skissm__Account *local_account,
-    Skissm__InvitePayload *invite_payload
+    Skissm__InviteMsg *msg
 );
 
 size_t pqc_complete_outbound_session(
     Skissm__Session *outbound_session,
-    Skissm__AcceptPayload *accept_payload
+    Skissm__AcceptMsg *msg
 );
-
-/**
- * @brief Close a session
- *
- * @param session
- */
-void close_session(Skissm__Session *session);
 
 #ifdef __cplusplus
 }

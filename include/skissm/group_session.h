@@ -71,29 +71,16 @@ void advance_group_chain_key(const cipher_suite_t *cipher_suite, ProtobufCBinary
 
 
 /**
- * @brief Create group message keys.
+ * @brief Create group message key.
  *
  * @param cipher_suite
  * @param chain_key
  * @param message_key
  */
-void create_group_message_keys(
+void create_group_message_key(
     const cipher_suite_t *cipher_suite,
     const ProtobufCBinaryData *chain_key,
     Skissm__MsgKey *message_key
-);
-
-/**
- * @brief Pack group pre-keys.
- *
- * @param outbound_group_session
- * @param group_pre_key_plaintext
- * @param old_session_id
- */
-size_t pack_group_pre_key_plaintext(
-    Skissm__GroupSession *outbound_group_session,
-    uint8_t **group_pre_key_plaintext,
-    char *old_session_id
 );
 
 /**
@@ -109,13 +96,6 @@ void encrypt_group_session(
     Skissm__E2eeAddress *group_address,
     const uint8_t *plaintext, size_t plaintext_len
 );
-
-/**
- * @brief Close a group session.
- *
- * @param group_session
- */
-void close_group_session(Skissm__GroupSession *group_session);
 
 #ifdef __cplusplus
 }

@@ -21,22 +21,22 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "Account";
+option java_outer_classname = "AccountProto";
 
-import "skissm/e2ee_address.proto";
-import "skissm/identity_key.proto";
-import "skissm/signed_pre_key.proto";
-import "skissm/one_time_pre_key.proto";
+import "skissm/E2eeAddress.proto";
+import "skissm/IdentityKey.proto";
+import "skissm/SignedPreKey.proto";
+import "skissm/OneTimePreKey.proto";
 
-message account {
+message Account {
     uint32 version = 1;
     uint64 account_id = 2;
     bool saved = 3;
-    skissm.e2ee_address address = 4;
+    skissm.E2eeAddress address = 4;
     string password = 5;
     uint32 e2ee_pack_id = 6;
-    skissm.identity_key identity_key = 7;
-    skissm.signed_pre_key signed_pre_key = 8;
-    repeated skissm.one_time_pre_key one_time_pre_keys = 9;
+    skissm.IdentityKey identity_key = 7;
+    skissm.SignedPreKey signed_pre_key = 8;
+    repeated skissm.OneTimePreKey one_time_pre_keys = 9;
     uint32 next_one_time_pre_key_id = 10;
 }

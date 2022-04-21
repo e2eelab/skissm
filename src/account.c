@@ -22,6 +22,7 @@
 
 #include "skissm/account_manager.h"
 #include "skissm/cipher.h"
+#include "skissm/e2ee_client_internal.h"
 #include "skissm/mem_util.h"
 
 static Skissm__Account *local_account = NULL;
@@ -45,7 +46,7 @@ void account_begin() {
         now = get_skissm_plugin()->common_handler.handle_get_ts();
         if (now > cur_account->signed_pre_key->ttl) {
             generate_signed_pre_key(cur_account);
-            publish_spk(cur_account);
+            publish_spk_internal(cur_account);
         }
 
         /* Check and remove signed pre-keys (keep last two) */

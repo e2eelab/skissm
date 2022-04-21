@@ -29,12 +29,6 @@ extern "C" {
 #include "skissm/skissm.h"
 #include "skissm/cipher.h"
 
-/** length of a shared key */
-//#define SHARED_KEY_LENGTH CIPHER.suite1->get_crypto_param().hash_len
-
-/** length of a message key */
-//#define MESSAGE_KEY_LENGTH (CIPHER.suite1->get_crypto_param().aead_key_len + CIPHER.suite1->get_crypto_param().aead_iv_len)
-
 typedef struct cipher cipher;
 
 void initialise_ratchet(Skissm__Ratchet **ratchet);
@@ -55,18 +49,41 @@ void initialise_as_alice(
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 );
 
+/**
+ * @brief Encrypt plaintext_data to Skissm__One2oneMsgPayload payload
+ * and keep updated ratchet states.
+ *
+ * @param cipher_suite
+ * @param ratchet
+ * @param ad
+ * @param plaintext_data
+ * @param plaintext_data_len
+ * @param payload
+ */
 void encrypt_ratchet(
     const cipher_suite_t *cipher_suite,
     Skissm__Ratchet *ratchet,
     ProtobufCBinaryData ad,
-    const uint8_t *plaintext, size_t plaintext_length,
-    Skissm__E2eeMsgPayload **e2ee_msg_payload
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    Skissm__One2oneMsgPayload **payload
 );
 
-size_t decrypt_ratchet(
+/**
+ * @brief Decrypt Skissm__One2oneMsgPayload payload to plaintext_data
+ * and keep updated ratchet states.
+ *
+ * @param cipher_suite
+ * @param ratchet
+ * @param ad
+ * @param payload
+ * @param plaintext_data
+ * @return true
+ * @return false
+ */
+bool decrypt_ratchet(
     const cipher_suite_t *cipher_suite,
-    Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__E2eeMsgPayload *e2ee_msg_payload,
-    uint8_t **plaintext
+    Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload,
+    uint8_t **plaintext_data
 );
 
 #ifdef __cplusplus

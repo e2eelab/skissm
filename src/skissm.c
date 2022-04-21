@@ -19,10 +19,6 @@
 #include "skissm/skissm.h"
 
 #include "skissm/account.h"
-#include "skissm/e2ee_protocol.h"
-
-#include "skissm/cipher.h"
-#include "skissm/session.h"
 
 extern const struct cipher_suite_t E2EE_CIPHER_ECDH_X25519_AES256_GCM_SHA256;
 extern const struct cipher_suite_t E2EE_CIPHER_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256;
@@ -51,16 +47,12 @@ static skissm_plugin_t *skissm_plugin;
 
 void skissm_begin(skissm_plugin_t *ssm_plugin) {
     skissm_plugin = ssm_plugin;
-
     account_begin();
-    protocol_begin();
 }
 
 void skissm_end() {
     skissm_plugin = NULL;
-
     account_end();
-    protocol_end();
 }
 
 skissm_plugin_t *get_skissm_plugin() {

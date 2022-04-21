@@ -28,78 +28,99 @@ extern "C" {
 #include "skissm/skissm.h"
 
 /**
- * @brief Initialize before using an outbound session
- * that is waiting for being responded.
- * @param from From address
- * @param to To Address
- * @return  0 outbound session initialized, wait for being responded.
- *         -1 outbound session is already responded and ready to use.
- *         -2 outbound session is wait for responding.
- */
-size_t init_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
-
-/**
- * @brief Get an outbound session that is responded and ready for use.
- * @param from From address
- * @param to To Address
- * @return Outbound session or NULL
- */
-Skissm__Session *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
-
-/**
- * @brief Create a get_pre_key_bundle_request_payload to be sent to messaging server.
+ * @brief Create a get_pre_key_bundle_request to be sent to messaging server.
  *
- * @param e2ee_address
- * @return Skissm__GetPreKeyBundleRequestPayload*
+ * @param peer_address
+ * @return Skissm__GetPreKeyBundleRequest*
  */
-Skissm__GetPreKeyBundleRequestPayload *produce_get_pre_key_bundle_request_payload(Skissm__E2eeAddress *e2ee_address);
+Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(Skissm__E2eeAddress *peer_address);
 
 /**
  * @brief Process an incoming get_pre_key_bundle_response_payload.
  *
  * @param from
  * @param to
- * @param get_pre_key_bundle_response_payload
+ * @param response
  * @return size_t 0 for Succcess
  */
-size_t consume_get_pre_key_bundle_response_payload(
-    uint32_t e2ee_pack_id,
+size_t consume_get_pre_key_bundle_response (
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
-    Skissm__GetPreKeyBundleResponsePayload *get_pre_key_bundle_response_payload);
-
+    Skissm__GetPreKeyBundleResponse *response);
 /**
- * @brief Create an outbound e2ee_message_payload to be sent to messaging server.
+ * @brief Create a send_one2one_msg_request to be sent to messaging server.
  *
  * @param outbound_session
- * @param e2ee_plaintext_data bytes array packed from
- * @param e2ee_plaintext_len
- * @return Skissm__E2eeMsg*
+ * @param plaintext_data
+ * @param plaintext_data_len
+ * @return Skissm__SendOne2oneMsgRequest*
  */
-Skissm__E2eeMsg *produce_e2ee_message_payload(Skissm__Session *outbound_session, const uint8_t *e2ee_plaintext_data, size_t e2ee_plaintext_len);
+Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len);
 
 /**
- * @brief Process an inbound e2ee_message_payload with corresponding inbound session.
+ * @brief Process an send_one2one_msg_response with corresponding inbound session.
  *
- * @param inbound_e2ee_message_payload
- * @return size_t 0 for Succcess
+ * @param outbound_session
+ * @param response
  */
-size_t consume_e2ee_message_payload(Skissm__E2eeMsg *inbound_e2ee_message_payload);
+void consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response);
 
-Skissm__InvitePayload *produce_e2ee_invite_payload(
-    Skissm__Session *outbound_session, ProtobufCBinaryData *pre_shared_key_1,
-    ProtobufCBinaryData *pre_shared_key_2, ProtobufCBinaryData *pre_shared_key_3
-);
+/**
+ * @brief Process a received Skissm__E2eeMsg message from server.
+ *
+ * @param receiver_address
+ * @param e2ee_msg
+ * @return size_t
+ */
+size_t consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg);
 
-size_t consume_e2ee_invite_payload(Skissm__E2eeMsg *invite_msg_payload);
+/**
+ * @brief Create a Skissm__InviteRequest message to be sent to server.
+ *
+ * @param outbound_session
+ * @param pre_shared_keys
+ * @param pre_shared_keys_len
+ * @return Skissm__InviteRequest*
+ */
+Skissm__InviteRequest *produce_invite_request(
+    Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len);
 
-Skissm__AcceptPayload *produce_e2ee_accept_payload(uint32_t e2ee_pack_id, ProtobufCBinaryData *ciphertext_1);
+/**
+ * @brief Process an incoming InviteResponse message.
+ *
+ * @param response
+ */
+void consume_invite_response(Skissm__InviteResponse *response);
 
-size_t consume_e2ee_accept_payload(Skissm__E2eeMsg *accept_msg_payload);
+/**
+ * @brief Process an incoming E2eeAddress message.
+ *
+ * @param response
+ */
+bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *msg);
 
-Skissm__E2eeMsg *produce_invite_message_payload(Skissm__Session *outbound_session, Skissm__InvitePayload *invite_payload);
+/**
+ * @brief Create a Skissm__AcceptRequest message to be sent to server.
+ *
+ * @param e2ee_pack_id
+ * @param ciphertext_1
+ * @return Skissm__AcceptRequest*
+ */
+Skissm__AcceptRequest *produce_accept_request(uint32_t e2ee_pack_id, ProtobufCBinaryData *ciphertext_1);
 
-Skissm__E2eeMsg *produce_accept_message_payload(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, Skissm__AcceptPayload *accept_payload);
+/**
+ * @brief Process an incoming AcceptResponse message.
+ *
+ * @param response
+ */
+void consume_accept_response(Skissm__AcceptResponse *response);
+
+/**
+ * @brief Process an incoming AcceptMs message.
+ *
+ * @param response
+ */
+bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg);
 
 #ifdef __cplusplus
 }

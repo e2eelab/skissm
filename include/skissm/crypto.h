@@ -106,38 +106,38 @@ size_t crypto_aes_encrypt_gcm_length(size_t input_length);
  * @brief AES256 encrypt function in GCM mode
  * @see [AES256 GCM mode](https://datatracker.ietf.org/doc/html/rfc5288)
  *
- * @param plaintext
- * @param plaintext_len
+ * @param plaintext_data
+ * @param plaintext_data_len
  * @param key
  * @param iv
  * @param add
  * @param add_len
- * @param ciphertext
+ * @param ciphertext_data
  */
 void crypto_aes_encrypt_gcm(
-    const uint8_t *plaintext, size_t plaintext_len,
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
     const uint8_t *key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
-    uint8_t *ciphertext);
+    uint8_t *ciphertext_data);
 
 /**
  * @brief AES256 decrypt function in GCM mode
  * @see [AES256 GCM mode](https://datatracker.ietf.org/doc/html/rfc5288)
  *
- * @param ciphertext
- * @param ciphertext_len
+ * @param ciphertext_data
+ * @param ciphertext_data_len
  * @param key
  * @param iv
  * @param add
  * @param add_len
- * @param output
+ * @param plaintext_data
  * @return size_t
  */
 size_t crypto_aes_decrypt_gcm(
-    const uint8_t *ciphertext, size_t ciphertext_len,
+    const uint8_t *ciphertext_data, size_t ciphertext_data_len,
     const uint8_t *key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
-    uint8_t *output);
+    uint8_t *plaintext_data);
 
 /**
  * @brief Encode to base64 string
@@ -151,11 +151,11 @@ char *crypto_base64_encode(const uint8_t *msg, size_t msg_len);
 /**
  * @brief Decode from base64 string
  *
- * @param base64_msg
- * @param base64_msg_len
+ * @param base64_data
+ * @param base64_data_len
  * @return char*
  */
-char *crypto_base64_decode(const uint8_t *base64_msg, size_t base64_msg_len);
+char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len);
 
 
 #ifdef __cplusplus
