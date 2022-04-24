@@ -30,7 +30,7 @@ void invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pr
     skissm__invite_response__free_unpacked(response, NULL);
 }
 
-void accept_internal(uint32_t e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1) {
+void accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1) {
     Skissm__AcceptRequest *request = produce_accept_request(e2ee_pack_id, ciphertext_1);
     Skissm__AcceptResponse *response = get_skissm_plugin()->proto_handler.accept(request);
 
@@ -78,10 +78,10 @@ void send_one2one_msg_internal(Skissm__Session *outbound_session, const uint8_t 
     skissm__session__free_unpacked(outbound_session, NULL);
 }
 
-void consume_proto_msg_internal(char *msg_id) {
+void consume_proto_msg_internal(char *proto_msg_id) {
     Skissm__ConsumeProtoMsgRequest *request = (Skissm__ConsumeProtoMsgRequest*)malloc(sizeof(Skissm__ConsumeProtoMsgRequest));
     skissm__consume_proto_msg_request__init(request);
-    request->msg_id = strdup(msg_id);
+    request->proto_msg_id = strdup(proto_msg_id);
 
     Skissm__ConsumeProtoMsgResponse *response = get_skissm_plugin()->proto_handler.consume_proto_msg(request);
     // TODO: what if error happened

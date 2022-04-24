@@ -32,9 +32,9 @@
 /** length of the shared secret created by a Curve25519 ECDH operation */
 #define CURVE25519_SHARED_SECRET_LENGTH 32
 
-void initialise_session(Skissm__Session *session, uint32_t e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
+void initialise_session(Skissm__Session *session, const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
     skissm__session__init(session);
-    session->e2ee_pack_id = e2ee_pack_id;
+    session->e2ee_pack_id = strdup(e2ee_pack_id);
     copy_address_from_address(&(session->from), from);
     copy_address_from_address(&(session->to), to);
     initialise_ratchet(&(session->ratchet));
@@ -43,7 +43,7 @@ void initialise_session(Skissm__Session *session, uint32_t e2ee_pack_id, Skissm_
 void pack_common_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **common_plaintext_data, size_t *common_plaintext_data_len) {
     Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
     skissm__plaintext__init(plaintext);
-    plaintext->version = PLAINTEXT_VERSION;
+    plaintext->version = E2EE_PLAINTEXT_VERSION;
     plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG;
     plaintext->common_msg.len = plaintext_data_len;
     plaintext->common_msg.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_data_len);

@@ -41,7 +41,7 @@ void account_end();
  * @param e2ee_pack_id an id (0, 1) of e2ee package
  * @return Skissm__Account*
  */
-Skissm__Account *create_account(uint64_t account_id, uint32_t e2ee_pack_id);
+Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id);
 
 /**
  * @brief Get the local account object

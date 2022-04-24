@@ -19,6 +19,7 @@
 #include "skissm/skissm.h"
 
 #include "skissm/account.h"
+#include "skissm/mem_util.h"
 
 extern const struct cipher_suite_t E2EE_CIPHER_ECDH_X25519_AES256_GCM_SHA256;
 extern const struct cipher_suite_t E2EE_CIPHER_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256;
@@ -117,10 +118,10 @@ void ssm_notify_group_members_removed(Skissm__E2eeAddress *group_address,
         skissm_plugin->event_handler.on_group_members_removed(group_address, group_name, member_addresses);
 }
 
-const e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id) {
-  if (e2ee_pack_id == 0){
+const e2ee_pack_t *get_e2ee_pack(const char *e2ee_pack_id) {
+  if (safe_strcmp(e2ee_pack_id, "0")) {
     return E2EE_PACK_LIST.e2ee_pack_0;
-  } else if (e2ee_pack_id == 1){
+  } else if (safe_strcmp(e2ee_pack_id, "1")) {
     return E2EE_PACK_LIST.e2ee_pack_1;
   } else{
     return NULL;

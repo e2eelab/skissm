@@ -25,7 +25,7 @@ typedef enum response_code {
  * @param account_id The unique account id.
  * @param e2ee_pack_id The e2ee package id to be used.
  */
-void register_user(uint64_t account_id, uint32_t e2ee_pack_id);
+void register_user(uint64_t account_id, const char *e2ee_pack_id);
 
 /**
  * @brief Send invite request and create a new outbound session
@@ -62,41 +62,40 @@ size_t send_one2one_msg(Skissm__Session *outbound_session, const uint8_t *plaint
  *
  * @param sender_address
  * @param group_name
- * @param member_num
- * @param member_addresses
+ * @param group_members
+ * @param group_members_num
  */
-void create_group(Skissm__E2eeAddress *sender_address, char *group_name, size_t member_num, Skissm__E2eeAddress **member_addresses);
+void create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm__GroupMember **group_members, size_t group_members_num);
 
 /**
  * @brief Add group members.
  *
  * @param sender_address
  * @param group_address
- * @param adding_member_addresses
- * @param adding_member_num
+ * @param adding_members
+ * @param adding_members_num
  * @return size_t
  */
 size_t add_group_members(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
-    const Skissm__E2eeAddress **adding_member_addresses,
-    size_t adding_member_num);
+    Skissm__GroupMember **adding_members,
+    size_t adding_members_num);
 
 /**
  * @brief Remove group members.
  *
  * @param sender_address
  * @param group_address
- * @param removing_member_addresses
- * @param removing_member_num
+ * @param removing_members
+ * @param removing_members_num
  * @return size_t
  */
 size_t remove_group_members(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
-    const Skissm__E2eeAddress **removing_member_addresses,
-    size_t removing_member_num
-);
+    Skissm__GroupMember **removing_members,
+    size_t removing_members_num);
 
 /**
  * @brief Send group msg.

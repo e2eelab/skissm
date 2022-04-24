@@ -1,0 +1,42 @@
+/*
+ * Copyright © 2020-2021 by Academia Sinica
+ *
+ * This file is part of SKISSM.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SKISSM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ */
+syntax = "proto3";
+
+package skissm;
+
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "AccountProto";
+
+import "skissm/E2eeAddress.proto";
+import "skissm/IdentityKey.proto";
+import "skissm/SignedPreKey.proto";
+import "skissm/OneTimePreKey.proto";
+
+message Account {
+    string version = 1;
+    uint64 account_id = 2;
+    bool saved = 3;
+    skissm.E2eeAddress address = 4;
+    string password = 5;
+    string e2ee_pack_id = 6;
+    skissm.IdentityKey identity_key = 7;
+    skissm.SignedPreKey signed_pre_key = 8;
+    repeated skissm.OneTimePreKey one_time_pre_keys = 9;
+    uint32 next_one_time_pre_key_id = 10;
+}

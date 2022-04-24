@@ -41,6 +41,7 @@
 #include "skissm/GetGroupResponse.pb-c.h"
 #include "skissm/GetPreKeyBundleRequest.pb-c.h"
 #include "skissm/GetPreKeyBundleResponse.pb-c.h"
+#include "skissm/GroupMember.pb-c.h"
 #include "skissm/GroupMsgPayload.pb-c.h"
 #include "skissm/GroupPreKeyPayload.pb-c.h"
 #include "skissm/GroupSession.pb-c.h"
@@ -88,14 +89,14 @@ extern "C" {
 #include "skissm/cipher.h"
 #include "skissm/error.h"
 
-#define PROTOCOL_VERSION 0x01
-#define GROUP_VERSION 0x01
-#define PLAINTEXT_VERSION 0x01
-#define UUID_LEN 16
-#define SIGNED_PRE_KEY_EXPIRATION 604800
+#define E2EE_PROTOCOL_VERSION       "E2EE_PROTOCOL_v1.0"
+#define E2EE_GROUP_PRE_KEY_VERSION  "E2EE_GROUP_PRE_KEY_v1.0"
+#define E2EE_PLAINTEXT_VERSION      "E2EE_PLAINTEXT_v1.0"
+#define UUID_LEN                    16
+#define SIGNED_PRE_KEY_EXPIRATION   604800
 
 typedef struct e2ee_pack_t {
-    uint32_t e2ee_pack_id;
+    const char *e2ee_pack_id;
     const struct cipher_suite_t *cipher_suite;
     const struct session_suite_t *session_suite;
 } e2ee_pack_t;
@@ -119,7 +120,6 @@ typedef struct skissm_common_handler_t {
     int64_t (*handle_get_ts)();
     void (*handle_gen_rand)(uint8_t *, size_t);
     void (*handle_gen_uuid)(uint8_t uuid[UUID_LEN]);
-    int (*handle_send)(uint8_t *, size_t);
 } skissm_common_handler_t;
 
 typedef struct skissm_db_handler_t {
@@ -291,34 +291,77 @@ typedef struct skissm_db_handler_t {
 
 typedef struct e2ee_proto_handler_t {
     /**
-     * @brief send_register
+     * @brief Register user
      * @param request
      * @return response
      */
     Skissm__RegisterUserResponse * (*register_user)(Skissm__RegisterUserRequest *);
-
+    /**
+     * @brief Get pre key bundle
+     * @param request
+     * @return response
+     */
     Skissm__GetPreKeyBundleResponse * (*get_pre_key_bundle)(Skissm__GetPreKeyBundleRequest *);
-
+    /**
+     * @brief Invite
+     * @param request
+     * @return response
+     */
     Skissm__InviteResponse * (*invite)(Skissm__InviteRequest *);
-
+    /**
+     * @brief Accept
+     * @param request
+     * @return response
+     */
     Skissm__AcceptResponse * (*accept)(Skissm__AcceptRequest *);
-
+    /**
+     * @brief Publish signed pre key
+     * @param request
+     * @return response
+     */
     Skissm__PublishSpkResponse * (*publish_spk)(Skissm__PublishSpkRequest *);
-
+    /**
+     * @brief Supply onetime pre key
+     * @param request
+     * @return response
+     */
     Skissm__SupplyOpksResponse * (*supply_opks)(Skissm__SupplyOpksRequest *);
-
+    /**
+     * @brief Send one2one message
+     * @param request
+     * @return response
+     */
     Skissm__SendOne2oneMsgResponse * (*send_one2one_msg)(Skissm__SendOne2oneMsgRequest *);
-
+    /**
+     * @brief Create group
+     * @param request
+     * @return response
+     */
     Skissm__CreateGroupResponse * (*create_group)(Skissm__CreateGroupRequest *);
-
+    /**
+     * @brief Add group members
+     * @param request
+     * @return response
+     */
     Skissm__AddGroupMembersResponse * (*add_group_members)(Skissm__AddGroupMembersRequest *);
-
+    /**
+     * @brief Remove group members
+     * @param request
+     * @return response
+     */
     Skissm__RemoveGroupMembersResponse * (*remove_group_members)(Skissm__RemoveGroupMembersRequest *);
-
+    /**
+     * @brief Send group message
+     * @param request
+     * @return response
+     */
     Skissm__SendGroupMsgResponse * (*send_group_msg)(Skissm__SendGroupMsgRequest *);
-
+    /**
+     * @brief Consume a ProtoMsg
+     * @param request
+     * @return response
+     */
     Skissm__ConsumeProtoMsgResponse * (*consume_proto_msg)(Skissm__ConsumeProtoMsgRequest *);
-
 } e2ee_proto_handler_t;
 
 typedef struct skissm_event_handler_t {
@@ -399,7 +442,7 @@ typedef struct skissm_plugin_t {
     skissm_event_handler_t event_handler;
 } skissm_plugin_t;
 
-const e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id);
+const e2ee_pack_t *get_e2ee_pack(const char *e2ee_pack_id);
 
 void skissm_begin(skissm_plugin_t *ssm_plugin);
 

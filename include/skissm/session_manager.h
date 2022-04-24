@@ -106,7 +106,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
  * @param ciphertext_1
  * @return Skissm__AcceptRequest*
  */
-Skissm__AcceptRequest *produce_accept_request(uint32_t e2ee_pack_id, ProtobufCBinaryData *ciphertext_1);
+Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id, ProtobufCBinaryData *ciphertext_1);
 
 /**
  * @brief Process an incoming AcceptResponse message.

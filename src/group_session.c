@@ -68,7 +68,7 @@ void create_group_message_key(
 static void pack_group_pre_key(Skissm__GroupPreKeyPayload *group_pre_key_payload, uint8_t **group_pre_key_plaintext_data, size_t *group_pre_key_plaintext_data_len) {
     Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
     skissm__plaintext__init(plaintext);
-    plaintext->version = PLAINTEXT_VERSION;
+    plaintext->version = E2EE_PLAINTEXT_VERSION;
     plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY;
     plaintext->group_pre_key = group_pre_key_payload;
 
@@ -89,7 +89,7 @@ static size_t pack_group_pre_key_plaintext(
     Skissm__GroupPreKeyPayload *group_pre_key_payload = (Skissm__GroupPreKeyPayload *) malloc(sizeof(Skissm__GroupPreKeyPayload));
     skissm__group_pre_key_payload__init(group_pre_key_payload);
 
-    group_pre_key_payload->version = GROUP_VERSION;
+    group_pre_key_payload->version = E2EE_GROUP_PRE_KEY_VERSION;
 
     group_pre_key_payload->session_id = strdup(outbound_group_session->session_id);
 
@@ -99,8 +99,8 @@ static size_t pack_group_pre_key_plaintext(
 
     copy_address_from_address(&(group_pre_key_payload->group_address), outbound_group_session->group_address);
 
-    group_pre_key_payload->n_member_addresses = outbound_group_session->n_member_addresses;
-    copy_member_addresses_from_member_addresses(&(group_pre_key_payload->member_addresses), (const Skissm__E2eeAddress **)outbound_group_session->member_addresses, outbound_group_session->n_member_addresses);
+    group_pre_key_payload->n_group_members = outbound_group_session->n_group_members;
+    copy_group_members(&(group_pre_key_payload->group_members), outbound_group_session->group_members, outbound_group_session->n_group_members);
 
     group_pre_key_payload->sequence = outbound_group_session->sequence;
     copy_protobuf_from_protobuf(&(group_pre_key_payload->chain_key), &(outbound_group_session->chain_key));
@@ -120,12 +120,12 @@ static size_t pack_group_pre_key_plaintext(
 }
 
 void create_outbound_group_session(
-    uint32_t e2ee_pack_id,
+    const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     Skissm__E2eeAddress *group_address,
-    Skissm__E2eeAddress **member_addresses,
-    size_t member_num,
-    char *old_session_id
+    Skissm__GroupMember **group_members,
+    size_t group_members_num,
+    char *session_id
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().sign_key_len;
@@ -133,15 +133,14 @@ void create_outbound_group_session(
     Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(outbound_group_session);
 
-    outbound_group_session->version = PROTOCOL_VERSION;
+    outbound_group_session->version = E2EE_PROTOCOL_VERSION;
 
     copy_address_from_address(&(outbound_group_session->session_owner), user_address);
     copy_address_from_address(&(outbound_group_session->group_address), group_address);
 
     outbound_group_session->session_id = generate_uuid_str();
-    outbound_group_session->n_member_addresses = member_num;
-
-    copy_member_addresses_from_member_addresses(&(outbound_group_session->member_addresses), (const Skissm__E2eeAddress **)member_addresses, member_num);
+    outbound_group_session->n_group_members = group_members_num;
+    copy_group_members(&(outbound_group_session->group_members), group_members, group_members_num);
 
     outbound_group_session->sequence = 0;
 
@@ -160,20 +159,28 @@ void create_outbound_group_session(
     get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
     uint8_t *group_pre_key_plaintext_data = NULL;
-    size_t group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext_data, old_session_id);
+    size_t group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext_data, session_id);
 
     /* send the group pre-key message to the members in the group */
     size_t i;
-    for (i = 0; i < outbound_group_session->n_member_addresses; i++){
-        if (compare_address(outbound_group_session->session_owner, outbound_group_session->member_addresses[i]) == false){
-            Skissm__Session *outbound_session = get_outbound_session(outbound_group_session->session_owner, outbound_group_session->member_addresses[i]);
-            if (outbound_session != NULL){
+    for (i = 0; i < outbound_group_session->n_group_members; i++){
+        if (!safe_strcmp(outbound_group_session->session_owner->user->user_id, outbound_group_session->group_members[i]->user_id)) {
+            Skissm__E2eeAddress *group_member_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
+            skissm__e2ee_address__init(group_member_address);
+            Skissm__PeerUser *peer_user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
+            skissm__peer_user__init(peer_user);
+            peer_user->user_id = strdup(outbound_group_session->group_members[i]->user_id);
+            group_member_address->user = peer_user;
+            Skissm__Session *outbound_session = get_outbound_session(outbound_group_session->session_owner, group_member_address);
+            if (outbound_session != NULL) {
                 send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
             } else{
-                get_skissm_plugin()->db_handler.store_group_pre_key(outbound_group_session->member_addresses[i], group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
+                get_skissm_plugin()->db_handler.store_group_pre_key(group_member_address, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
                 // send Invite
-                invite(outbound_group_session->session_owner, outbound_group_session->member_addresses[i]);
+                invite(outbound_group_session->session_owner, group_member_address);
             }
+            // release
+            skissm__e2ee_address__free_unpacked(group_member_address, NULL);
         }
     }
 
@@ -182,7 +189,7 @@ void create_outbound_group_session(
 }
 
 void create_inbound_group_session(
-    uint32_t e2ee_pack_id,
+    const char *e2ee_pack_id,
     Skissm__GroupPreKeyPayload *group_pre_key_payload,
     Skissm__E2eeAddress *user_address
 ) {
@@ -194,8 +201,8 @@ void create_inbound_group_session(
     inbound_group_session->session_id = strdup(group_pre_key_payload->session_id);
 
     copy_address_from_address(&(inbound_group_session->group_address), group_pre_key_payload->group_address);
-    inbound_group_session->n_member_addresses = group_pre_key_payload->n_member_addresses;
-    copy_member_addresses_from_member_addresses(&(inbound_group_session->member_addresses), (const Skissm__E2eeAddress **)group_pre_key_payload->member_addresses, group_pre_key_payload->n_member_addresses);
+    inbound_group_session->n_group_members = group_pre_key_payload->n_group_members;
+    copy_group_members(&(inbound_group_session->group_members), group_pre_key_payload->group_members, group_pre_key_payload->n_group_members);
 
     inbound_group_session->sequence = group_pre_key_payload->sequence;
     copy_protobuf_from_protobuf(&(inbound_group_session->chain_key), &(group_pre_key_payload->chain_key));

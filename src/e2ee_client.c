@@ -31,7 +31,7 @@
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 
-void register_user(uint64_t account_id, uint32_t e2ee_pack_id) {
+void register_user(uint64_t account_id, const char *e2ee_pack_id) {
     Skissm__Account *account = create_account(account_id, e2ee_pack_id);
 
     // register account to server
@@ -99,14 +99,14 @@ size_t send_one2one_msg(Skissm__Session *outbound_session, const uint8_t *plaint
     return (size_t)(0);
 }
 
-void create_group(Skissm__E2eeAddress *sender_address, char *group_name, size_t member_num, Skissm__E2eeAddress **member_addresses) {
+void create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm__GroupMember **group_members, size_t group_members_num) {
     Skissm__Account *account = get_local_account(sender_address);
 
-    Skissm__CreateGroupRequest *request = produce_create_group_request(sender_address, group_name, member_num, member_addresses);
+    Skissm__CreateGroupRequest *request = produce_create_group_request(sender_address, group_name, group_members, group_members_num);
 
     Skissm__CreateGroupResponse *response = get_skissm_plugin()->proto_handler.create_group(request);
 
-    consume_create_group_response(account->e2ee_pack_id, sender_address, group_name, member_num, member_addresses, response);
+    consume_create_group_response(account->e2ee_pack_id, sender_address, group_name, group_members, group_members_num, response);
 
     // release
     skissm__create_group_request__free_unpacked(request, NULL);
@@ -116,8 +116,8 @@ void create_group(Skissm__E2eeAddress *sender_address, char *group_name, size_t 
 size_t add_group_members(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
-    const Skissm__E2eeAddress **adding_member_addresses,
-    size_t adding_member_num) {
+    Skissm__GroupMember **adding_members,
+    size_t adding_members_num) {
     Skissm__GroupSession *outbound_group_session;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
@@ -126,11 +126,11 @@ size_t add_group_members(
     }
 
     // send message to server
-    Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_member_addresses, adding_member_num);
+    Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
 
     Skissm__AddGroupMembersResponse *response = get_skissm_plugin()->proto_handler.add_group_members(request);
 
-    consume_add_group_members_response(outbound_group_session, adding_member_addresses, adding_member_num, response);
+    consume_add_group_members_response(outbound_group_session, response);
 
     // release
     skissm__add_group_members_request__free_unpacked(request, NULL);
@@ -144,9 +144,8 @@ size_t add_group_members(
 size_t remove_group_members(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
-    const Skissm__E2eeAddress **removing_member_addresses,
-    size_t removing_member_num
-) {
+    Skissm__GroupMember **removing_members,
+    size_t removing_members_num) {
      Skissm__GroupSession *outbound_group_session;
      get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
 
@@ -156,11 +155,11 @@ size_t remove_group_members(
     }
 
     // send message to server
-    Skissm__RemoveGroupMembersRequest *request = produce_remove_group_members_request(outbound_group_session, removing_member_addresses, removing_member_num);
+    Skissm__RemoveGroupMembersRequest *request = produce_remove_group_members_request(outbound_group_session, removing_members, removing_members_num);
 
     Skissm__RemoveGroupMembersResponse *response = get_skissm_plugin()->proto_handler.remove_group_members(request);
 
-    consume_remove_group_members_response(outbound_group_session, removing_member_addresses, removing_member_num, response);
+    consume_remove_group_members_response(outbound_group_session, response);
 
     // release
     skissm__remove_group_members_request__free_unpacked(request, NULL);
@@ -227,7 +226,7 @@ void process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len) {
     // notify server that the proto_msg has been consumed
     // TODO what if consumed failed
     if (consumed)
-        consume_proto_msg_internal(proto_msg->msg_id);
+        consume_proto_msg_internal(proto_msg->proto_msg_id);
 
     // release
     skissm__proto_msg__free_unpacked(proto_msg, NULL);

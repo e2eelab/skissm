@@ -47,7 +47,7 @@ size_t consume_get_pre_key_bundle_response (
     size_t n_pre_key_bundles = response->n_pre_key_bundles;
     unsigned i;
     for(i = 0; i < n_pre_key_bundles; i++) {
-        uint32_t e2ee_pack_id = their_pre_key_bundles[i]->e2ee_pack_id;
+        const char *e2ee_pack_id = their_pre_key_bundles[i]->e2ee_pack_id;
         Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
         initialise_session(outbound_session, e2ee_pack_id, from, to);
         copy_address_from_address(&(outbound_session->session_owner), from);
@@ -81,7 +81,7 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
     Skissm__E2eeMsg *e2ee_msg = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
     skissm__e2ee_msg__init(e2ee_msg);
 
-    e2ee_msg->version = PROTOCOL_VERSION;
+    e2ee_msg->version = E2EE_PROTOCOL_VERSION;
     e2ee_msg->session_id = strdup(outbound_session->session_id);
     e2ee_msg->msg_id = generate_uuid_str();
     copy_address_from_address(&(e2ee_msg->from), outbound_session->from);
@@ -171,7 +171,7 @@ Skissm__InviteRequest *produce_invite_request(
     skissm__invite_msg__init(msg);
 
     msg->version = outbound_session->version;
-    msg->e2ee_pack_id = outbound_session->e2ee_pack_id;
+    msg->e2ee_pack_id = strdup(outbound_session->e2ee_pack_id);
     msg->session_id = strdup(outbound_session->session_id);
 
     copy_protobuf_from_protobuf(&(msg->alice_identity_key), &(outbound_session->alice_identity_key));
@@ -196,7 +196,7 @@ void consume_invite_response(Skissm__InviteResponse *response) {
 }
 
 bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *msg) {
-    uint32_t e2ee_pack_id = msg->e2ee_pack_id;
+    const char *e2ee_pack_id = msg->e2ee_pack_id;
     Skissm__E2eeAddress *from = msg->from;
     Skissm__E2eeAddress *to = msg->to;
 
@@ -229,14 +229,14 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     }
 }
 
-Skissm__AcceptRequest *produce_accept_request(uint32_t e2ee_pack_id, ProtobufCBinaryData *ciphertext_1) {
+Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id, ProtobufCBinaryData *ciphertext_1) {
     Skissm__AcceptRequest *request = (Skissm__AcceptRequest *) malloc(sizeof(Skissm__AcceptRequest));
     skissm__accept_request__init(request);
 
     Skissm__AcceptMsg *msg = (Skissm__AcceptMsg *) malloc(sizeof(Skissm__AcceptMsg));
     skissm__accept_msg__init(msg);
 
-    msg->e2ee_pack_id = e2ee_pack_id;
+    msg->e2ee_pack_id = strdup(e2ee_pack_id);
 
     if (ciphertext_1 == NULL){
         msg->n_pre_shared_keys = 0;

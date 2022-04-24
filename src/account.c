@@ -69,12 +69,12 @@ void account_end() {
     }
 }
 
-Skissm__Account *create_account(uint64_t account_id, uint32_t e2ee_pack_id) {
+Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
     Skissm__Account *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
     skissm__account__init(account);
 
     // Set the version
-    account->version = PROTOCOL_VERSION;
+    account->version = E2EE_PROTOCOL_VERSION;
 
     // Set some initial ids
     account->next_one_time_pre_key_id = 1;

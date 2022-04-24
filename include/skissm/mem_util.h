@@ -168,25 +168,30 @@ void copy_account_from_account(
 );
 
 /**
- * @brief Copy Skissm__E2eeAddress array from src to dest.
+ * @brief Copy Skissm__GroupMember from src to dest.
  *
  * @param dest
  * @param src
- * @param member_num
  */
-void copy_member_addresses_from_member_addresses(
-    Skissm__E2eeAddress ***dest,
-    const Skissm__E2eeAddress **src,
-    size_t member_num
-);
+void copy_group_member(Skissm__GroupMember **dest, Skissm__GroupMember *src);
 
 /**
- * @brief Release memory of Skissm__E2eeAddress array.
+ * @brief Copy Skissm__GroupMember array from src to dest.
  *
  * @param dest
- * @param member_num
+ * @param src
+ * @param group_members_num
  */
-void free_member_addresses(Skissm__E2eeAddress ***dest, size_t member_num);
+void copy_group_members(Skissm__GroupMember ***dest, Skissm__GroupMember **src, size_t group_members_num);
+
+
+/**
+ * @brief Release memory of Skissm__GroupMember array.
+ *
+ * @param dest
+ * @param group_members_num
+ */
+void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num);
 
 /**
  * @brief Release memory of ProtobufCBinaryData.

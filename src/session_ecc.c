@@ -50,9 +50,9 @@ size_t crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session,
     }
 
     // Set the version
-    outbound_session->version = PROTOCOL_VERSION;
+    outbound_session->version = E2EE_PROTOCOL_VERSION;
     // Set the cipher suite id
-    outbound_session->e2ee_pack_id = 0;
+    outbound_session->e2ee_pack_id = strdup("0");
 
     // Generate a new random ephemeral key pair
     Skissm__KeyPair my_ephemeral_key;

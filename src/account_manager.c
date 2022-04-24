@@ -97,6 +97,7 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
 
     Skissm__OneTimePreKey **inserted_one_time_pre_key_pair_list = generate_opks((size_t)opks_num, account);
 
+    request->e2ee_pack_id = strdup(account->e2ee_pack_id);
     request->n_one_time_pre_key_public = (size_t)opks_num;
     request->one_time_pre_key_public = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * opks_num);
 

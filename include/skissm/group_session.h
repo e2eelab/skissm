@@ -34,17 +34,17 @@ extern "C" {
  * @param e2ee_pack_id
  * @param user_address
  * @param group_address
- * @param member_addresses
- * @param member_num
- * @param old_session_id
+ * @param group_members
+ * @param group_members_num
+ * @param session_id
  */
 void create_outbound_group_session(
-    uint32_t e2ee_pack_id,
+    const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     Skissm__E2eeAddress *group_address,
-    Skissm__E2eeAddress **member_addresses,
-    size_t member_num,
-    char *old_session_id
+    Skissm__GroupMember **group_members,
+    size_t group_members_num,
+    char *session_id
 );
 
 /**
@@ -55,7 +55,7 @@ void create_outbound_group_session(
  * @param user_address
  */
 void create_inbound_group_session(
-    uint32_t e2ee_pack_id,
+    const char *e2ee_pack_id,
     Skissm__GroupPreKeyPayload *group_pre_key_payload,
     Skissm__E2eeAddress *user_address
 );

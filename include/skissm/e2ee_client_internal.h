@@ -50,7 +50,7 @@ void invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pr
  * @param to
  * @param ciphertext_1
  */
-void accept_internal(uint32_t e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1);
+void accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1);
 
 /**
  * @brief Send publish_spk request to server.
@@ -81,7 +81,7 @@ void send_one2one_msg_internal(Skissm__Session *outbound_session, const uint8_t 
  *
  * @param msg_id
  */
-void consume_proto_msg_internal(char *msg_id);
+void consume_proto_msg_internal(char *proto_msg_id);
 
 #ifdef __cplusplus
 }

@@ -72,7 +72,7 @@ typedef struct session_suite_t {
 /* common */
 void initialise_session(
     Skissm__Session *session,
-    uint32_t e2ee_pack_id,
+    const char *e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to
 );

@@ -166,18 +166,28 @@ void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src) {
     (*dest)->next_one_time_pre_key_id = src->next_one_time_pre_key_id;
 }
 
-void copy_member_addresses_from_member_addresses(Skissm__E2eeAddress ***dest, const Skissm__E2eeAddress **src, size_t member_num) {
-    *dest = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * member_num);
-    size_t i;
-    for (i = 0; i < member_num; i++) {
-        copy_address_from_address(&((*dest)[i]), src[i]);
+void copy_group_member(Skissm__GroupMember **dest, Skissm__GroupMember *src) {
+    *dest = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(*dest);
+    if (src != NULL) {
+        if (src->user_id != NULL)
+            (*dest)->user_id = strdup(src->user_id);
+        (*dest)->role =  src->role;
     }
 }
 
-void free_member_addresses(Skissm__E2eeAddress ***dest, size_t member_num) {
+void copy_group_members(Skissm__GroupMember ***dest, Skissm__GroupMember **src, size_t group_members_num) {
+    *dest = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * group_members_num);
     size_t i;
-    for (i = 0; i < member_num; i++) {
-        skissm__e2ee_address__free_unpacked((*dest)[i], NULL);
+    for (i = 0; i < group_members_num; i++) {
+        copy_group_member(&((*dest)[i]), src[i]);
+    }
+}
+
+void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num) {
+    size_t i;
+    for (i = 0; i < group_members_num; i++) {
+        skissm__group_member__free_unpacked((*dest)[i], NULL);
         (*dest)[i] = NULL;
     }
     free(*dest);

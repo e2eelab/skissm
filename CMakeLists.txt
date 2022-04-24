@@ -118,8 +118,8 @@ set(src_headers
     include/skissm/session_manager.h
     include/skissm/skissm.h)
 
-set(PROTO_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protos)
-set(PROTO_DIS_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto-src)
+set(PROTO_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protos/src)
+set(PROTO_DIS_DIR ${CMAKE_CURRENT_BINARY_DIR}/proto-gen)
 file(MAKE_DIRECTORY ${PROTO_DIS_DIR}/skissm)
 
 file(GLOB skissm_PROTOS ${PROTO_SRC_DIR}/skissm/*.proto)
