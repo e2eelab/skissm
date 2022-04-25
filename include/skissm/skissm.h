@@ -68,6 +68,7 @@
 #include "skissm/RemoveGroupMembersMsg.pb-c.h"
 #include "skissm/RemoveGroupMembersRequest.pb-c.h"
 #include "skissm/RemoveGroupMembersResponse.pb-c.h"
+#include "skissm/ResponseCode.pb-c.h"
 #include "skissm/SendGroupMsgRequest.pb-c.h"
 #include "skissm/SendGroupMsgResponse.pb-c.h"
 #include "skissm/SendOne2oneMsgRequest.pb-c.h"

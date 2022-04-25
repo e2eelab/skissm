@@ -24,9 +24,10 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "RemoveGroupMembersResponseProto";
 
 import "skissm/GroupMember.proto";
+import "skissm/ResponseCode.proto";
 
 message RemoveGroupMembersResponse {
-  uint32 code = 1;
+  ResponseCode code = 1;
   string msg = 2;
 
   repeated skissm.GroupMember group_members = 3;

@@ -95,7 +95,7 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
 }
 
 void consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response) {
-    if (response->code == OK) {
+    if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // store sesson state
         get_skissm_plugin()->db_handler.store_session(outbound_session);
     }

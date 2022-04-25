@@ -82,7 +82,7 @@ Skissm__PublishSpkRequest *produce_publish_spk_request(Skissm__Account *account)
 }
 
 void consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkResponse *response) {
-    if (response->code == OK) {
+    if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // save to db
         if (account->saved == true) {
             Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;
@@ -115,7 +115,7 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
 }
 
 void consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response) {
-    if (response->code == OK) {
+    if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // save to db
         unsigned int i;
         for (i = 0; i < account->n_one_time_pre_keys; i++) {

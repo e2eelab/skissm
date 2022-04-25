@@ -31,11 +31,20 @@
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 
-void register_user(uint64_t account_id, const char *e2ee_pack_id) {
+void register_user(uint64_t account_id,
+    const char *user_name,
+    const char *device_id,
+    const char *authenticator,
+    const char *auth_code,
+    const char *e2ee_pack_id) {
     Skissm__Account *account = create_account(account_id, e2ee_pack_id);
 
     // register account to server
     Skissm__RegisterUserRequest *request = produce_register_request(account);
+    request->user_name = strdup(user_name);
+    request->device_id = strdup(device_id);
+    request->authenticator = strdup(authenticator);
+    request->auth_code = strdup(auth_code);
 
     Skissm__RegisterUserResponse *response = get_skissm_plugin()->proto_handler.register_user(request);
 

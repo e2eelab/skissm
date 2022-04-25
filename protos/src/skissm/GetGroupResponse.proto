@@ -25,9 +25,10 @@ option java_outer_classname = "GetGroupResponseProto";
 
 import "skissm/E2eeAddress.proto";
 import "skissm/GroupMember.proto";
+import "skissm/ResponseCode.proto";
 
 message GetGroupResponse {
-  uint32 code = 1;
+  ResponseCode code = 1;
   string msg = 2;
 
   string group_name = 3;

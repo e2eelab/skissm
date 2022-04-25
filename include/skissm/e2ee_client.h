@@ -7,25 +7,22 @@
 extern "C" {
 #endif
 
-typedef enum response_code {
-    OK = 200,                     // The request has succeeded.
-    Created = 201,                // The request has been fulfilled and resulted in a new resource being created.
-    Accepted = 202,               // The request has been accepted for processing, but the processing has not been completed.
-    No_Content = 204,             // The server has fulfilled the request but does not need to return an entity-body, and might want to return updated metainformation.
-    Bad_Request = 400,            // The request could not be understood by the server due to malformed syntax.
-    Unauthorized = 401,           // The request requires user authentication.
-    Forbidden = 403,              // The server understood the request, but is refusing to fulfill it.
-    Not_Found = 404,              // The server has not found anything matching the Request-URI.
-    Internal_Server_Error = 500   // The server encountered an unexpected condition which prevented it from fulfilling the request.
-} response_code;
-
 /**
  * @brief Register a new account.
  *
  * @param account_id The unique account id.
+ * @param user_name The user name that is creating the new account.
+ * @param device_id The device id that will be binded to the new account.
+ * @param authenticator The authenticator (email and etc.) is used to receive an register auth code.
+ * @param auth_code The auth code that is received by the authenticator.
  * @param e2ee_pack_id The e2ee package id to be used.
  */
-void register_user(uint64_t account_id, const char *e2ee_pack_id);
+void register_user(uint64_t account_id,
+    const char *user_name,
+    const char *device_id,
+    const char *authenticator,
+    const char *auth_code,
+    const char *e2ee_pack_id);
 
 /**
  * @brief Send invite request and create a new outbound session

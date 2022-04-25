@@ -24,9 +24,10 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "CreateGroupResponseProto";
 
 import "skissm/E2eeAddress.proto";
+import "skissm/ResponseCode.proto";
 
 message CreateGroupResponse {
-    uint32 code = 1;
+    ResponseCode code = 1;
     string msg = 2;
 
     skissm.E2eeAddress group_address = 3;

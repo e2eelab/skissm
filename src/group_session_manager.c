@@ -53,7 +53,7 @@ void consume_create_group_response(
     size_t group_members_num,
     Skissm__CreateGroupResponse *response
 ) {
-    if (response->code == OK) {
+    if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         Skissm__E2eeAddress *group_address = response->group_address;
         create_outbound_group_session(e2ee_pack_id, sender_address, group_address, group_members, group_members_num, NULL);
         ssm_notify_group_created(group_address, group_name);
@@ -81,7 +81,7 @@ Skissm__GetGroupRequest *produce_get_group_request(Skissm__E2eeAddress *group_ad
 }
 
 void consume_get_group_response(Skissm__GetGroupResponse *response) {
-    if (response->code == OK) {
+    if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         char *group_name = response->group_name;
         size_t n_group_members = response->n_group_members;
         Skissm__GroupMember **group_members = response->group_members;
@@ -273,7 +273,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(Skissm__GroupSession
 }
 
 void consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session, Skissm__SendGroupMsgResponse *response) {
-    if (response->code == OK) {
+    if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // Prepare a new chain key for next encryption
         const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
         advance_group_chain_key(cipher_suite, &(outbound_group_session->chain_key), outbound_group_session->sequence);

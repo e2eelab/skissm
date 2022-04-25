@@ -24,9 +24,10 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "AddGroupMembersResponseProto";
 
 import "skissm/GroupMember.proto";
+import "skissm/ResponseCode.proto";
 
 message AddGroupMembersResponse {
-  uint32 code = 1;
+  ResponseCode code = 1;
   string msg = 2;
 
   repeated skissm.GroupMember group_members = 3;
