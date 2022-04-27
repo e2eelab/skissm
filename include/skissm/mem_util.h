@@ -86,7 +86,7 @@ bool compare_member_addresses(
  * @return true
  * @return false
  */
-bool safe_strcmp(char *str1, char *str2);
+bool safe_strcmp(const char *str1, const char *str2);
 
 /**
  * @brief Copy ProtobufCBinaryData from src to dest.

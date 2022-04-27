@@ -31,12 +31,12 @@
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 
-void register_user(uint64_t account_id,
+size_t register_user(uint64_t account_id,
+    const char *e2ee_pack_id,
     const char *user_name,
     const char *device_id,
     const char *authenticator,
-    const char *auth_code,
-    const char *e2ee_pack_id) {
+    const char *auth_code) {
     Skissm__Account *account = create_account(account_id, e2ee_pack_id);
 
     // register account to server
@@ -53,6 +53,9 @@ void register_user(uint64_t account_id,
     // release
     skissm__register_user_request__free_unpacked(request, NULL);
     skissm__register_user_response__free_unpacked(response, NULL);
+
+    // done
+    return (size_t)(0);
 }
 
 size_t invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
@@ -72,24 +75,9 @@ size_t invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
     }
 }
 
-Skissm__Session *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
-    Skissm__Session *outbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_session(from, to, &outbound_session);
-    if (outbound_session == NULL) {
-        return NULL;
-    } else {
-        if (outbound_session->responded)
-            return outbound_session;
-        else {
-            // outbound_session can't be used if is is not responded
-            skissm__session__free_unpacked(outbound_session, NULL);
-            return NULL;
-        }
-    }
-}
-
-size_t send_one2one_msg(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len) {
-    if (outbound_session->responded == false) {
+size_t send_one2one_msg(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, const uint8_t *plaintext_data, size_t plaintext_data_len) {
+    Skissm__Session *outbound_session = get_outbound_session(from, to);
+    if (outbound_session == NULL || outbound_session->responded == false) {
         ssm_notify_error(BAD_SESSION, "send_one2one_msg() outbound session is not responded");
         return (size_t)(-1);
     }
@@ -108,7 +96,7 @@ size_t send_one2one_msg(Skissm__Session *outbound_session, const uint8_t *plaint
     return (size_t)(0);
 }
 
-void create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm__GroupMember **group_members, size_t group_members_num) {
+size_t create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm__GroupMember **group_members, size_t group_members_num) {
     Skissm__Account *account = get_local_account(sender_address);
 
     Skissm__CreateGroupRequest *request = produce_create_group_request(sender_address, group_name, group_members, group_members_num);
@@ -120,6 +108,9 @@ void create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm_
     // release
     skissm__create_group_request__free_unpacked(request, NULL);
     skissm__create_group_response__free_unpacked(response, NULL);
+
+    // done
+    return (size_t)(0);
 }
 
 size_t add_group_members(
@@ -179,7 +170,7 @@ size_t remove_group_members(
     return (size_t)(0);
 }
 
-void send_group_msg(Skissm__E2eeAddress *sender_address,
+size_t send_group_msg(Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address, const uint8_t *plaintext_data, size_t plaintext_data_len) {
     // Load the outbound group session
     Skissm__GroupSession *outbound_group_session = NULL;
@@ -196,9 +187,12 @@ void send_group_msg(Skissm__E2eeAddress *sender_address,
     skissm__send_group_msg_request__free_unpacked(request, NULL);
     skissm__send_group_msg_response__free_unpacked(response, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
+
+    // done
+    return (size_t)(0);
 }
 
-void process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len) {
+size_t process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len) {
     Skissm__ProtoMsg *proto_msg = skissm__proto_msg__unpack(NULL, proto_msg_data_len, proto_msg_data);
     Skissm__E2eeAddress *receiver_address = proto_msg->to;
 
@@ -229,6 +223,8 @@ void process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len) {
             consumed = consume_supply_opks_msg(receiver_address, proto_msg->supply_opks_msg);
             break;
         default:
+            // consume the messag that is arriving here
+            consumed = true;
             break;
     };
 
@@ -239,5 +235,8 @@ void process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len) {
 
     // release
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
+
+    // done
+    return (size_t)(0);
 }
 

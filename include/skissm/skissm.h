@@ -102,6 +102,8 @@ typedef struct e2ee_pack_t {
     const struct session_suite_t *session_suite;
 } e2ee_pack_t;
 
+#define E2EE_PACK_ID_ECC_DEFAULT           "0"
+#define E2EE_PACK_ID_PQC_DEFAULT           "1"
 struct e2ee_pack_list_t {
   const struct e2ee_pack_t *e2ee_pack_0;
   const struct e2ee_pack_t *e2ee_pack_1;

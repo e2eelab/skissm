@@ -55,7 +55,7 @@ size_t pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm_
     // Set the version
     outbound_session->version = E2EE_PROTOCOL_VERSION;
     // Set the cipher suite id
-    outbound_session->e2ee_pack_id = strdup("1");
+    outbound_session->e2ee_pack_id = strdup(E2EE_PACK_ID_PQC_DEFAULT);
 
     // Store some information into the session
     const Skissm__KeyPair my_identity_key_pair = *(local_account->identity_key->asym_key_pair);

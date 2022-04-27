@@ -11,18 +11,19 @@ extern "C" {
  * @brief Register a new account.
  *
  * @param account_id The unique account id.
+ * @param e2ee_pack_id The e2ee package id to be used.
  * @param user_name The user name that is creating the new account.
  * @param device_id The device id that will be binded to the new account.
  * @param authenticator The authenticator (email and etc.) is used to receive an register auth code.
  * @param auth_code The auth code that is received by the authenticator.
- * @param e2ee_pack_id The e2ee package id to be used.
+ * @return size_t Return 0 for success
  */
-void register_user(uint64_t account_id,
+size_t register_user(uint64_t account_id,
+    const char *e2ee_pack_id,
     const char *user_name,
     const char *device_id,
     const char *authenticator,
-    const char *auth_code,
-    const char *e2ee_pack_id);
+    const char *auth_code);
 
 /**
  * @brief Send invite request and create a new outbound session
@@ -37,22 +38,15 @@ void register_user(uint64_t account_id,
 size_t invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
 
 /**
- * @brief Get an outbound session that is responded and ready for use.
- * @param from From address
- * @param to To Address
- * @return A responded outbound session or NULL
- */
-Skissm__Session *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
-
-/**
  * @brief Send one2one msg.
  *
- * @param outbound_session
+ * @param from
+ * @param to
  * @param plaintext_data
  * @param plaintext_data_len
- * @return size_t
+ * @return size_t Return 0 for success
  */
-size_t send_one2one_msg(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len);
+size_t send_one2one_msg(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, const uint8_t *plaintext_data, size_t plaintext_data_len);
 
 /**
  * @brief Create a group.
@@ -61,8 +55,9 @@ size_t send_one2one_msg(Skissm__Session *outbound_session, const uint8_t *plaint
  * @param group_name
  * @param group_members
  * @param group_members_num
+ * @return size_t Return 0 for success
  */
-void create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm__GroupMember **group_members, size_t group_members_num);
+size_t create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm__GroupMember **group_members, size_t group_members_num);
 
 /**
  * @brief Add group members.
@@ -71,7 +66,7 @@ void create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm_
  * @param group_address
  * @param adding_members
  * @param adding_members_num
- * @return size_t
+ * @return size_t Return 0 for success
  */
 size_t add_group_members(
     Skissm__E2eeAddress *sender_address,
@@ -86,7 +81,7 @@ size_t add_group_members(
  * @param group_address
  * @param removing_members
  * @param removing_members_num
- * @return size_t
+ * @return size_t Return 0 for success
  */
 size_t remove_group_members(
     Skissm__E2eeAddress *sender_address,
@@ -101,8 +96,9 @@ size_t remove_group_members(
  * @param group_address
  * @param plaintext_data
  * @param plaintext_data_len
+ * @return size_t Return 0 for success
  */
-void send_group_msg(Skissm__E2eeAddress *sender_address,
+size_t send_group_msg(Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address, const uint8_t *plaintext_data, size_t plaintext_data_len);
 
 /**
@@ -110,8 +106,9 @@ void send_group_msg(Skissm__E2eeAddress *sender_address,
  *
  * @param proto_msg_data
  * @param proto_msg_data_len
+ * @return size_t Return 0 for success
  */
-void process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len);
+size_t process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len);
 
 #ifdef __cplusplus
 }

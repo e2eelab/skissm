@@ -24,8 +24,8 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "GroupMemberProto";
 
 enum GroupRole {
-    MEMBER = 0;
-    MANAGER = 1;
+    GROUP_ROLE_MEMBER = 0;
+    GROUP_ROLE_MANAGER = 1;
 }
 
 message GroupMember {

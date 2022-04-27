@@ -47,7 +47,7 @@ bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
     return false;
 }
 
-bool safe_strcmp(char *str1, char *str2) {
+bool safe_strcmp(const char *str1, const char *str2) {
     if (str1 == NULL && str2 == NULL)
         return true;
     if (str1 != NULL && str2 != NULL) {
