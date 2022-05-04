@@ -104,6 +104,7 @@ typedef struct e2ee_pack_t {
 
 #define E2EE_PACK_ID_ECC_DEFAULT           "0"
 #define E2EE_PACK_ID_PQC_DEFAULT           "1"
+
 struct e2ee_pack_list_t {
   const struct e2ee_pack_t *e2ee_pack_0;
   const struct e2ee_pack_t *e2ee_pack_1;
@@ -419,7 +420,7 @@ typedef struct skissm_event_handler_t {
      * @param group_address
      * @param group_name
      */
-    void (*on_group_created)(Skissm__E2eeAddress *, char *);
+    void (*on_group_created)(Skissm__E2eeAddress *, const char *);
 
     /**
      * @brief notify group members added
@@ -427,7 +428,7 @@ typedef struct skissm_event_handler_t {
      * @param group_name
      * @param member_addresses
      */
-    void (*on_group_members_added)(Skissm__E2eeAddress *, char *, Skissm__E2eeAddress **);
+    void (*on_group_members_added)(Skissm__E2eeAddress *, const char *, Skissm__E2eeAddress **);
 
     /**
      * @brief notify group members removed
@@ -435,7 +436,7 @@ typedef struct skissm_event_handler_t {
      * @param group_name
      * @param member_addresses
      */
-    void (*on_group_members_removed)(Skissm__E2eeAddress *, char *, Skissm__E2eeAddress **);
+    void (*on_group_members_removed)(Skissm__E2eeAddress *, const char *, Skissm__E2eeAddress **);
 } skissm_event_handler_t;
 
 typedef struct skissm_plugin_t {
@@ -464,12 +465,12 @@ void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,
 void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
                           Skissm__E2eeAddress *group_address, uint8_t *plaintext,
                           size_t plaintext_len);
-void ssm_notify_group_created(Skissm__E2eeAddress *group_address, char *group_name);
+void ssm_notify_group_created(Skissm__E2eeAddress *group_address, const char *group_name);
 void ssm_notify_group_members_added(Skissm__E2eeAddress *group_address,
-                                    char *group_name,
+                                    const char *group_name,
                                     Skissm__E2eeAddress **member_addresses);
 void ssm_notify_group_members_removed(Skissm__E2eeAddress *group_address,
-                                      char *group_name,
+                                      const char *group_name,
                                       Skissm__E2eeAddress **member_addresses);
 
 #ifdef __cplusplus

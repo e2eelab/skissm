@@ -57,7 +57,7 @@ size_t send_one2one_msg(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, cons
  * @param group_members_num
  * @return size_t Return 0 for success
  */
-size_t create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm__GroupMember **group_members, size_t group_members_num);
+size_t create_group(Skissm__E2eeAddress *sender_address, const char *group_name, Skissm__GroupMember **group_members, size_t group_members_num);
 
 /**
  * @brief Add group members.

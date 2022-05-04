@@ -27,13 +27,13 @@
 
 static Skissm__Account *local_account = NULL;
 
-void account_begin() {
+static void update_signed_pre_key() {
     Skissm__Account **accounts = NULL;
     size_t account_num = get_skissm_plugin()->db_handler.load_accounts(&accounts);
 
     if (account_num == 0) {
         if (accounts != NULL) {
-            ssm_notify_error(BAD_LOAD_ACCOUNTS, "account_begin()");
+            ssm_notify_error(BAD_ACCOUNT, "account_begin()");
         }
         return;
     }
@@ -42,24 +42,33 @@ void account_begin() {
     size_t i;
     for (i = 0; i < account_num; i++) {
         cur_account = accounts[i];
-        /* Check if the signed pre-key expired */
+        // Check if the signed pre-key expired
         now = get_skissm_plugin()->common_handler.handle_get_ts();
         if (now > cur_account->signed_pre_key->ttl) {
             generate_signed_pre_key(cur_account);
             publish_spk_internal(cur_account);
         }
 
-        /* Check and remove signed pre-keys (keep last two) */
+        // Check and remove signed pre-keys (keep last two)
         get_skissm_plugin()->db_handler.remove_expired_signed_pre_key(cur_account->account_id);
 
-        /* Check if there are too many "used" one-time pre-keys */
+        // Check if there are too many "used" one-time pre-keys
         free_one_time_pre_key(cur_account);
 
-        /* Release */
+        // Release
         skissm__account__free_unpacked(cur_account, NULL);
         cur_account = NULL;
     }
     free(accounts);
+}
+
+void account_begin() {
+    // Load the first account tha may be null.
+    uint64_t account_id = 1;
+    get_skissm_plugin()->db_handler.load_account(account_id, &local_account);
+
+    // Check and keep a updated signed pre key.
+    update_signed_pre_key();
 }
 
 void account_end() {
@@ -73,8 +82,9 @@ Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
     Skissm__Account *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
     skissm__account__init(account);
 
-    // Set the version
+    // Set the version, e2ee_pack_id
     account->version = E2EE_PROTOCOL_VERSION;
+    account->e2ee_pack_id = strdup(e2ee_pack_id);
 
     // Set some initial ids
     account->next_one_time_pre_key_id = 1;
@@ -104,7 +114,21 @@ Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
     return account;
 }
 
-Skissm__Account *get_local_account(Skissm__E2eeAddress *address) {
+Skissm__Account *get_account() {
+    return local_account;
+}
+
+void set_account(Skissm__Account *account) {
+    if (local_account == account)
+        return;
+    if (local_account != NULL) {
+        skissm__account__free_unpacked(local_account, NULL);
+        local_account = NULL;
+    }
+    local_account = account;
+}
+
+Skissm__Account *switch_account(Skissm__E2eeAddress *address) {
     if (local_account != NULL) {
         if ((local_account->address) && compare_address(local_account->address, address)) {
             return local_account;

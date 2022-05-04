@@ -61,6 +61,7 @@ void consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
     account->password = strdup(response->password);
     // save to db
     get_skissm_plugin()->db_handler.store_account(account);
+    switch_account(account->address);
     ssm_notify_user_registered(account);
 }
 
@@ -127,7 +128,8 @@ void consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksRe
 bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__SupplyOpksMsg *msg) {
     uint32_t opks_num = msg->opks_num;
     Skissm__E2eeAddress *user_address = msg->user_address;
-    Skissm__Account *account = get_local_account(user_address);
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
 
     if (account == NULL || !account->saved) {
         ssm_notify_error(BAD_ONE_TIME_PRE_KEY, "consume_supply_opks_msg()");
@@ -136,5 +138,8 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
 
     supply_opks_internal(account, opks_num);
 
+    // release
+    skissm__account__free_unpacked(account, NULL);
+    // done
     return true;
 }

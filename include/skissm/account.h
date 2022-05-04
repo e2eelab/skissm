@@ -44,20 +44,34 @@ void account_end();
 Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id);
 
 /**
- * @brief Get the local account object
+ * @brief Get the current account that is loaded
+ * by default or switched by address.
+ *
+ * @return Skissm__Account* An account used currently.
+ */
+Skissm__Account *get_account();
+
+/**
+ * @brief Set current account.
+ * @param account
+ */
+void set_account(Skissm__Account *account);
+
+/**
+ * @brief Switch to a account with given address. The account will be NULL if it can't be found from database.
  *
  * @param address the peer address that is related to an account
- * @return The local account object
+ * @return Skissm__Account* The account object
  */
 Skissm__Account *
-get_local_account(Skissm__E2eeAddress *address);
+switch_account(Skissm__E2eeAddress *address);
 
 /**
  * @brief Lookup an one-time pre-key with a given public key
  *
  * @param account The account for looking up the one-time pre-key
  * @param one_time_pre_key_id The one-time pre-key id to be matched
- * @return The matched one-time pre-key.
+ * @return const Skissm__OneTimePreKey* The matched one-time pre-key.
  */
 const Skissm__OneTimePreKey *
 lookup_one_time_pre_key(Skissm__Account *account,

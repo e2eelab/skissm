@@ -47,25 +47,35 @@ size_t consume_get_pre_key_bundle_response (
     size_t n_pre_key_bundles = response->n_pre_key_bundles;
     unsigned i;
     for(i = 0; i < n_pre_key_bundles; i++) {
+        // find an account
+        Skissm__Account *account = NULL;
+        get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
+        if (account == NULL) {
+            ssm_notify_error(BAD_ACCOUNT, "consume_get_pre_key_bundle_response()");
+            return (size_t)(-1);
+        }
+
         const char *e2ee_pack_id = their_pre_key_bundles[i]->e2ee_pack_id;
         Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
         initialise_session(outbound_session, e2ee_pack_id, from, to);
         copy_address_from_address(&(outbound_session->session_owner), from);
-        Skissm__Account *local_account = get_local_account(from);
+
         const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-        size_t result = session_suite->new_outbound_session(outbound_session, local_account, their_pre_key_bundles[i]);
+        size_t result = session_suite->new_outbound_session(outbound_session, account, their_pre_key_bundles[i]);
 
-        if (result < (size_t)(0)) {
-            skissm__session__free_unpacked(outbound_session, NULL);
-            ssm_notify_error(BAD_SESSION, "consume_get_pre_key_bundle_response_payload()");
-            return (size_t)(-1);
+        if (result == (size_t)(0)) {
+            // store sesson state
+            get_skissm_plugin()->db_handler.store_session(outbound_session);
         }
-
-        // store sesson state
-        get_skissm_plugin()->db_handler.store_session(outbound_session);
-
         // release
+        skissm__account__free_unpacked(account, NULL);
         skissm__session__free_unpacked(outbound_session, NULL);
+
+        // done
+        if (result != (size_t)(0)) {
+            ssm_notify_error(BAD_SESSION, "consume_get_pre_key_bundle_response_payload()");
+            return result;
+        }
     }
 
     return (size_t)(0);
@@ -203,30 +213,39 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     // notify
     ssm_notify_inbound_session_invited(from);
 
-    //automatic create inbound session and send accept request
-
+    // automatic create inbound session and send accept request
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(to, &account);
+    if (account == NULL) {
+        ssm_notify_error(BAD_ACCOUNT, "consume_invite_msg()");
+        return (size_t)(-1);
+    }
     /* create a new inbound session */
     Skissm__Session *inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     initialise_session(inbound_session, e2ee_pack_id, from, to);
     copy_address_from_address(&(inbound_session->session_owner), to);
-    Skissm__Account *local_account = get_local_account(to);
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
     // Set the version and session id
     inbound_session->version = msg->version;
     inbound_session->session_id = msg->session_id;
     // create a new inbound session
-    size_t result = session_suite->new_inbound_session(inbound_session, local_account, msg);
+    size_t result = session_suite->new_inbound_session(inbound_session, account, msg);
 
-    if (result == (size_t)(-1)
+    if (result != (size_t)(0)
         || safe_strcmp(inbound_session->session_id, msg->session_id) == false) {
-        skissm__session__free_unpacked(inbound_session, NULL);
         ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_invite_payload()");
-        return false;
+        result = (size_t)(-1);
     } else {
         // notify
         ssm_notify_inbound_session_ready(inbound_session);
         return true;
     }
+    // release
+    skissm__account__free_unpacked(account, NULL);
+    skissm__session__free_unpacked(inbound_session, NULL);
+
+    // done
+    return result;
 }
 
 Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id, ProtobufCBinaryData *ciphertext_1) {

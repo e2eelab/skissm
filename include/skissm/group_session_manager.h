@@ -37,7 +37,7 @@ extern "C" {
  * @param group_members_num
  * @return Skissm__CreateGroupRequest*
  */
-Skissm__CreateGroupRequest *produce_create_group_request(Skissm__E2eeAddress *sender_address, char *group_name, Skissm__GroupMember **group_members, size_t group_members_num);
+Skissm__CreateGroupRequest *produce_create_group_request(Skissm__E2eeAddress *sender_address, const char *group_name, Skissm__GroupMember **group_members, size_t group_members_num);
 
 /**
  * @brief Process an incoming CreateGroupResponse message.
@@ -52,7 +52,7 @@ Skissm__CreateGroupRequest *produce_create_group_request(Skissm__E2eeAddress *se
 void consume_create_group_response(
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *sender_address,
-    char *group_name,
+    const char *group_name,
     Skissm__GroupMember **group_members,
     size_t group_members_num,
     Skissm__CreateGroupResponse *response

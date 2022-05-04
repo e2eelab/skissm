@@ -45,17 +45,25 @@ size_t register_user(uint64_t account_id,
     request->device_id = strdup(device_id);
     request->authenticator = strdup(authenticator);
     request->auth_code = strdup(auth_code);
+    request->e2ee_pack_id = strdup(e2ee_pack_id);
 
     Skissm__RegisterUserResponse *response = get_skissm_plugin()->proto_handler.register_user(request);
-
-    consume_register_response(account, response);
+    size_t result;
+    if (response != NULL) {
+        consume_register_response(account, response);
+        // release
+        skissm__register_user_response__free_unpacked(response, NULL);
+        result = (size_t)(0);
+    } else {
+        result = (size_t)(-1);
+    }
 
     // release
     skissm__register_user_request__free_unpacked(request, NULL);
-    skissm__register_user_response__free_unpacked(response, NULL);
+    skissm__account__free_unpacked(account, NULL);
 
     // done
-    return (size_t)(0);
+    return result;
 }
 
 size_t invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
@@ -87,30 +95,42 @@ size_t send_one2one_msg(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, cons
     pack_common_plaintext(plaintext_data, plaintext_data_len, &common_plaintext_data, &common_plaintext_data_len);
 
     // send message to server
-    send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
+    size_t result = send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
 
     // release
     free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
 
     // done
-    return (size_t)(0);
+    return result;
 }
 
-size_t create_group(Skissm__E2eeAddress *sender_address, char *group_name, Skissm__GroupMember **group_members, size_t group_members_num) {
-    Skissm__Account *account = get_local_account(sender_address);
+size_t create_group(Skissm__E2eeAddress *sender_address, const char *group_name, Skissm__GroupMember **group_members, size_t group_members_num) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
+    if (account == NULL) {
+        ssm_notify_error(BAD_ACCOUNT, "create_group()");
+        return (size_t)(-1);
+    }
 
     Skissm__CreateGroupRequest *request = produce_create_group_request(sender_address, group_name, group_members, group_members_num);
 
     Skissm__CreateGroupResponse *response = get_skissm_plugin()->proto_handler.create_group(request);
-
-    consume_create_group_response(account->e2ee_pack_id, sender_address, group_name, group_members, group_members_num, response);
+    size_t result;
+    if (response != NULL) {
+        consume_create_group_response(account->e2ee_pack_id, sender_address, group_name, group_members, group_members_num, response);
+        // release
+        skissm__create_group_response__free_unpacked(response, NULL);
+        result = (size_t)(0);
+    } else {
+        result = (size_t)(-1);
+    }
 
     // release
+    skissm__account__free_unpacked(account, NULL);
     skissm__create_group_request__free_unpacked(request, NULL);
-    skissm__create_group_response__free_unpacked(response, NULL);
 
     // done
-    return (size_t)(0);
+    return result;
 }
 
 size_t add_group_members(
@@ -129,16 +149,22 @@ size_t add_group_members(
     Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
 
     Skissm__AddGroupMembersResponse *response = get_skissm_plugin()->proto_handler.add_group_members(request);
-
-    consume_add_group_members_response(outbound_group_session, response);
+    size_t result;
+    if (response != NULL) {
+        consume_add_group_members_response(outbound_group_session, response);
+        // release
+        skissm__add_group_members_response__free_unpacked(response, NULL);
+        result = (size_t)(0);
+    } else {
+        result = (size_t)(-1);
+    }
 
     // release
     skissm__add_group_members_request__free_unpacked(request, NULL);
-    skissm__add_group_members_response__free_unpacked(response, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
     // done
-    return (size_t)(0);
+    return result;
 }
 
 size_t remove_group_members(
@@ -158,16 +184,22 @@ size_t remove_group_members(
     Skissm__RemoveGroupMembersRequest *request = produce_remove_group_members_request(outbound_group_session, removing_members, removing_members_num);
 
     Skissm__RemoveGroupMembersResponse *response = get_skissm_plugin()->proto_handler.remove_group_members(request);
-
-    consume_remove_group_members_response(outbound_group_session, response);
+    size_t result;
+    if (response != NULL) {
+        consume_remove_group_members_response(outbound_group_session, response);
+        // release
+        skissm__remove_group_members_response__free_unpacked(response, NULL);
+        result = (size_t)(0);
+    } else {
+        result = (size_t)(-1);
+    }
 
     // release
     skissm__remove_group_members_request__free_unpacked(request, NULL);
-    skissm__remove_group_members_response__free_unpacked(response, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
     // done
-    return (size_t)(0);
+    return result;
 }
 
 size_t send_group_msg(Skissm__E2eeAddress *sender_address,
@@ -180,16 +212,22 @@ size_t send_group_msg(Skissm__E2eeAddress *sender_address,
     Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, plaintext_data, plaintext_data_len);
 
     Skissm__SendGroupMsgResponse *response = get_skissm_plugin()->proto_handler.send_group_msg(request);
-
-    consume_send_group_msg_response(outbound_group_session, response);
+    size_t result;
+    if (response != NULL) {
+        consume_send_group_msg_response(outbound_group_session, response);
+        // release
+        skissm__send_group_msg_response__free_unpacked(response, NULL);
+        result = (size_t)(0);
+    } else {
+        result = (size_t)(-1);
+    }
 
     // release
     skissm__send_group_msg_request__free_unpacked(request, NULL);
-    skissm__send_group_msg_response__free_unpacked(response, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
     // done
-    return (size_t)(0);
+    return result;
 }
 
 size_t process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len) {
