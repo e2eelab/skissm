@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "test_env.h"
+#include "test_plugin.h"
 
 #include <limits.h>
 #include <stdio.h>
@@ -28,10 +28,10 @@
 
 #include "skissm/cipher.h"
 #include "skissm/crypto.h"
-#include "skissm/e2ee_protocol.h"
+#include "skissm/e2ee_client.h"
 #include "skissm/mem_util.h"
 
-#include "e2ee_protocol_simulator.h"
+#include "test_server.h"
 #include "test_db.h"
 #include "test_util.h"
 
@@ -47,29 +47,25 @@ void create_domain(ProtobufCBinaryData *domain) {
     memcpy(domain->data, E2EELAB_DOMAIN, domain->len);
 }
 
-// common handlers
+// ===============================================================
 static int64_t handle_get_ts() {
     time_t now = time(0);
     return now;
 }
 
-static void handle_rg(uint8_t *rand_out, size_t rand_out_len) {
+static void handle_gen_rand(uint8_t *rand_out, size_t rand_out_len) {
     srand((unsigned int)time(NULL));
     for (int i = 0; i < rand_out_len; i++) {
         rand_out[i] = random() % UCHAR_MAX;
     }
 }
 
-static void handle_generate_uuid(uint8_t uuid[UUID_LEN]) {
-    handle_rg(uuid, UUID_LEN);
+static void handle_gen_uuid(uint8_t uuid[UUID_LEN]) {
+    handle_gen_rand(uuid, UUID_LEN);
 }
 
-static int handle_send(uint8_t *msg, size_t msg_len) {
-    mock_protocol_receive(msg, msg_len);
-    return 0;
-}
+// ===============================================================
 
-// account related handlers
 void load_account(uint64_t account_id, Skissm__Account **account) {
     *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
     skissm__account__init((*account));
@@ -144,6 +140,8 @@ void store_account(Skissm__Account *account) {
     }
 }
 
+// ===============================================================
+// skissm_event_handler_t
 // callback handlers
 static void on_one2one_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
@@ -157,9 +155,8 @@ struct skissm_plugin_t ssm_plugin = {
     // common
     {
         handle_get_ts,
-        handle_rg,
-        handle_generate_uuid,
-        handle_send
+        handle_gen_rand,
+        handle_gen_uuid
     },
     {
         // account
@@ -191,6 +188,20 @@ struct skissm_plugin_t ssm_plugin = {
         unload_group_pre_key
     },
     {
+        test_register_user,
+        test_get_pre_key_bundle,
+        test_invite,
+        test_accept,
+        test_publish_spk,
+        test_supply_opks,
+        test_send_one2one_msg,
+        test_create_group,
+        test_add_group_members,
+        test_remove_group_members,
+        test_send_group_msg,
+        test_consume_proto_msg
+    },
+    {
         NULL,
         NULL,
         NULL,
@@ -209,11 +220,9 @@ struct skissm_plugin_t ssm_plugin = {
 void tear_up() {
     test_db_begin();
     skissm_begin(&ssm_plugin);
-    protocol_simulator_begin();
 }
 
 void tear_down() {
     test_db_end();
     skissm_end();
-    protocol_simulator_end();
 }

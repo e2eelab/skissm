@@ -27,11 +27,11 @@ void test_db_begin();
 void test_db_end();
 void load_id(ProtobufCBinaryData **account_id);
 size_t load_ids(sqlite_int64 **account_ids);
-uint32_t load_version(uint64_t account_id);
+char*load_version(uint64_t account_id);
 protobuf_c_boolean load_saved(uint64_t account_id);
 void load_address(uint64_t account_id, Skissm__E2eeAddress **address);
 void load_password(uint64_t account_id, char *password);
-uint32_t load_e2ee_pack_id(uint64_t account_id);
+const char *load_e2ee_pack_id(uint64_t account_id);
 void load_identity_key_pair(uint64_t account_id, Skissm__IdentityKey **identity_key_pair);
 void load_signed_pre_key_pair(
     uint64_t account_id,
@@ -48,8 +48,8 @@ sqlite_int64 insert_key_pair(Skissm__KeyPair *key_pair);
 sqlite_int64 insert_identity_key(Skissm__IdentityKey *identity_key);
 sqlite_int64 insert_signed_pre_key(Skissm__SignedPreKey *signed_pre_key);
 sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key);
-sqlite_int64 insert_account(uint64_t account_id, int version, protobuf_c_boolean saved,
-                            sqlite_int64 address_id, const char *password, int cipher_suite_id,
+sqlite_int64 insert_account(uint64_t account_id, const char *version, protobuf_c_boolean saved,
+                            sqlite_int64 address_id, const char *password, const char *e2ee_pack_id,
                             sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
                             sqlite_int64 next_one_time_pre_key_id);
 void insert_account_identity_key_id(uint64_t account_id, sqlite_int64 identity_key_id);

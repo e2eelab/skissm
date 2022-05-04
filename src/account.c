@@ -83,7 +83,7 @@ Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
     skissm__account__init(account);
 
     // Set the version, e2ee_pack_id
-    account->version = E2EE_PROTOCOL_VERSION;
+    account->version = strdup(E2EE_PROTOCOL_VERSION);
     account->e2ee_pack_id = strdup(e2ee_pack_id);
 
     // Set some initial ids

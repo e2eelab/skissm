@@ -365,22 +365,22 @@ bool is_equal_receiver_chain(Skissm__ReceiverChainNode *receiver_chain_node_1, S
   return true;
 }
 
-bool is_equal_skipped_message_key(Skissm__SkippedMessageKeyNode *skipped_message_key_node_1, Skissm__SkippedMessageKeyNode *skipped_message_key_node_2)
+bool is_equal_skipped_message_key(Skissm__SkippedMsgKeyNode *skipped_msg_key_node_1, Skissm__SkippedMsgKeyNode *skipped_msg_key_node_2)
 {
-  if (!is_equal_data(&(skipped_message_key_node_1->ratchet_key_public), &(skipped_message_key_node_2->ratchet_key_public)))
+  if (!is_equal_data(&(skipped_msg_key_node_1->ratchet_key_public), &(skipped_msg_key_node_2->ratchet_key_public)))
   {
     printf("ratchet_key_public not match");
     return false;
   }
-  if (is_not_null(skipped_message_key_node_1->msg_key, skipped_message_key_node_2->msg_key))
+  if (is_not_null(skipped_msg_key_node_1->msg_key, skipped_msg_key_node_2->msg_key))
   {
-    if (!is_equal_message_key(skipped_message_key_node_1->msg_key, skipped_message_key_node_2->msg_key))
+    if (!is_equal_message_key(skipped_msg_key_node_1->msg_key, skipped_msg_key_node_2->msg_key))
     {
       printf("message_key not match");
       return false;
     }
   } else{
-    if (!is_null(skipped_message_key_node_1->msg_key, skipped_message_key_node_2->msg_key))
+    if (!is_null(skipped_msg_key_node_1->msg_key, skipped_msg_key_node_2->msg_key))
     {
       printf("message_key not match");
       return false;
@@ -424,15 +424,15 @@ bool is_equal_ratchet(Skissm__Ratchet *ratchet_1, Skissm__Ratchet *ratchet_2)
       return false;
     }
   }
-  if (ratchet_1->n_skipped_message_keys != ratchet_2->n_skipped_message_keys)
+  if (ratchet_1->n_skipped_msg_keys != ratchet_2->n_skipped_msg_keys)
   {
-    printf("n_skipped_message_keys not match");
+    printf("n_skipped_msg_keys not match");
     return false;
   }
-  for (i = 0; i < ratchet_1->n_skipped_message_keys; i++){
-    if (!is_equal_skipped_message_key(ratchet_1->skipped_message_keys[i], ratchet_2->skipped_message_keys[i]))
+  for (i = 0; i < ratchet_1->n_skipped_msg_keys; i++){
+    if (!is_equal_skipped_message_key(ratchet_1->skipped_msg_keys[i], ratchet_2->skipped_msg_keys[i]))
     {
-      printf("skipped_message_keys not match");
+      printf("skipped_msg_keys not match");
       return false;
     }
   }

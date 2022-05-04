@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef TEST_ENV_H_
-#define TEST_ENV_H_
+#ifndef TEST_PLUGIN_H_
+#define TEST_PLUGIN_H_
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -26,7 +26,7 @@
 #include "skissm/skissm.h"
 
 #define E2EELAB_DOMAIN          "e2eelab.org"
-#define TEST_E2EE_PACK_ID       0
+#define TEST_E2EE_PACK_ID       "0"
 
 extern const char *db_name;
 
@@ -39,4 +39,5 @@ void create_domain(ProtobufCBinaryData *domain);
 void load_account(uint64_t account_id, Skissm__Account **account);
 void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **account);
 void store_account(Skissm__Account *account);
-#endif /* TEST_ENV_H_ */
+
+#endif /* TEST_PLUGIN_H_ */

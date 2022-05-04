@@ -258,11 +258,11 @@ static const char *ONETIME_PRE_KEY_CREATE_TABLE = "CREATE TABLE ONETIME_PRE_KEY(
 static const char *ACCOUNT_DROP_TABLE = "DROP TABLE IF EXISTS ACCOUNT;";
 static const char *ACCOUNT_CREATE_TABLE = "CREATE TABLE ACCOUNT( "
                                           "ACCOUNT_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                                          "VERSION INTEGER NOT NULL, "
+                                          "VERSION TEXT NOT NULL, "
                                           "SAVED INTEGER NOT NULL, "
                                           "ADDRESS INTEGER NOT NULL, "
                                           "PASSWORD TEXT NOT NULL, "
-                                          "E2EE_PACK_ID INTEGER NOT NULL, "
+                                          "E2EE_PACK_ID TEXT NOT NULL, "
                                           "IDENTITY_KEY INTEGER NOT NULL, "
                                           "SIGNED_PRE_KEY INTEGER NOT NULL, "
                                           "NEXT_ONETIME_PRE_KEY_ID INTEGER NOT NULL, "
@@ -594,17 +594,17 @@ size_t load_ids(sqlite_int64 **account_ids) {
     return num;
 }
 
-uint32_t load_version(uint64_t account_id) {
+char *load_version(uint64_t account_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_LOAD_VERSION, &stmt);
     sqlite3_bind_int64(stmt, 1, account_id);
 
     // step
-    sqlite_step(stmt, SQLITE_ROW);
+    bool succ = sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    uint32_t version = (uint32_t)sqlite3_column_int(stmt, 0);
+    char *version = succ?strdup((char *)sqlite3_column_text(stmt, 0)):NULL;
 
     // release
     sqlite_finalize(stmt);
@@ -645,12 +645,14 @@ void load_address(uint64_t account_id, Skissm__E2eeAddress **address) {
     sqlite3_bind_int64(stmt, 1, account_id);
 
     // step
-    sqlite_step(stmt, SQLITE_ROW);
+    bool succ = sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    (*address)->domain = strdup((char *)sqlite3_column_text(stmt, 0));
-    (*address)->user->user_id = strdup((char *)sqlite3_column_text(stmt, 1));
-    (*address)->user->device_id = strdup((char *)sqlite3_column_text(stmt, 2));
+    if (succ) {
+        (*address)->domain = strdup((char *)sqlite3_column_text(stmt, 0));
+        (*address)->user->user_id = strdup((char *)sqlite3_column_text(stmt, 1));
+        (*address)->user->device_id = strdup((char *)sqlite3_column_text(stmt, 2));
+    }
 
     // release
     sqlite_finalize(stmt);
@@ -666,23 +668,23 @@ void load_password(uint64_t account_id, char *password) {
     bool succ = sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    password = succ?(char *)sqlite3_column_text(stmt, 0):NULL;
+    password = succ?strdup((char *)sqlite3_column_text(stmt, 0)):NULL;
 
     // release
     sqlite_finalize(stmt);
 }
 
-uint32_t load_e2ee_pack_id(uint64_t account_id) {
+const char *load_e2ee_pack_id(uint64_t account_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_LOAD_E2EE_PACK_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, account_id);
 
     // step
-    sqlite_step(stmt, SQLITE_ROW);
+    bool succ = sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    uint32_t e2ee_pack_id = (uint32_t)sqlite3_column_int(stmt, 0);
+    const char *e2ee_pack_id = succ?strdup((char *)sqlite3_column_text(stmt, 0)):NULL;
 
     // release
     sqlite_finalize(stmt);
@@ -1028,8 +1030,8 @@ sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key) {
     return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_account(uint64_t account_id, int version, protobuf_c_boolean saved,
-                            sqlite_int64 address_id, const char *password, int e2ee_pack_id,
+sqlite_int64 insert_account(uint64_t account_id, const char *version, protobuf_c_boolean saved,
+                            sqlite_int64 address_id, const char *password, const char *e2ee_pack_id,
                             sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
                             sqlite_int64 next_one_time_pre_key_id) {
     // prepare
@@ -1038,11 +1040,11 @@ sqlite_int64 insert_account(uint64_t account_id, int version, protobuf_c_boolean
 
     // bind
     sqlite3_bind_int64(stmt, 1, account_id);
-    sqlite3_bind_int(stmt, 2, version);
+    sqlite3_bind_text(stmt, 2, version, strlen(version), NULL);
     sqlite3_bind_int(stmt, 3, (int)saved);
     sqlite3_bind_int(stmt, 4, address_id);
     sqlite3_bind_text(stmt, 5, password, strlen(password), NULL);
-    sqlite3_bind_int(stmt, 6, e2ee_pack_id);
+    sqlite3_bind_text(stmt, 6, e2ee_pack_id, strlen(e2ee_pack_id), NULL);
     sqlite3_bind_int(stmt, 7, identity_key_pair_id);
     sqlite3_bind_int(stmt, 8, signed_pre_key_id);
     sqlite3_bind_int(stmt, 9, next_one_time_pre_key_id);

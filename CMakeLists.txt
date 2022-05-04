@@ -34,7 +34,7 @@ set(CMAKE_C_STANDARD 11)
 include(GNUInstallDirs)
 
 option(SKISSM_BUILD_PROTOBUF "Build protobuf" ON)
-option(SKISSM_TESTS "Build skissm tests" OFF)
+option(SKISSM_TESTS "Build skissm tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
 set(PROJECT_VERSION_SO ${PROJECT_VERSION_MAJOR})

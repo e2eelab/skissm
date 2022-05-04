@@ -37,8 +37,8 @@ target_include_directories(db
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
 add_library(test_env STATIC
-    e2ee_protocol_simulator.c
-    test_env.c
+    test_server.c
+    test_plugin.c
     test_db.c
     test_util.c)
 
@@ -63,15 +63,15 @@ set(TEST_SKISSM
     test_gcm
     test_sha
     test_account
-    test_ratchet
-    test_session
-    test_group_session
-    test_account_db
-    test_session_db
-    test_group_pre_key
-    test_unload
-    test_spk_db
-    test_opk_db
+    # test_ratchet
+    # test_session
+    # test_group_session
+    # test_account_db
+    # test_session_db
+    # test_group_pre_key
+    # test_unload
+    # test_spk_db
+    # test_opk_db
   )
 
 if(NOT (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND BUILD_SHARED_LIBS))
@@ -105,12 +105,12 @@ add_test(AES test_aes)
 add_test(GCM test_gcm)
 add_test(SHA test_sha)
 add_test(Account test_account)
-add_test(Ratchet test_ratchet)
-add_test(Session test_session)
-add_test(GroupSession test_group_session)
-add_test(Account_db test_account_db)
-add_test(Session_db test_session_db)
-add_test(Group_pre_key test_group_pre_key)
-add_test(Unload test_unload)
-add_test(SPK_db test_spk_db)
-add_test(OPK_db test_opk_db)
+# add_test(Ratchet test_ratchet)
+# add_test(Session test_session)
+# add_test(GroupSession test_group_session)
+# add_test(Account_db test_account_db)
+# add_test(Session_db test_session_db)
+# add_test(Group_pre_key test_group_pre_key)
+# add_test(Unload test_unload)
+# add_test(SPK_db test_spk_db)
+# add_test(OPK_db test_opk_db)

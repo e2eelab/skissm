@@ -24,11 +24,10 @@
 #include "skissm/account.h"
 #include "skissm/cipher.h"
 #include "skissm/crypto.h"
-#include "skissm/e2ee_protocol.h"
 #include "skissm/mem_util.h"
 #include "skissm/skissm.h"
 
-#include "test_env.h"
+#include "test_plugin.h"
 
 static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_one_time_pre_keys) {
     unsigned int i;
