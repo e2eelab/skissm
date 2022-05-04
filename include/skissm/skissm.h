@@ -285,7 +285,7 @@ typedef struct skissm_db_handler_t {
      * @param e2ee_plaintext_data_len_list
      * @return number of loaded group pre-keys
      */
-    uint32_t (*load_group_pre_keys)(Skissm__E2eeAddress *, uint8_t ***, size_t **);
+    size_t (*load_group_pre_keys)(Skissm__E2eeAddress *, uint8_t ***, size_t **);
     /**
      * @brief delete group pre-key
      * @param member_address

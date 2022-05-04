@@ -49,7 +49,7 @@ size_t invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **
 }
 
 size_t accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1) {
-    Skissm__AcceptRequest *request = produce_accept_request(e2ee_pack_id, ciphertext_1);
+    Skissm__AcceptRequest *request = produce_accept_request(e2ee_pack_id, from, to, ciphertext_1);
     Skissm__AcceptResponse *response = get_skissm_plugin()->proto_handler.accept(request);
     size_t result;
     if (response != NULL) {

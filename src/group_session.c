@@ -133,7 +133,7 @@ void create_outbound_group_session(
     Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(outbound_group_session);
 
-    outbound_group_session->version = E2EE_PROTOCOL_VERSION;
+    outbound_group_session->version = strdup(E2EE_PROTOCOL_VERSION);
 
     copy_address_from_address(&(outbound_group_session->session_owner), user_address);
     copy_address_from_address(&(outbound_group_session->group_address), group_address);

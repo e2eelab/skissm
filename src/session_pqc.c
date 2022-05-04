@@ -53,7 +53,7 @@ size_t pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm_
     }
 
     // Set the version
-    outbound_session->version = E2EE_PROTOCOL_VERSION;
+    outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
     // Set the cipher suite id
     outbound_session->e2ee_pack_id = strdup(E2EE_PACK_ID_PQC_DEFAULT);
 
@@ -104,6 +104,9 @@ size_t pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm_
 
     // Set the session ID
     outbound_session->session_id = generate_uuid_str();
+
+    // store sesson state before send invite
+    get_skissm_plugin()->db_handler.store_session(outbound_session);
 
     // Send the invite request to the peer
     size_t pre_shared_keys_len = 3;

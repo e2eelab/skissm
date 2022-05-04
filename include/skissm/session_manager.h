@@ -103,10 +103,15 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
  * @brief Create a Skissm__AcceptRequest message to be sent to server.
  *
  * @param e2ee_pack_id
+ * @param from
+ * @param to
  * @param ciphertext_1
  * @return Skissm__AcceptRequest*
  */
-Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id, ProtobufCBinaryData *ciphertext_1);
+Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id,
+                                              Skissm__E2eeAddress *from,
+                                              Skissm__E2eeAddress *to,
+                                              ProtobufCBinaryData *ciphertext_1);
 
 /**
  * @brief Process an incoming AcceptResponse message.

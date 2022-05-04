@@ -50,7 +50,7 @@ size_t crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session,
     }
 
     // Set the version
-    outbound_session->version = E2EE_PROTOCOL_VERSION;
+    outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
     // Set the cipher suite id
     outbound_session->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
 
@@ -101,6 +101,9 @@ size_t crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session,
     // Create the root key and chain keys
     initialise_as_alice(cipher_suite, outbound_session->ratchet, secret, sizeof(secret), &my_ratchet_key, &(their_pre_key_bundle->signed_pre_key_public->public_key));
     outbound_session->session_id = generate_uuid_str();
+
+    // store sesson state before send invite
+    get_skissm_plugin()->db_handler.store_session(outbound_session);
 
     // Send the invite request to the peer
     ProtobufCBinaryData *pre_shared_keys[1] = {&(outbound_session->alice_ephemeral_key)};

@@ -188,7 +188,7 @@ void crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
 
 char *crypto_base64_encode(const uint8_t *msg, size_t msg_len) {
     size_t len = 4 * ((msg_len + 2) / 3) + 1;
-    char* output = (char*)malloc(sizeof(char) * len);
+    char *output = (char *)malloc(sizeof(char) * len);
     mbedtls_base64_encode((unsigned char *)output, len, &len, (const unsigned char *)msg, msg_len);
     return output;
 }

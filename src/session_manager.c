@@ -63,15 +63,11 @@ size_t consume_get_pre_key_bundle_response (
         const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
         size_t result = session_suite->new_outbound_session(outbound_session, account, their_pre_key_bundles[i]);
 
-        if (result == (size_t)(0)) {
-            // store sesson state
-            get_skissm_plugin()->db_handler.store_session(outbound_session);
-        }
         // release
         skissm__account__free_unpacked(account, NULL);
         skissm__session__free_unpacked(outbound_session, NULL);
 
-        // done
+        // error check
         if (result != (size_t)(0)) {
             ssm_notify_error(BAD_SESSION, "consume_get_pre_key_bundle_response_payload()");
             return result;
@@ -91,7 +87,7 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
     Skissm__E2eeMsg *e2ee_msg = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
     skissm__e2ee_msg__init(e2ee_msg);
 
-    e2ee_msg->version = E2EE_PROTOCOL_VERSION;
+    e2ee_msg->version = strdup(E2EE_PROTOCOL_VERSION);
     e2ee_msg->session_id = strdup(outbound_session->session_id);
     e2ee_msg->msg_id = generate_uuid_str();
     copy_address_from_address(&(e2ee_msg->from), outbound_session->from);
@@ -180,9 +176,11 @@ Skissm__InviteRequest *produce_invite_request(
     Skissm__InviteMsg *msg = (Skissm__InviteMsg *) malloc(sizeof(Skissm__InviteMsg));
     skissm__invite_msg__init(msg);
 
-    msg->version = outbound_session->version;
+    msg->version = strdup(outbound_session->version);
     msg->e2ee_pack_id = strdup(outbound_session->e2ee_pack_id);
     msg->session_id = strdup(outbound_session->session_id);
+    copy_address_from_address(&(msg->from), outbound_session->from);
+    copy_address_from_address(&(msg->to), outbound_session->to);
 
     copy_protobuf_from_protobuf(&(msg->alice_identity_key), &(outbound_session->alice_identity_key));
 
@@ -226,8 +224,8 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     copy_address_from_address(&(inbound_session->session_owner), to);
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
     // Set the version and session id
-    inbound_session->version = msg->version;
-    inbound_session->session_id = msg->session_id;
+    inbound_session->version = strdup(msg->version);
+    inbound_session->session_id = strdup(msg->session_id);
     // create a new inbound session
     size_t result = session_suite->new_inbound_session(inbound_session, account, msg);
 
@@ -248,7 +246,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     return result;
 }
 
-Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id, ProtobufCBinaryData *ciphertext_1) {
+Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1) {
     Skissm__AcceptRequest *request = (Skissm__AcceptRequest *) malloc(sizeof(Skissm__AcceptRequest));
     skissm__accept_request__init(request);
 
@@ -256,6 +254,8 @@ Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id, Protobuf
     skissm__accept_msg__init(msg);
 
     msg->e2ee_pack_id = strdup(e2ee_pack_id);
+    copy_address_from_address(&(msg->from), from);
+    copy_address_from_address(&(msg->to), to);
 
     if (ciphertext_1 == NULL){
         msg->n_pre_shared_keys = 0;
