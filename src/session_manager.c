@@ -18,17 +18,24 @@ static void send_group_pre_key(Skissm__Session *outbound_session){
     uint8_t **group_pre_key_plaintext_data_list;
     size_t *group_pre_key_plaintext_data_len_list;
     n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(outbound_session->to, &group_pre_key_plaintext_data_list, &group_pre_key_plaintext_data_len_list);
-    unsigned int i;
-    for (i = 0; i < n_group_pre_keys; i++){
-        send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data_list[i], group_pre_key_plaintext_data_len_list[i]);
-    }
+    if (n_group_pre_keys > 0) {
+        unsigned int i;
+        for (i = 0; i < n_group_pre_keys; i++) {
+            send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data_list[i],
+                                      group_pre_key_plaintext_data_len_list[i]);
+        }
 
-    // release
-    for (i = 0; i < n_group_pre_keys; i++){
-        free_mem((void **)(&(group_pre_key_plaintext_data_list[i])), group_pre_key_plaintext_data_len_list[i]);
+        // release
+        for (i = 0; i < n_group_pre_keys; i++) {
+            free_mem((void **) (&(group_pre_key_plaintext_data_list[i])),
+                     group_pre_key_plaintext_data_len_list[i]);
+        }
+        free_mem((void **) (&group_pre_key_plaintext_data_list), n_group_pre_keys);
+        free_mem((void **) (&group_pre_key_plaintext_data_len_list), n_group_pre_keys);
+
+        // done
+        get_skissm_plugin()->db_handler.unload_group_pre_key(outbound_session->to);
     }
-    free_mem((void **)(&group_pre_key_plaintext_data_list), n_group_pre_keys);
-    free_mem((void **)(&group_pre_key_plaintext_data_len_list), n_group_pre_keys);
 }
 
 Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(Skissm__E2eeAddress *peer_address) {

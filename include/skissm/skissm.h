@@ -140,18 +140,18 @@ typedef struct skissm_db_handler_t {
      */
     void (*load_account)(uint64_t, Skissm__Account **);
     /**
-     * @brief load all accounts from db
-     * @param accounts
-     * @return number of loaded accounts
-     */
-    size_t (*load_accounts)(Skissm__Account ***);
-    /**
      * @brief load account from db by giving address
      * @param address
      * @param account
      */
     void (*load_account_by_address)(Skissm__E2eeAddress *,
                                     Skissm__Account **);
+    /**
+     * @brief load all accounts from db
+     * @param accounts
+     * @return number of loaded accounts
+     */
+    size_t (*load_accounts)(Skissm__Account ***);
     /**
      * @brief update identity key of account to db
      * @param account_id
