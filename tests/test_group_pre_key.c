@@ -25,11 +25,11 @@
 #include "skissm/mem_util.h"
 
 #include "test_util.h"
-#include "test_env.h"
+#include "test_plugin.h"
 
 static const cipher_suite_t *test_cipher_suite;
 
-int main(){
+static void test_one_group_pre_key(){
     // test start
     tear_up();
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
@@ -118,6 +118,13 @@ int main(){
 
     // test stop
     tear_down();
+}
+
+static void test_multiple_group_pre_keys(){}
+
+int main(){
+    test_one_group_pre_key();
+    test_multiple_group_pre_keys();
 
     return 0;
 }

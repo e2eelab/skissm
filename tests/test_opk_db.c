@@ -26,7 +26,7 @@
 #include "skissm/mem_util.h"
 
 #include "test_db.h"
-#include "test_env.h"
+#include "test_plugin.h"
 #include "test_util.h"
 
 static void free_opks(Skissm__OneTimePreKey ***opks, uint32_t opk_num){

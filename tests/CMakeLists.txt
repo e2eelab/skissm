@@ -63,8 +63,8 @@ set(TEST_SKISSM
     test_gcm
     test_sha
     test_account
-    # test_ratchet
-    # test_session
+    test_ratchet
+    test_session
     # test_group_session
     # test_account_db
     # test_session_db
@@ -105,8 +105,8 @@ add_test(AES test_aes)
 add_test(GCM test_gcm)
 add_test(SHA test_sha)
 add_test(Account test_account)
-# add_test(Ratchet test_ratchet)
-# add_test(Session test_session)
+add_test(Ratchet test_ratchet)
+add_test(Session test_session)
 # add_test(GroupSession test_group_session)
 # add_test(Account_db test_account_db)
 # add_test(Session_db test_session_db)

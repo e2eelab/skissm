@@ -80,7 +80,7 @@ void encrypt_ratchet(
  * @return true
  * @return false
  */
-bool decrypt_ratchet(
+size_t decrypt_ratchet(
     const cipher_suite_t *cipher_suite,
     Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload,
     uint8_t **plaintext_data

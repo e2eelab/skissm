@@ -21,10 +21,10 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "skissm/e2ee_protocol.h"
+#include "skissm/e2ee_client.h"
 #include "skissm/mem_util.h"
 
-#include "test_env.h"
+#include "test_plugin.h"
 
 typedef struct user_data{
     Skissm__E2eeAddress *address;

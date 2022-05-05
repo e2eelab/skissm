@@ -24,17 +24,15 @@
 
 #include "skissm/account.h"
 #include "skissm/account_manager.h"
-#include "skissm/e2ee_protocol.h"
+#include "skissm/e2ee_client.h"
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 #include "skissm/skissm.h"
 
-#include "test_env.h"
+#include "test_plugin.h"
 #include "test_util.h"
-
-extern register_user_response_handler register_user_response_handler_store;
 
 #define account_data_max 2
 
@@ -125,14 +123,13 @@ static void test_encryption(
     // pack plaintext into ontext that is in Skissm__Plaintext structure
     uint8_t *e2ee_plaintext = NULL;
     size_t e2ee_plaintext_len;
-    pack_e2ee_plaintext(
+    pack_common_plaintext(
         plaintext, plaintext_len,
-        SKISSM__PLAINTEXT_TYPE__COMMON_MSG,
         &e2ee_plaintext, &e2ee_plaintext_len
     );
 
     // send encrypted msg
-    send_one2one_msg(outbound_session, e2ee_plaintext, e2ee_plaintext_len);
+    send_one2one_msg(outbound_session->from, outbound_session->to, e2ee_plaintext, e2ee_plaintext_len);
     if (plaintext_store.plaintext == NULL){
         printf("Test failed!!!\n");
         assert(false);
@@ -147,13 +144,13 @@ static void test_basic_session(){
     tear_up();
     test_begin();
 
-    register_account(1, TEST_E2EE_PACK_ID);
-    register_account(2, TEST_E2EE_PACK_ID);
+    create_account(1, TEST_E2EE_PACK_ID);
+    create_account(2, TEST_E2EE_PACK_ID);
 
     Skissm__Session *outbound_session;
 
     // Alice invites Bob to create a session
-    size_t success = init_outbound_session(account_data[0]->address, account_data[1]->address);
+    size_t success = invite(account_data[0]->address, account_data[1]->address);
     assert (success == 0); // waiting Accept
 
     // Load the outbound session
@@ -177,13 +174,13 @@ static void test_interaction(){
     tear_up();
     test_begin();
 
-    register_account(1, TEST_E2EE_PACK_ID);
-    register_account(2, TEST_E2EE_PACK_ID);
+    create_account(1, TEST_E2EE_PACK_ID);
+    create_account(2, TEST_E2EE_PACK_ID);
 
     Skissm__Session *outbound_session_a, *outbound_session_b;
 
     // Alice invites Bob to create a session
-    size_t success = init_outbound_session(account_data[0]->address, account_data[1]->address);
+    size_t success = invite(account_data[0]->address, account_data[1]->address);
     assert (success == 0); // waiting Accept
 
     // Alice loads the outbound session
@@ -197,7 +194,7 @@ static void test_interaction(){
     test_encryption(outbound_session_a, plaintext, plaintext_len);
 
     // Bob invites Alice to create a session
-    size_t success1 = init_outbound_session(account_data[1]->address, account_data[0]->address);
+    size_t success1 = invite(account_data[1]->address, account_data[0]->address);
     assert (success1 == 0); // waiting Accept
 
     // Bob loads the outbound session
@@ -222,13 +219,13 @@ static void test_continual_messages(){
     tear_up();
     test_begin();
 
-    register_account(1, TEST_E2EE_PACK_ID);
-    register_account(2, TEST_E2EE_PACK_ID);
+    create_account(1, TEST_E2EE_PACK_ID);
+    create_account(2, TEST_E2EE_PACK_ID);
 
     Skissm__Session *outbound_session;
 
     // Alice invites Bob to create a session
-    size_t success = init_outbound_session(account_data[0]->address, account_data[1]->address);
+    size_t success = invite(account_data[0]->address, account_data[1]->address);
     assert (success == 0); // waiting Accept
 
     // Load the outbound session

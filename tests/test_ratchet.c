@@ -24,7 +24,7 @@
 #include "skissm/ratchet.h"
 
 #include "test_util.h"
-#include "test_env.h"
+#include "test_plugin.h"
 
 static const cipher_suite_t *test_cipher_suite;
 
@@ -58,7 +58,7 @@ static void test_alice_to_bob(
     size_t decrypt_length;
 
     /* Alice sends Bob a message */
-    Skissm__E2eeMsgPayload *message;
+    Skissm__One2oneMsgPayload *message;
 
     encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_length, &message);
 
@@ -74,7 +74,7 @@ static void test_alice_to_bob(
       print_result("Decryption failed!!!", false);
     }
 
-    skissm__e2ee_msg_payload__free_unpacked(message, NULL);
+    skissm__one2one_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
     skissm__ratchet__free_unpacked(alice_ratchet, NULL);
     skissm__ratchet__free_unpacked(bob_ratchet, NULL);
@@ -105,10 +105,10 @@ static void test_out_of_order(
     size_t message_1_length, message_2_length;
     size_t output_1_length, output_2_length;
 
-    Skissm__E2eeMsgPayload *message_1;
+    Skissm__One2oneMsgPayload *message_1;
     encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
 
-    Skissm__E2eeMsgPayload *message_2;
+    Skissm__One2oneMsgPayload *message_2;
     encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
 
     uint8_t *output_1;
@@ -131,8 +131,8 @@ static void test_out_of_order(
       print_result("The second decryption failed!!!!", false);
     }
 
-    skissm__e2ee_msg_payload__free_unpacked(message_1, NULL);
-    skissm__e2ee_msg_payload__free_unpacked(message_2, NULL);
+    skissm__one2one_msg_payload__free_unpacked(message_1, NULL);
+    skissm__one2one_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, output_1_length);
     free_mem((void **)&output_2, output_2_length);
     skissm__ratchet__free_unpacked(alice_ratchet, NULL);
@@ -177,7 +177,7 @@ static void test_two_ratchets(
     size_t decrypt_length_alice;
 
     /* Alice sends Bob a message */
-    Skissm__E2eeMsgPayload *message_alice;
+    Skissm__One2oneMsgPayload *message_alice;
     encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_alice, plaintext_length_alice, &message_alice);
 
     /* Bob received the message from Alice */
@@ -195,7 +195,7 @@ static void test_two_ratchets(
     size_t decrypt_length_bob;
 
     /* Bob sends Alice a message */
-    Skissm__E2eeMsgPayload *message_bob;
+    Skissm__One2oneMsgPayload *message_bob;
     encrypt_ratchet(test_cipher_suite, bob_ratchet_2, ad, plaintext_bob, plaintext_length_bob, &message_bob);
 
     /* Alice decrypts the message from Bob */
@@ -204,8 +204,8 @@ static void test_two_ratchets(
 
     assert(result = is_equal(plaintext_bob, output_bob, plaintext_length_bob));
 
-    skissm__e2ee_msg_payload__free_unpacked(message_alice, NULL);
-    skissm__e2ee_msg_payload__free_unpacked(message_bob, NULL);
+    skissm__one2one_msg_payload__free_unpacked(message_alice, NULL);
+    skissm__one2one_msg_payload__free_unpacked(message_bob, NULL);
     free_mem((void **)&output_alice, decrypt_length_alice);
     free_mem((void **)&output_bob, decrypt_length_bob);
     skissm__ratchet__free_unpacked(alice_ratchet, NULL);

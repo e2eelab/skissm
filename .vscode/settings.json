@@ -17,7 +17,7 @@
         "curve25519-donna.h": "c",
         "crypto.h": "c",
         "mem_util.h": "c",
-        "e2ee_protocol.h": "c",
+        "e2ee_client.h": "c",
         "account_manager.h": "c",
         "e2ee_protocol_handler.h": "c",
         "group_session_manager.h": "c",

@@ -23,13 +23,13 @@
 
 #include "skissm/account.h"
 #include "skissm/cipher.h"
-#include "skissm/e2ee_protocol.h"
+#include "skissm/e2ee_client.h"
 #include "skissm/mem_util.h"
 #include "skissm/skissm.h"
 
-#include "test_env.h"
+#include "test_plugin.h"
 #include "test_db.h"
-#include "test_env.h"
+#include "test_plugin.h"
 #include "test_util.h"
 
 // test about account db

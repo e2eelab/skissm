@@ -162,8 +162,8 @@ struct skissm_plugin_t ssm_plugin = {
         // account
         store_account,
         load_account,
-        load_accounts,
         load_account_by_address,
+        load_accounts,
         update_identity_key,
         update_signed_pre_key,
         load_signed_pre_key,

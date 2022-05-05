@@ -22,16 +22,14 @@
 
 #include "skissm/account.h"
 #include "skissm/account_manager.h"
-#include "skissm/e2ee_protocol.h"
+#include "skissm/e2ee_client.h"
 #include "skissm/e2ee_protocol_handler.h"
 #include "skissm/group_session.h"
 #include "skissm/group_session_manager.h"
 #include "skissm/mem_util.h"
 
 #include "test_util.h"
-#include "test_env.h"
-
-extern register_user_response_handler register_user_response_handler_store;
+#include "test_plugin.h"
 
 #define account_data_max 3
 
@@ -161,8 +159,8 @@ static void test_create_group() {
     test_begin();
 
     // Prepare account
-    register_account(1, TEST_E2EE_PACK_ID);
-    register_account(2, TEST_E2EE_PACK_ID);
+    create_account(1, TEST_E2EE_PACK_ID);
+    create_account(2, TEST_E2EE_PACK_ID);
 
     // Alice invites Bob to create a group
     Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 2);
@@ -192,9 +190,9 @@ static void test_add_group_members() {
     test_begin();
 
     // Prepare account
-    register_account(1, TEST_E2EE_PACK_ID);
-    register_account(2, TEST_E2EE_PACK_ID);
-    register_account(3, TEST_E2EE_PACK_ID);
+    create_account(1, TEST_E2EE_PACK_ID);
+    create_account(2, TEST_E2EE_PACK_ID);
+    create_account(3, TEST_E2EE_PACK_ID);
 
     // Alice invites Bob to create a group
     Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 2);
@@ -233,9 +231,9 @@ static void test_remove_group_members() {
     test_begin();
 
     // Prepare account
-    register_account(1, TEST_E2EE_PACK_ID);
-    register_account(2, TEST_E2EE_PACK_ID);
-    register_account(3, TEST_E2EE_PACK_ID);
+    create_account(1, TEST_E2EE_PACK_ID);
+    create_account(2, TEST_E2EE_PACK_ID);
+    create_account(3, TEST_E2EE_PACK_ID);
 
     // Alice create a group with Bob and Claire
     Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 3);
@@ -276,9 +274,9 @@ static void test_create_add_remove() {
     test_begin();
 
     // Prepare account
-    register_account(1, TEST_E2EE_PACK_ID);
-    register_account(2, TEST_E2EE_PACK_ID);
-    register_account(3, TEST_E2EE_PACK_ID);
+    create_account(1, TEST_E2EE_PACK_ID);
+    create_account(2, TEST_E2EE_PACK_ID);
+    create_account(3, TEST_E2EE_PACK_ID);
 
     // Alice invites Bob to create a group
     Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * 2);
