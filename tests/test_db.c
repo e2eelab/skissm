@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "test_db.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "skissm/mem_util.h"
 
-#include "test_db.h"
-
 // global variable
-static const char *db_name = (char *)"test.db";
+static const char *db_name = (char *)"file:test.db?mode=memory&cache=shared";
 static sqlite3 *db;
 
 // util function
@@ -585,7 +585,8 @@ size_t load_ids(sqlite_int64 **account_ids) {
     // step
     int i = 0;
     while (sqlite3_step(stmt2) != SQLITE_DONE) {
-        (*account_ids)[i] = sqlite3_column_int64(stmt2, 0);
+        sqlite_int64 account_id = sqlite3_column_int64(stmt2, 0);
+        (*account_ids)[i++] = account_id;
     }
     // release
     sqlite_finalize(stmt2);
@@ -674,7 +675,7 @@ void load_password(uint64_t account_id, char *password) {
     sqlite_finalize(stmt);
 }
 
-const char *load_e2ee_pack_id(uint64_t account_id) {
+char *load_e2ee_pack_id(uint64_t account_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_LOAD_E2EE_PACK_ID, &stmt);
@@ -684,7 +685,7 @@ const char *load_e2ee_pack_id(uint64_t account_id) {
     bool succ = sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    const char *e2ee_pack_id = succ?strdup((char *)sqlite3_column_text(stmt, 0)):NULL;
+    char *e2ee_pack_id = succ?strdup((char *)sqlite3_column_text(stmt, 0)):NULL;
 
     // release
     sqlite_finalize(stmt);
@@ -1349,6 +1350,81 @@ void update_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id) 
     sqlite_finalize(stmt);
 }
 
+void store_account(Skissm__Account *account) {
+    // insert address
+    sqlite_int64 address_id = insert_address(account->address);
+
+    // insert identity_key
+    sqlite_int64 identity_key_pair_id = insert_identity_key(account->identity_key);
+
+    // insert signed_pre_key
+    sqlite_int64 signed_pre_key_id = insert_signed_pre_key(account->signed_pre_key);
+
+    // insert one_time_pre_keys
+    sqlite_int64 one_time_pre_key_ids[account->n_one_time_pre_keys];
+    for (int i = 0; i < account->n_one_time_pre_keys; i++) {
+        one_time_pre_key_ids[i] = insert_one_time_pre_key(account->one_time_pre_keys[i]);
+    }
+
+    // insert account
+    sqlite_int64 account_id = account->account_id;
+    insert_account(account_id, account->version, account->saved, address_id, account->password, account->e2ee_pack_id,
+                   identity_key_pair_id, signed_pre_key_id, account->next_one_time_pre_key_id);
+
+    // insert ACCOUNT_SIGNED_PRE_KEY_PAIR
+    insert_account_signed_pre_key_id(account_id, signed_pre_key_id);
+
+    // insert ACCOUNT_ONE_TIME_PRE_KEY_PAIR
+    for (int i = 0; i < account->n_one_time_pre_keys; i++) {
+        insert_account_one_time_pre_key_id(account_id, one_time_pre_key_ids[i]);
+    }
+}
+
+void load_account(uint64_t account_id, Skissm__Account **account) {
+    *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
+    skissm__account__init((*account));
+
+    (*account)->account_id = account_id;
+    (*account)->version = load_version(account_id);
+    (*account)->saved = load_saved(account_id);
+    (*account)->e2ee_pack_id = load_e2ee_pack_id(account_id);
+    load_address(account_id, &((*account)->address));
+    load_password(account_id, (*account)->password);
+
+    load_signed_pre_key_pair(account_id, &((*account)->signed_pre_key));
+    load_identity_key_pair(account_id, &((*account)->identity_key));
+    (*account)->n_one_time_pre_keys = load_one_time_pre_keys(account_id, &((*account)->one_time_pre_keys));
+    (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(account_id);
+}
+
+void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **account) {
+    sqlite_int64 account_id;
+    load_id_by_address(address, &account_id);
+    load_account(account_id, account);
+}
+
+size_t load_accounts(Skissm__Account ***accounts) {
+    // load all account_ids
+    sqlite_int64 *account_ids;
+    size_t num = load_ids(&account_ids);
+
+    // load all account by account_ids
+    if (num == 0) {
+        *accounts = NULL;
+    } else {
+        *accounts = (Skissm__Account **)malloc(sizeof(Skissm__Account *) * num);
+        for (int i = 0; i < num; i++) {
+            load_account(account_ids[i], &(*accounts)[i]);
+        }
+
+        // release account_ids array
+        free(account_ids);
+    }
+
+    // done
+    return num;
+}
+
 // session related handlers
 void load_inbound_session(char *session_id, Skissm__E2eeAddress *owner,
                           Skissm__Session **session) {
@@ -1534,7 +1610,7 @@ void load_inbound_group_session(Skissm__E2eeAddress *receiver_address,
         *group_session = NULL;
         return;
     }
-        
+
     // bind
     sqlite3_bind_text(stmt, 1, receiver_address->domain, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, receiver_address->user->user_id, -1, SQLITE_TRANSIENT);
@@ -1673,7 +1749,7 @@ int load_n_group_pre_keys(Skissm__E2eeAddress *member_address) {
     return n_group_pre_keys;
 }
 
-uint32_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
+size_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
     uint8_t ***e2ee_plaintext_data_list,
     size_t **e2ee_plaintext_data_len_list) {
     // allocate memory
@@ -1705,7 +1781,7 @@ uint32_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
         // assign
         (*e2ee_plaintext_data_list)[i] = (uint8_t *)malloc(e2ee_plaintext_data_len * sizeof(uint8_t));
         memcpy((*e2ee_plaintext_data_list)[i], e2ee_plaintext_data, e2ee_plaintext_data_len);
-        *e2ee_plaintext_data_len_list[i] = e2ee_plaintext_data_len;
+        (*e2ee_plaintext_data_len_list)[i] = e2ee_plaintext_data_len;
     }
 
     // release

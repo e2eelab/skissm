@@ -31,7 +31,7 @@ char*load_version(uint64_t account_id);
 protobuf_c_boolean load_saved(uint64_t account_id);
 void load_address(uint64_t account_id, Skissm__E2eeAddress **address);
 void load_password(uint64_t account_id, char *password);
-const char *load_e2ee_pack_id(uint64_t account_id);
+char *load_e2ee_pack_id(uint64_t account_id);
 void load_identity_key_pair(uint64_t account_id, Skissm__IdentityKey **identity_key_pair);
 void load_signed_pre_key_pair(
     uint64_t account_id,
@@ -65,6 +65,10 @@ void update_address(uint64_t account_id, Skissm__E2eeAddress *address);
 void remove_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id);
 void update_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id);
 void add_one_time_pre_key(uint64_t account_id, Skissm__OneTimePreKey *one_time_pre_key);
+void store_account(Skissm__Account *account);
+void load_account(uint64_t account_id, Skissm__Account **account);
+void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **account);
+size_t load_accounts(Skissm__Account ***accounts);
 void load_inbound_session(char *session_id,
                           Skissm__E2eeAddress *owner,
                           Skissm__Session **session);
@@ -97,7 +101,7 @@ void store_group_pre_key(Skissm__E2eeAddress *member_address,
                          uint8_t *group_pre_key_plaintext,
                          size_t group_pre_key_plaintext_len
 );
-uint32_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
+size_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
     uint8_t ***e2ee_plaintext_data_list,
     size_t **e2ee_plaintext_data_len_list);
 

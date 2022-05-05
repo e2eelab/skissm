@@ -49,7 +49,9 @@ bool is_equal_group_session(Skissm__GroupSession *group_session_1, Skissm__Group
 // mock
 void mock_data(ProtobufCBinaryData *to, const char *from);
 void mock_string(char **to, const char *from);
+char *mock_domain_str();
 void mock_address(Skissm__E2eeAddress **address_pp, const char *user_id, const char *domain, const char *device_id);
+void mock_random_address(Skissm__E2eeAddress **address);
 void mock_keypair(Skissm__KeyPair **keypair, const char *public_key, const char *private_key);
 void mock_identity_keypair(Skissm__IdentityKey **identity_keypair, const char *public_key, const char *private_key);
 void mock_signed_pre_keypair(Skissm__SignedPreKey **signed_pre_keypair, uint32_t spk_id, const char *public_key, const char *private_key, const char *signature);

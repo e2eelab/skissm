@@ -90,11 +90,11 @@ extern "C" {
 #include "skissm/cipher.h"
 #include "skissm/error.h"
 
-#define E2EE_PROTOCOL_VERSION       "E2EE_PROTOCOL_v1.0"
-#define E2EE_GROUP_PRE_KEY_VERSION  "E2EE_GROUP_PRE_KEY_v1.0"
-#define E2EE_PLAINTEXT_VERSION      "E2EE_PLAINTEXT_v1.0"
-#define UUID_LEN                    16
-#define SIGNED_PRE_KEY_EXPIRATION   604800
+#define E2EE_PROTOCOL_VERSION           "E2EE_PROTOCOL_v1.0"
+#define E2EE_GROUP_PRE_KEY_VERSION      "E2EE_GROUP_PRE_KEY_v1.0"
+#define E2EE_PLAINTEXT_VERSION          "E2EE_PLAINTEXT_v1.0"
+#define UUID_LEN                        16
+#define SIGNED_PRE_KEY_EXPIRATION_MS    604800000 // 7 days
 
 typedef struct e2ee_pack_t {
     const char *e2ee_pack_id;

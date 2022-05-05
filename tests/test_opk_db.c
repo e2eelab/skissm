@@ -48,7 +48,7 @@ void test_update_one_time_pre_key(){
     account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
     skissm__peer_user__init(account->address->user);
     account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
-    account->address->domain = create_domain_str();
+    account->address->domain = mock_domain_str();
     account->address->user->user_id = generate_uuid_str();
     account->address->user->device_id = generate_uuid_str();
 
@@ -86,7 +86,7 @@ void test_remove_one_time_pre_key(){
     account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
     skissm__peer_user__init(account->address->user);
     account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
-    account->address->domain = create_domain_str();
+    account->address->domain = mock_domain_str();
     account->address->user->user_id = generate_uuid_str();
     account->address->user->device_id = generate_uuid_str();
 

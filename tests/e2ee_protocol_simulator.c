@@ -141,7 +141,7 @@ static void process_register_user_request(
     random_address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
     skissm__peer_user__init(random_address->user);
     random_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
-    random_address->domain = create_domain_str();
+    random_address->domain = mock_domain_str();
     random_address->user->user_id = generate_uuid_str();
     random_address->user->device_id = generate_uuid_str();
     copy_address_from_address(&(user_data_set[user_data_set_insert_pos].address), random_address);
@@ -413,7 +413,7 @@ static void process_create_group_request(
     random_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
     skissm__peer_group__init(random_address->group);
     random_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
-    random_address->domain = create_domain_str();
+    random_address->domain = mock_domain_str();
     random_address->group->group_id = generate_uuid_str();
     copy_address_from_address(&(group_data_set[group_data_set_insert_pos].group_address), random_address);
 

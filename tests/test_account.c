@@ -28,6 +28,7 @@
 #include "skissm/skissm.h"
 
 #include "test_plugin.h"
+#include "test_util.h"
 
 static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_one_time_pre_keys) {
     unsigned int i;
@@ -43,12 +44,9 @@ static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_on
     }
 }
 
-int main(){
-    // test start
-    tear_up();
-
+static void register_account_test(uint64_t account_id) {
     // Register test
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
+    Skissm__Account *account = create_account(account_id, TEST_E2EE_PACK_ID);
 
     assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
@@ -73,9 +71,68 @@ int main(){
     Skissm__OneTimePreKey **output = generate_opks(80, account);
 
     verify_one_time_pre_keys(account, 180);
+    
+    // store account
+    mock_random_address(&account->address);
+    get_skissm_plugin()->db_handler.store_account(account);
+    printf("stored account_id %llu\n", account->account_id);
+    
+    // load account
+    Skissm__Account *loaded_account = NULL;
+    get_skissm_plugin()->db_handler.load_account(account_id, &loaded_account);
+    assert(is_equal_account(account, loaded_account));
 
     // release
     skissm__account__free_unpacked(account, NULL);
+    skissm__account__free_unpacked(loaded_account, NULL);
+}
+
+static void load_accounts_test(uint64_t num) {
+    printf("====== load_accounts_test ======\n");
+    unsigned i;
+    Skissm__Account **accounts = NULL;
+    size_t accounts_num = get_skissm_plugin()->db_handler.load_accounts(&accounts);
+    assert(accounts_num == num);
+    printf("loaded accounts num: %zu\n", accounts_num);
+    
+    // pack/unpack test
+    uint8_t **accounts_data;
+    size_t *accounts_data_len;
+    accounts_data_len = (size_t *)malloc(accounts_num * sizeof(size_t));
+    accounts_data = (uint8_t **)malloc(accounts_num * sizeof(uint8_t *));
+    memset(accounts_data_len, 0, accounts_num);
+    for(i = 0; i<accounts_num; i++) {
+        accounts_data_len[i] = skissm__account__get_packed_size(accounts[i]);
+        accounts_data[i] = (uint8_t *)malloc(accounts_data_len[i] * sizeof(uint8_t));
+        skissm__account__pack(accounts[i], accounts_data[i]);
+        assert(accounts_data[i] != NULL);
+        assert(accounts_data_len[i] > 0);
+    }
+    
+    for(i = 0; i<accounts_num; i++) {
+        Skissm__Account *unpacked_account  = skissm__account__unpack(NULL, accounts_data_len[i], accounts_data[i]);
+        free_mem((void **)(&accounts_data[i]), accounts_data_len[i]);
+        assert(unpacked_account->account_id == (i+1));
+        assert(is_equal_account(accounts[i], unpacked_account));
+        printf("pack/unpack verified: account_id %llu\n", accounts[i]->account_id);
+    }
+    free_mem((void **)(&accounts_data_len), accounts_num);
+    free_mem((void **)(&accounts_data), accounts_num);
+}
+
+static void register_accounts_test(uint64_t num) {
+    for (uint64_t account_id = 1; account_id<=num; account_id++) {
+        register_account_test(account_id);
+    }
+
+    load_accounts_test(num);
+}
+
+int main(){
+    // test start
+    tear_up();
+
+    register_accounts_test(8);
 
     // test stop.
     tear_down();

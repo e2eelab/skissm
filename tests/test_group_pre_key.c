@@ -52,7 +52,7 @@ static void test_one_group_pre_key(){
     group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
     skissm__peer_group__init(group_address->group);
     group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
-    group_address->domain = create_domain_str();
+    group_address->domain = mock_domain_str();
     group_address->group->group_id = generate_uuid_str();
 
     // create an outbound group session
