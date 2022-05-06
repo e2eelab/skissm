@@ -71,12 +71,12 @@ static void register_account_test(uint64_t account_id) {
     Skissm__OneTimePreKey **output = generate_opks(80, account);
 
     verify_one_time_pre_keys(account, 180);
-    
+
     // store account
     mock_random_address(&account->address);
     get_skissm_plugin()->db_handler.store_account(account);
     printf("stored account_id %llu\n", account->account_id);
-    
+
     // load account
     Skissm__Account *loaded_account = NULL;
     get_skissm_plugin()->db_handler.load_account(account_id, &loaded_account);
@@ -94,7 +94,7 @@ static void load_accounts_test(uint64_t num) {
     size_t accounts_num = get_skissm_plugin()->db_handler.load_accounts(&accounts);
     assert(accounts_num == num);
     printf("loaded accounts num: %zu\n", accounts_num);
-    
+
     // pack/unpack test
     uint8_t **accounts_data;
     size_t *accounts_data_len;
@@ -108,7 +108,7 @@ static void load_accounts_test(uint64_t num) {
         assert(accounts_data[i] != NULL);
         assert(accounts_data_len[i] > 0);
     }
-    
+
     for(i = 0; i<accounts_num; i++) {
         Skissm__Account *unpacked_account  = skissm__account__unpack(NULL, accounts_data_len[i], accounts_data[i]);
         free_mem((void **)(&accounts_data[i]), accounts_data_len[i]);

@@ -18,13 +18,133 @@
  */
 #include "test_server.h"
 
+#include "test_util.h"
+
+typedef struct user_data{
+    Skissm__E2eeAddress *address;
+    char *deviceId;
+    char *userName;
+    Skissm__IdentityKeyPublic *identity_key_public;
+    Skissm__SignedPreKeyPublic *signed_pre_key_public;
+    Skissm__OneTimePreKeyPublic **one_time_pre_keys;
+    size_t n_one_time_pre_keys;
+} user_data;
+
+typedef struct group_data{
+    Skissm__E2eeAddress *group_address;
+    char *group_name;
+    size_t member_num;
+    Skissm__E2eeAddress **member_addresses;
+} group_data;
+
+#define user_data_max 8
+
+#define group_data_max 8
+
+static user_data user_data_set[user_data_max] = {
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0}};
+
+static group_data group_data_set[user_data_max] = {
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL}};
+
+static uint8_t user_data_set_insert_pos = 0;
+
+static uint8_t group_data_set_insert_pos = 0;
+
+void test_server_begin(){
+}
+
+void test_server_end(){
+    uint8_t i, j;
+    for (i = 0; i < user_data_set_insert_pos; i++){
+        skissm__e2ee_address__free_unpacked(user_data_set[i].address, NULL);
+        user_data_set[i].address = NULL;
+
+        free(user_data_set[i].deviceId);
+        free(user_data_set[i].userName);
+        skissm__identity_key_public__free_unpacked(user_data_set[i].identity_key_public, NULL);
+        skissm__signed_pre_key_public__free_unpacked(user_data_set[i].signed_pre_key_public, NULL);
+        for(int j=0; j<user_data_set[i].n_one_time_pre_keys; j++) {
+            skissm__one_time_pre_key_public__free_unpacked(one_time_pre_keys[j], NULL);
+        }
+        free_mem((void **)(&(user_data_set[i].one_time_pre_keys)), user_data_set[i].n_one_time_pre_keys);
+        user_data_set[i].user
+        = NULL;
+        user_data_set[i].deviceId = NULL;
+        user_data_set[i].identity_key_public = NULL;
+        user_data_set[i].signed_pre_key_public = NULL;
+        user_data_set[i].one_time_pre_keys = NULL;
+        user_data_set[i].n_one_time_pre_keys = 0;
+    }
+    user_data_set_insert_pos = 0;
+    for (i = 0; i < group_data_set_insert_pos; i++){
+        skissm__e2ee_address__free_unpacked(group_data_set[i].group_address, NULL);
+        group_data_set[i].group_address = NULL;
+        free(group_data_set[i].group_name);
+        group_data_set[i].group_name = NULL;
+        for (j = 0; j < group_data_set[i].member_num; j++){
+            skissm__e2ee_address__free_unpacked(group_data_set[i].member_addresses[j], NULL);
+            group_data_set[i].member_addresses[j] = NULL;
+        }
+        group_data_set[i].member_num = 0;
+    }
+    group_data_set_insert_pos = 0;
+}
 
 Skissm__RegisterUserResponse *test_register_user(Skissm__RegisterUserRequest *request) {
-    size_t request_data_len = skissm__register_user_request__get_packed_size(request);
-    uint8_t *request_data = (uint8_t *)malloc(request_data_len);
-    skissm__register_user_request__pack(request, request_data);
+    /* prepare to store */
+    user_data_set[user_data_set_insert_pos].deviceId = strdup(request->device_id);
+    user_data_set[user_data_set_insert_pos].userName = strdup(request->user_name);
+    user_data_set[user_data_set_insert_pos].identity_key_public = request->identity_key_public;
+    user_data_set[user_data_set_insert_pos].signed_pre_key_public = request->signed_pre_key_public;
+    user_data_set[user_data_set_insert_pos].one_time_pre_keys = request->identity_key_public;
+    user_data_set[user_data_set_insert_pos].n_one_time_pre_keys = ;
 
-    Skissm__RegisterUserResponse *response = NULL;
+
+
+    user_data_set[user_data_set_insert_pos].identity_key_public = (Skissm__IdentityKeyPublic *) malloc(sizeof(Skissm__IdentityKeyPublic));
+    skissm__identity_key_public__init(user_data_set[user_data_set_insert_pos].identity_key_public);
+    copy_protobuf_from_protobuf(&(user_data_set[user_data_set_insert_pos].identity_key_public->asym_public_key), &(request->identity_key_public->asym_public_key));
+    copy_protobuf_from_protobuf(&(user_data_set[user_data_set_insert_pos].identity_key_public->sign_public_key), &(request->identity_key_public->sign_public_key));
+    user_data_set[user_data_set_insert_pos].signed_pre_key_public = (Skissm__SignedPreKeyPublic *) malloc(sizeof(Skissm__SignedPreKeyPublic));
+    skissm__signed_pre_key_public__init(user_data_set[user_data_set_insert_pos].signed_pre_key_public);
+    user_data_set[user_data_set_insert_pos].signed_pre_key_public->spk_id = request->signed_pre_key_public->spk_id;
+    copy_protobuf_from_protobuf(&(user_data_set[user_data_set_insert_pos].signed_pre_key_public->public_key), &(request->signed_pre_key_public->public_key));
+    copy_protobuf_from_protobuf(&(user_data_set[user_data_set_insert_pos].signed_pre_key_public->signature), &(request->signed_pre_key_public->signature));
+    user_data_set[user_data_set_insert_pos].n_one_time_pre_keys = request->n_one_time_pre_keys;
+    user_data_set[user_data_set_insert_pos].one_time_pre_keys = (Skissm__OneTimePreKeyPublic **) malloc(sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[user_data_set_insert_pos].n_one_time_pre_keys);
+    unsigned int i;
+    for (i = 0; i < user_data_set[user_data_set_insert_pos].n_one_time_pre_keys; i++){
+        user_data_set[user_data_set_insert_pos].one_time_pre_keys[i] = (Skissm__OneTimePreKeyPublic *) malloc(sizeof(Skissm__OneTimePreKeyPublic));
+        skissm__one_time_pre_key_public__init(user_data_set[user_data_set_insert_pos].one_time_pre_keys[i]);
+        user_data_set[user_data_set_insert_pos].one_time_pre_keys[i]->opk_id = request->one_time_pre_keys[i]->opk_id;
+        copy_protobuf_from_protobuf(&(user_data_set[user_data_set_insert_pos].one_time_pre_keys[i]->public_key), &(request->one_time_pre_keys[i]->public_key));
+    }
+
+    /* Generate a random address */
+    user_data_set[user_data_set_insert_pos].address = mock_random_address();
+
+    user_data_set_insert_pos++;
+
+    Skissm__RegisterUserResponse *response
+        = (Skissm__RegisterUserResponse *)malloc(sizeof(Skissm__RegisterUserResponse));
+    skissm__register_user_response__init(response);
+    copy_address_from_address(&(response->address),user_data_set[user_data_set_insert_pos].address);
+
     return response;
 }
 
