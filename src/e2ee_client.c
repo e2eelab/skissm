@@ -275,6 +275,6 @@ size_t process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len) {
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
 
     // done
-    return (size_t)(0);
+    return consumed?(size_t)(0):(size_t)(-1);
 }
 

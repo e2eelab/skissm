@@ -62,15 +62,16 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
  *
  * @param outbound_session
  * @param response
+ * @return size_t Success or not
  */
-void consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response);
+size_t consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response);
 
 /**
  * @brief Process a received Skissm__E2eeMsg message from server.
  *
  * @param receiver_address
  * @param e2ee_msg
- * @return size_t
+ * @return size_t Success or not
  */
 size_t consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg);
 

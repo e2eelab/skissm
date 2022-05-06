@@ -20,9 +20,12 @@ static void send_group_pre_key(Skissm__Session *outbound_session){
     n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(outbound_session->to, &group_pre_key_plaintext_data_list, &group_pre_key_plaintext_data_len_list);
     if (n_group_pre_keys > 0) {
         unsigned int i;
+        size_t result = 0;
         for (i = 0; i < n_group_pre_keys; i++) {
-            send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data_list[i],
+            result = send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data_list[i],
                                       group_pre_key_plaintext_data_len_list[i]);
+            if (result != 0)
+                break;
         }
 
         // release
@@ -34,7 +37,8 @@ static void send_group_pre_key(Skissm__Session *outbound_session){
         free_mem((void **) (&group_pre_key_plaintext_data_len_list), n_group_pre_keys);
 
         // done
-        get_skissm_plugin()->db_handler.unload_group_pre_key(outbound_session->to);
+        if (result == 0)
+            get_skissm_plugin()->db_handler.unload_group_pre_key(outbound_session->to);
     }
 }
 
@@ -107,10 +111,13 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
     return request;
 }
 
-void consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response) {
+size_t consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response) {
     if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // store sesson state
         get_skissm_plugin()->db_handler.store_session(outbound_session);
+        return (size_t)(0);
+    } else {
+        return (size_t)(-1);
     }
 }
 
@@ -131,22 +138,19 @@ size_t consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMs
     }
 
     Skissm__One2oneMsgPayload *payload = NULL;
-    uint8_t *plain_text_data = NULL;
     size_t plain_text_data_len = -1;
     if (e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG) {
         payload = e2ee_msg->one2one_msg;
     }
     if (payload != NULL) {
+        uint8_t *plain_text_data = NULL;
         const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
         plain_text_data_len = decrypt_ratchet(cipher_suite, inbound_session->ratchet, inbound_session->associated_data, payload, &plain_text_data);
 
         // store sesson state
         get_skissm_plugin()->db_handler.store_session(inbound_session);
 
-        if (plain_text_data_len == (size_t)(-1)) {
-            ssm_notify_error(BAD_MESSAGE_DECRYPTION, "consume_e2ee_message_payload()");
-            goto complete;
-        } else {
+        if (plain_text_data != NULL && plain_text_data_len >0) {
             Skissm__Plaintext *plaintext = skissm__plaintext__unpack(NULL, plain_text_data_len, plain_text_data);
             if (plaintext != NULL) {
                 if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG) {
@@ -160,15 +164,14 @@ size_t consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMs
             } else {
                 ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_message_payload(), skissm__e2ee_plaintext__unpack() error");
             }
+            // release
+            free_mem((void **)&plain_text_data, plain_text_data_len);
+        } else {
+            ssm_notify_error(BAD_MESSAGE_DECRYPTION, "consume_e2ee_message_payload()");
         }
-
-        // release
-        free_mem((void **)&plain_text_data, plain_text_data_len);
     }
 
-complete:
     // release
-    skissm__e2ee_msg__free_unpacked(e2ee_msg, NULL);
     skissm__session__free_unpacked(inbound_session, NULL);
 
     // done
@@ -301,5 +304,5 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
     // notify
     ssm_notify_outbound_session_ready(outbound_session);
 
-    return (size_t)(0);
+    return result == (size_t)(0);
 }

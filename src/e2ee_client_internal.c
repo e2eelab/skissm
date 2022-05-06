@@ -116,10 +116,9 @@ size_t send_one2one_msg_internal(Skissm__Session *outbound_session, const uint8_
     Skissm__SendOne2oneMsgResponse *response = get_skissm_plugin()->proto_handler.send_one2one_msg(request);
     size_t result;
     if (response != NULL) {
-        consume_send_one2one_msg_response(outbound_session, response);
+        result = consume_send_one2one_msg_response(outbound_session, response);
         // release
         skissm__send_one2one_msg_response__free_unpacked(response, NULL);
-        result = (size_t)(0);
     } else {
         result = (size_t)(-1);
     }
