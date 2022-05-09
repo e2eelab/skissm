@@ -55,14 +55,18 @@ Skissm__RegisterUserRequest *produce_register_request(Skissm__Account *account) 
     return request;
 }
 
-void consume_register_response(Skissm__Account *account, Skissm__RegisterUserResponse *response) {
-    copy_address_from_address(&(account->address), response->address);
-    account->saved = true;
-    account->password = strdup(response->password);
-    // save to db
-    get_skissm_plugin()->db_handler.store_account(account);
-    switch_account(account->address);
-    ssm_notify_user_registered(account);
+bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserResponse *response) {
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        copy_address_from_address(&(account->address), response->address);
+        account->saved = true;
+        account->password = strdup(response->password);
+        // save to db
+        get_skissm_plugin()->db_handler.store_account(account);
+        ssm_notify_user_registered(account);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 Skissm__PublishSpkRequest *produce_publish_spk_request(Skissm__Account *account) {
@@ -82,13 +86,16 @@ Skissm__PublishSpkRequest *produce_publish_spk_request(Skissm__Account *account)
     return request;
 }
 
-void consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkResponse *response) {
-    if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+bool consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkResponse *response) {
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // save to db
         if (account->saved == true) {
             Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;
             get_skissm_plugin()->db_handler.update_signed_pre_key(account->account_id, signed_pre_key);
         }
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -115,13 +122,16 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
     return request;
 }
 
-void consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response) {
-    if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+bool consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response) {
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // save to db
         unsigned int i;
         for (i = 0; i < account->n_one_time_pre_keys; i++) {
             get_skissm_plugin()->db_handler.add_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]);
         }
+        return true;
+    } else {
+        return false;
     }
 }
 

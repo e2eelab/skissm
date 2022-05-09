@@ -30,9 +30,9 @@ extern "C" {
  *
  * @param from
  * @param to
- * @return size_t Return 0 for success
+ * @return Skissm__InviteResponse *
  */
-size_t get_pre_key_bundle_internal(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
+Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
 
 /**
  * @brief Send invite requesst to server.
@@ -40,9 +40,9 @@ size_t get_pre_key_bundle_internal(Skissm__E2eeAddress *from, Skissm__E2eeAddres
  * @param outbound_session
  * @param pre_shared_keys
  * @param pre_shared_keys_len
- * @return size_t Return 0 for success
+ * @return Skissm__InviteResponse *
  */
-size_t invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len);
+Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len);
 
 /**
  * @brief Send accept requesst to server.
@@ -51,26 +51,26 @@ size_t invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **
  * @param from
  * @param to
  * @param ciphertext_1
- * @return size_t Return 0 for success
+ * @return Skissm__AcceptResponse *
  */
-size_t accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1);
+Skissm__AcceptResponse *accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1);
 
 /**
  * @brief Send publish_spk request to server.
  *
  * @param account The account to be processed
- * @return size_t Return 0 for success
+ * @return Skissm__PublishSpkResponse *
  */
-size_t publish_spk_internal(Skissm__Account *account);
+Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account);
 
 /**
  * @brief Send supply_opks request to server.
  *
  * @param account
  * @param opks_num
- * @return size_t Return 0 for success
+ * @return Skissm__SupplyOpksResponse *
  */
-size_t supply_opks_internal(Skissm__Account *account, uint32_t opks_num);
+Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint32_t opks_num);
 
 /**
  * @brief Send one2one_msg request to server.
@@ -78,17 +78,17 @@ size_t supply_opks_internal(Skissm__Account *account, uint32_t opks_num);
  * @param outbound_session
  * @param plaintext_data
  * @param plaintext_data_len
- * @return size_t Return 0 for success
+ * @return Skissm__SendOne2oneMsgResponse *
  */
-size_t send_one2one_msg_internal(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len);
+Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len);
 
 /**
  * @brief Send consume_proto_msg request to server.
  *
  * @param msg_id
- * @return size_t Return 0 for success
+ * @return Skissm__ConsumeProtoMsgResponse *
  */
-size_t consume_proto_msg_internal(char *proto_msg_id);
+Skissm__ConsumeProtoMsgResponse *consume_proto_msg_internal(char *proto_msg_id);
 
 #ifdef __cplusplus
 }

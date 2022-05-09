@@ -35,7 +35,7 @@
 /** length of the ciphertext created by a PQC operation */
 #define CRYPTO_CIPHERTEXTBYTES 1039
 
-size_t pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
+Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
     // Verify the signature
@@ -43,13 +43,13 @@ size_t pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm_
     if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len) ||
         (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)) {
         ssm_notify_error(BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
-        return (size_t)(-1);
+        return NULL;
     }
     result = cipher_suite->verify(their_pre_key_bundle->signed_pre_key_public->signature.data, their_pre_key_bundle->identity_key_public->sign_public_key.data,
                                   their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len);
     if (result < 0) {
         ssm_notify_error(BAD_SIGNATURE, "pqc_new_outbound_session()");
-        return (size_t)(-1);
+        return NULL;
     }
 
     // Set the version
@@ -111,13 +111,13 @@ size_t pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm_
     // Send the invite request to the peer
     size_t pre_shared_keys_len = 3;
     ProtobufCBinaryData *pre_shared_keys[3] = {ciphertext_2, ciphertext_3, ciphertext_4};
-    invite_internal(outbound_session, pre_shared_keys, pre_shared_keys_len);
+    Skissm__InviteResponse *response = invite_internal(outbound_session, pre_shared_keys, pre_shared_keys_len);
 
     // release
     unset(secret, sizeof(secret));
 
     // done
-    return (size_t)(0);
+    return response;
 }
 
 size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *local_account, Skissm__InviteMsg *msg) {

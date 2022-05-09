@@ -50,42 +50,50 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(Skissm__E2eeA
     return request;
 }
 
-size_t consume_get_pre_key_bundle_response (
+Skissm__InviteResponse *consume_get_pre_key_bundle_response (
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     Skissm__GetPreKeyBundleResponse *response) {
-    Skissm__PreKeyBundle **their_pre_key_bundles = response->pre_key_bundles;
-    size_t n_pre_key_bundles = response->n_pre_key_bundles;
-    unsigned i;
-    for(i = 0; i < n_pre_key_bundles; i++) {
-        // find an account
-        Skissm__Account *account = NULL;
-        get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
-        if (account == NULL) {
-            ssm_notify_error(BAD_ACCOUNT, "consume_get_pre_key_bundle_response()");
-            return (size_t)(-1);
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        Skissm__PreKeyBundle **their_pre_key_bundles = response->pre_key_bundles;
+        size_t n_pre_key_bundles = response->n_pre_key_bundles;
+        unsigned i;
+        for (i = 0; i < n_pre_key_bundles; i++) {
+            // find an account
+            Skissm__Account *account = NULL;
+            get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
+            if (account == NULL) {
+                ssm_notify_error(BAD_ACCOUNT, "consume_get_pre_key_bundle_response()");
+                return NULL;
+            }
+
+            const char *e2ee_pack_id = their_pre_key_bundles[i]->e2ee_pack_id;
+            Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+            initialise_session(outbound_session, e2ee_pack_id, from, to);
+            copy_address_from_address(&(outbound_session->session_owner), from);
+
+            const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
+            Skissm__InviteResponse *invite_response = session_suite->new_outbound_session(outbound_session,
+                                                                                   account,their_pre_key_bundles[i]);
+            // release
+            skissm__account__free_unpacked(account, NULL);
+            skissm__session__free_unpacked(outbound_session, NULL);
+
+            // error check
+            if (invite_response != NULL) {
+                // return last invite response
+                if (i == (n_pre_key_bundles-1))
+                    return invite_response;
+                else
+                    skissm__invite_response__free_unpacked(invite_response, NULL);
+            } else {
+                ssm_notify_error(BAD_SESSION, "invite_response ()");
+                return NULL;
+            }
         }
-
-        const char *e2ee_pack_id = their_pre_key_bundles[i]->e2ee_pack_id;
-        Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
-        initialise_session(outbound_session, e2ee_pack_id, from, to);
-        copy_address_from_address(&(outbound_session->session_owner), from);
-
-        const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-        size_t result = session_suite->new_outbound_session(outbound_session, account, their_pre_key_bundles[i]);
-
-        // release
-        skissm__account__free_unpacked(account, NULL);
-        skissm__session__free_unpacked(outbound_session, NULL);
-
-        // error check
-        if (result != (size_t)(0)) {
-            ssm_notify_error(BAD_SESSION, "consume_get_pre_key_bundle_response_payload()");
-            return result;
-        }
+    } else {
+        return NULL;
     }
-
-    return (size_t)(0);
 }
 
 Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len) {
@@ -111,20 +119,20 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
     return request;
 }
 
-size_t consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response) {
-    if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+bool consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response) {
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // store sesson state
         get_skissm_plugin()->db_handler.store_session(outbound_session);
-        return (size_t)(0);
+        return true;
     } else {
-        return (size_t)(-1);
+        return false;
     }
 }
 
-size_t consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg) {
+bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg) {
     if (e2ee_msg->session_id == NULL) {
         ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_message_payload()");
-        return (size_t)(-1);
+        return false;
     }
 
     /* load the corresponding inbound session */
@@ -132,7 +140,7 @@ size_t consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMs
     get_skissm_plugin()->db_handler.load_inbound_session(e2ee_msg->session_id, e2ee_msg->to, &inbound_session);
     if (inbound_session == NULL) {
         ssm_notify_error(BAD_SESSION, "consume_e2ee_message_payload()");
-        return (size_t)(-1);
+        return false;
         /* delete the old inbound session if it exists */
         get_skissm_plugin()->db_handler.unload_session(e2ee_msg->to, e2ee_msg->from, e2ee_msg->to);
     }
@@ -175,7 +183,7 @@ size_t consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMs
     skissm__session__free_unpacked(inbound_session, NULL);
 
     // done
-    return plain_text_data_len;
+    return plain_text_data_len > 0;
 }
 
 Skissm__InviteRequest *produce_invite_request(
@@ -210,7 +218,11 @@ Skissm__InviteRequest *produce_invite_request(
     return reqest;
 }
 
-void consume_invite_response(Skissm__InviteResponse *response) {
+bool consume_invite_response(Skissm__InviteResponse *response) {
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK)
+        return true;
+    else
+        return false;
 }
 
 bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *msg) {
@@ -281,7 +293,12 @@ Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id, Skissm__
     return request;
 }
 
-void consume_accept_response(Skissm__AcceptResponse *response) {
+bool consume_accept_response(Skissm__AcceptResponse *response) {
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg) {

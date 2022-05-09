@@ -789,7 +789,7 @@ void load_signed_pre_key_pair(uint64_t account_id,
                              sqlite3_column_bytes(stmt, 2));
     copy_protobuf_from_array(&((*signed_pre_key)->signature), (uint8_t *)sqlite3_column_blob(stmt, 3),
                              sqlite3_column_bytes(stmt, 3));
-    (*signed_pre_key)->ttl = (uint64_t)sqlite3_column_int(stmt, 4);
+    (*signed_pre_key)->ttl = (uint64_t)sqlite3_column_int64(stmt, 4);
 
     // release
     sqlite_finalize(stmt);

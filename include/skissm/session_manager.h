@@ -41,9 +41,9 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(Skissm__E2eeA
  * @param from
  * @param to
  * @param response
- * @return size_t 0 for Succcess
+ * @return Skissm__InviteResponse *
  */
-size_t consume_get_pre_key_bundle_response (
+Skissm__InviteResponse *consume_get_pre_key_bundle_response (
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     Skissm__GetPreKeyBundleResponse *response);
@@ -62,18 +62,20 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
  *
  * @param outbound_session
  * @param response
- * @return size_t Success or not
+ * @return true
+ * @return false
  */
-size_t consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response);
+bool consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response);
 
 /**
  * @brief Process a received Skissm__E2eeMsg message from server.
  *
  * @param receiver_address
  * @param e2ee_msg
- * @return size_t Success or not
+ * @return true
+ * @return false
  */
-size_t consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg);
+bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg);
 
 /**
  * @brief Create a Skissm__InviteRequest message to be sent to server.
@@ -90,13 +92,17 @@ Skissm__InviteRequest *produce_invite_request(
  * @brief Process an incoming InviteResponse message.
  *
  * @param response
+ * @return true
+ * @return false
  */
-void consume_invite_response(Skissm__InviteResponse *response);
+bool consume_invite_response(Skissm__InviteResponse *response);
 
 /**
  * @brief Process an incoming E2eeAddress message.
  *
  * @param response
+ * @return true
+ * @return false
  */
 bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *msg);
 
@@ -118,13 +124,17 @@ Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id,
  * @brief Process an incoming AcceptResponse message.
  *
  * @param response
+ * @return true
+ * @return false
  */
-void consume_accept_response(Skissm__AcceptResponse *response);
+bool consume_accept_response(Skissm__AcceptResponse *response);
 
 /**
  * @brief Process an incoming AcceptMs message.
  *
  * @param response
+ * @return true
+ * @return false
  */
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg);
 

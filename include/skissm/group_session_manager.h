@@ -47,9 +47,11 @@ Skissm__CreateGroupRequest *produce_create_group_request(Skissm__E2eeAddress *se
  * @param group_name
  * @param group_members
  * @param group_members_num
- * @param create_group_response_payload
+ * @param response
+ * @return true
+ * @return false
  */
-void consume_create_group_response(
+bool consume_create_group_response(
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *sender_address,
     const char *group_name,
@@ -80,8 +82,9 @@ Skissm__GetGroupRequest *produce_get_group_request(Skissm__E2eeAddress *group_ad
  * @brief Process an incoming GetGroupResponse message.
  *
  * @param response
+ *
  */
-void consume_get_group_response(Skissm__GetGroupResponse *response);
+bool consume_get_group_response(Skissm__GetGroupResponse *response);
 
 /**
  * @brief Create a AddGroupMembersRequest message to be sent to server.
@@ -98,8 +101,10 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(Skissm__GroupS
  *
  * @param outbound_group_session
  * @param response
+ * @return true
+ * @return false
  */
-void consume_add_group_members_response(
+bool consume_add_group_members_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__AddGroupMembersResponse *response);
 
@@ -128,8 +133,10 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(Skissm__
  *
  * @param outbound_group_session
  * @param response
+ * @return true
+ * @return false
  */
-void consume_remove_group_members_response(
+bool consume_remove_group_members_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__RemoveGroupMembersResponse *response);
 
@@ -158,8 +165,10 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(Skissm__GroupSession
  *
  * @param outbound_group_session
  * @param response
+ * @return true
+ * @return false
  */
-void consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session, Skissm__SendGroupMsgResponse *response);
+bool consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session, Skissm__SendGroupMsgResponse *response);
 
 /**
  * @brief Process an incoming E2eeMsg message.

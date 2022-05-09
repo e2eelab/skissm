@@ -68,7 +68,7 @@ void create_group_message_key(
 static void pack_group_pre_key(Skissm__GroupPreKeyPayload *group_pre_key_payload, uint8_t **group_pre_key_plaintext_data, size_t *group_pre_key_plaintext_data_len) {
     Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
     skissm__plaintext__init(plaintext);
-    plaintext->version = E2EE_PLAINTEXT_VERSION;
+    plaintext->version = strdup(E2EE_PLAINTEXT_VERSION);
     plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY;
     plaintext->group_pre_key = group_pre_key_payload;
 

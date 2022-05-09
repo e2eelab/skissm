@@ -34,9 +34,9 @@ typedef struct session_suite_t {
      * @param session The outbound session
      * @param local_account Our account
      * @param their_pre_key_bundle Their pre-key bundle
-     * @return Success or not
+     * @return Skissm__InviteResponse *
      */
-    size_t (*new_outbound_session)(
+    Skissm__InviteResponse * (*new_outbound_session)(
         Skissm__Session *,
         const Skissm__Account *,
         Skissm__PreKeyBundle *
@@ -97,7 +97,7 @@ void pack_common_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_
 Skissm__Session *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
 
 /* ECC-related */
-size_t crypto_curve25519_new_outbound_session(
+Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     Skissm__Session *session,
     const Skissm__Account *local_account,
     Skissm__PreKeyBundle *their_pre_key_bundle
@@ -115,7 +115,7 @@ size_t crypto_curve25519_complete_outbound_session(
 );
 
 /* PQC-related */
-size_t pqc_new_outbound_session(
+Skissm__InviteResponse *pqc_new_outbound_session(
     Skissm__Session *session,
     const Skissm__Account *local_account,
     Skissm__PreKeyBundle *their_pre_key_bundle

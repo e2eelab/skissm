@@ -32,7 +32,7 @@
 /** length of the shared secret created by a Curve25519 ECDH operation */
 #define CURVE25519_SHARED_SECRET_LENGTH 32
 
-size_t crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
+Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
     // Verify the signature
@@ -107,7 +107,7 @@ size_t crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session,
 
     // Send the invite request to the peer
     ProtobufCBinaryData *pre_shared_keys[1] = {&(outbound_session->alice_ephemeral_key)};
-    invite_internal(outbound_session, pre_shared_keys, 1);
+    Skissm__InviteResponse *response = invite_internal(outbound_session, pre_shared_keys, 1);
 
     // release
     free_protobuf(&(my_ephemeral_key.private_key));
@@ -119,7 +119,7 @@ size_t crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session,
     unset(secret, sizeof(secret));
 
     // done
-    return (size_t)(0);
+    return response;
 }
 
 size_t crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *local_account, Skissm__InviteMsg *msg) {

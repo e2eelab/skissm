@@ -39,8 +39,10 @@ Skissm__RegisterUserRequest *produce_register_request(Skissm__Account *account);
  *
  * @param account
  * @param payload
+ * @return true
+ * @return false
  */
-void consume_register_response(Skissm__Account *account, Skissm__RegisterUserResponse *payload);
+bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserResponse *payload);
 
 /**
  * @brief Create a PublishSpkRequest message to be sent to server.
@@ -55,8 +57,10 @@ Skissm__PublishSpkRequest *produce_publish_spk_request(Skissm__Account *account)
  *
  * @param account
  * @param response
+ * @return true
+ * @return false
  */
-void consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkResponse *response);
+bool consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkResponse *response);
 
 /**
  * @brief Create a SupplyOpksRequest message to be sent to server.
@@ -72,8 +76,10 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
  *
  * @param account
  * @param response
+ * @return true
+ * @return false
  */
-void consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response);
+bool consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response);
 
 /**
  * @brief Process an incoming SupplyOpksMsg message.
