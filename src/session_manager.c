@@ -158,7 +158,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
         // store sesson state
         get_skissm_plugin()->db_handler.store_session(inbound_session);
 
-        if (plain_text_data != NULL && plain_text_data_len >0) {
+        if (plain_text_data != NULL && plain_text_data_len != (size_t)(-1)) {
             Skissm__Plaintext *plaintext = skissm__plaintext__unpack(NULL, plain_text_data_len, plain_text_data);
             if (plaintext != NULL) {
                 if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG) {

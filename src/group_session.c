@@ -78,6 +78,7 @@ static void pack_group_pre_key(Skissm__GroupPreKeyPayload *group_pre_key_payload
     skissm__plaintext__pack(plaintext, *group_pre_key_plaintext_data);
 
     // release
+    // group_pre_key_payload will also be released
     skissm__plaintext__free_unpacked(plaintext, NULL);
 }
 
@@ -89,7 +90,7 @@ static size_t pack_group_pre_key_plaintext(
     Skissm__GroupPreKeyPayload *group_pre_key_payload = (Skissm__GroupPreKeyPayload *) malloc(sizeof(Skissm__GroupPreKeyPayload));
     skissm__group_pre_key_payload__init(group_pre_key_payload);
 
-    group_pre_key_payload->version = E2EE_GROUP_PRE_KEY_VERSION;
+    group_pre_key_payload->version = strdup(E2EE_GROUP_PRE_KEY_VERSION);
 
     group_pre_key_payload->session_id = strdup(outbound_group_session->session_id);
 
@@ -114,8 +115,9 @@ static size_t pack_group_pre_key_plaintext(
     );
 
     // release
-    skissm__group_pre_key_payload__free_unpacked(group_pre_key_payload, NULL);
+    // group_pre_key_payload is released in pack_group_pre_key()
 
+    // done
     return group_pre_key_plaintext_data_len;
 }
 
@@ -134,6 +136,7 @@ void create_outbound_group_session(
     skissm__group_session__init(outbound_group_session);
 
     outbound_group_session->version = strdup(E2EE_PROTOCOL_VERSION);
+    outbound_group_session->e2ee_pack_id = strdup(e2ee_pack_id);
 
     copy_address_from_address(&(outbound_group_session->session_owner), user_address);
     copy_address_from_address(&(outbound_group_session->group_address), group_address);
@@ -170,6 +173,7 @@ void create_outbound_group_session(
             Skissm__PeerUser *peer_user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
             skissm__peer_user__init(peer_user);
             peer_user->user_id = strdup(outbound_group_session->group_members[i]->user_id);
+            group_member_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
             group_member_address->user = peer_user;
             Skissm__Session *outbound_session = get_outbound_session(outbound_group_session->session_owner, group_member_address);
             if (outbound_session != NULL) {
@@ -196,7 +200,8 @@ void create_inbound_group_session(
     Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(inbound_group_session);
 
-    inbound_group_session->version = group_pre_key_payload->version;
+    inbound_group_session->version = strdup(group_pre_key_payload->version);
+    inbound_group_session->e2ee_pack_id = strdup(e2ee_pack_id);
     copy_address_from_address(&(inbound_group_session->session_owner), user_address);
     inbound_group_session->session_id = strdup(group_pre_key_payload->session_id);
 

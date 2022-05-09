@@ -175,6 +175,10 @@ Skissm__SendGroupMsgResponse *send_group_msg(Skissm__E2eeAddress *sender_address
     // Load the outbound group session
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
+    if (outbound_group_session == NULL) {
+        // outbound_group_session is not exist
+        return NULL;
+    }
     Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, plaintext_data, plaintext_data_len);
     Skissm__SendGroupMsgResponse *response = get_skissm_plugin()->proto_handler.send_group_msg(request);
     consume_send_group_msg_response(outbound_group_session, response);
@@ -227,6 +231,8 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
     Skissm__ConsumeProtoMsgResponse *response = NULL;
     if (consumed) {
         response = consume_proto_msg_internal(proto_msg->proto_msg_id);
+    } else {
+        response = NULL;
     }
 
     // release
