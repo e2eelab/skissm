@@ -133,6 +133,17 @@ void copy_key_pair_from_key_pair(
 );
 
 /**
+ * @brief Copy Skissm__IdentityKey from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_ik_from_ik(
+    Skissm__IdentityKey **dest,
+    Skissm__IdentityKey *src
+);
+
+/**
  * @brief Copy Skissm__SignedPreKey from src to dest.
  *
  * @param dest
@@ -165,6 +176,39 @@ void copy_opks_from_opks(
 void copy_account_from_account(
     Skissm__Account **dest,
     Skissm__Account *src
+);
+
+/**
+ * @brief Copy Skissm__IdentityKeyPublic from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_ik_public_from_ik_public(
+    Skissm__IdentityKeyPublic **dest,
+    Skissm__IdentityKeyPublic *src
+);
+
+/**
+ * @brief Copy Skissm__SignedPreKeyPublic from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_spk_public_from_spk_public(
+    Skissm__SignedPreKeyPublic **dest,
+    Skissm__SignedPreKeyPublic *src
+);
+
+/**
+ * @brief Copy Skissm__OneTimePreKeyPublic from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_opk_public_from_opk_public(
+    Skissm__OneTimePreKeyPublic **dest,
+    Skissm__OneTimePreKeyPublic *src
 );
 
 /**

@@ -18,6 +18,8 @@
  */
 #include "test_server.h"
 
+#include "skissm/mem_util.h"
+
 #include "test_util.h"
 
 typedef struct user_data{
@@ -150,11 +152,54 @@ Skissm__RegisterUserResponse *test_register_user(Skissm__RegisterUserRequest *re
 }
 
 Skissm__GetPreKeyBundleResponse *test_get_pre_key_bundle(Skissm__GetPreKeyBundleRequest *request) {
-    size_t request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(request);
-    uint8_t *request_data = (uint8_t *)malloc(request_data_len);
-    skissm__get_pre_key_bundle_request__pack(request, request_data);
-
     Skissm__GetPreKeyBundleResponse *response = NULL;
+
+    // uint8_t user_data_find = 0;
+    // while (user_data_find < user_data_set_insert_pos)
+    // {
+    //     if ((user_data_set[user_data_find].address) && (request->peer_address)
+    //         && compare_address(user_data_set[user_data_find].address, request->peer_address)
+    //     ) {
+    //         break;
+    //     }
+    //     user_data_find++;
+    // }
+
+    // // Skissm__ResponseData *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
+    // // skissm__response_data__init(response_data);
+
+    // // if (user_data_find == user_data_set_insert_pos){
+    // //     response_data->code = Internal_Server_Error;
+    // //     goto complete;
+    // // }
+
+    // get_pre_key_bundle_response_payload->pre_key_bundle = (Skissm__PreKeyBundle *) malloc(sizeof(Skissm__PreKeyBundle));
+    // skissm__pre_key_bundle__init(get_pre_key_bundle_response_payload->pre_key_bundle);
+
+    // copy_address_from_address(&(get_pre_key_bundle_response_payload->pre_key_bundle->peer_address), request->peer_address);
+    // get_pre_key_bundle_response_payload->pre_key_bundle->identity_key_public = (Skissm__IdentityKeyPublic *) malloc(sizeof(Skissm__IdentityKeyPublic));
+    // skissm__identity_key_public__init(get_pre_key_bundle_response_payload->pre_key_bundle->identity_key_public);
+    // copy_protobuf_from_protobuf(&(get_pre_key_bundle_response_payload->pre_key_bundle->identity_key_public->asym_public_key), &(user_data_set[user_data_find].pre_key->identity_key_public->asym_public_key));
+    // copy_protobuf_from_protobuf(&(get_pre_key_bundle_response_payload->pre_key_bundle->identity_key_public->sign_public_key), &(user_data_set[user_data_find].pre_key->identity_key_public->sign_public_key));
+    // get_pre_key_bundle_response_payload->pre_key_bundle->signed_pre_key_public = (Skissm__SignedPreKeyPublic *) malloc(sizeof(Skissm__SignedPreKeyPublic));
+    // skissm__signed_pre_key_public__init(get_pre_key_bundle_response_payload->pre_key_bundle->signed_pre_key_public);
+    // get_pre_key_bundle_response_payload->pre_key_bundle->signed_pre_key_public->spk_id = user_data_set[user_data_find].pre_key->signed_pre_key_public->spk_id;
+    // copy_protobuf_from_protobuf(&(get_pre_key_bundle_response_payload->pre_key_bundle->signed_pre_key_public->public_key), &(user_data_set[user_data_find].pre_key->signed_pre_key_public->public_key));
+    // copy_protobuf_from_protobuf(&(get_pre_key_bundle_response_payload->pre_key_bundle->signed_pre_key_public->signature), &(user_data_set[user_data_find].pre_key->signed_pre_key_public->signature));
+    // uint8_t i;
+    // for (i = 0; i < user_data_set[user_data_find].pre_key->n_one_time_pre_keys; i++){
+    //     if (user_data_set[user_data_find].pre_key->one_time_pre_keys[i]){
+    //         get_pre_key_bundle_response_payload->pre_key_bundle->one_time_pre_key_public = (Skissm__OneTimePreKeyPublic *) malloc(sizeof(Skissm__OneTimePreKeyPublic));
+    //         skissm__one_time_pre_key_public__init(get_pre_key_bundle_response_payload->pre_key_bundle->one_time_pre_key_public);
+    //         get_pre_key_bundle_response_payload->pre_key_bundle->one_time_pre_key_public->opk_id = user_data_set[user_data_find].pre_key->one_time_pre_keys[i]->opk_id;
+    //         copy_protobuf_from_protobuf(&(get_pre_key_bundle_response_payload->pre_key_bundle->one_time_pre_key_public->public_key), &(user_data_set[user_data_find].pre_key->one_time_pre_keys[i]->public_key));
+    //         break;
+    //     }
+    // }
+    // /* release the one-time pre-key */
+    // skissm__one_time_pre_key_public__free_unpacked(user_data_set[user_data_find].pre_key->one_time_pre_keys[i], NULL);
+    // user_data_set[user_data_find].pre_key->one_time_pre_keys[i] = NULL;
+
     return response;
 }
 
