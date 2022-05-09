@@ -109,6 +109,11 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *
     ProtobufCBinaryData *pre_shared_keys[1] = {&(outbound_session->alice_ephemeral_key)};
     Skissm__InviteResponse *response = invite_internal(outbound_session, pre_shared_keys, 1);
 
+    if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        // unload outbound_session to enable retry
+        get_skissm_plugin()->db_handler.unload_session(outbound_session->session_owner, outbound_session->from, outbound_session->to);
+    }
+
     // release
     free_protobuf(&(my_ephemeral_key.private_key));
     free_protobuf(&(my_ephemeral_key.public_key));
