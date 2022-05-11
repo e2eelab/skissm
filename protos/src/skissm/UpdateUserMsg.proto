@@ -21,21 +21,12 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "E2eeAddressProto";
+option java_outer_classname = "UpdateUserMsgProto";
 
-message PeerUser {
-    string user_id = 1;
-    string device_id = 2;
-}
+import "skissm/E2eeAddress.proto";
 
-message PeerGroup {
-    string group_id = 1;
-}
-
-message E2eeAddress {
-    string domain = 1;
-    oneof peer {
-        PeerUser user = 2;
-        PeerGroup group = 3;
-    }
+message UpdateUserMsg {
+    skissm.E2eeAddress user_address = 1;
+    string user_name = 2;
+    string user_avatar = 3;
 }

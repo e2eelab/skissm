@@ -165,7 +165,7 @@ void create_outbound_group_session(
     size_t group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext_data, session_id);
 
     /* send the group pre-key message to the members in the group */
-    size_t i;
+    unsigned i, j;
     for (i = 0; i < outbound_group_session->n_group_members; i++){
         if (!safe_strcmp(outbound_group_session->session_owner->user->user_id, outbound_group_session->group_members[i]->user_id)) {
             Skissm__E2eeAddress *group_member_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
@@ -175,14 +175,32 @@ void create_outbound_group_session(
             peer_user->user_id = strdup(outbound_group_session->group_members[i]->user_id);
             group_member_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
             group_member_address->user = peer_user;
-            Skissm__Session *outbound_session = get_outbound_session(outbound_group_session->session_owner, group_member_address);
-            if (outbound_session != NULL) {
-                send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
-            } else{
-                get_skissm_plugin()->db_handler.store_group_pre_key(group_member_address, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
-                // send Invite
-                invite(outbound_group_session->session_owner, group_member_address);
+            Skissm__Session **outbound_sessions = NULL;
+            size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(outbound_group_session->session_owner, group_member_address->user->user_id, &outbound_sessions);
+
+            if (outbound_sessions_num > (size_t)(0) && outbound_sessions != NULL) {
+                for(j = 0; j < outbound_sessions_num; j++) {
+                    Skissm__Session *outbound_session = outbound_sessions[i];
+                    if (outbound_session != NULL) {
+                        send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
+                    } else{
+                        get_skissm_plugin()->db_handler.store_group_pre_key(group_member_address, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
+                        // send Invite
+                        Skissm__InviteResponse *response = invite(outbound_group_session->session_owner, group_member_address);
+                        // release
+                        if (response != NULL)
+                            skissm__invite_response__free_unpacked(response, NULL);
+                        else {
+                            // what if response error?
+                        }
+                    }
+                    // release outbound_session
+                    skissm__session__free_unpacked(outbound_session, NULL);
+                }
+                // release outbound_sessions
+                free_mem((void **)(&outbound_sessions), outbound_sessions_num);
             }
+
             // release
             skissm__e2ee_address__free_unpacked(group_member_address, NULL);
         }

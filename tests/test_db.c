@@ -1508,6 +1508,14 @@ void load_outbound_session(Skissm__E2eeAddress *owner,
     return;
 }
 
+
+size_t load_outbound_sessions(Skissm__E2eeAddress *owner,
+    const char *to_user_id,
+    Skissm__Session ***outbound_sessions) {
+    // TODO
+    return (size_t)(0);
+}
+
 void store_session(Skissm__Session *session) {
     // pack
     char *session_id = session->session_id;

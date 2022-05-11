@@ -87,15 +87,6 @@ void initialise_session(
  */
 void pack_common_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **common_plaintext_data, size_t *common_plaintext_data_len);
 
-/**
- * @brief Get the outbound session.
- *
- * @param from
- * @param to
- * @return Skissm__Session*
- */
-Skissm__Session *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
-
 /* ECC-related */
 Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     Skissm__Session *session,

@@ -495,7 +495,7 @@ char *mock_domain_str() {
     return domain_str;
 }
 
-void mock_random_address(Skissm__E2eeAddress **address) {
+void mock_random_user_address(Skissm__E2eeAddress **address) {
     *address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(*address);
     (*address)->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
@@ -504,6 +504,15 @@ void mock_random_address(Skissm__E2eeAddress **address) {
     (*address)->domain = mock_domain_str();
     (*address)->user->user_id = generate_uuid_str();
     (*address)->user->device_id = generate_uuid_str();
+}
+
+void mock_random_group_address(Skissm__E2eeAddress **address) {
+    *address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
+    skissm__e2ee_address__init(*address);
+    (*address)->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
+    skissm__peer_user__init((*address)->group);
+    (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
+    (*address)->group->group_id = generate_uuid_str();
 }
 
 void mock_keypair(Skissm__KeyPair **keypair, const char *public_key, const char *private_key) {

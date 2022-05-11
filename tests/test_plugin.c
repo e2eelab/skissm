@@ -87,6 +87,7 @@ struct skissm_plugin_t ssm_plugin = {
         // session
         load_inbound_session,
         load_outbound_session,
+        load_outbound_sessions,
         store_session,
         unload_session,
         load_outbound_group_session,

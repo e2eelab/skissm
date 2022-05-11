@@ -40,13 +40,13 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *
     if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len) ||
         (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)) {
         ssm_notify_error(BAD_PRE_KEY_BUNDLE, "crypto_curve25519_new_outbound_session()");
-        return (size_t)(-1);
+        return NULL;
     }
     result = cipher_suite->verify(their_pre_key_bundle->signed_pre_key_public->signature.data, their_pre_key_bundle->identity_key_public->sign_public_key.data,
                                   their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len);
     if (result < 0) {
         ssm_notify_error(BAD_SIGNATURE, "crypto_curve25519_new_outbound_session()");
-        return (size_t)(-1);
+        return NULL;
     }
 
     // Set the version

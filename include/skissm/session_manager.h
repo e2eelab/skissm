@@ -77,6 +77,17 @@ bool consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm
  */
 bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg);
 
+
+/**
+ * @brief Process an incoming NewUserDeviceMsg message.
+ *
+ * @param receiver_address
+ * @param msg
+ * @return true
+ * @return false
+ */
+bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg);
+
 /**
  * @brief Create a Skissm__InviteRequest message to be sent to server.
  *

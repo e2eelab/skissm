@@ -150,11 +150,11 @@ static void test_basic_session(){
     Skissm__Session *outbound_session;
 
     // Alice invites Bob to create a session
-    size_t success = invite(account_data[0]->address, account_data[1]->address);
-    assert (success == 0); // waiting Accept
+    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address);
+    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     // Load the outbound session
-    outbound_session = get_outbound_session(account_data[0]->address, account_data[1]->address);
+    get_skissm_plugin()->db_handler.load_outbound_session(account_data[0]->address, account_data[1]->address, &outbound_session);
     assert(outbound_session != NULL);
     assert(outbound_session->responded == true);
 
@@ -180,11 +180,11 @@ static void test_interaction(){
     Skissm__Session *outbound_session_a, *outbound_session_b;
 
     // Alice invites Bob to create a session
-    size_t success = invite(account_data[0]->address, account_data[1]->address);
-    assert (success == 0); // waiting Accept
+    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address);
+    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     // Alice loads the outbound session
-    outbound_session_a = get_outbound_session(account_data[0]->address, account_data[1]->address);
+    get_skissm_plugin()->db_handler.load_outbound_session(account_data[0]->address, account_data[1]->address, &outbound_session_a);
     assert(outbound_session_a != NULL);
     assert(outbound_session_a->responded == true);
 
@@ -194,11 +194,11 @@ static void test_interaction(){
     test_encryption(outbound_session_a, plaintext, plaintext_len);
 
     // Bob invites Alice to create a session
-    size_t success1 = invite(account_data[1]->address, account_data[0]->address);
-    assert (success1 == 0); // waiting Accept
+    Skissm__InviteResponse *response1 = invite(account_data[1]->address, account_data[0]->address);
+    assert(response1 != NULL && response1->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     // Bob loads the outbound session
-    outbound_session_b = get_outbound_session(account_data[1]->address, account_data[0]->address);
+    get_skissm_plugin()->db_handler.load_outbound_session(account_data[1]->address, account_data[0]->address, &outbound_session_b);
     assert(outbound_session_b != NULL);
     assert(outbound_session_b->responded == true);
 
@@ -225,11 +225,11 @@ static void test_continual_messages(){
     Skissm__Session *outbound_session;
 
     // Alice invites Bob to create a session
-    size_t success = invite(account_data[0]->address, account_data[1]->address);
-    assert (success == 0); // waiting Accept
+    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address);
+    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accep
 
     // Load the outbound session
-    outbound_session = get_outbound_session(account_data[0]->address, account_data[1]->address);
+    get_skissm_plugin()->db_handler.load_outbound_session(account_data[0]->address, account_data[1]->address, &outbound_session);
     assert(outbound_session != NULL);
     assert(outbound_session->responded == true);
 

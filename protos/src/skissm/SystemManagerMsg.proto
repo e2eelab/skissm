@@ -16,15 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 syntax = "proto3";
 
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "HeartbeatMsgProto";
+option java_outer_classname = "SystemManagerMsgProto";
 
-message HeartbeatMsg {
-    string hostname = 1;
-    int64 server_t = 2;
+message SystemManagerMsg {
+  string system_notif_id = 1;
+  repeated string args = 2;
 }

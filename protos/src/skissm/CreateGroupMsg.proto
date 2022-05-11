@@ -29,7 +29,7 @@ import "skissm/GroupMember.proto";
 message CreateGroupMsg {
     string e2ee_pack_id = 1;
     skissm.E2eeAddress sender_address = 2;
-    repeated skissm.GroupMember group_members = 3;
-    string group_name = 4;
-    skissm.E2eeAddress group_address = 5;
+    string group_name = 3;
+    skissm.E2eeAddress group_address = 4;
+    repeated skissm.GroupMember group_members = 5;
 }

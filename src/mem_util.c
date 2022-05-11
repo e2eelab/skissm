@@ -168,14 +168,14 @@ void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src) {
 
 void copy_ik_public_from_ik_public(Skissm__IdentityKeyPublic **dest, Skissm__IdentityKeyPublic *src){
     *dest = (Skissm__IdentityKeyPublic *)malloc(sizeof(Skissm__IdentityKeyPublic));
-    skissm__identity_key_public__init(dest);
+    skissm__identity_key_public__init(*dest);
     copy_protobuf_from_protobuf(&((*dest)->asym_public_key), &(src->asym_public_key));
     copy_protobuf_from_protobuf(&((*dest)->sign_public_key), &(src->sign_public_key));
 }
 
 void copy_spk_public_from_spk_public(Skissm__SignedPreKeyPublic **dest, Skissm__SignedPreKeyPublic *src){
     *dest = (Skissm__SignedPreKeyPublic *)malloc(sizeof(Skissm__SignedPreKeyPublic));
-    skissm__signed_pre_key_public__init(dest);
+    skissm__signed_pre_key_public__init(*dest);
     (*dest)->spk_id = src->spk_id;
     copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
     copy_protobuf_from_protobuf(&((*dest)->signature), &(src->signature));
@@ -183,7 +183,7 @@ void copy_spk_public_from_spk_public(Skissm__SignedPreKeyPublic **dest, Skissm__
 
 void copy_opk_public_from_opk_public(Skissm__OneTimePreKeyPublic **dest, Skissm__OneTimePreKeyPublic *src){
     *dest = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
-    skissm__one_time_pre_key_public__init(dest);
+    skissm__one_time_pre_key_public__init(*dest);
     (*dest)->opk_id = src->opk_id;
     copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
 }

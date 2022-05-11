@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <inttypes.h>
 
 #include "skissm/account.h"
 #include "skissm/cipher.h"
@@ -73,9 +74,9 @@ static void register_account_test(uint64_t account_id) {
     verify_one_time_pre_keys(account, 180);
 
     // store account
-    mock_random_address(&account->address);
+    mock_random_user_address(&account->address);
     get_skissm_plugin()->db_handler.store_account(account);
-    printf("stored account_id %llu\n", account->account_id);
+    printf("stored account_id %" PRIu64 "\n", account->account_id);
 
     // load account
     Skissm__Account *loaded_account = NULL;
@@ -114,7 +115,7 @@ static void load_accounts_test(uint64_t num) {
         free_mem((void **)(&accounts_data[i]), accounts_data_len[i]);
         assert(unpacked_account->account_id == (i+1));
         assert(is_equal_account(accounts[i], unpacked_account));
-        printf("pack/unpack verified: account_id %llu\n", accounts[i]->account_id);
+        printf("pack/unpack verified: account_id %" PRIu64 "\n", accounts[i]->account_id);
     }
     free_mem((void **)(&accounts_data_len), accounts_num);
     free_mem((void **)(&accounts_data), accounts_num);

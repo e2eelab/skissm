@@ -71,10 +71,13 @@ void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **acc
 size_t load_accounts(Skissm__Account ***accounts);
 void load_inbound_session(char *session_id,
                           Skissm__E2eeAddress *owner,
-                          Skissm__Session **session);
+                          Skissm__Session **inbound_session);
 void load_outbound_session(Skissm__E2eeAddress *owner,
                            Skissm__E2eeAddress *to,
-                           Skissm__Session **session);
+                           Skissm__Session **outbound_session);
+size_t load_outbound_sessions(Skissm__E2eeAddress *owner,
+                                  const char *to_user_id,
+                                  Skissm__Session ***outbound_sessions);
 void store_session(Skissm__Session *session);
 void unload_session(
     Skissm__E2eeAddress *owner,

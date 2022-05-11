@@ -63,40 +63,65 @@ Skissm__RegisterUserResponse *register_user(uint64_t account_id,
 }
 
 Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
-    Skissm__Session *outbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_session(from, to, &outbound_session);
-    if (outbound_session == NULL) {
+    Skissm__Session **outbound_sessions = NULL;
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to->user->user_id, &outbound_sessions);
+    if (outbound_sessions_num == (size_t)(0)) {
         return get_pre_key_bundle_internal(from, to);
     } else {
-        if (outbound_session->responded) {
-            // outbound session is already responded and ready to use
-            return NULL;
-        } else {
-            // outbound session is wait for responding
-            return NULL;
+        // release
+        unsigned i;
+        for(i = 0; i < outbound_sessions_num; i++) {
+            skissm__session__free_unpacked(outbound_sessions[i], NULL);
         }
+        free_mem((void **)(&outbound_sessions), outbound_sessions_num);
+        return NULL;
     }
 }
 
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, const uint8_t *plaintext_data, size_t plaintext_data_len) {
-    Skissm__Session *outbound_session = get_outbound_session(from, to);
-    if (outbound_session == NULL || outbound_session->responded == false) {
+    Skissm__Session **outbound_sessions = NULL;
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to->user->user_id, &outbound_sessions);
+    if (outbound_sessions_num <= (size_t)(0) || outbound_sessions == NULL) {
         ssm_notify_error(BAD_SESSION, "send_one2one_msg() outbound session is not responded");
         return NULL;
     }
-    // pack common plaintext before sending it
-    uint8_t *common_plaintext_data = NULL;
-    size_t common_plaintext_data_len;
-    pack_common_plaintext(plaintext_data, plaintext_data_len, &common_plaintext_data, &common_plaintext_data_len);
+    unsigned i;
+    for(i=0; i < outbound_sessions_num; i++) {
+        Skissm__Session *outbound_session = outbound_sessions[i];
+        if (outbound_session->responded == false) {
+            // skip non-responded session
+            continue;
+        }
+        // pack common plaintext before sending it
+        uint8_t *common_plaintext_data = NULL;
+        size_t common_plaintext_data_len;
+        pack_common_plaintext(plaintext_data, plaintext_data_len, &common_plaintext_data, &common_plaintext_data_len);
 
-    // send message to server
-    Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
+        // send message to server
+        Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
+
+        // release
+        free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+        skissm__session__free_unpacked(outbound_session, NULL);
+
+        // done
+        if (i == (outbound_sessions_num - 1)) {
+            free_mem((void **)(&outbound_sessions), outbound_sessions_num);
+            return response;
+        } else {
+            if (response != NULL)
+                skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+            else {
+                // what if response error?
+            }
+        }
+    }
 
     // release
-    free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+    free_mem((void **)(&outbound_sessions), outbound_sessions_num);
 
-    // done
-    return response;
+    // done;
+    return NULL;
 }
 
 Skissm__CreateGroupResponse *create_group(Skissm__E2eeAddress *sender_address, const char *group_name, Skissm__GroupMember **group_members, size_t group_members_num) {
@@ -197,14 +222,17 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
 
     bool consumed = false;
     switch(proto_msg->payload_case) {
+        case SKISSM__PROTO_MSG__PAYLOAD_SUPPLY_OPKS_MSG:
+            consumed = consume_supply_opks_msg(receiver_address, proto_msg->supply_opks_msg);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_NEW_USER_DEVICE_MSG:
+            consumed = consume_new_user_device_msg(receiver_address, proto_msg->new_user_device_msg);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG:
+            consumed = consume_invite_msg(receiver_address, proto_msg->invite_msg);
+            break;
         case SKISSM__PROTO_MSG__PAYLOAD_ACCEPT_MSG:
             consumed = consume_accept_msg(receiver_address, proto_msg->accept_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBERS_MSG:
-            consumed = consume_add_group_members_msg(receiver_address, proto_msg->add_group_members_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_CREATE_GROUP_MSG:
-            consumed = consume_create_group_msg(receiver_address, proto_msg->create_group_msg);
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG:
             if (proto_msg->e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG)
@@ -212,14 +240,14 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             else if (proto_msg->e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_GROUP_MSG)
                 consumed = consume_group_msg(receiver_address, proto_msg->e2ee_msg);
             break;
-        case SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG:
-            consumed = consume_invite_msg(receiver_address, proto_msg->invite_msg);
+        case SKISSM__PROTO_MSG__PAYLOAD_CREATE_GROUP_MSG:
+            consumed = consume_create_group_msg(receiver_address, proto_msg->create_group_msg);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBERS_MSG:
+            consumed = consume_add_group_members_msg(receiver_address, proto_msg->add_group_members_msg);
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_GROUP_MEMBERS_MSG:
             consumed = consume_remove_group_members_msg(receiver_address, proto_msg->remove_group_members_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_SUPPLY_OPKS_MSG:
-            consumed = consume_supply_opks_msg(receiver_address, proto_msg->supply_opks_msg);
             break;
         default:
             // consume the messag that is arriving here

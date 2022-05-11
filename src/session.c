@@ -57,19 +57,3 @@ void pack_common_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_
     // release
     skissm__plaintext__free_unpacked(plaintext, NULL);
 }
-
-Skissm__Session *get_outbound_session(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
-    Skissm__Session *outbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_session(from, to, &outbound_session);
-    if (outbound_session == NULL) {
-        return NULL;
-    } else {
-        if (outbound_session->responded)
-            return outbound_session;
-        else {
-            // outbound_session can't be used if is is not responded
-            skissm__session__free_unpacked(outbound_session, NULL);
-            return NULL;
-        }
-    }
-}

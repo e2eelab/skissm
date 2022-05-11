@@ -52,6 +52,7 @@
 #include "skissm/InviteResponse.pb-c.h"
 #include "skissm/KeyPair.pb-c.h"
 #include "skissm/MsgKey.pb-c.h"
+#include "skissm/NewUserDeviceMsg.pb-c.h"
 #include "skissm/One2oneMsgPayload.pb-c.h"
 #include "skissm/OneTimePreKey.pb-c.h"
 #include "skissm/OneTimePreKeyPublic.pb-c.h"
@@ -212,7 +213,7 @@ typedef struct skissm_db_handler_t {
     void (*load_inbound_session)(char *, Skissm__E2eeAddress *,
                                  Skissm__Session **);
     /**
-     * @brief find outbound session
+     * @brief find the lastest outbound session
      * @param owner
      * @param to
      * @param outbound_session
@@ -220,6 +221,17 @@ typedef struct skissm_db_handler_t {
     void (*load_outbound_session)(Skissm__E2eeAddress *,
                                   Skissm__E2eeAddress *,
                                   Skissm__Session **);
+
+    /**
+     * @brief find the list of outbound sessions that are related to to_user_id
+     * @param owner
+     * @param to_user_id
+     * @param outbound_sessions
+     */
+    size_t (*load_outbound_sessions)(Skissm__E2eeAddress *,
+                                  const char *,
+                                  Skissm__Session ***);
+
     /**
      * @brief store session
      * @param session

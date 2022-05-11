@@ -20,12 +20,17 @@ static void send_group_pre_key(Skissm__Session *outbound_session){
     n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(outbound_session->to, &group_pre_key_plaintext_data_list, &group_pre_key_plaintext_data_len_list);
     if (n_group_pre_keys > 0) {
         unsigned int i;
-        size_t result = 0;
+        bool succ = true;
         for (i = 0; i < n_group_pre_keys; i++) {
-            result = send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data_list[i],
+            Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data_list[i],
                                       group_pre_key_plaintext_data_len_list[i]);
-            if (result != 0)
+            if (response == NULL) {
+                succ = false;
                 break;
+            } else {
+                // release
+                skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+            }
         }
 
         // release
@@ -37,7 +42,7 @@ static void send_group_pre_key(Skissm__Session *outbound_session){
         free_mem((void **) (&group_pre_key_plaintext_data_len_list), n_group_pre_keys);
 
         // done
-        if (result == 0)
+        if (succ)
             get_skissm_plugin()->db_handler.unload_group_pre_key(outbound_session->to);
     }
 }
@@ -91,6 +96,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response (
                 return NULL;
             }
         }
+        return NULL;
     } else {
         return NULL;
     }
@@ -184,6 +190,19 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 
     // done
     return plain_text_data_len > 0;
+}
+
+bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg) {
+    Skissm__InviteResponse *response = get_pre_key_bundle_internal(receiver_address, msg->user_address);
+    bool succ = false;
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        succ = true;
+    }
+    // release
+    skissm__invite_response__free_unpacked(response, NULL);
+
+    // done
+    return succ;
 }
 
 Skissm__InviteRequest *produce_invite_request(
