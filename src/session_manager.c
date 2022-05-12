@@ -38,7 +38,7 @@ static void send_group_pre_key(Skissm__Session *outbound_session){
             free_mem((void **) (&(group_pre_key_plaintext_data_list[i])),
                      group_pre_key_plaintext_data_len_list[i]);
         }
-        free_mem((void **) (&group_pre_key_plaintext_data_list), n_group_pre_keys);
+        free_mem((void **) (&group_pre_key_plaintext_data_list), sizeof(uint8_t *) * n_group_pre_keys);
         free_mem((void **) (&group_pre_key_plaintext_data_len_list), n_group_pre_keys);
 
         // done

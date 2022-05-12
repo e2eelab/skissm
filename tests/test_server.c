@@ -85,7 +85,7 @@ void test_server_end(){
        for(int j=0; j<user_data_set[i].n_one_time_pre_keys; j++) {
            skissm__one_time_pre_key_public__free_unpacked(user_data_set[i].one_time_pre_keys[j], NULL);
        }
-       free_mem((void **)(&(user_data_set[i].one_time_pre_keys)), user_data_set[i].n_one_time_pre_keys);
+       free_mem((void **)(&(user_data_set[i].one_time_pre_keys)), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);
        user_data_set[i].user_name = NULL;
        user_data_set[i].device_id = NULL;
        user_data_set[i].identity_key_public = NULL;
@@ -103,7 +103,7 @@ void test_server_end(){
            skissm__group_member__free_unpacked(group_data_set[i].group_members[j], NULL);
            group_data_set[i].group_members[j] = NULL;
        }
-       free_mem((void **)(&(group_data_set[i].group_members)), group_data_set[i].group_members_num);
+       free_mem((void **)(&(group_data_set[i].group_members)), sizeof(Skissm__GroupMember *) * group_data_set[i].group_members_num);
        group_data_set[i].group_members_num = 0;
    }
    group_data_set_insert_pos = 0;
@@ -340,7 +340,7 @@ Skissm__AddGroupMembersResponse *test_add_group_members(Skissm__AddGroupMembersR
         copy_group_member(&(temp_group_members[i]), cur_group_data->group_members[i]);
         skissm__group_member__free_unpacked(cur_group_data->group_members[i], NULL);
     }
-    free_mem((void **)(&(cur_group_data->group_members)), old_group_members_num);
+    free_mem((void **)(&(cur_group_data->group_members)), sizeof(Skissm__GroupMember *) * old_group_members_num);
     cur_group_data->group_members = temp_group_members;
 
     for (i = old_group_members_num; i < new_group_members_num; i++){

@@ -75,9 +75,10 @@ void load_inbound_session(char *session_id,
 void load_outbound_session(Skissm__E2eeAddress *owner,
                            Skissm__E2eeAddress *to,
                            Skissm__Session **outbound_session);
+int load_n_outbound_sessions(Skissm__E2eeAddress *owner, const char *to_user_id);
 size_t load_outbound_sessions(Skissm__E2eeAddress *owner,
-                                  const char *to_user_id,
-                                  Skissm__Session ***outbound_sessions);
+                              const char *to_user_id,
+                              Skissm__Session ***outbound_sessions);
 void store_session(Skissm__Session *session);
 void unload_session(
     Skissm__E2eeAddress *owner,

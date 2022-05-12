@@ -198,7 +198,7 @@ void create_outbound_group_session(
                     skissm__session__free_unpacked(outbound_session, NULL);
                 }
                 // release outbound_sessions
-                free_mem((void **)(&outbound_sessions), outbound_sessions_num);
+                free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
             }
 
             // release

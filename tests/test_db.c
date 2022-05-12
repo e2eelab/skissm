@@ -120,6 +120,22 @@ static const char *SESSION_LOAD_DATA_BY_ID_AND_OWNER = "SELECT DATA FROM SESSION
                                                        "ON SESSION.OWNER = ADDRESS.ID "
                                                        "WHERE SESSION.ID is (?) AND ADDRESS.USER_ID is (?);";
 
+static const char *SESSION_LOAD_N_OUTBOUND_SESSION = "SELECT COUNT(*) "
+                                                     "FROM SESSION "
+                                                     "INNER JOIN ADDRESS AS a1 "
+                                                     "ON SESSION.OWNER = a1.ID "
+                                                     "INNER JOIN ADDRESS AS a2 "
+                                                     "ON SESSION.TO_ADDRESS = a2.ID "
+                                                     "WHERE a1.USER_ID is (?) AND a2.USER_ID is (?);";
+
+static const char *SESSION_LOAD_OUTBOUND_SESSIONS = "SELECT DATA "
+                                                    "FROM SESSION "
+                                                    "INNER JOIN ADDRESS AS a1 "
+                                                    "ON SESSION.OWNER = a1.ID "
+                                                    "INNER JOIN ADDRESS AS a2 "
+                                                    "ON SESSION.TO_ADDRESS = a2.ID "
+                                                    "WHERE a1.USER_ID is (?) AND a2.USER_ID is (?);";
+
 static const char *SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO = "DELETE FROM SESSION "
                                                               "WHERE OWNER IN "
                                                               "(SELECT ID FROM ADDRESS WHERE USER_ID is (?)) "
@@ -1508,12 +1524,55 @@ void load_outbound_session(Skissm__E2eeAddress *owner,
     return;
 }
 
+int load_n_outbound_sessions(Skissm__E2eeAddress *owner, const char *to_user_id) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(SESSION_LOAD_N_OUTBOUND_SESSION, &stmt);
+    sqlite3_bind_text(stmt, 1, owner->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, to_user_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
+
+    // load
+    int n_outbound_sessions = (int)sqlite3_column_int(stmt, 0);
+
+    // release
+    sqlite_finalize(stmt);
+
+    return n_outbound_sessions;
+}
 
 size_t load_outbound_sessions(Skissm__E2eeAddress *owner,
-    const char *to_user_id,
-    Skissm__Session ***outbound_sessions) {
-    // TODO
-    return (size_t)(0);
+                              const char *to_user_id,
+                              Skissm__Session ***outbound_sessions) {
+    // allocate memory
+    size_t n_outbound_sessions = load_n_outbound_sessions(owner, to_user_id);
+    (*outbound_sessions) = (Skissm__Session **)malloc(
+        n_outbound_sessions * sizeof(Skissm__Session *));
+
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(SESSION_LOAD_OUTBOUND_SESSIONS, &stmt);
+    sqlite3_bind_text(stmt, 1, owner->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, to_user_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    for (int i = 0; i < n_outbound_sessions; i++) {
+        sqlite3_step(stmt);
+
+        // load
+        size_t session_data_len = sqlite3_column_bytes(stmt, 0);
+        uint8_t *session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+        // unpack
+        (*outbound_sessions)[i] = skissm__session__unpack(NULL, session_data_len, session_data);
+    }
+
+    // release
+    sqlite_finalize(stmt);
+
+    return n_outbound_sessions;
 }
 
 void store_session(Skissm__Session *session) {

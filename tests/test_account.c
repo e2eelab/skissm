@@ -117,8 +117,8 @@ static void load_accounts_test(uint64_t num) {
         assert(is_equal_account(accounts[i], unpacked_account));
         printf("pack/unpack verified: account_id %" PRIu64 "\n", accounts[i]->account_id);
     }
-    free_mem((void **)(&accounts_data_len), accounts_num);
-    free_mem((void **)(&accounts_data), accounts_num);
+    free_mem((void **)(&accounts_data_len), accounts_num * sizeof(size_t));
+    free_mem((void **)(&accounts_data), accounts_num * sizeof(uint8_t *));
 }
 
 static void register_accounts_test(uint64_t num) {

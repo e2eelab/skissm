@@ -229,8 +229,8 @@ typedef struct skissm_db_handler_t {
      * @param outbound_sessions
      */
     size_t (*load_outbound_sessions)(Skissm__E2eeAddress *,
-                                  const char *,
-                                  Skissm__Session ***);
+                                     const char *,
+                                     Skissm__Session ***);
 
     /**
      * @brief store session

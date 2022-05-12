@@ -73,7 +73,7 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *t
         for(i = 0; i < outbound_sessions_num; i++) {
             skissm__session__free_unpacked(outbound_sessions[i], NULL);
         }
-        free_mem((void **)(&outbound_sessions), outbound_sessions_num);
+        free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
         return NULL;
     }
 }
@@ -106,7 +106,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(Skissm__E2eeAddress *from, Skis
 
         // done
         if (i == (outbound_sessions_num - 1)) {
-            free_mem((void **)(&outbound_sessions), outbound_sessions_num);
+            free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
             return response;
         } else {
             if (response != NULL)
@@ -118,7 +118,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(Skissm__E2eeAddress *from, Skis
     }
 
     // release
-    free_mem((void **)(&outbound_sessions), outbound_sessions_num);
+    free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
 
     // done;
     return NULL;
