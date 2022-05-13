@@ -21,9 +21,10 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "SystemManagerMsgProto";
+option java_outer_classname = "ProtoMsgTagProto";
 
-message SystemManagerMsg {
-    string system_notif_id = 1;
-    repeated string args = 2;
+message ProtoMsgTag {
+    int64 proto_msg_t = 1;
+    string proto_msg_id = 2;
 }
+

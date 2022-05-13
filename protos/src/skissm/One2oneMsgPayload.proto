@@ -24,7 +24,7 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "One2oneMsgPayloadProto";
 
 message One2oneMsgPayload {
-  uint32 sequence = 1;
-  bytes ciphertext = 2;
-  bytes ratchet_key = 3;
+    uint32 sequence = 1;
+    bytes ciphertext = 2;
+    bytes ratchet_key = 3;
 }

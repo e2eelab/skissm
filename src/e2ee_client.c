@@ -216,6 +216,19 @@ Skissm__SendGroupMsgResponse *send_group_msg(Skissm__E2eeAddress *sender_address
     return response;
 }
 
+Skissm__ConsumeProtoMsgResponse *consume_proto_msg(const char *proto_msg_id) {
+    Skissm__ConsumeProtoMsgRequest *request = (Skissm__ConsumeProtoMsgRequest*)malloc(sizeof(Skissm__ConsumeProtoMsgRequest));
+    skissm__consume_proto_msg_request__init(request);
+    request->proto_msg_id = strdup(proto_msg_id);
+    Skissm__ConsumeProtoMsgResponse *response = get_skissm_plugin()->proto_handler.consume_proto_msg(request);
+
+    // release
+    skissm__consume_proto_msg_request__free_unpacked(request, NULL);
+
+    // done
+    return response;
+}
+
 Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len) {
     Skissm__ProtoMsg *proto_msg = skissm__proto_msg__unpack(NULL, proto_msg_data_len, proto_msg_data);
     Skissm__E2eeAddress *receiver_address = proto_msg->to;
@@ -258,7 +271,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
     // notify server that the proto_msg has been consumed
     Skissm__ConsumeProtoMsgResponse *response = NULL;
     if (consumed) {
-        response = consume_proto_msg_internal(proto_msg->proto_msg_id);
+        response = consume_proto_msg(proto_msg->tag->proto_msg_id);
     } else {
         response = NULL;
     }

@@ -60,6 +60,7 @@
 #include "skissm/Plaintext.pb-c.h"
 #include "skissm/PreKeyBundle.pb-c.h"
 #include "skissm/ProtoMsg.pb-c.h"
+#include "skissm/ProtoMsgTag.pb-c.h"
 #include "skissm/PublishSpkRequest.pb-c.h"
 #include "skissm/PublishSpkResponse.pb-c.h"
 #include "skissm/Ratchet.pb-c.h"

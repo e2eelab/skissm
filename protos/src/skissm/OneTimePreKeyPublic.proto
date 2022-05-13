@@ -24,6 +24,6 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "OneTimePreKeyPublicProto";
 
 message OneTimePreKeyPublic {
-  uint32 opk_id = 1;
-  bytes public_key = 2;
+    uint32 opk_id = 1;
+    bytes public_key = 2;
 }

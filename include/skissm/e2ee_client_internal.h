@@ -82,14 +82,6 @@ Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint3
  */
 Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len);
 
-/**
- * @brief Send consume_proto_msg request to server.
- *
- * @param msg_id
- * @return Skissm__ConsumeProtoMsgResponse *
- */
-Skissm__ConsumeProtoMsgResponse *consume_proto_msg_internal(char *proto_msg_id);
-
 #ifdef __cplusplus
 }
 #endif

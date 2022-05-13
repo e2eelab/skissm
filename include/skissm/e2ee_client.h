@@ -100,6 +100,14 @@ Skissm__SendGroupMsgResponse *send_group_msg(Skissm__E2eeAddress *sender_address
     Skissm__E2eeAddress *group_address, const uint8_t *plaintext_data, size_t plaintext_data_len);
 
 /**
+ * @brief Send consume_proto_msg request to server.
+ *
+ * @param proto_msg_id
+ * @return Skissm__ConsumeProtoMsgResponse *
+ */
+Skissm__ConsumeProtoMsgResponse *consume_proto_msg(const char *proto_msg_id);
+
+/**
  * @brief Process incoming protocol messages.
  *
  * @param proto_msg_data

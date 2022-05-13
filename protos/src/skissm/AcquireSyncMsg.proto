@@ -21,9 +21,10 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "SystemManagerMsgProto";
+option java_outer_classname = "AcquireSyncMsgProto";
 
-message SystemManagerMsg {
-    string system_notif_id = 1;
-    repeated string args = 2;
+import "skissm/ProtoMsgTag.proto";
+
+message AcquireSyncMsg {
+    skissm.ProtoMsgTag last_proto_msg_tag = 1;
 }

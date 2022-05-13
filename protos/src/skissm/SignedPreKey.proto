@@ -26,8 +26,8 @@ option java_outer_classname = "SignedPreKeyProto";
 import "skissm/KeyPair.proto";
 
 message SignedPreKey {
-  uint32 spk_id = 1;
-  skissm.KeyPair key_pair = 2;
-  bytes signature = 3;
-  int64 ttl = 4;
+    uint32 spk_id = 1;
+    skissm.KeyPair key_pair = 2;
+    bytes signature = 3;
+    int64 ttl = 4;
 }

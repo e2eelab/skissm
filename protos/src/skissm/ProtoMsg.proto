@@ -25,6 +25,7 @@ option java_outer_classname = "ProtoMsgProto";
 
 import "skissm/AcceptMsg.proto";
 import "skissm/AddGroupMembersMsg.proto";
+import "skissm/AcquireSyncMsg.proto";
 import "skissm/ClientHeartbeatMsg.proto";
 import "skissm/CreateGroupMsg.proto";
 import "skissm/E2eeAddress.proto";
@@ -32,6 +33,7 @@ import "skissm/E2eeMsg.proto";
 import "skissm/FriendManagerMsg.proto";
 import "skissm/InviteMsg.proto";
 import "skissm/NewUserDeviceMsg.proto";
+import "skissm/ProtoMsgTag.proto";
 import "skissm/RemoveGroupMembersMsg.proto";
 import "skissm/UpdateGroupMsg.proto";
 import "skissm/UpdateUserMsg.proto";
@@ -40,23 +42,24 @@ import "skissm/ServerHeartbeatMsg.proto";
 import "skissm/SystemManagerMsg.proto";
 
 message ProtoMsg {
-    string proto_msg_id = 1;
+    skissm.ProtoMsgTag tag = 1;
     skissm.E2eeAddress from = 2;
     skissm.E2eeAddress to = 3;
     oneof payload {
-        skissm.InviteMsg invite_msg = 4;
-        skissm.AcceptMsg accept_msg = 5;
-        skissm.NewUserDeviceMsg new_user_device_msg = 6;
-        skissm.E2eeMsg e2ee_msg = 7;
-        skissm.SupplyOpksMsg supply_opks_msg = 8;
-        skissm.CreateGroupMsg create_group_msg = 9;
-        skissm.AddGroupMembersMsg add_group_members_msg = 10;
-        skissm.RemoveGroupMembersMsg remove_group_members_msg = 11;
-        skissm.UpdateGroupMsg update_group_msg = 12;
-        skissm.ClientHeartbeatMsg client_heartbeat_msg = 13;
-        skissm.ServerHeartbeatMsg server_heartbeat_msg = 14;
-        skissm.UpdateUserMsg update_user_msg = 15;
-        skissm.SystemManagerMsg system_manager_msg = 16;
-        skissm.FriendManagerMsg friend_manager_msg = 17;
+        skissm.AcquireSyncMsg acquire_sync_msg = 4;
+        skissm.SupplyOpksMsg supply_opks_msg = 5;
+        skissm.InviteMsg invite_msg = 6;
+        skissm.AcceptMsg accept_msg = 7;
+        skissm.NewUserDeviceMsg new_user_device_msg = 8;
+        skissm.E2eeMsg e2ee_msg = 9;
+        skissm.CreateGroupMsg create_group_msg = 10;
+        skissm.AddGroupMembersMsg add_group_members_msg = 11;
+        skissm.RemoveGroupMembersMsg remove_group_members_msg = 12;
+        skissm.UpdateGroupMsg update_group_msg = 13;
+        skissm.ClientHeartbeatMsg client_heartbeat_msg = 14;
+        skissm.ServerHeartbeatMsg server_heartbeat_msg = 15;
+        skissm.UpdateUserMsg update_user_msg = 16;
+        skissm.SystemManagerMsg system_manager_msg = 17;
+        skissm.FriendManagerMsg friend_manager_msg = 18;
     };
 }

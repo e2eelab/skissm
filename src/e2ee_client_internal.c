@@ -80,15 +80,3 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(Skissm__Session *outbo
     return response;
 }
 
-Skissm__ConsumeProtoMsgResponse *consume_proto_msg_internal(char *proto_msg_id) {
-    Skissm__ConsumeProtoMsgRequest *request = (Skissm__ConsumeProtoMsgRequest*)malloc(sizeof(Skissm__ConsumeProtoMsgRequest));
-    skissm__consume_proto_msg_request__init(request);
-    request->proto_msg_id = strdup(proto_msg_id);
-    Skissm__ConsumeProtoMsgResponse *response = get_skissm_plugin()->proto_handler.consume_proto_msg(request);
-
-    // release
-    skissm__consume_proto_msg_request__free_unpacked(request, NULL);
-
-    // done
-    return response;
-}
