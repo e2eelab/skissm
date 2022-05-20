@@ -43,7 +43,7 @@
 #include "skissm/GetPreKeyBundleResponse.pb-c.h"
 #include "skissm/GroupMember.pb-c.h"
 #include "skissm/GroupMsgPayload.pb-c.h"
-#include "skissm/GroupPreKeyPayload.pb-c.h"
+#include "skissm/GroupPreKeyBundle.pb-c.h"
 #include "skissm/GroupSession.pb-c.h"
 #include "skissm/IdentityKey.pb-c.h"
 #include "skissm/IdentityKeyPublic.pb-c.h"

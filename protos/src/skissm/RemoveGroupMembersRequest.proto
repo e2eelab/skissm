@@ -26,5 +26,5 @@ option java_outer_classname = "RemoveGroupMembersRequestProto";
 import "skissm/RemoveGroupMembersMsg.proto";
 
 message RemoveGroupMembersRequest {
-  RemoveGroupMembersMsg msg = 1;
+    RemoveGroupMembersMsg msg = 1;
 }

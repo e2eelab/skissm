@@ -51,7 +51,7 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(Skissm__E2eeA
     Skissm__GetPreKeyBundleRequest *request =
         (Skissm__GetPreKeyBundleRequest *)malloc(sizeof(Skissm__GetPreKeyBundleRequest));
     skissm__get_pre_key_bundle_request__init(request);
-    copy_address_from_address(&(request->peer_address), peer_address);
+    copy_address_from_address(&(request->user_address), peer_address);
     return request;
 }
 
@@ -169,10 +169,10 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
             if (plaintext != NULL) {
                 if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG) {
                     ssm_notify_one2one_msg(e2ee_msg->from, e2ee_msg->to, plaintext->common_msg.data, plaintext->common_msg.len);
-                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY) {
-                    Skissm__GroupPreKeyPayload *group_pre_key_payload = plaintext->group_pre_key;
-                    get_skissm_plugin()->db_handler.unload_inbound_group_session(e2ee_msg->to, group_pre_key_payload->old_session_id);
-                    create_inbound_group_session(inbound_session->e2ee_pack_id, group_pre_key_payload, e2ee_msg->to);
+                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY_BUNDLE) {
+                    Skissm__GroupPreKeyBundle *group_pre_key_bundle = plaintext->group_pre_key_bundle;
+                    get_skissm_plugin()->db_handler.unload_inbound_group_session(e2ee_msg->to, group_pre_key_bundle->old_session_id);
+                    create_inbound_group_session(inbound_session->e2ee_pack_id, group_pre_key_bundle, e2ee_msg->to);
                 }
                 skissm__plaintext__free_unpacked(plaintext, NULL);
             } else {

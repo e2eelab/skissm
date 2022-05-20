@@ -23,12 +23,12 @@ package skissm;
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "PlaintextProto";
 
-import "skissm/GroupPreKeyPayload.proto";
+import "skissm/GroupPreKeyBundle.proto";
 
 message Plaintext {
     string version = 1;
     oneof payload {
         bytes common_msg = 2;
-        skissm.GroupPreKeyPayload group_pre_key = 3;
+        skissm.GroupPreKeyBundle group_pre_key_bundle = 3;
     };
 }

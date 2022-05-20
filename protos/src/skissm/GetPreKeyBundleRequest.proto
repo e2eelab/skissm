@@ -26,5 +26,5 @@ option java_outer_classname = "GetPreKeyBundleRequestProto";
 import "skissm/E2eeAddress.proto";
 
 message GetPreKeyBundleRequest {
-  skissm.E2eeAddress peer_address = 1;
+    skissm.E2eeAddress user_address = 1;
 }

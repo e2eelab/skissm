@@ -27,9 +27,9 @@ import "skissm/E2eeAddress.proto";
 import "skissm/GroupMember.proto";
 
 message RemoveGroupMembersMsg {
-  string e2ee_pack_id = 1;
-  skissm.E2eeAddress sender_address = 2;
-  skissm.E2eeAddress group_address = 3;
-  repeated skissm.GroupMember removing_members = 4;
-  repeated skissm.GroupMember all_members = 5;
+    string e2ee_pack_id = 1;
+    skissm.E2eeAddress sender_address = 2;
+    skissm.E2eeAddress group_address = 3;
+    repeated skissm.GroupMember removing_members = 4;
+    repeated skissm.GroupMember all_members = 5;
 }

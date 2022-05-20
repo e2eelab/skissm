@@ -143,8 +143,8 @@ Skissm__GetPreKeyBundleResponse *test_get_pre_key_bundle(Skissm__GetPreKeyBundle
     uint8_t user_data_find = 0;
     while (user_data_find < user_data_set_insert_pos)
     {
-        if ((user_data_set[user_data_find].address) && (request->peer_address)
-            && compare_address(user_data_set[user_data_find].address, request->peer_address)
+        if ((user_data_set[user_data_find].address) && (request->user_address)
+            && compare_address(user_data_set[user_data_find].address, request->user_address)
         ) {
             break;
         }
@@ -167,7 +167,7 @@ Skissm__GetPreKeyBundleResponse *test_get_pre_key_bundle(Skissm__GetPreKeyBundle
     response->pre_key_bundles[0] = (Skissm__PreKeyBundle *) malloc(sizeof(Skissm__PreKeyBundle));
     skissm__pre_key_bundle__init(response->pre_key_bundles[0]);
 
-    copy_address_from_address(&(response->pre_key_bundles[0]->peer_address), request->peer_address);
+    copy_address_from_address(&(response->pre_key_bundles[0]->user_address), request->user_address);
     copy_ik_public_from_ik_public(&(response->pre_key_bundles[0]->identity_key_public), cur_data->identity_key_public);
     copy_spk_public_from_spk_public(&(response->pre_key_bundles[0]->signed_pre_key_public), cur_data->signed_pre_key_public);
     // TODO: remove one_time_pre_keys[0] and append to response->pre_key_bundles

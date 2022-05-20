@@ -51,12 +51,12 @@ void create_outbound_group_session(
  * @brief Create an inbound group session.
  *
  * @param e2ee_pack_id
- * @param group_pre_key_payload
+ * @param group_pre_key_bundle
  * @param user_address
  */
 void create_inbound_group_session(
     const char *e2ee_pack_id,
-    Skissm__GroupPreKeyPayload *group_pre_key_payload,
+    Skissm__GroupPreKeyBundle *group_pre_key_bundle,
     Skissm__E2eeAddress *user_address
 );
 

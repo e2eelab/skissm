@@ -28,12 +28,12 @@ import "skissm/SignedPreKeyPublic.proto";
 import "skissm/OneTimePreKeyPublic.proto";
 
 message RegisterUserRequest {
-  string user_name = 1;
-  string device_id = 2;
-  string authenticator = 3;
-  string auth_code = 4;
-  string e2ee_pack_id = 5;
-  skissm.IdentityKeyPublic identity_key_public = 6;
-  skissm.SignedPreKeyPublic signed_pre_key_public = 7;
-  repeated skissm.OneTimePreKeyPublic one_time_pre_keys = 8;
+    string user_name = 1;
+    string device_id = 2;
+    string authenticator = 3;
+    string auth_code = 4;
+    string e2ee_pack_id = 5;
+    skissm.IdentityKeyPublic identity_key_public = 6;
+    skissm.SignedPreKeyPublic signed_pre_key_public = 7;
+    repeated skissm.OneTimePreKeyPublic one_time_pre_keys = 8;
 }

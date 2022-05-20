@@ -21,12 +21,12 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "GroupPreKeyPayloadProto";
+option java_outer_classname = "GroupPreKeyBundleProto";
 
 import "skissm/E2eeAddress.proto";
 import "skissm/GroupMember.proto";
 
-message GroupPreKeyPayload {
+message GroupPreKeyBundle {
     string version = 1;
     string session_id = 2;
     string old_session_id = 3;

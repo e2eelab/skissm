@@ -27,9 +27,9 @@ import "skissm/E2eeAddress.proto";
 import "skissm/ResponseCode.proto";
 
 message RegisterUserResponse {
-  ResponseCode code = 1;
-  string msg = 2;
+    ResponseCode code = 1;
+    string msg = 2;
 
-  skissm.E2eeAddress address = 3;
-  string password = 4;
+    skissm.E2eeAddress address = 3;
+    string password = 4;
 }

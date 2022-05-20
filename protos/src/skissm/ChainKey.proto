@@ -24,6 +24,6 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "ChainKeyProto";
 
 message ChainKey {
-  uint32 index = 1;
-  bytes shared_key = 2;
+    uint32 index = 1;
+    bytes shared_key = 2;
 }

@@ -24,23 +24,24 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "ResponseCodeProto";
 
 /**
- * HTTP 狀態碼用來表示一個 HTTP 請求的回應狀態。回應分為五個分類：
- * (ref: https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Status)
- * 資訊回應 (Informational responses, 100–199),
- * 成功回應 (Successful responses, 200–299),
- * 重定向 (Redirects, 300–399),
- * 用戶端錯誤 (Client errors, 400–499),
- * 伺服器端錯誤 (Server errors, 500–599).
+ * Response status codes indicate whether a specific request
+ * has been successfully completed.
+ * Responses are grouped in four classes:
+ * (ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+ *      Informational responses 100–199
+ *      Successful responses    200–299
+ *      Client error responses  400–499
+ *      Server error responses  500–599
  */
 enum ResponseCode {
-    RESPONSE_CODE_UNKNOWN = 0;                    // 未知
-    RESPONSE_CODE_OK = 200;                       // 請求成功，用於CRUD的「R」、「U」
-    RESPONSE_CODE_CREATED = 201;                  // 請求成功且新成功被創建data，用於CRUD的「C」
-    RESPONSE_CODE_ACCEPTED = 202;                 // 此請求已經被接受但尚未處理
-    RESPONSE_CODE_NO_CONTENT = 204;               // 伺服器成功處理了請求，但沒有返回任何內容，可用於CRUD的「D」
-    RESPONSE_CODE_BAD_REQUEST = 400;              // 伺服器因為收到無效語法，而無法理解請求，發生錯誤的參數格式
-    RESPONSE_CODE_UNAUTHORIZED = 401;             // 連線「未認證」，即用戶沒有必要的憑據，請求需提供要正確、可用、時效內的token
-    RESPONSE_CODE_FORBIDDEN = 403;                // 伺服端已知道用戶端的身份，但用戶端並無訪問權限，例如未被授權，所以伺服器拒絕給予應有的回應。
-    RESPONSE_CODE_NOT_FOUND = 404;                // 資源路徑或訪問網址錯誤
-    RESPONSE_CODE_INTERNAL_SERVER_ERROR = 500;    // 伺服器端發生未知或無法處理的錯誤
+    RESPONSE_CODE_UNKNOWN = 0;                    // Unknown
+    RESPONSE_CODE_OK = 200;                       // The request succeeded, and some resources were read or updated.
+    RESPONSE_CODE_CREATED = 201;                  // The request succeeded, and some new resources were created as a result.
+    RESPONSE_CODE_ACCEPTED = 202;                 // The request has been received but not yet acted upon.
+    RESPONSE_CODE_NO_CONTENT = 204;               // There is no content to send for this request, and some resources were deleted.
+    RESPONSE_CODE_BAD_REQUEST = 400;              // The server cannot or will not process the request due to something that is perceived to be a client error.
+    RESPONSE_CODE_UNAUTHORIZED = 401;             // The client is not authenticated to get the requested response.
+    RESPONSE_CODE_FORBIDDEN = 403;                // The client is authenticated but does not have access rights to the content.
+    RESPONSE_CODE_NOT_FOUND = 404;                // The server can not find the requested resource.
+    RESPONSE_CODE_INTERNAL_SERVER_ERROR = 500;    // The server has encountered a situation it does not know how to handle.
 }

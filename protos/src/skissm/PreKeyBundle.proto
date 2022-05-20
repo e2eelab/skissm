@@ -29,7 +29,7 @@ import "skissm/SignedPreKeyPublic.proto";
 import "skissm/OneTimePreKeyPublic.proto";
 
 message PreKeyBundle {
-    skissm.E2eeAddress peer_address = 1;
+    skissm.E2eeAddress user_address = 1;
     string e2ee_pack_id = 2;
     skissm.IdentityKeyPublic identity_key_public = 3;
     skissm.SignedPreKeyPublic signed_pre_key_public = 4;

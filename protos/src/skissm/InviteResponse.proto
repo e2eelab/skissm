@@ -26,6 +26,6 @@ option java_outer_classname = "InviteResponseProto";
 import "skissm/ResponseCode.proto";
 
 message InviteResponse {
-  ResponseCode code = 1;
-  string msg = 2;
+    ResponseCode code = 1;
+    string msg = 2;
 }
