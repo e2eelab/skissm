@@ -28,6 +28,6 @@ import "skissm/OneTimePreKeyPublic.proto";
 
 message SupplyOpksRequest {
     string e2ee_pack_id = 1;
-    skissm.E2eeAddress user_address = 2;
-    repeated skissm.OneTimePreKeyPublic one_time_pre_key_public = 3;
+    E2eeAddress user_address = 2;
+    repeated OneTimePreKeyPublic one_time_pre_key_public = 3;
 }

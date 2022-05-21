@@ -26,5 +26,5 @@ option java_outer_classname = "AcceptRequestProto";
 import "skissm/AcceptMsg.proto";
 
 message AcceptRequest {
-    skissm.AcceptMsg msg = 1;
+    AcceptMsg msg = 1;
 }

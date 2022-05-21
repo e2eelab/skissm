@@ -26,7 +26,7 @@ option java_outer_classname = "SupplyOpksMsgProto";
 import "skissm/E2eeAddress.proto";
 
 message SupplyOpksMsg {
-  int64 server_t = 1;
-  uint32 opks_num = 2;
-  skissm.E2eeAddress user_address = 3;
+    int64 server_t = 1;
+    uint32 opks_num = 2;
+    E2eeAddress user_address = 3;
 }

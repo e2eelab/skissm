@@ -29,8 +29,8 @@ message InviteMsg {
     string version = 1;
     string e2ee_pack_id = 2;
     string session_id = 3;
-    skissm.E2eeAddress from = 4;
-    skissm.E2eeAddress to = 5;
+    E2eeAddress from = 4;
+    E2eeAddress to = 5;
     bytes alice_identity_key = 6;
     repeated bytes pre_shared_keys = 7;
     uint32 bob_signed_pre_key_id = 8;

@@ -26,5 +26,5 @@ option java_outer_classname = "UpdateUserRequestProto";
 import "skissm/UpdateUserMsg.proto";
 
 message UpdateUserRequest {
-    skissm.UpdateUserMsg msg = 1;
+    UpdateUserMsg msg = 1;
 }

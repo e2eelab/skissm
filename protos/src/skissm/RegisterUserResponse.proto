@@ -30,6 +30,6 @@ message RegisterUserResponse {
     ResponseCode code = 1;
     string msg = 2;
 
-    skissm.E2eeAddress address = 3;
+    E2eeAddress address = 3;
     string password = 4;
 }

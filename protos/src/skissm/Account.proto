@@ -32,11 +32,11 @@ message Account {
     string version = 1;
     uint64 account_id = 2;
     bool saved = 3;
-    skissm.E2eeAddress address = 4;
+    E2eeAddress address = 4;
     string password = 5;
     string e2ee_pack_id = 6;
-    skissm.IdentityKey identity_key = 7;
-    skissm.SignedPreKey signed_pre_key = 8;
-    repeated skissm.OneTimePreKey one_time_pre_keys = 9;
+    IdentityKey identity_key = 7;
+    SignedPreKey signed_pre_key = 8;
+    repeated OneTimePreKey one_time_pre_keys = 9;
     uint32 next_one_time_pre_key_id = 10;
 }

@@ -27,9 +27,9 @@ import "skissm/PreKeyBundle.proto";
 import "skissm/ResponseCode.proto";
 
 message GetPreKeyBundleResponse {
-    ResponseCode code = 1;
+   ResponseCode code = 1;
     string msg = 2;
 
     string user_id = 3;
-    repeated skissm.PreKeyBundle pre_key_bundles = 4;
+    repeated PreKeyBundle pre_key_bundles = 4;
 }

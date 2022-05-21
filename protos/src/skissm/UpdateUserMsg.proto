@@ -26,7 +26,7 @@ option java_outer_classname = "UpdateUserMsgProto";
 import "skissm/E2eeAddress.proto";
 
 message UpdateUserMsg {
-    skissm.E2eeAddress user_address = 1;
+    E2eeAddress user_address = 1;
     string user_name = 2;
     string user_avatar = 3;
 }

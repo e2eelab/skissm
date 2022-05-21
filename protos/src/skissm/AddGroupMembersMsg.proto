@@ -28,8 +28,8 @@ import "skissm/GroupMember.proto";
 
 message AddGroupMembersMsg {
     string e2ee_pack_id = 1;
-    skissm.E2eeAddress sender_address = 2;
-    skissm.E2eeAddress group_address = 3;
-    repeated skissm.GroupMember adding_members = 4;
-    repeated skissm.GroupMember all_members = 5;
+    E2eeAddress sender_address = 2;
+    E2eeAddress group_address = 3;
+    repeated GroupMember adding_members = 4;
+    repeated GroupMember all_members = 5;
 }

@@ -28,8 +28,8 @@ import "skissm/ReceiverChainNode.proto";
 import "skissm/SkippedMsgKeyNode.proto";
 
 message Ratchet {
-  bytes root_key = 1;
-  skissm.SenderChainNode sender_chain = 2;
-  repeated skissm.ReceiverChainNode receiver_chains = 3;
-  repeated skissm.SkippedMsgKeyNode skipped_msg_keys = 4;
+    bytes root_key = 1;
+    SenderChainNode sender_chain = 2;
+    repeated ReceiverChainNode receiver_chains = 3;
+    repeated SkippedMsgKeyNode skipped_msg_keys = 4;
 }

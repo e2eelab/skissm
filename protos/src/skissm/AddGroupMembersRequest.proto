@@ -26,5 +26,5 @@ option java_outer_classname = "AddGroupMembersRequestProto";
 import "skissm/AddGroupMembersMsg.proto";
 
 message AddGroupMembersRequest {
-    skissm.AddGroupMembersMsg msg = 1;
+    AddGroupMembersMsg msg = 1;
 }

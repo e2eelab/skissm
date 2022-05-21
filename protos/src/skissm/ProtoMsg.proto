@@ -42,24 +42,24 @@ import "skissm/ServerHeartbeatMsg.proto";
 import "skissm/SystemManagerMsg.proto";
 
 message ProtoMsg {
-    skissm.ProtoMsgTag tag = 1;
-    skissm.E2eeAddress from = 2;
-    skissm.E2eeAddress to = 3;
+    ProtoMsgTag tag = 1;
+    E2eeAddress from = 2;
+    E2eeAddress to = 3;
     oneof payload {
-        skissm.AcquireSyncMsg acquire_sync_msg = 4;
-        skissm.SupplyOpksMsg supply_opks_msg = 5;
-        skissm.InviteMsg invite_msg = 6;
-        skissm.AcceptMsg accept_msg = 7;
-        skissm.NewUserDeviceMsg new_user_device_msg = 8;
-        skissm.E2eeMsg e2ee_msg = 9;
-        skissm.CreateGroupMsg create_group_msg = 10;
-        skissm.AddGroupMembersMsg add_group_members_msg = 11;
-        skissm.RemoveGroupMembersMsg remove_group_members_msg = 12;
-        skissm.UpdateGroupMsg update_group_msg = 13;
-        skissm.ClientHeartbeatMsg client_heartbeat_msg = 14;
-        skissm.ServerHeartbeatMsg server_heartbeat_msg = 15;
-        skissm.UpdateUserMsg update_user_msg = 16;
-        skissm.SystemManagerMsg system_manager_msg = 17;
-        skissm.FriendManagerMsg friend_manager_msg = 18;
+        AcquireSyncMsg acquire_sync_msg = 4;
+        SupplyOpksMsg supply_opks_msg = 5;
+        InviteMsg invite_msg = 6;
+        AcceptMsg accept_msg = 7;
+        NewUserDeviceMsg new_user_device_msg = 8;
+        E2eeMsg e2ee_msg = 9;
+        CreateGroupMsg create_group_msg = 10;
+        AddGroupMembersMsg add_group_members_msg = 11;
+        RemoveGroupMembersMsg remove_group_members_msg = 12;
+        UpdateGroupMsg update_group_msg = 13;
+        ClientHeartbeatMsg client_heartbeat_msg = 14;
+        ServerHeartbeatMsg server_heartbeat_msg = 15;
+        UpdateUserMsg update_user_msg = 16;
+        SystemManagerMsg system_manager_msg = 17;
+        FriendManagerMsg friend_manager_msg = 18;
     };
 }

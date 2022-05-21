@@ -30,10 +30,10 @@ message Session {
     string version = 1;
     string e2ee_pack_id = 2;
     string session_id = 3;
-    skissm.E2eeAddress session_owner = 4;
-    skissm.E2eeAddress from = 5;
-    skissm.E2eeAddress to = 6;
-    skissm.Ratchet ratchet = 7;
+    E2eeAddress session_owner = 4;
+    E2eeAddress from = 5;
+    E2eeAddress to = 6;
+    Ratchet ratchet = 7;
     bytes alice_identity_key = 8;
     bytes alice_ephemeral_key = 9;
     bytes bob_signed_pre_key = 10;

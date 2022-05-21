@@ -26,5 +26,5 @@ option java_outer_classname = "InviteRequestProto";
 import "skissm/InviteMsg.proto";
 
 message InviteRequest {
-    skissm.InviteMsg msg = 1;
+    InviteMsg msg = 1;
 }

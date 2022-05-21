@@ -26,6 +26,6 @@ option java_outer_classname = "SupplyOpksResponseProto";
 import "skissm/ResponseCode.proto";
 
 message SupplyOpksResponse {
-  ResponseCode code = 1;
-  string msg = 2;
+    ResponseCode code = 1;
+    string msg = 2;
 }

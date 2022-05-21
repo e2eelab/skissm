@@ -26,5 +26,5 @@ option java_outer_classname = "CreateGroupRequestProto";
 import "skissm/CreateGroupMsg.proto";
 
 message CreateGroupRequest {
-    skissm.CreateGroupMsg msg = 1;
+    CreateGroupMsg msg = 1;
 }

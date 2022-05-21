@@ -68,11 +68,15 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *t
     if (outbound_sessions_num == (size_t)(0)) {
         return get_pre_key_bundle_internal(from, to);
     } else {
-        // release
         unsigned i;
         for(i = 0; i < outbound_sessions_num; i++) {
+            if (!outbound_sessions[i]->responded) {
+                // resend ?
+            }
+            // release
             skissm__session__free_unpacked(outbound_sessions[i], NULL);
         }
+        // release
         free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
         return NULL;
     }

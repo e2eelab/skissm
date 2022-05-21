@@ -26,5 +26,5 @@ option java_outer_classname = "SendOne2oneMsgRequestProto";
 import "skissm/E2eeMsg.proto";
 
 message SendOne2oneMsgRequest {
-    skissm.E2eeMsg msg = 1;
+    E2eeMsg msg = 1;
 }

@@ -26,5 +26,5 @@ option java_outer_classname = "AcquireSyncMsgProto";
 import "skissm/ProtoMsgTag.proto";
 
 message AcquireSyncMsg {
-    skissm.ProtoMsgTag last_proto_msg_tag = 1;
+    ProtoMsgTag last_proto_msg_tag = 1;
 }

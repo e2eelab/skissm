@@ -36,7 +36,7 @@ enum NewFriendOp {
 }
 
 message FriendManagerMsg {
-    skissm.E2eeAddress user_address = 1;
+    E2eeAddress user_address = 1;
     string user_name = 2;
     NewFriendOp op = 3;
 }

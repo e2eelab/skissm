@@ -28,5 +28,5 @@ import "skissm/KeyPair.proto";
 message OneTimePreKey {
     uint32 opk_id = 1;
     bool used = 2;
-    skissm.KeyPair key_pair = 3;
+    KeyPair key_pair = 3;
 }

@@ -26,6 +26,6 @@ option java_outer_classname = "SkippedMsgKeyNodeProto";
 import "skissm/MsgKey.proto";
 
 message SkippedMsgKeyNode {
-  bytes ratchet_key_public = 1;
-  skissm.MsgKey msg_key = 2;
+    bytes ratchet_key_public = 1;
+    MsgKey msg_key = 2;
 }

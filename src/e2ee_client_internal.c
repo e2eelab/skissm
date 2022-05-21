@@ -74,7 +74,6 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(Skissm__Session *outbo
 
     // release
     skissm__send_one2one_msg_request__free_unpacked(request, NULL);
-    skissm__session__free_unpacked(outbound_session, NULL);
 
     // done
     return response;

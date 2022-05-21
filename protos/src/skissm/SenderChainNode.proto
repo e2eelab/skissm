@@ -26,6 +26,6 @@ option java_outer_classname = "SenderChainNodeProto";
 import "skissm/ChainKey.proto";
 
 message SenderChainNode {
-  bytes ratchet_key = 1;
-  skissm.ChainKey chain_key = 2;
+    bytes ratchet_key = 1;
+    ChainKey chain_key = 2;
 }

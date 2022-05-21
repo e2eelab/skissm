@@ -29,8 +29,8 @@ import "skissm/GroupMsgPayload.proto";
 
 message E2eeMsg {
     string version = 1;
-    skissm.E2eeAddress from = 2;
-    skissm.E2eeAddress to = 3;
+    E2eeAddress from = 2;
+    E2eeAddress to = 3;
     string msg_id = 4;
     string session_id = 5;
     oneof payload {

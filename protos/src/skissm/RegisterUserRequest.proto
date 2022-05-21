@@ -33,7 +33,7 @@ message RegisterUserRequest {
     string authenticator = 3;
     string auth_code = 4;
     string e2ee_pack_id = 5;
-    skissm.IdentityKeyPublic identity_key_public = 6;
-    skissm.SignedPreKeyPublic signed_pre_key_public = 7;
-    repeated skissm.OneTimePreKeyPublic one_time_pre_keys = 8;
+    IdentityKeyPublic identity_key_public = 6;
+    SignedPreKeyPublic signed_pre_key_public = 7;
+    repeated OneTimePreKeyPublic one_time_pre_keys = 8;
 }

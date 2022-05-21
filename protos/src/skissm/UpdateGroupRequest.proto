@@ -26,5 +26,5 @@ option java_outer_classname = "UpdateGroupRequestProto";
 import "skissm/UpdateGroupMsg.proto";
 
 message UpdateGroupRequest {
-    skissm.UpdateGroupMsg msg = 1;
+    UpdateGroupMsg msg = 1;
 }

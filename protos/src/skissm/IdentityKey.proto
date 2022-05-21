@@ -26,6 +26,6 @@ option java_outer_classname = "IdentityKeyProto";
 import "skissm/KeyPair.proto";
 
 message IdentityKey {
-    skissm.KeyPair asym_key_pair = 1;
-    skissm.KeyPair sign_key_pair = 2;
+    KeyPair asym_key_pair = 1;
+    KeyPair sign_key_pair = 2;
 }

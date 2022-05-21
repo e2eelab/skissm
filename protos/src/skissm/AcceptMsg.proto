@@ -26,8 +26,8 @@ option java_outer_classname = "AcceptMsgProto";
 import "skissm/E2eeAddress.proto";
 
 message AcceptMsg {
-    skissm.E2eeAddress from = 1;
-    skissm.E2eeAddress to = 2;
+    E2eeAddress from = 1;
+    E2eeAddress to = 2;
     string e2ee_pack_id = 3;
     repeated bytes pre_shared_keys = 4;
 }

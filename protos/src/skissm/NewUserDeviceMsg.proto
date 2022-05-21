@@ -26,5 +26,5 @@ option java_outer_classname = "NewUserDeviceMsgProto";
 import "skissm/E2eeAddress.proto";
 
 message NewUserDeviceMsg {
-    skissm.E2eeAddress user_address = 1;
+    E2eeAddress user_address = 1;
 }

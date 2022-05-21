@@ -27,8 +27,8 @@ import "skissm/E2eeAddress.proto";
 import "skissm/GroupMember.proto";
 
 message UpdateGroupMsg {
-    skissm.E2eeAddress group_address = 1;
+    E2eeAddress group_address = 1;
     string group_name = 2;
     string group_avatar = 3;
-    repeated skissm.GroupMember group_members = 4;
+    repeated GroupMember group_members = 4;
 }

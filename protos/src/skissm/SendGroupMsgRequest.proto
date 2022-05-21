@@ -26,5 +26,5 @@ option java_outer_classname = "SendGroupMsgRequestProto";
 import "skissm/E2eeMsg.proto";
 
 message SendGroupMsgRequest {
-    skissm.E2eeMsg msg = 1;
+    E2eeMsg msg = 1;
 }

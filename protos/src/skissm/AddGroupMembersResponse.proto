@@ -30,5 +30,5 @@ message AddGroupMembersResponse {
     ResponseCode code = 1;
     string msg = 2;
 
-    repeated skissm.GroupMember group_members = 3;
+    repeated GroupMember group_members = 3;
 }

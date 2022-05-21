@@ -26,6 +26,6 @@ option java_outer_classname = "AcceptResponseProto";
 import "skissm/ResponseCode.proto";
 
 message AcceptResponse {
-  ResponseCode code = 1;
-  string msg = 2;
+    ResponseCode code = 1;
+    string msg = 2;
 }

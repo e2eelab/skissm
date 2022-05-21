@@ -30,5 +30,5 @@ message CreateGroupResponse {
     ResponseCode code = 1;
     string msg = 2;
 
-    skissm.E2eeAddress group_address = 3;
+    E2eeAddress group_address = 3;
 }
