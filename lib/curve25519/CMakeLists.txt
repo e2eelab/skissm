@@ -106,7 +106,7 @@ set(ed25519_headers
     ed25519/additions/generalized/gen_veddsa.h
     ed25519/additions/generalized/gen_x.h)
 
-add_library(curve25519)
+add_library(curve25519 STATIC)
 
 target_sources(curve25519 PRIVATE ${ed25519_SRCS})
 target_sources(curve25519 PUBLIC ${ed25519_headers})

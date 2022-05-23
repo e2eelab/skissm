@@ -208,14 +208,14 @@ typedef struct skissm_db_handler_t {
     /**
      * @brief find inbound session
      * @param session_id
-     * @param owner
+     * @param session_owner_address
      * @param inbound_session
      */
     void (*load_inbound_session)(char *, Skissm__E2eeAddress *,
                                  Skissm__Session **);
     /**
      * @brief find the lastest outbound session
-     * @param owner
+     * @param session_owner_address
      * @param to
      * @param outbound_session
      */
@@ -225,7 +225,7 @@ typedef struct skissm_db_handler_t {
 
     /**
      * @brief find the list of outbound sessions that are related to to_user_id
-     * @param owner
+     * @param session_owner_address
      * @param to_user_id
      * @param outbound_sessions
      */
@@ -387,7 +387,7 @@ typedef struct skissm_event_handler_t {
      * @param error_code
      * @param error_msg
      */
-    void (*on_error)(ErrorCode, char *);
+    void (*on_error)(ErrorCode, const char *);
     /**
      * @brief notify user registered event
      * @param account

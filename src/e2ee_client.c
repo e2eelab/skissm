@@ -94,6 +94,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(Skissm__E2eeAddress *from, Skis
         Skissm__Session *outbound_session = outbound_sessions[i];
         if (outbound_session->responded == false) {
             // skip non-responded session
+            // TODO keep common_plaintext_data and resend when AcceptMsg is received.
             continue;
         }
         // pack common plaintext before sending it

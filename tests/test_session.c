@@ -49,8 +49,8 @@ typedef struct store_plaintext {
 
 store_plaintext plaintext_store = {NULL, 0};
 
-static void on_error(ErrorCode error_code, char *error_msg) {
-    print_error(error_msg, error_code);
+static void on_error(ErrorCode error_code, const char *error_msg) {
+    print_error((char *)error_msg, error_code);
 }
 
 static void on_user_registered(Skissm__Account *account){

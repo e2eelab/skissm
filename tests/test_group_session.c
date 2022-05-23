@@ -53,7 +53,7 @@ store_plaintext plaintext_store = {NULL, 0};
 
 store_group group = {NULL, NULL};
 
-static void on_error(ErrorCode error_code, char *error_msg) { print_error(error_msg, error_code); }
+static void on_error(ErrorCode error_code, const char *error_msg) { print_error(error_msg, error_code); }
 
 static void on_user_registered(Skissm__Account *account) {
     print_msg("on_user_registered: user_id", (uint8_t *)account->address->user->user_id, strlen(account->address->user->user_id));

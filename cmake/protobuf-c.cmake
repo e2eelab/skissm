@@ -40,7 +40,7 @@ endif()
 
 set(TEST_DIR ${MAIN_DIR}/t)
 
-add_library(protobuf-c)
+add_library(protobuf-c STATIC)
 target_sources(protobuf-c
                PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/protobuf-c/protobuf-c.c)
 target_sources(protobuf-c

@@ -13,7 +13,7 @@ add_subdirectory(include)
 add_subdirectory(library)
 
 set(mbedcrypto_target "${MBEDTLS_TARGET_PREFIX}mbedcrypto")
-add_library(${mbedcrypto_target})
+add_library(${mbedcrypto_target} STATIC)
 target_sources(${mbedcrypto_target} PRIVATE ${src_files})
 target_sources(${mbedcrypto_target} PUBLIC ${src_headers})
 
