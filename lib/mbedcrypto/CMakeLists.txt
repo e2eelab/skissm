@@ -22,8 +22,8 @@ set_target_properties(${mbedcrypto_target} PROPERTIES VERSION 2.26.0 SOVERSION
 target_include_directories(${mbedcrypto_target}
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-install(
-  TARGETS ${mbedcrypto_target}
+install(TARGETS ${mbedcrypto_target}
+  CONFIGURATIONS ${CMAKE_BUILD_TYPE}
   EXPORT ${mbedcrypto_target}Targets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

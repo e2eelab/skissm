@@ -36,6 +36,7 @@ include(GNUInstallDirs)
 option(SKISSM_BUILD_PROTOBUF "Build protobuf" ON)
 option(SKISSM_TESTS "Build skissm tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
+option(CMAKE_BUILD_TYPE "Build types" Debug)
 
 set(PROJECT_VERSION_SO ${PROJECT_VERSION_MAJOR})
 
@@ -192,8 +193,8 @@ target_link_options(skissm_static PUBLIC "LINKER:-undefined,dynamic_lookup")
 target_link_libraries(skissm_static PUBLIC mbedcrypto curve25519
                                             protobuf::libprotobuf protobuf-c)
 
-install(
-  TARGETS skissm_static
+install(TARGETS skissm_static
+  CONFIGURATIONS ${CMAKE_BUILD_TYPE}
   EXPORT skissm-targets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
