@@ -27,6 +27,7 @@
 #include "skissm/crypto.h"
 #include "skissm/mem_util.h"
 #include "skissm/skissm.h"
+#include "skissm/e2ee_client.h"
 
 #include "test_plugin.h"
 #include "test_util.h"
@@ -129,11 +130,30 @@ static void register_accounts_test(uint64_t num) {
     load_accounts_test(num);
 }
 
+void register_user_test() {
+    uint64_t account_id = 9;
+    const char *e2ee_pack_id = "0";
+    const char *user_name = "alice";
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "email";
+    const char *auth_code = "123456";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: %s", response->address->user->user_id);
+}
+
 int main(){
     // test start
     tear_up();
 
     register_accounts_test(8);
+    register_user_test();
 
     // test stop.
     tear_down();

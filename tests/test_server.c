@@ -126,6 +126,8 @@ Skissm__RegisterUserResponse *test_register_user(Skissm__RegisterUserRequest *re
 
     /* Generate a random address */
     mock_random_user_address(&(cur_data->address));
+    free(cur_data->address->user->device_id);
+    cur_data->address->user->device_id = strdup(request->device_id);
 
     user_data_set_insert_pos++;
 
