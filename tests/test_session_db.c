@@ -88,6 +88,124 @@ void test_load_outbound_session()
     tear_down();
 }
 
+void test_load_outbound_sessions()
+{
+    tear_up();;
+
+    // create sessions
+    Skissm__Session *session_1, *session_2, *session_3;
+    session_1 = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    session_2 = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    session_3 = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+
+    // create addresses
+    Skissm__E2eeAddress *from, *to_1, *to_2, *to_3;
+    mock_address(&from, "alice", "alice's domain", "alice's device");
+    mock_address(&to_1, "bob", "bob's domain", "bob's device 1");
+    mock_address(&to_2, "bob", "bob's domain", "bob's device 2");
+    mock_address(&to_3, "bob", "bob's domain", "bob's device 3");
+
+    // initialise sessions
+    initialise_session(session_1, TEST_E2EE_PACK_ID, from, to_1);
+    copy_address_from_address(&(session_1->session_owner), from);
+    initialise_session(session_2, TEST_E2EE_PACK_ID, from, to_2);
+    copy_address_from_address(&(session_2->session_owner), from);
+    initialise_session(session_3, TEST_E2EE_PACK_ID, from, to_3);
+    copy_address_from_address(&(session_3->session_owner), from);
+
+    // create mock public keys for session_1
+    session_1->alice_identity_key.len = 32;
+    session_1->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_1->alice_identity_key.data, "11111111111111111111111111111111", 32);
+    session_1->alice_ephemeral_key.len = 32;
+    session_1->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_1->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    session_1->bob_signed_pre_key.len = 32;
+    session_1->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_1->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
+    session_1->bob_one_time_pre_key.len = 32;
+    session_1->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_1->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
+
+    session_1->associated_data.len = 64;
+    session_1->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    memcpy(session_1->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
+
+    session_1->session_id = generate_uuid_str();
+
+    // insert to the db
+    store_session(session_1);
+
+    // create mock public keys for session_2
+    session_2->alice_identity_key.len = 32;
+    session_2->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_2->alice_identity_key.data, "11111111111111111111111111111111", 32);
+    session_2->alice_ephemeral_key.len = 32;
+    session_2->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_2->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    session_2->bob_signed_pre_key.len = 32;
+    session_2->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_2->bob_signed_pre_key.data, "33333333333333333333333333333333", 32);
+    session_2->bob_one_time_pre_key.len = 32;
+    session_2->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_2->bob_one_time_pre_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+
+    session_2->associated_data.len = 64;
+    session_2->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    memcpy(session_2->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
+
+    session_2->session_id = generate_uuid_str();
+
+    // insert to the db
+    store_session(session_2);
+
+    // create mock public keys for session_3
+    session_3->alice_identity_key.len = 32;
+    session_3->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_3->alice_identity_key.data, "11111111111111111111111111111111", 32);
+    session_3->alice_ephemeral_key.len = 32;
+    session_3->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_3->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+    session_3->bob_signed_pre_key.len = 32;
+    session_3->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_3->bob_signed_pre_key.data, "44444444444444444444444444444444", 32);
+    session_3->bob_one_time_pre_key.len = 32;
+    session_3->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(session_3->bob_one_time_pre_key.data, "mnopqrstuvwxyz012345abcdefghijkl", 32);
+
+    session_3->associated_data.len = 64;
+    session_3->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    memcpy(session_3->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
+
+    session_3->session_id = generate_uuid_str();
+
+    // insert to the db
+    store_session(session_3);
+
+    Skissm__Session **sessions = (Skissm__Session **) malloc(sizeof(Skissm__Session *) * 3);
+    sessions[0] = session_1;
+    sessions[1] = session_2;
+    sessions[2] = session_3;
+
+    // load_outbound_session
+    Skissm__Session **sessions_copy;
+    load_outbound_sessions(from, to_1->user->user_id, &sessions_copy);
+
+    // assert session equals to session_copy
+    print_result("test_load_outbound_sessions", is_equal_sessions(sessions, sessions_copy, 3));
+
+    // free
+    skissm__e2ee_address__free_unpacked(from, NULL);
+    skissm__e2ee_address__free_unpacked(to_1, NULL);
+    skissm__e2ee_address__free_unpacked(to_2, NULL);
+    skissm__e2ee_address__free_unpacked(to_3, NULL);
+    skissm__session__free_unpacked(session_1, NULL);
+    skissm__session__free_unpacked(session_2, NULL);
+    skissm__session__free_unpacked(session_3, NULL);
+
+    tear_down();
+}
+
 void test_load_inbound_session()
 {
     tear_up();
@@ -150,10 +268,16 @@ void test_load_outbound_group_session()
     mock_address(&Alice, "alice", "alice's domain", "alice's device");
     mock_address(&Bob, "bob", "bob's domain", "bob's device");
 
-    // create member_addresses
-    Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **) malloc(sizeof(Skissm__E2eeAddress *) * 2);
-    copy_address_from_address(&(member_addresses[0]), Alice);
-    copy_address_from_address(&(member_addresses[1]), Bob);
+    // create group_members
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **) malloc(sizeof(Skissm__GroupMember *) * 2);
+    group_members[0] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup("alice");
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    group_members[1] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup("bob");
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
@@ -168,7 +292,7 @@ void test_load_outbound_group_session()
     Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(group_session);
 
-    group_session->version = PROTOCOL_VERSION;
+    group_session->version = strdup(E2EE_PROTOCOL_VERSION);
 
     copy_address_from_address(&(group_session->session_owner), Alice);
 
@@ -176,9 +300,9 @@ void test_load_outbound_group_session()
 
     group_session->session_id = generate_uuid_str();
 
-    group_session->n_member_addresses = 2;
+    group_session->n_group_members = 2;
 
-    copy_member_addresses_from_member_addresses(&(group_session->member_addresses), (const Skissm__E2eeAddress **)member_addresses, 2);
+    copy_group_members(&(group_session->group_members), group_members, 2);
 
     group_session->sequence = 0;
 
@@ -206,7 +330,6 @@ void test_load_outbound_group_session()
     // free
     skissm__e2ee_address__free_unpacked(Alice, NULL);
     skissm__e2ee_address__free_unpacked(Bob, NULL);
-    free(member_addresses);
     skissm__e2ee_address__free_unpacked(group_address, NULL);
     skissm__group_session__free_unpacked(group_session, NULL);
     skissm__group_session__free_unpacked(group_session_copy, NULL);
@@ -223,10 +346,16 @@ void test_load_inbound_group_session()
     mock_address(&Alice, "alice", E2EELAB_DOMAIN, "alice's device");
     mock_address(&Bob, "bob", E2EELAB_DOMAIN, "bob's device");
 
-    // create member_addresses
-    Skissm__E2eeAddress **member_addresses = (Skissm__E2eeAddress **) malloc(sizeof(Skissm__E2eeAddress *) * 2);
-    copy_address_from_address(&(member_addresses[0]), Alice);
-    copy_address_from_address(&(member_addresses[1]), Bob);
+    // create group_members
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **) malloc(sizeof(Skissm__GroupMember *) * 2);
+    group_members[0] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup("alice");
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    group_members[1] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup("bob");
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
@@ -241,7 +370,7 @@ void test_load_inbound_group_session()
     Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(group_session);
 
-    group_session->version = PROTOCOL_VERSION;
+    group_session->version = strdup(E2EE_PROTOCOL_VERSION);
 
     copy_address_from_address(&(group_session->session_owner), Alice);
 
@@ -249,9 +378,9 @@ void test_load_inbound_group_session()
 
     group_session->session_id = generate_uuid_str();
 
-    group_session->n_member_addresses = 2;
+    group_session->n_group_members = 2;
 
-    copy_member_addresses_from_member_addresses(&(group_session->member_addresses), (const Skissm__E2eeAddress **)member_addresses, 2);
+    copy_group_members(&(group_session->group_members), group_members, 2);
 
     group_session->sequence = 0;
 
@@ -283,7 +412,6 @@ void test_load_inbound_group_session()
     // free
     skissm__e2ee_address__free_unpacked(Alice, NULL);
     skissm__e2ee_address__free_unpacked(Bob, NULL);
-    free(member_addresses);
     skissm__e2ee_address__free_unpacked(group_address, NULL);
     skissm__group_session__free_unpacked(group_session, NULL);
     skissm__group_session__free_unpacked(group_session_copy, NULL);
@@ -522,6 +650,7 @@ int main(){
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
 
     test_load_outbound_session();
+    test_load_outbound_sessions();
     test_load_inbound_session();
     test_load_outbound_group_session();
     test_load_inbound_group_session();

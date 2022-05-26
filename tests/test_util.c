@@ -361,7 +361,7 @@ bool is_equal_ratchet(Skissm__Ratchet *ratchet_1, Skissm__Ratchet *ratchet_2) {
 }
 
 bool is_equal_session(Skissm__Session *session_1, Skissm__Session *session_2) {
-    if (session_1->version != session_2->version) {
+    if (!safe_strcmp(session_1->version, session_2->version)) {
         printf("version not match");
         return false;
     }
@@ -415,8 +415,19 @@ bool is_equal_session(Skissm__Session *session_1, Skissm__Session *session_2) {
     return true;
 }
 
+bool is_equal_sessions(Skissm__Session **sessions_1, Skissm__Session **sessions_2, size_t session_num) {
+    size_t i;
+    for (i = 0; i < session_num; i++){
+        if (is_equal_session(sessions_1[i], sessions_2[i]) == false){
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool is_equal_group_session(Skissm__GroupSession *group_session_1, Skissm__GroupSession *group_session_2) {
-    if (group_session_1->version != group_session_2->version) {
+    if (!safe_strcmp(group_session_1->version, group_session_2->version)) {
         printf("version not match");
         return false;
     }
