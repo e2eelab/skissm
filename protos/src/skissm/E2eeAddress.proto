@@ -22,6 +22,8 @@ package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "E2eeAddressProto";
+option objc_class_prefix = "Objc";
+option swift_prefix="Swift";
 
 message PeerUser {
     string user_id = 1;

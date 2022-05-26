@@ -22,6 +22,8 @@ package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "ConsumeProtoMsgRequestProto";
+option objc_class_prefix = "Objc";
+option swift_prefix="Swift";
 
 message ConsumeProtoMsgRequest {
     string proto_msg_id = 1;

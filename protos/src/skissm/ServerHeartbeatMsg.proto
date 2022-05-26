@@ -23,6 +23,8 @@ package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "ServerHeartbeatMsgProto";
+option objc_class_prefix = "Objc";
+option swift_prefix="Swift";
 
 message ServerHeartbeatMsg {
     string hostname = 1;

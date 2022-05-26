@@ -24,6 +24,8 @@ option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "OneTimePreKeyProto";
 
 import "skissm/KeyPair.proto";
+option objc_class_prefix = "Objc";
+option swift_prefix="Swift";
 
 message OneTimePreKey {
     uint32 opk_id = 1;

@@ -145,7 +145,7 @@ void register_user_test() {
             authenticator,
             auth_code);
     assert(safe_strcmp(device_id, response->address->user->device_id));
-    printf("Test user registered: %s", response->address->user->user_id);
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 }
 
 int main(){

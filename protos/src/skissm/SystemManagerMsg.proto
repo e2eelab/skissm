@@ -22,6 +22,8 @@ package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
 option java_outer_classname = "SystemManagerMsgProto";
+option objc_class_prefix = "Objc";
+option swift_prefix="Swift";
 
 message SystemManagerMsg {
     string system_notif_id = 1;
