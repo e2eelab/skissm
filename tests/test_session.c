@@ -120,16 +120,9 @@ static void test_encryption(
     if (plaintext_store.plaintext != NULL){
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
     }
-    // pack plaintext into ontext that is in Skissm__Plaintext structure
-    uint8_t *e2ee_plaintext = NULL;
-    size_t e2ee_plaintext_len;
-    pack_common_plaintext(
-        plaintext, plaintext_len,
-        &e2ee_plaintext, &e2ee_plaintext_len
-    );
 
     // send encrypted msg
-    send_one2one_msg(outbound_session->from, outbound_session->to, e2ee_plaintext, e2ee_plaintext_len);
+    send_one2one_msg(outbound_session->from, outbound_session->to, plaintext, plaintext_len);
     if (plaintext_store.plaintext == NULL){
         printf("Test failed!!!\n");
         assert(false);
@@ -139,13 +132,29 @@ static void test_encryption(
     assert(memcmp(plaintext, plaintext_store.plaintext, plaintext_len) == 0);
 }
 
+static void create_test_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "email";
+    const char *auth_code = "123456";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+}
+
 static void test_basic_session(){
     // test start
     tear_up();
     test_begin();
 
-    create_account(1, TEST_E2EE_PACK_ID);
-    create_account(2, TEST_E2EE_PACK_ID);
+    create_test_account(1, "alice");
+    create_test_account(2, "bob");
 
     Skissm__Session *outbound_session;
 
@@ -174,8 +183,8 @@ static void test_interaction(){
     tear_up();
     test_begin();
 
-    create_account(1, TEST_E2EE_PACK_ID);
-    create_account(2, TEST_E2EE_PACK_ID);
+    create_test_account(1, "alice");
+    create_test_account(2, "bob");
 
     Skissm__Session *outbound_session_a, *outbound_session_b;
 
@@ -219,8 +228,8 @@ static void test_continual_messages(){
     tear_up();
     test_begin();
 
-    create_account(1, TEST_E2EE_PACK_ID);
-    create_account(2, TEST_E2EE_PACK_ID);
+    create_test_account(1, "alice");
+    create_test_account(2, "bob");
 
     Skissm__Session *outbound_session;
 

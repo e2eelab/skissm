@@ -147,12 +147,14 @@ void copy_opks_from_opks(Skissm__OneTimePreKey ***dest, Skissm__OneTimePreKey **
 void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src) {
     *dest = (Skissm__Account *)malloc(sizeof(Skissm__Account));
     skissm__account__init(*dest);
-    (*dest)->version = src->version;
+    (*dest)->version = strdup(src->version);
     (*dest)->account_id = src->account_id;
     (*dest)->saved = src->saved;
     if (src->address) {
         copy_address_from_address(&((*dest)->address), src->address);
     }
+    (*dest)->password = strdup(src->password);
+    (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
     if (src->identity_key) {
         copy_ik_from_ik(&((*dest)->identity_key), src->identity_key);
     }

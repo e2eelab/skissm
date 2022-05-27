@@ -24,8 +24,6 @@
 #include "skissm/account.h"
 #include "skissm/mem_util.h"
 
-#include "test_plugin.h"
-
 void print_hex(char *title, uint8_t *msg, size_t msg_len) {
     printf("%s", title);
     for (int i = 0; i < msg_len; i++) {

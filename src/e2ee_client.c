@@ -275,10 +275,12 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
 
     // notify server that the proto_msg has been consumed
     Skissm__ConsumeProtoMsgResponse *response = NULL;
-    if (consumed) {
+    if (consumed && (proto_msg->tag != NULL)) {
         response = consume_proto_msg(proto_msg->tag->proto_msg_id);
     } else {
-        response = NULL;
+        response = (Skissm__ConsumeProtoMsgResponse *)malloc(sizeof(Skissm__ConsumeProtoMsgResponse));
+        skissm__consume_proto_msg_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT;
     }
 
     // release

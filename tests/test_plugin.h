@@ -25,9 +25,6 @@
 
 #include "skissm/skissm.h"
 
-#define E2EELAB_DOMAIN          "e2eelab.org"
-#define TEST_E2EE_PACK_ID       "0"
-
 extern const char *db_name;
 
 void tear_up();

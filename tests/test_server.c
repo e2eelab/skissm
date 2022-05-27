@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "skissm/mem_util.h"
+#include "skissm/e2ee_client.h"
 
 #include "test_util.h"
 
@@ -135,6 +136,7 @@ Skissm__RegisterUserResponse *test_register_user(Skissm__RegisterUserRequest *re
         = (Skissm__RegisterUserResponse *)malloc(sizeof(Skissm__RegisterUserResponse));
     skissm__register_user_response__init(response);
     copy_address_from_address(&(response->address), cur_data->address);
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     return response;
 }
@@ -153,22 +155,16 @@ Skissm__GetPreKeyBundleResponse *test_get_pre_key_bundle(Skissm__GetPreKeyBundle
         user_data_find++;
     }
 
-    // Skissm__ResponseData *response_data = (Skissm__ResponseData *)malloc(sizeof(Skissm__ResponseData));
-    // skissm__response_data__init(response_data);
-
-    // if (user_data_find == user_data_set_insert_pos){
-    //     response_data->code = Internal_Server_Error;
-    //     goto complete;
-    // }
-
     user_data *cur_data = &(user_data_set[user_data_find]);
 
     response = (Skissm__GetPreKeyBundleResponse *) malloc(sizeof(Skissm__GetPreKeyBundleResponse));
     skissm__get_pre_key_bundle_response__init(response);
-    response->pre_key_bundles = (Skissm__PreKeyBundle **) malloc(sizeof(Skissm__PreKeyBundle *));
+    response->pre_key_bundles = (Skissm__PreKeyBundle **) malloc(sizeof(Skissm__PreKeyBundle *)*1);
+    response->n_pre_key_bundles = 1;
     response->pre_key_bundles[0] = (Skissm__PreKeyBundle *) malloc(sizeof(Skissm__PreKeyBundle));
     skissm__pre_key_bundle__init(response->pre_key_bundles[0]);
 
+    response->pre_key_bundles[0]->e2ee_pack_id = strdup(TEST_E2EE_PACK_ID);
     copy_address_from_address(&(response->pre_key_bundles[0]->user_address), request->user_address);
     copy_ik_public_from_ik_public(&(response->pre_key_bundles[0]->identity_key_public), cur_data->identity_key_public);
     copy_spk_public_from_spk_public(&(response->pre_key_bundles[0]->signed_pre_key_public), cur_data->signed_pre_key_public);
@@ -183,25 +179,72 @@ Skissm__GetPreKeyBundleResponse *test_get_pre_key_bundle(Skissm__GetPreKeyBundle
     /* release the one-time pre-key */
     skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_keys[i], NULL);
     cur_data->one_time_pre_keys[i] = NULL;
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     return response;
 }
 
 Skissm__InviteResponse *test_invite(Skissm__InviteRequest *request) {
-    size_t request_data_len = skissm__invite_request__get_packed_size(request);
-    uint8_t *request_data = (uint8_t *)malloc(request_data_len);
-    skissm__invite_request__pack(request, request_data);
+    Skissm__InviteMsg *invite_msg = request->msg;
+    size_t invite_msg_data_len = skissm__invite_msg__get_packed_size(invite_msg);
+    uint8_t invite_msg_data[invite_msg_data_len];
+    skissm__invite_msg__pack(invite_msg, invite_msg_data);
 
-    Skissm__InviteResponse *response = NULL;
+    // forward a copy of InviteMsg
+    Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+    skissm__proto_msg__init(proto_msg);
+    copy_address_from_address(&(proto_msg->from), invite_msg->from);
+    copy_address_from_address(&(proto_msg->to), invite_msg->to);
+    proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG;
+    proto_msg->invite_msg = skissm__invite_msg__unpack(NULL, invite_msg_data_len, invite_msg_data);
+
+    size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
+    uint8_t proto_msg_data[proto_msg_data_len];
+    skissm__proto_msg__pack(proto_msg, proto_msg_data);
+    Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
+
+    // prepare response
+    Skissm__InviteResponse *response = (Skissm__InviteResponse *)malloc(sizeof(Skissm__InviteResponse));
+    skissm__invite_response__init(response);
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
+    // release
+    skissm__proto_msg__free_unpacked(proto_msg, NULL);
+    skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
+
+    // done
     return response;
 }
 
 Skissm__AcceptResponse *test_accept(Skissm__AcceptRequest *request) {
-    size_t request_data_len = skissm__accept_request__get_packed_size(request);
-    uint8_t *request_data = (uint8_t *)malloc(request_data_len);
-    skissm__accept_request__pack(request, request_data);
+    Skissm__AcceptMsg *accept_msg = request->msg;
+    size_t accept_msg_data_len = skissm__accept_msg__get_packed_size(accept_msg);
+    uint8_t accept_msg_data[accept_msg_data_len];
+    skissm__accept_msg__pack(accept_msg, accept_msg_data);
 
-    Skissm__AcceptResponse *response = NULL;
+    // forward a copy of InviteMsg
+    Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+    skissm__proto_msg__init(proto_msg);
+    copy_address_from_address(&(proto_msg->from), accept_msg->from);
+    copy_address_from_address(&(proto_msg->to), accept_msg->to);
+    proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_ACCEPT_MSG;
+    proto_msg->accept_msg = skissm__accept_msg__unpack(NULL, accept_msg_data_len, accept_msg_data);
+
+    size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
+    uint8_t proto_msg_data[proto_msg_data_len];
+    skissm__proto_msg__pack(proto_msg, proto_msg_data);
+    Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
+
+    // prepare response
+    Skissm__AcceptResponse *response = (Skissm__AcceptResponse *)malloc(sizeof(Skissm__AcceptResponse));
+    skissm__accept_response__init(response);
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
+    // release
+    skissm__proto_msg__free_unpacked(proto_msg, NULL);
+    skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
+
+    // done
     return response;
 }
 
@@ -229,6 +272,8 @@ Skissm__PublishSpkResponse *test_publish_spk(Skissm__PublishSpkRequest *request)
     copy_spk_public_from_spk_public(&(cur_data->signed_pre_key_public), request->signed_pre_key_public);
 
     Skissm__PublishSpkResponse *response = NULL;
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
     return response;
 }
 
@@ -271,15 +316,40 @@ Skissm__SupplyOpksResponse *test_supply_opks(Skissm__SupplyOpksRequest *request)
     }
 
     Skissm__SupplyOpksResponse *response = NULL;
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
     return response;
 }
 
 Skissm__SendOne2oneMsgResponse *test_send_one2one_msg(Skissm__SendOne2oneMsgRequest *request) {
-    size_t request_data_len = skissm__send_one2one_msg_request__get_packed_size(request);
-    uint8_t *request_data = (uint8_t *)malloc(request_data_len);
-    skissm__send_one2one_msg_request__pack(request, request_data);
+    Skissm__E2eeMsg *e2ee_msg = request->msg;
+    size_t e2ee_msg_data_len = skissm__e2ee_msg__get_packed_size(e2ee_msg);
+    uint8_t e2ee_msg_data[e2ee_msg_data_len];
+    skissm__e2ee_msg__pack(e2ee_msg, e2ee_msg_data);
 
-    Skissm__SendOne2oneMsgResponse *response = NULL;
+    // forward a copy of InviteMsg
+    Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+    skissm__proto_msg__init(proto_msg);
+    copy_address_from_address(&(proto_msg->from), e2ee_msg->from);
+    copy_address_from_address(&(proto_msg->to), e2ee_msg->to);
+    proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG;
+    proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
+
+    size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
+    uint8_t proto_msg_data[proto_msg_data_len];
+    skissm__proto_msg__pack(proto_msg, proto_msg_data);
+    Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
+
+    // prepare response
+    Skissm__SendOne2oneMsgResponse *response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
+    skissm__send_one2one_msg_response__init(response);
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
+    // release
+    skissm__proto_msg__free_unpacked(proto_msg, NULL);
+    skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
+
+    // done
     return response;
 }
 
@@ -308,6 +378,8 @@ Skissm__CreateGroupResponse *test_create_group(Skissm__CreateGroupRequest *reque
     group_data_set_insert_pos++;
 
     Skissm__CreateGroupResponse *response = NULL;
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
     return response;
 }
 
@@ -358,6 +430,8 @@ Skissm__AddGroupMembersResponse *test_add_group_members(Skissm__AddGroupMembersR
     }
 
     Skissm__AddGroupMembersResponse *response = NULL;
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
     return response;
 }
 
@@ -425,6 +499,8 @@ Skissm__RemoveGroupMembersResponse *test_remove_group_members(Skissm__RemoveGrou
     }
 
     Skissm__RemoveGroupMembersResponse *response = NULL;
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
     return response;
 }
 
@@ -434,6 +510,8 @@ Skissm__SendGroupMsgResponse *test_send_group_msg(Skissm__SendGroupMsgRequest *r
     skissm__send_group_msg_request__pack(request, request_data);
 
     Skissm__SendGroupMsgResponse *response = NULL;
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
     return response;
 }
 
@@ -443,5 +521,7 @@ Skissm__ConsumeProtoMsgResponse *test_consume_proto_msg(Skissm__ConsumeProtoMsgR
     skissm__consume_proto_msg_request__pack(request, request_data);
 
     Skissm__ConsumeProtoMsgResponse *response = NULL;
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
     return response;
 }
