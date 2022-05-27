@@ -44,6 +44,7 @@ bool is_equal_receiver_chain(Skissm__ReceiverChainNode *receiver_chain_node_1, S
 bool is_equal_skipped_message_key(Skissm__SkippedMsgKeyNode *skipped_msg_key_node_1, Skissm__SkippedMsgKeyNode *skipped_msg_key_node_2);
 bool is_equal_ratchet(Skissm__Ratchet *ratchet_1, Skissm__Ratchet *ratchet_2);
 bool is_equal_session(Skissm__Session *session_1, Skissm__Session *session_2);
+bool is_equal_sessions(Skissm__Session **sessions_1, Skissm__Session **sessions_2, size_t session_num);
 bool is_equal_group_session(Skissm__GroupSession *group_session_1, Skissm__GroupSession *group_session_2);
 
 // mock
