@@ -43,7 +43,7 @@ static void update_signed_pre_key() {
     for (i = 0; i < account_num; i++) {
         cur_account = accounts[i];
         // Check if the signed pre-key expired
-        now = get_skissm_plugin()->common_handler.handle_get_ts();
+        now = get_skissm_plugin()->common_handler.gen_ts();
         if (now > cur_account->signed_pre_key->ttl) {
             generate_signed_pre_key(cur_account);
             publish_spk_internal(cur_account);
@@ -168,7 +168,7 @@ size_t generate_signed_pre_key(Skissm__Account *account) {
     account->signed_pre_key->signature.len = sig_len;
     cipher_suite->sign(account->identity_key->sign_key_pair->private_key.data, account->signed_pre_key->key_pair->public_key.data, key_len, account->signed_pre_key->signature.data);
 
-    int64_t now = get_skissm_plugin()->common_handler.handle_get_ts();
+    int64_t now = get_skissm_plugin()->common_handler.gen_ts();
     account->signed_pre_key->ttl = now + SIGNED_PRE_KEY_EXPIRATION_MS;
 
     return 0;

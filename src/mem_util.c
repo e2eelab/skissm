@@ -33,7 +33,7 @@ bool is_equal(const uint8_t *buffer_a, const uint8_t *buffer_b, size_t length) {
 
 char *generate_uuid_str() {
     uint8_t uuid[UUID_LEN];
-    get_skissm_plugin()->common_handler.handle_gen_uuid(uuid);
+    get_skissm_plugin()->common_handler.gen_uuid(uuid);
     // to base64
     return crypto_base64_encode(uuid, UUID_LEN);
 }

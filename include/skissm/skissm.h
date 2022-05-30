@@ -123,9 +123,9 @@ typedef struct crypto_param_t {
 } crypto_param_t;
 
 typedef struct skissm_common_handler_t {
-    int64_t (*handle_get_ts)();
-    void (*handle_gen_rand)(uint8_t *, size_t);
-    void (*handle_gen_uuid)(uint8_t uuid[UUID_LEN]);
+    int64_t (*gen_ts)();
+    void (*gen_rand)(uint8_t *, size_t);
+    void (*gen_uuid)(uint8_t uuid[UUID_LEN]);
 } skissm_common_handler_t;
 
 typedef struct skissm_db_handler_t {

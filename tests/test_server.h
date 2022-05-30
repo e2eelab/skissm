@@ -27,7 +27,7 @@
  * @param request 
  * @return Skissm__RegisterUserResponse* 
  */
-Skissm__RegisterUserResponse *test_register_user(Skissm__RegisterUserRequest *request);
+Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request);
 
 /**
  * @brief Get the pre key bundle object
@@ -35,7 +35,7 @@ Skissm__RegisterUserResponse *test_register_user(Skissm__RegisterUserRequest *re
  * @param request 
  * @return Skissm__GetPreKeyBundleResponse* 
  */
-Skissm__GetPreKeyBundleResponse *test_get_pre_key_bundle(Skissm__GetPreKeyBundleRequest *request);
+Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundleRequest *request);
 
 /**
  * @brief 
@@ -43,7 +43,7 @@ Skissm__GetPreKeyBundleResponse *test_get_pre_key_bundle(Skissm__GetPreKeyBundle
  * @param request 
  * @return Skissm__InviteResponse* 
  */
-Skissm__InviteResponse *test_invite(Skissm__InviteRequest *request);
+Skissm__InviteResponse *mock_invite(Skissm__InviteRequest *request);
 
 /**
  * @brief 
@@ -51,7 +51,7 @@ Skissm__InviteResponse *test_invite(Skissm__InviteRequest *request);
  * @param request 
  * @return Skissm__AcceptResponse* 
  */
-Skissm__AcceptResponse *test_accept(Skissm__AcceptRequest *request);
+Skissm__AcceptResponse *mock_accept(Skissm__AcceptRequest *request);
 
 /**
  * @brief 
@@ -59,9 +59,9 @@ Skissm__AcceptResponse *test_accept(Skissm__AcceptRequest *request);
  * @param request 
  * @return Skissm__PublishSpkResponse* 
  */
-Skissm__PublishSpkResponse *test_publish_spk(Skissm__PublishSpkRequest *request);
+Skissm__PublishSpkResponse *mock_publish_spk(Skissm__PublishSpkRequest *request);
 
-Skissm__SupplyOpksResponse *test_supply_opks(Skissm__SupplyOpksRequest *request);
+Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__SupplyOpksRequest *request);
 
 /**
  * @brief 
@@ -69,7 +69,7 @@ Skissm__SupplyOpksResponse *test_supply_opks(Skissm__SupplyOpksRequest *request)
  * @param request 
  * @return Skissm__SendOne2oneMsgResponse* 
  */
-Skissm__SendOne2oneMsgResponse *test_send_one2one_msg(Skissm__SendOne2oneMsgRequest *request);
+Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__SendOne2oneMsgRequest *request);
 
 /**
  * @brief Create a group object
@@ -77,7 +77,7 @@ Skissm__SendOne2oneMsgResponse *test_send_one2one_msg(Skissm__SendOne2oneMsgRequ
  * @param request 
  * @return Skissm__CreateGroupResponse* 
  */
-Skissm__CreateGroupResponse *test_create_group(Skissm__CreateGroupRequest *request);
+Skissm__CreateGroupResponse *mock_create_group(Skissm__CreateGroupRequest *request);
 
 /**
  * @brief 
@@ -85,7 +85,7 @@ Skissm__CreateGroupResponse *test_create_group(Skissm__CreateGroupRequest *reque
  * @param request 
  * @return Skissm__AddGroupMembersResponse* 
  */
-Skissm__AddGroupMembersResponse *test_add_group_members(Skissm__AddGroupMembersRequest *request);
+Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersRequest *request);
 
 /**
  * @brief 
@@ -93,7 +93,7 @@ Skissm__AddGroupMembersResponse *test_add_group_members(Skissm__AddGroupMembersR
  * @param request 
  * @return Skissm__RemoveGroupMembersResponse* 
  */
-Skissm__RemoveGroupMembersResponse *test_remove_group_members(Skissm__RemoveGroupMembersRequest *request);
+Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGroupMembersRequest *request);
 
 /**
  * @brief 
@@ -101,7 +101,7 @@ Skissm__RemoveGroupMembersResponse *test_remove_group_members(Skissm__RemoveGrou
  * @param request 
  * @return Skissm__SendGroupMsgResponse* 
  */
-Skissm__SendGroupMsgResponse *test_send_group_msg(Skissm__SendGroupMsgRequest *request);
+Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__SendGroupMsgRequest *request);
 
 /**
  * @brief 
@@ -109,6 +109,6 @@ Skissm__SendGroupMsgResponse *test_send_group_msg(Skissm__SendGroupMsgRequest *r
  * @param request 
  * @return Skissm__ConsumeProtoMsgResponse* 
  */
-Skissm__ConsumeProtoMsgResponse *test_consume_proto_msg(Skissm__ConsumeProtoMsgRequest *request);
+Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__ConsumeProtoMsgRequest *request);
 
 #endif /* TEST_SERVER_H_ */

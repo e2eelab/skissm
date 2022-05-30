@@ -149,7 +149,7 @@ void create_outbound_group_session(
 
     outbound_group_session->chain_key.len = cipher_suite->get_crypto_param().hash_len;
     outbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
-    get_skissm_plugin()->common_handler.handle_gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
+    get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
 
     cipher_suite->sign_key_gen(&(outbound_group_session->signature_public_key), &(outbound_group_session->signature_private_key));
 

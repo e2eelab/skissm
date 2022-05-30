@@ -68,7 +68,7 @@ void crypto_curve25519_generate_key_pair(ProtobufCBinaryData *pub_key,
   pub_key->len = CURVE25519_KEY_LENGTH;
 
   uint8_t random[CURVE25519_RANDOM_LENGTH];
-  get_skissm_plugin()->common_handler.handle_gen_rand(random, sizeof(random));
+  get_skissm_plugin()->common_handler.gen_rand(random, sizeof(random));
 
   memcpy(priv_key->data, random, CURVE25519_KEY_LENGTH);
 
@@ -86,7 +86,7 @@ uint8_t *crypto_curve25519_dh(const ProtobufCBinaryData *our_key,
 void crypto_curve25519_sign(uint8_t *private_key, uint8_t *msg, size_t msg_len,
                             uint8_t *signature_out) {
   uint8_t nonce[CURVE_SIGNATURE_LENGTH];
-  get_skissm_plugin()->common_handler.handle_gen_rand(nonce, sizeof(nonce));
+  get_skissm_plugin()->common_handler.gen_rand(nonce, sizeof(nonce));
   curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
 }
 

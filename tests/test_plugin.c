@@ -36,20 +36,20 @@
 #include "test_util.h"
 
 // ===============================================================
-static int64_t handle_get_ts() {
+static int64_t gen_ts() {
     time_t now = time(0);
     return now;
 }
 
-static void handle_gen_rand(uint8_t *rand_out, size_t rand_out_len) {
+static void gen_rand(uint8_t *rand_out, size_t rand_out_len) {
     srand((unsigned int)time(NULL));
     for (int i = 0; i < rand_out_len; i++) {
         rand_out[i] = random() % UCHAR_MAX;
     }
 }
 
-static void handle_gen_uuid(uint8_t uuid[UUID_LEN]) {
-    handle_gen_rand(uuid, UUID_LEN);
+static void gen_uuid(uint8_t uuid[UUID_LEN]) {
+    gen_rand(uuid, UUID_LEN);
 }
 
 // ===============================================================
@@ -66,9 +66,9 @@ static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2e
 struct skissm_plugin_t ssm_plugin = {
     // common
     {
-        handle_get_ts,
-        handle_gen_rand,
-        handle_gen_uuid
+        gen_ts,
+        gen_rand,
+        gen_uuid
     },
     {
         // account
@@ -101,18 +101,18 @@ struct skissm_plugin_t ssm_plugin = {
         unload_group_pre_key
     },
     {
-        test_register_user,
-        test_get_pre_key_bundle,
-        test_invite,
-        test_accept,
-        test_publish_spk,
-        test_supply_opks,
-        test_send_one2one_msg,
-        test_create_group,
-        test_add_group_members,
-        test_remove_group_members,
-        test_send_group_msg,
-        test_consume_proto_msg
+        mock_register_user,
+        mock_get_pre_key_bundle,
+        mock_invite,
+        mock_accept,
+        mock_publish_spk,
+        mock_supply_opks,
+        mock_send_one2one_msg,
+        mock_create_group,
+        mock_add_group_members,
+        mock_remove_group_members,
+        mock_send_group_msg,
+        mock_consume_proto_msg
     },
     {
         NULL,
