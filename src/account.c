@@ -67,7 +67,7 @@ void account_begin() {
     uint64_t account_id = 1;
     get_skissm_plugin()->db_handler.load_account(account_id, &local_account);
 
-    // Check and keep a updated signed pre key.
+    // Check and keep a updated signed pre-key.
     update_signed_pre_key();
 }
 
@@ -236,7 +236,7 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *ac
 
 size_t mark_opk_as_used(Skissm__Account *account, uint32_t id) {
     Skissm__OneTimePreKey **cur = account->one_time_pre_keys;
-    unsigned int i;
+    size_t i;
     for (i = 0; i < account->n_one_time_pre_keys; i++) {
         if (cur[i]->opk_id == id) {
             cur[i]->used = true;
@@ -266,7 +266,7 @@ static void copy_one_time_pre_keys(Skissm__OneTimePreKey **dest, Skissm__OneTime
 void free_one_time_pre_key(Skissm__Account *account) {
     size_t used_num = 0;
     size_t new_num;
-    unsigned int i;
+    size_t i;
     if (account->one_time_pre_keys) {
         for (i = 0; i < account->n_one_time_pre_keys; i++) {
             if (account->one_time_pre_keys[i]) {

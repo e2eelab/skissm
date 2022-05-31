@@ -161,20 +161,20 @@ typedef struct skissm_db_handler_t {
      */
     void (*update_identity_key)(uint64_t, Skissm__IdentityKey *);
     /**
-     * @brief update signed pre key of account to db
+     * @brief update signed pre-key of account to db
      * @param account_id
      * @param signed_pre_key
      */
     void (*update_signed_pre_key)(uint64_t, Skissm__SignedPreKey *);
     /**
-     * @brief load old signed pre key by spk_id
+     * @brief load old signed pre-key by spk_id
      * @param account_id
      * @param spk_id
      * @param signed_pre_key
      */
     void (*load_signed_pre_key)(uint64_t, uint32_t, Skissm__SignedPreKey **);
     /**
-     * @brief remove expired signed pre key of account from db
+     * @brief remove expired signed pre-key of account from db
      * @param account_id
      */
     void (*remove_expired_signed_pre_key)(uint64_t);
@@ -185,20 +185,20 @@ typedef struct skissm_db_handler_t {
      */
     void (*update_address)(uint64_t, Skissm__E2eeAddress *);
     /**
-     * @brief add an one time pre key of account to db
+     * @brief add an one time pre-key of account to db
      * @param account_id
      * @param one_time_pre_key
      */
     void (*add_one_time_pre_key)(uint64_t,
                                  Skissm__OneTimePreKey *);
     /**
-     * @brief remove an one time pre key of account to db
+     * @brief remove an one time pre-key of account to db
      * @param account_id
      * @param one_time_pre_key_id
      */
     void (*remove_one_time_pre_key)(uint64_t, uint32_t);
     /**
-     * @brief update an one time pre key of acount from db
+     * @brief update an one time pre-key of acount from db
      * @param account_id
      * @param one_time_pre_key_id
      */
@@ -314,7 +314,7 @@ typedef struct e2ee_proto_handler_t {
      */
     Skissm__RegisterUserResponse * (*register_user)(Skissm__RegisterUserRequest *);
     /**
-     * @brief Get pre key bundle
+     * @brief Get pre-key bundle
      * @param request
      * @return response
      */
@@ -332,13 +332,13 @@ typedef struct e2ee_proto_handler_t {
      */
     Skissm__AcceptResponse * (*accept)(Skissm__AcceptRequest *);
     /**
-     * @brief Publish signed pre key
+     * @brief Publish signed pre-key
      * @param request
      * @return response
      */
     Skissm__PublishSpkResponse * (*publish_spk)(Skissm__PublishSpkRequest *);
     /**
-     * @brief Supply onetime pre key
+     * @brief Supply onetime pre-key
      * @param request
      * @return response
      */

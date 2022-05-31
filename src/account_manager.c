@@ -29,7 +29,7 @@ Skissm__RegisterUserRequest *produce_register_request(Skissm__Account *account) 
     Skissm__RegisterUserRequest *request = (Skissm__RegisterUserRequest *)malloc(sizeof(Skissm__RegisterUserRequest));
     skissm__register_user_request__init(request);
 
-    unsigned int i;
+    size_t i;
 
     request->identity_key_public = (Skissm__IdentityKeyPublic *) malloc(sizeof(Skissm__IdentityKeyPublic));
     skissm__identity_key_public__init(request->identity_key_public);
@@ -111,7 +111,7 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
 
     copy_address_from_address(&(request->user_address), account->address);
 
-    unsigned int i;
+    uint32_t i;
     for (i = 0; i < opks_num; i++) {
         request->one_time_pre_key_public[i] = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
         skissm__one_time_pre_key_public__init(request->one_time_pre_key_public[i]);
@@ -125,7 +125,7 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
 bool consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // save to db
-        unsigned int i;
+        size_t i;
         for (i = 0; i < account->n_one_time_pre_keys; i++) {
             get_skissm_plugin()->db_handler.add_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]);
         }

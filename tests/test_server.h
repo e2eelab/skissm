@@ -30,7 +30,7 @@
 Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request);
 
 /**
- * @brief Get the pre key bundle object
+ * @brief Get the pre-key bundle object
  * 
  * @param request 
  * @return Skissm__GetPreKeyBundleResponse* 

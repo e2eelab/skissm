@@ -1231,7 +1231,7 @@ static void delete_account_signed_pre_key(uint64_t account_id, sqlite_int64 sign
 }
 
 void remove_expired_signed_pre_key(uint64_t account_id) {
-    // delete old signed pre keys and keep last two
+    // delete old signed pre-keys and keep last two
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_SIGNED_PRE_KEY_SELECT_MORE_THAN_2, &stmt);

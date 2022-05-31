@@ -153,7 +153,7 @@ int main(){
     tear_up();
 
     register_accounts_test(8);
-    register_user_test();
+    //register_user_test();
 
     // test stop.
     tear_down();

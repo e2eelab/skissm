@@ -450,7 +450,7 @@ size_t decrypt_ratchet(
     /* Find the corresponding receiving chain */
     Skissm__ReceiverChainNode **cur = ratchet->receiver_chains;
     if (cur){
-        unsigned int i;
+        size_t i;
         for (i = 0; i < ratchet->n_receiver_chains; i++){
             if (0 == memcmp(cur[i]->ratchet_key_public.data, payload->ratchet_key.data, key_len)){
                 chain = cur[i];
@@ -476,7 +476,7 @@ size_t decrypt_ratchet(
     } else if (chain->chain_key->index > payload->sequence) {
         /* Chain already advanced beyond the key for this message
          * Check if the message keys are in the skipped key list. */
-        unsigned int i;
+        size_t i;
         for (i = 0; i < ratchet->n_skipped_msg_keys; i++){
             if (payload->sequence == ratchet->skipped_msg_keys[i]->msg_key->index
                 && 0 == memcmp(ratchet->skipped_msg_keys[i]->ratchet_key_public.data, payload->ratchet_key.data,

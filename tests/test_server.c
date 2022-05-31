@@ -30,7 +30,6 @@
 
 typedef struct user_data{
     Skissm__E2eeAddress *address;
-    const char *device_id;
     const char *user_name;
     Skissm__IdentityKeyPublic *identity_key_public;
     Skissm__SignedPreKeyPublic *signed_pre_key_public;
@@ -97,7 +96,6 @@ void test_server_end(){
        skissm__e2ee_address__free_unpacked(user_data_set[i].address, NULL);
        user_data_set[i].address = NULL;
 
-       free((void *)(user_data_set[i].device_id));
        free((void *)(user_data_set[i].user_name));
        skissm__identity_key_public__free_unpacked(user_data_set[i].identity_key_public, NULL);
        skissm__signed_pre_key_public__free_unpacked(user_data_set[i].signed_pre_key_public, NULL);
@@ -106,7 +104,6 @@ void test_server_end(){
        }
        free_mem((void **)(&(user_data_set[i].one_time_pre_keys)), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);
        user_data_set[i].user_name = NULL;
-       user_data_set[i].device_id = NULL;
        user_data_set[i].identity_key_public = NULL;
        user_data_set[i].signed_pre_key_public = NULL;
        user_data_set[i].one_time_pre_keys = NULL;
@@ -131,7 +128,6 @@ void test_server_end(){
 Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request) {
     user_data *cur_data = &(user_data_set[user_data_set_insert_pos]);
     /* prepare to store */
-    cur_data->device_id = strdup(request->device_id);
     cur_data->user_name = strdup(request->user_name);
 
     copy_ik_public_from_ik_public(&(cur_data->identity_key_public), request->identity_key_public);
@@ -240,7 +236,7 @@ Skissm__AcceptResponse *mock_accept(Skissm__AcceptRequest *request) {
     uint8_t accept_msg_data[accept_msg_data_len];
     skissm__accept_msg__pack(accept_msg, accept_msg_data);
 
-    // forward a copy of InviteMsg
+    // forward a copy of AcceptMsg
     Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
     skissm__proto_msg__init(proto_msg);
     copy_address_from_address(&(proto_msg->from), accept_msg->from);
@@ -289,7 +285,8 @@ Skissm__PublishSpkResponse *mock_publish_spk(Skissm__PublishSpkRequest *request)
     // copy new data
     copy_spk_public_from_spk_public(&(cur_data->signed_pre_key_public), request->signed_pre_key_public);
 
-    Skissm__PublishSpkResponse *response = NULL;
+    Skissm__PublishSpkResponse *response = (Skissm__PublishSpkResponse *)malloc(sizeof(Skissm__PublishSpkResponse));
+    skissm__publish_spk_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     return response;
@@ -333,7 +330,9 @@ Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__SupplyOpksRequest *request)
         copy_opk_public_from_opk_public(&(cur_data->one_time_pre_keys[i]), request->one_time_pre_key_public[i - old_num]);
     }
 
-    Skissm__SupplyOpksResponse *response = NULL;
+    // prepare response
+    Skissm__SupplyOpksResponse *response = (Skissm__SupplyOpksResponse *)malloc(sizeof(Skissm__SupplyOpksResponse));
+    skissm__supply_opks_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     return response;
@@ -487,7 +486,8 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
         }
     }
 
-    Skissm__AddGroupMembersResponse *response = NULL;
+    Skissm__AddGroupMembersResponse *response = (Skissm__AddGroupMembersResponse *)malloc(sizeof(Skissm__AddGroupMembersResponse));
+    skissm__add_group_members_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     return response;
@@ -556,7 +556,8 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
         }
     }
 
-    Skissm__RemoveGroupMembersResponse *response = NULL;
+    Skissm__RemoveGroupMembersResponse *response = (Skissm__RemoveGroupMembersResponse *)malloc(sizeof(Skissm__RemoveGroupMembersResponse));
+    skissm__remove_group_members_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     return response;
@@ -567,7 +568,8 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__SendGroupMsgRequest *r
     uint8_t *request_data = (uint8_t *)malloc(request_data_len);
     skissm__send_group_msg_request__pack(request, request_data);
 
-    Skissm__SendGroupMsgResponse *response = NULL;
+    Skissm__SendGroupMsgResponse *response = (Skissm__SendGroupMsgResponse *)malloc(sizeof(Skissm__SendGroupMsgResponse));
+    skissm__send_group_msg_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     return response;
@@ -578,7 +580,8 @@ Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__ConsumeProtoMsgR
     uint8_t *request_data = (uint8_t *)malloc(request_data_len);
     skissm__consume_proto_msg_request__pack(request, request_data);
 
-    Skissm__ConsumeProtoMsgResponse *response = NULL;
+    Skissm__ConsumeProtoMsgResponse *response = (Skissm__ConsumeProtoMsgResponse *)malloc(sizeof(Skissm__ConsumeProtoMsgResponse));
+    skissm__consume_proto_msg_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     return response;

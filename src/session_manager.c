@@ -19,7 +19,7 @@ static void send_group_pre_key(Skissm__Session *outbound_session){
     size_t *group_pre_key_plaintext_data_len_list;
     n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(outbound_session->to, &group_pre_key_plaintext_data_list, &group_pre_key_plaintext_data_len_list);
     if (n_group_pre_keys > 0) {
-        unsigned int i;
+        uint32_t i;
         bool succ = true;
         for (i = 0; i < n_group_pre_keys; i++) {
             Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data_list[i],
@@ -224,8 +224,8 @@ Skissm__InviteRequest *produce_invite_request(
     msg->n_pre_shared_keys = pre_shared_keys_len;
     if (pre_shared_keys_len > 0 && pre_shared_keys != NULL) {
         msg->pre_shared_keys = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * pre_shared_keys_len);
-        int i = 0;
-        for(int i = 0; i< pre_shared_keys_len; i++) {
+        size_t i = 0;
+        for (i = 0; i < pre_shared_keys_len; i++) {
             copy_protobuf_from_protobuf(&(msg->pre_shared_keys[i]), pre_shared_keys[i]);
         }
     }

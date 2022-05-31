@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 /**
- * @brief Get the pre key bundle internal object.
+ * @brief Get the pre-key bundle internal object.
  *
  * @param from
  * @param to
