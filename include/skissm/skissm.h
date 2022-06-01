@@ -439,17 +439,19 @@ typedef struct skissm_event_handler_t {
      * @brief notify group members added
      * @param group_address
      * @param group_name
-     * @param member_addresses
+     * @param adding_group_members
+     * @param adding_group_members_num
      */
-    void (*on_group_members_added)(Skissm__E2eeAddress *, const char *, Skissm__E2eeAddress **);
+    void (*on_group_members_added)(Skissm__E2eeAddress *, const char *, Skissm__GroupMember **, size_t);
 
     /**
      * @brief notify group members removed
      * @param group_address
      * @param group_name
-     * @param member_addresses
+     * @param removing_group_members
+     * @param removing_group_members_num
      */
-    void (*on_group_members_removed)(Skissm__E2eeAddress *, const char *, Skissm__E2eeAddress **);
+    void (*on_group_members_removed)(Skissm__E2eeAddress *, const char *, Skissm__GroupMember **, size_t);
 } skissm_event_handler_t;
 
 typedef struct skissm_plugin_t {
@@ -481,10 +483,10 @@ void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
 void ssm_notify_group_created(Skissm__E2eeAddress *group_address, const char *group_name);
 void ssm_notify_group_members_added(Skissm__E2eeAddress *group_address,
                                     const char *group_name,
-                                    Skissm__E2eeAddress **member_addresses);
+                                    Skissm__GroupMember **adding_group_members, size_t adding_group_members_num);
 void ssm_notify_group_members_removed(Skissm__E2eeAddress *group_address,
                                       const char *group_name,
-                                      Skissm__E2eeAddress **member_addresses);
+                                      Skissm__GroupMember **removing_group_members, size_t removing_group_members_num);
 
 #ifdef __cplusplus
 }

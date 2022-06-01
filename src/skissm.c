@@ -106,17 +106,19 @@ void ssm_notify_group_created(Skissm__E2eeAddress *group_address, const char *gr
 
 void ssm_notify_group_members_added(Skissm__E2eeAddress *group_address,
                                     const char *group_name,
-                                    Skissm__E2eeAddress **member_addresses) {
+                                    Skissm__GroupMember **adding_group_members,
+                                    size_t adding_group_members_num) {
     if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_members_added(group_address, group_name, member_addresses);
+        skissm_plugin->event_handler.on_group_members_added(group_address, group_name, adding_group_members, adding_group_members_num);
 }
 
 void ssm_notify_group_members_removed(
     Skissm__E2eeAddress *group_address,
     const char *group_name,
-    Skissm__E2eeAddress **member_addresses) {
+    Skissm__GroupMember **removing_group_members,
+    size_t removing_group_members_num) {
     if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_members_removed(group_address, group_name, member_addresses);
+        skissm_plugin->event_handler.on_group_members_removed(group_address, group_name, removing_group_members, removing_group_members_num);
 }
 
 const e2ee_pack_t *get_e2ee_pack(const char *e2ee_pack_id) {
