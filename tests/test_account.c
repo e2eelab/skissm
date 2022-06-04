@@ -28,9 +28,31 @@
 #include "skissm/mem_util.h"
 #include "skissm/skissm.h"
 #include "skissm/e2ee_client.h"
+#include "skissm/e2ee_client_internal.h"
 
 #include "test_plugin.h"
 #include "test_util.h"
+
+static void on_error(ErrorCode error_code, const char *error_msg) {
+    print_error((char *)error_msg, error_code);
+}
+
+static void on_user_registered(Skissm__Account *account){
+    print_msg("on_user_registered: user_id", (uint8_t *)account->address->user->user_id, strlen(account->address->user->user_id));
+}
+
+static skissm_event_handler_t test_event_handler = {
+    on_error,
+    on_user_registered,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
 
 static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_one_time_pre_keys) {
     unsigned int i;
@@ -75,7 +97,7 @@ static void register_account_test(uint64_t account_id) {
     verify_one_time_pre_keys(account, 180);
 
     // store account
-    mock_random_user_address(&account->address);
+    mock_random_user_address(&(account->address));
     get_skissm_plugin()->db_handler.store_account(account);
     printf("stored account_id %" PRIu64 "\n", account->account_id);
 
@@ -91,7 +113,7 @@ static void register_account_test(uint64_t account_id) {
 
 static void load_accounts_test(uint64_t num) {
     printf("====== load_accounts_test ======\n");
-    unsigned i;
+    size_t i;
     Skissm__Account **accounts = NULL;
     size_t accounts_num = get_skissm_plugin()->db_handler.load_accounts(&accounts);
     assert(accounts_num == num);
@@ -103,7 +125,7 @@ static void load_accounts_test(uint64_t num) {
     accounts_data_len = (size_t *)malloc(accounts_num * sizeof(size_t));
     accounts_data = (uint8_t **)malloc(accounts_num * sizeof(uint8_t *));
     memset(accounts_data_len, 0, accounts_num);
-    for(i = 0; i<accounts_num; i++) {
+    for (i = 0; i < accounts_num; i++) {
         accounts_data_len[i] = skissm__account__get_packed_size(accounts[i]);
         accounts_data[i] = (uint8_t *)malloc(accounts_data_len[i] * sizeof(uint8_t));
         skissm__account__pack(accounts[i], accounts_data[i]);
@@ -111,7 +133,7 @@ static void load_accounts_test(uint64_t num) {
         assert(accounts_data_len[i] > 0);
     }
 
-    for(i = 0; i<accounts_num; i++) {
+    for (i = 0; i < accounts_num; i++) {
         Skissm__Account *unpacked_account  = skissm__account__unpack(NULL, accounts_data_len[i], accounts_data[i]);
         free_mem((void **)(&accounts_data[i]), accounts_data_len[i]);
         assert(unpacked_account->account_id == (i+1));
@@ -123,7 +145,7 @@ static void load_accounts_test(uint64_t num) {
 }
 
 static void register_accounts_test(uint64_t num) {
-    for (uint64_t account_id = 1; account_id<=num; account_id++) {
+    for (uint64_t account_id = 1; account_id <= num; account_id++) {
         register_account_test(account_id);
     }
 
@@ -148,12 +170,99 @@ void register_user_test() {
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 }
 
+void publish_spk_test() {
+    uint64_t account_id = 10;
+    const char *e2ee_pack_id = "0";
+    const char *user_name = "alice";
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "email";
+    const char *auth_code = "123456";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+
+    // load account
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account(account_id, &account);
+    uint32_t old_spk_id = account->signed_pre_key->spk_id;
+
+    // update the signed pre-key
+    generate_signed_pre_key(account);
+    uint32_t new_spk_id = account->signed_pre_key->spk_id;
+    publish_spk_internal(account);
+
+    assert(new_spk_id == old_spk_id + 1);
+
+    // release
+    skissm__account__free_unpacked(account, NULL);
+}
+
+Skissm__ProtoMsg *mock_supply_opks_msg(Skissm__E2eeAddress *user_address, uint32_t supply_opks_num) {
+    Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+    skissm__proto_msg__init(proto_msg);
+
+    copy_address_from_address(&(proto_msg->to), user_address);
+    proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_SUPPLY_OPKS_MSG;
+    proto_msg->supply_opks_msg = (Skissm__SupplyOpksMsg *)malloc(sizeof(Skissm__SupplyOpksMsg));
+    skissm__supply_opks_msg__init(proto_msg->supply_opks_msg);
+    proto_msg->supply_opks_msg->opks_num = supply_opks_num;
+    copy_address_from_address(&(proto_msg->supply_opks_msg->user_address), user_address);
+
+    return proto_msg;
+}
+
+void supply_opks_test() {
+    uint64_t account_id = 11;
+    const char *e2ee_pack_id = "0";
+    const char *user_name = "alice";
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "email";
+    const char *auth_code = "123456";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+
+    // load account
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account(account_id, &account);
+
+    // the server asks the client to supply some one-time pre-keys
+    uint32_t supply_opks_num = 50;
+    Skissm__E2eeAddress *user_address = account->address;
+    Skissm__ProtoMsg *proto_msg = mock_supply_opks_msg(user_address, supply_opks_num);
+    size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
+    uint8_t proto_msg_data[proto_msg_data_len];
+    skissm__proto_msg__pack(proto_msg, proto_msg_data);
+    Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
+
+    // assert
+    Skissm__Account *account_new = NULL;
+    get_skissm_plugin()->db_handler.load_account(account_id, &account_new);
+    assert(account_new->n_one_time_pre_keys == (100 + supply_opks_num));
+
+    // release
+    skissm__account__free_unpacked(account, NULL);
+    skissm__account__free_unpacked(account_new, NULL);
+    skissm__proto_msg__free_unpacked(proto_msg, NULL);
+}
+
 int main(){
     // test start
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     register_accounts_test(8);
-    //register_user_test();
+    register_user_test();
+    publish_spk_test();
+    supply_opks_test();
 
     // test stop.
     tear_down();

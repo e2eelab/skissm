@@ -63,7 +63,7 @@ static void update_signed_pre_key() {
 }
 
 void account_begin() {
-    // Load the first account tha may be null.
+    // Load the first account that may be null.
     uint64_t account_id = 1;
     get_skissm_plugin()->db_handler.load_account(account_id, &local_account);
 

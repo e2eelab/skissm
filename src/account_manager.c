@@ -70,8 +70,6 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
 }
 
 Skissm__PublishSpkRequest *produce_publish_spk_request(Skissm__Account *account) {
-    generate_signed_pre_key(account);
-
     Skissm__PublishSpkRequest *request =
         (Skissm__PublishSpkRequest *)malloc(sizeof(Skissm__PublishSpkRequest));
     skissm__publish_spk_request__init(request);
@@ -124,10 +122,11 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
 
 bool consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        size_t old_opks_num = account->n_one_time_pre_keys - response->supply_opks_num;
         // save to db
         size_t i;
-        for (i = 0; i < account->n_one_time_pre_keys; i++) {
-            get_skissm_plugin()->db_handler.add_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]);
+        for (i = 0; i < response->supply_opks_num; i++) {
+            get_skissm_plugin()->db_handler.add_one_time_pre_key(account->account_id, account->one_time_pre_keys[old_opks_num + i]);
         }
         return true;
     } else {
@@ -136,6 +135,11 @@ bool consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksRe
 }
 
 bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__SupplyOpksMsg *msg) {
+    if (!compare_address(receiver_address, msg->user_address)){
+        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
+        return false;
+    }
+
     uint32_t opks_num = msg->opks_num;
     Skissm__E2eeAddress *user_address = msg->user_address;
     Skissm__Account *account = NULL;
