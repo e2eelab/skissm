@@ -487,11 +487,11 @@ static const char *ACCOUNT_ONETIME_PRE_KEY_DELETE = "DELETE FROM ACCOUNT_ONETIME
                                                     "WHERE ACCOUNT is (?) AND ONETIME_PRE_KEY is (?);";
 
 static const char *ACCOUNT_UPDATE_ADDRESS = "UPDATE ACCOUNT "
-                                            "SET ADDRESS is (?) "
+                                            "SET ADDRESS = (?) "
                                             "WHERE ACCOUNT_ID is (?);";
 
 static const char *ACCOUNT_UPDATE_SIGNED_PRE_KEY = "UPDATE ACCOUNT "
-                                                   "SET SIGNED_PRE_KEY is (?) "
+                                                   "SET SIGNED_PRE_KEY = (?) "
                                                    "WHERE ACCOUNT_ID is (?);";
 
 static const char *LOAD_OLD_SIGNED_PRE_KEY = "SELECT SIGNED_PRE_KEY.SPK_ID, "
@@ -509,7 +509,7 @@ static const char *LOAD_OLD_SIGNED_PRE_KEY = "SELECT SIGNED_PRE_KEY.SPK_ID, "
                                              "WHERE ACCOUNT.ACCOUNT_ID is (?) AND SIGNED_PRE_KEY.SPK_ID is (?);";
 
 static const char *ACCOUNT_UPDATE_IDENTITY_KEY = "UPDATE ACCOUNT "
-                                                 "SET IDENTITY_KEY is (?) "
+                                                 "SET IDENTITY_KEY = (?) "
                                                  "WHERE ACCOUNT_ID is (?);";
 
 static const char *ONETIME_PRE_KEY_UPDATE_USED = "UPDATE ONETIME_PRE_KEY "
