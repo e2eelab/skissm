@@ -30,5 +30,4 @@ import "skissm/ResponseCode.proto";
 message SupplyOpksResponse {
     ResponseCode code = 1;
     string msg = 2;
-    uint32 supply_opks_num = 3;
 }

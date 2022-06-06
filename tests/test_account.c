@@ -68,7 +68,7 @@ static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_on
     }
 }
 
-static void register_account_test(uint64_t account_id) {
+static void create_account_test(uint64_t account_id) {
     // Register test
     Skissm__Account *account = create_account(account_id, TEST_E2EE_PACK_ID);
 
@@ -144,9 +144,9 @@ static void load_accounts_test(uint64_t num) {
     free_mem((void **)(&accounts_data), accounts_num * sizeof(uint8_t *));
 }
 
-static void register_accounts_test(uint64_t num) {
+static void create_accounts_test(uint64_t num) {
     for (uint64_t account_id = 1; account_id <= num; account_id++) {
-        register_account_test(account_id);
+        create_account_test(account_id);
     }
 
     load_accounts_test(num);
@@ -259,7 +259,7 @@ int main(){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    register_accounts_test(8);
+    create_accounts_test(8);
     register_user_test();
     publish_spk_test();
     supply_opks_test();

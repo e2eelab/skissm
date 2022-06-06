@@ -75,11 +75,12 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
  * @brief Process an incoming SupplyOpksResponse message.
  *
  * @param account
+ * @param opks_num
  * @param response
  * @return true
  * @return false
  */
-bool consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response);
+bool consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response);
 
 /**
  * @brief Process an incoming SupplyOpksMsg message.

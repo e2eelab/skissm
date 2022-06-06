@@ -120,12 +120,12 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
     return request;
 }
 
-bool consume_supply_opks_response(Skissm__Account *account, Skissm__SupplyOpksResponse *response) {
+bool consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        size_t old_opks_num = account->n_one_time_pre_keys - response->supply_opks_num;
+        size_t old_opks_num = account->n_one_time_pre_keys - opks_num;
         // save to db
         size_t i;
-        for (i = 0; i < response->supply_opks_num; i++) {
+        for (i = 0; i < opks_num; i++) {
             get_skissm_plugin()->db_handler.add_one_time_pre_key(account->account_id, account->one_time_pre_keys[old_opks_num + i]);
         }
         return true;

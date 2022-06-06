@@ -58,7 +58,7 @@ Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
 Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint32_t opks_num) {
     Skissm__SupplyOpksRequest *request = produce_supply_opks_request(account, opks_num);
     Skissm__SupplyOpksResponse *response = get_skissm_plugin()->proto_handler.supply_opks(request);
-    consume_supply_opks_response(account, response);
+    consume_supply_opks_response(account, opks_num, response);
 
     // release
     skissm__supply_opks_request__free_unpacked(request, NULL);

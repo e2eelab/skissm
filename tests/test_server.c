@@ -45,14 +45,14 @@ typedef struct group_data{
 } group_data;
 
 static user_data user_data_set[user_data_max] = {
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0}};
+    {NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, 0}};
 
 static group_data group_data_set[group_data_max] = {
     {NULL, NULL, 0, NULL},
@@ -68,7 +68,7 @@ static uint8_t user_data_set_insert_pos = 0;
 
 static uint8_t group_data_set_insert_pos = 0;
 
-static size_t find_user_addresses(const char *user_id, Skissm__E2eeAddress **user_addresses) {
+static size_t find_user_addresses(const char *user_id, Skissm__E2eeAddress ***user_addresses) {
     size_t user_addresses_num = 0;
     uint8_t i;
     for(i = 0; i<user_data_max; i++) {
@@ -77,11 +77,12 @@ static size_t find_user_addresses(const char *user_id, Skissm__E2eeAddress **use
                 user_addresses_num++;
         }
     }
-    *user_addresses = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-    for(i = 0; i<user_addresses_num; i++) {
+    *user_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * user_addresses_num);
+    uint8_t j = 0;
+    for(i = 0; i<user_data_max; i++) {
         if (user_data_set[i].address != NULL) {
             if (safe_strcmp(user_data_set[i].address->user->user_id, user_id))
-                copy_address_from_address(&(user_addresses[i]), user_data_set[i].address);
+                copy_address_from_address(&((*user_addresses)[j++]), user_data_set[i].address);
         }
     }
     return user_addresses_num;
@@ -337,7 +338,6 @@ Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__SupplyOpksRequest *request)
     Skissm__SupplyOpksResponse *response = (Skissm__SupplyOpksResponse *)malloc(sizeof(Skissm__SupplyOpksResponse));
     skissm__supply_opks_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
-    response->supply_opks_num = request->n_one_time_pre_key_public;
 
     return response;
 }
@@ -403,7 +403,7 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__CreateGroupRequest *reque
 
             // forward a copy of CreateGroupMsg
             Skissm__E2eeAddress **to_member_addresses = NULL;
-            size_t to_member_addresses_num = find_user_addresses(member_user_id, to_member_addresses);
+            size_t to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);
             for (j = 0; j < to_member_addresses_num; j++) {
                 Skissm__E2eeAddress *to_member_address = to_member_addresses[j];
                 if (to_member_address == NULL)
@@ -503,7 +503,7 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
 
             // forward a copy of AddGroupMembersMsg
             Skissm__E2eeAddress **to_member_addresses = NULL;
-            size_t to_member_addresses_num = find_user_addresses(member_user_id, to_member_addresses);
+            size_t to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);
             for (j = 0; j < to_member_addresses_num; j++) {
                 Skissm__E2eeAddress *to_member_address = to_member_addresses[j];
                 if (to_member_address == NULL)
@@ -622,7 +622,7 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
 
             // forward a copy of RemoveGroupMembersMsg
             Skissm__E2eeAddress **to_member_addresses = NULL;
-            size_t to_member_addresses_num = find_user_addresses(member_user_id, to_member_addresses);
+            size_t to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);
             for (j = 0; j < to_member_addresses_num; j++) {
                 Skissm__E2eeAddress *to_member_address = to_member_addresses[j];
                 if (to_member_address == NULL)
@@ -708,7 +708,7 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__SendGroupMsgRequest *r
 
             // forward a copy of E2eeMsg
             Skissm__E2eeAddress **to_member_addresses = NULL;
-            size_t to_member_addresses_num = find_user_addresses(member_user_id, to_member_addresses);
+            size_t to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);
             for (j = 0; j < to_member_addresses_num; j++) {
                 Skissm__E2eeAddress *to_member_address = to_member_addresses[j];
                 if (to_member_address == NULL)

@@ -25,7 +25,9 @@
 #include "skissm/mem_util.h"
 
 // global variable
-static const char *db_name = (char *)"file:test.db?mode=memory&cache=shared";
+// db in memory
+//static const char *db_name = (char *)"file:test.db?mode=memory&cache=shared";
+static const char *db_name = (char *)"test.db";
 static sqlite3 *db;
 
 // util function
@@ -805,7 +807,7 @@ void load_signed_pre_key_pair(uint64_t account_id,
                              sqlite3_column_bytes(stmt, 2));
     copy_protobuf_from_array(&((*signed_pre_key)->signature), (uint8_t *)sqlite3_column_blob(stmt, 3),
                              sqlite3_column_bytes(stmt, 3));
-    (*signed_pre_key)->ttl = (uint64_t)sqlite3_column_int64(stmt, 4);
+    (*signed_pre_key)->ttl = (int64_t)sqlite3_column_int64(stmt, 4);
 
     // release
     sqlite_finalize(stmt);
@@ -1015,7 +1017,7 @@ sqlite_int64 insert_signed_pre_key(Skissm__SignedPreKey *signed_pre_key) {
     sqlite3_bind_int(stmt, 1, signed_pre_key->spk_id);
     sqlite3_bind_int(stmt, 2, key_pair_id);
     sqlite3_bind_blob(stmt, 3, signed_pre_key->signature.data, signed_pre_key->signature.len, SQLITE_STATIC);
-    sqlite3_bind_int64(stmt, 4, signed_pre_key->ttl);
+    sqlite3_bind_int64(stmt, 4, (sqlite3_int64)(signed_pre_key->ttl));
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -1198,7 +1200,7 @@ void load_signed_pre_key(uint64_t account_id, uint32_t spk_id,
                              sqlite3_column_bytes(stmt, 2));
     copy_protobuf_from_array(&((*signed_pre_key)->signature), (uint8_t *)sqlite3_column_blob(stmt, 3),
                              sqlite3_column_bytes(stmt, 3));
-    (*signed_pre_key)->ttl = (uint64_t)sqlite3_column_int(stmt, 4);
+    (*signed_pre_key)->ttl = (int64_t)sqlite3_column_int(stmt, 4);
 
     // release
     sqlite_finalize(stmt);
