@@ -127,7 +127,7 @@ void create_outbound_group_session(
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **group_members,
     size_t group_members_num,
-    char *session_id
+    char *old_session_id
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().sign_key_len;
@@ -162,9 +162,9 @@ void create_outbound_group_session(
     get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
     uint8_t *group_pre_key_plaintext_data = NULL;
-    size_t group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext_data, session_id);
+    size_t group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext_data, old_session_id);
 
-    /* send the group pre-key message to the members in the group */
+    // send the group pre-key message to the members in the group
     size_t i, j;
     for (i = 0; i < outbound_group_session->n_group_members; i++){
         if (!safe_strcmp(outbound_group_session->session_owner->user->user_id, outbound_group_session->group_members[i]->user_id)) {
@@ -206,7 +206,7 @@ void create_outbound_group_session(
         }
     }
 
-    /* release */
+    // release
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
 }
 
@@ -241,6 +241,6 @@ void create_inbound_group_session(
 
     get_skissm_plugin()->db_handler.store_group_session(inbound_group_session);
 
-    /* release */
+    // release
     skissm__group_session__free_unpacked(inbound_group_session, NULL);
 }

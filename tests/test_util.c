@@ -26,7 +26,8 @@
 
 void print_hex(char *title, uint8_t *msg, size_t msg_len) {
     printf("%s", title);
-    for (int i = 0; i < msg_len; i++) {
+    size_t i;
+    for (i = 0; i < msg_len; i++) {
         if (i % 16 == 0)
             printf("\n| ");
         printf("0x%02x ", msg[i]);
@@ -68,7 +69,8 @@ bool is_equal_data(ProtobufCBinaryData *data1, ProtobufCBinaryData *data2) {
         return false;
     }
 
-    for (int i = 0; i < data1->len; i++) {
+    size_t i;
+    for (i = 0; i < data1->len; i++) {
         if (data1->data[i] != data2->data[i]) {
             return false;
         }
@@ -85,7 +87,8 @@ bool is_equal_str(char *str1, char *str2) {
         return false;
     }
 
-    for (int i = 0; i < len1; i++) {
+    int i;
+    for (i = 0; i < len1; i++) {
         if (str1[i] != str2[i]) {
             return false;
         }
@@ -215,11 +218,12 @@ bool is_equal_account(Skissm__Account *account1, Skissm__Account *account2) {
         printf("n_one_time_pre_keys not match");
         return false;
     }
-    for (int i = 0; i < account1->n_one_time_pre_keys; i++) {
+    size_t i;
+    for (i = 0; i < account1->n_one_time_pre_keys; i++) {
         if (!is_equal_opk(account1->one_time_pre_keys[i], account2->one_time_pre_keys[i])) {
             printf("1: %u\n", account1->one_time_pre_keys[i]->opk_id);
             printf("2: %u\n", account2->one_time_pre_keys[i]->opk_id);
-            printf("%d opk not match\n", i);
+            printf("%zu opk not match\n", i);
             return false;
         }
     }

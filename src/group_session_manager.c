@@ -106,6 +106,7 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(Skissm__GroupS
         (Skissm__AddGroupMembersMsg *)malloc(sizeof(Skissm__AddGroupMembersMsg));
     skissm__add_group_members_msg__init(msg);
 
+    msg->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
     copy_address_from_address(&(msg->group_address), outbound_group_session->group_address);
     msg->n_adding_members = adding_members_num;
@@ -150,22 +151,24 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
     Skissm__GroupMember **new_group_members = msg->all_members;
     const char *e2ee_pack_id = msg->e2ee_pack_id;
 
+    /** The old group members have their own inbound group sessions, so they need to delete them.
+     *  On the other hand, the new group members do not need to do this.
+     */
+    // ????????????? The inbound_group_session may not be unique
     Skissm__GroupSession *inbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_inbound_group_session(receiver_address, group_address, &inbound_group_session);
-
-    if (inbound_group_session == NULL) {
-        ssm_notify_error(BAD_SESSION, "consume_add_group_members_msg()");
-        return false;
+    // delete the old inbound group session if it exists
+    if (inbound_group_session != NULL) {
+        char *old_session_id = strdup(inbound_group_session->session_id);
+        get_skissm_plugin()->db_handler.unload_group_session(inbound_group_session);
+        // create a new outbound group session
+        create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, old_session_id);
+        // release
+        free_mem((void **)&old_session_id, strlen(old_session_id));
+    } else{
+        // create an outbound group session
+        create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, NULL);
     }
-    // delete the old group session
-    char *old_session_id = strdup(inbound_group_session->session_id);
-    get_skissm_plugin()->db_handler.unload_group_session(inbound_group_session);
-
-    // create a new outbound group session
-    create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, old_session_id);
-
-    // release
-    free_mem((void **)&old_session_id, strlen(old_session_id));
 
     // done
     return true;
@@ -180,6 +183,7 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(Skissm__
         (Skissm__RemoveGroupMembersMsg *)malloc(sizeof(Skissm__RemoveGroupMembersMsg));
     skissm__remove_group_members_msg__init(msg);
 
+    msg->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
     copy_address_from_address(&(msg->group_address), outbound_group_session->group_address);
     msg->n_removing_members = removing_group_members_num;

@@ -108,7 +108,7 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
     Skissm__SendOne2oneMsgRequest *request = (Skissm__SendOne2oneMsgRequest *)malloc(sizeof(Skissm__SendOne2oneMsgRequest));
     skissm__send_one2one_msg_request__init(request);
 
-    /* Prepare an e2ee message */
+    // prepare an e2ee message
     Skissm__E2eeMsg *e2ee_msg = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
     skissm__e2ee_msg__init(e2ee_msg);
 
@@ -141,13 +141,13 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
         return false;
     }
 
-    /* load the corresponding inbound session */
+    // load the corresponding inbound session
     Skissm__Session *inbound_session = NULL;
     get_skissm_plugin()->db_handler.load_inbound_session(e2ee_msg->session_id, e2ee_msg->to, &inbound_session);
     if (inbound_session == NULL) {
         ssm_notify_error(BAD_SESSION, "consume_e2ee_message_payload()");
         return false;
-        /* delete the old inbound session if it exists */
+        // delete the old inbound session if it exists
         get_skissm_plugin()->db_handler.unload_session(e2ee_msg->to, e2ee_msg->from, e2ee_msg->to);
     }
 
@@ -259,12 +259,12 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         ssm_notify_error(BAD_ACCOUNT, "consume_invite_msg()");
         return (size_t)(-1);
     }
-    /* create a new inbound session */
+    // create a new inbound session
     Skissm__Session *inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     initialise_session(inbound_session, e2ee_pack_id, from, to);
     copy_address_from_address(&(inbound_session->session_owner), to);
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-    // Set the version and session id
+    // set the version and session id
     inbound_session->version = strdup(msg->version);
     inbound_session->session_id = strdup(msg->session_id);
     // create a new inbound session

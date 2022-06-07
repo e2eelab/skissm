@@ -130,7 +130,7 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *
 size_t crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *local_account, Skissm__InviteMsg *msg) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
 
-    /* Verify the signed pre-key */
+    // verify the signed pre-key
     bool old_spk = 0;
     Skissm__SignedPreKey *old_spk_data = NULL;
     if (local_account->signed_pre_key->spk_id != msg->bob_signed_pre_key_id) {
@@ -163,7 +163,7 @@ size_t crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, S
     memcpy(inbound_session->associated_data.data, msg->alice_identity_key.data, key_len);
     memcpy((inbound_session->associated_data.data) + key_len, local_account->identity_key->asym_key_pair->public_key.data, key_len);
 
-    /* Mark the one-time pre-key as used */
+    // mark the one-time pre-key as used
     const Skissm__OneTimePreKey *our_one_time_pre_key;
     if (x3dh_epoch == 4) {
         our_one_time_pre_key = lookup_one_time_pre_key(local_account, msg->bob_one_time_pre_key_id);

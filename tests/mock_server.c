@@ -92,7 +92,8 @@ void mock_server_begin(){
 }
 
 void mock_server_end(){
-   uint8_t i, j;
+   uint8_t i;
+   size_t j;
    for (i = 0; i < user_data_set_insert_pos; i++){
        skissm__e2ee_address__free_unpacked(user_data_set[i].address, NULL);
        user_data_set[i].address = NULL;
@@ -100,7 +101,7 @@ void mock_server_end(){
        free((void *)(user_data_set[i].user_name));
        skissm__identity_key_public__free_unpacked(user_data_set[i].identity_key_public, NULL);
        skissm__signed_pre_key_public__free_unpacked(user_data_set[i].signed_pre_key_public, NULL);
-       for (int j=0; j<user_data_set[i].n_one_time_pre_keys; j++) {
+       for (j = 0; j < user_data_set[i].n_one_time_pre_keys; j++) {
            skissm__one_time_pre_key_public__free_unpacked(user_data_set[i].one_time_pre_keys[j], NULL);
        }
        free_mem((void **)(&(user_data_set[i].one_time_pre_keys)), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);

@@ -243,7 +243,8 @@ static void test_continual_messages(){
     assert(outbound_session->responded == true);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    for (int i = 0; i < 1000; i++){
+    int i;
+    for (i = 0; i < 1000; i++){
         uint8_t plaintext[64];
         size_t plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message will be sent a lot of times.", i);
         test_encryption(outbound_session, plaintext, plaintext_len);

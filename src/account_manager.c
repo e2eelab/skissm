@@ -29,22 +29,23 @@ Skissm__RegisterUserRequest *produce_register_request(Skissm__Account *account) 
     Skissm__RegisterUserRequest *request = (Skissm__RegisterUserRequest *)malloc(sizeof(Skissm__RegisterUserRequest));
     skissm__register_user_request__init(request);
 
-    size_t i;
-
-    request->identity_key_public = (Skissm__IdentityKeyPublic *) malloc(sizeof(Skissm__IdentityKeyPublic));
+    // copy identity public key
+    request->identity_key_public = (Skissm__IdentityKeyPublic *)malloc(sizeof(Skissm__IdentityKeyPublic));
     skissm__identity_key_public__init(request->identity_key_public);
     copy_protobuf_from_protobuf(&(request->identity_key_public->asym_public_key), &(account->identity_key->asym_key_pair->public_key));
     copy_protobuf_from_protobuf(&(request->identity_key_public->sign_public_key), &(account->identity_key->sign_key_pair->public_key));
 
+    // copy signed pre-key
     request->signed_pre_key_public = (Skissm__SignedPreKeyPublic *)malloc(sizeof(Skissm__SignedPreKeyPublic));
     skissm__signed_pre_key_public__init(request->signed_pre_key_public);
     request->signed_pre_key_public->spk_id = account->signed_pre_key->spk_id;
     copy_protobuf_from_protobuf(&(request->signed_pre_key_public->public_key), &(account->signed_pre_key->key_pair->public_key));
-
     copy_protobuf_from_protobuf(&(request->signed_pre_key_public->signature), &(account->signed_pre_key->signature));
 
+    // copy one-time pre-key
     request->n_one_time_pre_keys = account->n_one_time_pre_keys;
     request->one_time_pre_keys = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * request->n_one_time_pre_keys);
+    size_t i;
     for (i = 0; i < request->n_one_time_pre_keys; i++) {
         request->one_time_pre_keys[i] = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
         skissm__one_time_pre_key_public__init(request->one_time_pre_keys[i]);
@@ -57,6 +58,7 @@ Skissm__RegisterUserRequest *produce_register_request(Skissm__Account *account) 
 
 bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserResponse *response) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        // insert the address the server gave to our account
         copy_address_from_address(&(account->address), response->address);
         account->saved = true;
         account->password = strdup(response->password);
@@ -70,10 +72,10 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
 }
 
 Skissm__PublishSpkRequest *produce_publish_spk_request(Skissm__Account *account) {
-    Skissm__PublishSpkRequest *request =
-        (Skissm__PublishSpkRequest *)malloc(sizeof(Skissm__PublishSpkRequest));
+    Skissm__PublishSpkRequest *request = (Skissm__PublishSpkRequest *)malloc(sizeof(Skissm__PublishSpkRequest));
     skissm__publish_spk_request__init(request);
 
+    // copy the new signed pre-key to the message which will be sent to the server
     copy_address_from_address(&(request->user_address), account->address);
     request->signed_pre_key_public = (Skissm__SignedPreKeyPublic *)malloc(sizeof(Skissm__SignedPreKeyPublic));
     skissm__signed_pre_key_public__init(request->signed_pre_key_public);
@@ -101,6 +103,7 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
     Skissm__SupplyOpksRequest *request = (Skissm__SupplyOpksRequest *)malloc(sizeof(Skissm__SupplyOpksRequest));
     skissm__supply_opks_request__init(request);
 
+    // generate a given number of new one-time pre-keys
     Skissm__OneTimePreKey **inserted_one_time_pre_key_pair_list = generate_opks((size_t)opks_num, account);
 
     request->e2ee_pack_id = strdup(account->e2ee_pack_id);
@@ -109,6 +112,7 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
 
     copy_address_from_address(&(request->user_address), account->address);
 
+    // copy the new one-time pre-keys to the message which will be sent to the server
     uint32_t i;
     for (i = 0; i < opks_num; i++) {
         request->one_time_pre_key_public[i] = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
@@ -135,6 +139,9 @@ bool consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, S
 }
 
 bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__SupplyOpksMsg *msg) {
+    /** The server notifies us to generate some new one-time pre-keys 
+        since our published one-time pre-keys are going to used up. */
+
     if (!compare_address(receiver_address, msg->user_address)){
         ssm_notify_error(BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
         return false;
@@ -145,7 +152,7 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
 
-    if (account == NULL || !account->saved) {
+    if (account == NULL || !(account->saved)) {
         ssm_notify_error(BAD_ONE_TIME_PRE_KEY, "consume_supply_opks_msg()");
         return false;
     }

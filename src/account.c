@@ -42,20 +42,20 @@ static void update_signed_pre_key() {
     size_t i;
     for (i = 0; i < account_num; i++) {
         cur_account = accounts[i];
-        // Check if the signed pre-key expired
+        // check if the signed pre-key expired
         now = get_skissm_plugin()->common_handler.gen_ts();
         if (now > cur_account->signed_pre_key->ttl) {
             generate_signed_pre_key(cur_account);
             publish_spk_internal(cur_account);
         }
 
-        // Check and remove signed pre-keys (keep last two)
+        // check and remove signed pre-keys (keep last two)
         get_skissm_plugin()->db_handler.remove_expired_signed_pre_key(cur_account->account_id);
 
-        // Check if there are too many "used" one-time pre-keys
+        // check if there are too many "used" one-time pre-keys
         free_one_time_pre_key(cur_account);
 
-        // Release
+        // release
         skissm__account__free_unpacked(cur_account, NULL);
         cur_account = NULL;
     }
@@ -63,11 +63,11 @@ static void update_signed_pre_key() {
 }
 
 void account_begin() {
-    // Load the first account that may be null.
+    // load the first account that may be null
     uint64_t account_id = 1;
     get_skissm_plugin()->db_handler.load_account(account_id, &local_account);
 
-    // Check and keep a updated signed pre-key.
+    // check and keep a updated signed pre-key
     update_signed_pre_key();
 }
 
@@ -82,17 +82,17 @@ Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
     Skissm__Account *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
     skissm__account__init(account);
 
-    // Set the version, e2ee_pack_id
+    // set the version, e2ee_pack_id
     account->version = strdup(E2EE_PROTOCOL_VERSION);
     account->e2ee_pack_id = strdup(e2ee_pack_id);
 
-    // Set some initial ids
+    // set some initial ids
     account->next_one_time_pre_key_id = 1;
 
-    // Generate an account ID
+    // generate an account ID
     account->account_id = account_id;
 
-    // Generate the identity key pair
+    // generate the identity key pair
     account->identity_key = (Skissm__IdentityKey *)malloc(sizeof(Skissm__IdentityKey));
     skissm__identity_key__init(account->identity_key);
     account->identity_key->asym_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
@@ -105,10 +105,10 @@ Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
     skissm__key_pair__init(account->identity_key->sign_key_pair);
     cipher_suite->sign_key_gen(&(account->identity_key->sign_key_pair->public_key), &(account->identity_key->sign_key_pair->private_key));
 
-    // Generate a signed pre-key pair
+    // generate a signed pre-key pair
     generate_signed_pre_key(account);
 
-    // Generate 100 one-time pre-key pairs
+    // generate 100 one-time pre-key pairs
     generate_opks(100, account);
 
     return account;
@@ -142,26 +142,26 @@ Skissm__Account *switch_account(Skissm__E2eeAddress *address) {
 
 size_t generate_signed_pre_key(Skissm__Account *account) {
     uint32_t next_signed_pre_key_id = 1;
-    // Check whether the old signed pre-key exists or not
+    // check whether the old signed pre-key exists or not
     if (account->signed_pre_key) {
         next_signed_pre_key_id = account->signed_pre_key->spk_id + 1;
         skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
         account->signed_pre_key = NULL;
     }
 
-    // Initialize
+    // initialize
     account->signed_pre_key = (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
     skissm__signed_pre_key__init(account->signed_pre_key);
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(account->e2ee_pack_id)->cipher_suite;
 
-    // Generate signed pre-key
+    // generate a signed pre-key pair
     account->signed_pre_key->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->signed_pre_key->key_pair);
     cipher_suite->asym_key_gen(&(account->signed_pre_key->key_pair->public_key), &(account->signed_pre_key->key_pair->private_key));
     account->signed_pre_key->spk_id = next_signed_pre_key_id;
 
-    // Generate signature
+    // generate a signature
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
     int sig_len = cipher_suite->get_crypto_param().sig_len;
     account->signed_pre_key->signature.data = (uint8_t *)malloc(sig_len);
@@ -186,7 +186,7 @@ const Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__Account *account, u
 }
 
 Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *account) {
-    // Generate a number of one-time pre-key pairs
+    // generate a number of one-time pre-key pairs
 
     Skissm__OneTimePreKey **inserted_one_time_pre_key_list_node;
 

@@ -196,7 +196,7 @@ static size_t verify_and_decrypt_for_existing_chain(
         return (size_t)(-1);
     }
 
-    /* Limit the number of hashes we're prepared to compute */
+    // limit the number of hashes we're prepared to compute
     if (payload->sequence - chain->index > MAX_CHAIN_INDEX) {
         ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
         return (size_t)(-2);
@@ -243,7 +243,7 @@ static size_t verify_and_decrypt_for_new_chain(
         return (size_t)(-1);
     }
 
-    /* Limit the number of hashes we're prepared to compute */
+    // Limit the number of hashes we're prepared to compute
     if (payload->sequence > MAX_CHAIN_INDEX) {
         ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
         return (size_t)(-2);
@@ -288,7 +288,7 @@ void initialise_as_bob(
     const Skissm__KeyPair *our_ratchet_key
 ){
     int shared_key_len = cipher_suite->get_crypto_param().hash_len;
-    /* The ssk will be 64 bytes */
+    // the ssk will be 64 bytes
     uint8_t derived_secrets[2 * shared_key_len];
     int hash_len = cipher_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
@@ -306,7 +306,8 @@ void initialise_as_bob(
     skissm__chain_key__init(ratchet->sender_chain->chain_key);
     ratchet->sender_chain->chain_key->index = 0;
 
-    /* The first half of the ssk will be the root key, and the second half will be the sending chain key */
+    /** The first half of the ssk will be the root key,
+     *  and the second half will be the sending chain key */
     copy_protobuf_from_array(&(ratchet->root_key), derived_secrets, shared_key_len);
 
     copy_protobuf_from_array(&(ratchet->sender_chain->chain_key->shared_key), derived_secrets + shared_key_len, shared_key_len);
@@ -322,14 +323,14 @@ void initialise_as_alice(
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 ){
     int shared_key_len = cipher_suite->get_crypto_param().hash_len;
-    /* The length of derived_secrets will be 64 bytes */
+    // the length of derived_secrets will be 64 bytes
     uint8_t derived_secrets[2 * shared_key_len];
     memset(derived_secrets, 0, 2 * shared_key_len);
     int hash_len = cipher_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
 
-    /* shared_secret_length may be 128 or 96 */
+    // shared_secret_length may be 128 or 96
     cipher_suite->hkdf(
         shared_secret, shared_secret_length,
         salt, sizeof(salt),
@@ -342,7 +343,8 @@ void initialise_as_alice(
     ratchet->receiver_chains[0]->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
     skissm__chain_key__init(ratchet->receiver_chains[0]->chain_key);
 
-    /* The first half of the ssk will be the root key, and the second half will be the receiving chain key */
+    /** The first half of the ssk will be the root key,
+     *  and the second half will be the receiving chain key */
     copy_protobuf_from_array(&(ratchet->root_key), derived_secrets, shared_key_len);
 
     copy_protobuf_from_array(&(ratchet->receiver_chains[0]->chain_key->shared_key), derived_secrets + shared_key_len, shared_key_len);
@@ -351,7 +353,7 @@ void initialise_as_alice(
 
     (ratchet->n_receiver_chains)++;
 
-    /* Generate a new root key and a sending chain key */
+    // generate a new root key and a sending chain key
     ratchet->sender_chain = (Skissm__SenderChainNode *) malloc(sizeof(Skissm__SenderChainNode));
     skissm__sender_chain_node__init(ratchet->sender_chain);
 
@@ -378,7 +380,7 @@ void encrypt_ratchet(
             ratchet->sender_chain = NULL;
         }
     }
-    /* Prepare a new sender chain if no available */
+    // prepare a new sender chain if no available
     if (ratchet->sender_chain == NULL) {
         ratchet->sender_chain = (Skissm__SenderChainNode *) malloc(sizeof(Skissm__SenderChainNode));
         skissm__sender_chain_node__init(ratchet->sender_chain);
@@ -447,7 +449,7 @@ size_t decrypt_ratchet(
 
     Skissm__ReceiverChainNode *chain = NULL;
 
-    /* Find the corresponding receiving chain */
+    // find the corresponding receiving chain
     Skissm__ReceiverChainNode **cur = ratchet->receiver_chains;
     if (cur){
         size_t i;
@@ -499,7 +501,7 @@ size_t decrypt_ratchet(
             return (size_t)(-4);
         }
     } else {
-        /* They use the same ratchet key. */
+        // they use the same ratchet key
         result = verify_and_decrypt_for_existing_chain(
             cipher_suite,
             ad, chain->chain_key,

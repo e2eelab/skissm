@@ -43,7 +43,8 @@ static int64_t gen_ts() {
 
 static void gen_rand(uint8_t *rand_out, size_t rand_out_len) {
     srand((unsigned int)time(NULL));
-    for (int i = 0; i < rand_out_len; i++) {
+    size_t i;
+    for (i = 0; i < rand_out_len; i++) {
         rand_out[i] = random() % UCHAR_MAX;
     }
 }
