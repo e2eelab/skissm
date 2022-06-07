@@ -189,6 +189,8 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(Skissm__
     msg->n_removing_members = removing_group_members_num;
     copy_group_members(&(msg->removing_members), removing_group_members, removing_group_members_num);
 
+    // done
+    request->msg = msg;
     return request;
 }
 
@@ -226,18 +228,20 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
     Skissm__GroupMember **new_group_members = msg->all_members;
     const char *e2ee_pack_id = msg->e2ee_pack_id;
 
-    Skissm__GroupSession *group_session = NULL;
-    get_skissm_plugin()->db_handler.load_inbound_group_session(receiver_address, group_address, &group_session);
-
-    // delete the old group session
-    get_skissm_plugin()->db_handler.unload_group_session(group_session);
-    char *old_session_id = strdup(group_session->session_id);
-
-    // create a new outbound group session
-    create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, old_session_id);
-
-    // release
-    free_mem((void **)&old_session_id, strlen(old_session_id));
+    Skissm__GroupSession *inbound_group_session = NULL;
+    get_skissm_plugin()->db_handler.load_inbound_group_session(receiver_address, group_address, &inbound_group_session);
+    // delete the old inbound group session if it exists
+    if (inbound_group_session != NULL) {
+        char *old_session_id = strdup(inbound_group_session->session_id);
+        get_skissm_plugin()->db_handler.unload_group_session(inbound_group_session);
+        // create a new outbound group session
+        create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, old_session_id);
+        // release
+        free_mem((void **)&old_session_id, strlen(old_session_id));
+    } else{
+        // create an outbound group session
+        create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, NULL);
+    }
 
     // done
     return true;

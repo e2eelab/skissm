@@ -42,7 +42,7 @@ void test_update_one_time_pre_key(){
     tear_up();
 
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
-    /* Generate a random address */
+    // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
     account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
@@ -52,7 +52,7 @@ void test_update_one_time_pre_key(){
     account->address->user->user_id = generate_uuid_str();
     account->address->user->device_id = generate_uuid_str();
 
-    /* Save to db */
+    // save to db
     account->saved = true;
     get_skissm_plugin()->db_handler.store_account(account);
 
@@ -62,12 +62,12 @@ void test_update_one_time_pre_key(){
     mark_opk_as_used(account, opk_id);
     update_one_time_pre_key(account->account_id, opk_id);
 
-    /* load the one-time pre-keys */
+    // load the one-time pre-keys
     Skissm__OneTimePreKey **opk_copy = NULL;
     uint32_t opk_num = load_one_time_pre_keys(account->account_id, &opk_copy);
 
-    /* assert the opk is used */
-    print_result("test_update_one_time_pre_key", (opk_copy[used_opk]->used == true));
+    // assert the opk is used
+    assert(opk_copy[used_opk]->used == true);
 
     // free
     skissm__account__free_unpacked(account, NULL);
@@ -80,7 +80,7 @@ void test_remove_one_time_pre_key(){
     tear_up();
 
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
-    /* Generate a random address */
+    // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
     account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
@@ -90,7 +90,7 @@ void test_remove_one_time_pre_key(){
     account->address->user->user_id = generate_uuid_str();
     account->address->user->device_id = generate_uuid_str();
 
-    /* Save to db */
+    // save to db
     account->saved = true;
     get_skissm_plugin()->db_handler.store_account(account);
 
@@ -102,12 +102,12 @@ void test_remove_one_time_pre_key(){
         remove_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]->opk_id);
     }
 
-    /* load the one-time pre-keys */
+    // load the one-time pre-keys
     Skissm__OneTimePreKey **opk_copy = NULL;
     uint32_t opk_num = load_one_time_pre_keys(account->account_id, &opk_copy);
 
-    /* check if the opks are deleted */
-    print_result("test_remove_one_time_pre_key", (opk_num == origin_opk_num - used_opk_num));
+    // check if the opks are deleted
+    assert(opk_num == origin_opk_num - used_opk_num);
 
     // free
     skissm__account__free_unpacked(account, NULL);
