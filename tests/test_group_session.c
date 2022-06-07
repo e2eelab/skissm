@@ -52,7 +52,7 @@ store_plaintext plaintext_store = {NULL, 0};
 
 store_group group = {NULL, NULL};
 
-static void on_error(ErrorCode error_code, const char *error_msg) { print_error(error_msg, error_code); }
+static void on_error(ErrorCode error_code, const char *error_msg) { print_error((char *)error_msg, error_code); }
 
 static void on_user_registered(Skissm__Account *account) {
     print_msg("on_user_registered: user_id", (uint8_t *)account->address->user->user_id, strlen(account->address->user->user_id));
@@ -97,14 +97,14 @@ static void on_group_created(Skissm__E2eeAddress *group_address, const char *gro
 
 static void on_group_members_added(Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **added_group_members, size_t added_group_members_num) {
     print_msg("on_group_members_added: group_name", (uint8_t *)group_name, strlen(group_name));
-    for(int i=0; i<added_group_members_num; i++) {
+    for (int i=0; i<added_group_members_num; i++) {
         print_msg("    member_id", (uint8_t *)(added_group_members[i]->user_id), strlen(added_group_members[i]->user_id));
     }
 }
 
 static void on_group_members_removed(Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **removed_group_members, size_t removed_group_members_num) {
     print_msg("on_group_members_removed: group_name", (uint8_t *)group_name, strlen(group_name));
-    for(int i=0; i<removed_group_members_num; i++) {
+    for (int i=0; i<removed_group_members_num; i++) {
         print_msg("    member_id", (uint8_t *)(removed_group_members[i]->user_id), strlen(removed_group_members[i]->user_id));
     }
 }

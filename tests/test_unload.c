@@ -30,7 +30,7 @@
 #include "skissm/skissm.h"
 
 #include "test_plugin.h"
-#include "test_db.h"
+#include "mock_db.h"
 #include "test_util.h"
 
 void test_unload_inbound_group_session(){

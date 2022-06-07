@@ -218,7 +218,7 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *ac
     }
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(account->e2ee_pack_id)->cipher_suite;
-    unsigned i;
+    size_t i;
     for (i = 0; i < number_of_keys; i++) {
         Skissm__OneTimePreKey *node;
         node = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));

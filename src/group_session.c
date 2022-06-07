@@ -165,7 +165,7 @@ void create_outbound_group_session(
     size_t group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext_data, session_id);
 
     /* send the group pre-key message to the members in the group */
-    unsigned i, j;
+    size_t i, j;
     for (i = 0; i < outbound_group_session->n_group_members; i++){
         if (!safe_strcmp(outbound_group_session->session_owner->user->user_id, outbound_group_session->group_members[i]->user_id)) {
             Skissm__E2eeAddress *group_member_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
@@ -179,8 +179,8 @@ void create_outbound_group_session(
             size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(outbound_group_session->session_owner, group_member_address->user->user_id, &outbound_sessions);
 
             if (outbound_sessions_num > (size_t)(0) && outbound_sessions != NULL) {
-                for(j = 0; j < outbound_sessions_num; j++) {
-                    Skissm__Session *outbound_session = outbound_sessions[i];
+                for (j = 0; j < outbound_sessions_num; j++) {
+                    Skissm__Session *outbound_session = outbound_sessions[j];
                     if (outbound_session != NULL) {
                         send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
                     } else{

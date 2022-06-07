@@ -31,8 +31,8 @@
 #include "skissm/e2ee_client.h"
 #include "skissm/mem_util.h"
 
-#include "test_server.h"
-#include "test_db.h"
+#include "mock_server.h"
+#include "mock_db.h"
 #include "test_util.h"
 
 // ===============================================================
@@ -131,11 +131,11 @@ struct skissm_plugin_t ssm_plugin = {
 // test case interface
 
 void tear_up() {
-    test_db_begin();
+    mock_db_begin();
     skissm_begin(&ssm_plugin);
 }
 
 void tear_down() {
-    test_db_end();
+    mock_db_end();
     skissm_end();
 }

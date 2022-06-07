@@ -25,7 +25,7 @@
 #include "skissm/account.h"
 #include "skissm/mem_util.h"
 
-#include "test_db.h"
+#include "mock_db.h"
 #include "test_plugin.h"
 #include "test_util.h"
 

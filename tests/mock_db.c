@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "test_db.h"
+#include "mock_db.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -518,7 +518,7 @@ static const char *ONETIME_PRE_KEY_UPDATE_USED = "UPDATE ONETIME_PRE_KEY "
                                                  "SET USED = 1 "
                                                  "WHERE ID is (?);";
 
-void test_db_begin() {
+void mock_db_begin() {
     sqlite3_initialize();
 
     // connect
@@ -573,7 +573,7 @@ void test_db_begin() {
     sqlite_execute(ACCOUNT_ONETIME_PRE_KEY_CREATE_TABLE);
 }
 
-void test_db_end() {
+void mock_db_end() {
     sqlite3_close(db);
     sqlite3_shutdown();
 }

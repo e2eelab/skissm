@@ -55,14 +55,14 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(Skissm__E2eeA
     return request;
 }
 
-Skissm__InviteResponse *consume_get_pre_key_bundle_response (
+Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     Skissm__GetPreKeyBundleResponse *response) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         Skissm__PreKeyBundle **their_pre_key_bundles = response->pre_key_bundles;
         size_t n_pre_key_bundles = response->n_pre_key_bundles;
-        unsigned i;
+        size_t i;
         for (i = 0; i < n_pre_key_bundles; i++) {
             // find an account
             Skissm__Account *account = NULL;

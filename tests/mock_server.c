@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "test_server.h"
+#include "mock_server.h"
 
 #include <string.h>
 
@@ -71,7 +71,7 @@ static uint8_t group_data_set_insert_pos = 0;
 static size_t find_user_addresses(const char *user_id, Skissm__E2eeAddress ***user_addresses) {
     size_t user_addresses_num = 0;
     uint8_t i;
-    for(i = 0; i<user_data_max; i++) {
+    for (i = 0; i<user_data_max; i++) {
         if (user_data_set[i].address != NULL) {
             if (safe_strcmp(user_data_set[i].address->user->user_id, user_id))
                 user_addresses_num++;
@@ -79,7 +79,7 @@ static size_t find_user_addresses(const char *user_id, Skissm__E2eeAddress ***us
     }
     *user_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * user_addresses_num);
     uint8_t j = 0;
-    for(i = 0; i<user_data_max; i++) {
+    for (i = 0; i<user_data_max; i++) {
         if (user_data_set[i].address != NULL) {
             if (safe_strcmp(user_data_set[i].address->user->user_id, user_id))
                 copy_address_from_address(&((*user_addresses)[j++]), user_data_set[i].address);
@@ -88,10 +88,10 @@ static size_t find_user_addresses(const char *user_id, Skissm__E2eeAddress ***us
     return user_addresses_num;
 }
 
-void test_server_begin(){
+void mock_server_begin(){
 }
 
-void test_server_end(){
+void mock_server_end(){
    uint8_t i, j;
    for (i = 0; i < user_data_set_insert_pos; i++){
        skissm__e2ee_address__free_unpacked(user_data_set[i].address, NULL);
@@ -100,7 +100,7 @@ void test_server_end(){
        free((void *)(user_data_set[i].user_name));
        skissm__identity_key_public__free_unpacked(user_data_set[i].identity_key_public, NULL);
        skissm__signed_pre_key_public__free_unpacked(user_data_set[i].signed_pre_key_public, NULL);
-       for(int j=0; j<user_data_set[i].n_one_time_pre_keys; j++) {
+       for (int j=0; j<user_data_set[i].n_one_time_pre_keys; j++) {
            skissm__one_time_pre_key_public__free_unpacked(user_data_set[i].one_time_pre_keys[j], NULL);
        }
        free_mem((void **)(&(user_data_set[i].one_time_pre_keys)), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);
@@ -135,7 +135,7 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     copy_spk_public_from_spk_public(&(cur_data->signed_pre_key_public), request->signed_pre_key_public);
     cur_data->n_one_time_pre_keys = request->n_one_time_pre_keys;
     cur_data->one_time_pre_keys = (Skissm__OneTimePreKeyPublic **) malloc(sizeof(Skissm__OneTimePreKeyPublic *) * cur_data->n_one_time_pre_keys);
-    unsigned i;
+    size_t i;
     for (i = 0; i < cur_data->n_one_time_pre_keys; i++){
         copy_opk_public_from_opk_public(&(cur_data->one_time_pre_keys[i]), request->one_time_pre_keys[i]);
     }
@@ -184,7 +184,7 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundle
     copy_ik_public_from_ik_public(&(response->pre_key_bundles[0]->identity_key_public), cur_data->identity_key_public);
     copy_spk_public_from_spk_public(&(response->pre_key_bundles[0]->signed_pre_key_public), cur_data->signed_pre_key_public);
     // TODO: remove one_time_pre_keys[0] and append to response->pre_key_bundles
-    unsigned i;
+    size_t i;
     for (i = 0; i < cur_data->n_one_time_pre_keys; i++){
         if (cur_data->one_time_pre_keys[i]){
             copy_opk_public_from_opk_public(&(response->pre_key_bundles[0]->one_time_pre_key_public), cur_data->one_time_pre_keys[i]);
@@ -320,7 +320,7 @@ Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__SupplyOpksRequest *request)
     cur_data->n_one_time_pre_keys += request->n_one_time_pre_key_public;
     Skissm__OneTimePreKeyPublic **temp;
     temp = (Skissm__OneTimePreKeyPublic **) malloc(sizeof(Skissm__OneTimePreKeyPublic *) * cur_data->n_one_time_pre_keys);
-    unsigned i;
+    size_t i;
     for (i = 0; i < old_num; i++){
         copy_opk_public_from_opk_public(&(temp[i]), cur_data->one_time_pre_keys[i]);
         skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_keys[i], NULL);

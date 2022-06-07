@@ -68,8 +68,8 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *t
     if (outbound_sessions_num == (size_t)(0)) {
         return get_pre_key_bundle_internal(from, to);
     } else {
-        unsigned i;
-        for(i = 0; i < outbound_sessions_num; i++) {
+        size_t i;
+        for (i = 0; i < outbound_sessions_num; i++) {
             if (!outbound_sessions[i]->responded) {
                 // resend ?
             }
@@ -89,8 +89,8 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(Skissm__E2eeAddress *from, Skis
         ssm_notify_error(BAD_SESSION, "send_one2one_msg() outbound session is not responded");
         return NULL;
     }
-    unsigned i;
-    for(i=0; i < outbound_sessions_num; i++) {
+    size_t i;
+    for (i = 0; i < outbound_sessions_num; i++) {
         Skissm__Session *outbound_session = outbound_sessions[i];
         if (outbound_session->responded == false) {
             // skip non-responded session

@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef TEST_DB_H_
-#define TEST_DB_H_
+#ifndef MOCK_DB_H_
+#define MOCK_DB_H_
 
 #include <sqlite3.h>
 
 #include "skissm/skissm.h"
 
-void test_db_begin();
-void test_db_end();
+void mock_db_begin();
+void mock_db_end();
 void load_id(ProtobufCBinaryData **account_id);
 size_t load_ids(sqlite_int64 **account_ids);
 char*load_version(uint64_t account_id);
@@ -111,4 +111,4 @@ size_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
 
 void unload_group_pre_key(Skissm__E2eeAddress *member_address);
 
-#endif /* TEST_DB_H_ */
+#endif /* MOCK_DB_H_ */

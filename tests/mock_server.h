@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef TEST_SERVER_H_
-#define TEST_SERVER_H_
+#ifndef MOCK_SERVER_H_
+#define MOCK_SERVER_H_
 
 #include "skissm/skissm.h"
 
@@ -111,4 +111,4 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__SendGroupMsgRequest *r
  */
 Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__ConsumeProtoMsgRequest *request);
 
-#endif /* TEST_SERVER_H_ */
+#endif /* MOCK_SERVER_H_ */

@@ -27,7 +27,7 @@ if(NOT sqlite3)
 endif()
 
 add_library(db STATIC
-    test_db.c)
+    mock_db.c)
 
 target_include_directories(db
     PRIVATE
@@ -37,9 +37,9 @@ target_include_directories(db
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
 add_library(test_env STATIC
-    test_server.c
+    mock_server.c
     test_plugin.c
-    test_db.c
+    mock_db.c
     test_util.c)
 
 target_include_directories(test_env
