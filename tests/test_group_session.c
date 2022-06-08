@@ -130,6 +130,12 @@ static void test_begin() {
     account_data[2] = NULL;
     account_data_insert_pos = 0;
 
+    group.group_address = NULL;
+    group.group_name = NULL;
+
+    plaintext_store.plaintext = NULL;
+    plaintext_store.plaintext_len = 0;
+
     get_skissm_plugin()->event_handler = test_event_handler;
 }
 
@@ -141,6 +147,16 @@ static void test_end() {
     skissm__account__free_unpacked(account_data[2], NULL);
     account_data[2] = NULL;
     account_data_insert_pos = 0;
+
+    skissm__e2ee_address__free_unpacked(group.group_address, NULL);
+    if (group.group_name != NULL) {
+        free(group.group_name);
+    }
+
+    if (plaintext_store.plaintext != NULL) {
+        free(plaintext_store.plaintext);
+    }
+    plaintext_store.plaintext_len = 0;
 }
 
 static void register_test_user(uint64_t account_id, const char *user_name) {
@@ -155,6 +171,9 @@ static void register_test_user(uint64_t account_id, const char *user_name) {
             "");
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    // skissm__register_user_response__free_unpacked(response, NULL);
 }
 
 static void test_encryption(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext_data, size_t plaintext_data_len) {
@@ -293,7 +312,7 @@ static void test_remove_group_members() {
     invite(account_data[0]->address, account_data[2]->address);
 
     // the first group member is Alice
-    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
@@ -419,9 +438,9 @@ int main() {
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
     
     test_create_group();
-    //test_add_group_members();
-    //test_remove_group_members();
-    //test_create_add_remove();
+    test_add_group_members();
+    test_remove_group_members();
+    test_create_add_remove();
 
     return 0;
 }

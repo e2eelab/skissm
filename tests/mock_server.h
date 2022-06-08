@@ -21,6 +21,14 @@
 
 #include "skissm/skissm.h"
 
+void mock_server_begin();
+
+/**
+ * @brief Close the mock server
+ * 
+ */
+void mock_server_end();
+
 /**
  * @brief 
  * 

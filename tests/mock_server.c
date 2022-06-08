@@ -580,7 +580,7 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
     size_t new_group_members_num = original_group_members_num - request->msg->n_removing_members;
     cur_group_data->group_members_num = new_group_members_num;
 
-    size_t i,j;
+    size_t i, j;
     for (j = 0; j < request->msg->n_removing_members; j++){
         for (i = 0; i < original_group_members_num; i++){
             if (safe_strcmp(cur_group_data->group_members[i]->user_id, request->msg->removing_members[j]->user_id)){
@@ -603,7 +603,6 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
         }
     }
 
-    i = 0;
     for (i = 0; i < original_group_members_num; i++){
         skissm__group_member__free_unpacked(cur_group_data->group_members[i], NULL);
         cur_group_data->group_members[i] = NULL;

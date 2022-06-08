@@ -68,7 +68,7 @@ void test_load_old_signed_pre_key(){
     load_signed_pre_key(account->account_id, old_spk->spk_id, &old_spk_copy);
 
     // assert old_spk equals to old_spk_copy
-    // assert(is_equal_spk(old_spk, old_spk_copy));
+    assert(is_equal_spk(old_spk, old_spk_copy));
     print_result("compare signed_pre_key [2]", is_equal_spk(old_spk, old_spk_copy));
 
     // free

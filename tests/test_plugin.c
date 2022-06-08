@@ -138,5 +138,6 @@ void tear_up() {
 
 void tear_down() {
     mock_db_end();
+    mock_server_end();
     skissm_end();
 }

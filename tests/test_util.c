@@ -525,6 +525,7 @@ void mock_random_group_address(Skissm__E2eeAddress **address) {
     (*address)->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
     skissm__peer_group__init((*address)->group);
     (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
+    (*address)->domain = mock_domain_str();
     (*address)->group->group_id = generate_uuid_str();
 }
 
