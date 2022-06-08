@@ -807,8 +807,9 @@ void load_signed_pre_key_pair(uint64_t account_id,
                              sqlite3_column_bytes(stmt, 2));
     copy_protobuf_from_array(&((*signed_pre_key)->signature), (uint8_t *)sqlite3_column_blob(stmt, 3),
                              sqlite3_column_bytes(stmt, 3));
-    (*signed_pre_key)->ttl = (int64_t)sqlite3_column_int64(stmt, 4);
-
+    int64_t ttl = (int64_t)sqlite3_column_int64(stmt, 4);
+    if (ttl < 0) ttl = (0xffffffff + ttl + 1);
+    (*signed_pre_key)->ttl = ttl;
     // release
     sqlite_finalize(stmt);
 }
@@ -1200,7 +1201,9 @@ void load_signed_pre_key(uint64_t account_id, uint32_t spk_id,
                              sqlite3_column_bytes(stmt, 2));
     copy_protobuf_from_array(&((*signed_pre_key)->signature), (uint8_t *)sqlite3_column_blob(stmt, 3),
                              sqlite3_column_bytes(stmt, 3));
-    (*signed_pre_key)->ttl = (int64_t)sqlite3_column_int(stmt, 4);
+    int64_t ttl = (int64_t)sqlite3_column_int64(stmt, 4);
+    if (ttl < 0) ttl = (0xffffffff + ttl + 1);
+    (*signed_pre_key)->ttl = ttl;
 
     // release
     sqlite_finalize(stmt);

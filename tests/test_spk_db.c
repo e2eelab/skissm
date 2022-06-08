@@ -57,17 +57,19 @@ void test_load_old_signed_pre_key(){
     copy_protobuf_from_protobuf(&(old_spk->signature), &(account->signed_pre_key->signature));
     old_spk->ttl = account->signed_pre_key->ttl;
 
+    print_result("compare signed_pre_key [1]", is_equal_spk(old_spk, account->signed_pre_key));
+    
     // generate a new signed pre-key pair
     generate_signed_pre_key(account);
     get_skissm_plugin()->db_handler.update_signed_pre_key(account->account_id, account->signed_pre_key);
 
-    // load the old signed pre-key
+    // load the updated signed pre-key from db
     Skissm__SignedPreKey *old_spk_copy = NULL;
     load_signed_pre_key(account->account_id, old_spk->spk_id, &old_spk_copy);
 
     // assert old_spk equals to old_spk_copy
     // assert(is_equal_spk(old_spk, old_spk_copy));
-    print_result("test_load_old_signed_pre_key", is_equal_spk(old_spk, old_spk_copy));
+    print_result("compare signed_pre_key [2]", is_equal_spk(old_spk, old_spk_copy));
 
     // free
     skissm__account__free_unpacked(account, NULL);
