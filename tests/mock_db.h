@@ -91,8 +91,15 @@ void load_outbound_group_session(
     Skissm__GroupSession **group_session);
 void load_inbound_group_session(
     Skissm__E2eeAddress *receiver_address,
-    Skissm__E2eeAddress *group_address,
+    char *session_id,
     Skissm__GroupSession **group_session);
+int load_n_inbound_group_sessions(
+    Skissm__E2eeAddress *owner,
+    Skissm__E2eeAddress *group_address);
+size_t load_inbound_group_sessions(
+    Skissm__E2eeAddress *owner,
+    Skissm__E2eeAddress *group_address,
+    Skissm__GroupSession ***inbound_group_sessions);
 void store_group_session(
     Skissm__GroupSession *group_session);
 void unload_group_session(

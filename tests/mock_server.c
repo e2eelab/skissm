@@ -92,39 +92,46 @@ void mock_server_begin(){
 }
 
 void mock_server_end(){
-   uint8_t i;
-   size_t j;
-   for (i = 0; i < user_data_set_insert_pos; i++){
-       skissm__e2ee_address__free_unpacked(user_data_set[i].address, NULL);
-       user_data_set[i].address = NULL;
+    uint8_t i;
+    size_t j;
+    for (i = 0; i < user_data_set_insert_pos; i++){
+        skissm__e2ee_address__free_unpacked(user_data_set[i].address, NULL);
+        user_data_set[i].address = NULL;
 
-       free((void *)(user_data_set[i].user_name));
-       skissm__identity_key_public__free_unpacked(user_data_set[i].identity_key_public, NULL);
-       skissm__signed_pre_key_public__free_unpacked(user_data_set[i].signed_pre_key_public, NULL);
-       for (j = 0; j < user_data_set[i].n_one_time_pre_keys; j++) {
-           skissm__one_time_pre_key_public__free_unpacked(user_data_set[i].one_time_pre_keys[j], NULL);
-       }
-       free_mem((void **)(&(user_data_set[i].one_time_pre_keys)), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);
-       user_data_set[i].user_name = NULL;
-       user_data_set[i].identity_key_public = NULL;
-       user_data_set[i].signed_pre_key_public = NULL;
-       user_data_set[i].one_time_pre_keys = NULL;
-       user_data_set[i].n_one_time_pre_keys = 0;
-   }
-   user_data_set_insert_pos = 0;
-   for (i = 0; i < group_data_set_insert_pos; i++){
-       skissm__e2ee_address__free_unpacked(group_data_set[i].group_address, NULL);
-       group_data_set[i].group_address = NULL;
-       free(group_data_set[i].group_name);
-       group_data_set[i].group_name = NULL;
-       for (j = 0; j < group_data_set[i].group_members_num; j++){
-           skissm__group_member__free_unpacked(group_data_set[i].group_members[j], NULL);
-           group_data_set[i].group_members[j] = NULL;
-       }
-       free_mem((void **)(&(group_data_set[i].group_members)), sizeof(Skissm__GroupMember *) * group_data_set[i].group_members_num);
-       group_data_set[i].group_members_num = 0;
-   }
-   group_data_set_insert_pos = 0;
+        free((void *)(user_data_set[i].user_name));
+        skissm__identity_key_public__free_unpacked(user_data_set[i].identity_key_public, NULL);
+        skissm__signed_pre_key_public__free_unpacked(user_data_set[i].signed_pre_key_public, NULL);
+        for (j = 0; j < user_data_set[i].n_one_time_pre_keys; j++) {
+            Skissm__OneTimePreKeyPublic *cur_opk = user_data_set[i].one_time_pre_keys[j];
+            if (cur_opk != NULL) {
+                skissm__one_time_pre_key_public__free_unpacked(cur_opk, NULL);
+                cur_opk = NULL;
+            }
+        }
+        free_mem((void **)(&(user_data_set[i].one_time_pre_keys)), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);
+        user_data_set[i].user_name = NULL;
+        user_data_set[i].identity_key_public = NULL;
+        user_data_set[i].signed_pre_key_public = NULL;
+        user_data_set[i].one_time_pre_keys = NULL;
+        user_data_set[i].n_one_time_pre_keys = 0;
+    }
+    user_data_set_insert_pos = 0;
+    for (i = 0; i < group_data_set_insert_pos; i++){
+        skissm__e2ee_address__free_unpacked(group_data_set[i].group_address, NULL);
+        group_data_set[i].group_address = NULL;
+        free(group_data_set[i].group_name);
+        group_data_set[i].group_name = NULL;
+        for (j = 0; j < group_data_set[i].group_members_num; j++){
+            Skissm__GroupMember *cur_group_member = group_data_set[i].group_members[j];
+            if (cur_group_member != NULL){
+                skissm__group_member__free_unpacked(cur_group_member, NULL);
+                cur_group_member = NULL;
+            }
+        }
+        free_mem((void **)(&(group_data_set[i].group_members)), sizeof(Skissm__GroupMember *) * group_data_set[i].group_members_num);
+        group_data_set[i].group_members_num = 0;
+    }
+    group_data_set_insert_pos = 0;
 }
 
 Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request) {
@@ -481,8 +488,10 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
     temp_group_members = (Skissm__GroupMember **) malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     size_t i;
     for (i = 0; i < old_group_members_num; i++){
-        copy_group_member(&(temp_group_members[i]), cur_group_data->group_members[i]);
-        skissm__group_member__free_unpacked(cur_group_data->group_members[i], NULL);
+        Skissm__GroupMember *cur_group_member = (cur_group_data->group_members)[i];
+        copy_group_member(&(temp_group_members[i]), cur_group_member);
+        skissm__group_member__free_unpacked(cur_group_member, NULL);
+        cur_group_member = NULL;
     }
     free_mem((void **)(&(cur_group_data->group_members)), sizeof(Skissm__GroupMember *) * old_group_members_num);
     cur_group_data->group_members = temp_group_members;
@@ -580,32 +589,26 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
     size_t new_group_members_num = original_group_members_num - request->msg->n_removing_members;
     cur_group_data->group_members_num = new_group_members_num;
 
-    size_t i, j;
-    for (j = 0; j < request->msg->n_removing_members; j++){
-        for (i = 0; i < original_group_members_num; i++){
-            if (safe_strcmp(cur_group_data->group_members[i]->user_id, request->msg->removing_members[j]->user_id)){
-                skissm__group_member__free_unpacked(cur_group_data->group_members[i], NULL);
-                cur_group_data->group_members[i] = NULL;
-                break;
-            }
-        }
-    }
-
-    Skissm__GroupMember **temp_group_members;
-    temp_group_members = (Skissm__GroupMember **) malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
-    i = 0; j = 0;
+    Skissm__GroupMember **temp_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
+    size_t i = 0, j = 0;
+    size_t cur_removing_member_num;
     while (i < new_group_members_num && j < original_group_members_num){
-        if (cur_group_data->group_members[j] != NULL){
-            copy_group_member(&(temp_group_members[i]), cur_group_data->group_members[j]);
-            i++; j++;
+        cur_removing_member_num = j - i;
+        if (cur_removing_member_num < request->msg->n_removing_members){
+            if (!safe_strcmp((cur_group_data->group_members)[j]->user_id, request->msg->removing_members[cur_removing_member_num]->user_id)){
+                copy_group_member(&(temp_group_members[i]), (cur_group_data->group_members)[j]);
+                i++; j++;
+            } else{
+                j++;
+            }
         } else{
-            j++;
+            copy_group_member(&(temp_group_members[i]), (cur_group_data->group_members)[j]);
         }
     }
 
     for (i = 0; i < original_group_members_num; i++){
-        skissm__group_member__free_unpacked(cur_group_data->group_members[i], NULL);
-        cur_group_data->group_members[i] = NULL;
+        skissm__group_member__free_unpacked((cur_group_data->group_members)[i], NULL);
+        (cur_group_data->group_members)[i] = NULL;
     }
     free(cur_group_data->group_members);
     cur_group_data->group_members = temp_group_members;

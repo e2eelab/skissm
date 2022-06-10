@@ -252,7 +252,7 @@ typedef struct skissm_db_handler_t {
      * @brief find outbound group session
      * @param sender_address
      * @param group_address
-     * @param inbound_group_session
+     * @param outbound_group_session
      */
     void (*load_outbound_group_session)(Skissm__E2eeAddress *,
                                         Skissm__E2eeAddress *,
@@ -260,12 +260,21 @@ typedef struct skissm_db_handler_t {
     /**
      * @brief find inbound group session
      * @param receiver_address
-     * @param group_address
-     * @param outbound_group_session
+     * @param session_id
+     * @param inbound_group_session
      */
     void (*load_inbound_group_session)(Skissm__E2eeAddress *,
-                                       Skissm__E2eeAddress *,
+                                       char *,
                                        Skissm__GroupSession **);
+    /**
+     * @brief find inbound group session
+     * @param receiver_address
+     * @param group_address
+     * @param inbound_group_sessions
+     */
+    size_t (*load_inbound_group_sessions)(Skissm__E2eeAddress *,
+                                        Skissm__E2eeAddress *,
+                                        Skissm__GroupSession ***);
     /**
      * @brief store group session
      * @param group_session

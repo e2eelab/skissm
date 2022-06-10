@@ -404,7 +404,7 @@ void test_load_inbound_group_session()
 
     // load_inbound_group_session for owner: Alice
     Skissm__GroupSession *group_session_copy = NULL;
-    load_inbound_group_session(Alice, group_session->group_address, &group_session_copy);
+    load_inbound_group_session(Alice, group_session->session_id, &group_session_copy);
 
     // assert session equals to session_copy
     print_result("test_load_inbound_group_session", is_equal_group_session(group_session, group_session_copy));
