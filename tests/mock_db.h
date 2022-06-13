@@ -106,16 +106,19 @@ void unload_group_session(
     Skissm__GroupSession *group_session);
 void unload_inbound_group_session(
     Skissm__E2eeAddress *receiver_address,
-    char *session_id
-);
-void store_group_pre_key(Skissm__E2eeAddress *member_address,
-                         uint8_t *group_pre_key_plaintext,
-                         size_t group_pre_key_plaintext_len
-);
-size_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
+    char *session_id);
+void store_pending_plaintext_data(
+    Skissm__E2eeAddress *member_address,
+    bool outbound_session_responded,
+    uint8_t *group_pre_key_plaintext,
+    size_t group_pre_key_plaintext_len);
+size_t load_pending_plaintext_data(
+    Skissm__E2eeAddress *member_address,
+    bool outbound_session_responded,
     uint8_t ***e2ee_plaintext_data_list,
-    size_t **e2ee_plaintext_data_len_list);
+    size_t **e2ee_plaintext_data_len_list
+);
 
-void unload_group_pre_key(Skissm__E2eeAddress *member_address);
+void unload_pending_plaintext_data(Skissm__E2eeAddress *member_address, bool outbound_session_responded);
 
 #endif /* MOCK_DB_H_ */

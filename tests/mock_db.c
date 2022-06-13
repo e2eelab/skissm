@@ -1844,9 +1844,11 @@ void unload_inbound_group_session(Skissm__E2eeAddress *receiver_address,
     sqlite_finalize(stmt);
 }
 
-void store_group_pre_key(Skissm__E2eeAddress *member_address,
-                         uint8_t *group_pre_key_plaintext,
-                         size_t group_pre_key_plaintext_len) {
+void store_pending_plaintext_data(
+    Skissm__E2eeAddress *member_address,
+    bool outbound_session_responded,
+    uint8_t *group_pre_key_plaintext,
+    size_t group_pre_key_plaintext_len) {
     // insert member's address
     int member_address_id = insert_address(member_address);
 
@@ -1885,7 +1887,9 @@ int load_n_group_pre_keys(Skissm__E2eeAddress *member_address) {
     return n_group_pre_keys;
 }
 
-size_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
+size_t load_pending_plaintext_data(
+    Skissm__E2eeAddress *member_address,
+    bool outbound_session_responded,
     uint8_t ***e2ee_plaintext_data_list,
     size_t **e2ee_plaintext_data_len_list) {
     // allocate memory
@@ -1926,7 +1930,7 @@ size_t load_group_pre_keys(Skissm__E2eeAddress *member_address,
     return n_group_pre_keys;
 }
 
-void unload_group_pre_key(Skissm__E2eeAddress *member_address) {
+void unload_pending_plaintext_data(Skissm__E2eeAddress *member_address, bool outbound_session_responded) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(PENDING_GROUP_PRE_KEY_DELETE_DATA, &stmt);

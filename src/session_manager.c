@@ -12,18 +12,24 @@
 #include "skissm/ratchet.h"
 #include "skissm/session.h"
 
-static void send_group_pre_key(Skissm__Session *outbound_session){
+static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     // load group pre-key
-    uint32_t n_group_pre_keys;
-    uint8_t **group_pre_key_plaintext_data_list;
-    size_t *group_pre_key_plaintext_data_len_list;
-    n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(outbound_session->to, &group_pre_key_plaintext_data_list, &group_pre_key_plaintext_data_len_list);
-    if (n_group_pre_keys > 0) {
+    uint32_t pending_plaintext_data_list_num;
+    uint8_t **pending_plaintext_data_list;
+    size_t *pending_plaintext_data_len_list;
+    pending_plaintext_data_list_num = get_skissm_plugin()->db_handler.load_pending_plaintext_data(
+        outbound_session->to,
+        false,
+        &pending_plaintext_data_list,
+        &pending_plaintext_data_len_list);
+    if (pending_plaintext_data_list_num > 0) {
         uint32_t i;
         bool succ = true;
-        for (i = 0; i < n_group_pre_keys; i++) {
-            Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data_list[i],
-                                      group_pre_key_plaintext_data_len_list[i]);
+        for (i = 0; i < pending_plaintext_data_list_num; i++) {
+            Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(
+                outbound_session,
+                pending_plaintext_data_list[i],
+                pending_plaintext_data_len_list[i]);
             if (response == NULL) {
                 succ = false;
                 break;
@@ -34,16 +40,16 @@ static void send_group_pre_key(Skissm__Session *outbound_session){
         }
 
         // release
-        for (i = 0; i < n_group_pre_keys; i++) {
-            free_mem((void **) (&(group_pre_key_plaintext_data_list[i])),
-                     group_pre_key_plaintext_data_len_list[i]);
+        for (i = 0; i < pending_plaintext_data_list_num; i++) {
+            free_mem((void **) (&(pending_plaintext_data_list[i])),
+                     pending_plaintext_data_len_list[i]);
         }
-        free_mem((void **) (&group_pre_key_plaintext_data_list), sizeof(uint8_t *) * n_group_pre_keys);
-        free_mem((void **) (&group_pre_key_plaintext_data_len_list), n_group_pre_keys);
+        free_mem((void **) (&pending_plaintext_data_list), sizeof(uint8_t *) * pending_plaintext_data_list_num);
+        free_mem((void **) (&pending_plaintext_data_len_list), pending_plaintext_data_list_num);
 
         // done
         if (succ)
-            get_skissm_plugin()->db_handler.unload_group_pre_key(outbound_session->to);
+            get_skissm_plugin()->db_handler.unload_pending_plaintext_data(outbound_session->to, false);
     }
 }
 
@@ -332,7 +338,7 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
     size_t result = session_suite->complete_outbound_session(outbound_session, msg);
 
     // try to send group pre-keys if necessary
-    send_group_pre_key(outbound_session);
+    send_pending_plaintext_data(outbound_session);
 
     // store sesson state
     get_skissm_plugin()->db_handler.store_session(outbound_session);

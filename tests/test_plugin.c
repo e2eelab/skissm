@@ -98,9 +98,9 @@ struct skissm_plugin_t ssm_plugin = {
         unload_group_session,
         unload_inbound_group_session,
         // group pre-key
-        store_group_pre_key,
-        load_group_pre_keys,
-        unload_group_pre_key
+        store_pending_plaintext_data,
+        load_pending_plaintext_data,
+        unload_pending_plaintext_data
     },
     {
         mock_register_user,

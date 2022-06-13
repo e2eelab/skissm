@@ -93,28 +93,50 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(Skissm__E2eeAddress *from, Skis
     size_t i;
     for (i = 0; i < outbound_sessions_num; i++) {
         Skissm__Session *outbound_session = outbound_sessions[i];
-        if (outbound_session->responded == false) {
-            // skip non-responded session
-            // TODO keep common_plaintext_data and resend when AcceptMsg is received.
-            continue;
-        }
+
         // pack common plaintext before sending it
         uint8_t *common_plaintext_data = NULL;
         size_t common_plaintext_data_len;
         pack_common_plaintext(plaintext_data, plaintext_data_len, &common_plaintext_data, &common_plaintext_data_len);
 
+        if (outbound_session->responded == false) {
+            // save common_plaintext_data with flag responded = false
+            get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                outbound_session->to,
+                false,
+                common_plaintext_data,
+                common_plaintext_data_len);
+            // release
+            free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+            skissm__session__free_unpacked(outbound_session, NULL);
+            continue;
+        }
+
         // send message to server
         Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
+
+        // done
+        // if error happened, keep common_plaintext_data in db
+        if (response == NULL) {
+            // save common_plaintext_data with flag responded = true
+            get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                outbound_session->to,
+                true,
+                common_plaintext_data,
+                common_plaintext_data_len);
+        }
 
         // release
         free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
         skissm__session__free_unpacked(outbound_session, NULL);
 
-        // done
+        // check if i is the last index
         if (i == (outbound_sessions_num - 1)) {
+            // return response and release outbound_sessions
             free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
             return response;
         } else {
+            // release response
             if (response != NULL)
                 skissm__send_one2one_msg_response__free_unpacked(response, NULL);
             else {

@@ -292,27 +292,30 @@ typedef struct skissm_db_handler_t {
      */
     void (*unload_inbound_group_session)(Skissm__E2eeAddress *, char *);
 
-    // group pre-key related handlers
+    // pending plaintext related handlers
     /**
-     * @brief store group pre-key
-     * @param member_address
-     * @param group_pre_key_plaintext
-     * @param group_pre_key_plaintext_len
+     * @brief store pending plaintext data
+     * @param user_address
+     * @param outbound_session_responded
+     * @param plaintext_data
+     * @param plaintext_data_len
      */
-    void (*store_group_pre_key)(Skissm__E2eeAddress *, uint8_t *, size_t);
+    void (*store_pending_plaintext_data)(Skissm__E2eeAddress *, bool, uint8_t *, size_t);
     /**
-     * @brief load group pre-keys
-     * @param member_address
-     * @param e2ee_plaintext_data_list
-     * @param e2ee_plaintext_data_len_list
+     * @brief load pending plaintext_data
+     * @param user_address
+     * @param outbound_session_responded
+     * @param plaintext_data_list
+     * @param plaintext_data_len_list
      * @return number of loaded group pre-keys
      */
-    size_t (*load_group_pre_keys)(Skissm__E2eeAddress *, uint8_t ***, size_t **);
+    size_t (*load_pending_plaintext_data)(Skissm__E2eeAddress *, bool, uint8_t ***, size_t **);
     /**
      * @brief delete group pre-key
-     * @param member_address
+     * @param user_address
+     * @param outbound_session_responded
      */
-    void (*unload_group_pre_key)(Skissm__E2eeAddress *);
+    void (*unload_pending_plaintext_data)(Skissm__E2eeAddress *, bool);
 } skissm_db_handler_t;
 
 typedef struct e2ee_proto_handler_t {

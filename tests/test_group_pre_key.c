@@ -89,21 +89,33 @@ static void test_one_group_pre_key(){
     size_t group_pre_key_plaintext_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext, NULL);
 
     // store group pre-key
-    get_skissm_plugin()->db_handler.store_group_pre_key(outbound_group_session->member_addresses[1], group_pre_key_plaintext, group_pre_key_plaintext_len);
+    get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+        outbound_group_session->member_addresses[1],
+        false,
+        group_pre_key_plaintext,
+        group_pre_key_plaintext_len);
 
     // load group pre-key
     uint32_t n_group_pre_keys;
     uint8_t **group_pre_key_plaintext_data_list;
     size_t *group_pre_key_plaintext_data_len_list;
-    n_group_pre_keys = get_skissm_plugin()->db_handler.load_group_pre_keys(member_address, &group_pre_key_plaintext_data_list, &group_pre_key_plaintext_data_len_list);
+    n_group_pre_keys = get_skissm_plugin()->db_handler.load_pending_plaintext_data(
+        member_address,
+        false,
+        &group_pre_key_plaintext_data_list,
+        &group_pre_key_plaintext_data_len_list);
     assert(group_pre_key_plaintext_len == group_pre_key_plaintext_data_len_list[0]);
     assert(memcmp(group_pre_key_plaintext, group_pre_key_plaintext_data_list[0], group_pre_key_plaintext_data_len_list[0]) == 0);
 
     // unload group pre-key
-    get_skissm_plugin()->db_handler.unload_group_pre_key(member_address);
+    get_skissm_plugin()->db_handler.unload_pending_plaintext_data(member_address, false);
     uint8_t **group_pre_key_plaintext_data_list_null;
     size_t *group_pre_key_plaintext_data_len_list_null;
-    get_skissm_plugin()->db_handler.load_group_pre_keys(member_address, &group_pre_key_plaintext_data_list_null, &group_pre_key_plaintext_data_len_list_null);
+    get_skissm_plugin()->db_handler.load_pending_plaintext_data(
+        member_address,
+        false,
+        &group_pre_key_plaintext_data_list_null,
+        &group_pre_key_plaintext_data_len_list_null);
     assert(group_pre_key_plaintext_data_list_null == NULL);
     assert(group_pre_key_plaintext_data_len_list_null == NULL);
 

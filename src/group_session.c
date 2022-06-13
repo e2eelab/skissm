@@ -181,10 +181,14 @@ void create_outbound_group_session(
             if (outbound_sessions_num > (size_t)(0) && outbound_sessions != NULL) {
                 for (j = 0; j < outbound_sessions_num; j++) {
                     Skissm__Session *outbound_session = outbound_sessions[j];
-                    if (outbound_session != NULL) {
+                    if (outbound_session != NULL && outbound_session->responded) {
                         send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
-                    } else{
-                        get_skissm_plugin()->db_handler.store_group_pre_key(group_member_address, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
+                    } else {
+                        get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                            group_member_address,
+                            false,
+                            group_pre_key_plaintext_data,
+                            group_pre_key_plaintext_data_len);
                         // send Invite
                         Skissm__InviteResponse *response = invite(outbound_group_session->session_owner, group_member_address);
                         // release
