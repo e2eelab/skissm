@@ -69,7 +69,7 @@ set(TEST_SKISSM
     test_account_db
     test_session_db
     # test_group_pre_key
-    # test_unload
+    test_unload
     test_spk_db
     test_opk_db
   )
@@ -111,6 +111,6 @@ add_test(GroupSession test_group_session)
 add_test(Account_db test_account_db)
 add_test(Session_db test_session_db)
 # add_test(Group_pre_key test_group_pre_key)
-# add_test(Unload test_unload)
+add_test(Unload test_unload)
 add_test(SPK_db test_spk_db)
 add_test(OPK_db test_opk_db)

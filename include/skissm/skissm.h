@@ -273,8 +273,8 @@ typedef struct skissm_db_handler_t {
      * @param inbound_group_sessions
      */
     size_t (*load_inbound_group_sessions)(Skissm__E2eeAddress *,
-                                        Skissm__E2eeAddress *,
-                                        Skissm__GroupSession ***);
+                                          Skissm__E2eeAddress *,
+                                          Skissm__GroupSession ***);
     /**
      * @brief store group session
      * @param group_session
