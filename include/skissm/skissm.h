@@ -56,7 +56,6 @@
 #include "skissm/One2oneMsgPayload.pb-c.h"
 #include "skissm/OneTimePreKey.pb-c.h"
 #include "skissm/OneTimePreKeyPublic.pb-c.h"
-#include "skissm/PendingGroupPreKey.pb-c.h"
 #include "skissm/Plaintext.pb-c.h"
 #include "skissm/PreKeyBundle.pb-c.h"
 #include "skissm/ProtoMsg.pb-c.h"
@@ -307,7 +306,7 @@ typedef struct skissm_db_handler_t {
      * @param outbound_session_responded
      * @param plaintext_data_list
      * @param plaintext_data_len_list
-     * @return number of loaded group pre-keys
+     * @return number of loaded plaintext_data list
      */
     size_t (*load_pending_plaintext_data)(Skissm__E2eeAddress *, bool, uint8_t ***, size_t **);
     /**
