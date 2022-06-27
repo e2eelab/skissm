@@ -177,10 +177,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     ssm_notify_one2one_msg(e2ee_msg->from, e2ee_msg->to, plaintext->common_msg.data, plaintext->common_msg.len);
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY_BUNDLE) {
                     Skissm__GroupPreKeyBundle *group_pre_key_bundle = plaintext->group_pre_key_bundle;
-                    size_t i;
-                    for (i = 0; i < group_pre_key_bundle->n_old_session_id; i++) {
-                        get_skissm_plugin()->db_handler.unload_inbound_group_session(e2ee_msg->to, (group_pre_key_bundle->old_session_id)[i]);
-                    }
+                    get_skissm_plugin()->db_handler.unload_inbound_group_session(e2ee_msg->to, group_pre_key_bundle->old_session_id);
                     create_inbound_group_session(inbound_session->e2ee_pack_id, group_pre_key_bundle, e2ee_msg->to);
                 }
                 skissm__plaintext__free_unpacked(plaintext, NULL);

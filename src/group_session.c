@@ -85,8 +85,7 @@ static void pack_group_pre_key(Skissm__GroupPreKeyBundle *group_pre_key_bundle, 
 static size_t pack_group_pre_key_plaintext(
     Skissm__GroupSession *outbound_group_session,
     uint8_t **group_pre_key_plaintext_data,
-    char **old_session_id,
-    size_t old_session_id_num
+    char *old_session_id
 ) {
     Skissm__GroupPreKeyBundle *group_pre_key_bundle = (Skissm__GroupPreKeyBundle *) malloc(sizeof(Skissm__GroupPreKeyBundle));
     skissm__group_pre_key_bundle__init(group_pre_key_bundle);
@@ -95,13 +94,8 @@ static size_t pack_group_pre_key_plaintext(
 
     group_pre_key_bundle->session_id = strdup(outbound_group_session->session_id);
 
-    if (old_session_id_num != 0) {
-        group_pre_key_bundle->n_old_session_id = old_session_id_num;
-        group_pre_key_bundle->old_session_id = (char **)malloc(sizeof(char *) * old_session_id_num);
-        size_t i;
-        for (i = 0; i < old_session_id_num; i++) {
-            (group_pre_key_bundle->old_session_id)[i] = strdup(old_session_id[i]);
-        }
+    if (old_session_id != NULL) {
+        group_pre_key_bundle->old_session_id = strdup(old_session_id);
     }
 
     copy_address_from_address(&(group_pre_key_bundle->group_address), outbound_group_session->group_address);
@@ -133,8 +127,7 @@ void create_outbound_group_session(
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **group_members,
     size_t group_members_num,
-    char **old_session_id,
-    size_t old_session_id_num
+    char *old_session_id
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().sign_key_len;
@@ -169,7 +162,7 @@ void create_outbound_group_session(
     get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
     uint8_t *group_pre_key_plaintext_data = NULL;
-    size_t group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext_data, old_session_id, old_session_id_num);
+    size_t group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext_data, old_session_id);
 
     // send the group pre-key message to the members in the group
     size_t i, j;

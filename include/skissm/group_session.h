@@ -37,7 +37,6 @@ extern "C" {
  * @param group_members
  * @param group_members_num
  * @param old_session_id
- * @param old_session_id_num
  */
 void create_outbound_group_session(
     const char *e2ee_pack_id,
@@ -45,8 +44,7 @@ void create_outbound_group_session(
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **group_members,
     size_t group_members_num,
-    char **old_session_id,
-    size_t old_session_id_num
+    char *old_session_id
 );
 
 /**

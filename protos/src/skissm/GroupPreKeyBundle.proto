@@ -31,7 +31,7 @@ import "skissm/GroupMember.proto";
 message GroupPreKeyBundle {
     string version = 1;
     string session_id = 2;
-    repeated string old_session_id = 3;
+    string old_session_id = 3;
     E2eeAddress group_address = 4;
     repeated GroupMember group_members = 5;
     uint32 sequence = 6;
