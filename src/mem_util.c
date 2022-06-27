@@ -71,6 +71,23 @@ bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *addres
                 && (safe_strcmp(address_1->group->group_id, address_2->group->group_id))));
 }
 
+bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_member_num_1, Skissm__GroupMember **group_members_2, size_t group_member_num_2) {
+    if (group_members_1 == NULL && group_members_2 == NULL)
+        return true;
+    if ((group_members_1 == NULL && group_members_2 != NULL)
+        || (group_members_1 != NULL && group_members_2 == NULL))
+        return false;
+    if (group_member_num_1 != group_member_num_2)
+        return false;
+
+    size_t i;
+    for (i = 0; i < group_member_num_1; i++) {
+        if ((group_members_1[i]->role != group_members_2[i]->role) || !safe_strcmp(group_members_1[i]->user_id, group_members_2[i]->user_id))
+            return false;
+    }
+    return true;
+}
+
 void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src) {
     dest->len = src->len;
     dest->data = (uint8_t *)malloc(sizeof(uint8_t) * src->len);

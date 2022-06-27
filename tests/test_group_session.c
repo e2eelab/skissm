@@ -434,6 +434,72 @@ static void test_create_add_remove() {
     tear_down();
 }
 
+static void test_interaction() {
+    // test start
+    tear_up();
+    test_begin();
+
+    // Prepare account
+    register_test_user(1, "alice");
+    register_test_user(2, "bob");
+    register_test_user(3, "claire");
+
+    // Alice invites Bob and Claire to join the group
+    invite(account_data[0]->address, account_data[1]->address);
+    invite(account_data[0]->address, account_data[2]->address);
+    // Bob invites Alice and Claire to join the group
+    invite(account_data[1]->address, account_data[0]->address);
+    invite(account_data[1]->address, account_data[2]->address);
+    // Claire invites Alice and Bob to join the group
+    invite(account_data[2]->address, account_data[0]->address);
+    invite(account_data[2]->address, account_data[1]->address);
+
+    // the first group member is Alice
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
+    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    // the second group member is Bob
+    group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the second group member is Claire
+    group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[2]);
+    group_members[2]->user_id = strdup(account_data[2]->address->user->user_id);
+    group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // create the group
+    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
+
+    // Alice sends a message to the group
+    uint8_t plaintext_data_a[] = "This message will be sent to Bob and Claire.";
+    size_t plaintext_data_a_len = sizeof(plaintext_data_a) - 1;
+    test_encryption(account_data[0]->address, group.group_address, plaintext_data_a, plaintext_data_a_len);
+
+    // Bob sends a message to the group
+    uint8_t plaintext_data_b[] = "This message will be sent to Alice and Claire.";
+    size_t plaintext_data_b_len = sizeof(plaintext_data_b) - 1;
+    test_encryption(account_data[1]->address, group.group_address, plaintext_data_b, plaintext_data_b_len);
+
+    // Claire sends a message to the group
+    uint8_t plaintext_data_c[] = "This message will be sent to Alice and Bob.";
+    size_t plaintext_data_c_len = sizeof(plaintext_data_c) - 1;
+    test_encryption(account_data[2]->address, group.group_address, plaintext_data_c, plaintext_data_c_len);
+
+    // release
+    skissm__group_member__free_unpacked(group_members[0], NULL);
+    skissm__group_member__free_unpacked(group_members[1], NULL);
+    skissm__group_member__free_unpacked(group_members[2], NULL);
+    free(group_members);
+    skissm__create_group_response__free_unpacked(create_group_response, NULL);
+
+    // test stop
+    test_end();
+    tear_down();
+}
+
 int main() {
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
     
@@ -441,6 +507,7 @@ int main() {
     test_add_group_members();
     test_remove_group_members();
     test_create_add_remove();
+    test_interaction();
 
     return 0;
 }

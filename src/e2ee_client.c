@@ -237,7 +237,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
-        // outbound_group_session is not exist
+        // outbound_group_session does not exist
         return NULL;
     }
     Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, plaintext_data, plaintext_data_len);

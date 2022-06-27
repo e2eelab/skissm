@@ -64,18 +64,18 @@ bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2);
 bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *address_2);
 
 /**
- * @brief Compaare two Skissm__E2eeAddress arrays.
+ * @brief Compaare two Skissm__GroupMember arrays.
  *
- * @param member_addresses_1
- * @param member_num_1
- * @param member_addresses_2
- * @param member_num_2
+ * @param group_members_1
+ * @param group_member_num_1
+ * @param group_members_2
+ * @param group_member_num_2
  * @return true
  * @return false
  */
-bool compare_member_addresses(
-    Skissm__E2eeAddress **member_addresses_1, size_t member_num_1,
-    Skissm__E2eeAddress **member_addresses_2, size_t member_num_2
+bool compare_group_member(
+    Skissm__GroupMember **group_members_1, size_t group_member_num_1,
+    Skissm__GroupMember **group_members_2, size_t group_member_num_2
 );
 
 /**

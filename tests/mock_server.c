@@ -383,20 +383,30 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__SendOne2oneMsgRequ
 }
 
 Skissm__CreateGroupResponse *mock_create_group(Skissm__CreateGroupRequest *request) {
+    if (request == NULL) {
+        return NULL;
+    }
+    if (request->msg == NULL) {
+        return NULL;
+    }
+
+    // create a new group
+    group_data *cur_group_data = &(group_data_set[group_data_set_insert_pos]);
+
+    // Generate a random address
+    mock_random_group_address(&(cur_group_data->group_address));
+
+    // pack CreateGroupMsg
     Skissm__CreateGroupMsg *create_group_msg = request->msg;
+    copy_address_from_address(&(create_group_msg->group_address), cur_group_data->group_address);
     size_t create_group_msg_data_len = skissm__create_group_msg__get_packed_size(create_group_msg);
     uint8_t create_group_msg_data[create_group_msg_data_len];
     skissm__create_group_msg__pack(create_group_msg, create_group_msg_data);
 
-    // create a new group
-    group_data *cur_group_data = &(group_data_set[group_data_set_insert_pos]);
     // prepare to store
     cur_group_data->group_name = strdup(create_group_msg->group_name);
     cur_group_data->group_members_num = create_group_msg->n_group_members;
     copy_group_members(&(cur_group_data->group_members), create_group_msg->group_members, create_group_msg->n_group_members);
-
-    // Generate a random address
-    mock_random_group_address(&(cur_group_data->group_address));
 
     // send the message to all the other members in the group
     Skissm__E2eeAddress *sender_address = create_group_msg->sender_address;

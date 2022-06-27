@@ -156,8 +156,7 @@ static const char *GROUP_SESSION_CREATE_TABLE = "CREATE TABLE GROUP_SESSION( "
                                                 "IS_OUTBOUND INTEGER NOT NULL, "
                                                 "FOREIGN KEY(OWNER) REFERENCES ADDRESS(ID), "
                                                 "FOREIGN KEY(ADDRESS) REFERENCES ADDRESS(ID), "
-                                                "PRIMARY KEY (ADDRESS, OWNER), "
-                                                "UNIQUE (ID, OWNER));";
+                                                "PRIMARY KEY (ID, ADDRESS, OWNER));";
 
 static const char *GROUP_SESSION_INSERT_OR_REPLACE = "INSERT OR REPLACE INTO GROUP_SESSION "
                                                      "(ID, OWNER, ADDRESS, GROUP_DATA, IS_OUTBOUND) "
