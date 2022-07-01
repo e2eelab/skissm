@@ -166,7 +166,7 @@ void create_outbound_group_session(
 
     // send the group pre-key message to the members in the group
     size_t i, j;
-    for (i = 0; i < outbound_group_session->n_group_members; i++){
+    for (i = 0; i < outbound_group_session->n_group_members; i++) {
         if (!safe_strcmp(outbound_group_session->session_owner->user->user_id, outbound_group_session->group_members[i]->user_id)) {
             Skissm__E2eeAddress *group_member_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
             skissm__e2ee_address__init(group_member_address);
@@ -242,8 +242,6 @@ void create_inbound_group_session(
     inbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
     memcpy(inbound_group_session->associated_data.data, inbound_group_session->signature_public_key.data, key_len);
     memcpy((inbound_group_session->associated_data.data) + key_len, inbound_group_session->signature_public_key.data, key_len);
-
-    // delete old inbound group sessions
 
     get_skissm_plugin()->db_handler.store_group_session(inbound_group_session);
 

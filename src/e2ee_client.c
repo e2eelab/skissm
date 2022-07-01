@@ -37,7 +37,8 @@ Skissm__RegisterUserResponse *register_user(
     const char *user_name,
     const char *device_id,
     const char *authenticator,
-    const char *auth_code) {
+    const char *auth_code
+) {
     Skissm__Account *account = create_account(account_id, e2ee_pack_id);
 
     // register account to server
@@ -83,7 +84,10 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *t
     }
 }
 
-Skissm__SendOne2oneMsgResponse *send_one2one_msg(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, const uint8_t *plaintext_data, size_t plaintext_data_len) {
+Skissm__SendOne2oneMsgResponse *send_one2one_msg(
+    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    const uint8_t *plaintext_data, size_t plaintext_data_len
+) {
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to->user->user_id, &outbound_sessions);
     if (outbound_sessions_num <= (size_t)(0) || outbound_sessions == NULL) {
@@ -156,7 +160,8 @@ Skissm__CreateGroupResponse *create_group(
     Skissm__E2eeAddress *sender_address,
     const char *group_name,
     Skissm__GroupMember **group_members,
-    size_t group_members_num) {
+    size_t group_members_num
+) {
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
     if (account == NULL) {
@@ -181,7 +186,8 @@ Skissm__AddGroupMembersResponse *add_group_members(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **adding_members,
-    size_t adding_members_num) {
+    size_t adding_members_num
+) {
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
@@ -206,7 +212,8 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **removing_members,
-    size_t removing_members_num) {
+    size_t removing_members_num
+) {
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
 
@@ -232,7 +239,8 @@ Skissm__SendGroupMsgResponse *send_group_msg(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     const uint8_t *plaintext_data,
-    size_t plaintext_data_len) {
+    size_t plaintext_data_len
+) {
     // load the outbound group session
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);

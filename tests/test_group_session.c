@@ -502,7 +502,7 @@ static void test_interaction() {
 
 int main() {
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
-    
+
     test_create_group();
     test_add_group_members();
     test_remove_group_members();

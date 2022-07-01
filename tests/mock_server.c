@@ -191,7 +191,7 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundle
     copy_address_from_address(&(response->pre_key_bundles[0]->user_address), request->user_address);
     copy_ik_public_from_ik_public(&(response->pre_key_bundles[0]->identity_key_public), cur_data->identity_key_public);
     copy_spk_public_from_spk_public(&(response->pre_key_bundles[0]->signed_pre_key_public), cur_data->signed_pre_key_public);
-    // TODO: remove one_time_pre_keys[0] and append to response->pre_key_bundles
+
     size_t i;
     for (i = 0; i < cur_data->n_one_time_pre_keys; i++){
         if (cur_data->one_time_pre_keys[i]){
@@ -199,7 +199,7 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundle
             break;
         }
     }
-    /* release the one-time pre-key */
+    // release the one-time pre-key
     skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_keys[i], NULL);
     cur_data->one_time_pre_keys[i] = NULL;
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
@@ -416,9 +416,6 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__CreateGroupRequest *reque
         // send to other group members
         const char *member_user_id = cur_group_data->group_members[i]->user_id;
         if (safe_strcmp(sender_user_id, member_user_id) == false){
-            // copy_address_from_address(&(new_request->to), group_data_set[group_data_set_insert_pos].group_members[i]);
-            // mock_protocol_send(new_request);
-
             // forward a copy of CreateGroupMsg
             Skissm__E2eeAddress **to_member_addresses = NULL;
             size_t to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);
@@ -518,9 +515,6 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
         // send to other group members
         const char *member_user_id = cur_group_data->group_members[i]->user_id;
         if (safe_strcmp(sender_user_id, member_user_id) == false){
-            // copy_address_from_address(&(new_request->to), group_data_set[group_data_set_insert_pos].group_members[i]);
-            // mock_protocol_send(new_request);
-
             // forward a copy of AddGroupMembersMsg
             Skissm__E2eeAddress **to_member_addresses = NULL;
             size_t to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);
@@ -557,7 +551,7 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
     skissm__add_group_members_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
     response->n_group_members = new_group_members_num;
-    response->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *));
+    response->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     for (i = 0; i < new_group_members_num; i++){
         (response->group_members)[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
         skissm__group_member__init((response->group_members)[i]);
@@ -616,13 +610,6 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
         }
     }
 
-    for (i = 0; i < original_group_members_num; i++){
-        skissm__group_member__free_unpacked((cur_group_data->group_members)[i], NULL);
-        (cur_group_data->group_members)[i] = NULL;
-    }
-    free(cur_group_data->group_members);
-    cur_group_data->group_members = temp_group_members;
-
     // send the message to all the other members in the group
     Skissm__E2eeAddress *sender_address = remove_group_members_msg->sender_address;
     const char *sender_user_id = sender_address->user->user_id;
@@ -630,9 +617,6 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
         // send to other group members
         const char *member_user_id = cur_group_data->group_members[i]->user_id;
         if (safe_strcmp(sender_user_id, member_user_id) == false){
-            // copy_address_from_address(&(new_request->to), group_data_set[group_data_set_insert_pos].group_members[i]);
-            // mock_protocol_send(new_request);
-
             // forward a copy of RemoveGroupMembersMsg
             Skissm__E2eeAddress **to_member_addresses = NULL;
             size_t to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);
@@ -665,11 +649,19 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
         }
     }
 
+    // release the old group members
+    for (i = 0; i < original_group_members_num; i++){
+        skissm__group_member__free_unpacked((cur_group_data->group_members)[i], NULL);
+        (cur_group_data->group_members)[i] = NULL;
+    }
+    free(cur_group_data->group_members);
+    cur_group_data->group_members = temp_group_members;
+
     Skissm__RemoveGroupMembersResponse *response = (Skissm__RemoveGroupMembersResponse *)malloc(sizeof(Skissm__RemoveGroupMembersResponse));
     skissm__remove_group_members_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
     response->n_group_members = new_group_members_num;
-    response->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *));
+    response->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     for (i = 0; i < new_group_members_num; i++){
         (response->group_members)[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
         skissm__group_member__init((response->group_members)[i]);
@@ -716,9 +708,6 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__SendGroupMsgRequest *r
         // send to other group members
         const char *member_user_id = cur_group_data->group_members[i]->user_id;
         if (safe_strcmp(sender_user_id, member_user_id) == false){
-            // copy_address_from_address(&(new_request->to), group_data_set[group_data_set_insert_pos].group_members[i]);
-            // mock_protocol_send(new_request);
-
             // forward a copy of E2eeMsg
             Skissm__E2eeAddress **to_member_addresses = NULL;
             size_t to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);

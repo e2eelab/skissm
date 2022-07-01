@@ -64,7 +64,8 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(Skissm__E2eeA
 Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
-    Skissm__GetPreKeyBundleResponse *response) {
+    Skissm__GetPreKeyBundleResponse *response
+) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         Skissm__PreKeyBundle **their_pre_key_bundles = response->pre_key_bundles;
         size_t n_pre_key_bundles = response->n_pre_key_bundles;
@@ -84,8 +85,8 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
             copy_address_from_address(&(outbound_session->session_owner), from);
 
             const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-            Skissm__InviteResponse *invite_response = session_suite->new_outbound_session(outbound_session,
-                                                                                   account,their_pre_key_bundles[i]);
+            Skissm__InviteResponse *invite_response =
+                session_suite->new_outbound_session(outbound_session, account, their_pre_key_bundles[i]);
             // release
             skissm__account__free_unpacked(account, NULL);
             skissm__session__free_unpacked(outbound_session, NULL);
@@ -98,7 +99,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 else
                     skissm__invite_response__free_unpacked(invite_response, NULL);
             } else {
-                ssm_notify_error(BAD_SESSION, "invite_response ()");
+                ssm_notify_error(BAD_SESSION, "invite_response()");
                 return NULL;
             }
         }
@@ -108,7 +109,10 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     }
 }
 
-Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len) {
+Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(
+    Skissm__Session *outbound_session,
+    const uint8_t *plaintext_data, size_t plaintext_data_len
+) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
 
     Skissm__SendOne2oneMsgRequest *request = (Skissm__SendOne2oneMsgRequest *)malloc(sizeof(Skissm__SendOne2oneMsgRequest));
@@ -131,7 +135,10 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
     return request;
 }
 
-bool consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response) {
+bool consume_send_one2one_msg_response(
+    Skissm__Session *outbound_session,
+    Skissm__SendOne2oneMsgResponse *response
+) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // store sesson state
         get_skissm_plugin()->db_handler.store_session(outbound_session);
@@ -212,7 +219,9 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
 }
 
 Skissm__InviteRequest *produce_invite_request(
-    Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len) {
+    Skissm__Session *outbound_session,
+    ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len
+) {
     Skissm__InviteRequest *reqest = (Skissm__InviteRequest *) malloc(sizeof(Skissm__InviteRequest));
     skissm__invite_request__init(reqest);
 
@@ -293,7 +302,12 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     return result;
 }
 
-Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1) {
+Skissm__AcceptRequest *produce_accept_request(
+    const char *e2ee_pack_id,
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    ProtobufCBinaryData *ciphertext_1
+) {
     Skissm__AcceptRequest *request = (Skissm__AcceptRequest *) malloc(sizeof(Skissm__AcceptRequest));
     skissm__accept_request__init(request);
 

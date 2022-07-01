@@ -786,8 +786,10 @@ void load_identity_key_pair(uint64_t account_id, Skissm__IdentityKey **identity_
     sqlite_finalize(stmt);
 }
 
-void load_signed_pre_key_pair(uint64_t account_id,
-                              Skissm__SignedPreKey **signed_pre_key) {
+void load_signed_pre_key_pair(
+    uint64_t account_id,
+    Skissm__SignedPreKey **signed_pre_key
+) {
     // allocate memory
     *signed_pre_key =
         (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
@@ -839,8 +841,10 @@ int load_n_one_time_pre_keys(uint64_t account_id) {
     return n_one_time_pre_keys;
 }
 
-uint32_t load_one_time_pre_keys(uint64_t account_id,
-                                Skissm__OneTimePreKey ***one_time_pre_keys) {
+uint32_t load_one_time_pre_keys(
+    uint64_t account_id,
+    Skissm__OneTimePreKey ***one_time_pre_keys
+) {
     // allocate memory
     size_t n_one_time_pre_keys = load_n_one_time_pre_keys(account_id);
     (*one_time_pre_keys) = (Skissm__OneTimePreKey **)malloc(
@@ -1057,10 +1061,12 @@ sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key) {
     return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_account(uint64_t account_id, const char *version, protobuf_c_boolean saved,
-                            sqlite_int64 address_id, const char *password, const char *e2ee_pack_id,
-                            sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
-                            sqlite_int64 next_one_time_pre_key_id) {
+sqlite_int64 insert_account(
+    uint64_t account_id, const char *version, protobuf_c_boolean saved,
+    sqlite_int64 address_id, const char *password, const char *e2ee_pack_id,
+    sqlite_int64 identity_key_pair_id, sqlite_int64 signed_pre_key_id,
+    sqlite_int64 next_one_time_pre_key_id
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_INSERT, &stmt);
@@ -1133,8 +1139,10 @@ void insert_account_one_time_pre_key_id(uint64_t account_id, sqlite_int64 one_ti
     sqlite_finalize(stmt);
 }
 
-void update_identity_key(uint64_t account_id,
-                         Skissm__IdentityKey *identity_key) {
+void update_identity_key(
+    uint64_t account_id,
+    Skissm__IdentityKey *identity_key
+) {
     sqlite_int64 identity_key_id = insert_identity_key(identity_key);
 
     insert_account_identity_key_id(account_id, identity_key_id);
@@ -1154,8 +1162,10 @@ void update_identity_key(uint64_t account_id,
     sqlite_finalize(stmt);
 }
 
-void update_signed_pre_key(uint64_t account_id,
-                           Skissm__SignedPreKey *signed_pre_key) {
+void update_signed_pre_key(
+    uint64_t account_id,
+    Skissm__SignedPreKey *signed_pre_key
+) {
     sqlite_int64 signed_pre_key_id = insert_signed_pre_key(signed_pre_key);
 
     insert_account_signed_pre_key_id(account_id, signed_pre_key_id);
@@ -1175,8 +1185,10 @@ void update_signed_pre_key(uint64_t account_id,
     sqlite_finalize(stmt);
 }
 
-void load_signed_pre_key(uint64_t account_id, uint32_t spk_id,
-                         Skissm__SignedPreKey **signed_pre_key) {
+void load_signed_pre_key(
+    uint64_t account_id, uint32_t spk_id,
+    Skissm__SignedPreKey **signed_pre_key
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_OLD_SIGNED_PRE_KEY, &stmt);
@@ -1229,7 +1241,7 @@ static void delete_signed_pre_key(sqlite_int64 signed_pre_key_id) {
     sqlite_finalize(stmt);
 }
 
-static void delete_account_signed_pre_key(uint64_t account_id, sqlite_int64 signed_pre_key_id){
+static void delete_account_signed_pre_key(uint64_t account_id, sqlite_int64 signed_pre_key_id) {
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_SIGNED_PRE_KEY_DELETE, &stmt);
     sqlite3_bind_int(stmt, 1, account_id);
@@ -1260,8 +1272,10 @@ void remove_expired_signed_pre_key(uint64_t account_id) {
     sqlite_finalize(stmt);
 }
 
-void update_address(uint64_t account_id,
-                    Skissm__E2eeAddress *address) {
+void update_address(
+    uint64_t account_id,
+    Skissm__E2eeAddress *address
+) {
     int address_id = insert_address(address);
 
     // prepare
@@ -1279,8 +1293,10 @@ void update_address(uint64_t account_id,
     sqlite_finalize(stmt);
 }
 
-void add_one_time_pre_key(uint64_t account_id,
-                          Skissm__OneTimePreKey *one_time_pre_key) {
+void add_one_time_pre_key(
+    uint64_t account_id,
+    Skissm__OneTimePreKey *one_time_pre_key
+) {
     int one_time_pre_key_id = insert_one_time_pre_key(one_time_pre_key);
 
     // prepare
@@ -1311,7 +1327,9 @@ static void delete_one_time_pre_key(sqlite_int64 one_time_pre_key_id) {
     sqlite_finalize(stmt);
 }
 
-static void delete_account_one_time_pre_key(uint64_t account_id, sqlite_int64 one_time_pre_key_id){
+static void delete_account_one_time_pre_key(
+    uint64_t account_id, sqlite_int64 one_time_pre_key_id
+) {
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_ONETIME_PRE_KEY_DELETE, &stmt);
     sqlite3_bind_int(stmt, 1, account_id);
@@ -1324,7 +1342,7 @@ static void delete_account_one_time_pre_key(uint64_t account_id, sqlite_int64 on
     sqlite_finalize(stmt);
 }
 
-void remove_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id){
+void remove_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_LOAD_ONETIME_PRE_KEY, &stmt);
@@ -1495,9 +1513,11 @@ void load_inbound_session(char *session_id, Skissm__E2eeAddress *owner,
 }
 
 // return the lastest updated session
-void load_outbound_session(Skissm__E2eeAddress *owner,
-                           Skissm__E2eeAddress *to,
-                           Skissm__Session **session) {
+void load_outbound_session(
+    Skissm__E2eeAddress *owner,
+    Skissm__E2eeAddress *to,
+    Skissm__Session **session
+) {
     // prepare
     sqlite3_stmt *stmt;
     if (!sqlite_prepare(SESSION_LOAD_DATA_BY_OWNER_AND_TO, &stmt)) {
@@ -1555,9 +1575,11 @@ int load_n_outbound_sessions(Skissm__E2eeAddress *owner, const char *to_user_id)
     return n_outbound_sessions;
 }
 
-size_t load_outbound_sessions(Skissm__E2eeAddress *owner,
-                              const char *to_user_id,
-                              Skissm__Session ***outbound_sessions) {
+size_t load_outbound_sessions(
+    Skissm__E2eeAddress *owner,
+    const char *to_user_id,
+    Skissm__Session ***outbound_sessions
+) {
     // allocate memory
     size_t n_outbound_sessions = load_n_outbound_sessions(owner, to_user_id);
     (*outbound_sessions) = (Skissm__Session **)malloc(
@@ -1617,8 +1639,10 @@ void store_session(Skissm__Session *session) {
     free_mem((void **)(&session_data), session_data_len);
 }
 
-void unload_session(Skissm__E2eeAddress *owner, Skissm__E2eeAddress *from,
-                    Skissm__E2eeAddress *to) {
+void unload_session(
+    Skissm__E2eeAddress *owner, Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO, &stmt);
@@ -1636,9 +1660,11 @@ void unload_session(Skissm__E2eeAddress *owner, Skissm__E2eeAddress *from,
 }
 
 // return the first signature which is not null
-void load_outbound_group_session(Skissm__E2eeAddress *sender_address,
-                                 Skissm__E2eeAddress *group_address,
-                                 Skissm__GroupSession **group_session) {
+void load_outbound_group_session(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *group_address,
+    Skissm__GroupSession **group_session
+) {
     // prepare
     sqlite3_stmt *stmt;
     if (!sqlite_prepare(GROUP_SESSION_LOAD_OUTBOUND, &stmt)) {
@@ -1680,9 +1706,11 @@ void load_outbound_group_session(Skissm__E2eeAddress *sender_address,
     return;
 }
 
-void load_inbound_group_session(Skissm__E2eeAddress *receiver_address,
-                                char *session_id,
-                                Skissm__GroupSession **group_session) {
+void load_inbound_group_session(
+    Skissm__E2eeAddress *receiver_address,
+    char *session_id,
+    Skissm__GroupSession **group_session
+) {
     // prepare
     sqlite3_stmt *stmt;
     if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_ID_AND_OWNER, &stmt)) {
@@ -1745,9 +1773,11 @@ int load_n_inbound_group_sessions(Skissm__E2eeAddress *owner, Skissm__E2eeAddres
     return n_inbound_group_sessions;
 }
 
-size_t load_inbound_group_sessions(Skissm__E2eeAddress *owner,
-                                   Skissm__E2eeAddress *group_address,
-                                   Skissm__GroupSession ***inbound_group_sessions) {
+size_t load_inbound_group_sessions(
+    Skissm__E2eeAddress *owner,
+    Skissm__E2eeAddress *group_address,
+    Skissm__GroupSession ***inbound_group_sessions
+) {
     // allocate memory
     size_t n_inbound_group_sessions = load_n_inbound_group_sessions(owner, group_address);
     (*inbound_group_sessions) = (Skissm__GroupSession **)malloc(
@@ -1823,8 +1853,10 @@ void unload_group_session(Skissm__GroupSession *group_session) {
     sqlite_finalize(stmt);
 }
 
-void unload_inbound_group_session(Skissm__E2eeAddress *receiver_address,
-                                  char *session_id) {
+void unload_inbound_group_session(
+    Skissm__E2eeAddress *receiver_address,
+    char *session_id
+) {
     if (session_id == NULL){
         return;
     }
@@ -1847,7 +1879,8 @@ void store_pending_plaintext_data(
     Skissm__E2eeAddress *member_address,
     bool outbound_session_responded,
     uint8_t *group_pre_key_plaintext,
-    size_t group_pre_key_plaintext_len) {
+    size_t group_pre_key_plaintext_len
+) {
     // insert member's address
     int member_address_id = insert_address(member_address);
 
@@ -1890,7 +1923,8 @@ size_t load_pending_plaintext_data(
     Skissm__E2eeAddress *member_address,
     bool outbound_session_responded,
     uint8_t ***e2ee_plaintext_data_list,
-    size_t **e2ee_plaintext_data_len_list) {
+    size_t **e2ee_plaintext_data_len_list
+) {
     // allocate memory
     size_t n_group_pre_keys = load_n_group_pre_keys(member_address);
     if (n_group_pre_keys == 0){
