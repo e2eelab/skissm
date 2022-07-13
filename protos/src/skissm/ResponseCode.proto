@@ -46,4 +46,5 @@ enum ResponseCode {
     RESPONSE_CODE_FORBIDDEN = 403;                // The client is authenticated but does not have access rights to the content.
     RESPONSE_CODE_NOT_FOUND = 404;                // The server can not find the requested resource.
     RESPONSE_CODE_INTERNAL_SERVER_ERROR = 500;    // The server has encountered a situation it does not know how to handle.
+    RESPONSE_CODE_SERVICE_UNAVAILABLE = 503;      // The server is down for maintenance or overloaded.
 }
