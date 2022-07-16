@@ -42,6 +42,33 @@ Skissm__AcceptResponse *accept_internal(const char *e2ee_pack_id, Skissm__E2eeAd
     return response;
 }
 
+Skissm__F2fInviteResponse *f2f_invite_internal(
+    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    uint8_t *secret, size_t secret_len
+) {
+    Skissm__F2fInviteRequest *request = produce_f2f_invite_request(from, to, secret, secret_len);
+    Skissm__F2fInviteResponse *response = get_skissm_plugin()->proto_handler.f2f_invite(request);
+    consume_f2f_invite_response(response);
+
+    // release
+    skissm__f2f_invite_request__free_unpacked(request, NULL);
+
+    // done
+    return response;
+}
+
+Skissm__F2fAcceptResponse *f2f_accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, Skissm__Account *local_account) {
+    Skissm__F2fAcceptRequest *request = produce_f2f_accept_request(e2ee_pack_id, from, to, local_account);
+    Skissm__F2fAcceptResponse *response = get_skissm_plugin()->proto_handler.f2f_accept(request);
+    consume_f2f_accept_response(response);
+
+    // release
+    skissm__f2f_accept_request__free_unpacked(request, NULL);
+
+    // done
+    return response;
+}
+
 Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
     Skissm__PublishSpkRequest *request = produce_publish_spk_request(account);
     Skissm__PublishSpkResponse *response = get_skissm_plugin()->proto_handler.publish_spk(request);

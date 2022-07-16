@@ -21,29 +21,14 @@ syntax = "proto3";
 package skissm;
 
 option java_package = "org.e2eelab.skissm.proto";
-option java_outer_classname = "SessionProto";
+option java_outer_classname = "F2fAcceptResponseProto";
 option objc_class_prefix = "Objc";
 option swift_prefix="Swift";
 
-import "skissm/E2eeAddress.proto";
-import "skissm/Ratchet.proto";
+import "skissm/ResponseCode.proto";
 
-message Session {
-    string version = 1;
-    string e2ee_pack_id = 2;
-    string session_id = 3;
-    E2eeAddress session_owner = 4;
-    E2eeAddress from = 5;
-    E2eeAddress to = 6;
-    Ratchet ratchet = 7;
-    bytes alice_identity_key = 8;
-    bytes alice_ephemeral_key = 9;
-    bytes bob_signed_pre_key = 10;
-    uint32 bob_signed_pre_key_id = 11;
-    bytes bob_one_time_pre_key = 12;
-    uint32 bob_one_time_pre_key_id = 13;
-
-    bool f2f = 14;
-    bool responded = 15;
-    bytes associated_data = 16;
+message F2fAcceptResponse {
+    ResponseCode code = 1;
+    string msg = 2;
 }
+ 

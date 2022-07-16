@@ -84,6 +84,60 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *t
     }
 }
 
+size_t produce_f2f_psk_request(
+    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    uint8_t *password, size_t password_len,
+    uint8_t **f2f_pre_shared_key
+) {
+    Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg = (Skissm__F2fPreKeyInviteMsg *)malloc(sizeof(Skissm__F2fPreKeyInviteMsg));
+    skissm__f2f_pre_key_invite_msg__init(f2f_pre_key_invite_msg);
+
+    f2f_pre_key_invite_msg->version = strdup(E2EE_PROTOCOL_VERSION);
+    f2f_pre_key_invite_msg->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
+    f2f_pre_key_invite_msg->session_id = generate_uuid_str();
+
+    copy_address_from_address(&(f2f_pre_key_invite_msg->from), from);
+    copy_address_from_address(&(f2f_pre_key_invite_msg->to), to);
+
+    f2f_pre_key_invite_msg->secret.data = (uint8_t *)malloc(sizeof(uint8_t) * 128);
+    f2f_pre_key_invite_msg->secret.len = 128;
+    get_skissm_plugin()->common_handler.gen_rand(f2f_pre_key_invite_msg->secret.data, f2f_pre_key_invite_msg->secret.len);
+
+    // pack
+    size_t f2f_pre_key_plaintext_len = skissm__f2f_pre_key_invite_msg__get_packed_size(f2f_pre_key_invite_msg);
+    uint8_t *f2f_pre_key_plaintext = (uint8_t *)malloc(sizeof(uint8_t) * f2f_pre_key_plaintext_len);
+    skissm__f2f_pre_key_invite_msg__pack(f2f_pre_key_invite_msg, f2f_pre_key_plaintext);
+
+    // hkdf(produce the AES key)
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(f2f_pre_key_invite_msg->e2ee_pack_id)->cipher_suite;
+    int hash_len = cipher_suite->get_crypto_param().hash_len;
+    uint8_t salt[hash_len];
+    memset(salt, 0, hash_len);
+    const char F2F_PSK_SEED[] = "F2FPSK";
+    int aes_key_len = cipher_suite->get_crypto_param().aead_key_len + cipher_suite->get_crypto_param().aead_iv_len;
+    uint8_t *aes_key = (uint8_t *)malloc(sizeof(uint8_t) * aes_key_len);
+    cipher_suite->hkdf(
+        password, password_len,
+        salt, sizeof(salt),
+        (uint8_t *)F2F_PSK_SEED, sizeof(F2F_PSK_SEED) - 1,
+        aes_key, aes_key_len
+    );
+
+    // encrypt
+    uint8_t ad[64];
+    memset(ad, 0, 64);
+    size_t f2f_pre_shared_key_len = cipher_suite->encrypt(
+        ad,
+        aes_key,
+        f2f_pre_key_plaintext, f2f_pre_key_plaintext_len,
+        f2f_pre_shared_key
+    );
+
+    f2f_invite_internal(from, to, *f2f_pre_shared_key, f2f_pre_shared_key_len);
+
+    return f2f_pre_shared_key_len;
+}
+
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
     const uint8_t *plaintext_data, size_t plaintext_data_len
@@ -290,6 +344,10 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_ACCEPT_MSG:
             consumed = consume_accept_msg(receiver_address, proto_msg->accept_msg);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_F2F_INVITE_MSG:
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_F2F_ACCEPT_MSG:
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG:
             if (proto_msg->e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG)

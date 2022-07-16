@@ -35,7 +35,7 @@ extern "C" {
 Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
 
 /**
- * @brief Send invite requesst to server.
+ * @brief Send invite request to server.
  *
  * @param outbound_session
  * @param pre_shared_keys
@@ -45,7 +45,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, S
 Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len);
 
 /**
- * @brief Send accept requesst to server.
+ * @brief Send accept request to server.
  *
  * @param e2ee_pack_id
  * @param from
@@ -54,6 +54,17 @@ Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, Proto
  * @return Skissm__AcceptResponse *
  */
 Skissm__AcceptResponse *accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1);
+
+Skissm__F2fInviteResponse *f2f_invite_internal(
+    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    uint8_t *secret, size_t secret_len
+);
+
+Skissm__F2fAcceptResponse *f2f_accept_internal(
+    const char *e2ee_pack_id,
+    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    Skissm__Account *local_account
+);
 
 /**
  * @brief Send publish_spk request to server.

@@ -235,7 +235,7 @@ static void test_continual_messages(){
 
     // Alice invites Bob to create a session
     Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address);
-    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accep
+    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     // Load the outbound session
     get_skissm_plugin()->db_handler.load_outbound_session(account_data[0]->address, account_data[1]->address, &outbound_session);

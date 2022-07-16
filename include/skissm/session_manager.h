@@ -43,10 +43,11 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(Skissm__E2eeA
  * @param response
  * @return Skissm__InviteResponse *
  */
-Skissm__InviteResponse *consume_get_pre_key_bundle_response (
+Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
-    Skissm__GetPreKeyBundleResponse *response);
+    Skissm__GetPreKeyBundleResponse *response
+);
 /**
  * @brief Create a send_one2one_msg_request to be sent to messaging server.
  *
@@ -97,7 +98,8 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
  * @return Skissm__InviteRequest*
  */
 Skissm__InviteRequest *produce_invite_request(
-    Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len);
+    Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len
+);
 
 /**
  * @brief Process an incoming InviteResponse message.
@@ -126,10 +128,12 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
  * @param ciphertext_1
  * @return Skissm__AcceptRequest*
  */
-Skissm__AcceptRequest *produce_accept_request(const char *e2ee_pack_id,
-                                              Skissm__E2eeAddress *from,
-                                              Skissm__E2eeAddress *to,
-                                              ProtobufCBinaryData *ciphertext_1);
+Skissm__AcceptRequest *produce_accept_request(
+    const char *e2ee_pack_id,
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    ProtobufCBinaryData *ciphertext_1
+);
 
 /**
  * @brief Process an incoming AcceptResponse message.
@@ -148,6 +152,26 @@ bool consume_accept_response(Skissm__AcceptResponse *response);
  * @return false
  */
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg);
+
+Skissm__F2fInviteRequest *produce_f2f_invite_request(
+    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    uint8_t *secret, size_t secret_len
+);
+
+bool consume_f2f_invite_response(Skissm__F2fInviteResponse *response);
+
+bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fInviteMsg *msg);
+
+Skissm__F2fAcceptRequest *produce_f2f_accept_request(
+    const char *e2ee_pack_id,
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    Skissm__Account *local_account
+);
+
+bool consume_f2f_accept_response(Skissm__F2fAcceptResponse *response);
+
+bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAcceptMsg *msg);
 
 #ifdef __cplusplus
 }

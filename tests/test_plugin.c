@@ -107,6 +107,8 @@ struct skissm_plugin_t ssm_plugin = {
         mock_get_pre_key_bundle,
         mock_invite,
         mock_accept,
+        mock_f2f_invite,
+        mock_f2f_accept,
         mock_publish_spk,
         mock_supply_opks,
         mock_send_one2one_msg,
