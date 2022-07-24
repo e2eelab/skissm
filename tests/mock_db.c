@@ -110,6 +110,7 @@ static const char *SESSION_LOAD_DATA_BY_OWNER_AND_TO = "SELECT DATA FROM SESSION
                                                        "INNER JOIN ADDRESS AS a2 "
                                                        "ON SESSION.TO_ADDRESS = a2.ID "
                                                        "WHERE a1.USER_ID is (?) AND a2.USER_ID is (?) "
+                                                       "AND a1.DEVICE_ID is (?) AND a2.DEVICE_ID is (?) "
                                                        "ORDER BY TIMESTAMP DESC "
                                                        "LIMIT 1;";
 
@@ -1528,6 +1529,8 @@ void load_outbound_session(
     // bind
     sqlite3_bind_text(stmt, 1, owner->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, to->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, owner->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, to->user->device_id, -1, SQLITE_TRANSIENT);
 
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {

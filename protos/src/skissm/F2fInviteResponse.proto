@@ -26,8 +26,10 @@ option objc_class_prefix = "Objc";
 option swift_prefix="Swift";
 
 import "skissm/ResponseCode.proto";
+import "skissm/SignedPreKeyPublic.proto";
 
 message F2fInviteResponse {
     ResponseCode code = 1;
     string msg = 2;
+    SignedPreKeyPublic spk_public = 3;
 }

@@ -5,10 +5,10 @@
 #include "skissm/account_manager.h"
 #include "skissm/session_manager.h"
 
-Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
-    Skissm__GetPreKeyBundleRequest *request = produce_get_pre_key_bundle_request(to);
+Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
+    Skissm__GetPreKeyBundleRequest *request = produce_get_pre_key_bundle_request(to_user_id, to_domain);
     Skissm__GetPreKeyBundleResponse *response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(request);
-    Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(from, to, response);
+    Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(from, response);
 
     // release
     skissm__get_pre_key_bundle_request__free_unpacked(request, NULL);
@@ -44,11 +44,12 @@ Skissm__AcceptResponse *accept_internal(const char *e2ee_pack_id, Skissm__E2eeAd
 
 Skissm__F2fInviteResponse *f2f_invite_internal(
     Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    char *e2ee_pack_id,
     uint8_t *secret, size_t secret_len
 ) {
-    Skissm__F2fInviteRequest *request = produce_f2f_invite_request(from, to, secret, secret_len);
+    Skissm__F2fInviteRequest *request = produce_f2f_invite_request(from, to, e2ee_pack_id, secret, secret_len);
     Skissm__F2fInviteResponse *response = get_skissm_plugin()->proto_handler.f2f_invite(request);
-    consume_f2f_invite_response(response);
+    consume_f2f_invite_response(request, response);
 
     // release
     skissm__f2f_invite_request__free_unpacked(request, NULL);

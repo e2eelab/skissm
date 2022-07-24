@@ -190,7 +190,7 @@ void create_outbound_group_session(
                             group_pre_key_plaintext_data,
                             group_pre_key_plaintext_data_len);
                         // send Invite
-                        Skissm__InviteResponse *response = invite(outbound_group_session->session_owner, group_member_address);
+                        Skissm__InviteResponse *response = invite(outbound_group_session->session_owner, group_member_address->user->user_id, group_member_address->domain);
                         // release
                         if (response != NULL)
                             skissm__invite_response__free_unpacked(response, NULL);

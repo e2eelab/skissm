@@ -64,11 +64,11 @@ Skissm__RegisterUserResponse *register_user(
     return response;
 }
 
-Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
+Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
     Skissm__Session **outbound_sessions = NULL;
-    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to->user->user_id, &outbound_sessions);
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num == (size_t)(0)) {
-        return get_pre_key_bundle_internal(from, to);
+        return get_pre_key_bundle_internal(from, to_user_id, to_domain);
     } else {
         size_t i;
         for (i = 0; i < outbound_sessions_num; i++) {
@@ -133,7 +133,7 @@ size_t produce_f2f_psk_request(
         f2f_pre_shared_key
     );
 
-    f2f_invite_internal(from, to, *f2f_pre_shared_key, f2f_pre_shared_key_len);
+    f2f_invite_internal(from, to, f2f_pre_key_invite_msg->e2ee_pack_id, *f2f_pre_shared_key, f2f_pre_shared_key_len);
 
     return f2f_pre_shared_key_len;
 }
@@ -346,8 +346,10 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             consumed = consume_accept_msg(receiver_address, proto_msg->accept_msg);
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_F2F_INVITE_MSG:
+            consumed = consume_f2f_invite_msg(receiver_address, proto_msg->f2f_invite_msg);
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_F2F_ACCEPT_MSG:
+            consumed = consume_f2f_accept_msg(receiver_address, proto_msg->f2f_accept_msg);
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG:
             if (proto_msg->e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG)

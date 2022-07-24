@@ -33,7 +33,7 @@ static void update_signed_pre_key() {
 
     if (account_num == 0) {
         if (accounts != NULL) {
-            ssm_notify_error(BAD_ACCOUNT, "account_begin()");
+            ssm_notify_error(BAD_ACCOUNT, "update_signed_pre_key()");
         }
         return;
     }

@@ -56,6 +56,21 @@ bool safe_strcmp(const char *str1, const char *str2) {
     return false;
 }
 
+bool compare_user_id(Skissm__E2eeAddress *address, const char *user_id, const char *domain) {
+    if (address == NULL && user_id == NULL && domain == NULL)
+        return true;
+    if ((user_id == NULL && domain != NULL)
+        || (user_id != NULL && domain == NULL))
+        return false;
+    if ((address == NULL && user_id != NULL)
+        || (address != NULL && user_id == NULL))
+        return false;
+
+    return safe_strcmp(address->domain, domain)
+        && (address->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER)
+        && (safe_strcmp(address->user->user_id, user_id));
+}
+
 bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *address_2) {
     if (address_1 == NULL && address_2 == NULL)
         return true;

@@ -32,10 +32,11 @@ Skissm__RegisterUserResponse *register_user(
  * that needs to be responded before it can be used
  * to send encryption message.
  * @param from From address
- * @param to To Address
+ * @param to_user_id The receiver's user_id
+ * @param to_domain The receiver's domain
  * @return  Skissm__InviteResponse *
  */
-Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
+Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain);
 
 /**
  * @brief Send a face-to-face invite request and create a new outbound session.

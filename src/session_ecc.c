@@ -232,52 +232,44 @@ size_t crypto_curve25519_complete_outbound_session(Skissm__Session *outbound_ses
     return (size_t)(0);
 }
 
-// Skissm__F2fInviteResponse *crypto_curve25519_new_f2f_outbound_session(
-//     Skissm__Session *outbound_session,
-//     const Skissm__Account *local_account,
-//     ProtobufCBinaryData *their_signed_pre_key_public
-// ) {
-//     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
-//     int key_len = cipher_suite->get_crypto_param().asym_key_len;
+size_t crypto_curve25519_new_f2f_outbound_session(
+    Skissm__Session *outbound_session,
+    const Skissm__Account *local_account,
+    Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg,
+    Skissm__SignedPreKeyPublic *their_signed_pre_key_public
+) {
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+    int key_len = cipher_suite->get_crypto_param().asym_key_len;
 
-//     // set the version
-//     outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
-//     // set the cipher suite id
-//     outbound_session->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
+    // set the version
+    outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
+    // set the cipher suite id
+    outbound_session->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
 
-//     // generate a new random ratchet key pair
-//     Skissm__KeyPair my_ratchet_key;
-//     cipher_suite->asym_key_gen(&(my_ratchet_key.public_key), &(my_ratchet_key.private_key));
+    // generate a new random ratchet key pair
+    Skissm__KeyPair my_ratchet_key;
+    cipher_suite->asym_key_gen(&(my_ratchet_key.public_key), &(my_ratchet_key.private_key));
 
-//     // generate a random secret
-//     uint8_t secret[4 * CURVE25519_SHARED_SECRET_LENGTH];
-//     get_skissm_plugin()->common_handler.gen_rand(secret, sizeof(secret));
+    // generate a random secret
+    uint8_t secret[4 * CURVE25519_SHARED_SECRET_LENGTH];
+    get_skissm_plugin()->common_handler.gen_rand(secret, sizeof(secret));
 
-//     // create the root key and chain keys
-//     initialise_as_alice(cipher_suite, outbound_session->ratchet, secret, sizeof(secret), &my_ratchet_key, their_signed_pre_key_public);
-//     outbound_session->session_id = generate_uuid_str();
+    // create the root key and chain keys
+    initialise_as_alice(cipher_suite, outbound_session->ratchet, secret, sizeof(secret), &my_ratchet_key, &(their_signed_pre_key_public->public_key));
+    outbound_session->session_id = generate_uuid_str();
 
-//     // store sesson state before send invite
-//     get_skissm_plugin()->db_handler.store_session(outbound_session);
+    // store sesson state
+    get_skissm_plugin()->db_handler.store_session(outbound_session);
 
-//     // send the invite request to the peer
-//     ProtobufCBinaryData *pre_shared_keys[1] = {&(outbound_session->alice_ephemeral_key)};
-//     Skissm__F2fInviteResponse *response = f2f_invite_internal(outbound_session, pre_shared_keys, 1);
+    // release
+    free_protobuf(&(my_ratchet_key.private_key));
+    free_protobuf(&(my_ratchet_key.public_key));
+    unset((void volatile *)&my_ratchet_key, sizeof(Skissm__KeyPair));
+    unset(secret, sizeof(secret));
 
-//     if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-//         // unload outbound_session to enable retry
-//         get_skissm_plugin()->db_handler.unload_session(outbound_session->session_owner, outbound_session->from, outbound_session->to);
-//     }
-
-//     // release
-//     free_protobuf(&(my_ratchet_key.private_key));
-//     free_protobuf(&(my_ratchet_key.public_key));
-//     unset((void volatile *)&my_ratchet_key, sizeof(Skissm__KeyPair));
-//     unset(secret, sizeof(secret));
-
-//     // done
-//     return response;
-// }
+    // done
+    return (size_t)(0);
+}
 
 size_t crypto_curve25519_new_f2f_inbound_session(
     Skissm__Session *inbound_session,
@@ -302,5 +294,7 @@ size_t crypto_curve25519_new_f2f_inbound_session(
 const session_suite_t E2EE_SESSION_ECDH_X25519_AES256_GCM_SHA256 = {
     crypto_curve25519_new_outbound_session,
     crypto_curve25519_new_inbound_session,
-    crypto_curve25519_complete_outbound_session
+    crypto_curve25519_complete_outbound_session,
+    crypto_curve25519_new_f2f_outbound_session,
+    crypto_curve25519_new_f2f_inbound_session
 };

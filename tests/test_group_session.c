@@ -117,6 +117,8 @@ static skissm_event_handler_t test_event_handler = {
     on_inbound_session_invited,
     on_inbound_session_ready,
     on_outbound_session_ready,
+    NULL,
+    NULL,
     on_one2one_msg_received,
     on_group_msg_received,
     on_group_created,
@@ -203,7 +205,7 @@ static void test_create_group() {
 
     // Alice invites Bob to create a group
     switch_account(account_data[0]->address);
-    invite(account_data[0]->address, account_data[1]->address);
+    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
@@ -249,7 +251,7 @@ static void test_add_group_members() {
     register_test_user(3, "claire");
 
     // Alice invites Bob to create a group
-    invite(account_data[0]->address, account_data[1]->address);
+    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
@@ -266,7 +268,7 @@ static void test_add_group_members() {
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
 
     // Alice invites Claire to join the group
-    invite(account_data[0]->address, account_data[2]->address);
+    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // the new group member is Claire
     Skissm__GroupMember **new_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *));
     new_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
@@ -308,8 +310,8 @@ static void test_remove_group_members() {
     register_test_user(3, "claire");
 
     // Alice invites Bob and Claire to join the group
-    invite(account_data[0]->address, account_data[1]->address);
-    invite(account_data[0]->address, account_data[2]->address);
+    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
@@ -373,7 +375,7 @@ static void test_create_add_remove() {
     register_test_user(3, "claire");
 
     // Alice invites Bob to create a group
-    invite(account_data[0]->address, account_data[1]->address);
+    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
@@ -395,7 +397,7 @@ static void test_create_add_remove() {
     test_encryption(account_data[0]->address, group.group_address, plaintext, plaintext_len);
 
     // Alice invites Claire to join the group
-    invite(account_data[0]->address, account_data[2]->address);
+    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // the new group member is Claire
     Skissm__GroupMember **new_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *));
     new_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
@@ -445,14 +447,14 @@ static void test_interaction() {
     register_test_user(3, "claire");
 
     // Alice invites Bob and Claire to join the group
-    invite(account_data[0]->address, account_data[1]->address);
-    invite(account_data[0]->address, account_data[2]->address);
+    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Bob invites Alice and Claire to join the group
-    invite(account_data[1]->address, account_data[0]->address);
-    invite(account_data[1]->address, account_data[2]->address);
+    invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
+    invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Claire invites Alice and Bob to join the group
-    invite(account_data[2]->address, account_data[0]->address);
-    invite(account_data[2]->address, account_data[1]->address);
+    invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
+    invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
@@ -511,14 +513,14 @@ static void test_continual() {
     register_test_user(3, "claire");
 
     // Alice invites Bob and Claire to join the group
-    invite(account_data[0]->address, account_data[1]->address);
-    invite(account_data[0]->address, account_data[2]->address);
+    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Bob invites Alice and Claire to join the group
-    invite(account_data[1]->address, account_data[0]->address);
-    invite(account_data[1]->address, account_data[2]->address);
+    invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
+    invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Claire invites Alice and Bob to join the group
-    invite(account_data[2]->address, account_data[0]->address);
-    invite(account_data[2]->address, account_data[1]->address);
+    invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
+    invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);

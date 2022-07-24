@@ -67,6 +67,36 @@ typedef struct session_suite_t {
         Skissm__Session *,
         Skissm__AcceptMsg *
     );
+
+    /**
+     * @brief Create a face-to-face outbound session.
+     *
+     * @param outbound_session The outbound session
+     * @param local_account Our account
+     * @param f2f_pre_key_invite_msg The face-to-face message to create a session
+     * @param their_signed_pre_key_public Their signed pre-key(public key)
+     * @return Success or not
+     */
+    size_t (*new_f2f_outbound_session)(
+        Skissm__Session *,
+        const Skissm__Account *,
+        Skissm__F2fPreKeyInviteMsg *,
+        Skissm__SignedPreKeyPublic *
+    );
+
+    /**
+     * @brief Create a face-to-face inbound session.
+     *
+     * @param inbound_session The inbound session
+     * @param local_account Our account
+     * @param secret The shared secret bytes
+     * @return Success or not
+     */
+    size_t (*new_f2f_inbound_session)(
+        Skissm__Session *,
+        Skissm__Account *,
+        uint8_t *
+    );
 } session_suite_t;
 
 /* common */

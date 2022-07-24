@@ -124,6 +124,8 @@ struct skissm_plugin_t ssm_plugin = {
         NULL,
         NULL,
         NULL,
+        NULL,
+        NULL,
         on_one2one_msg_received,
         on_group_msg_received,
         NULL,

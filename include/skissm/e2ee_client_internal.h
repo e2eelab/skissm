@@ -29,10 +29,11 @@ extern "C" {
  * @brief Get the pre-key bundle internal object.
  *
  * @param from
- * @param to
+ * @param to_user_id
+ * @param to_domain
  * @return Skissm__InviteResponse *
  */
-Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
+Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain);
 
 /**
  * @brief Send invite request to server.
@@ -55,11 +56,31 @@ Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, Proto
  */
 Skissm__AcceptResponse *accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1);
 
+/**
+ * @brief Send face-to-face invite request to server.
+ *
+ * @param from
+ * @param to
+ * @param e2ee_pack_id
+ * @param secret
+ * @param secret_len
+ * @return Skissm__F2fInviteResponse *
+ */
 Skissm__F2fInviteResponse *f2f_invite_internal(
     Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    char *e2ee_pack_id,
     uint8_t *secret, size_t secret_len
 );
 
+/**
+ * @brief Send face-to-face accept request to server.
+ *
+ * @param e2ee_pack_id
+ * @param from
+ * @param to
+ * @param local_account
+ * @return Skissm__F2fAcceptResponse *
+ */
 Skissm__F2fAcceptResponse *f2f_accept_internal(
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,

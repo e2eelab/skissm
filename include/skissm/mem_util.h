@@ -54,6 +54,27 @@ char *generate_uuid_str();
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2);
 
 /**
+ * @brief Compare two char string that can be NULL.
+ *
+ * @param str1
+ * @param str2
+ * @return true
+ * @return false
+ */
+bool safe_strcmp(const char *str1, const char *str2);
+
+/**
+ * @brief Compare two user's ids.
+ *
+ * @param address
+ * @param user_id
+ * @param domain
+ * @return true
+ * @return false
+ */
+bool compare_user_id(Skissm__E2eeAddress *address, const char *user_id, const char *domain);
+
+/**
  * @brief Compare two Skissm__E2eeAddress objects.
  *
  * @param address_1
@@ -77,16 +98,6 @@ bool compare_group_member(
     Skissm__GroupMember **group_members_1, size_t group_member_num_1,
     Skissm__GroupMember **group_members_2, size_t group_member_num_2
 );
-
-/**
- * @brief Compare two char string that can be NULL.
- *
- * @param str1
- * @param str2
- * @return true
- * @return false
- */
-bool safe_strcmp(const char *str1, const char *str2);
 
 /**
  * @brief Copy ProtobufCBinaryData from src to dest.

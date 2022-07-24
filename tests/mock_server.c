@@ -165,49 +165,61 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
 }
 
 Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundleRequest *request) {
-    size_t user_device_num;
-
-    uint8_t user_data_find = 0;
-    while (user_data_find < user_data_set_insert_pos)
-    {
-        if ((user_data_set[user_data_find].address) && (request->user_address)
-            && compare_address(user_data_set[user_data_find].address, request->user_address)
-        ) {
-            break;
-        }
-        user_data_find++;
+    if ((request->user_id == NULL) || (request->domain == NULL)) {
+        ssm_notify_error(BAD_MESSAGE_FORMAT, "mock_get_pre_key_bundle()");
+        return NULL;
     }
 
-    if (user_data_find == user_data_set_insert_pos) {
+    size_t user_device_num = 0;
+
+    uint8_t user_data_find[user_data_max] = {0};
+    uint8_t i;
+    for (i = 0; i < user_data_set_insert_pos; i++) {
+        if ((user_data_set[i].address)
+            && compare_user_id(user_data_set[i].address, request->user_id, request->domain)
+        ) {
+            user_data_find[user_device_num] = i;
+            user_device_num++;
+        }
+    }
+
+    if (user_device_num == 0) {
         // not found
         return NULL;
     }
 
-    user_data *cur_data = &(user_data_set[user_data_find]);
-
     Skissm__GetPreKeyBundleResponse *response = NULL;
     response = (Skissm__GetPreKeyBundleResponse *) malloc(sizeof(Skissm__GetPreKeyBundleResponse));
     skissm__get_pre_key_bundle_response__init(response);
-    response->pre_key_bundles = (Skissm__PreKeyBundle **) malloc(sizeof(Skissm__PreKeyBundle *)*1);
-    response->n_pre_key_bundles = 1;
-    response->pre_key_bundles[0] = (Skissm__PreKeyBundle *) malloc(sizeof(Skissm__PreKeyBundle));
-    skissm__pre_key_bundle__init(response->pre_key_bundles[0]);
+    response->user_id = strdup(request->user_id);
+    response->pre_key_bundles = (Skissm__PreKeyBundle **) malloc(sizeof(Skissm__PreKeyBundle *) * user_device_num);
 
-    response->pre_key_bundles[0]->e2ee_pack_id = strdup(TEST_E2EE_PACK_ID);
-    copy_address_from_address(&(response->pre_key_bundles[0]->user_address), request->user_address);
-    copy_ik_public_from_ik_public(&(response->pre_key_bundles[0]->identity_key_public), cur_data->identity_key_public);
-    copy_spk_public_from_spk_public(&(response->pre_key_bundles[0]->signed_pre_key_public), cur_data->signed_pre_key_public);
+    size_t j;
+    for (j = 0; j < user_device_num; j++) {
+        i = user_data_find[j];
+        user_data *cur_data = &(user_data_set[i]);
 
-    size_t i;
-    for (i = 0; i < cur_data->n_one_time_pre_keys; i++){
-        if (cur_data->one_time_pre_keys[i]){
-            copy_opk_public_from_opk_public(&(response->pre_key_bundles[0]->one_time_pre_key_public), cur_data->one_time_pre_keys[i]);
-            break;
+        response->n_pre_key_bundles += 1;
+        response->pre_key_bundles[j] = (Skissm__PreKeyBundle *) malloc(sizeof(Skissm__PreKeyBundle));
+        skissm__pre_key_bundle__init(response->pre_key_bundles[j]);
+
+        response->pre_key_bundles[j]->e2ee_pack_id = strdup(TEST_E2EE_PACK_ID);
+        copy_address_from_address(&(response->pre_key_bundles[j]->user_address), cur_data->address);
+        copy_ik_public_from_ik_public(&(response->pre_key_bundles[j]->identity_key_public), cur_data->identity_key_public);
+        copy_spk_public_from_spk_public(&(response->pre_key_bundles[j]->signed_pre_key_public), cur_data->signed_pre_key_public);
+
+        size_t k;
+        for (k = 0; k < cur_data->n_one_time_pre_keys; k++) {
+            if (cur_data->one_time_pre_keys[k]){
+                copy_opk_public_from_opk_public(&(response->pre_key_bundles[j]->one_time_pre_key_public), cur_data->one_time_pre_keys[k]);
+                break;
+            }
         }
+        // release the one-time pre-key
+        skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_keys[k], NULL);
+        cur_data->one_time_pre_keys[k] = NULL;
     }
-    // release the one-time pre-key
-    skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_keys[i], NULL);
-    cur_data->one_time_pre_keys[i] = NULL;
+
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     return response;
@@ -279,6 +291,29 @@ Skissm__AcceptResponse *mock_accept(Skissm__AcceptRequest *request) {
 
 Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__F2fInviteRequest *request) {
     Skissm__F2fInviteMsg *f2f_invite_msg = request->msg;
+
+    uint8_t user_data_find = 0;
+    while (user_data_find < user_data_set_insert_pos)
+    {
+        if ((user_data_set[user_data_find].address) && (f2f_invite_msg->to)
+            && compare_address(user_data_set[user_data_find].address, f2f_invite_msg->to)
+        ) {
+            break;
+        }
+        user_data_find++;
+    }
+
+    // data not found
+    if (user_data_find == user_data_set_insert_pos){
+        Skissm__F2fInviteResponse *response = (Skissm__F2fInviteResponse *)malloc(sizeof(Skissm__F2fInviteResponse));
+        skissm__f2f_invite_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_INTERNAL_SERVER_ERROR;
+        return response;
+    }
+
+    user_data *cur_data = &(user_data_set[user_data_find]);
+
+    // pack
     size_t f2f_invite_msg_data_len = skissm__f2f_invite_msg__get_packed_size(f2f_invite_msg);
     uint8_t f2f_invite_msg_data[f2f_invite_msg_data_len];
     skissm__f2f_invite_msg__pack(f2f_invite_msg, f2f_invite_msg_data);
@@ -299,6 +334,7 @@ Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__F2fInviteRequest *request) {
     // prepare response
     Skissm__F2fInviteResponse *response = (Skissm__F2fInviteResponse *)malloc(sizeof(Skissm__F2fInviteResponse));
     skissm__f2f_invite_response__init(response);
+    copy_spk_public_from_spk_public(&(response->spk_public), cur_data->signed_pre_key_public);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     // release
