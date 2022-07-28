@@ -135,15 +135,20 @@ size_t produce_f2f_psk_request(
 
     f2f_invite_internal(from, to, f2f_pre_key_invite_msg->e2ee_pack_id, *f2f_pre_shared_key, f2f_pre_shared_key_len);
 
+    // release
+    skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);
+    free_mem((void **)&f2f_pre_key_plaintext, f2f_pre_key_plaintext_len);
+    free_mem((void **)&aes_key, aes_key_len);
+
     return f2f_pre_shared_key_len;
 }
 
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
-    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 ) {
     Skissm__Session **outbound_sessions = NULL;
-    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to->user->user_id, &outbound_sessions);
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num <= (size_t)(0) || outbound_sessions == NULL) {
         ssm_notify_error(BAD_SESSION, "send_one2one_msg() outbound session is not responded");
         return NULL;

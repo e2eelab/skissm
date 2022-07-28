@@ -34,7 +34,7 @@
 #include "test_plugin.h"
 #include "test_util.h"
 
-#define account_data_max 2
+#define account_data_max 10
 
 static const cipher_suite_t *test_cipher_suite;
 
@@ -137,29 +137,10 @@ static void test_end(){
     f2f_password_len = 0;
 }
 
-static void test_encryption(
-    Skissm__Session *outbound_session,
-    uint8_t *plaintext, size_t plaintext_len
-) {
-    if (plaintext_store.plaintext != NULL){
-        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
-    }
-
-    // send encrypted msg
-    send_one2one_msg(outbound_session->from, outbound_session->to, plaintext, plaintext_len);
-    if (plaintext_store.plaintext == NULL){
-        printf("Test failed!!!\n");
-        assert(false);
-        return;
-    }
-    assert(plaintext_len == plaintext_store.plaintext_len);
-    assert(memcmp(plaintext, plaintext_store.plaintext, plaintext_len) == 0);
-}
-
-static void create_test_account(uint64_t account_id, const char *user_name) {
+static void mock_alice_account(uint64_t account_id, const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
     const char *device_id = generate_uuid_str();
-    const char *authenticator = "email";
+    const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
         register_user(account_id,
@@ -172,29 +153,73 @@ static void create_test_account(uint64_t account_id, const char *user_name) {
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 }
 
+static void mock_bob_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "bob@domain.com.tw";
+    const char *auth_code = "654321";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+}
+
+static void test_encryption(
+    Skissm__E2eeAddress *from_address, const char *to_user_id, const char *to_domain,
+    uint8_t *plaintext, size_t plaintext_len
+) {
+    if (plaintext_store.plaintext != NULL){
+        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
+    }
+
+    // send encrypted msg
+    send_one2one_msg(from_address, to_user_id, to_domain, plaintext, plaintext_len);
+    if (plaintext_store.plaintext == NULL){
+        printf("Test failed!!!\n");
+        assert(false);
+        return;
+    }
+    assert(plaintext_len == plaintext_store.plaintext_len);
+    assert(memcmp(plaintext, plaintext_store.plaintext, plaintext_len) == 0);
+}
+
 static void test_basic_session(){
     // test start
     tear_up();
     test_begin();
 
-    create_test_account(1, "alice");
-    create_test_account(2, "bob");
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
 
-    Skissm__Session *outbound_session;
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
     assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
-    // Load the outbound session
-    get_skissm_plugin()->db_handler.load_outbound_session(account_data[0]->address, account_data[1]->address, &outbound_session);
+    // load the outbound session
+    Skissm__Session *outbound_session = NULL;
+    get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session);
     assert(outbound_session != NULL);
     assert(outbound_session->responded == true);
+
+    // load the inbound session
+    Skissm__Session *inbound_session = NULL;
+    get_skissm_plugin()->db_handler.load_inbound_session(outbound_session->session_id, outbound_session->to, &inbound_session);
+    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chains[0]->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "Hello, World";
     size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(outbound_session, plaintext, plaintext_len);
+    test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
 
     // test stop
     skissm__session__free_unpacked(outbound_session, NULL);
@@ -207,38 +232,45 @@ static void test_interaction(){
     tear_up();
     test_begin();
 
-    create_test_account(1, "alice");
-    create_test_account(2, "bob");
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
+
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *alice_user_id = alice_address->user->user_id;
+    char *alice_domain = alice_address->domain;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
 
     Skissm__Session *outbound_session_a, *outbound_session_b;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
     assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     // Alice loads the outbound session
-    get_skissm_plugin()->db_handler.load_outbound_session(account_data[0]->address, account_data[1]->address, &outbound_session_a);
+    get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session_a);
     assert(outbound_session_a != NULL);
     assert(outbound_session_a->responded == true);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "Hi! Bob! This is Alice.";
     size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(outbound_session_a, plaintext, plaintext_len);
+    test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
 
     // Bob invites Alice to create a session
-    Skissm__InviteResponse *response1 = invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
+    Skissm__InviteResponse *response1 = invite(bob_address, alice_user_id, alice_domain);
     assert(response1 != NULL && response1->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     // Bob loads the outbound session
-    get_skissm_plugin()->db_handler.load_outbound_session(account_data[1]->address, account_data[0]->address, &outbound_session_b);
+    get_skissm_plugin()->db_handler.load_outbound_session(bob_address, alice_address, &outbound_session_b);
     assert(outbound_session_b != NULL);
     assert(outbound_session_b->responded == true);
 
     // Bob sends an encrypted message to Alice, and Alice decrypts the message
     uint8_t plaintext_2[] = "Hello! This is Bob.";
     size_t plaintext_len_2 = sizeof(plaintext_2) - 1;
-    test_encryption(outbound_session_b, plaintext_2, plaintext_len_2);
+    test_encryption(bob_address, alice_user_id, alice_domain, plaintext_2, plaintext_len_2);
 
     // test stop
     skissm__session__free_unpacked(outbound_session_a, NULL);
@@ -252,26 +284,26 @@ static void test_continual_messages(){
     tear_up();
     test_begin();
 
-    create_test_account(1, "alice");
-    create_test_account(2, "bob");
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
 
-    Skissm__Session *outbound_session;
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
+
+    Skissm__Session *outbound_session = NULL;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
     assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
-
-    // Load the outbound session
-    get_skissm_plugin()->db_handler.load_outbound_session(account_data[0]->address, account_data[1]->address, &outbound_session);
-    assert(outbound_session != NULL);
-    assert(outbound_session->responded == true);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     int i;
     for (i = 0; i < 1000; i++){
         uint8_t plaintext[64];
         size_t plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message will be sent a lot of times.", i);
-        test_encryption(outbound_session, plaintext, plaintext_len);
+        test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
     }
 
     // test stop
@@ -280,37 +312,69 @@ static void test_continual_messages(){
     tear_down();
 }
 
-// static void test_multiple_devices(){
-//     // test start
-//     tear_up();
-//     test_begin();
+static void test_multiple_devices(){
+    // test start
+    tear_up();
+    test_begin();
 
-//     create_test_account(1, "alice");
-//     create_test_account(2, "bob");
-//     create_test_account(3, "bob");
-//     create_test_account(4, "bob");
+    mock_alice_account(1, "Alice");
+    mock_bob_account(2, "Bob");
+    mock_bob_account(3, "Bob");
+    mock_bob_account(4, "Bob");
 
-//     Skissm__Session *outbound_session;
+    // Bob's user_id should be the same
+    assert(strcmp(account_data[1]->address->user->user_id, account_data[2]->address->user->user_id) == 0);
+    assert(strcmp(account_data[1]->address->user->user_id, account_data[3]->address->user->user_id) == 0);
 
-//     // Alice invites Bob to create a session
-//     Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
-//     assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    char *bob_user_id = account_data[1]->address->user->user_id;
+    char *bob_domain = account_data[1]->address->domain;
 
-//     // Load the outbound session
-//     get_skissm_plugin()->db_handler.load_outbound_session(account_data[0]->address, account_data[1]->address, &outbound_session);
-//     assert(outbound_session != NULL);
-//     assert(outbound_session->responded == true);
+    // Alice invites Bob to create a session
+    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
-//     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-//     uint8_t plaintext[] = "Hello, World";
-//     size_t plaintext_len = sizeof(plaintext) - 1;
-//     test_encryption(outbound_session, plaintext, plaintext_len);
+    // load the outbound sessions
+    Skissm__Session **outbound_sessions = NULL;
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(alice_address, bob_user_id, &outbound_sessions);
+    assert(outbound_sessions_num == 3);
 
-//     // test stop
-//     skissm__session__free_unpacked(outbound_session, NULL);
-//     test_end();
-//     tear_down();
-// }
+    // load the inbound sessions
+    Skissm__Session **inbound_sessions = (Skissm__Session **)malloc(sizeof(Skissm__Session *) * 3);
+    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[0]->session_id, outbound_sessions[0]->to, &(inbound_sessions[0]));
+    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[1]->session_id, outbound_sessions[1]->to, &(inbound_sessions[1]));
+    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[2]->session_id, outbound_sessions[2]->to, &(inbound_sessions[2]));
+
+    // check if the outbound sessions and inbound sessions match
+    Skissm__Session *outbound_session, *inbound_session;
+    outbound_session = outbound_sessions[0];
+    inbound_session = inbound_sessions[0];
+    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chains[0]->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
+    outbound_session = outbound_sessions[1];
+    inbound_session = inbound_sessions[1];
+    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chains[0]->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
+    outbound_session = outbound_sessions[2];
+    inbound_session = inbound_sessions[2];
+    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chains[0]->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
+
+    // Alice sends an encrypted message to Bob, and Bob decrypts the message
+    uint8_t plaintext[] = "This message will be sent to Bob's three devices.";
+    size_t plaintext_len = sizeof(plaintext) - 1;
+    test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
+
+    // test stop
+    size_t i;
+    for (i = 0; i < outbound_sessions_num; i++) {
+        skissm__session__free_unpacked(outbound_sessions[i], NULL);
+        outbound_sessions[i] = NULL;
+        skissm__session__free_unpacked(inbound_sessions[i], NULL);
+        inbound_sessions[i] = NULL;
+    }
+    free(outbound_sessions);
+    free(inbound_sessions);
+    test_end();
+    tear_down();
+}
 
 int main() {
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
@@ -318,6 +382,7 @@ int main() {
     test_basic_session();
     test_interaction();
     test_continual_messages();
+    test_multiple_devices();
 
     return 0;
 }

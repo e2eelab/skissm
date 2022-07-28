@@ -39,9 +39,13 @@ char *generate_uuid_str() {
 }
 
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
-    if (src_1->len == src_2->len) {
-        if (memcmp(src_1->data, src_2->data, src_1->len) == 0) {
-            return true;
+    if (src_1 == NULL && src_2 == NULL)
+        return true;
+    if (src_1 != NULL && src_2 != NULL) {
+        if (src_1->len == src_2->len) {
+            if (memcmp(src_1->data, src_2->data, src_1->len) == 0) {
+                return true;
+            }
         }
     }
     return false;

@@ -29,6 +29,7 @@
 #define group_data_max 8
 
 typedef struct user_data{
+    char *authenticator;
     Skissm__E2eeAddress *address;
     const char *user_name;
     Skissm__IdentityKeyPublic *identity_key_public;
@@ -45,14 +46,14 @@ typedef struct group_data{
 } group_data;
 
 static user_data user_data_set[user_data_max] = {
-    {NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, 0}};
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, 0}};
 
 static group_data group_data_set[group_data_max] = {
     {NULL, NULL, 0, NULL},
@@ -67,6 +68,18 @@ static group_data group_data_set[group_data_max] = {
 static uint8_t user_data_set_insert_pos = 0;
 
 static uint8_t group_data_set_insert_pos = 0;
+
+static user_data *find_user(char *authenticator) {
+    uint8_t i;
+    for (i = 0; i < user_data_max; i++) {
+        if (user_data_set[i].authenticator != NULL) {
+            if (strcmp(user_data_set[i].authenticator, authenticator) == 0) {
+                return &(user_data_set[i]);
+            }
+        }
+    }
+    return NULL;
+}
 
 static size_t find_user_addresses(const char *user_id, Skissm__E2eeAddress ***user_addresses) {
     size_t user_addresses_num = 0;
@@ -135,8 +148,17 @@ void mock_server_end(){
 }
 
 Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request) {
+    if ((request == NULL) || (request->authenticator == NULL)) {
+        ssm_notify_error(BAD_MESSAGE_FORMAT, "mock_register_user()");
+        return NULL;
+    }
+
+    // check if there is the user's data stored in the server's database
+    user_data *client_data = find_user(request->authenticator);
+
+    // prepare to store
     user_data *cur_data = &(user_data_set[user_data_set_insert_pos]);
-    /* prepare to store */
+    cur_data->authenticator = strdup(request->authenticator);
     cur_data->user_name = strdup(request->user_name);
 
     copy_ik_public_from_ik_public(&(cur_data->identity_key_public), request->identity_key_public);
@@ -148,10 +170,14 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
         copy_opk_public_from_opk_public(&(cur_data->one_time_pre_keys[i]), request->one_time_pre_keys[i]);
     }
 
-    /* Generate a random address */
+    // generate a random address
     mock_random_user_address(&(cur_data->address));
     free(cur_data->address->user->device_id);
     cur_data->address->user->device_id = strdup(request->device_id);
+    if (client_data != NULL) {
+        free(cur_data->address->user->user_id);
+        cur_data->address->user->user_id = strdup(client_data->address->user->user_id);
+    }
 
     user_data_set_insert_pos++;
 

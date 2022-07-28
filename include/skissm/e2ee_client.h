@@ -68,13 +68,14 @@ size_t f2f_consume_psk_response(uint8_t *password, size_t password_len, uint8_t 
  * @brief Send one2one msg.
  *
  * @param from
- * @param to
+ * @param to_user_id
+ * @param to_domain
  * @param plaintext_data
  * @param plaintext_data_len
  * @return Skissm__SendOne2oneMsgResponse *
  */
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
-    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 );
 
