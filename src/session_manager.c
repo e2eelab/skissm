@@ -12,6 +12,8 @@
 #include "skissm/ratchet.h"
 #include "skissm/session.h"
 
+Skissm__Session *f2f_session = NULL;
+
 static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     // load group pre-key
     uint32_t pending_plaintext_data_list_num;
@@ -389,64 +391,6 @@ Skissm__F2fInviteRequest *produce_f2f_invite_request(
 
 bool consume_f2f_invite_response(Skissm__F2fInviteRequest *request, Skissm__F2fInviteResponse *response) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        Skissm__F2fInviteMsg *f2f_invite_msg = request->msg;
-        char *e2ee_pack_id = f2f_invite_msg->e2ee_pack_id;
-        Skissm__E2eeAddress *from = f2f_invite_msg->from;
-        Skissm__E2eeAddress *to = f2f_invite_msg->to;
-
-        uint8_t *password = NULL;
-        size_t password_len;
-        get_skissm_plugin()->event_handler.get_f2f_password(&password, &password_len);
-
-        // hkdf(produce the AES key)
-        const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-        int hash_len = cipher_suite->get_crypto_param().hash_len;
-        uint8_t salt[hash_len];
-        memset(salt, 0, hash_len);
-        const char F2F_PSK_SEED[] = "F2FPSK";
-        int aes_key_len = cipher_suite->get_crypto_param().aead_key_len + cipher_suite->get_crypto_param().aead_iv_len;
-        uint8_t *aes_key = (uint8_t *)malloc(sizeof(uint8_t) * aes_key_len);
-        cipher_suite->hkdf(
-            password, password_len,
-            salt, sizeof(salt),
-            (uint8_t *)F2F_PSK_SEED, sizeof(F2F_PSK_SEED) - 1,
-            aes_key, aes_key_len
-        );
-
-        // decrypt
-        uint8_t ad[64];
-        memset(ad, 0, 64);
-        uint8_t *f2f_pre_key_plaintext = NULL;
-        size_t f2f_pre_key_plaintext_len = cipher_suite->decrypt(
-            ad,
-            aes_key,
-            f2f_invite_msg->secret_msg.data, f2f_invite_msg->secret_msg.len,
-            &f2f_pre_key_plaintext
-        );
-
-        // unpack
-        Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg = skissm__f2f_pre_key_invite_msg__unpack(NULL, f2f_pre_key_plaintext_len, f2f_pre_key_plaintext);
-
-        // create a face-to-face outbound session
-        Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
-        initialise_session(outbound_session, e2ee_pack_id, from, to);
-        copy_address_from_address(&(outbound_session->session_owner), from);
-
-        // load account
-        Skissm__Account *account = NULL;
-        get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
-
-        const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-        session_suite->new_f2f_outbound_session(outbound_session, account, f2f_pre_key_invite_msg, response->spk_public);
-
-        // release
-        free_mem((void **)&password, password_len);
-        free_mem((void **)&aes_key, aes_key_len);
-        free_mem((void **)&f2f_pre_key_plaintext, f2f_pre_key_plaintext_len);
-        skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);
-        skissm__session__free_unpacked(outbound_session, NULL);
-        skissm__account__free_unpacked(account, NULL);
-
         return true;
     } else {
         return false;
@@ -467,7 +411,6 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     int hash_len = cipher_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
-    const char F2F_PSK_SEED[] = "F2FPSK";
     int aes_key_len = cipher_suite->get_crypto_param().aead_key_len + cipher_suite->get_crypto_param().aead_iv_len;
     uint8_t *aes_key = (uint8_t *)malloc(sizeof(uint8_t) * aes_key_len);
     cipher_suite->hkdf(
@@ -522,6 +465,9 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
         return true;
     }
     // release
+    free_mem((void **)&aes_key, aes_key_len);
+    free_mem((void **)&f2f_pre_key_plaintext, f2f_pre_key_plaintext_len);
+    skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);
     skissm__account__free_unpacked(account, NULL);
     skissm__session__free_unpacked(inbound_session, NULL);
 
@@ -570,25 +516,23 @@ bool consume_f2f_accept_response(Skissm__F2fAcceptResponse *response) {
     }
 }
 
-// bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAcceptMsg *msg) {
-//     Skissm__Session *outbound_session = NULL;
-//     // Is it unique?
-//     get_skissm_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &outbound_session);
-//     if (outbound_session == NULL){
-//         ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_f2f_accept_msg()");
-//         return false;
-//     }
-//     const session_suite_t *session_suite = get_e2ee_pack(msg->e2ee_pack_id)->session_suite;
-//     size_t result = session_suite->complete_outbound_session(outbound_session, msg);
+bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAcceptMsg *msg) {
+    const session_suite_t *session_suite = get_e2ee_pack(msg->e2ee_pack_id)->session_suite;
+    size_t result = session_suite->complete_f2f_outbound_session(f2f_session, msg);
 
-//     // try to send group pre-keys if necessary
-//     send_pending_plaintext_data(outbound_session);
+    // delete the old outbound session if it exists
+    Skissm__Session *outbound_session = NULL;
 
-//     // store sesson state
-//     get_skissm_plugin()->db_handler.store_session(outbound_session);
+    get_skissm_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &outbound_session);
+    if (outbound_session != NULL){
+        get_skissm_plugin()->db_handler.unload_session(outbound_session->session_owner, outbound_session->from, outbound_session->to);
+    }
 
-//     // notify
-//     ssm_notify_outbound_session_ready(outbound_session);
+    // store the face-to-face session
+    get_skissm_plugin()->db_handler.store_session(f2f_session);
 
-//     return result == (size_t)(0);
-// }
+    // notify
+    ssm_notify_outbound_session_ready(f2f_session);
+
+    return result == (size_t)(0);
+}

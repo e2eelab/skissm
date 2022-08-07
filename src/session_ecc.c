@@ -102,6 +102,9 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *
     initialise_as_alice(cipher_suite, outbound_session->ratchet, secret, sizeof(secret), &my_ratchet_key, &(their_pre_key_bundle->signed_pre_key_public->public_key));
     outbound_session->session_id = generate_uuid_str();
 
+    // this is not a face-to-face session
+    outbound_session->f2f = false;
+
     // store sesson state before send invite
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
@@ -210,6 +213,9 @@ size_t crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, S
 
     initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key);
 
+    // this is not a face-to-face session
+    inbound_session->f2f = false;
+
     // store sesson state
     get_skissm_plugin()->db_handler.store_session(inbound_session);
 
@@ -234,38 +240,28 @@ size_t crypto_curve25519_complete_outbound_session(Skissm__Session *outbound_ses
 
 size_t crypto_curve25519_new_f2f_outbound_session(
     Skissm__Session *outbound_session,
-    const Skissm__Account *local_account,
-    Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg,
-    Skissm__SignedPreKeyPublic *their_signed_pre_key_public
+    Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg
 ) {
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(f2f_pre_key_invite_msg->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
 
     // set the version
-    outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
+    outbound_session->version = strdup(f2f_pre_key_invite_msg->version);
     // set the cipher suite id
-    outbound_session->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
+    outbound_session->e2ee_pack_id = strdup(f2f_pre_key_invite_msg->e2ee_pack_id);
 
-    // generate a new random ratchet key pair
-    Skissm__KeyPair my_ratchet_key;
-    cipher_suite->asym_key_gen(&(my_ratchet_key.public_key), &(my_ratchet_key.private_key));
+    // set the session id
+    outbound_session->session_id = strdup(f2f_pre_key_invite_msg->session_id);
 
-    // generate a random secret
-    uint8_t secret[4 * CURVE25519_SHARED_SECRET_LENGTH];
-    get_skissm_plugin()->common_handler.gen_rand(secret, sizeof(secret));
+    // set the address
+    copy_address_from_address(&(outbound_session->from), f2f_pre_key_invite_msg->from);
+    copy_address_from_address(&(outbound_session->to), f2f_pre_key_invite_msg->to);
 
-    // create the root key and chain keys
-    initialise_as_alice(cipher_suite, outbound_session->ratchet, secret, sizeof(secret), &my_ratchet_key, &(their_signed_pre_key_public->public_key));
-    outbound_session->session_id = generate_uuid_str();
+    // store the secret bytes(store in the associated_data)
+    copy_protobuf_from_protobuf(&(outbound_session->associated_data), &(f2f_pre_key_invite_msg->secret));
 
-    // store sesson state
-    get_skissm_plugin()->db_handler.store_session(outbound_session);
-
-    // release
-    free_protobuf(&(my_ratchet_key.private_key));
-    free_protobuf(&(my_ratchet_key.public_key));
-    unset((void volatile *)&my_ratchet_key, sizeof(Skissm__KeyPair));
-    unset(secret, sizeof(secret));
+    // this is a face-to-face session
+    outbound_session->f2f = true;
 
     // done
     return (size_t)(0);
@@ -280,6 +276,18 @@ size_t crypto_curve25519_new_f2f_inbound_session(
 
     initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, 4 * CURVE25519_SHARED_SECRET_LENGTH, local_account->signed_pre_key->key_pair);
 
+    // this is a face-to-face session
+    inbound_session->f2f = true;
+
+    // insert the associated data
+    int key_len = local_account->identity_key->asym_key_pair->public_key.len;
+    int ad_len = 2 * key_len;
+    inbound_session->associated_data.len = ad_len;
+    inbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
+    uint8_t *key_data = local_account->identity_key->asym_key_pair->public_key.data;
+    memcpy(inbound_session->associated_data.data, key_data, key_len);
+    memcpy((inbound_session->associated_data.data) + key_len, key_data, key_len);
+
     // store sesson state
     get_skissm_plugin()->db_handler.store_session(inbound_session);
 
@@ -291,10 +299,52 @@ size_t crypto_curve25519_new_f2f_inbound_session(
     return (size_t)(0);
 }
 
+size_t crypto_curve25519_complete_f2f_outbound_session(Skissm__Session *outbound_session, Skissm__F2fAcceptMsg *msg) {
+    // get the cipher suite
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+
+    // unpack
+    Skissm__F2fPreKeyAcceptMsg *f2f_pre_key_accept_msg = skissm__f2f_pre_key_accept_msg__unpack(NULL, msg->pre_key_msg.len, msg->pre_key_msg.data);
+
+    // set the other's signed pre-key
+    copy_protobuf_from_protobuf(&(outbound_session->bob_signed_pre_key), &(f2f_pre_key_accept_msg->bob_signed_pre_key));
+
+    // generate a new random ratchet key pair
+    Skissm__KeyPair my_ratchet_key;
+    cipher_suite->asym_key_gen(&(my_ratchet_key.public_key), &(my_ratchet_key.private_key));
+
+    // create the root key and chain keys
+    initialise_as_alice(
+        cipher_suite, outbound_session->ratchet,
+        outbound_session->associated_data.data, outbound_session->associated_data.len,
+        &my_ratchet_key, &(outbound_session->bob_signed_pre_key)
+    );
+
+    // replace the associated data
+    int key_len = f2f_pre_key_accept_msg->bob_identity_public_key.len;
+    int ad_len = 2 * key_len;
+    outbound_session->associated_data.len = ad_len;
+    uint8_t *key_data = f2f_pre_key_accept_msg->bob_identity_public_key.data;
+    memcpy(outbound_session->associated_data.data, key_data, key_len);
+    memcpy((outbound_session->associated_data.data) + key_len, key_data, key_len);
+
+    outbound_session->responded = true;
+
+    // release
+    skissm__f2f_pre_key_accept_msg__free_unpacked(f2f_pre_key_accept_msg, NULL);
+    free_protobuf(&(my_ratchet_key.private_key));
+    free_protobuf(&(my_ratchet_key.public_key));
+    unset((void volatile *)&my_ratchet_key, sizeof(Skissm__KeyPair));
+
+    // done
+    return (size_t)(0);
+}
+
 const session_suite_t E2EE_SESSION_ECDH_X25519_AES256_GCM_SHA256 = {
     crypto_curve25519_new_outbound_session,
     crypto_curve25519_new_inbound_session,
     crypto_curve25519_complete_outbound_session,
     crypto_curve25519_new_f2f_outbound_session,
-    crypto_curve25519_new_f2f_inbound_session
+    crypto_curve25519_new_f2f_inbound_session,
+    crypto_curve25519_complete_f2f_outbound_session
 };

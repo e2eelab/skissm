@@ -35,6 +35,8 @@ extern "C" {
 #define KDF_INFO_ROOT "ROOT"
 #define KDF_INFO_RATCHET "RATCHET"
 
+#define F2F_PSK_SEED "F2FPSK"
+
 struct cipher;
 
 typedef struct cipher_suite_t {

@@ -445,6 +445,11 @@ typedef struct skissm_event_handler_t {
      * @param password_len
      */
     void (*on_f2f_password_created)(uint8_t *, size_t);
+    /**
+     * @brief get the face-to-face password
+     * @param password
+     * @param password_len
+     */
     void (*get_f2f_password)(uint8_t **, size_t *);
     /**
      * @brief notify one2one msg received event

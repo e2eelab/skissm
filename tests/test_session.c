@@ -376,6 +376,46 @@ static void test_multiple_devices(){
     tear_down();
 }
 
+static void test_face_to_face() {
+    // test start
+    tear_up();
+    test_begin();
+
+    mock_alice_account(1, "Alice");
+    mock_bob_account(2, "Bob");
+
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
+
+    // generate a password
+    uint8_t password[] = "password";
+    size_t password_len = sizeof(password) - 1;
+    get_skissm_plugin()->event_handler.on_f2f_password_created(password, password_len);
+    uint8_t *encrypted_f2f_pre_shared_key = NULL;
+
+    // Alice invites Bob to create a face-to-face session
+    produce_f2f_psk_request(alice_address, bob_address, password, password_len, &encrypted_f2f_pre_shared_key);
+
+    // load the outbound session
+    Skissm__Session *outbound_session = NULL;
+    get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session);
+    assert(outbound_session != NULL);
+    assert(outbound_session->f2f == true);
+    assert(outbound_session->responded == true);
+
+    // Alice sends an encrypted message to Bob, and Bob decrypts the message
+    uint8_t plaintext[] = "Hello, World";
+    size_t plaintext_len = sizeof(plaintext) - 1;
+    test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
+
+    // test stop
+    skissm__session__free_unpacked(outbound_session, NULL);
+    test_end();
+    tear_down();
+}
+
 int main() {
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
 
@@ -383,6 +423,7 @@ int main() {
     test_interaction();
     test_continual_messages();
     test_multiple_devices();
+    test_face_to_face();
 
     return 0;
 }

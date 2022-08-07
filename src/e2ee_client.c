@@ -31,6 +31,8 @@
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 
+extern Skissm__Session *f2f_session;
+
 Skissm__RegisterUserResponse *register_user(
     uint64_t account_id,
     const char *e2ee_pack_id,
@@ -87,7 +89,7 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
 size_t produce_f2f_psk_request(
     Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
     uint8_t *password, size_t password_len,
-    uint8_t **f2f_pre_shared_key
+    uint8_t **encrypted_f2f_pre_shared_key
 ) {
     Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg = (Skissm__F2fPreKeyInviteMsg *)malloc(sizeof(Skissm__F2fPreKeyInviteMsg));
     skissm__f2f_pre_key_invite_msg__init(f2f_pre_key_invite_msg);
@@ -113,7 +115,6 @@ size_t produce_f2f_psk_request(
     int hash_len = cipher_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
-    const char F2F_PSK_SEED[] = "F2FPSK";
     int aes_key_len = cipher_suite->get_crypto_param().aead_key_len + cipher_suite->get_crypto_param().aead_iv_len;
     uint8_t *aes_key = (uint8_t *)malloc(sizeof(uint8_t) * aes_key_len);
     cipher_suite->hkdf(
@@ -130,10 +131,20 @@ size_t produce_f2f_psk_request(
         ad,
         aes_key,
         f2f_pre_key_plaintext, f2f_pre_key_plaintext_len,
-        f2f_pre_shared_key
+        encrypted_f2f_pre_shared_key
     );
 
-    f2f_invite_internal(from, to, f2f_pre_key_invite_msg->e2ee_pack_id, *f2f_pre_shared_key, f2f_pre_shared_key_len);
+    // create a face-to-face outbound session
+    f2f_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    char *e2ee_pack_id = f2f_pre_key_invite_msg->e2ee_pack_id;
+    initialise_session(f2f_session, e2ee_pack_id, from, to);
+    copy_address_from_address(&(f2f_session->session_owner), from);
+
+    const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
+    session_suite->new_f2f_outbound_session(f2f_session, f2f_pre_key_invite_msg);
+
+    // send face-to-face invite message to the other
+    f2f_invite_internal(from, to, e2ee_pack_id, *encrypted_f2f_pre_shared_key, f2f_pre_shared_key_len);
 
     // release
     skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);

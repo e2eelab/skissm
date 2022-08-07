@@ -59,7 +59,7 @@ typedef struct session_suite_t {
     /**
      * @brief Complete an outbound session.
      *
-     * @param outbound_session The inbound session
+     * @param outbound_session The outbound session
      * @param msg The accept message
      * @return Success or not
      */
@@ -72,16 +72,12 @@ typedef struct session_suite_t {
      * @brief Create a face-to-face outbound session.
      *
      * @param outbound_session The outbound session
-     * @param local_account Our account
      * @param f2f_pre_key_invite_msg The face-to-face message to create a session
-     * @param their_signed_pre_key_public Their signed pre-key(public key)
      * @return Success or not
      */
     size_t (*new_f2f_outbound_session)(
         Skissm__Session *,
-        const Skissm__Account *,
-        Skissm__F2fPreKeyInviteMsg *,
-        Skissm__SignedPreKeyPublic *
+        Skissm__F2fPreKeyInviteMsg *
     );
 
     /**
@@ -96,6 +92,18 @@ typedef struct session_suite_t {
         Skissm__Session *,
         Skissm__Account *,
         uint8_t *
+    );
+
+    /**
+     * @brief Complete a face-to-face outbound session.
+     *
+     * @param outbound_session The outbound session
+     * @param msg The face-to-face accept message
+     * @return Success or not
+     */
+    size_t (*complete_f2f_outbound_session)(
+        Skissm__Session *,
+        Skissm__F2fAcceptMsg *
     );
 } session_suite_t;
 
