@@ -294,7 +294,6 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     } else {
         // notify
         ssm_notify_inbound_session_ready(inbound_session);
-        return true;
     }
     // release
     skissm__account__free_unpacked(account, NULL);
@@ -456,15 +455,23 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     size_t result = session_suite->new_f2f_inbound_session(inbound_session, account, f2f_pre_key_invite_msg->secret.data);
 
     if (result != (size_t)(0)
-        || safe_strcmp(inbound_session->session_id, f2f_pre_key_invite_msg->session_id) == false) {
+        || safe_strcmp(inbound_session->session_id, f2f_pre_key_invite_msg->session_id) == false
+    ) {
         ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_e2ee_invite_payload()");
         result = (size_t)(-1);
     } else {
         // notify
         ssm_notify_inbound_session_ready(inbound_session);
-        return true;
+        // send the face-to-face invite back to the sender if necessary
+        if (f2f_pre_key_invite_msg->responded == false) {
+            uint8_t *f2f_pre_shared_key = NULL;
+            produce_f2f_psk_request(to, from, true, password, password_len, &f2f_pre_shared_key);
+
+            free(f2f_pre_shared_key);
+        }
     }
     // release
+    free_mem((void **)&password, password_len);
     free_mem((void **)&aes_key, aes_key_len);
     free_mem((void **)&f2f_pre_key_plaintext, f2f_pre_key_plaintext_len);
     skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);

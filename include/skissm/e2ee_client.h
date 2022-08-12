@@ -36,33 +36,30 @@ Skissm__RegisterUserResponse *register_user(
  * @param to_domain The receiver's domain
  * @return  Skissm__InviteResponse *
  */
-Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain);
+Skissm__InviteResponse *invite(
+    Skissm__E2eeAddress *from,
+    const char *to_user_id,
+    const char *to_domain
+);
 
 /**
  * @brief Send a face-to-face invite request and create a new outbound session.
  * @param from From address
  * @param to To Address
+ * @param responded responded or not
  * @param password Password (6-8)
  * @param password_len Password length
  * @param f2f_pre_shared_key
  * @return  Length of f2f_pre_shared_key
  */
-size_t produce_f2f_psk_request(Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, uint8_t *password, size_t password_len, uint8_t **f2f_pre_shared_key);
-
-/**
- * @brief Send face-to-face invite request and create a new outbound session
- * that needs to be responded before it can be used
- * to send encryption message.
- * @param f2f_pre_shared_key
- * @param f2f_pre_shared_key_len
- * @param password Password
- * @param password_len Password length
- * @param f2f_psk_response
- * @return  Length of f2f_psk_response
- */
-size_t f2f_consume_psk_request(uint8_t *f2f_pre_shared_key, size_t f2f_pre_shared_key_len, uint8_t *password, size_t password_len, uint8_t **f2f_psk_response);
-
-size_t f2f_consume_psk_response(uint8_t *password, size_t password_len, uint8_t *f2f_psk_response, size_t f2f_psk_response_len);
+size_t produce_f2f_psk_request(
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    bool responded,
+    uint8_t *password,
+    size_t password_len,
+    uint8_t **f2f_pre_shared_key
+);
 
 /**
  * @brief Send one2one msg.

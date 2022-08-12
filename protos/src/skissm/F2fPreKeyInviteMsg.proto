@@ -33,5 +33,6 @@ message F2fPreKeyInviteMsg {
     string session_id = 3;
     E2eeAddress from = 4;
     E2eeAddress to = 5;
-    bytes secret = 6;
+    bool responded = 6;
+    bytes secret = 7;
 }
