@@ -60,6 +60,10 @@ static void on_one2one_msg_received(Skissm__E2eeAddress *from_address, Skissm__E
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
 
+static void on_other_device_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
+    print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
+}
+
 static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
 }
@@ -127,6 +131,7 @@ struct skissm_plugin_t ssm_plugin = {
         NULL,
         NULL,
         on_one2one_msg_received,
+        on_other_device_msg_received,
         on_group_msg_received,
         NULL,
         NULL,

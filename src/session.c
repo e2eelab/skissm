@@ -40,11 +40,15 @@ void initialise_session(Skissm__Session *session, const char *e2ee_pack_id, Skis
     initialise_ratchet(&(session->ratchet));
 }
 
-void pack_common_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **common_plaintext_data, size_t *common_plaintext_data_len) {
+void pack_common_plaintext(
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    int plaintext_type,
+    uint8_t **common_plaintext_data, size_t *common_plaintext_data_len
+) {
     Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
     skissm__plaintext__init(plaintext);
     plaintext->version = strdup(E2EE_PLAINTEXT_VERSION);
-    plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG;
+    plaintext->payload_case = plaintext_type;
     plaintext->common_msg.len = plaintext_data_len;
     plaintext->common_msg.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_data_len);
     memcpy(plaintext->common_msg.data, plaintext_data, plaintext_data_len);

@@ -85,11 +85,20 @@ void ssm_notify_outbound_session_ready(Skissm__Session *outbound_session) {
         skissm_plugin->event_handler.on_outbound_session_ready(outbound_session);
 }
 
-void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,
-                            Skissm__E2eeAddress *to_address, uint8_t *plaintext,
-                            size_t plaintext_len) {
+void ssm_notify_one2one_msg(
+    Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_one2one_msg_received(from_address, to_address, plaintext, plaintext_len);
+}
+
+void ssm_notify_other_device_msg(
+    Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_other_device_msg_received(from_address, to_address, plaintext, plaintext_len);
 }
 
 void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,

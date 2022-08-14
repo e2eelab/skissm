@@ -458,8 +458,22 @@ typedef struct skissm_event_handler_t {
      * @param plaintext
      * @param plaintext_len
      */
-    void (*on_one2one_msg_received)(Skissm__E2eeAddress *,
-                                    Skissm__E2eeAddress *, uint8_t *, size_t);
+    void (*on_one2one_msg_received)(
+        Skissm__E2eeAddress *, Skissm__E2eeAddress *,
+        uint8_t *, size_t
+    );
+
+    /**
+     * @brief notify messages from other devices received event
+     * @param from_address
+     * @param to_address
+     * @param plaintext
+     * @param plaintext_len
+     */
+    void (*on_other_device_msg_received)(
+        Skissm__E2eeAddress *, Skissm__E2eeAddress *,
+        uint8_t *, size_t
+    );
 
     /**
      * @brief notify group msg received event
@@ -517,9 +531,14 @@ void ssm_notify_user_registered(Skissm__Account *account);
 void ssm_notify_inbound_session_invited(Skissm__E2eeAddress *from);
 void ssm_notify_inbound_session_ready(Skissm__Session *inbound_session);
 void ssm_notify_outbound_session_ready(Skissm__Session *outbound_session);
-void ssm_notify_one2one_msg(Skissm__E2eeAddress *from_address,
-                            Skissm__E2eeAddress *to_address, uint8_t *plaintext,
-                            size_t plaintext_len);
+void ssm_notify_one2one_msg(
+    Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+);
+void ssm_notify_other_device_msg(
+    Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+);
 void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
                           Skissm__E2eeAddress *group_address, uint8_t *plaintext,
                           size_t plaintext_len);

@@ -184,6 +184,8 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
             if (plaintext != NULL) {
                 if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG) {
                     ssm_notify_one2one_msg(e2ee_msg->from, e2ee_msg->to, plaintext->common_msg.data, plaintext->common_msg.len);
+                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_OTHER_DEVICE_MSG) {
+                    ssm_notify_other_device_msg(e2ee_msg->from, e2ee_msg->to, plaintext->common_msg.data, plaintext->common_msg.len);
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY_BUNDLE) {
                     Skissm__GroupPreKeyBundle *group_pre_key_bundle = plaintext->group_pre_key_bundle;
                     get_skissm_plugin()->db_handler.unload_inbound_group_session(e2ee_msg->to, group_pre_key_bundle->old_session_id);
@@ -465,7 +467,7 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
         // send the face-to-face invite back to the sender if necessary
         if (f2f_pre_key_invite_msg->responded == false) {
             uint8_t *f2f_pre_shared_key = NULL;
-            produce_f2f_psk_request(to, from, true, password, password_len, &f2f_pre_shared_key);
+            f2f_invite(to, from, true, password, password_len, &f2f_pre_shared_key);
 
             free(f2f_pre_shared_key);
         }

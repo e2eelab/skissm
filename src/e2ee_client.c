@@ -86,7 +86,7 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
     }
 }
 
-size_t produce_f2f_psk_request(
+size_t f2f_invite(
     Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, bool responded,
     uint8_t *password, size_t password_len,
     uint8_t **encrypted_f2f_pre_shared_key
@@ -174,7 +174,11 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         // pack common plaintext before sending it
         uint8_t *common_plaintext_data = NULL;
         size_t common_plaintext_data_len;
-        pack_common_plaintext(plaintext_data, plaintext_data_len, &common_plaintext_data, &common_plaintext_data_len);
+        pack_common_plaintext(
+            plaintext_data, plaintext_data_len,
+            SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG,
+            &common_plaintext_data, &common_plaintext_data_len
+        );
 
         if (outbound_session->responded == false) {
             // save common_plaintext_data with flag responded = false
@@ -231,7 +235,11 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         // pack common plaintext before sending it
         uint8_t *common_plaintext_data = NULL;
         size_t common_plaintext_data_len;
-        pack_common_plaintext(plaintext_data, plaintext_data_len, &common_plaintext_data, &common_plaintext_data_len);
+        pack_common_plaintext(
+            plaintext_data, plaintext_data_len,
+            SKISSM__PLAINTEXT__PAYLOAD_OTHER_DEVICE_MSG,
+            &common_plaintext_data, &common_plaintext_data_len
+        );
 
         // send message to server
         send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);

@@ -120,10 +120,15 @@ void initialise_session(
  *
  * @param plaintext_data
  * @param plaintext_data_len
+ * @param plaintext_type
  * @param common_plaintext_data
  * @param common_plaintext_data_len
  */
-void pack_common_plaintext(const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **common_plaintext_data, size_t *common_plaintext_data_len);
+void pack_common_plaintext(
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    int plaintext_type,
+    uint8_t **common_plaintext_data, size_t *common_plaintext_data_len
+);
 
 /* ECC-related */
 Skissm__InviteResponse *crypto_curve25519_new_outbound_session(

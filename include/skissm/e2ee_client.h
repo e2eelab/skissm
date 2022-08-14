@@ -52,7 +52,7 @@ Skissm__InviteResponse *invite(
  * @param f2f_pre_shared_key
  * @return  Length of f2f_pre_shared_key
  */
-size_t produce_f2f_psk_request(
+size_t f2f_invite(
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     bool responded,
