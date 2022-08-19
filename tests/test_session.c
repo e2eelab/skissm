@@ -81,7 +81,7 @@ static void on_f2f_password_created(uint8_t *password, size_t password_len) {
     memcpy(f2f_password, password, password_len);
 }
 
-static void get_f2f_password(uint8_t **password, size_t *password_len) {
+static void on_f2f_password_acquired(uint8_t **password, size_t *password_len) {
     *password_len = f2f_password_len;
     *password = (uint8_t *)malloc(sizeof(uint8_t) * f2f_password_len);
     memcpy(*password, f2f_password, f2f_password_len);
@@ -115,16 +115,32 @@ static void on_other_device_msg_received(
     plaintext_store.plaintext_len = plaintext_len;
 }
 
+static void on_new_f2f_session_msg_received(Skissm__Session *session) {
+    if (session->from->user->device_id != NULL) {
+        printf("New outbound face-to-face session created.\n");
+        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
+        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
+        printf("From: %s\n", session->from->user->user_id);
+        printf("to: %s\n", session->to->user->user_id);
+    } else {
+        printf("New inbound face-to-face session created.\n");
+        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
+        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
+        printf("From: %s\n", session->from->user->user_id);
+        printf("to: %s\n", session->to->user->user_id);
+    }
+}
+
 static skissm_event_handler_t test_event_handler = {
     on_error,
     on_user_registered,
     on_inbound_session_invited,
     on_inbound_session_ready,
     on_outbound_session_ready,
-    on_f2f_password_created,
-    get_f2f_password,
+    on_f2f_password_acquired,
     on_one2one_msg_received,
     on_other_device_msg_received,
+    on_new_f2f_session_msg_received,
     NULL,
     NULL,
     NULL,
@@ -410,18 +426,18 @@ static void test_face_to_face() {
     // generate a password
     uint8_t password[] = "password";
     size_t password_len = sizeof(password) - 1;
-    get_skissm_plugin()->event_handler.on_f2f_password_created(password, password_len);
-    uint8_t *encrypted_f2f_pre_shared_key = NULL;
+    on_f2f_password_created(password, password_len);
 
     // Alice invites Bob to create a face-to-face session
-    f2f_invite(alice_address, bob_address, 0, password, password_len, &encrypted_f2f_pre_shared_key);
+    f2f_invite(alice_address, bob_address, 0, password, password_len);
 
     // load the outbound session
-    Skissm__Session *outbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session);
-    assert(outbound_session != NULL);
-    assert(outbound_session->f2f == true);
-    assert(outbound_session->responded == true);
+    Skissm__Session **outbound_sessions = NULL;
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(alice_address, bob_user_id, &outbound_sessions);
+    assert(outbound_sessions_num == 1);
+    assert(outbound_sessions[0] != NULL);
+    assert(outbound_sessions[0]->f2f == true);
+    assert(outbound_sessions[0]->responded == true);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "This is a face-to-face session.";
@@ -429,8 +445,8 @@ static void test_face_to_face() {
     test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
 
     // test stop
-    free(encrypted_f2f_pre_shared_key);
-    skissm__session__free_unpacked(outbound_session, NULL);
+    skissm__session__free_unpacked(outbound_sessions[0], NULL);
+    free(outbound_sessions);
     test_end();
     tear_down();
 }
@@ -455,18 +471,18 @@ static void test_replace_session_with_f2f() {
     // generate a password
     uint8_t password[] = "password";
     size_t password_len = sizeof(password) - 1;
-    get_skissm_plugin()->event_handler.on_f2f_password_created(password, password_len);
-    uint8_t *encrypted_f2f_pre_shared_key = NULL;
+    on_f2f_password_created(password, password_len);
 
     // Alice invites Bob to create a face-to-face session
-    f2f_invite(alice_address, bob_address, 0, password, password_len, &encrypted_f2f_pre_shared_key);
+    f2f_invite(alice_address, bob_address, 0, password, password_len);
 
     // load the outbound session
-    Skissm__Session *outbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session);
-    assert(outbound_session != NULL);
-    assert(outbound_session->f2f == true);
-    assert(outbound_session->responded == true);
+    Skissm__Session **outbound_sessions = NULL;
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(alice_address, bob_user_id, &outbound_sessions);
+    assert(outbound_sessions_num == 1);
+    assert(outbound_sessions[0] != NULL);
+    assert(outbound_sessions[0]->f2f == true);
+    assert(outbound_sessions[0]->responded == true);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "This message will be sent via face-to-face session.";
@@ -474,8 +490,8 @@ static void test_replace_session_with_f2f() {
     test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
 
     // test stop
-    free(encrypted_f2f_pre_shared_key);
-    skissm__session__free_unpacked(outbound_session, NULL);
+    skissm__session__free_unpacked(outbound_sessions[0], NULL);
+    free(outbound_sessions);
     test_end();
     tear_down();
 }
@@ -498,18 +514,18 @@ static void test_f2f_interaction() {
     // generate a password
     uint8_t password[] = "password";
     size_t password_len = sizeof(password) - 1;
-    get_skissm_plugin()->event_handler.on_f2f_password_created(password, password_len);
-    uint8_t *encrypted_f2f_pre_shared_key = NULL;
+    on_f2f_password_created(password, password_len);
 
     // Alice invites Bob to create a face-to-face session
-    f2f_invite(alice_address, bob_address, 0, password, password_len, &encrypted_f2f_pre_shared_key);
+    f2f_invite(alice_address, bob_address, 0, password, password_len);
 
     // check if Bob's outbound session is face-to-face
-    Skissm__Session *outbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_session(bob_address, alice_address, &outbound_session);
-    assert(outbound_session != NULL);
-    assert(outbound_session->f2f == true);
-    assert(outbound_session->responded == true);
+    Skissm__Session **outbound_sessions = NULL;
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(bob_address, alice_user_id, &outbound_sessions);
+    assert(outbound_sessions_num == 1);
+    assert(outbound_sessions[0] != NULL);
+    assert(outbound_sessions[0]->f2f == true);
+    assert(outbound_sessions[0]->responded == true);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext_1[] = "Alice sends a message to Bob via a face-to-face session.";
@@ -522,8 +538,8 @@ static void test_f2f_interaction() {
     test_encryption(bob_address, alice_user_id, alice_domain, plaintext_2, plaintext_2_len);
 
     // test stop
-    free(encrypted_f2f_pre_shared_key);
-    skissm__session__free_unpacked(outbound_session, NULL);
+    skissm__session__free_unpacked(outbound_sessions[0], NULL);
+    free(outbound_sessions);
     test_end();
     tear_down();
 }
@@ -551,41 +567,23 @@ static void test_many_to_one() {
     // face-to-face session between device_1 and device_2
     uint8_t password_1[] = "password 1";
     size_t password_1_len = sizeof(password_1) - 1;
-    get_skissm_plugin()->event_handler.on_f2f_password_created(password_1, password_1_len);
+    on_f2f_password_created(password_1, password_1_len);
 
-    uint8_t *encrypted_f2f_pre_shared_key_1 = NULL;
-    f2f_invite(device_1, device_2, 0, password_1, password_1_len, &encrypted_f2f_pre_shared_key_1);
-
-    get_skissm_plugin()->db_handler.load_outbound_session(device_1, device_2, &(outbound_sessions[0]));
-    assert(outbound_sessions[0] != NULL);
-    assert(outbound_sessions[0]->f2f == true);
-    assert(outbound_sessions[0]->responded == true);
+    f2f_invite(device_1, device_2, 0, password_1, password_1_len);
 
     // face-to-face session between device_2 and device_3
     uint8_t password_2[] = "password 2";
     size_t password_2_len = sizeof(password_2) - 1;
-    get_skissm_plugin()->event_handler.on_f2f_password_created(password_2, password_2_len);
+    on_f2f_password_created(password_2, password_2_len);
 
-    uint8_t *encrypted_f2f_pre_shared_key_2 = NULL;
-    f2f_invite(device_2, device_3, 0, password_2, password_2_len, &encrypted_f2f_pre_shared_key_2);
-
-    get_skissm_plugin()->db_handler.load_outbound_session(device_2, device_3, &(outbound_sessions[1]));
-    assert(outbound_sessions[1] != NULL);
-    assert(outbound_sessions[1]->f2f == true);
-    assert(outbound_sessions[1]->responded == true);
+    f2f_invite(device_2, device_3, 0, password_2, password_2_len);
 
     // face-to-face session between device_1 and device_3
     uint8_t password_3[] = "password 3";
     size_t password_3_len = sizeof(password_3) - 1;
-    get_skissm_plugin()->event_handler.on_f2f_password_created(password_3, password_3_len);
+    on_f2f_password_created(password_3, password_3_len);
 
-    uint8_t *encrypted_f2f_pre_shared_key_3 = NULL;
-    f2f_invite(device_1, device_3, 0, password_3, password_3_len, &encrypted_f2f_pre_shared_key_3);
-
-    get_skissm_plugin()->db_handler.load_outbound_session(device_1, device_3, &(outbound_sessions[2]));
-    assert(outbound_sessions[2] != NULL);
-    assert(outbound_sessions[2]->f2f == true);
-    assert(outbound_sessions[2]->responded == true);
+    f2f_invite(device_1, device_3, 0, password_3, password_3_len);
 
     // Alice invites Bob to create a session
     invite(device_1, bob_user_id, bob_domain);
@@ -596,15 +594,6 @@ static void test_many_to_one() {
     test_encryption(device_1, bob_user_id, bob_domain, plaintext, plaintext_len);
 
     // test stop
-    size_t i;
-    for (i = 0; i < 3; i++) {
-        skissm__session__free_unpacked(outbound_sessions[i], NULL);
-        outbound_sessions[i] = NULL;
-    }
-    free(outbound_sessions);
-    free(encrypted_f2f_pre_shared_key_1);
-    free(encrypted_f2f_pre_shared_key_2);
-    free(encrypted_f2f_pre_shared_key_3);
     test_end();
     tear_down();
 }
@@ -621,16 +610,145 @@ static void test_many_to_many() {
     mock_bob_account(5, "Bob");
     mock_bob_account(6, "Bob");
 
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
-    char *bob_user_id = account_data[3]->address->user->user_id;
-    char *bob_domain = account_data[3]->address->domain;
+    Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
+    Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
+    Skissm__E2eeAddress *alice_address_3 = account_data[2]->address;
+    char *alice_user_id = alice_address_1->user->user_id;
+    char *alice_domain = alice_address_1->domain;
+    Skissm__E2eeAddress *bob_address_1 = account_data[3]->address;
+    Skissm__E2eeAddress *bob_address_2 = account_data[4]->address;
+    Skissm__E2eeAddress *bob_address_3 = account_data[5]->address;
+    char *bob_user_id = bob_address_1->user->user_id;
+    char *bob_domain = bob_address_1->domain;
+
+    // Alice creates face-to-face session between each device
+    uint8_t password_1[] = "password 1";
+    size_t password_1_len = sizeof(password_1) - 1;
+    on_f2f_password_created(password_1, password_1_len);
+    f2f_invite(alice_address_1, alice_address_2, 0, password_1, password_1_len);
+
+    uint8_t password_2[] = "password 2";
+    size_t password_2_len = sizeof(password_2) - 1;
+    on_f2f_password_created(password_2, password_2_len);
+    f2f_invite(alice_address_2, alice_address_3, 0, password_2, password_2_len);
+
+    uint8_t password_3[] = "password 3";
+    size_t password_3_len = sizeof(password_3) - 1;
+    on_f2f_password_created(password_3, password_3_len);
+    f2f_invite(alice_address_1, alice_address_3, 0, password_3, password_3_len);
+
+    // Bob creates face-to-face session between each device
+    uint8_t password_4[] = "password 4";
+    size_t password_4_len = sizeof(password_4) - 1;
+    on_f2f_password_created(password_4, password_4_len);
+    f2f_invite(bob_address_1, bob_address_2, 0, password_4, password_4_len);
+
+    uint8_t password_5[] = "password 5";
+    size_t password_5_len = sizeof(password_5) - 1;
+    on_f2f_password_created(password_5, password_5_len);
+    f2f_invite(bob_address_2, bob_address_3, 0, password_5, password_5_len);
+
+    uint8_t password_6[] = "password 6";
+    size_t password_6_len = sizeof(password_6) - 1;
+    on_f2f_password_created(password_6, password_6_len);
+    f2f_invite(bob_address_1, bob_address_3, 0, password_6, password_6_len);
+
+    // Alice invites Bob to create a session
+    invite(alice_address_1, bob_user_id, bob_domain);
+
+    // Alice sends an encrypted message to Bob, and Bob decrypts the message
+    uint8_t plaintext[] = "This message will be sent to Bob's three devices and Alice's other two devices.";
+    size_t plaintext_len = sizeof(plaintext) - 1;
+    test_encryption(alice_address_1, bob_user_id, bob_domain, plaintext, plaintext_len);
+
+    // Bob invites Alice to create a session
+    invite(bob_address_1, alice_user_id, alice_domain);
+
+    // Bob sends an encrypted message to Alice, and Alice decrypts the message
+    uint8_t plaintext_2[] = "This message will be sent to Alice's three devices and Bob's other two devices.";
+    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
+    test_encryption(bob_address_1, alice_user_id, alice_domain, plaintext_2, plaintext_2_len);
 
     // test stop
     test_end();
     tear_down();
 }
 
-static void test_f2f_multiple_devices() {}
+static void test_f2f_multiple_devices() {
+    // test start
+    tear_up();
+    test_begin();
+
+    mock_alice_account(1, "Alice");
+    mock_alice_account(2, "Alice");
+    mock_alice_account(3, "Alice");
+    mock_bob_account(4, "Bob");
+    mock_bob_account(5, "Bob");
+    mock_bob_account(6, "Bob");
+
+    Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
+    Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
+    Skissm__E2eeAddress *alice_address_3 = account_data[2]->address;
+    char *alice_user_id = alice_address_1->user->user_id;
+    char *alice_domain = alice_address_1->domain;
+    Skissm__E2eeAddress *bob_address_1 = account_data[3]->address;
+    Skissm__E2eeAddress *bob_address_2 = account_data[4]->address;
+    Skissm__E2eeAddress *bob_address_3 = account_data[5]->address;
+    char *bob_user_id = bob_address_1->user->user_id;
+    char *bob_domain = bob_address_1->domain;
+
+    // Alice creates face-to-face session between each device
+    uint8_t password_1[] = "password 1";
+    size_t password_1_len = sizeof(password_1) - 1;
+    on_f2f_password_created(password_1, password_1_len);
+    f2f_invite(alice_address_1, alice_address_2, 0, password_1, password_1_len);
+
+    uint8_t password_2[] = "password 2";
+    size_t password_2_len = sizeof(password_2) - 1;
+    on_f2f_password_created(password_2, password_2_len);
+    f2f_invite(alice_address_2, alice_address_3, 0, password_2, password_2_len);
+
+    uint8_t password_3[] = "password 3";
+    size_t password_3_len = sizeof(password_3) - 1;
+    on_f2f_password_created(password_3, password_3_len);
+    f2f_invite(alice_address_1, alice_address_3, 0, password_3, password_3_len);
+
+    // Bob creates face-to-face session between each device
+    uint8_t password_4[] = "password 4";
+    size_t password_4_len = sizeof(password_4) - 1;
+    on_f2f_password_created(password_4, password_4_len);
+    f2f_invite(bob_address_1, bob_address_2, 0, password_4, password_4_len);
+
+    uint8_t password_5[] = "password 5";
+    size_t password_5_len = sizeof(password_5) - 1;
+    on_f2f_password_created(password_5, password_5_len);
+    f2f_invite(bob_address_2, bob_address_3, 0, password_5, password_5_len);
+
+    uint8_t password_6[] = "password 6";
+    size_t password_6_len = sizeof(password_6) - 1;
+    on_f2f_password_created(password_6, password_6_len);
+    f2f_invite(bob_address_1, bob_address_3, 0, password_6, password_6_len);
+
+    // Alice invites Bob to create a face-to-face session
+    uint8_t password_ab[] = "password";
+    size_t password_ab_len = sizeof(password_ab) - 1;
+    on_f2f_password_created(password_ab, password_ab_len);
+    f2f_invite(alice_address_1, bob_address_1, 0, password_ab, password_ab_len);
+
+    // Alice sends an encrypted message to Bob, and Bob decrypts the message
+    uint8_t plaintext[] = "This message will be sent to Bob's three devices and Alice's other two devices via face-to-face sessions.";
+    size_t plaintext_len = sizeof(plaintext) - 1;
+    test_encryption(alice_address_1, bob_user_id, bob_domain, plaintext, plaintext_len);
+
+    // Bob sends an encrypted message to Alice, and Alice decrypts the message
+    uint8_t plaintext_2[] = "This message will be sent to Alice's three devices and Bob's other two devices via face-to-face sessions.";
+    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
+    test_encryption(bob_address_1, alice_user_id, alice_domain, plaintext_2, plaintext_2_len);
+
+    // test stop
+    test_end();
+    tear_down();
+}
 
 int main() {
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
@@ -643,6 +761,8 @@ int main() {
     test_replace_session_with_f2f();
     test_f2f_interaction();
     test_many_to_one();
+    test_many_to_many();
+    test_f2f_multiple_devices();
 
     return 0;
 }

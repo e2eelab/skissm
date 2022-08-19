@@ -88,8 +88,7 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
 
 size_t f2f_invite(
     Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, bool responded,
-    uint8_t *password, size_t password_len,
-    uint8_t **encrypted_f2f_pre_shared_key
+    uint8_t *password, size_t password_len
 ) {
     Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg = (Skissm__F2fPreKeyInviteMsg *)malloc(sizeof(Skissm__F2fPreKeyInviteMsg));
     skissm__f2f_pre_key_invite_msg__init(f2f_pre_key_invite_msg);
@@ -129,11 +128,12 @@ size_t f2f_invite(
     // encrypt
     uint8_t ad[64];
     memset(ad, 0, 64);
-    size_t f2f_pre_shared_key_len = cipher_suite->encrypt(
+    uint8_t *encrypted_f2f_pre_shared_key = NULL;
+    size_t encrypted_f2f_pre_shared_key_len = cipher_suite->encrypt(
         ad,
         aes_key,
         f2f_pre_key_plaintext, f2f_pre_key_plaintext_len,
-        encrypted_f2f_pre_shared_key
+        &encrypted_f2f_pre_shared_key
     );
 
     // create a face-to-face outbound session
@@ -146,14 +146,15 @@ size_t f2f_invite(
     session_suite->new_f2f_outbound_session(f2f_session, f2f_pre_key_invite_msg);
 
     // send face-to-face invite message to the other
-    f2f_invite_internal(from, to, e2ee_pack_id, *encrypted_f2f_pre_shared_key, f2f_pre_shared_key_len);
+    f2f_invite_internal(from, to, e2ee_pack_id, encrypted_f2f_pre_shared_key, encrypted_f2f_pre_shared_key_len);
 
     // release
+    free_mem((void **)&encrypted_f2f_pre_shared_key, encrypted_f2f_pre_shared_key_len);
     skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);
     free_mem((void **)&f2f_pre_key_plaintext, f2f_pre_key_plaintext_len);
     free_mem((void **)&aes_key, aes_key_len);
 
-    return f2f_pre_shared_key_len;
+    return encrypted_f2f_pre_shared_key_len;
 }
 
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
@@ -257,6 +258,43 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
 
     // done;
     return response;
+}
+
+void send_f2f_session_msg(
+    Skissm__E2eeAddress *to,
+    const uint8_t *f2f_session_msg, size_t f2f_session_msg_len
+) {
+    // send the message to other self devices
+    Skissm__Session **self_outbound_sessions = NULL;
+    size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(to, to->user->user_id, &self_outbound_sessions);
+    size_t i;
+    for (i = 0; i < self_outbound_sessions_num; i++) {
+        // check if the device is different from the sender's
+        if (strcmp(self_outbound_sessions[i]->to->user->device_id, to->user->device_id) == 0)
+            continue;
+
+        Skissm__Session *self_outbound_session = self_outbound_sessions[i];
+
+        // pack common plaintext before sending it
+        uint8_t *common_plaintext_data = NULL;
+        size_t common_plaintext_data_len;
+        pack_common_plaintext(
+            f2f_session_msg, f2f_session_msg_len,
+            SKISSM__PLAINTEXT__PAYLOAD_F2F_SESSION_MSG,
+            &common_plaintext_data, &common_plaintext_data_len
+        );
+
+        // send message to server
+        send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
+
+        // release
+        free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+        skissm__session__free_unpacked(self_outbound_session, NULL);
+    }
+    // release
+    if (self_outbound_sessions_num > 0) {
+        free_mem((void **)(&self_outbound_sessions), sizeof(Skissm__Session *) * self_outbound_sessions_num);
+    }
 }
 
 Skissm__CreateGroupResponse *create_group(

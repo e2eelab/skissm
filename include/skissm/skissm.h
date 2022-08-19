@@ -440,17 +440,11 @@ typedef struct skissm_event_handler_t {
      */
     void (*on_outbound_session_ready)(Skissm__Session *);
     /**
-     * @brief notify face-to-face password created
-     * @param password
-     * @param password_len
-     */
-    void (*on_f2f_password_created)(uint8_t *, size_t);
-    /**
      * @brief get the face-to-face password
      * @param password
      * @param password_len
      */
-    void (*get_f2f_password)(uint8_t **, size_t *);
+    void (*on_f2f_password_acquired)(uint8_t **, size_t *);
     /**
      * @brief notify one2one msg received event
      * @param from_address
@@ -473,6 +467,14 @@ typedef struct skissm_event_handler_t {
     void (*on_other_device_msg_received)(
         Skissm__E2eeAddress *, Skissm__E2eeAddress *,
         uint8_t *, size_t
+    );
+
+    /**
+     * @brief notify new face-to-face session messages from other devices received event
+     * @param f2f_session
+     */
+    void (*on_new_f2f_session_msg_received)(
+        Skissm__Session *
     );
 
     /**
@@ -539,6 +541,7 @@ void ssm_notify_other_device_msg(
     Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 );
+void ssm_notify_new_f2f_session_msg(Skissm__Session *f2f_session);
 void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
                           Skissm__E2eeAddress *group_address, uint8_t *plaintext,
                           size_t plaintext_len);

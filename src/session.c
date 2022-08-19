@@ -49,9 +49,26 @@ void pack_common_plaintext(
     skissm__plaintext__init(plaintext);
     plaintext->version = strdup(E2EE_PLAINTEXT_VERSION);
     plaintext->payload_case = plaintext_type;
-    plaintext->common_msg.len = plaintext_data_len;
-    plaintext->common_msg.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_data_len);
-    memcpy(plaintext->common_msg.data, plaintext_data, plaintext_data_len);
+    switch(plaintext_type) {
+        case SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG:
+            plaintext->common_msg.len = plaintext_data_len;
+            plaintext->common_msg.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_data_len);
+            memcpy(plaintext->common_msg.data, plaintext_data, plaintext_data_len);
+            break;
+        case SKISSM__PLAINTEXT__PAYLOAD_OTHER_DEVICE_MSG:
+            plaintext->other_device_msg.len = plaintext_data_len;
+            plaintext->other_device_msg.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_data_len);
+            memcpy(plaintext->other_device_msg.data, plaintext_data, plaintext_data_len);
+            break;
+        case SKISSM__PLAINTEXT__PAYLOAD_F2F_SESSION_MSG:
+            plaintext->f2f_session_msg.len = plaintext_data_len;
+            plaintext->f2f_session_msg.data = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_data_len);
+            memcpy(plaintext->f2f_session_msg.data, plaintext_data, plaintext_data_len);
+            break;
+        default:
+            // error
+            break;
+    };
 
     size_t len = skissm__plaintext__get_packed_size(plaintext);
     *common_plaintext_data_len = len;

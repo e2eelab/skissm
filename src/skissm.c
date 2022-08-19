@@ -101,9 +101,17 @@ void ssm_notify_other_device_msg(
         skissm_plugin->event_handler.on_other_device_msg_received(from_address, to_address, plaintext, plaintext_len);
 }
 
-void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
-                          Skissm__E2eeAddress *group_address, uint8_t *plaintext,
-                          size_t plaintext_len) {
+void ssm_notify_new_f2f_session_msg(Skissm__Session *f2f_session) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_new_f2f_session_msg_received(f2f_session);
+}
+
+void ssm_notify_group_msg(
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *group_address,
+    uint8_t *plaintext,
+    size_t plaintext_len
+) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_group_msg_received(from_address, group_address, plaintext, plaintext_len);
 }
@@ -113,10 +121,12 @@ void ssm_notify_group_created(Skissm__E2eeAddress *group_address, const char *gr
         skissm_plugin->event_handler.on_group_created(group_address, group_name);
 }
 
-void ssm_notify_group_members_added(Skissm__E2eeAddress *group_address,
-                                    const char *group_name,
-                                    Skissm__GroupMember **adding_group_members,
-                                    size_t adding_group_members_num) {
+void ssm_notify_group_members_added(
+    Skissm__E2eeAddress *group_address,
+    const char *group_name,
+    Skissm__GroupMember **adding_group_members,
+    size_t adding_group_members_num
+) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_group_members_added(group_address, group_name, adding_group_members, adding_group_members_num);
 }
@@ -125,7 +135,8 @@ void ssm_notify_group_members_removed(
     Skissm__E2eeAddress *group_address,
     const char *group_name,
     Skissm__GroupMember **removing_group_members,
-    size_t removing_group_members_num) {
+    size_t removing_group_members_num
+) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_group_members_removed(group_address, group_name, removing_group_members, removing_group_members_num);
 }

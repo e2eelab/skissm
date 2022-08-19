@@ -488,27 +488,54 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__SendOne2oneMsgRequ
     uint8_t e2ee_msg_data[e2ee_msg_data_len];
     skissm__e2ee_msg__pack(e2ee_msg, e2ee_msg_data);
 
-    // forward a copy of E2eeMsg
-    Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
-    skissm__proto_msg__init(proto_msg);
-    copy_address_from_address(&(proto_msg->from), e2ee_msg->from);
-    copy_address_from_address(&(proto_msg->to), e2ee_msg->to);
-    proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG;
-    proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
+    Skissm__ProtoMsg *proto_msg = NULL;
+    Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = NULL;
+    // check if the receiver's device id exists
+    if (strcmp(e2ee_msg->to->user->device_id, "") != 0) {
+        // forward a copy of E2eeMsg
+        proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+        skissm__proto_msg__init(proto_msg);
+        copy_address_from_address(&(proto_msg->from), e2ee_msg->from);
+        copy_address_from_address(&(proto_msg->to), e2ee_msg->to);
+        proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG;
+        proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
 
-    size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-    uint8_t proto_msg_data[proto_msg_data_len];
-    skissm__proto_msg__pack(proto_msg, proto_msg_data);
-    Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
+        size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
+        uint8_t proto_msg_data[proto_msg_data_len];
+        skissm__proto_msg__pack(proto_msg, proto_msg_data);
+        consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
+
+        // release
+        skissm__proto_msg__free_unpacked(proto_msg, NULL);
+        skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
+    } else {
+        Skissm__E2eeAddress **to_addresses = NULL;
+        size_t to_address_num = find_user_addresses(e2ee_msg->to->user->user_id, &to_addresses);
+        size_t i;
+        for (i = 0; i < to_address_num; i++) {
+            // forward a copy of E2eeMsg
+            proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+            skissm__proto_msg__init(proto_msg);
+            copy_address_from_address(&(proto_msg->from), e2ee_msg->from);
+            copy_address_from_address(&(proto_msg->to), to_addresses[i]);
+            proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG;
+            proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
+
+            size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
+            uint8_t proto_msg_data[proto_msg_data_len];
+            skissm__proto_msg__pack(proto_msg, proto_msg_data);
+            consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
+
+            // release
+            skissm__proto_msg__free_unpacked(proto_msg, NULL);
+            skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
+        }
+    }
 
     // prepare response
     Skissm__SendOne2oneMsgResponse *response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
     skissm__send_one2one_msg_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
-
-    // release
-    skissm__proto_msg__free_unpacked(proto_msg, NULL);
-    skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
 
     // done
     return response;

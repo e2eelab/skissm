@@ -288,12 +288,23 @@ size_t crypto_curve25519_new_f2f_inbound_session(
     memcpy(inbound_session->associated_data.data, key_data, key_len);
     memcpy((inbound_session->associated_data.data) + key_len, key_data, key_len);
 
+    Skissm__E2eeAddress *sender_address = NULL;
+    copy_address_from_address(&(sender_address), inbound_session->from);
+    if (strcmp(inbound_session->from->user->user_id, inbound_session->to->user->user_id) != 0) {
+        // no need to record the device id of the sender's address in the face-to-face inbound session
+        free(inbound_session->from->user->device_id);
+        inbound_session->from->user->device_id = NULL;
+    }
+
     // store sesson state
     get_skissm_plugin()->db_handler.store_session(inbound_session);
 
     /** The one who sends the accept message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    f2f_accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, inbound_session->from, local_account);
+    f2f_accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, sender_address, local_account);
+
+    // release
+    skissm__e2ee_address__free_unpacked(sender_address, NULL);
 
     // done
     return (size_t)(0);
@@ -327,6 +338,12 @@ size_t crypto_curve25519_complete_f2f_outbound_session(Skissm__Session *outbound
     uint8_t *key_data = f2f_pre_key_accept_msg->bob_identity_public_key.data;
     memcpy(outbound_session->associated_data.data, key_data, key_len);
     memcpy((outbound_session->associated_data.data) + key_len, key_data, key_len);
+
+    if (strcmp(outbound_session->from->user->user_id, outbound_session->to->user->user_id) != 0) {
+        // no need to record the device id of the receiver's address in the face-to-face outbound session
+        free(outbound_session->to->user->device_id);
+        outbound_session->to->user->device_id = NULL;
+    }
 
     outbound_session->responded = true;
 

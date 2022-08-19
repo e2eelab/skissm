@@ -49,16 +49,14 @@ Skissm__InviteResponse *invite(
  * @param responded responded or not
  * @param password Password (6-8)
  * @param password_len Password length
- * @param f2f_pre_shared_key
- * @return  Length of f2f_pre_shared_key
+ * @return  Length of encrypted_f2f_pre_shared_key
  */
 size_t f2f_invite(
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     bool responded,
     uint8_t *password,
-    size_t password_len,
-    uint8_t **f2f_pre_shared_key
+    size_t password_len
 );
 
 /**
@@ -74,6 +72,19 @@ size_t f2f_invite(
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
     const uint8_t *plaintext_data, size_t plaintext_data_len
+);
+
+/**
+ * @brief Send face-to-face session msg.
+ *
+ * @param to
+ * @param f2f_session_msg
+ * @param f2f_session_msg_len
+ * @return 
+ */
+void send_f2f_session_msg(
+    Skissm__E2eeAddress *to,
+    const uint8_t *f2f_session_msg, size_t f2f_session_msg_len
 );
 
 /**

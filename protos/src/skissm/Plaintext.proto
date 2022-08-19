@@ -32,6 +32,7 @@ message Plaintext {
     oneof payload {
         bytes common_msg = 2;
         bytes other_device_msg = 3;
-        skissm.GroupPreKeyBundle group_pre_key_bundle = 4;
+        bytes f2f_session_msg = 4;
+        skissm.GroupPreKeyBundle group_pre_key_bundle = 5;
     };
 }
