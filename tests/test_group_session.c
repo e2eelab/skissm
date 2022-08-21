@@ -166,21 +166,52 @@ static void test_end() {
     plaintext_store.plaintext_len = 0;
 }
 
-static void register_test_user(uint64_t account_id, const char *user_name) {
+static void mock_alice_account(uint64_t account_id, const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
     const char *device_id = generate_uuid_str();
+    const char *authenticator = "alice@domain.com.tw";
+    const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
         register_user(account_id,
             e2ee_pack_id,
             user_name,
             device_id,
-            "",
-            "");
+            authenticator,
+            auth_code);
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+}
 
-    // release
-    // skissm__register_user_response__free_unpacked(response, NULL);
+static void mock_bob_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "bob@domain.com.tw";
+    const char *auth_code = "654321";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+}
+
+static void mock_claire_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "claire@domain.com.tw";
+    const char *auth_code = "987654";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 }
 
 static void test_encryption(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext_data, size_t plaintext_data_len) {
@@ -205,8 +236,8 @@ static void test_create_group() {
     test_begin();
 
     // Prepare account
-    register_test_user(1, "alice");
-    register_test_user(2, "bob");
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
 
     // Alice invites Bob to create a group
     switch_account(account_data[0]->address);
@@ -251,9 +282,9 @@ static void test_add_group_members() {
     test_begin();
 
     // Prepare account
-    register_test_user(1, "alice");
-    register_test_user(2, "bob");
-    register_test_user(3, "claire");
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
+    mock_claire_account(3, "claire");
 
     // Alice invites Bob to create a group
     invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -310,9 +341,9 @@ static void test_remove_group_members() {
     test_begin();
 
     // Prepare account
-    register_test_user(1, "alice");
-    register_test_user(2, "bob");
-    register_test_user(3, "claire");
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
+    mock_claire_account(3, "claire");
 
     // Alice invites Bob and Claire to join the group
     invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -375,9 +406,9 @@ static void test_create_add_remove() {
     test_begin();
 
     // Prepare account
-    register_test_user(1, "alice");
-    register_test_user(2, "bob");
-    register_test_user(3, "claire");
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
+    mock_claire_account(3, "claire");
 
     // Alice invites Bob to create a group
     invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -447,9 +478,9 @@ static void test_interaction() {
     test_begin();
 
     // Prepare account
-    register_test_user(1, "alice");
-    register_test_user(2, "bob");
-    register_test_user(3, "claire");
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
+    mock_claire_account(3, "claire");
 
     // Alice invites Bob and Claire to join the group
     invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -513,9 +544,9 @@ static void test_continual() {
     test_begin();
 
     // Prepare account
-    register_test_user(1, "alice");
-    register_test_user(2, "bob");
-    register_test_user(3, "claire");
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
+    mock_claire_account(3, "claire");
 
     // Alice invites Bob and Claire to join the group
     invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
