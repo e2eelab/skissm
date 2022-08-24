@@ -130,6 +130,19 @@ void pack_common_plaintext(
     uint8_t **common_plaintext_data, size_t *common_plaintext_data_len
 );
 
+/**
+ * @brief Packaging a face-to-face session data to common_plaintext_data.
+ *
+ * @param session
+ * @param plaintext_type
+ * @param common_plaintext_data
+ * @param common_plaintext_data_len
+ */
+void pack_f2f_session_plaintext(
+    Skissm__Session *session, int plaintext_type,
+    uint8_t **common_plaintext_data, size_t *common_plaintext_data_len
+);
+
 /* ECC-related */
 Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     Skissm__Session *session,

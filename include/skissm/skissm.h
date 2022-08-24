@@ -473,7 +473,7 @@ typedef struct skissm_event_handler_t {
      * @brief notify new face-to-face session messages from other devices received event
      * @param f2f_session
      */
-    void (*on_new_f2f_session_msg_received)(
+    void (*on_f2f_session_ready)(
         Skissm__Session *
     );
 
@@ -541,7 +541,7 @@ void ssm_notify_other_device_msg(
     Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 );
-void ssm_notify_new_f2f_session_msg(Skissm__Session *f2f_session);
+void ssm_notify_f2f_session_ready(Skissm__Session *f2f_session);
 void ssm_notify_group_msg(Skissm__E2eeAddress *from_address,
                           Skissm__E2eeAddress *group_address, uint8_t *plaintext,
                           size_t plaintext_len);

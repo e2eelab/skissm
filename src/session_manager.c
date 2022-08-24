@@ -12,7 +12,7 @@
 #include "skissm/ratchet.h"
 #include "skissm/session.h"
 
-Skissm__Session *f2f_session = NULL;
+Skissm__Session *f2f_session_mid = NULL;
 
 static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     // load group pre-key
@@ -52,6 +52,43 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
         // done
         if (succ)
             get_skissm_plugin()->db_handler.unload_pending_plaintext_data(outbound_session->to, false);
+    }
+}
+
+static void send_f2f_session_msg(
+    Skissm__E2eeAddress *to,
+    Skissm__Session *f2f_session_data
+) {
+    // send the message to other self devices
+    Skissm__Session **self_outbound_sessions = NULL;
+    size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(to, to->user->user_id, &self_outbound_sessions);
+    size_t i;
+    for (i = 0; i < self_outbound_sessions_num; i++) {
+        // check if the device is different from the sender's
+        if (strcmp(self_outbound_sessions[i]->to->user->device_id, to->user->device_id) == 0)
+            continue;
+
+        Skissm__Session *self_outbound_session = self_outbound_sessions[i];
+
+        // pack common plaintext before sending it
+        uint8_t *common_plaintext_data = NULL;
+        size_t common_plaintext_data_len;
+        pack_f2f_session_plaintext(
+            f2f_session_data,
+            SKISSM__PLAINTEXT__PAYLOAD_F2F_SESSION_DATA,
+            &common_plaintext_data, &common_plaintext_data_len
+        );
+
+        // send message to server
+        send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
+
+        // release
+        free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+        skissm__session__free_unpacked(self_outbound_session, NULL);
+    }
+    // release
+    if (self_outbound_sessions_num > 0) {
+        free_mem((void **)(&self_outbound_sessions), sizeof(Skissm__Session *) * self_outbound_sessions_num);
     }
 }
 
@@ -184,10 +221,10 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
             if (plaintext != NULL) {
                 if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG) {
                     ssm_notify_one2one_msg(e2ee_msg->from, e2ee_msg->to, plaintext->common_msg.data, plaintext->common_msg.len);
-                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_OTHER_DEVICE_MSG) {
-                    ssm_notify_other_device_msg(e2ee_msg->from, e2ee_msg->to, plaintext->other_device_msg.data, plaintext->other_device_msg.len);
-                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_F2F_SESSION_MSG) {
-                    Skissm__Session *session = skissm__session__unpack(NULL, plaintext->f2f_session_msg.len, plaintext->f2f_session_msg.data);
+                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG) {
+                    ssm_notify_other_device_msg(e2ee_msg->from, e2ee_msg->to, plaintext->common_sync_msg.data, plaintext->common_sync_msg.len);
+                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_F2F_SESSION_DATA) {
+                    Skissm__Session *session = plaintext->f2f_session_data;
                     // check if the session is outbound or inbound
                     if (compare_user_id(session->from, e2ee_msg->from->user->user_id, e2ee_msg->from->domain)) {
                         /** Since the session is outbound, the reciever's device id has been inserted "NULL".
@@ -215,9 +252,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     }
                     get_skissm_plugin()->db_handler.store_session(session);
                     // notify
-                    ssm_notify_new_f2f_session_msg(session);
-                    // release
-                    skissm__session__free_unpacked(session, NULL);
+                    ssm_notify_f2f_session_ready(session);
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY_BUNDLE) {
                     Skissm__GroupPreKeyBundle *group_pre_key_bundle = plaintext->group_pre_key_bundle;
                     get_skissm_plugin()->db_handler.unload_inbound_group_session(e2ee_msg->to, group_pre_key_bundle->old_session_id);
@@ -499,10 +534,7 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
         // check if this message is from other devices or other members
         if (strcmp(from->user->user_id, to->user->user_id) != 0) {
             // send the face-to-face inbound message to other devices if they are available
-            size_t f2f_session_msg_len = skissm__session__get_packed_size(inbound_session);
-            uint8_t *f2f_session_msg = (uint8_t *)malloc(sizeof(uint8_t) * f2f_session_msg_len);
-            skissm__session__pack(inbound_session, f2f_session_msg);
-            send_f2f_session_msg(to, f2f_session_msg, f2f_session_msg_len);
+            send_f2f_session_msg(to, inbound_session);
         }
         // send the face-to-face invite back to the sender if necessary
         if (f2f_pre_key_invite_msg->responded == false) {
@@ -564,7 +596,9 @@ bool consume_f2f_accept_response(Skissm__F2fAcceptResponse *response) {
 
 bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAcceptMsg *msg) {
     const session_suite_t *session_suite = get_e2ee_pack(msg->e2ee_pack_id)->session_suite;
-    size_t result = session_suite->complete_f2f_outbound_session(f2f_session, msg);
+
+    // check f2f_session_mid
+    size_t result = session_suite->complete_f2f_outbound_session(f2f_session_mid, msg);
 
     // delete the old outbound session if it exists
     Skissm__Session *outbound_session = NULL;
@@ -575,18 +609,19 @@ bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAc
     }
 
     // store the face-to-face session
-    get_skissm_plugin()->db_handler.store_session(f2f_session);
+    get_skissm_plugin()->db_handler.store_session(f2f_session_mid);
 
     // notify
-    ssm_notify_outbound_session_ready(f2f_session);
+    ssm_notify_outbound_session_ready(f2f_session_mid);
 
     if (strcmp(receiver_address->user->user_id, msg->from->user->user_id) != 0) {
         // send the face-to-face outbound message to other devices if they are available
-        size_t f2f_session_msg_len = skissm__session__get_packed_size(f2f_session);
-        uint8_t *f2f_session_msg = (uint8_t *)malloc(sizeof(uint8_t) * f2f_session_msg_len);
-        skissm__session__pack(f2f_session, f2f_session_msg);
-        send_f2f_session_msg(msg->to, f2f_session_msg, f2f_session_msg_len);
+        send_f2f_session_msg(msg->to, f2f_session_mid);
     }
+
+    // release
+    skissm__session__free_unpacked(f2f_session_mid, NULL);
+    f2f_session_mid = NULL;
 
     return result == (size_t)(0);
 }

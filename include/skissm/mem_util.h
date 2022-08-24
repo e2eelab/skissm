@@ -190,6 +190,87 @@ void copy_account_from_account(
 );
 
 /**
+ * @brief Copy Skissm__ChainKey from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_chain_key_from_chain_key(
+    Skissm__ChainKey **dest,
+    Skissm__ChainKey *src
+);
+
+/**
+ * @brief Copy Skissm__MsgKey from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_msg_key_from_msg_key(
+    Skissm__MsgKey **dest,
+    Skissm__MsgKey *src
+);
+
+/**
+ * @brief Copy Skissm__SenderChainNode from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_sender_chain_from_sender_chain(
+    Skissm__SenderChainNode **dest,
+    Skissm__SenderChainNode *src
+);
+
+/**
+ * @brief Copy Skissm__ReceiverChainNode from src to dest.
+ *
+ * @param dest
+ * @param src
+ * @param receiver_chains_num
+ */
+void copy_receiver_chains_from_receiver_chains(
+    Skissm__ReceiverChainNode ***dest,
+    Skissm__ReceiverChainNode **src,
+    size_t receiver_chains_num
+);
+
+/**
+ * @brief Copy Skissm__SkippedMsgKeyNode from src to dest.
+ *
+ * @param dest
+ * @param src
+ * @param skipped_msg_keys_num
+ */
+void copy_skipped_msg_keys_from_skipped_msg_keys(
+    Skissm__SkippedMsgKeyNode ***dest,
+    Skissm__SkippedMsgKeyNode **src,
+    size_t skipped_msg_keys_num
+);
+
+/**
+ * @brief Copy Skissm__Ratchet from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_ratchet_from_ratchet(
+    Skissm__Ratchet **dest,
+    Skissm__Ratchet *src
+);
+
+/**
+ * @brief Copy Skissm__Session from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_session_from_session(
+    Skissm__Session **dest,
+    Skissm__Session *src
+);
+
+/**
  * @brief Copy Skissm__IdentityKeyPublic from src to dest.
  *
  * @param dest

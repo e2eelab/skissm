@@ -101,9 +101,9 @@ void ssm_notify_other_device_msg(
         skissm_plugin->event_handler.on_other_device_msg_received(from_address, to_address, plaintext, plaintext_len);
 }
 
-void ssm_notify_new_f2f_session_msg(Skissm__Session *f2f_session) {
+void ssm_notify_f2f_session_ready(Skissm__Session *f2f_session) {
     if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_new_f2f_session_msg_received(f2f_session);
+        skissm_plugin->event_handler.on_f2f_session_ready(f2f_session);
 }
 
 void ssm_notify_group_msg(

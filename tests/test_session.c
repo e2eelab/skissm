@@ -115,7 +115,7 @@ static void on_other_device_msg_received(
     plaintext_store.plaintext_len = plaintext_len;
 }
 
-static void on_new_f2f_session_msg_received(Skissm__Session *session) {
+static void on_f2f_session_ready(Skissm__Session *session) {
     if (session->from->user->device_id != NULL) {
         printf("New outbound face-to-face session created.\n");
         printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
@@ -140,7 +140,7 @@ static skissm_event_handler_t test_event_handler = {
     on_f2f_password_acquired,
     on_one2one_msg_received,
     on_other_device_msg_received,
-    on_new_f2f_session_msg_received,
+    on_f2f_session_ready,
     NULL,
     NULL,
     NULL,

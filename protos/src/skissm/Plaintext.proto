@@ -25,14 +25,15 @@ option java_outer_classname = "PlaintextProto";
 option objc_class_prefix = "Objc";
 option swift_prefix="Swift";
 
+import "skissm/Session.proto";
 import "skissm/GroupPreKeyBundle.proto";
 
 message Plaintext {
     string version = 1;
     oneof payload {
         bytes common_msg = 2;
-        bytes other_device_msg = 3;
-        bytes f2f_session_msg = 4;
+        bytes common_sync_msg = 3;
+        skissm.Session f2f_session_data = 4;
         skissm.GroupPreKeyBundle group_pre_key_bundle = 5;
     };
 }

@@ -31,7 +31,7 @@
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 
-extern Skissm__Session *f2f_session;
+extern Skissm__Session *f2f_session_mid;
 
 Skissm__RegisterUserResponse *register_user(
     uint64_t account_id,
@@ -137,13 +137,17 @@ size_t f2f_invite(
     );
 
     // create a face-to-face outbound session
-    f2f_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    if (f2f_session_mid != NULL) {
+        skissm__session__free_unpacked(f2f_session_mid, NULL);
+        f2f_session_mid = NULL;
+    }
+    f2f_session_mid = (Skissm__Session *) malloc(sizeof(Skissm__Session));
     char *e2ee_pack_id = f2f_pre_key_invite_msg->e2ee_pack_id;
-    initialise_session(f2f_session, e2ee_pack_id, from, to);
-    copy_address_from_address(&(f2f_session->session_owner), from);
+    initialise_session(f2f_session_mid, e2ee_pack_id, from, to);
+    copy_address_from_address(&(f2f_session_mid->session_owner), from);
 
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-    session_suite->new_f2f_outbound_session(f2f_session, f2f_pre_key_invite_msg);
+    session_suite->new_f2f_outbound_session(f2f_session_mid, f2f_pre_key_invite_msg);
 
     // send face-to-face invite message to the other
     f2f_invite_internal(from, to, e2ee_pack_id, encrypted_f2f_pre_shared_key, encrypted_f2f_pre_shared_key_len);
@@ -238,7 +242,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         size_t common_plaintext_data_len;
         pack_common_plaintext(
             plaintext_data, plaintext_data_len,
-            SKISSM__PLAINTEXT__PAYLOAD_OTHER_DEVICE_MSG,
+            SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG,
             &common_plaintext_data, &common_plaintext_data_len
         );
 
@@ -258,43 +262,6 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
 
     // done;
     return response;
-}
-
-void send_f2f_session_msg(
-    Skissm__E2eeAddress *to,
-    const uint8_t *f2f_session_msg, size_t f2f_session_msg_len
-) {
-    // send the message to other self devices
-    Skissm__Session **self_outbound_sessions = NULL;
-    size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(to, to->user->user_id, &self_outbound_sessions);
-    size_t i;
-    for (i = 0; i < self_outbound_sessions_num; i++) {
-        // check if the device is different from the sender's
-        if (strcmp(self_outbound_sessions[i]->to->user->device_id, to->user->device_id) == 0)
-            continue;
-
-        Skissm__Session *self_outbound_session = self_outbound_sessions[i];
-
-        // pack common plaintext before sending it
-        uint8_t *common_plaintext_data = NULL;
-        size_t common_plaintext_data_len;
-        pack_common_plaintext(
-            f2f_session_msg, f2f_session_msg_len,
-            SKISSM__PLAINTEXT__PAYLOAD_F2F_SESSION_MSG,
-            &common_plaintext_data, &common_plaintext_data_len
-        );
-
-        // send message to server
-        send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
-
-        // release
-        free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
-        skissm__session__free_unpacked(self_outbound_session, NULL);
-    }
-    // release
-    if (self_outbound_sessions_num > 0) {
-        free_mem((void **)(&self_outbound_sessions), sizeof(Skissm__Session *) * self_outbound_sessions_num);
-    }
 }
 
 Skissm__CreateGroupResponse *create_group(

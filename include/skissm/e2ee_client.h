@@ -75,19 +75,6 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
 );
 
 /**
- * @brief Send face-to-face session msg.
- *
- * @param to
- * @param f2f_session_msg
- * @param f2f_session_msg_len
- * @return 
- */
-void send_f2f_session_msg(
-    Skissm__E2eeAddress *to,
-    const uint8_t *f2f_session_msg, size_t f2f_session_msg_len
-);
-
-/**
  * @brief Create a group.
  *
  * @param sender_address
