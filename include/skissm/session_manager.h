@@ -93,11 +93,11 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
  *
  * @param outbound_session
  * @param pre_shared_keys
- * @param pre_shared_keys_len
+ * @param pre_shared_keys_num
  * @return Skissm__InviteRequest*
  */
 Skissm__InviteRequest *produce_invite_request(
-    Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len
+    Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num
 );
 
 /**

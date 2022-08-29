@@ -121,16 +121,6 @@ void test_insert_one_time_pre_key()
     tear_down();
 }
 
-void test_insert_account()
-{
-    // todo
-}
-
-void test_insert_account_one_time_pre_key_id()
-{
-    // todo
-}
-
 void test_init_account()
 {
     fprintf(stderr, "test_init_account\n");
@@ -325,8 +315,6 @@ int main()
     test_insert_key_pair();
     test_insert_signed_pre_key();
     test_insert_one_time_pre_key();
-    test_insert_account();
-    test_insert_account_one_time_pre_key_id();
     test_init_account();
     test_update_identity_key();
     test_update_signed_pre_key();

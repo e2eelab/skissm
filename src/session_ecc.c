@@ -49,16 +49,16 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *
         return NULL;
     }
 
-    // Set the version
+    // set the version
     outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
-    // Set the cipher suite id
+    // set the cipher suite id
     outbound_session->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
 
-    // Generate a new random ephemeral key pair
+    // generate a new random ephemeral key pair
     Skissm__KeyPair my_ephemeral_key;
     cipher_suite->asym_key_gen(&(my_ephemeral_key.public_key), &(my_ephemeral_key.private_key));
 
-    // Generate a new random ratchet key pair
+    // generate a new random ratchet key pair
     Skissm__KeyPair my_ratchet_key;
     cipher_suite->asym_key_gen(&(my_ratchet_key.public_key), &(my_ratchet_key.private_key));
 
@@ -84,7 +84,7 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *
     memcpy(outbound_session->associated_data.data, my_identity_key_pair.public_key.data, key_len);
     memcpy((outbound_session->associated_data.data) + key_len, their_pre_key_bundle->identity_key_public->asym_public_key.data, key_len);
 
-    // Calculate the shared secret S via quadruple ECDH
+    // calculate the shared secret S via quadruple ECDH
     uint8_t secret[x3dh_epoch * CURVE25519_SHARED_SECRET_LENGTH];
     uint8_t *pos = secret;
 
@@ -98,7 +98,7 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *
         cipher_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
     }
 
-    // Create the root key and chain keys
+    // create the root key and chain keys
     initialise_as_alice(cipher_suite, outbound_session->ratchet, secret, sizeof(secret), &my_ratchet_key, &(their_pre_key_bundle->signed_pre_key_public->public_key));
     outbound_session->session_id = generate_uuid_str();
 
@@ -108,8 +108,9 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *
     // store sesson state before send invite
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
-    // Send the invite request to the peer
+    // the pre_shared_keys is an array with only one element in it
     ProtobufCBinaryData *pre_shared_keys[1] = {&(outbound_session->alice_ephemeral_key)};
+    // send the invite request to the peer
     Skissm__InviteResponse *response = invite_internal(outbound_session, pre_shared_keys, 1);
 
     if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
@@ -198,7 +199,7 @@ size_t crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, S
         bob_one_time_pre_key = NULL;
     }
 
-    // Calculate the shared secret S via quadruple DH
+    // calculate the shared secret S via quadruple DH
     uint8_t secret[x3dh_epoch * CURVE25519_SHARED_SECRET_LENGTH];
     uint8_t *pos = secret;
     cipher_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &inbound_session->alice_identity_key, pos);
@@ -259,6 +260,8 @@ size_t crypto_curve25519_new_f2f_outbound_session(
 
     // store the secret bytes(store in the associated_data)
     copy_protobuf_from_protobuf(&(outbound_session->associated_data), &(f2f_pre_key_invite_msg->secret));
+
+    outbound_session->responded = false;
 
     // this is a face-to-face session
     outbound_session->f2f = true;

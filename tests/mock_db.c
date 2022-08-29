@@ -730,7 +730,10 @@ char *load_e2ee_pack_id(uint64_t account_id) {
     return e2ee_pack_id;
 }
 
-static void load_identity_key_asym(sqlite_int64 identity_key_id, Skissm__KeyPair **asym_key_pair) {
+static void load_identity_key_asym(
+    sqlite_int64 identity_key_id,
+    Skissm__KeyPair **asym_key_pair
+) {
     // allocate memory
     *asym_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(*asym_key_pair);
@@ -744,16 +747,25 @@ static void load_identity_key_asym(sqlite_int64 identity_key_id, Skissm__KeyPair
     sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    copy_protobuf_from_array(&((*asym_key_pair)->public_key), (uint8_t *)sqlite3_column_blob(stmt, 0),
-                             sqlite3_column_bytes(stmt, 0));
-    copy_protobuf_from_array(&((*asym_key_pair)->private_key), (uint8_t *)sqlite3_column_blob(stmt, 1),
-                             sqlite3_column_bytes(stmt, 1));
+    copy_protobuf_from_array(
+        &((*asym_key_pair)->public_key),
+        (uint8_t *)sqlite3_column_blob(stmt, 0),
+        sqlite3_column_bytes(stmt, 0)
+    );
+    copy_protobuf_from_array(
+        &((*asym_key_pair)->private_key),
+        (uint8_t *)sqlite3_column_blob(stmt, 1),
+        sqlite3_column_bytes(stmt, 1)
+    );
 
     // release
     sqlite_finalize(stmt);
 }
 
-static void load_identity_key_sign(sqlite_int64 identity_key_id, Skissm__KeyPair **sign_key_pair) {
+static void load_identity_key_sign(
+    sqlite_int64 identity_key_id,
+    Skissm__KeyPair **sign_key_pair
+) {
     // allocate memory
     *sign_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(*sign_key_pair);
@@ -767,16 +779,25 @@ static void load_identity_key_sign(sqlite_int64 identity_key_id, Skissm__KeyPair
     sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    copy_protobuf_from_array(&((*sign_key_pair)->public_key), (uint8_t *)sqlite3_column_blob(stmt, 0),
-                             sqlite3_column_bytes(stmt, 0));
-    copy_protobuf_from_array(&((*sign_key_pair)->private_key), (uint8_t *)sqlite3_column_blob(stmt, 1),
-                             sqlite3_column_bytes(stmt, 1));
+    copy_protobuf_from_array(
+        &((*sign_key_pair)->public_key),
+        (uint8_t *)sqlite3_column_blob(stmt, 0),
+        sqlite3_column_bytes(stmt, 0)
+    );
+    copy_protobuf_from_array(
+        &((*sign_key_pair)->private_key),
+        (uint8_t *)sqlite3_column_blob(stmt, 1),
+        sqlite3_column_bytes(stmt, 1)
+    );
 
     // release
     sqlite_finalize(stmt);
 }
 
-void load_identity_key_pair(uint64_t account_id, Skissm__IdentityKey **identity_key) {
+void load_identity_key_pair(
+    uint64_t account_id,
+    Skissm__IdentityKey **identity_key
+) {
     // allocate memory
     *identity_key = (Skissm__IdentityKey *)malloc(sizeof(Skissm__IdentityKey));
     skissm__identity_key__init(*identity_key);
@@ -822,12 +843,21 @@ void load_signed_pre_key_pair(
 
     // load
     (*signed_pre_key)->spk_id = (uint32_t)sqlite3_column_int(stmt, 0);
-    copy_protobuf_from_array(&((*signed_pre_key)->key_pair->public_key), (uint8_t *)sqlite3_column_blob(stmt, 1),
-                             sqlite3_column_bytes(stmt, 1));
-    copy_protobuf_from_array(&((*signed_pre_key)->key_pair->private_key), (uint8_t *)sqlite3_column_blob(stmt, 2),
-                             sqlite3_column_bytes(stmt, 2));
-    copy_protobuf_from_array(&((*signed_pre_key)->signature), (uint8_t *)sqlite3_column_blob(stmt, 3),
-                             sqlite3_column_bytes(stmt, 3));
+    copy_protobuf_from_array(
+        &((*signed_pre_key)->key_pair->public_key),
+        (uint8_t *)sqlite3_column_blob(stmt, 1),
+        sqlite3_column_bytes(stmt, 1)
+    );
+    copy_protobuf_from_array(
+        &((*signed_pre_key)->key_pair->private_key),
+        (uint8_t *)sqlite3_column_blob(stmt, 2),
+        sqlite3_column_bytes(stmt, 2)
+    );
+    copy_protobuf_from_array(
+        &((*signed_pre_key)->signature),
+        (uint8_t *)sqlite3_column_blob(stmt, 3),
+        sqlite3_column_bytes(stmt, 3)
+    );
     int64_t ttl = (int64_t)sqlite3_column_int64(stmt, 4);
     if (ttl < 0) ttl = (0xffffffff + ttl + 1);
     (*signed_pre_key)->ttl = ttl;
@@ -884,10 +914,16 @@ uint32_t load_one_time_pre_keys(
         // load
         (*one_time_pre_keys)[i]->opk_id = (uint32_t)sqlite3_column_int(stmt, 0);
         (*one_time_pre_keys)[i]->used = sqlite3_column_int(stmt, 1);
-        copy_protobuf_from_array(&((*one_time_pre_keys)[i]->key_pair->public_key),
-                                 (uint8_t *)sqlite3_column_blob(stmt, 2), sqlite3_column_bytes(stmt, 2));
-        copy_protobuf_from_array(&((*one_time_pre_keys)[i]->key_pair->private_key),
-                                 (uint8_t *)sqlite3_column_blob(stmt, 3), sqlite3_column_bytes(stmt, 3));
+        copy_protobuf_from_array(
+            &((*one_time_pre_keys)[i]->key_pair->public_key),
+            (uint8_t *)sqlite3_column_blob(stmt, 2),
+            sqlite3_column_bytes(stmt, 2)
+        );
+        copy_protobuf_from_array(
+            &((*one_time_pre_keys)[i]->key_pair->private_key),
+            (uint8_t *)sqlite3_column_blob(stmt, 3),
+            sqlite3_column_bytes(stmt, 3)
+        );
     }
 
     // release
@@ -1105,7 +1141,9 @@ sqlite_int64 insert_account(
     return sqlite3_last_insert_rowid(db);
 }
 
-void insert_account_identity_key_id(uint64_t account_id, sqlite_int64 identity_key_id) {
+void insert_account_identity_key_id(
+    uint64_t account_id, sqlite_int64 identity_key_id
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_IDENTITY_KEY_INSERT, &stmt);
@@ -1121,7 +1159,9 @@ void insert_account_identity_key_id(uint64_t account_id, sqlite_int64 identity_k
     sqlite_finalize(stmt);
 }
 
-void insert_account_signed_pre_key_id(uint64_t account_id, sqlite_int64 signed_pre_key_id) {
+void insert_account_signed_pre_key_id(
+    uint64_t account_id, sqlite_int64 signed_pre_key_id
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_SIGNED_PRE_KEY_INSERT, &stmt);
@@ -1137,7 +1177,9 @@ void insert_account_signed_pre_key_id(uint64_t account_id, sqlite_int64 signed_p
     sqlite_finalize(stmt);
 }
 
-void insert_account_one_time_pre_key_id(uint64_t account_id, sqlite_int64 one_time_pre_key_id) {
+void insert_account_one_time_pre_key_id(
+    uint64_t account_id, sqlite_int64 one_time_pre_key_id
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_ONETIME_PRE_KEY_INSERT, &stmt);
@@ -1228,12 +1270,21 @@ void load_signed_pre_key(
 
     // load
     (*signed_pre_key)->spk_id = (uint32_t)sqlite3_column_int(stmt, 0);
-    copy_protobuf_from_array(&((*signed_pre_key)->key_pair->public_key), (uint8_t *)sqlite3_column_blob(stmt, 1),
-                             sqlite3_column_bytes(stmt, 1));
-    copy_protobuf_from_array(&((*signed_pre_key)->key_pair->private_key), (uint8_t *)sqlite3_column_blob(stmt, 2),
-                             sqlite3_column_bytes(stmt, 2));
-    copy_protobuf_from_array(&((*signed_pre_key)->signature), (uint8_t *)sqlite3_column_blob(stmt, 3),
-                             sqlite3_column_bytes(stmt, 3));
+    copy_protobuf_from_array(
+        &((*signed_pre_key)->key_pair->public_key),
+        (uint8_t *)sqlite3_column_blob(stmt, 1),
+        sqlite3_column_bytes(stmt, 1)
+    );
+    copy_protobuf_from_array(
+        &((*signed_pre_key)->key_pair->private_key),
+        (uint8_t *)sqlite3_column_blob(stmt, 2),
+        sqlite3_column_bytes(stmt, 2)
+    );
+    copy_protobuf_from_array(
+        &((*signed_pre_key)->signature),
+        (uint8_t *)sqlite3_column_blob(stmt, 3),
+        sqlite3_column_bytes(stmt, 3)
+    );
     int64_t ttl = (int64_t)sqlite3_column_int64(stmt, 4);
     if (ttl < 0) ttl = (0xffffffff + ttl + 1);
     (*signed_pre_key)->ttl = ttl;
@@ -1255,7 +1306,9 @@ static void delete_signed_pre_key(sqlite_int64 signed_pre_key_id) {
     sqlite_finalize(stmt);
 }
 
-static void delete_account_signed_pre_key(uint64_t account_id, sqlite_int64 signed_pre_key_id) {
+static void delete_account_signed_pre_key(
+    uint64_t account_id, sqlite_int64 signed_pre_key_id
+) {
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_SIGNED_PRE_KEY_DELETE, &stmt);
     sqlite3_bind_int(stmt, 1, account_id);
@@ -1356,7 +1409,9 @@ static void delete_account_one_time_pre_key(
     sqlite_finalize(stmt);
 }
 
-void remove_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id) {
+void remove_one_time_pre_key(
+    uint64_t account_id, uint32_t one_time_pre_key_id
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_LOAD_ONETIME_PRE_KEY, &stmt);
@@ -1391,7 +1446,9 @@ static void mark_one_time_pre_key_as_used(sqlite_int64 one_time_pre_key_id){
     sqlite_finalize(stmt);
 }
 
-void update_one_time_pre_key(uint64_t account_id, uint32_t one_time_pre_key_id) {
+void update_one_time_pre_key(
+    uint64_t account_id, uint32_t one_time_pre_key_id
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_LOAD_ONETIME_PRE_KEY, &stmt);
@@ -1486,8 +1543,11 @@ size_t load_accounts(Skissm__Account ***accounts) {
 }
 
 // session related handlers
-void load_inbound_session(char *session_id, Skissm__E2eeAddress *owner,
-                          Skissm__Session **session) {
+void load_inbound_session(
+    char *session_id,
+    Skissm__E2eeAddress *owner,
+    Skissm__Session **session
+) {
     // prepare
     sqlite3_stmt *stmt;
     if (!sqlite_prepare(SESSION_LOAD_DATA_BY_ID_AND_OWNER, &stmt)) {
@@ -1574,7 +1634,10 @@ void load_outbound_session(
     return;
 }
 
-int load_n_outbound_sessions(Skissm__E2eeAddress *owner, const char *to_user_id) {
+int load_n_outbound_sessions(
+    Skissm__E2eeAddress *owner,
+    const char *to_user_id
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SESSION_LOAD_N_OUTBOUND_SESSION, &stmt);
@@ -1662,7 +1725,8 @@ void store_session(Skissm__Session *session) {
 }
 
 void unload_session(
-    Skissm__E2eeAddress *owner, Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *owner,
+    Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to
 ) {
     // prepare
@@ -1777,7 +1841,10 @@ void load_inbound_group_session(
     return;
 }
 
-int load_n_inbound_group_sessions(Skissm__E2eeAddress *owner, Skissm__E2eeAddress *group_address) {
+int load_n_inbound_group_sessions(
+    Skissm__E2eeAddress *owner,
+    Skissm__E2eeAddress *group_address
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(N_GROUP_SESSION_LOAD_INBOUND, &stmt);
@@ -1990,7 +2057,10 @@ size_t load_pending_plaintext_data(
     return n_group_pre_keys;
 }
 
-void unload_pending_plaintext_data(Skissm__E2eeAddress *member_address, bool outbound_session_responded) {
+void unload_pending_plaintext_data(
+    Skissm__E2eeAddress *member_address,
+    bool outbound_session_responded
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(PENDING_GROUP_PRE_KEY_DELETE_DATA, &stmt);

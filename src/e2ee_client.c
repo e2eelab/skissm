@@ -76,6 +76,8 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
         for (i = 0; i < outbound_sessions_num; i++) {
             if (!outbound_sessions[i]->responded) {
                 // resend ?
+                // invite_internal
+                // the parameters are different between ECC and PQC
             }
             // release
             skissm__session__free_unpacked(outbound_sessions[i], NULL);
@@ -191,7 +193,8 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
                 outbound_session->to,
                 false,
                 common_plaintext_data,
-                common_plaintext_data_len);
+                common_plaintext_data_len
+            );
             // release
             free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
             skissm__session__free_unpacked(outbound_session, NULL);
@@ -209,7 +212,8 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
                 outbound_session->to,
                 true,
                 common_plaintext_data,
-                common_plaintext_data_len);
+                common_plaintext_data_len
+            );
         }
 
         // release

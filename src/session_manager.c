@@ -19,11 +19,13 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     uint32_t pending_plaintext_data_list_num;
     uint8_t **pending_plaintext_data_list;
     size_t *pending_plaintext_data_len_list;
-    pending_plaintext_data_list_num = get_skissm_plugin()->db_handler.load_pending_plaintext_data(
-        outbound_session->to,
-        false,
-        &pending_plaintext_data_list,
-        &pending_plaintext_data_len_list);
+    pending_plaintext_data_list_num =
+        get_skissm_plugin()->db_handler.load_pending_plaintext_data(
+            outbound_session->to,
+            false,
+            &pending_plaintext_data_list,
+            &pending_plaintext_data_len_list
+        );
     if (pending_plaintext_data_list_num > 0) {
         uint32_t i;
         bool succ = true;
@@ -31,7 +33,8 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
             Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(
                 outbound_session,
                 pending_plaintext_data_list[i],
-                pending_plaintext_data_len_list[i]);
+                pending_plaintext_data_len_list[i]
+            );
             if (response == NULL) {
                 succ = false;
                 break;
@@ -291,7 +294,7 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
 
 Skissm__InviteRequest *produce_invite_request(
     Skissm__Session *outbound_session,
-    ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len
+    ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num
 ) {
     Skissm__InviteRequest *request = (Skissm__InviteRequest *) malloc(sizeof(Skissm__InviteRequest));
     skissm__invite_request__init(request);
@@ -307,11 +310,11 @@ Skissm__InviteRequest *produce_invite_request(
 
     copy_protobuf_from_protobuf(&(msg->alice_identity_key), &(outbound_session->alice_identity_key));
 
-    msg->n_pre_shared_keys = pre_shared_keys_len;
-    if (pre_shared_keys_len > 0 && pre_shared_keys != NULL) {
-        msg->pre_shared_keys = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * pre_shared_keys_len);
+    msg->n_pre_shared_keys = pre_shared_keys_num;
+    if (pre_shared_keys_num > 0 && pre_shared_keys != NULL) {
+        msg->pre_shared_keys = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * pre_shared_keys_num);
         size_t i = 0;
-        for (i = 0; i < pre_shared_keys_len; i++) {
+        for (i = 0; i < pre_shared_keys_num; i++) {
             copy_protobuf_from_protobuf(&(msg->pre_shared_keys[i]), pre_shared_keys[i]);
         }
     }

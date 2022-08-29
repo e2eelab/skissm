@@ -18,8 +18,8 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, c
     return invite_response;
 }
 
-Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len) {
-    Skissm__InviteRequest *request = produce_invite_request(outbound_session, pre_shared_keys, pre_shared_keys_len);
+Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num) {
+    Skissm__InviteRequest *request = produce_invite_request(outbound_session, pre_shared_keys, pre_shared_keys_num);
     Skissm__InviteResponse *response = get_skissm_plugin()->proto_handler.invite(request);
     consume_invite_response(response);
 

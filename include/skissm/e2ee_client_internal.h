@@ -40,10 +40,10 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, c
  *
  * @param outbound_session
  * @param pre_shared_keys
- * @param pre_shared_keys_len
+ * @param pre_shared_keys_num
  * @return Skissm__InviteResponse *
  */
-Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_len);
+Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num);
 
 /**
  * @brief Send accept request to server.

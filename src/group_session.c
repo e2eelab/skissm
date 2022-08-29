@@ -188,7 +188,8 @@ void create_outbound_group_session(
                             group_member_address,
                             false,
                             group_pre_key_plaintext_data,
-                            group_pre_key_plaintext_data_len);
+                            group_pre_key_plaintext_data_len
+                        );
                         // send Invite
                         Skissm__InviteResponse *response = invite(outbound_group_session->session_owner, group_member_address->user->user_id, group_member_address->domain);
                         // release
@@ -203,6 +204,10 @@ void create_outbound_group_session(
                 }
                 // release outbound_sessions
                 free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
+            } else {
+                /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
+                invite(outbound_group_session->session_owner, group_member_address->user->user_id, group_member_address->domain);
+                // not done
             }
 
             // release

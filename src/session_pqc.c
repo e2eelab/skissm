@@ -109,9 +109,9 @@ Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_sessi
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
     // Send the invite request to the peer
-    size_t pre_shared_keys_len = 3;
+    size_t pre_shared_keys_num = 3;
     ProtobufCBinaryData *pre_shared_keys[3] = {ciphertext_2, ciphertext_3, ciphertext_4};
-    Skissm__InviteResponse *response = invite_internal(outbound_session, pre_shared_keys, pre_shared_keys_len);
+    Skissm__InviteResponse *response = invite_internal(outbound_session, pre_shared_keys, pre_shared_keys_num);
 
     // release
     unset(secret, sizeof(secret));
