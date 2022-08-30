@@ -218,36 +218,36 @@ static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ID = "DELETE FROM GROU
                                                                "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?)) "
                                                                "AND ID is (?);";
 
-static const char *PENDING_GROUP_PRE_KEY_DROP_TABLE = "DROP TABLE IF EXISTS PENDING_GROUP_PRE_KEY;";
-static const char *PENDING_GROUP_PRE_KEY_CREATE_TABLE = "CREATE TABLE PENDING_GROUP_PRE_KEY( "
+static const char *PENDING_PLAINTEXT_DATA_DROP_TABLE = "DROP TABLE IF EXISTS PENDING_PLAINTEXT_DATA;";
+static const char *PENDING_PLAINTEXT_DATA_CREATE_TABLE = "CREATE TABLE PENDING_PLAINTEXT_DATA( "
                                                         "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                                                         "MEMBER_ADDRESS INTEGER NOT NULL, "
                                                         "GROUP_PRE_KEY_DATA BLOB NOT NULL, "
                                                         "FOREIGN KEY(MEMBER_ADDRESS) REFERENCES ADDRESS(ID));";
 
-static const char *PENDING_GROUP_PRE_KEY_INSERT = "INSERT INTO PENDING_GROUP_PRE_KEY "
+static const char *PENDING_PLAINTEXT_DATA_INSERT = "INSERT INTO PENDING_PLAINTEXT_DATA "
                                                   "(MEMBER_ADDRESS, GROUP_PRE_KEY_DATA) "
                                                   "VALUES (?, ?);";
 
-static const char *N_PENDING_GROUP_PRE_KEY_LOAD = "SELECT COUNT(*) "
-                                                  "FROM PENDING_GROUP_PRE_KEY "
+static const char *N_PENDING_PLAINTEXT_DATA_LOAD = "SELECT COUNT(*) "
+                                                  "FROM PENDING_PLAINTEXT_DATA "
                                                   "INNER JOIN ADDRESS "
-                                                  "ON PENDING_GROUP_PRE_KEY.MEMBER_ADDRESS = ADDRESS.ID "
+                                                  "ON PENDING_PLAINTEXT_DATA.MEMBER_ADDRESS = ADDRESS.ID "
                                                   "WHERE ADDRESS.DOMAIN is (?) AND "
                                                   "ADDRESS.USER_ID is (?) AND "
                                                   "ADDRESS.DEVICE_ID is (?);";
 
-static const char *PENDING_GROUP_PRE_KEY_LOAD = "SELECT GROUP_PRE_KEY_DATA "
-                                                "FROM PENDING_GROUP_PRE_KEY "
+static const char *PENDING_PLAINTEXT_DATA_LOAD = "SELECT GROUP_PRE_KEY_DATA "
+                                                "FROM PENDING_PLAINTEXT_DATA "
                                                 "INNER JOIN ADDRESS "
-                                                "ON PENDING_GROUP_PRE_KEY.MEMBER_ADDRESS = ADDRESS.ID "
+                                                "ON PENDING_PLAINTEXT_DATA.MEMBER_ADDRESS = ADDRESS.ID "
                                                 "WHERE ADDRESS.DOMAIN is (?) AND "
                                                 "ADDRESS.USER_ID is (?) AND "
                                                 "ADDRESS.DEVICE_ID is (?);";
 
-static const char *PENDING_GROUP_PRE_KEY_DELETE_DATA = "DELETE FROM PENDING_GROUP_PRE_KEY "
-                                                       "WHERE MEMBER_ADDRESS IN "
-                                                       "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?));";
+static const char *PENDING_PLAINTEXT_DATA_DELETE = "DELETE FROM PENDING_PLAINTEXT_DATA "
+                                                   "WHERE MEMBER_ADDRESS IN "
+                                                   "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?));";
 
 // account related
 static const char *ADDRESS_DROP_TABLE = "DROP TABLE IF EXISTS ADDRESS;";
@@ -552,8 +552,8 @@ void mock_db_begin() {
     sqlite_execute(GROUP_SESSION_CREATE_TABLE);
 
     // group_pre_key
-    sqlite_execute(PENDING_GROUP_PRE_KEY_DROP_TABLE);
-    sqlite_execute(PENDING_GROUP_PRE_KEY_CREATE_TABLE);
+    sqlite_execute(PENDING_PLAINTEXT_DATA_DROP_TABLE);
+    sqlite_execute(PENDING_PLAINTEXT_DATA_CREATE_TABLE);
 
     // address
     sqlite_execute(ADDRESS_DROP_TABLE);
@@ -1980,7 +1980,7 @@ void store_pending_plaintext_data(
 
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(PENDING_GROUP_PRE_KEY_INSERT, &stmt);
+    sqlite_prepare(PENDING_PLAINTEXT_DATA_INSERT, &stmt);
 
     // bind
     sqlite3_bind_int(stmt, 1, member_address_id);
@@ -1996,7 +1996,7 @@ void store_pending_plaintext_data(
 int load_n_group_pre_keys(Skissm__E2eeAddress *member_address) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(N_PENDING_GROUP_PRE_KEY_LOAD, &stmt);
+    sqlite_prepare(N_PENDING_PLAINTEXT_DATA_LOAD, &stmt);
     sqlite3_bind_text(stmt, 1, member_address->domain, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, member_address->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, member_address->user->device_id, -1, SQLITE_TRANSIENT);
@@ -2032,7 +2032,7 @@ size_t load_pending_plaintext_data(
 
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(PENDING_GROUP_PRE_KEY_LOAD, &stmt);
+    sqlite_prepare(PENDING_PLAINTEXT_DATA_LOAD, &stmt);
     sqlite3_bind_text(stmt, 1, member_address->domain, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, member_address->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, member_address->user->device_id, -1, SQLITE_TRANSIENT);
@@ -2063,7 +2063,7 @@ void unload_pending_plaintext_data(
 ) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(PENDING_GROUP_PRE_KEY_DELETE_DATA, &stmt);
+    sqlite_prepare(PENDING_PLAINTEXT_DATA_DELETE, &stmt);
 
     // bind
     sqlite3_bind_text(stmt, 1, member_address->user->user_id, -1, SQLITE_TRANSIENT);

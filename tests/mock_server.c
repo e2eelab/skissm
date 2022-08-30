@@ -491,7 +491,7 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__SendOne2oneMsgRequ
     Skissm__ProtoMsg *proto_msg = NULL;
     Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = NULL;
     // check if the receiver's device id exists
-    if (strcmp(e2ee_msg->to->user->device_id, "") != 0) {
+    if ((e2ee_msg->to->user->device_id)[0] != '\0') {
         // forward a copy of E2eeMsg
         proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
         skissm__proto_msg__init(proto_msg);

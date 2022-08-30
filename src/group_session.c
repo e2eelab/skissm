@@ -181,23 +181,18 @@ void create_outbound_group_session(
             if (outbound_sessions_num > (size_t)(0) && outbound_sessions != NULL) {
                 for (j = 0; j < outbound_sessions_num; j++) {
                     Skissm__Session *outbound_session = outbound_sessions[j];
-                    if (outbound_session != NULL && outbound_session->responded) {
+                    if (outbound_session->responded) {
                         send_one2one_msg_internal(outbound_session, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
                     } else {
+                        /** Since the other has not responded, we store the group pre-key first so that
+                         *  we can send it right after receiving the other's accept message.
+                         */
                         get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-                            group_member_address,
+                            outbound_session->to,
                             false,
                             group_pre_key_plaintext_data,
                             group_pre_key_plaintext_data_len
                         );
-                        // send Invite
-                        Skissm__InviteResponse *response = invite(outbound_group_session->session_owner, group_member_address->user->user_id, group_member_address->domain);
-                        // release
-                        if (response != NULL)
-                            skissm__invite_response__free_unpacked(response, NULL);
-                        else {
-                            // what if response error?
-                        }
                     }
                     // release outbound_session
                     skissm__session__free_unpacked(outbound_session, NULL);
@@ -206,6 +201,12 @@ void create_outbound_group_session(
                 free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
             } else {
                 /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
+                // get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                //     group_member_address,
+                //     false,
+                //     group_pre_key_plaintext_data,
+                //     group_pre_key_plaintext_data_len
+                // );
                 invite(outbound_group_session->session_owner, group_member_address->user->user_id, group_member_address->domain);
                 // not done
             }

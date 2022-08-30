@@ -15,7 +15,7 @@
 Skissm__Session *f2f_session_mid = NULL;
 
 static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
-    // load group pre-key
+    // load pending plaintext data(may be the group pre-key or the common plaintext)
     uint32_t pending_plaintext_data_list_num;
     uint8_t **pending_plaintext_data_list;
     size_t *pending_plaintext_data_len_list;

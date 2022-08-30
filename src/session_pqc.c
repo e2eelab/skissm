@@ -38,7 +38,7 @@
 Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
-    // Verify the signature
+    // verify the signature
     size_t result;
     if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len) ||
         (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)) {
@@ -52,12 +52,12 @@ Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_sessi
         return NULL;
     }
 
-    // Set the version
+    // set the version
     outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
-    // Set the cipher suite id
+    // set the cipher suite id
     outbound_session->e2ee_pack_id = strdup(E2EE_PACK_ID_PQC_DEFAULT);
 
-    // Store some information into the session
+    // store some information into the session
     const Skissm__KeyPair my_identity_key_pair = *(local_account->identity_key->asym_key_pair);
 
     uint8_t x3dh_epoch = 2;
@@ -66,7 +66,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_sessi
     copy_protobuf_from_protobuf(&(outbound_session->bob_signed_pre_key), &(their_pre_key_bundle->signed_pre_key_public->public_key));
     outbound_session->bob_signed_pre_key_id = their_pre_key_bundle->signed_pre_key_public->spk_id;
 
-    // Server may return empty one-time pre-key(public)
+    // server may return empty one-time pre-key(public)
     if (their_pre_key_bundle->one_time_pre_key_public) {
         copy_protobuf_from_protobuf(&(outbound_session->bob_one_time_pre_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key));
         outbound_session->bob_one_time_pre_key_id = their_pre_key_bundle->one_time_pre_key_public->opk_id;
@@ -79,7 +79,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_sessi
     memcpy(outbound_session->associated_data.data, my_identity_key_pair.public_key.data, key_len);
     memcpy((outbound_session->associated_data.data) + key_len, their_pre_key_bundle->identity_key_public->asym_public_key.data, key_len);
 
-    // Calculate the shared secret S via encapsulation
+    // calculate the shared secret S via encapsulation
     uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY];
     uint8_t *pos = secret;
     ProtobufCBinaryData *ciphertext_2, *ciphertext_3, *ciphertext_4;
@@ -97,18 +97,18 @@ Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_sessi
         ciphertext_4->len = 0;
     }
 
-    // The first part of the shared secret will be determined after receiving the acception message
+    // the first part of the shared secret will be determined after receiving the acception message
     outbound_session->alice_ephemeral_key.len = (x3dh_epoch + 1) * CRYPTO_BYTES_KEY;
     outbound_session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_session->alice_ephemeral_key.len);
     memcpy(outbound_session->alice_ephemeral_key.data + CRYPTO_BYTES_KEY, secret, x3dh_epoch * CRYPTO_BYTES_KEY);
 
-    // Set the session ID
+    // set the session ID
     outbound_session->session_id = generate_uuid_str();
 
     // store sesson state before send invite
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
-    // Send the invite request to the peer
+    // send the invite request to the peer
     size_t pre_shared_keys_num = 3;
     ProtobufCBinaryData *pre_shared_keys[3] = {ciphertext_2, ciphertext_3, ciphertext_4};
     Skissm__InviteResponse *response = invite_internal(outbound_session, pre_shared_keys, pre_shared_keys_num);
@@ -123,7 +123,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_sessi
 size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *local_account, Skissm__InviteMsg *msg) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
 
-    /* Verify the signed pre-key */
+    // verify the signed pre-key
     bool old_spk = 0;
     Skissm__SignedPreKey *old_spk_data = NULL;
     if (local_account->signed_pre_key->spk_id != msg->bob_signed_pre_key_id) {
@@ -155,7 +155,7 @@ size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account
     memcpy(inbound_session->associated_data.data, msg->alice_identity_key.data, key_len);
     memcpy((inbound_session->associated_data.data) + key_len, local_account->identity_key->asym_key_pair->public_key.data, key_len);
 
-    /* Mark the one-time pre-key as used */
+    // mark the one-time pre-key as used
     const Skissm__OneTimePreKey *our_one_time_pre_key;
     if (x3dh_epoch == 4) {
         our_one_time_pre_key = lookup_one_time_pre_key(local_account, msg->bob_one_time_pre_key_id);
@@ -187,7 +187,7 @@ size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account
         bob_one_time_pre_key = NULL;
     }
 
-    // Calculate the shared secret S via KEM
+    // calculate the shared secret S via KEM
     uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY];
     uint8_t *pos = secret;
     ProtobufCBinaryData *ciphertext_1;
@@ -232,7 +232,7 @@ size_t pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__
     uint8_t *pos = outbound_session->alice_ephemeral_key.data;
     cipher_suite->ss_key_gen(&(outbound_session->alice_identity_key), &(msg->pre_shared_keys[0]), pos);
 
-    // Create the root key and chain keys(????????????????)
+    // create the root key and chain keys(????????????????)
     initialise_as_alice(cipher_suite, outbound_session->ratchet, pos, outbound_session->alice_ephemeral_key.len, NULL, NULL);
 
     // done

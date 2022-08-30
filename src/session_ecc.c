@@ -35,7 +35,7 @@
 Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
-    // Verify the signature
+    // verify the signature
     size_t result;
     if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len) ||
         (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)) {
@@ -296,7 +296,7 @@ size_t crypto_curve25519_new_f2f_inbound_session(
     if (strcmp(inbound_session->from->user->user_id, inbound_session->to->user->user_id) != 0) {
         // no need to record the device id of the sender's address in the face-to-face inbound session
         free(inbound_session->from->user->device_id);
-        inbound_session->from->user->device_id = NULL;
+        inbound_session->from->user->device_id = '\0';
     }
 
     // store sesson state
@@ -345,7 +345,7 @@ size_t crypto_curve25519_complete_f2f_outbound_session(Skissm__Session *outbound
     if (strcmp(outbound_session->from->user->user_id, outbound_session->to->user->user_id) != 0) {
         // no need to record the device id of the receiver's address in the face-to-face outbound session
         free(outbound_session->to->user->device_id);
-        outbound_session->to->user->device_id = NULL;
+        outbound_session->to->user->device_id = '\0';
     }
 
     outbound_session->responded = true;

@@ -686,7 +686,24 @@ void test_multiple_devices() {
     on_f2f_password_created(password_claire, password_claire_len);
     f2f_invite(claire_address_1, claire_address_2, 0, password_claire, password_claire_len);
 
-    // create group
+    // the first group member is Alice
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
+    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup(alice_user_id);
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    // the second group member is Bob
+    group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup(bob_user_id);
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the second group member is Claire
+    group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[2]);
+    group_members[2]->user_id = strdup(claire_user_id);
+    group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // create the group
+    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address_1, "Group name", group_members, 3);
 
     // release
 
