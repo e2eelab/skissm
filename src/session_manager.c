@@ -21,6 +21,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     size_t *pending_plaintext_data_len_list;
     pending_plaintext_data_list_num =
         get_skissm_plugin()->db_handler.load_pending_plaintext_data(
+            outbound_session->from,
             outbound_session->to,
             false,
             &pending_plaintext_data_list,
@@ -54,7 +55,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
 
         // done
         if (succ)
-            get_skissm_plugin()->db_handler.unload_pending_plaintext_data(outbound_session->to, false);
+            get_skissm_plugin()->db_handler.unload_pending_plaintext_data(outbound_session->from, outbound_session->to, false);
     }
 }
 
@@ -230,14 +231,14 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     Skissm__Session *session = plaintext->f2f_session_data;
                     // check if the session is outbound or inbound
                     if (compare_user_id(session->from, e2ee_msg->from->user->user_id, e2ee_msg->from->domain)) {
-                        /** Since the session is outbound, the reciever's device id has been inserted "NULL".
+                        /** Since the session is outbound, the reciever's device id has been inserted "'\0'".
                          *  But the sender's device id should be replaced with that of this device. */
                         skissm__e2ee_address__free_unpacked(session->from, NULL);
                         copy_address_from_address(&(session->from), e2ee_msg->to);
                         skissm__e2ee_address__free_unpacked(session->session_owner, NULL);
                         copy_address_from_address(&(session->session_owner), e2ee_msg->to);
                     } else if (compare_user_id(session->to, e2ee_msg->from->user->user_id, e2ee_msg->from->domain)) {
-                        /** Since the session is inbound, the sender's device id has been inserted "NULL".
+                        /** Since the session is inbound, the sender's device id has been inserted "'\0'".
                          *  But the receiver's device id should be replaced with that of this device. */
                         skissm__e2ee_address__free_unpacked(session->to, NULL);
                         copy_address_from_address(&(session->to), e2ee_msg->to);
@@ -338,6 +339,11 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     Skissm__E2eeAddress *from = msg->from;
     Skissm__E2eeAddress *to = msg->to;
 
+    if (!compare_address(receiver_address, to)){
+        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_invite_msg()");
+        return false;
+    }
+
     // notify
     ssm_notify_inbound_session_invited(from);
 
@@ -346,7 +352,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     get_skissm_plugin()->db_handler.load_account_by_address(to, &account);
     if (account == NULL) {
         ssm_notify_error(BAD_ACCOUNT, "consume_invite_msg()");
-        return (size_t)(-1);
+        return false;
     }
     // create a new inbound session
     Skissm__Session *inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
@@ -372,7 +378,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     skissm__session__free_unpacked(inbound_session, NULL);
 
     // done
-    return result;
+    return result == (size_t)(0);
 }
 
 Skissm__AcceptRequest *produce_accept_request(
@@ -414,6 +420,11 @@ bool consume_accept_response(Skissm__AcceptResponse *response) {
 }
 
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg) {
+    if (!compare_address(receiver_address, msg->to)){
+        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_accept_msg()");
+        return false;
+    }
+
     Skissm__Session *outbound_session = NULL;
     // Is it unique?
     get_skissm_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &outbound_session);
@@ -472,6 +483,11 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     const char *e2ee_pack_id = msg->e2ee_pack_id;
     Skissm__E2eeAddress *from = msg->from;
     Skissm__E2eeAddress *to = msg->to;
+
+    if (!compare_address(receiver_address, to)){
+        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_f2f_invite_msg()");
+        return false;
+    }
 
     uint8_t *password = NULL;
     size_t password_len;
@@ -598,6 +614,11 @@ bool consume_f2f_accept_response(Skissm__F2fAcceptResponse *response) {
 }
 
 bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAcceptMsg *msg) {
+    if (!compare_address(receiver_address, msg->to)){
+        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_f2f_accept_msg()");
+        return false;
+    }
+
     const session_suite_t *session_suite = get_e2ee_pack(msg->e2ee_pack_id)->session_suite;
 
     // check f2f_session_mid

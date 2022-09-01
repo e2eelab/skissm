@@ -29,6 +29,19 @@ extern "C" {
 #include "skissm/skissm.h"
 
 /**
+ * @brief Pack the group pre-keys.
+ *
+ * @param outbound_group_session
+ * @param group_pre_key_plaintext_data
+ * @param old_session_id
+ */
+size_t pack_group_pre_key_plaintext(
+    Skissm__GroupSession *outbound_group_session,
+    uint8_t **group_pre_key_plaintext_data,
+    char *old_session_id
+);
+
+/**
  * @brief Create an outbound group session.
  *
  * @param e2ee_pack_id
@@ -67,7 +80,11 @@ void create_inbound_group_session(
  * @param chain_key
  * @param iteration
  */
-void advance_group_chain_key(const cipher_suite_t *cipher_suite, ProtobufCBinaryData *chain_key, uint32_t iteration);
+void advance_group_chain_key(
+    const cipher_suite_t *cipher_suite,
+    ProtobufCBinaryData *chain_key,
+    uint32_t iteration
+);
 
 
 /**

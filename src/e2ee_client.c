@@ -84,6 +84,7 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
         }
         // release
         free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
+        // TODO: return what
         return NULL;
     }
 }
@@ -190,6 +191,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         if (outbound_session->responded == false) {
             // save common_plaintext_data with flag responded = false
             get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                outbound_session->from,
                 outbound_session->to,
                 false,
                 common_plaintext_data,
@@ -206,9 +208,10 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
 
         // done
         // if error happened, keep common_plaintext_data in db
-        if (response == NULL) {
+        if (response == NULL  || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             // save common_plaintext_data with flag responded = true
             get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                outbound_session->from,
                 outbound_session->to,
                 true,
                 common_plaintext_data,

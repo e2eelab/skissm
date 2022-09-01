@@ -151,6 +151,8 @@ Skissm__ConsumeProtoMsgResponse *consume_proto_msg(const char *proto_msg_id);
  */
 Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len);
 
+void resume_connection();
+
 #ifdef __cplusplus
 }
 #endif

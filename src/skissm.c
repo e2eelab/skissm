@@ -49,6 +49,7 @@ static skissm_plugin_t *skissm_plugin;
 void skissm_begin(skissm_plugin_t *ssm_plugin) {
     skissm_plugin = ssm_plugin;
     account_begin();
+    // TODO: resend
 }
 
 void skissm_end() {

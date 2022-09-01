@@ -209,20 +209,39 @@ void unload_inbound_group_session(
     char *session_id
 );
 void store_pending_plaintext_data(
-    Skissm__E2eeAddress *member_address,
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *to_address,
     bool outbound_session_responded,
     uint8_t *group_pre_key_plaintext,
     size_t group_pre_key_plaintext_len
 );
 size_t load_pending_plaintext_data(
-    Skissm__E2eeAddress *member_address,
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *to_address,
     bool outbound_session_responded,
     uint8_t ***e2ee_plaintext_data_list,
     size_t **e2ee_plaintext_data_len_list
 );
 void unload_pending_plaintext_data(
-    Skissm__E2eeAddress *member_address,
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *to_address,
     bool outbound_session_responded
+);
+void store_pending_request_data(
+    Skissm__E2eeAddress *user_address,
+    int request_type,
+    uint8_t *request_data,
+    size_t request_data_len
+);
+size_t load_pending_request_data(
+    Skissm__E2eeAddress *user_address,
+    int **request_type,
+    uint8_t ***request_data_list,
+    size_t **request_data_len_list
+);
+void unload_pending_request_data(
+    Skissm__E2eeAddress *user_address,
+    int request_type
 );
 
 #endif /* MOCK_DB_H_ */

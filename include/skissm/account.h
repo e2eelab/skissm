@@ -63,8 +63,7 @@ void set_account(Skissm__Account *account);
  * @param address the peer address that is related to an account
  * @return Skissm__Account* The account object
  */
-Skissm__Account *
-switch_account(Skissm__E2eeAddress *address);
+Skissm__Account *switch_account(Skissm__E2eeAddress *address);
 
 /**
  * @brief Lookup an one-time pre-key with a given public key
@@ -73,9 +72,10 @@ switch_account(Skissm__E2eeAddress *address);
  * @param one_time_pre_key_id The one-time pre-key id to be matched
  * @return const Skissm__OneTimePreKey* The matched one-time pre-key.
  */
-const Skissm__OneTimePreKey *
-lookup_one_time_pre_key(Skissm__Account *account,
-                        uint32_t one_time_pre_key_id);
+const Skissm__OneTimePreKey *lookup_one_time_pre_key(
+    Skissm__Account *account,
+    uint32_t one_time_pre_key_id
+);
 
 /**
  * @brief Generate a new signed pre-key pair and a new signature.
@@ -83,8 +83,7 @@ lookup_one_time_pre_key(Skissm__Account *account,
  * @param account The account to be updated with new generated signed pre-key
  * @return Success or not
  */
-size_t
-generate_signed_pre_key(Skissm__Account *account);
+size_t generate_signed_pre_key(Skissm__Account *account);
 
 /**
  * @brief Generates a number of new one-time pre-keys
@@ -94,9 +93,10 @@ generate_signed_pre_key(Skissm__Account *account);
  * pre-keys
  * @return Skissm__OneTimePreKey**
  */
-Skissm__OneTimePreKey **
-generate_opks(size_t number_of_keys,
-              Skissm__Account *account);
+Skissm__OneTimePreKey **generate_opks(
+    size_t number_of_keys,
+    Skissm__Account *account
+);
 
 /**
  * @brief Mark one of the one-time pre-key pairs as used given by ID
@@ -105,8 +105,10 @@ generate_opks(size_t number_of_keys,
  * @param id The id of one-time pre-key that will be marked as used.
  * @return Success or not
  */
-size_t mark_opk_as_used(Skissm__Account *account,
-                        uint32_t id);
+size_t mark_opk_as_used(
+    Skissm__Account *account,
+    uint32_t id
+);
 
 /**
  * @brief Remove the used one-time pre-keys

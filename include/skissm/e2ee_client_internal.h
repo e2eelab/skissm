@@ -33,7 +33,10 @@ extern "C" {
  * @param to_domain
  * @return Skissm__InviteResponse *
  */
-Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain);
+Skissm__InviteResponse *get_pre_key_bundle_internal(
+    Skissm__E2eeAddress *from,
+    const char *to_user_id, const char *to_domain
+);
 
 /**
  * @brief Send invite request to server.
@@ -43,7 +46,10 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, c
  * @param pre_shared_keys_num
  * @return Skissm__InviteResponse *
  */
-Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num);
+Skissm__InviteResponse *invite_internal(
+    Skissm__Session *outbound_session,
+    ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num
+);
 
 /**
  * @brief Send accept request to server.
@@ -54,7 +60,11 @@ Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, Proto
  * @param ciphertext_1
  * @return Skissm__AcceptResponse *
  */
-Skissm__AcceptResponse *accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1);
+Skissm__AcceptResponse *accept_internal(
+    const char *e2ee_pack_id,
+    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
+    ProtobufCBinaryData *ciphertext_1
+);
 
 /**
  * @brief Send face-to-face invite request to server.
@@ -112,7 +122,12 @@ Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint3
  * @param plaintext_data_len
  * @return Skissm__SendOne2oneMsgResponse *
  */
-Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len);
+Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
+    Skissm__Session *outbound_session,
+    const uint8_t *plaintext_data, size_t plaintext_data_len
+);
+
+void resume_connection_internal();
 
 #ifdef __cplusplus
 }
