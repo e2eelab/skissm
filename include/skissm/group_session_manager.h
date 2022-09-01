@@ -37,7 +37,12 @@ extern "C" {
  * @param group_members_num
  * @return Skissm__CreateGroupRequest*
  */
-Skissm__CreateGroupRequest *produce_create_group_request(Skissm__E2eeAddress *sender_address, const char *group_name, Skissm__GroupMember **group_members, size_t group_members_num);
+Skissm__CreateGroupRequest *produce_create_group_request(
+    Skissm__E2eeAddress *sender_address,
+    const char *group_name,
+    Skissm__GroupMember **group_members,
+    size_t group_members_num
+);
 
 /**
  * @brief Process an incoming CreateGroupResponse message.
@@ -68,7 +73,10 @@ bool consume_create_group_response(
  * @return true
  * @return false
  */
-bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg);
+bool consume_create_group_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__CreateGroupMsg *msg
+);
 
 /**
  * @brief Create a GetGroupRequest message to be sent to server.
@@ -94,7 +102,11 @@ bool consume_get_group_response(Skissm__GetGroupResponse *response);
  * @param adding_member_num
  * @return Skissm__AddGroupMembersRequest*
  */
-Skissm__AddGroupMembersRequest *produce_add_group_members_request(Skissm__GroupSession *outbound_group_session, Skissm__GroupMember **adding_group_members, size_t adding_group_members_num);
+Skissm__AddGroupMembersRequest *produce_add_group_members_request(
+    Skissm__GroupSession *outbound_group_session,
+    Skissm__GroupMember **adding_group_members,
+    size_t adding_group_members_num
+);
 
 /**
  * @brief Process an incoming AddGroupMembersResponse message.
@@ -106,7 +118,8 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(Skissm__GroupS
  */
 bool consume_add_group_members_response(
     Skissm__GroupSession *outbound_group_session,
-    Skissm__AddGroupMembersResponse *response);
+    Skissm__AddGroupMembersResponse *response
+);
 
 /**
  * @brief Process an incoming AddGroupMembersMsg message.
@@ -116,7 +129,10 @@ bool consume_add_group_members_response(
  * @return true
  * @return false
  */
-bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddGroupMembersMsg *msg);
+bool consume_add_group_members_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__AddGroupMembersMsg *msg
+);
 
 /**
  * @brief Create a RemoveGroupMembersRequest message to be sent to server.
@@ -126,7 +142,11 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
  * @param removing_member_num
  * @return Skissm__RemoveGroupMembersRequest*
  */
-Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(Skissm__GroupSession *outbound_group_session, Skissm__GroupMember **removing_group_members, size_t removing_group_members_num);
+Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
+    Skissm__GroupSession *outbound_group_session,
+    Skissm__GroupMember **removing_group_members,
+    size_t removing_group_members_num
+);
 
 /**
  * @brief Process an incoming RemoveGroupMembersResponse message.
@@ -138,7 +158,8 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(Skissm__
  */
 bool consume_remove_group_members_response(
     Skissm__GroupSession *outbound_group_session,
-    Skissm__RemoveGroupMembersResponse *response);
+    Skissm__RemoveGroupMembersResponse *response
+);
 
 /**
  * @brief Process an incoming RemoveGroupMembersMsg message.
@@ -148,7 +169,10 @@ bool consume_remove_group_members_response(
  * @return true
  * @return false
  */
-bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveGroupMembersMsg *msg);
+bool consume_remove_group_members_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__RemoveGroupMembersMsg *msg
+);
 
 /**
  * @brief Create a SendGroupMsgRequest message to be sent to server.
@@ -158,7 +182,10 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
  * @param plaintext_data_len
  * @return Skissm__SendGroupMsgRequest*
  */
-Skissm__SendGroupMsgRequest *produce_send_group_msg_request(Skissm__GroupSession *group_session, const uint8_t *plaintext_data, size_t plaintext_data_len);
+Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
+    Skissm__GroupSession *group_session,
+    const uint8_t *plaintext_data, size_t plaintext_data_len
+);
 
 /**
  * @brief Process an incoming SendGroupMsgResponse message.
@@ -168,7 +195,10 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(Skissm__GroupSession
  * @return true
  * @return false
  */
-bool consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session, Skissm__SendGroupMsgResponse *response);
+bool consume_send_group_msg_response(
+    Skissm__GroupSession *outbound_group_session,
+    Skissm__SendGroupMsgResponse *response
+);
 
 /**
  * @brief Process an incoming E2eeMsg message.
@@ -178,7 +208,10 @@ bool consume_send_group_msg_response(Skissm__GroupSession *outbound_group_sessio
  * @return true
  * @return false
  */
-bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg);
+bool consume_group_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__E2eeMsg *e2ee_msg
+);
 
 #ifdef __cplusplus
 }

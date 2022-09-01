@@ -302,27 +302,53 @@ typedef struct skissm_db_handler_t {
     // pending plaintext related handlers
     /**
      * @brief store pending plaintext data
-     * @param user_address
+     * @param from_address
+     * @param to_address
      * @param outbound_session_responded
      * @param plaintext_data
      * @param plaintext_data_len
      */
-    void (*store_pending_plaintext_data)(Skissm__E2eeAddress *, bool, uint8_t *, size_t);
+    void (*store_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, bool, uint8_t *, size_t);
     /**
-     * @brief load pending plaintext_data
-     * @param user_address
+     * @brief load pending plaintext data
+     * @param from_address
+     * @param to_address
      * @param outbound_session_responded
      * @param plaintext_data_list
      * @param plaintext_data_len_list
      * @return number of loaded plaintext_data list
      */
-    size_t (*load_pending_plaintext_data)(Skissm__E2eeAddress *, bool, uint8_t ***, size_t **);
+    size_t (*load_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, bool, uint8_t ***, size_t **);
     /**
-     * @brief delete group pre-key
-     * @param user_address
+     * @brief delete pending plaintext data
+     * @param from_address
+     * @param to_address
      * @param outbound_session_responded
      */
-    void (*unload_pending_plaintext_data)(Skissm__E2eeAddress *, bool);
+    void (*unload_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, bool);
+    /**
+     * @brief store pending request data
+     * @param user_address
+     * @param request_type
+     * @param request_data
+     * @param request_data_len
+     */
+    void (*store_pending_request_data)(Skissm__E2eeAddress *, int, uint8_t *, size_t);
+    /**
+     * @brief load pending request data
+     * @param user_address
+     * @param request_type
+     * @param request_data_list
+     * @param request_data_len_list
+     * @return number of loaded request_data list
+     */
+    size_t (*load_pending_request_data)(Skissm__E2eeAddress *, int **, uint8_t ***, size_t **);
+    /**
+     * @brief delete pending request data
+     * @param user_address
+     * @param request_type
+     */
+    void (*unload_pending_request_data)(Skissm__E2eeAddress *, int);
 } skissm_db_handler_t;
 
 typedef struct e2ee_proto_handler_t {
@@ -519,6 +545,12 @@ typedef struct skissm_plugin_t {
     e2ee_proto_handler_t proto_handler;
     skissm_event_handler_t event_handler;
 } skissm_plugin_t;
+
+// TODO
+typedef enum {
+    INVITE_REQUEST,
+    ACCEPT_REQUEST
+} resendable_request;
 
 const e2ee_pack_t *get_e2ee_pack(const char *e2ee_pack_id);
 

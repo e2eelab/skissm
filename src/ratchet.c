@@ -119,7 +119,7 @@ static void create_chain_key(
     }
 
     new_chain_key->index = 0;
-    copy_protobuf_from_array(&new_chain_key->shared_key, derived_secrets + 32, shared_key_len);
+    copy_protobuf_from_array(&new_chain_key->shared_key, derived_secrets + shared_key_len, shared_key_len);
 
     unset(derived_secrets, sizeof(derived_secrets));
     unset(secret, sizeof(secret));

@@ -65,7 +65,11 @@ void create_group_message_key(
     );
 }
 
-static void pack_group_pre_key(Skissm__GroupPreKeyBundle *group_pre_key_bundle, uint8_t **group_pre_key_plaintext_data, size_t *group_pre_key_plaintext_data_len) {
+static void pack_group_pre_key(
+    Skissm__GroupPreKeyBundle *group_pre_key_bundle,
+    uint8_t **group_pre_key_plaintext_data,
+    size_t *group_pre_key_plaintext_data_len
+) {
     Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
     skissm__plaintext__init(plaintext);
     plaintext->version = strdup(E2EE_PLAINTEXT_VERSION);
@@ -82,7 +86,7 @@ static void pack_group_pre_key(Skissm__GroupPreKeyBundle *group_pre_key_bundle, 
     skissm__plaintext__free_unpacked(plaintext, NULL);
 }
 
-static size_t pack_group_pre_key_plaintext(
+size_t pack_group_pre_key_plaintext(
     Skissm__GroupSession *outbound_group_session,
     uint8_t **group_pre_key_plaintext_data,
     char *old_session_id
@@ -115,7 +119,7 @@ static size_t pack_group_pre_key_plaintext(
     );
 
     // release
-    // group_pre_key_payload is released in pack_group_pre_key()
+    // group_pre_key_bundle is released in pack_group_pre_key()
 
     // done
     return group_pre_key_plaintext_data_len;
@@ -188,6 +192,7 @@ void create_outbound_group_session(
                          *  we can send it right after receiving the other's accept message.
                          */
                         get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                            outbound_session->from,
                             outbound_session->to,
                             false,
                             group_pre_key_plaintext_data,
@@ -207,7 +212,7 @@ void create_outbound_group_session(
                 //     group_pre_key_plaintext_data,
                 //     group_pre_key_plaintext_data_len
                 // );
-                invite(outbound_group_session->session_owner, group_member_address->user->user_id, group_member_address->domain);
+                get_pre_key_bundle_internal(outbound_group_session->session_owner, group_member_address->user->user_id, group_member_address->domain);
                 // not done
             }
 

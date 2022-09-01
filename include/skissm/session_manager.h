@@ -34,7 +34,9 @@ extern "C" {
  * @param to_domain
  * @return Skissm__GetPreKeyBundleRequest*
  */
-Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(const char *to_user_id, const char *to_domain);
+Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(
+    const char *to_user_id, const char *to_domain
+);
 
 /**
  * @brief Process an incoming get_pre_key_bundle_response_payload.
@@ -55,7 +57,10 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
  * @param plaintext_data_len
  * @return Skissm__SendOne2oneMsgRequest*
  */
-Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len);
+Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(
+    Skissm__Session *outbound_session,
+    const uint8_t *plaintext_data, size_t plaintext_data_len
+);
 
 /**
  * @brief Process an send_one2one_msg_response with corresponding inbound session.
@@ -65,7 +70,10 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(Skissm__Session 
  * @return true
  * @return false
  */
-bool consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response);
+bool consume_send_one2one_msg_response(
+    Skissm__Session *outbound_session,
+    Skissm__SendOne2oneMsgResponse *response
+);
 
 /**
  * @brief Process a received Skissm__E2eeMsg message from server.
@@ -75,8 +83,10 @@ bool consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm
  * @return true
  * @return false
  */
-bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg);
-
+bool consume_one2one_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__E2eeMsg *e2ee_msg
+);
 
 /**
  * @brief Process an incoming NewUserDeviceMsg message.
@@ -86,7 +96,10 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
  * @return true
  * @return false
  */
-bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg);
+bool consume_new_user_device_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__NewUserDeviceMsg *msg
+);
 
 /**
  * @brief Create a Skissm__InviteRequest message to be sent to server.
@@ -97,7 +110,8 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
  * @return Skissm__InviteRequest*
  */
 Skissm__InviteRequest *produce_invite_request(
-    Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num
+    Skissm__Session *outbound_session,
+    ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num
 );
 
 /**
@@ -117,7 +131,10 @@ bool consume_invite_response(Skissm__InviteResponse *response);
  * @return true
  * @return false
  */
-bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *msg);
+bool consume_invite_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__InviteMsg *msg
+);
 
 /**
  * @brief Create a Skissm__AcceptRequest message to be sent to server.
@@ -152,7 +169,10 @@ bool consume_accept_response(Skissm__AcceptResponse *response);
  * @return true
  * @return false
  */
-bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg);
+bool consume_accept_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__AcceptMsg *msg
+);
 
 /**
  * @brief Create a Skissm__F2fInviteRequest message to be sent to server.
@@ -178,7 +198,10 @@ Skissm__F2fInviteRequest *produce_f2f_invite_request(
  * @return true
  * @return false
  */
-bool consume_f2f_invite_response(Skissm__F2fInviteRequest *request, Skissm__F2fInviteResponse *response);
+bool consume_f2f_invite_response(
+    Skissm__F2fInviteRequest *request,
+    Skissm__F2fInviteResponse *response
+);
 
 /**
  * @brief Process an incoming Skissm__F2fInviteMsg message.
@@ -188,7 +211,10 @@ bool consume_f2f_invite_response(Skissm__F2fInviteRequest *request, Skissm__F2fI
  * @return true
  * @return false
  */
-bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fInviteMsg *msg);
+bool consume_f2f_invite_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__F2fInviteMsg *msg
+);
 
 /**
  * @brief Create a Skissm__F2fAcceptRequest message to be sent to server.
@@ -223,7 +249,10 @@ bool consume_f2f_accept_response(Skissm__F2fAcceptResponse *response);
  * @return true
  * @return false
  */
-bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAcceptMsg *msg);
+bool consume_f2f_accept_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__F2fAcceptMsg *msg
+);
 
 #ifdef __cplusplus
 }

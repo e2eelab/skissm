@@ -33,8 +33,15 @@ Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, Proto
 Skissm__AcceptResponse *accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1) {
     Skissm__AcceptRequest *request = produce_accept_request(e2ee_pack_id, from, to, ciphertext_1);
     Skissm__AcceptResponse *response = get_skissm_plugin()->proto_handler.accept(request);
-    consume_accept_response(response);
-
+    bool succ = consume_accept_response(response);
+    if (!succ) {
+        // pack
+        size_t request_data_len = skissm__accept_request__get_packed_size(request);
+        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+        skissm__accept_request__pack(request, request_data);
+        // store
+        get_skissm_plugin()->db_handler.store_pending_request_data(from, ACCEPT_REQUEST, request_data, request_data_len);
+    }
     // release
     skissm__accept_request__free_unpacked(request, NULL);
 
