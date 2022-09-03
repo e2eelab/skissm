@@ -296,7 +296,7 @@ size_t crypto_curve25519_new_f2f_inbound_session(
     if (strcmp(inbound_session->from->user->user_id, inbound_session->to->user->user_id) != 0) {
         // no need to record the device id of the sender's address in the face-to-face inbound session
         free(inbound_session->from->user->device_id);
-        inbound_session->from->user->device_id = '\0';
+        inbound_session->from->user->device_id = strdup("");
     }
 
     // store sesson state
@@ -345,7 +345,7 @@ size_t crypto_curve25519_complete_f2f_outbound_session(Skissm__Session *outbound
     if (strcmp(outbound_session->from->user->user_id, outbound_session->to->user->user_id) != 0) {
         // no need to record the device id of the receiver's address in the face-to-face outbound session
         free(outbound_session->to->user->device_id);
-        outbound_session->to->user->device_id = '\0';
+        outbound_session->to->user->device_id = strdup("");
     }
 
     outbound_session->responded = true;
