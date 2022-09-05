@@ -85,7 +85,8 @@ bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *addres
     return safe_strcmp(address_1->domain, address_2->domain)
         && (address_1->peer_case == address_2->peer_case)
         && (((address_1->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER)
-                && (safe_strcmp(address_1->user->user_id, address_2->user->user_id) && safe_strcmp(address_1->user->device_id, address_2->user->device_id)))
+                && (safe_strcmp(address_1->user->user_id, address_2->user->user_id)
+                && safe_strcmp(address_1->user->device_id, address_2->user->device_id)))
             || ((address_1->peer_case == SKISSM__E2EE_ADDRESS__PEER_GROUP)
                 && (safe_strcmp(address_1->group->group_id, address_2->group->group_id))));
 }
