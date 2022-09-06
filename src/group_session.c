@@ -206,14 +206,11 @@ void create_outbound_group_session(
                 free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
             } else {
                 /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
-                // get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-                //     group_member_address,
-                //     false,
-                //     group_pre_key_plaintext_data,
-                //     group_pre_key_plaintext_data_len
-                // );
-                get_pre_key_bundle_internal(outbound_group_session->session_owner, group_member_address->user->user_id, group_member_address->domain);
-                // not done
+                get_pre_key_bundle_internal(
+                    outbound_group_session->session_owner,
+                    group_member_address->user->user_id, group_member_address->domain,
+                    group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
+                );
             }
 
             // release

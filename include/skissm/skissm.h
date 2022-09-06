@@ -320,6 +320,15 @@ typedef struct skissm_db_handler_t {
      */
     size_t (*load_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, bool, uint8_t ***, size_t **);
     /**
+     * @brief load all resending plaintext data
+     * @param from_address
+     * @param to_addresses
+     * @param plaintext_data_list
+     * @param plaintext_data_len_list
+     * @return number of loaded resending_plaintext_data list
+     */
+    size_t (*load_resending_plaintext)(Skissm__E2eeAddress *, Skissm__E2eeAddress ***, uint8_t ***, size_t **);
+    /**
      * @brief delete pending plaintext data
      * @param from_address
      * @param to_address
@@ -546,10 +555,15 @@ typedef struct skissm_plugin_t {
     skissm_event_handler_t event_handler;
 } skissm_plugin_t;
 
-// TODO
 typedef enum {
     INVITE_REQUEST,
-    ACCEPT_REQUEST
+    ACCEPT_REQUEST,
+    PUBLISH_SPK_REQUEST,
+    SUPPLY_OPKS_REQUEST,
+    CREATE_GROUP_REQUEST,
+    ADD_GROUP_MEMBERS_REQUEST,
+    REMOVE_GROUP_MEMBERS_REQUEST,
+    SEND_GROUP_MSG_REQUEST
 } resendable_request;
 
 const e2ee_pack_t *get_e2ee_pack(const char *e2ee_pack_id);

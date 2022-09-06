@@ -109,6 +109,8 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(
 
 Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     Skissm__E2eeAddress *from,
+    uint8_t *group_pre_key_plaintext_data,
+    size_t group_pre_key_plaintext_data_len,
     Skissm__GetPreKeyBundleResponse *response
 ) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
@@ -124,6 +126,16 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 return NULL;
             }
 
+            // store the group pre-keys if necessary
+            get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                from,
+                their_pre_key_bundles[i]->user_address,
+                false,
+                group_pre_key_plaintext_data,
+                group_pre_key_plaintext_data_len
+            );
+
+            // prepare to create an outbound session
             const char *e2ee_pack_id = their_pre_key_bundles[i]->e2ee_pack_id;
             Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
             initialise_session(outbound_session, e2ee_pack_id, from, their_pre_key_bundles[i]->user_address);
@@ -281,7 +293,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 }
 
 bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg) {
-    Skissm__InviteResponse *response = get_pre_key_bundle_internal(receiver_address, msg->user_address->user->user_id, msg->user_address->domain);
+    Skissm__InviteResponse *response = get_pre_key_bundle_internal(receiver_address, msg->user_address->user->user_id, msg->user_address->domain, NULL, 0);
     bool succ = false;
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         succ = true;

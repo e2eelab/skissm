@@ -3,12 +3,19 @@
 #include <string.h>
 
 #include "skissm/account_manager.h"
+#include "skissm/group_session_manager.h"
+#include "skissm/mem_util.h"
 #include "skissm/session_manager.h"
 
-Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
+Skissm__InviteResponse *get_pre_key_bundle_internal(
+    Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
+    uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len
+) {
     Skissm__GetPreKeyBundleRequest *request = produce_get_pre_key_bundle_request(to_user_id, to_domain);
     Skissm__GetPreKeyBundleResponse *response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(request);
-    Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(from, response);
+    Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
+        from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, response
+    );
 
     // release
     skissm__get_pre_key_bundle_request__free_unpacked(request, NULL);
@@ -18,10 +25,21 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(Skissm__E2eeAddress *from, c
     return invite_response;
 }
 
-Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num) {
+Skissm__InviteResponse *invite_internal(
+    Skissm__Session *outbound_session,
+    ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num
+) {
     Skissm__InviteRequest *request = produce_invite_request(outbound_session, pre_shared_keys, pre_shared_keys_num);
     Skissm__InviteResponse *response = get_skissm_plugin()->proto_handler.invite(request);
-    consume_invite_response(response);
+    bool succ = consume_invite_response(response);
+    if (!succ) {
+        // pack
+        size_t request_data_len = skissm__invite_request__get_packed_size(request);
+        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+        skissm__invite_request__pack(request, request_data);
+        // store
+        get_skissm_plugin()->db_handler.store_pending_request_data(outbound_session->from, INVITE_REQUEST, request_data, request_data_len);
+    }
 
     // release
     skissm__invite_request__free_unpacked(request, NULL);
@@ -30,7 +48,12 @@ Skissm__InviteResponse *invite_internal(Skissm__Session *outbound_session, Proto
     return response;
 }
 
-Skissm__AcceptResponse *accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1) {
+Skissm__AcceptResponse *accept_internal(
+    const char *e2ee_pack_id,
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    ProtobufCBinaryData *ciphertext_1
+) {
     Skissm__AcceptRequest *request = produce_accept_request(e2ee_pack_id, from, to, ciphertext_1);
     Skissm__AcceptResponse *response = get_skissm_plugin()->proto_handler.accept(request);
     bool succ = consume_accept_response(response);
@@ -65,7 +88,12 @@ Skissm__F2fInviteResponse *f2f_invite_internal(
     return response;
 }
 
-Skissm__F2fAcceptResponse *f2f_accept_internal(const char *e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, Skissm__Account *local_account) {
+Skissm__F2fAcceptResponse *f2f_accept_internal(
+    const char *e2ee_pack_id,
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    Skissm__Account *local_account
+) {
     Skissm__F2fAcceptRequest *request = produce_f2f_accept_request(e2ee_pack_id, from, to, local_account);
     Skissm__F2fAcceptResponse *response = get_skissm_plugin()->proto_handler.f2f_accept(request);
     consume_f2f_accept_response(response);
@@ -80,7 +108,15 @@ Skissm__F2fAcceptResponse *f2f_accept_internal(const char *e2ee_pack_id, Skissm_
 Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
     Skissm__PublishSpkRequest *request = produce_publish_spk_request(account);
     Skissm__PublishSpkResponse *response = get_skissm_plugin()->proto_handler.publish_spk(request);
-    consume_publish_spk_response(account, response);
+    bool succ = consume_publish_spk_response(account, response);
+    if (!succ) {
+        // pack
+        size_t request_data_len = skissm__publish_spk_request__get_packed_size(request);
+        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+        skissm__publish_spk_request__pack(request, request_data);
+        // store
+        get_skissm_plugin()->db_handler.store_pending_request_data(account->address, PUBLISH_SPK_REQUEST, request_data, request_data_len);
+    }
 
     // release
     skissm__publish_spk_request__free_unpacked(request, NULL);
@@ -92,7 +128,15 @@ Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
 Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint32_t opks_num) {
     Skissm__SupplyOpksRequest *request = produce_supply_opks_request(account, opks_num);
     Skissm__SupplyOpksResponse *response = get_skissm_plugin()->proto_handler.supply_opks(request);
-    consume_supply_opks_response(account, opks_num, response);
+    bool succ = consume_supply_opks_response(account, opks_num, response);
+    if (!succ) {
+        // pack
+        size_t request_data_len = skissm__supply_opks_request__get_packed_size(request);
+        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+        skissm__supply_opks_request__pack(request, request_data);
+        // store
+        get_skissm_plugin()->db_handler.store_pending_request_data(account->address, SUPPLY_OPKS_REQUEST, request_data, request_data_len);
+    }
 
     // release
     skissm__supply_opks_request__free_unpacked(request, NULL);
@@ -101,7 +145,10 @@ Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint3
     return response;
 }
 
-Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(Skissm__Session *outbound_session, const uint8_t *plaintext_data, size_t plaintext_data_len) {
+Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
+    Skissm__Session *outbound_session,
+    const uint8_t *plaintext_data, size_t plaintext_data_len
+) {
     Skissm__SendOne2oneMsgRequest *request = produce_send_one2one_msg_request(outbound_session, plaintext_data, plaintext_data_len);
     Skissm__SendOne2oneMsgResponse *response = get_skissm_plugin()->proto_handler.send_one2one_msg(request);
     consume_send_one2one_msg_response(outbound_session, response);
@@ -113,3 +160,166 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(Skissm__Session *outbo
     return response;
 }
 
+void resume_connection_internal(Skissm__Account *account) {
+    Skissm__E2eeAddress *address = account->address;
+    // load all pending request data
+    int *request_type;
+    uint8_t **request_data_list;
+    size_t *request_data_len_list;
+    size_t pending_request_data_num =
+        get_skissm_plugin()->db_handler.load_pending_request_data(
+            address, &request_type, &request_data_list, &request_data_len_list
+        );
+    // send the pending request data
+    bool succ;
+    size_t i;
+    for (i = 0; i < pending_request_data_num; i++) {
+        switch (request_type[i]) {
+            case INVITE_REQUEST: {
+                Skissm__InviteRequest *invite_request = skissm__invite_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+                Skissm__InviteResponse *invite_response = get_skissm_plugin()->proto_handler.invite(invite_request);
+                succ = consume_invite_response(invite_response);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, INVITE_REQUEST);
+                }
+                skissm__invite_request__free_unpacked(invite_request, NULL);
+                skissm__invite_response__free_unpacked(invite_response, NULL);
+                break;
+            }
+            case ACCEPT_REQUEST: {
+                Skissm__AcceptRequest *accept_request = skissm__accept_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+                Skissm__AcceptResponse *accept_response = get_skissm_plugin()->proto_handler.accept(accept_request);
+                succ = consume_accept_response(accept_response);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, ACCEPT_REQUEST);
+                }
+                skissm__accept_request__free_unpacked(accept_request, NULL);
+                skissm__accept_response__free_unpacked(accept_response, NULL);
+                break;
+            }
+            case PUBLISH_SPK_REQUEST: {
+                Skissm__PublishSpkRequest *publish_spk_request = skissm__publish_spk_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+                Skissm__PublishSpkResponse *publish_spk_response = get_skissm_plugin()->proto_handler.publish_spk(publish_spk_request);
+                succ = consume_publish_spk_response(account, publish_spk_response);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, PUBLISH_SPK_REQUEST);
+                }
+                skissm__publish_spk_request__free_unpacked(publish_spk_request, NULL);
+                skissm__publish_spk_response__free_unpacked(publish_spk_response, NULL);
+                break;
+            }
+            case SUPPLY_OPKS_REQUEST: {
+                Skissm__SupplyOpksRequest *supply_opks_request = skissm__supply_opks_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+                Skissm__SupplyOpksResponse *supply_opks_response = get_skissm_plugin()->proto_handler.supply_opks(supply_opks_request);
+                succ = consume_supply_opks_response(account, (uint32_t)supply_opks_request->n_one_time_pre_key_public, supply_opks_response);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, SUPPLY_OPKS_REQUEST);
+                }
+                skissm__supply_opks_request__free_unpacked(supply_opks_request, NULL);
+                skissm__supply_opks_response__free_unpacked(supply_opks_response, NULL);
+                break;
+            }
+            case CREATE_GROUP_REQUEST: {
+                Skissm__CreateGroupRequest *create_group_request = skissm__create_group_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+                Skissm__CreateGroupResponse *create_group_response = get_skissm_plugin()->proto_handler.create_group(create_group_request);
+                succ = consume_create_group_response(
+                    account->e2ee_pack_id,
+                    address,
+                    create_group_request->msg->group_name,
+                    create_group_request->msg->group_members,
+                    create_group_request->msg->n_group_members,
+                    create_group_response
+                );
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, CREATE_GROUP_REQUEST);
+                }
+                skissm__create_group_request__free_unpacked(create_group_request, NULL);
+                skissm__create_group_response__free_unpacked(create_group_response, NULL);
+                break;
+            }
+            case ADD_GROUP_MEMBERS_REQUEST: {
+                Skissm__AddGroupMembersRequest *add_group_members_request = skissm__add_group_members_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+                Skissm__AddGroupMembersResponse *add_group_members_response = get_skissm_plugin()->proto_handler.add_group_members(add_group_members_request);
+                Skissm__GroupSession *outbound_group_session_1 = NULL;
+                get_skissm_plugin()->db_handler.load_outbound_group_session(address, add_group_members_request->msg->group_address, &outbound_group_session_1);
+                succ = consume_add_group_members_response(outbound_group_session_1, add_group_members_response);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, ADD_GROUP_MEMBERS_REQUEST);
+                }
+                skissm__add_group_members_request__free_unpacked(add_group_members_request, NULL);
+                skissm__add_group_members_response__free_unpacked(add_group_members_response, NULL);
+                skissm__group_session__free_unpacked(outbound_group_session_1, NULL);
+                break;
+            }
+            case REMOVE_GROUP_MEMBERS_REQUEST: {
+                Skissm__RemoveGroupMembersRequest *remove_group_members_request = skissm__remove_group_members_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+                Skissm__RemoveGroupMembersResponse *remove_group_members_response = get_skissm_plugin()->proto_handler.remove_group_members(remove_group_members_request);
+                Skissm__GroupSession *outbound_group_session_2 = NULL;
+                get_skissm_plugin()->db_handler.load_outbound_group_session(address, remove_group_members_request->msg->group_address, &outbound_group_session_2);
+                succ = consume_remove_group_members_response(outbound_group_session_2, remove_group_members_response);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, REMOVE_GROUP_MEMBERS_REQUEST);
+                }
+                skissm__remove_group_members_request__free_unpacked(remove_group_members_request, NULL);
+                skissm__remove_group_members_response__free_unpacked(remove_group_members_response, NULL);
+                skissm__group_session__free_unpacked(outbound_group_session_2, NULL);
+                break;
+            }
+            case SEND_GROUP_MSG_REQUEST: {
+                Skissm__SendGroupMsgRequest *send_group_msg_request = skissm__send_group_msg_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+                Skissm__SendGroupMsgResponse *send_group_msg_response = get_skissm_plugin()->proto_handler.send_group_msg(send_group_msg_request);
+                Skissm__GroupSession *outbound_group_session_3 = NULL;
+                get_skissm_plugin()->db_handler.load_outbound_group_session(address, send_group_msg_request->msg->to, &outbound_group_session_3);
+                succ = consume_send_group_msg_response(outbound_group_session_3, send_group_msg_response);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, SEND_GROUP_MSG_REQUEST);
+                }
+                skissm__send_group_msg_request__free_unpacked(send_group_msg_request, NULL);
+                skissm__send_group_msg_response__free_unpacked(send_group_msg_response, NULL);
+                skissm__group_session__free_unpacked(outbound_group_session_3, NULL);
+                break;
+            }
+        
+            default:
+                break;
+        };
+        // release
+        free_mem((void **)&(request_data_list[i]), request_data_len_list[i]);
+    }
+    // load all pending plaintext data with responded sessions
+    Skissm__E2eeAddress **to_addresses;
+    uint8_t **e2ee_plaintext_data_list;
+    size_t *e2ee_plaintext_data_len_list;
+    size_t pending_plaintext_data_num
+        = get_skissm_plugin()->db_handler.load_resending_plaintext(
+            address, &to_addresses, &e2ee_plaintext_data_list, &e2ee_plaintext_data_len_list
+        );
+    // send the pending plaintext data
+    for (i = 0; i < pending_plaintext_data_num; i++) {
+        Skissm__Session *outbound_session = NULL;
+        get_skissm_plugin()->db_handler.load_outbound_session(address, to_addresses[i], &outbound_session);
+        Skissm__SendOne2oneMsgResponse *response;
+        response = send_one2one_msg_internal(outbound_session, e2ee_plaintext_data_list[i], e2ee_plaintext_data_len_list[i]);
+        if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+                get_skissm_plugin()->db_handler.unload_pending_plaintext_data(address, to_addresses[i], true);
+            }
+            skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+        }
+        // release
+        skissm__session__free_unpacked(outbound_session, NULL);
+        free_mem((void **)&(e2ee_plaintext_data_list[i]), e2ee_plaintext_data_len_list[i]);
+        skissm__e2ee_address__free_unpacked(to_addresses[i], NULL);
+    }
+    // release
+    if (pending_request_data_num > 0) {
+        free(request_type);
+        free(request_data_list);
+        free(request_data_len_list);
+    }
+    if (pending_plaintext_data_num > 0) {
+        free(to_addresses);
+        free(e2ee_plaintext_data_list);
+        free(e2ee_plaintext_data_len_list);
+    }
+}

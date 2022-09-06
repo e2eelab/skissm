@@ -222,6 +222,12 @@ size_t load_pending_plaintext_data(
     uint8_t ***e2ee_plaintext_data_list,
     size_t **e2ee_plaintext_data_len_list
 );
+size_t load_resending_plaintext(
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress ***to_addresses,
+    uint8_t ***e2ee_plaintext_data_list,
+    size_t **e2ee_plaintext_data_len_list
+);
 void unload_pending_plaintext_data(
     Skissm__E2eeAddress *from_address,
     Skissm__E2eeAddress *to_address,
