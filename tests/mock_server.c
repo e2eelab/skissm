@@ -552,7 +552,7 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__CreateGroupRequest *reque
     // create a new group
     group_data *cur_group_data = &(group_data_set[group_data_set_insert_pos]);
 
-    // Generate a random address
+    // generate a random address
     mock_random_group_address(&(cur_group_data->group_address));
 
     // pack CreateGroupMsg

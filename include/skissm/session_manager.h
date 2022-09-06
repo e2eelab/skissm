@@ -42,11 +42,15 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(
  * @brief Process an incoming get_pre_key_bundle_response_payload.
  *
  * @param from
+ * @param group_pre_key_plaintext_data
+ * @param group_pre_key_plaintext_data_len
  * @param response
  * @return Skissm__InviteResponse *
  */
 Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     Skissm__E2eeAddress *from,
+    uint8_t *group_pre_key_plaintext_data,
+    size_t group_pre_key_plaintext_data_len,
     Skissm__GetPreKeyBundleResponse *response
 );
 /**

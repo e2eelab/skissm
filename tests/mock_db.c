@@ -252,6 +252,24 @@ static const char *PENDING_PLAINTEXT_DATA_LOAD = "SELECT PLAINTEXT_DATA "
                                                  "AND a2.DOMAIN is (?) AND a2.USER_ID is (?) AND a2.DEVICE_ID is (?) "
                                                  "AND SESSION_RESPONDED is (?);";
 
+static const char *N_RESENDING_PLAINTEXT_DATA_LOAD = "SELECT COUNT(*) "
+                                                     "FROM PENDING_PLAINTEXT_DATA "
+                                                     "INNER JOIN ADDRESS AS a1 "
+                                                     "ON PENDING_PLAINTEXT_DATA.FROM_ADDRESS = a1.ID "
+                                                     "WHERE a1.DOMAIN is (?) AND a1.USER_ID is (?) AND a1.DEVICE_ID is (?) "
+                                                     "AND SESSION_RESPONDED is (?);";
+
+static const char *RESENDING_PLAINTEXT_DATA_LOAD = "SELECT "
+                                                   "TO_ADDRESS.DOMAIN, "
+                                                   "TO_ADDRESS.USER_ID, "
+                                                   "TO_ADDRESS.DEVICE_ID, "
+                                                   "PLAINTEXT_DATA "
+                                                   "FROM PENDING_PLAINTEXT_DATA "
+                                                   "INNER JOIN ADDRESS AS a1 "
+                                                   "ON PENDING_PLAINTEXT_DATA.FROM_ADDRESS = a1.ID "
+                                                   "WHERE a1.DOMAIN is (?) AND a1.USER_ID is (?) AND a1.DEVICE_ID is (?) "
+                                                   "AND SESSION_RESPONDED is (?);";
+
 static const char *PENDING_PLAINTEXT_DATA_DELETE = "DELETE FROM PENDING_PLAINTEXT_DATA "
                                                    "WHERE FROM_ADDRESS IN "
                                                    "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?)) "
@@ -2120,6 +2138,87 @@ size_t load_pending_plaintext_data(
     sqlite_finalize(stmt);
 
     return n_group_pre_keys;
+}
+
+int load_n_resending_plaintext(
+    Skissm__E2eeAddress *from_address
+) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(N_RESENDING_PLAINTEXT_DATA_LOAD, &stmt);
+    sqlite3_bind_text(stmt, 1, from_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, from_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, from_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 4, true);
+
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
+
+    // load
+    int n_resending_plaintext = (int)sqlite3_column_int(stmt, 0);
+
+    // release
+    sqlite_finalize(stmt);
+
+    return n_resending_plaintext;
+}
+
+size_t load_resending_plaintext(
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress ***to_addresses,
+    uint8_t ***e2ee_plaintext_data_list,
+    size_t **e2ee_plaintext_data_len_list
+) {
+    // allocate memory
+    size_t n_resending_plaintext = load_n_resending_plaintext(from_address);
+    if (n_resending_plaintext == 0){
+        *e2ee_plaintext_data_list = NULL;
+        *e2ee_plaintext_data_len_list = NULL;
+        return 0;
+    }
+    *to_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * n_resending_plaintext);
+
+    *e2ee_plaintext_data_list = (uint8_t **)malloc(sizeof(uint8_t *) * n_resending_plaintext);
+
+    *e2ee_plaintext_data_len_list = (size_t *)malloc(sizeof(size_t) * n_resending_plaintext);
+
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(RESENDING_PLAINTEXT_DATA_LOAD, &stmt);
+    sqlite3_bind_text(stmt, 1, from_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, from_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, from_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 4, true);
+
+    // step
+    size_t i;
+    for (i = 0; i < n_resending_plaintext; i++) {
+        sqlite3_step(stmt);
+
+        // load
+        (*to_addresses)[i] = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
+        skissm__e2ee_address__init((*to_addresses)[i]);
+        (*to_addresses)[i]->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
+        skissm__peer_user__init((*to_addresses)[i]->user);
+        (*to_addresses)[i]->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
+
+        (*to_addresses)[i]->domain = strdup((char *)sqlite3_column_text(stmt, 0));
+        (*to_addresses)[i]->user->user_id = strdup((char *)sqlite3_column_text(stmt, 1));
+        (*to_addresses)[i]->user->device_id = strdup((char *)sqlite3_column_text(stmt, 2));
+
+        size_t e2ee_plaintext_data_len = sqlite3_column_bytes(stmt, 3);
+        uint8_t *e2ee_plaintext_data = (uint8_t *)sqlite3_column_blob(stmt, 3);
+
+        // assign
+        (*e2ee_plaintext_data_list)[i] = (uint8_t *)malloc(e2ee_plaintext_data_len * sizeof(uint8_t));
+        memcpy((*e2ee_plaintext_data_list)[i], e2ee_plaintext_data, e2ee_plaintext_data_len);
+        (*e2ee_plaintext_data_len_list)[i] = e2ee_plaintext_data_len;
+    }
+
+    // release
+    sqlite_finalize(stmt);
+
+    return n_resending_plaintext;
 }
 
 void unload_pending_plaintext_data(
