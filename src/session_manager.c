@@ -23,7 +23,6 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
         get_skissm_plugin()->db_handler.load_pending_plaintext_data(
             outbound_session->from,
             outbound_session->to,
-            false,
             &pending_plaintext_data_list,
             &pending_plaintext_data_len_list
         );
@@ -55,7 +54,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
 
         // done
         if (succ)
-            get_skissm_plugin()->db_handler.unload_pending_plaintext_data(outbound_session->from, outbound_session->to, false);
+            get_skissm_plugin()->db_handler.unload_pending_plaintext_data(outbound_session->from, outbound_session->to);
     }
 }
 
@@ -84,11 +83,13 @@ static void send_f2f_session_msg(
         );
 
         // send message to server
-        send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
+        Skissm__SendOne2oneMsgResponse *response;
+        response = send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
 
         // release
         free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
         skissm__session__free_unpacked(self_outbound_session, NULL);
+        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
     }
     // release
     if (self_outbound_sessions_num > 0) {
@@ -130,7 +131,6 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
             get_skissm_plugin()->db_handler.store_pending_plaintext_data(
                 from,
                 their_pre_key_bundles[i]->user_address,
-                false,
                 group_pre_key_plaintext_data,
                 group_pre_key_plaintext_data_len
             );

@@ -151,7 +151,15 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
 ) {
     Skissm__SendOne2oneMsgRequest *request = produce_send_one2one_msg_request(outbound_session, plaintext_data, plaintext_data_len);
     Skissm__SendOne2oneMsgResponse *response = get_skissm_plugin()->proto_handler.send_one2one_msg(request);
-    consume_send_one2one_msg_response(outbound_session, response);
+    bool succ = consume_send_one2one_msg_response(outbound_session, response);
+    if (!succ) {
+        // pack
+        size_t request_data_len = skissm__send_one2one_msg_request__get_packed_size(request);
+        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+        skissm__send_one2one_msg_request__pack(request, request_data);
+        // store
+        get_skissm_plugin()->db_handler.store_pending_request_data(outbound_session->session_owner, SEND_ONE2ONE_MSG_REQUEST, request_data, request_data_len);
+    }
 
     // release
     skissm__send_one2one_msg_request__free_unpacked(request, NULL);
@@ -161,6 +169,11 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
 }
 
 void resume_connection_internal(Skissm__Account *account) {
+    // check if the account exists
+    if (account == NULL) {
+        return;
+    }
+
     Skissm__E2eeAddress *address = account->address;
     // load all pending request data
     int *request_type;
@@ -217,6 +230,20 @@ void resume_connection_internal(Skissm__Account *account) {
                 }
                 skissm__supply_opks_request__free_unpacked(supply_opks_request, NULL);
                 skissm__supply_opks_response__free_unpacked(supply_opks_response, NULL);
+                break;
+            }
+            case SEND_ONE2ONE_MSG_REQUEST: {
+                Skissm__SendOne2oneMsgRequest *send_one2one_msg_request = skissm__send_one2one_msg_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+                Skissm__SendOne2oneMsgResponse *send_one2one_msg_response = get_skissm_plugin()->proto_handler.send_one2one_msg(send_one2one_msg_request);
+                Skissm__Session *outbound_session;
+                get_skissm_plugin()->db_handler.load_outbound_session(send_one2one_msg_request->msg->from, send_one2one_msg_request->msg->to, &outbound_session);
+                succ = consume_send_one2one_msg_response(outbound_session, send_one2one_msg_response);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, SEND_ONE2ONE_MSG_REQUEST);
+                }
+                skissm__send_one2one_msg_request__free_unpacked(send_one2one_msg_request, NULL);
+                skissm__send_one2one_msg_response__free_unpacked(send_one2one_msg_response, NULL);
+                skissm__session__free_unpacked(outbound_session, NULL);
                 break;
             }
             case CREATE_GROUP_REQUEST: {
@@ -286,40 +313,11 @@ void resume_connection_internal(Skissm__Account *account) {
         // release
         free_mem((void **)&(request_data_list[i]), request_data_len_list[i]);
     }
-    // load all pending plaintext data with responded sessions
-    Skissm__E2eeAddress **to_addresses;
-    uint8_t **e2ee_plaintext_data_list;
-    size_t *e2ee_plaintext_data_len_list;
-    size_t pending_plaintext_data_num
-        = get_skissm_plugin()->db_handler.load_resending_plaintext(
-            address, &to_addresses, &e2ee_plaintext_data_list, &e2ee_plaintext_data_len_list
-        );
-    // send the pending plaintext data
-    for (i = 0; i < pending_plaintext_data_num; i++) {
-        Skissm__Session *outbound_session = NULL;
-        get_skissm_plugin()->db_handler.load_outbound_session(address, to_addresses[i], &outbound_session);
-        Skissm__SendOne2oneMsgResponse *response;
-        response = send_one2one_msg_internal(outbound_session, e2ee_plaintext_data_list[i], e2ee_plaintext_data_len_list[i]);
-        if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-                get_skissm_plugin()->db_handler.unload_pending_plaintext_data(address, to_addresses[i], true);
-            }
-            skissm__send_one2one_msg_response__free_unpacked(response, NULL);
-        }
-        // release
-        skissm__session__free_unpacked(outbound_session, NULL);
-        free_mem((void **)&(e2ee_plaintext_data_list[i]), e2ee_plaintext_data_len_list[i]);
-        skissm__e2ee_address__free_unpacked(to_addresses[i], NULL);
-    }
+
     // release
     if (pending_request_data_num > 0) {
         free(request_type);
         free(request_data_list);
         free(request_data_len_list);
-    }
-    if (pending_plaintext_data_num > 0) {
-        free(to_addresses);
-        free(e2ee_plaintext_data_list);
-        free(e2ee_plaintext_data_len_list);
     }
 }

@@ -281,11 +281,13 @@ static void test_create_group() {
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
+    group_members[0]->domain = strdup(account_data[0]->address->domain);
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
     group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
+    group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
@@ -327,11 +329,13 @@ static void test_add_group_members() {
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
+    group_members[0]->domain = strdup(account_data[0]->address->domain);
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
     group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
+    group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
@@ -343,6 +347,7 @@ static void test_add_group_members() {
     new_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(new_group_members[0]);
     new_group_members[0]->user_id = strdup(account_data[2]->address->user->user_id);
+    new_group_members[0]->domain = strdup(account_data[2]->address->domain);
     new_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     size_t new_group_member_num = 1;
     // add the new group member to the group
@@ -387,16 +392,19 @@ static void test_remove_group_members() {
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
+    group_members[0]->domain = strdup(account_data[0]->address->domain);
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
     group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
+    group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // the second group member is Claire
     group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[2]);
     group_members[2]->user_id = strdup(account_data[2]->address->user->user_id);
+    group_members[2]->domain = strdup(account_data[2]->address->domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
@@ -406,6 +414,7 @@ static void test_remove_group_members() {
     removing_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(removing_group_members[0]);
     removing_group_members[0]->user_id = strdup(account_data[2]->address->user->user_id);
+    removing_group_members[0]->domain = strdup(account_data[2]->address->domain);
     removing_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     size_t removing_group_member_num = 1;
 
@@ -451,11 +460,13 @@ static void test_create_add_remove() {
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
+    group_members[0]->domain = strdup(account_data[0]->address->domain);
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
     group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
+    group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
@@ -472,6 +483,7 @@ static void test_create_add_remove() {
     new_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(new_group_members[0]);
     new_group_members[0]->user_id = strdup(account_data[2]->address->user->user_id);
+    new_group_members[0]->domain = strdup(account_data[2]->address->domain);
     new_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     size_t new_group_member_num = 1;
     // add the new group member to the group
@@ -530,16 +542,19 @@ static void test_interaction() {
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
+    group_members[0]->domain = strdup(account_data[0]->address->domain);
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
     group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
+    group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // the second group member is Claire
     group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[2]);
     group_members[2]->user_id = strdup(account_data[2]->address->user->user_id);
+    group_members[2]->domain = strdup(account_data[2]->address->domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
@@ -596,16 +611,19 @@ static void test_continual() {
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
+    group_members[0]->domain = strdup(account_data[0]->address->domain);
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
     group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
+    group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // the second group member is Claire
     group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[2]);
     group_members[2]->user_id = strdup(account_data[2]->address->user->user_id);
+    group_members[2]->domain = strdup(account_data[2]->address->domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
@@ -691,21 +709,44 @@ void test_multiple_devices() {
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup(alice_user_id);
+    group_members[0]->domain = strdup(alice_domain);
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
     group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup(bob_user_id);
+    group_members[1]->domain = strdup(bob_domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // the second group member is Claire
     group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[2]);
     group_members[2]->user_id = strdup(claire_user_id);
+    group_members[2]->domain = strdup(claire_domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(alice_address_1, "Group name", group_members, 3);
 
+    // Alice sends a message to the group via the first device
+    uint8_t plaintext_1[] = "This message is from Alice's first device.";
+    size_t plaintext_1_len = sizeof(plaintext_1) - 1;
+    test_encryption(account_data[0]->address, group.group_address, plaintext_1, plaintext_1_len);
+
+    // Bob sends a message to the group via the second device
+    uint8_t plaintext_2[] = "This message is from Bob's second device.";
+    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
+    test_encryption(account_data[3]->address, group.group_address, plaintext_2, plaintext_2_len);
+
+    // Claire sends a message to the group via the second device
+    uint8_t plaintext_3[] = "This message is from Claire's second device.";
+    size_t plaintext_3_len = sizeof(plaintext_3) - 1;
+    test_encryption(account_data[5]->address, group.group_address, plaintext_3, plaintext_3_len);
+
     // release
+    skissm__group_member__free_unpacked(group_members[0], NULL);
+    skissm__group_member__free_unpacked(group_members[1], NULL);
+    skissm__group_member__free_unpacked(group_members[2], NULL);
+    free(group_members);
+    skissm__create_group_response__free_unpacked(create_group_response, NULL);
 
     // test stop
     test_end();
@@ -721,7 +762,7 @@ int main() {
     test_create_add_remove();
     test_interaction();
     test_continual();
-    // test_multiple_devices();
+    test_multiple_devices();
 
     return 0;
 }

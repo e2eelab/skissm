@@ -304,37 +304,25 @@ typedef struct skissm_db_handler_t {
      * @brief store pending plaintext data
      * @param from_address
      * @param to_address
-     * @param outbound_session_responded
      * @param plaintext_data
      * @param plaintext_data_len
      */
-    void (*store_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, bool, uint8_t *, size_t);
+    void (*store_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, uint8_t *, size_t);
     /**
      * @brief load pending plaintext data
      * @param from_address
      * @param to_address
-     * @param outbound_session_responded
      * @param plaintext_data_list
      * @param plaintext_data_len_list
      * @return number of loaded plaintext_data list
      */
-    size_t (*load_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, bool, uint8_t ***, size_t **);
-    /**
-     * @brief load all resending plaintext data
-     * @param from_address
-     * @param to_addresses
-     * @param plaintext_data_list
-     * @param plaintext_data_len_list
-     * @return number of loaded resending_plaintext_data list
-     */
-    size_t (*load_resending_plaintext)(Skissm__E2eeAddress *, Skissm__E2eeAddress ***, uint8_t ***, size_t **);
+    size_t (*load_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, uint8_t ***, size_t **);
     /**
      * @brief delete pending plaintext data
      * @param from_address
      * @param to_address
-     * @param outbound_session_responded
      */
-    void (*unload_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, bool);
+    void (*unload_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *);
     /**
      * @brief store pending request data
      * @param user_address
@@ -560,6 +548,7 @@ typedef enum {
     ACCEPT_REQUEST,
     PUBLISH_SPK_REQUEST,
     SUPPLY_OPKS_REQUEST,
+    SEND_ONE2ONE_MSG_REQUEST,
     CREATE_GROUP_REQUEST,
     ADD_GROUP_MEMBERS_REQUEST,
     REMOVE_GROUP_MEMBERS_REQUEST,

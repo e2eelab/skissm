@@ -19,6 +19,7 @@
 #include "skissm/skissm.h"
 
 #include "skissm/account.h"
+#include "skissm/e2ee_client_internal.h"
 #include "skissm/mem_util.h"
 
 extern const struct cipher_suite_t E2EE_CIPHER_ECDH_X25519_AES256_GCM_SHA256;
@@ -49,7 +50,9 @@ static skissm_plugin_t *skissm_plugin;
 void skissm_begin(skissm_plugin_t *ssm_plugin) {
     skissm_plugin = ssm_plugin;
     account_begin();
-    // TODO: resend
+    Skissm__Account *local_account = get_account();
+    // resend the pending data if necessary
+    resume_connection_internal(local_account);
 }
 
 void skissm_end() {

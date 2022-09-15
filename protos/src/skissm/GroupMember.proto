@@ -32,5 +32,6 @@ enum GroupRole {
 
 message GroupMember {
     string user_id = 1;
-    GroupRole role = 2;
+    string domain = 2;
+    GroupRole role = 3;
 }

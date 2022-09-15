@@ -193,12 +193,14 @@ void publish_spk_test() {
     // update the signed pre-key
     generate_signed_pre_key(account);
     uint32_t new_spk_id = account->signed_pre_key->spk_id;
-    publish_spk_internal(account);
+    Skissm__PublishSpkResponse *publish_spk_response = publish_spk_internal(account);
 
     assert(new_spk_id == old_spk_id + 1);
 
     // release
+    skissm__register_user_response__free_unpacked(response, NULL);
     skissm__account__free_unpacked(account, NULL);
+    skissm__publish_spk_response__free_unpacked(publish_spk_response, NULL);
 }
 
 Skissm__ProtoMsg *mock_supply_opks_msg(Skissm__E2eeAddress *user_address, uint32_t supply_opks_num) {

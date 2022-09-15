@@ -104,7 +104,6 @@ struct skissm_plugin_t ssm_plugin = {
         // pending data
         store_pending_plaintext_data,
         load_pending_plaintext_data,
-        load_resending_plaintext,
         unload_pending_plaintext_data,
         store_pending_request_data,
         load_pending_request_data,

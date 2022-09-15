@@ -222,11 +222,12 @@ size_t crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, S
 
     /** The one who sends the accept message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, inbound_session->from, NULL);
+    Skissm__AcceptResponse *response = accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, inbound_session->from, NULL);
 
     // release
     skissm__signed_pre_key__free_unpacked(old_spk_data, NULL);
     unset(secret, sizeof(secret));
+    skissm__accept_response__free_unpacked(response, NULL);
 
     // done
     return (size_t)(0);
@@ -304,10 +305,11 @@ size_t crypto_curve25519_new_f2f_inbound_session(
 
     /** The one who sends the accept message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    f2f_accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, sender_address, local_account);
+    Skissm__F2fAcceptResponse *response = f2f_accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, sender_address, local_account);
 
     // release
     skissm__e2ee_address__free_unpacked(sender_address, NULL);
+    skissm__f2f_accept_response__free_unpacked(response, NULL);
 
     // done
     return (size_t)(0);

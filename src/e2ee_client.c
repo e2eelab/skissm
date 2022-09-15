@@ -153,13 +153,14 @@ size_t f2f_invite(
     session_suite->new_f2f_outbound_session(f2f_session_mid, f2f_pre_key_invite_msg);
 
     // send face-to-face invite message to the other
-    f2f_invite_internal(from, to, e2ee_pack_id, encrypted_f2f_pre_shared_key, encrypted_f2f_pre_shared_key_len);
+    Skissm__F2fInviteResponse *response = f2f_invite_internal(from, to, e2ee_pack_id, encrypted_f2f_pre_shared_key, encrypted_f2f_pre_shared_key_len);
 
     // release
     free_mem((void **)&encrypted_f2f_pre_shared_key, encrypted_f2f_pre_shared_key_len);
     skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);
     free_mem((void **)&f2f_pre_key_plaintext, f2f_pre_key_plaintext_len);
     free_mem((void **)&aes_key, aes_key_len);
+    skissm__f2f_invite_response__free_unpacked(response, NULL);
 
     return encrypted_f2f_pre_shared_key_len;
 }
@@ -193,7 +194,6 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
             get_skissm_plugin()->db_handler.store_pending_plaintext_data(
                 outbound_session->from,
                 outbound_session->to,
-                false,
                 common_plaintext_data,
                 common_plaintext_data_len
             );
@@ -205,19 +205,6 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
 
         // send message to server
         response = send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
-
-        // done
-        // if error happened, keep common_plaintext_data in db
-        if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            // save common_plaintext_data with flag responded = true
-            get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-                outbound_session->from,
-                outbound_session->to,
-                true,
-                common_plaintext_data,
-                common_plaintext_data_len
-            );
-        }
 
         // release
         free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
@@ -254,11 +241,13 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         );
 
         // send message to server
-        send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
+        Skissm__SendOne2oneMsgResponse *response;
+        response = send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
 
         // release
         free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
         skissm__session__free_unpacked(self_outbound_session, NULL);
+        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
     }
 
     // release
@@ -482,3 +471,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
     return response;
 }
 
+void resume_connection() {
+    Skissm__Account *local_account = get_account();
+    resume_connection_internal(local_account);
+}

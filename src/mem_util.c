@@ -102,7 +102,10 @@ bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_me
 
     size_t i;
     for (i = 0; i < group_member_num_1; i++) {
-        if ((group_members_1[i]->role != group_members_2[i]->role) || !safe_strcmp(group_members_1[i]->user_id, group_members_2[i]->user_id))
+        if ((group_members_1[i]->role != group_members_2[i]->role)
+            || !safe_strcmp(group_members_1[i]->user_id, group_members_2[i]->user_id)
+            || !safe_strcmp(group_members_1[i]->domain, group_members_2[i]->domain)
+        )
             return false;
     }
     return true;
@@ -316,6 +319,8 @@ void copy_group_member(Skissm__GroupMember **dest, Skissm__GroupMember *src) {
     if (src != NULL) {
         if (src->user_id != NULL)
             (*dest)->user_id = strdup(src->user_id);
+        if (src->domain != NULL)
+            (*dest)->domain = strdup(src->domain);
         (*dest)->role =  src->role;
     }
 }

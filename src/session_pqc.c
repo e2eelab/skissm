@@ -214,11 +214,12 @@ size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account
 
     /** The one who sends the acception message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, inbound_session->from, ciphertext_1);
+    Skissm__AcceptResponse *response = accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, inbound_session->from, ciphertext_1);
 
     // release
     skissm__signed_pre_key__free_unpacked(old_spk_data, NULL);
     unset(secret, sizeof(secret));
+    skissm__accept_response__free_unpacked(response, NULL);
 
     // done
     return (size_t)(0);

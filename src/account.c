@@ -46,7 +46,8 @@ static void update_signed_pre_key() {
         now = get_skissm_plugin()->common_handler.gen_ts();
         if (now > cur_account->signed_pre_key->ttl) {
             generate_signed_pre_key(cur_account);
-            publish_spk_internal(cur_account);
+            Skissm__PublishSpkResponse *response = publish_spk_internal(cur_account);
+            skissm__publish_spk_response__free_unpacked(response, NULL);
         }
 
         // check and remove signed pre-keys (keep last two)

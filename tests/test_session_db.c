@@ -273,10 +273,12 @@ void test_load_outbound_group_session()
     group_members[0] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup("alice");
+    group_members[0]->domain = strdup("alice's domain");
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     group_members[1] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup("bob");
+    group_members[1]->domain = strdup("bob's domain");
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
@@ -351,10 +353,12 @@ void test_load_inbound_group_session()
     group_members[0] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup("alice");
+    group_members[0]->domain = strdup("alice's domain");
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     group_members[1] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup("bob");
+    group_members[1]->domain = strdup("bob's domain");
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address

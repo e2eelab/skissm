@@ -46,11 +46,13 @@ void test_unload_inbound_group_session(){
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[0]);
     group_members[0]->user_id = strdup(Alice->user->user_id);
+    group_members[0]->domain = strdup(Alice->domain);
     group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
     group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[1]);
     group_members[1]->user_id = strdup(Bob->user->user_id);
+    group_members[1]->domain = strdup(Bob->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
