@@ -21,7 +21,6 @@
 cmake_minimum_required(VERSION 3.15.0)
 project(
   skissm
-  VERSION 1.0.1
   LANGUAGES CXX C)
 
 cmake_policy(SET CMP0009 NEW)
@@ -37,8 +36,6 @@ option(SKISSM_BUILD_PROTOBUF "Build protobuf" ON)
 option(SKISSM_TESTS "Build skissm tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 option(CMAKE_BUILD_TYPE "Build types" Debug)
-
-set(PROJECT_VERSION_SO ${PROJECT_VERSION_MAJOR})
 
 set(EXTERNAL_LIB_DIR "${CMAKE_CURRENT_BINARY_DIR}/lib")
 
@@ -180,8 +177,6 @@ set_target_properties(
   skissm_static
   PROPERTIES OUTPUT_NAME "skissm"
               WINDOWS_EXPORT_ALL_SYMBOLS ON
-              #VERSION "${CMAKE_PROJECT_VERSION}"
-              #SOVERSION "${PROJECT_VERSION_SO}"
               ARCHIVE_OUTPUT_DIRECTORY
               ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
               LIBRARY_OUTPUT_DIRECTORY
@@ -194,7 +189,6 @@ target_link_libraries(skissm_static PUBLIC mbedcrypto curve25519
                                             protobuf::libprotobuf protobuf-c)
 
 install(TARGETS skissm_static
-  CONFIGURATIONS ${CMAKE_BUILD_TYPE}
   EXPORT skissm-targets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
