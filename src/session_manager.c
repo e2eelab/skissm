@@ -17,44 +17,41 @@ Skissm__Session *f2f_session_mid = NULL;
 static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     // load pending plaintext data(may be the group pre-key or the common plaintext)
     uint32_t pending_plaintext_data_list_num;
+    char **pending_plaintext_id_list;
     uint8_t **pending_plaintext_data_list;
     size_t *pending_plaintext_data_len_list;
     pending_plaintext_data_list_num =
         get_skissm_plugin()->db_handler.load_pending_plaintext_data(
             outbound_session->from,
             outbound_session->to,
+            &pending_plaintext_id_list,
             &pending_plaintext_data_list,
             &pending_plaintext_data_len_list
         );
     if (pending_plaintext_data_list_num > 0) {
         uint32_t i;
-        bool succ = true;
         for (i = 0; i < pending_plaintext_data_list_num; i++) {
             Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(
                 outbound_session,
                 pending_plaintext_data_list[i],
                 pending_plaintext_data_len_list[i]
             );
-            if (response == NULL) {
-                succ = false;
-                break;
-            } else {
-                // release
+            if (response != NULL || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+                get_skissm_plugin()->db_handler.unload_pending_plaintext_data(
+                    outbound_session->from, outbound_session->to, pending_plaintext_id_list[i]
+                );
                 skissm__send_one2one_msg_response__free_unpacked(response, NULL);
             }
         }
 
         // release
         for (i = 0; i < pending_plaintext_data_list_num; i++) {
-            free_mem((void **) (&(pending_plaintext_data_list[i])),
-                     pending_plaintext_data_len_list[i]);
+            free_mem((void **) &(pending_plaintext_data_list[i]), pending_plaintext_data_len_list[i]);
+            free(pending_plaintext_id_list[i]);
         }
+        free_mem((void **) (&pending_plaintext_id_list), sizeof(char *) * pending_plaintext_data_list_num);
         free_mem((void **) (&pending_plaintext_data_list), sizeof(uint8_t *) * pending_plaintext_data_list_num);
-        free_mem((void **) (&pending_plaintext_data_len_list), pending_plaintext_data_list_num);
-
-        // done
-        if (succ)
-            get_skissm_plugin()->db_handler.unload_pending_plaintext_data(outbound_session->from, outbound_session->to);
+        free_mem((void **) (&pending_plaintext_data_len_list), sizeof(size_t) * pending_plaintext_data_list_num);
     }
 }
 
@@ -98,13 +95,15 @@ static void send_f2f_session_msg(
 }
 
 Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(
-    const char *to_user_id, const char *to_domain
+    const char *to_user_id, const char *to_domain, const char *to_device_id
 ) {
     Skissm__GetPreKeyBundleRequest *request =
         (Skissm__GetPreKeyBundleRequest *)malloc(sizeof(Skissm__GetPreKeyBundleRequest));
     skissm__get_pre_key_bundle_request__init(request);
     request->domain = strdup(to_domain);
     request->user_id = strdup(to_user_id);
+    if (to_device_id != NULL)
+        request->device_id = strdup(to_device_id);
     return request;
 }
 
@@ -128,9 +127,11 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
             }
 
             // store the group pre-keys if necessary
+            char *pending_plaintext_id = generate_uuid_str();
             get_skissm_plugin()->db_handler.store_pending_plaintext_data(
                 from,
                 their_pre_key_bundles[i]->user_address,
+                pending_plaintext_id,
                 group_pre_key_plaintext_data,
                 group_pre_key_plaintext_data_len
             );
@@ -146,6 +147,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 session_suite->new_outbound_session(outbound_session, account, their_pre_key_bundles[i]);
             // release
             skissm__account__free_unpacked(account, NULL);
+            free(pending_plaintext_id);
             skissm__session__free_unpacked(outbound_session, NULL);
 
             // error check
@@ -293,7 +295,13 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 }
 
 bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg) {
-    Skissm__InviteResponse *response = get_pre_key_bundle_internal(receiver_address, msg->user_address->user->user_id, msg->user_address->domain, NULL, 0);
+    Skissm__InviteResponse *response = get_pre_key_bundle_internal(
+        receiver_address,
+        msg->user_address->user->user_id,
+        msg->user_address->domain,
+        msg->user_address->user->device_id,
+        NULL, 0
+    );
     bool succ = false;
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         succ = true;

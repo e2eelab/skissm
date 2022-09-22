@@ -221,15 +221,17 @@ static const char *GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ID = "DELETE FROM GROU
 // pending data related
 static const char *PENDING_PLAINTEXT_DATA_DROP_TABLE = "DROP TABLE IF EXISTS PENDING_PLAINTEXT_DATA;";
 static const char *PENDING_PLAINTEXT_DATA_CREATE_TABLE = "CREATE TABLE PENDING_PLAINTEXT_DATA( "
-                                                         "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                         "PENDING_PLAINTEXT_ID TEXT NOT NULL, "
                                                          "FROM_ADDRESS INTEGER NOT NULL, "
                                                          "TO_ADDRESS INTEGER NOT NULL, "
                                                          "PLAINTEXT_DATA BLOB NOT NULL, "
-                                                         "FOREIGN KEY(TO_ADDRESS) REFERENCES ADDRESS(ID));";
+                                                         "FOREIGN KEY(FROM_ADDRESS) REFERENCES ADDRESS(ID), "
+                                                         "FOREIGN KEY(TO_ADDRESS) REFERENCES ADDRESS(ID), "
+                                                         "PRIMARY KEY (PENDING_PLAINTEXT_ID, FROM_ADDRESS, TO_ADDRESS));";
 
 static const char *PENDING_PLAINTEXT_DATA_INSERT = "INSERT INTO PENDING_PLAINTEXT_DATA "
-                                                   "(FROM_ADDRESS, TO_ADDRESS, PLAINTEXT_DATA) "
-                                                   "VALUES (? ,?, ?);";
+                                                   "(PENDING_PLAINTEXT_ID, FROM_ADDRESS, TO_ADDRESS, PLAINTEXT_DATA) "
+                                                   "VALUES (?, ? ,?, ?);";
 
 static const char *N_PENDING_PLAINTEXT_DATA_LOAD = "SELECT COUNT(*) "
                                                    "FROM PENDING_PLAINTEXT_DATA "
@@ -240,7 +242,8 @@ static const char *N_PENDING_PLAINTEXT_DATA_LOAD = "SELECT COUNT(*) "
                                                    "WHERE a1.DOMAIN is (?) AND a1.USER_ID is (?) AND a1.DEVICE_ID is (?) "
                                                    "AND a2.DOMAIN is (?) AND a2.USER_ID is (?) AND a2.DEVICE_ID is (?);";
 
-static const char *PENDING_PLAINTEXT_DATA_LOAD = "SELECT PLAINTEXT_DATA "
+static const char *PENDING_PLAINTEXT_DATA_LOAD = "SELECT PENDING_PLAINTEXT_ID, "
+                                                 "PLAINTEXT_DATA "
                                                  "FROM PENDING_PLAINTEXT_DATA "
                                                  "INNER JOIN ADDRESS AS a1 "
                                                  "ON PENDING_PLAINTEXT_DATA.FROM_ADDRESS = a1.ID "
@@ -253,19 +256,21 @@ static const char *PENDING_PLAINTEXT_DATA_DELETE = "DELETE FROM PENDING_PLAINTEX
                                                    "WHERE FROM_ADDRESS IN "
                                                    "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?)) "
                                                    "AND TO_ADDRESS IN "
-                                                   "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?));";
+                                                   "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?)) "
+                                                   "AND PENDING_PLAINTEXT_ID is (?);";
 
 static const char *PENDING_REQUEST_DATA_DROP_TABLE = "DROP TABLE IF EXISTS PENDING_REQUEST_DATA;";
 static const char *PENDING_REQUEST_DATA_CREATE_TABLE = "CREATE TABLE PENDING_REQUEST_DATA( "
-                                                       "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                       "PENDING_REQUEST_ID TEXT NOT NULL, "
                                                        "UESR_ADDRESS INTEGER NOT NULL, "
                                                        "REQUEST_TYPE INTEGER NOT NULL, "
                                                        "REQUEST_DATA BLOB NOT NULL, "
-                                                       "FOREIGN KEY(UESR_ADDRESS) REFERENCES ADDRESS(ID));";
+                                                       "FOREIGN KEY(UESR_ADDRESS) REFERENCES ADDRESS(ID), "
+                                                       "PRIMARY KEY (PENDING_REQUEST_ID, UESR_ADDRESS, REQUEST_TYPE));";
 
 static const char *PENDING_REQUEST_DATA_INSERT = "INSERT INTO PENDING_REQUEST_DATA "
-                                                 "(UESR_ADDRESS, REQUEST_TYPE, REQUEST_DATA) "
-                                                 "VALUES (?, ?, ?);";
+                                                 "(PENDING_REQUEST_ID, UESR_ADDRESS, REQUEST_TYPE, REQUEST_DATA) "
+                                                 "VALUES (?, ?, ?, ?);";
 
 static const char *N_PENDING_REQUEST_DATA_LOAD = "SELECT COUNT(*) "
                                                  "FROM PENDING_REQUEST_DATA "
@@ -275,7 +280,8 @@ static const char *N_PENDING_REQUEST_DATA_LOAD = "SELECT COUNT(*) "
                                                  "ADDRESS.USER_ID is (?) AND "
                                                  "ADDRESS.DEVICE_ID is (?);";
 
-static const char *PENDING_REQUEST_DATA_LOAD = "SELECT REQUEST_TYPE, "
+static const char *PENDING_REQUEST_DATA_LOAD = "SELECT PENDING_REQUEST_ID, "
+                                               "REQUEST_TYPE, "
                                                "REQUEST_DATA "
                                                "FROM PENDING_REQUEST_DATA "
                                                "INNER JOIN ADDRESS "
@@ -287,7 +293,8 @@ static const char *PENDING_REQUEST_DATA_LOAD = "SELECT REQUEST_TYPE, "
 static const char *PENDING_REQUEST_DATA_DELETE = "DELETE FROM PENDING_REQUEST_DATA "
                                                  "WHERE UESR_ADDRESS IN "
                                                  "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?)) "
-                                                 "AND REQUEST_TYPE is (?);";
+                                                 "AND REQUEST_TYPE is (?) "
+                                                 "AND PENDING_REQUEST_ID is (?);";
 
 // account related
 static const char *ADDRESS_DROP_TABLE = "DROP TABLE IF EXISTS ADDRESS;";
@@ -395,8 +402,8 @@ static const char *ACCOUNT_LOAD_PASSWORD = "SELECT PASSWORD "
                                            "WHERE ACCOUNT.ACCOUNT_ID is (?);";
 
 static const char *ACCOUNT_LOAD_E2EE_PACK_ID = "SELECT E2EE_PACK_ID "
-                                                  "FROM ACCOUNT "
-                                                  "WHERE ACCOUNT_ID is (?);";
+                                               "FROM ACCOUNT "
+                                               "WHERE ACCOUNT_ID is (?);";
 
 static const char *ACCOUNT_LOAD_KEYPAIR = "SELECT KEYPAIR.PUBLIC_KEY, "
                                           "KEYPAIR.PRIVATE_KEY "
@@ -505,6 +512,7 @@ static const char *SIGNED_PRE_KEY_DELETE = "DELETE FROM SIGNED_PRE_KEY "
 static const char *KEYPAIR_INSERT = "INSERT INTO KEYPAIR "
                                     "(PUBLIC_KEY, PRIVATE_KEY) "
                                     "VALUES (?, ?);";
+
 static const char *ONETIME_PRE_KEY_INSERT = "INSERT INTO ONETIME_PRE_KEY "
                                             "(OPK_ID, USED, KEYPAIR) "
                                             "VALUES (?, ?, ?);";
@@ -2016,6 +2024,7 @@ void unload_inbound_group_session(
 void store_pending_plaintext_data(
     Skissm__E2eeAddress *from_address,
     Skissm__E2eeAddress *to_address,
+    char *pending_plaintext_id,
     uint8_t *group_pre_key_plaintext,
     size_t group_pre_key_plaintext_len
 ) {
@@ -2028,9 +2037,10 @@ void store_pending_plaintext_data(
     sqlite_prepare(PENDING_PLAINTEXT_DATA_INSERT, &stmt);
 
     // bind
-    sqlite3_bind_int(stmt, 1, from_address_id);
-    sqlite3_bind_int(stmt, 2, to_address_id);
-    sqlite3_bind_blob(stmt, 3, group_pre_key_plaintext, group_pre_key_plaintext_len, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 1, pending_plaintext_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 2, from_address_id);
+    sqlite3_bind_int(stmt, 3, to_address_id);
+    sqlite3_bind_blob(stmt, 4, group_pre_key_plaintext, group_pre_key_plaintext_len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -2068,6 +2078,7 @@ int load_n_group_pre_keys(
 size_t load_pending_plaintext_data(
     Skissm__E2eeAddress *from_address,
     Skissm__E2eeAddress *to_address,
+    char ***pending_plaintext_id_list,
     uint8_t ***e2ee_plaintext_data_list,
     size_t **e2ee_plaintext_data_len_list
 ) {
@@ -2078,9 +2089,11 @@ size_t load_pending_plaintext_data(
         *e2ee_plaintext_data_len_list = NULL;
         return 0;
     }
-    (*e2ee_plaintext_data_list) = (uint8_t **)malloc(n_group_pre_keys * sizeof(uint8_t *));
+    (*pending_plaintext_id_list) = (char **)malloc(sizeof(char *) * n_group_pre_keys);
 
-    *e2ee_plaintext_data_len_list = (size_t *)malloc(n_group_pre_keys * sizeof(size_t));
+    (*e2ee_plaintext_data_list) = (uint8_t **)malloc(sizeof(uint8_t *) * n_group_pre_keys);
+
+    *e2ee_plaintext_data_len_list = (size_t *)malloc(sizeof(size_t) * n_group_pre_keys);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -2097,8 +2110,9 @@ size_t load_pending_plaintext_data(
         sqlite3_step(stmt);
 
         // load
-        size_t e2ee_plaintext_data_len = sqlite3_column_bytes(stmt, 0);
-        uint8_t *e2ee_plaintext_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+        (*pending_plaintext_id_list)[i] = strdup((char *)sqlite3_column_text(stmt, 0));
+        size_t e2ee_plaintext_data_len = sqlite3_column_bytes(stmt, 1);
+        uint8_t *e2ee_plaintext_data = (uint8_t *)sqlite3_column_blob(stmt, 1);
 
         // assign
         (*e2ee_plaintext_data_list)[i] = (uint8_t *)malloc(e2ee_plaintext_data_len * sizeof(uint8_t));
@@ -2114,7 +2128,8 @@ size_t load_pending_plaintext_data(
 
 void unload_pending_plaintext_data(
     Skissm__E2eeAddress *from_address,
-    Skissm__E2eeAddress *to_address
+    Skissm__E2eeAddress *to_address,
+    char *pending_plaintext_id
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -2127,6 +2142,7 @@ void unload_pending_plaintext_data(
     sqlite3_bind_text(stmt, 4, to_address->domain, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 5, to_address->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 6, to_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 7, pending_plaintext_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -2138,6 +2154,7 @@ void unload_pending_plaintext_data(
 void store_pending_request_data(
     Skissm__E2eeAddress *user_address,
     int request_type,
+    char *pending_request_id,
     uint8_t *request_data,
     size_t request_data_len
 ) {
@@ -2149,9 +2166,10 @@ void store_pending_request_data(
     sqlite_prepare(PENDING_REQUEST_DATA_INSERT, &stmt);
 
     // bind
-    sqlite3_bind_int(stmt, 1, user_address_id);
-    sqlite3_bind_int(stmt, 2, request_type);
-    sqlite3_bind_blob(stmt, 3, request_data, request_data_len, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 1, pending_request_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 2, user_address_id);
+    sqlite3_bind_int(stmt, 3, request_type);
+    sqlite3_bind_blob(stmt, 4, request_data, request_data_len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -2182,6 +2200,7 @@ int load_n_pending_request_data(Skissm__E2eeAddress *user_address) {
 
 size_t load_pending_request_data(
     Skissm__E2eeAddress *user_address,
+    char ***pending_request_id_list,
     int **request_type,
     uint8_t ***request_data_list,
     size_t **request_data_len_list
@@ -2193,6 +2212,8 @@ size_t load_pending_request_data(
         *request_data_len_list = NULL;
         return 0;
     }
+    *pending_request_id_list = (char **)malloc(sizeof(char *) * n_pending_request_data);
+
     *request_type = (int *)malloc(sizeof(int) * n_pending_request_data);
 
     (*request_data_list) = (uint8_t **)malloc(sizeof(uint8_t *) * n_pending_request_data);
@@ -2211,10 +2232,11 @@ size_t load_pending_request_data(
         sqlite3_step(stmt);
 
         // load
-        (*request_type)[i] = sqlite3_column_int(stmt, 0);
+        (*pending_request_id_list)[i] = strdup((char *)sqlite3_column_text(stmt, 0));
+        (*request_type)[i] = sqlite3_column_int(stmt, 1);
 
-        size_t e2ee_plaintext_data_len = sqlite3_column_bytes(stmt, 1);
-        uint8_t *e2ee_plaintext_data = (uint8_t *)sqlite3_column_blob(stmt, 1);
+        size_t e2ee_plaintext_data_len = sqlite3_column_bytes(stmt, 2);
+        uint8_t *e2ee_plaintext_data = (uint8_t *)sqlite3_column_blob(stmt, 2);
 
         // assign
         (*request_data_list)[i] = (uint8_t *)malloc(e2ee_plaintext_data_len * sizeof(uint8_t));
@@ -2230,7 +2252,8 @@ size_t load_pending_request_data(
 
 void unload_pending_request_data(
     Skissm__E2eeAddress *user_address,
-    int request_type
+    int request_type,
+    char *pending_request_id
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -2241,6 +2264,7 @@ void unload_pending_request_data(
     sqlite3_bind_text(stmt, 2, user_address->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, user_address->user->device_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_int(stmt, 4, request_type);
+    sqlite3_bind_text(stmt, 5, pending_request_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

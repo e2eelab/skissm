@@ -153,8 +153,7 @@ typedef struct skissm_db_handler_t {
      * @param address
      * @param account
      */
-    void (*load_account_by_address)(Skissm__E2eeAddress *,
-                                    Skissm__Account **);
+    void (*load_account_by_address)(Skissm__E2eeAddress *, Skissm__Account **);
     /**
      * @brief load all accounts from db
      * @param accounts
@@ -196,8 +195,7 @@ typedef struct skissm_db_handler_t {
      * @param account_id
      * @param one_time_pre_key
      */
-    void (*add_one_time_pre_key)(uint64_t,
-                                 Skissm__OneTimePreKey *);
+    void (*add_one_time_pre_key)(uint64_t, Skissm__OneTimePreKey *);
     /**
      * @brief remove an one time pre-key of account to db
      * @param account_id
@@ -218,17 +216,22 @@ typedef struct skissm_db_handler_t {
      * @param session_owner_address
      * @param inbound_session
      */
-    void (*load_inbound_session)(char *, Skissm__E2eeAddress *,
-                                 Skissm__Session **);
+    void (*load_inbound_session)(
+        char *,
+        Skissm__E2eeAddress *,
+        Skissm__Session **
+    );
     /**
      * @brief find the lastest outbound session
      * @param session_owner_address
      * @param to
      * @param outbound_session
      */
-    void (*load_outbound_session)(Skissm__E2eeAddress *,
-                                  Skissm__E2eeAddress *,
-                                  Skissm__Session **);
+    void (*load_outbound_session)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        Skissm__Session **
+    );
 
     /**
      * @brief find the list of outbound sessions that are related to to_user_id
@@ -236,9 +239,11 @@ typedef struct skissm_db_handler_t {
      * @param to_user_id
      * @param outbound_sessions
      */
-    size_t (*load_outbound_sessions)(Skissm__E2eeAddress *,
-                                     const char *,
-                                     Skissm__Session ***);
+    size_t (*load_outbound_sessions)(
+        Skissm__E2eeAddress *,
+        const char *,
+        Skissm__Session ***
+    );
 
     /**
      * @brief store session
@@ -251,8 +256,11 @@ typedef struct skissm_db_handler_t {
      * @param from
      * @param to
      */
-    void (*unload_session)(Skissm__E2eeAddress *, Skissm__E2eeAddress *,
-                           Skissm__E2eeAddress *);
+    void (*unload_session)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *
+    );
 
     // group session related handlers
     /**
@@ -261,27 +269,33 @@ typedef struct skissm_db_handler_t {
      * @param group_address
      * @param outbound_group_session
      */
-    void (*load_outbound_group_session)(Skissm__E2eeAddress *,
-                                        Skissm__E2eeAddress *,
-                                        Skissm__GroupSession **);
+    void (*load_outbound_group_session)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        Skissm__GroupSession **
+    );
     /**
      * @brief find inbound group session
      * @param receiver_address
      * @param session_id
      * @param inbound_group_session
      */
-    void (*load_inbound_group_session)(Skissm__E2eeAddress *,
-                                       char *,
-                                       Skissm__GroupSession **);
+    void (*load_inbound_group_session)(
+        Skissm__E2eeAddress *,
+        char *,
+        Skissm__GroupSession **
+    );
     /**
      * @brief find inbound group session
      * @param receiver_address
      * @param group_address
      * @param inbound_group_sessions
      */
-    size_t (*load_inbound_group_sessions)(Skissm__E2eeAddress *,
-                                          Skissm__E2eeAddress *,
-                                          Skissm__GroupSession ***);
+    size_t (*load_inbound_group_sessions)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        Skissm__GroupSession ***
+    );
     /**
      * @brief store group session
      * @param group_session
@@ -304,48 +318,68 @@ typedef struct skissm_db_handler_t {
      * @brief store pending plaintext data
      * @param from_address
      * @param to_address
+     * @param pending_plaintext_id
      * @param plaintext_data
      * @param plaintext_data_len
      */
-    void (*store_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, uint8_t *, size_t);
+    void (*store_pending_plaintext_data)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        char *, uint8_t *, size_t
+    );
     /**
      * @brief load pending plaintext data
      * @param from_address
      * @param to_address
+     * @param pending_plaintext_id_list
      * @param plaintext_data_list
      * @param plaintext_data_len_list
      * @return number of loaded plaintext_data list
      */
-    size_t (*load_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *, uint8_t ***, size_t **);
+    size_t (*load_pending_plaintext_data)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        char ***, uint8_t ***, size_t **
+    );
     /**
      * @brief delete pending plaintext data
      * @param from_address
      * @param to_address
+     * @param pending_plaintext_id
      */
-    void (*unload_pending_plaintext_data)(Skissm__E2eeAddress *, Skissm__E2eeAddress *);
+    void (*unload_pending_plaintext_data)(
+        Skissm__E2eeAddress *, Skissm__E2eeAddress *, char *
+    );
     /**
      * @brief store pending request data
      * @param user_address
      * @param request_type
+     * @param pending_request_id
      * @param request_data
      * @param request_data_len
      */
-    void (*store_pending_request_data)(Skissm__E2eeAddress *, int, uint8_t *, size_t);
+    void (*store_pending_request_data)(
+        Skissm__E2eeAddress *, int, char *, uint8_t *, size_t
+    );
     /**
      * @brief load pending request data
      * @param user_address
+     * @param pending_request_id_list
      * @param request_type
      * @param request_data_list
      * @param request_data_len_list
      * @return number of loaded request_data list
      */
-    size_t (*load_pending_request_data)(Skissm__E2eeAddress *, int **, uint8_t ***, size_t **);
+    size_t (*load_pending_request_data)(
+        Skissm__E2eeAddress *, char ***, int **, uint8_t ***, size_t **
+    );
     /**
      * @brief delete pending request data
      * @param user_address
      * @param request_type
+     * @param pending_request_id
      */
-    void (*unload_pending_request_data)(Skissm__E2eeAddress *, int);
+    void (*unload_pending_request_data)(Skissm__E2eeAddress *, int, char *);
 } skissm_db_handler_t;
 
 typedef struct e2ee_proto_handler_t {
@@ -507,8 +541,10 @@ typedef struct skissm_event_handler_t {
      * @param plaintext
      * @param plaintext_len
      */
-    void (*on_group_msg_received)(Skissm__E2eeAddress *,
-                                  Skissm__E2eeAddress *, uint8_t *, size_t);
+    void (*on_group_msg_received)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *, uint8_t *, size_t
+    );
 
     /**
      * @brief notify group created event

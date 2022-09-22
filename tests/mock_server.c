@@ -65,15 +65,27 @@ static group_data group_data_set[group_data_max] = {
     {NULL, NULL, 0, NULL},
     {NULL, NULL, 0, NULL}};
 
+static bool session_record[user_data_max][user_data_max] = {
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0}
+};
+
 static uint8_t user_data_set_insert_pos = 0;
 
 static uint8_t group_data_set_insert_pos = 0;
 
-static user_data *find_user(char *authenticator) {
+static user_data *find_user(char *authenticator, uint8_t *position) {
     uint8_t i;
     for (i = 0; i < user_data_max; i++) {
         if (user_data_set[i].authenticator != NULL) {
             if (strcmp(user_data_set[i].authenticator, authenticator) == 0) {
+                *position = i;
                 return &(user_data_set[i]);
             }
         }
@@ -154,7 +166,8 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     }
 
     // check if there is the user's data stored in the server's database
-    user_data *client_data = find_user(request->authenticator);
+    uint8_t user_data_find;
+    user_data *client_data = find_user(request->authenticator, &user_data_find);
 
     // prepare to store
     user_data *cur_data = &(user_data_set[user_data_set_insert_pos]);
@@ -186,6 +199,37 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     skissm__register_user_response__init(response);
     copy_address_from_address(&(response->address), cur_data->address);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+    if (client_data != NULL) {
+        response->n_other_device_addresses = find_user_addresses(
+            client_data->address->user->user_id, &(response->other_device_addresses)
+        );
+    }
+
+    // send the new device message to other users
+    if (client_data != NULL) {
+        uint8_t j;
+        for (j = 0; j < user_data_set_insert_pos - 1; j++) {
+            if (session_record[user_data_find][j] == true) {
+                Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+                skissm__proto_msg__init(proto_msg);
+                copy_address_from_address(&(proto_msg->from), cur_data->address);
+                copy_address_from_address(&(proto_msg->to), user_data_set[j].address);
+                proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_NEW_USER_DEVICE_MSG;
+                proto_msg->new_user_device_msg = (Skissm__NewUserDeviceMsg *)malloc(sizeof(Skissm__NewUserDeviceMsg));
+                skissm__new_user_device_msg__init(proto_msg->new_user_device_msg);
+                copy_address_from_address(&(proto_msg->new_user_device_msg->user_address), cur_data->address);
+
+                size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
+                uint8_t proto_msg_data[proto_msg_data_len];
+                skissm__proto_msg__pack(proto_msg, proto_msg_data);
+                Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
+
+                // release
+                skissm__proto_msg__free_unpacked(proto_msg, NULL);
+                skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
+            }
+        }
+    }
 
     return response;
 }
@@ -197,15 +241,28 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundle
     }
 
     size_t user_device_num = 0;
-
     uint8_t user_data_find[user_data_max] = {0};
     uint8_t i;
-    for (i = 0; i < user_data_set_insert_pos; i++) {
-        if ((user_data_set[i].address)
-            && compare_user_id(user_data_set[i].address, request->user_id, request->domain)
-        ) {
-            user_data_find[user_device_num] = i;
-            user_device_num++;
+    Skissm__E2eeAddress *cur_address;
+    if ((request->device_id)[0] == '\0') {
+        for (i = 0; i < user_data_set_insert_pos; i++) {
+            cur_address = user_data_set[i].address;
+            if ((cur_address != NULL) && compare_user_id(cur_address, request->user_id, request->domain)) {
+                user_data_find[user_device_num] = i;
+                user_device_num++;
+            }
+        }
+    } else {
+        for (i = 0; i < user_data_set_insert_pos; i++) {
+            cur_address = user_data_set[i].address;
+            if ((cur_address != NULL)
+                && safe_strcmp(cur_address->domain, request->domain)
+                && safe_strcmp(cur_address->user->user_id, request->user_id)
+                && safe_strcmp(cur_address->user->device_id, request->device_id)
+            ) {
+                user_data_find[user_device_num] = i;
+                user_device_num++;
+            }
         }
     }
 

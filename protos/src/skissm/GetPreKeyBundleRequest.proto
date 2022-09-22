@@ -28,4 +28,5 @@ option swift_prefix="Swift";
 message GetPreKeyBundleRequest {
     string domain = 1;
     string user_id = 2;
+    string device_id = 3;
 }

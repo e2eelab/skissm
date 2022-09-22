@@ -291,7 +291,7 @@ void free_one_time_pre_key(Skissm__Account *account) {
                 skissm__one_time_pre_key__free_unpacked(account->one_time_pre_keys[i], NULL);
                 account->one_time_pre_keys[i] = NULL;
             }
-            free_mem((void **)&(account->one_time_pre_keys), sizeof(Skissm__OneTimePreKey **) * account->n_one_time_pre_keys);
+            free_mem((void **)&(account->one_time_pre_keys), sizeof(Skissm__OneTimePreKey *) * account->n_one_time_pre_keys);
             if (new_num > 0) {
                 account->one_time_pre_keys = new_one_time_pre_keys;
             }

@@ -32,10 +32,11 @@ extern "C" {
  *
  * @param to_user_id
  * @param to_domain
+ * @param to_device_id
  * @return Skissm__GetPreKeyBundleRequest*
  */
 Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(
-    const char *to_user_id, const char *to_domain
+    const char *to_user_id, const char *to_domain, const char *to_device_id
 );
 
 /**

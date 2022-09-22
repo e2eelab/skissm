@@ -31,6 +31,7 @@ extern "C" {
  * @param from
  * @param to_user_id
  * @param to_domain
+ * @param to_device_id
  * @param group_pre_key_plaintext_data
  * @param group_pre_key_plaintext_data_len
  * @return Skissm__InviteResponse *
@@ -39,6 +40,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
     Skissm__E2eeAddress *from,
     const char *to_user_id,
     const char *to_domain,
+    const char *to_device_id,
     uint8_t *group_pre_key_plaintext_data,
     size_t group_pre_key_plaintext_data_len
 );

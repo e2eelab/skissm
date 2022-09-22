@@ -70,7 +70,7 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num == (size_t)(0)) {
-        return get_pre_key_bundle_internal(from, to_user_id, to_domain, NULL, 0);
+        return get_pre_key_bundle_internal(from, to_user_id, to_domain, NULL, NULL, 0);
     } else {
         size_t i;
         for (i = 0; i < outbound_sessions_num; i++) {
@@ -165,6 +165,11 @@ size_t f2f_invite(
     return encrypted_f2f_pre_shared_key_len;
 }
 
+void send_new_device_msg(
+    Skissm__E2eeAddress *new_device_address, Skissm__E2eeAddress **old_device_addresses,
+    Skissm__E2eeAddress **friends
+) {}
+
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
     const uint8_t *plaintext_data, size_t plaintext_data_len
@@ -191,13 +196,16 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
 
         if (outbound_session->responded == false) {
             // save common_plaintext_data with flag responded = false
+            char *pending_plaintext_id = generate_uuid_str();
             get_skissm_plugin()->db_handler.store_pending_plaintext_data(
                 outbound_session->from,
                 outbound_session->to,
+                pending_plaintext_id,
                 common_plaintext_data,
                 common_plaintext_data_len
             );
             // release
+            free(pending_plaintext_id);
             free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
             skissm__session__free_unpacked(outbound_session, NULL);
             continue;
@@ -283,7 +291,12 @@ Skissm__CreateGroupResponse *create_group(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__create_group_request__pack(request, request_data);
         // store
-        get_skissm_plugin()->db_handler.store_pending_request_data(account->address, CREATE_GROUP_REQUEST, request_data, request_data_len);
+        char *pending_request_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_request_data(
+            account->address, CREATE_GROUP_REQUEST, pending_request_id, request_data, request_data_len
+        );
+        // release
+        free(pending_request_id);
     }
 
     // release
@@ -317,7 +330,12 @@ Skissm__AddGroupMembersResponse *add_group_members(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__add_group_members_request__pack(request, request_data);
         // store
-        get_skissm_plugin()->db_handler.store_pending_request_data(sender_address, ADD_GROUP_MEMBERS_REQUEST, request_data, request_data_len);
+        char *pending_request_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_request_data(
+            sender_address, ADD_GROUP_MEMBERS_REQUEST, pending_request_id, request_data, request_data_len
+        );
+        // release
+        free(pending_request_id);
     }
 
     // release
@@ -352,7 +370,12 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__remove_group_members_request__pack(request, request_data);
         // store
-        get_skissm_plugin()->db_handler.store_pending_request_data(sender_address, REMOVE_GROUP_MEMBERS_REQUEST, request_data, request_data_len);
+        char *pending_request_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_request_data(
+            sender_address, REMOVE_GROUP_MEMBERS_REQUEST, pending_request_id, request_data, request_data_len
+        );
+        // release
+        free(pending_request_id);
     }
 
     // release
@@ -385,7 +408,12 @@ Skissm__SendGroupMsgResponse *send_group_msg(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__send_group_msg_request__pack(request, request_data);
         // store
-        get_skissm_plugin()->db_handler.store_pending_request_data(sender_address, SEND_GROUP_MSG_REQUEST, request_data, request_data_len);
+        char *pending_request_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_request_data(
+            sender_address, SEND_GROUP_MSG_REQUEST, pending_request_id, request_data, request_data_len
+        );
+        // release
+        free(pending_request_id);
     }
 
     // release

@@ -197,12 +197,15 @@ void create_outbound_group_session(
                     /** Since the other has not responded, we store the group pre-key first so that
                      *  we can send it right after receiving the other's accept message.
                      */
+                    char *pending_plaintext_id = generate_uuid_str();
                     get_skissm_plugin()->db_handler.store_pending_plaintext_data(
                         outbound_session->from,
                         outbound_session->to,
+                        pending_plaintext_id,
                         group_pre_key_plaintext_data,
                         group_pre_key_plaintext_data_len
                     );
+                    free(pending_plaintext_id);
                 }
                 // release outbound_session
                 skissm__session__free_unpacked(outbound_session, NULL);
@@ -214,6 +217,7 @@ void create_outbound_group_session(
             Skissm__InviteResponse *response = get_pre_key_bundle_internal(
                 outbound_group_session->session_owner,
                 group_member_address->user->user_id, group_member_address->domain,
+                NULL,
                 group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
             );
             // release

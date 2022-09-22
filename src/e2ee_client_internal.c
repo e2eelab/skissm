@@ -8,10 +8,10 @@
 #include "skissm/session_manager.h"
 
 Skissm__InviteResponse *get_pre_key_bundle_internal(
-    Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
+    Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain, const char *to_device_id,
     uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len
 ) {
-    Skissm__GetPreKeyBundleRequest *request = produce_get_pre_key_bundle_request(to_user_id, to_domain);
+    Skissm__GetPreKeyBundleRequest *request = produce_get_pre_key_bundle_request(to_user_id, to_domain, to_device_id);
     Skissm__GetPreKeyBundleResponse *response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(request);
     Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
         from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, response
@@ -38,7 +38,12 @@ Skissm__InviteResponse *invite_internal(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__invite_request__pack(request, request_data);
         // store
-        get_skissm_plugin()->db_handler.store_pending_request_data(outbound_session->from, INVITE_REQUEST, request_data, request_data_len);
+        char *pending_request_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_request_data(
+            outbound_session->from, INVITE_REQUEST, pending_request_id, request_data, request_data_len
+        );
+        // release
+        free(pending_request_id);
     }
 
     // release
@@ -63,7 +68,12 @@ Skissm__AcceptResponse *accept_internal(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__accept_request__pack(request, request_data);
         // store
-        get_skissm_plugin()->db_handler.store_pending_request_data(from, ACCEPT_REQUEST, request_data, request_data_len);
+        char *pending_request_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_request_data(
+            from, ACCEPT_REQUEST, pending_request_id, request_data, request_data_len
+        );
+        // release
+        free(pending_request_id);
     }
     // release
     skissm__accept_request__free_unpacked(request, NULL);
@@ -115,7 +125,12 @@ Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__publish_spk_request__pack(request, request_data);
         // store
-        get_skissm_plugin()->db_handler.store_pending_request_data(account->address, PUBLISH_SPK_REQUEST, request_data, request_data_len);
+        char *pending_request_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_request_data(
+            account->address, PUBLISH_SPK_REQUEST, pending_request_id, request_data, request_data_len
+        );
+        // release
+        free(pending_request_id);
     }
 
     // release
@@ -135,7 +150,12 @@ Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint3
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__supply_opks_request__pack(request, request_data);
         // store
-        get_skissm_plugin()->db_handler.store_pending_request_data(account->address, SUPPLY_OPKS_REQUEST, request_data, request_data_len);
+        char *pending_request_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_request_data(
+            account->address, SUPPLY_OPKS_REQUEST, pending_request_id, request_data, request_data_len
+        );
+        // release
+        free(pending_request_id);
     }
 
     // release
@@ -158,7 +178,12 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__send_one2one_msg_request__pack(request, request_data);
         // store
-        get_skissm_plugin()->db_handler.store_pending_request_data(outbound_session->session_owner, SEND_ONE2ONE_MSG_REQUEST, request_data, request_data_len);
+        char *pending_request_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_request_data(
+            outbound_session->session_owner, SEND_ONE2ONE_MSG_REQUEST, pending_request_id, request_data, request_data_len
+        );
+        // release
+        free(pending_request_id);
     }
 
     // release
@@ -176,12 +201,13 @@ void resume_connection_internal(Skissm__Account *account) {
 
     Skissm__E2eeAddress *address = account->address;
     // load all pending request data
+    char **pending_request_id_list;
     int *request_type;
     uint8_t **request_data_list;
     size_t *request_data_len_list;
     size_t pending_request_data_num =
         get_skissm_plugin()->db_handler.load_pending_request_data(
-            address, &request_type, &request_data_list, &request_data_len_list
+            address, &pending_request_id_list, &request_type, &request_data_list, &request_data_len_list
         );
     // send the pending request data
     bool succ;
@@ -193,7 +219,7 @@ void resume_connection_internal(Skissm__Account *account) {
                 Skissm__InviteResponse *invite_response = get_skissm_plugin()->proto_handler.invite(invite_request);
                 succ = consume_invite_response(invite_response);
                 if (succ) {
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, INVITE_REQUEST);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, INVITE_REQUEST, pending_request_id_list[i]);
                 }
                 skissm__invite_request__free_unpacked(invite_request, NULL);
                 skissm__invite_response__free_unpacked(invite_response, NULL);
@@ -204,7 +230,7 @@ void resume_connection_internal(Skissm__Account *account) {
                 Skissm__AcceptResponse *accept_response = get_skissm_plugin()->proto_handler.accept(accept_request);
                 succ = consume_accept_response(accept_response);
                 if (succ) {
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, ACCEPT_REQUEST);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, ACCEPT_REQUEST, pending_request_id_list[i]);
                 }
                 skissm__accept_request__free_unpacked(accept_request, NULL);
                 skissm__accept_response__free_unpacked(accept_response, NULL);
@@ -215,7 +241,7 @@ void resume_connection_internal(Skissm__Account *account) {
                 Skissm__PublishSpkResponse *publish_spk_response = get_skissm_plugin()->proto_handler.publish_spk(publish_spk_request);
                 succ = consume_publish_spk_response(account, publish_spk_response);
                 if (succ) {
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, PUBLISH_SPK_REQUEST);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, PUBLISH_SPK_REQUEST, pending_request_id_list[i]);
                 }
                 skissm__publish_spk_request__free_unpacked(publish_spk_request, NULL);
                 skissm__publish_spk_response__free_unpacked(publish_spk_response, NULL);
@@ -226,7 +252,7 @@ void resume_connection_internal(Skissm__Account *account) {
                 Skissm__SupplyOpksResponse *supply_opks_response = get_skissm_plugin()->proto_handler.supply_opks(supply_opks_request);
                 succ = consume_supply_opks_response(account, (uint32_t)supply_opks_request->n_one_time_pre_key_public, supply_opks_response);
                 if (succ) {
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, SUPPLY_OPKS_REQUEST);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, SUPPLY_OPKS_REQUEST, pending_request_id_list[i]);
                 }
                 skissm__supply_opks_request__free_unpacked(supply_opks_request, NULL);
                 skissm__supply_opks_response__free_unpacked(supply_opks_response, NULL);
@@ -239,7 +265,7 @@ void resume_connection_internal(Skissm__Account *account) {
                 get_skissm_plugin()->db_handler.load_outbound_session(send_one2one_msg_request->msg->from, send_one2one_msg_request->msg->to, &outbound_session);
                 succ = consume_send_one2one_msg_response(outbound_session, send_one2one_msg_response);
                 if (succ) {
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, SEND_ONE2ONE_MSG_REQUEST);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, SEND_ONE2ONE_MSG_REQUEST, pending_request_id_list[i]);
                 }
                 skissm__send_one2one_msg_request__free_unpacked(send_one2one_msg_request, NULL);
                 skissm__send_one2one_msg_response__free_unpacked(send_one2one_msg_response, NULL);
@@ -258,7 +284,7 @@ void resume_connection_internal(Skissm__Account *account) {
                     create_group_response
                 );
                 if (succ) {
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, CREATE_GROUP_REQUEST);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, CREATE_GROUP_REQUEST, pending_request_id_list[i]);
                 }
                 skissm__create_group_request__free_unpacked(create_group_request, NULL);
                 skissm__create_group_response__free_unpacked(create_group_response, NULL);
@@ -271,7 +297,7 @@ void resume_connection_internal(Skissm__Account *account) {
                 get_skissm_plugin()->db_handler.load_outbound_group_session(address, add_group_members_request->msg->group_address, &outbound_group_session_1);
                 succ = consume_add_group_members_response(outbound_group_session_1, add_group_members_response);
                 if (succ) {
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, ADD_GROUP_MEMBERS_REQUEST);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, ADD_GROUP_MEMBERS_REQUEST, pending_request_id_list[i]);
                 }
                 skissm__add_group_members_request__free_unpacked(add_group_members_request, NULL);
                 skissm__add_group_members_response__free_unpacked(add_group_members_response, NULL);
@@ -285,7 +311,7 @@ void resume_connection_internal(Skissm__Account *account) {
                 get_skissm_plugin()->db_handler.load_outbound_group_session(address, remove_group_members_request->msg->group_address, &outbound_group_session_2);
                 succ = consume_remove_group_members_response(outbound_group_session_2, remove_group_members_response);
                 if (succ) {
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, REMOVE_GROUP_MEMBERS_REQUEST);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, REMOVE_GROUP_MEMBERS_REQUEST, pending_request_id_list[i]);
                 }
                 skissm__remove_group_members_request__free_unpacked(remove_group_members_request, NULL);
                 skissm__remove_group_members_response__free_unpacked(remove_group_members_response, NULL);
@@ -299,7 +325,7 @@ void resume_connection_internal(Skissm__Account *account) {
                 get_skissm_plugin()->db_handler.load_outbound_group_session(address, send_group_msg_request->msg->to, &outbound_group_session_3);
                 succ = consume_send_group_msg_response(outbound_group_session_3, send_group_msg_response);
                 if (succ) {
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, SEND_GROUP_MSG_REQUEST);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(address, SEND_GROUP_MSG_REQUEST, pending_request_id_list[i]);
                 }
                 skissm__send_group_msg_request__free_unpacked(send_group_msg_request, NULL);
                 skissm__send_group_msg_response__free_unpacked(send_group_msg_response, NULL);
@@ -311,13 +337,15 @@ void resume_connection_internal(Skissm__Account *account) {
                 break;
         };
         // release
+        free(pending_request_id_list[i]);
         free_mem((void **)&(request_data_list[i]), request_data_len_list[i]);
     }
 
     // release
     if (pending_request_data_num > 0) {
-        free(request_type);
-        free(request_data_list);
-        free(request_data_len_list);
+        free_mem((void **)&pending_request_id_list, sizeof(char *) * pending_request_data_num);
+        free_mem((void **)&request_type, sizeof(int) * pending_request_data_num);
+        free_mem((void **)&request_data_list, sizeof(uint8_t *) * pending_request_data_num);
+        free_mem((void **)&request_data_len_list, sizeof(size_t) * pending_request_data_num);
     }
 }

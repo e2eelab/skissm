@@ -34,4 +34,8 @@ message RegisterUserResponse {
 
     E2eeAddress address = 3;
     string password = 4;
+
+    repeated E2eeAddress other_device_addresses = 5;
+    repeated E2eeAddress other_user_addresses = 6;
+    repeated E2eeAddress group_addresses = 7;
 }
