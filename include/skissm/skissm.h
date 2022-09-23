@@ -318,7 +318,7 @@ typedef struct skissm_db_handler_t {
      * @brief store pending plaintext data
      * @param from_address
      * @param to_address
-     * @param pending_plaintext_id
+     * @param plaintext_id
      * @param plaintext_data
      * @param plaintext_data_len
      */
@@ -331,7 +331,7 @@ typedef struct skissm_db_handler_t {
      * @brief load pending plaintext data
      * @param from_address
      * @param to_address
-     * @param pending_plaintext_id_list
+     * @param plaintext_id_list
      * @param plaintext_data_list
      * @param plaintext_data_len_list
      * @return number of loaded plaintext_data list
@@ -345,7 +345,7 @@ typedef struct skissm_db_handler_t {
      * @brief delete pending plaintext data
      * @param from_address
      * @param to_address
-     * @param pending_plaintext_id
+     * @param plaintext_id
      */
     void (*unload_pending_plaintext_data)(
         Skissm__E2eeAddress *, Skissm__E2eeAddress *, char *
@@ -353,33 +353,32 @@ typedef struct skissm_db_handler_t {
     /**
      * @brief store pending request data
      * @param user_address
+     * @param request_id
      * @param request_type
-     * @param pending_request_id
      * @param request_data
      * @param request_data_len
      */
     void (*store_pending_request_data)(
-        Skissm__E2eeAddress *, int, char *, uint8_t *, size_t
+        Skissm__E2eeAddress *, char *, uint8_t, uint8_t *, size_t
     );
     /**
      * @brief load pending request data
      * @param user_address
-     * @param pending_request_id_list
-     * @param request_type
+     * @param request_id_list
+     * @param request_type_list
      * @param request_data_list
      * @param request_data_len_list
      * @return number of loaded request_data list
      */
     size_t (*load_pending_request_data)(
-        Skissm__E2eeAddress *, char ***, int **, uint8_t ***, size_t **
+        Skissm__E2eeAddress *, char ***, uint8_t **, uint8_t ***, size_t **
     );
     /**
      * @brief delete pending request data
      * @param user_address
-     * @param request_type
-     * @param pending_request_id
+     * @param request_id
      */
-    void (*unload_pending_request_data)(Skissm__E2eeAddress *, int, char *);
+    void (*unload_pending_request_data)(Skissm__E2eeAddress *, char *);
 } skissm_db_handler_t;
 
 typedef struct e2ee_proto_handler_t {

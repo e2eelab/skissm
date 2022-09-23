@@ -293,7 +293,6 @@ static const char *PENDING_REQUEST_DATA_LOAD = "SELECT PENDING_REQUEST_ID, "
 static const char *PENDING_REQUEST_DATA_DELETE = "DELETE FROM PENDING_REQUEST_DATA "
                                                  "WHERE UESR_ADDRESS IN "
                                                  "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?)) "
-                                                 "AND REQUEST_TYPE is (?) "
                                                  "AND PENDING_REQUEST_ID is (?);";
 
 // account related
@@ -2153,8 +2152,8 @@ void unload_pending_plaintext_data(
 
 void store_pending_request_data(
     Skissm__E2eeAddress *user_address,
-    int request_type,
     char *pending_request_id,
+    uint8_t request_type,
     uint8_t *request_data,
     size_t request_data_len
 ) {
@@ -2200,8 +2199,8 @@ int load_n_pending_request_data(Skissm__E2eeAddress *user_address) {
 
 size_t load_pending_request_data(
     Skissm__E2eeAddress *user_address,
-    char ***pending_request_id_list,
-    int **request_type,
+    char ***request_id_list,
+    uint8_t **request_type_list,
     uint8_t ***request_data_list,
     size_t **request_data_len_list
 ) {
@@ -2212,9 +2211,9 @@ size_t load_pending_request_data(
         *request_data_len_list = NULL;
         return 0;
     }
-    *pending_request_id_list = (char **)malloc(sizeof(char *) * n_pending_request_data);
+    *request_id_list = (char **)malloc(sizeof(char *) * n_pending_request_data);
 
-    *request_type = (int *)malloc(sizeof(int) * n_pending_request_data);
+    *request_type_list = (uint8_t *)malloc(sizeof(uint8_t) * n_pending_request_data);
 
     (*request_data_list) = (uint8_t **)malloc(sizeof(uint8_t *) * n_pending_request_data);
 
@@ -2232,8 +2231,8 @@ size_t load_pending_request_data(
         sqlite3_step(stmt);
 
         // load
-        (*pending_request_id_list)[i] = strdup((char *)sqlite3_column_text(stmt, 0));
-        (*request_type)[i] = sqlite3_column_int(stmt, 1);
+        (*request_id_list)[i] = strdup((char *)sqlite3_column_text(stmt, 0));
+        (*request_type_list)[i] = sqlite3_column_int(stmt, 1);
 
         size_t e2ee_plaintext_data_len = sqlite3_column_bytes(stmt, 2);
         uint8_t *e2ee_plaintext_data = (uint8_t *)sqlite3_column_blob(stmt, 2);
@@ -2252,7 +2251,6 @@ size_t load_pending_request_data(
 
 void unload_pending_request_data(
     Skissm__E2eeAddress *user_address,
-    int request_type,
     char *pending_request_id
 ) {
     // prepare
@@ -2263,8 +2261,7 @@ void unload_pending_request_data(
     sqlite3_bind_text(stmt, 1, user_address->domain, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, user_address->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, user_address->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_int(stmt, 4, request_type);
-    sqlite3_bind_text(stmt, 5, pending_request_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, pending_request_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

@@ -267,22 +267,22 @@ static void test_pending_request_data() {
     // store
     char *pending_request_id = generate_uuid_str();
     get_skissm_plugin()->db_handler.store_pending_request_data(
-        alice_address, ACCEPT_REQUEST, pending_request_id, request_data, request_data_len
+        alice_address, pending_request_id, ACCEPT_REQUEST, request_data, request_data_len
     );
 
     // load
     char **pending_request_id_list;
-    int *request_type;
+    uint8_t *request_type_list;
     uint8_t **request_data_list;
     size_t *request_data_len_list;
     size_t pending_request_data_num =
         get_skissm_plugin()->db_handler.load_pending_request_data(
-            alice_address, &pending_request_id_list, &request_type, &request_data_list, &request_data_len_list
+            alice_address, &pending_request_id_list, &request_type_list, &request_data_list, &request_data_len_list
         );
 
     // assert
     assert(pending_request_data_num == 1);
-    assert(request_type[0] == ACCEPT_REQUEST);
+    assert(request_type_list[0] == ACCEPT_REQUEST);
     assert(request_data_len_list[0] == request_data_len);
     assert(memcmp(request_data_list[0], request_data, request_data_len) == 0);
 
@@ -293,7 +293,7 @@ static void test_pending_request_data() {
     free_mem((void **)&request_data, request_data_len);
     free(pending_request_id);
     free_mem((void **)&pending_request_id_list, sizeof(char *) * pending_request_data_num);
-    free_mem((void **)&request_type, sizeof(int) * pending_request_data_num);
+    free_mem((void **)&request_type_list, sizeof(int) * pending_request_data_num);
     free_mem((void **)&(request_data_list[0]), request_data_len_list[0]);
     free_mem((void **)&request_data_list, sizeof(uint8_t *) * pending_request_data_num);
     free_mem((void **)&request_data_len_list, sizeof(size_t) * pending_request_data_num);

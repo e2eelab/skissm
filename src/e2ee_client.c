@@ -293,7 +293,7 @@ Skissm__CreateGroupResponse *create_group(
         // store
         char *pending_request_id = generate_uuid_str();
         get_skissm_plugin()->db_handler.store_pending_request_data(
-            account->address, CREATE_GROUP_REQUEST, pending_request_id, request_data, request_data_len
+            account->address, pending_request_id, CREATE_GROUP_REQUEST, request_data, request_data_len
         );
         // release
         free(pending_request_id);
@@ -332,7 +332,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
         // store
         char *pending_request_id = generate_uuid_str();
         get_skissm_plugin()->db_handler.store_pending_request_data(
-            sender_address, ADD_GROUP_MEMBERS_REQUEST, pending_request_id, request_data, request_data_len
+            sender_address, pending_request_id, ADD_GROUP_MEMBERS_REQUEST, request_data, request_data_len
         );
         // release
         free(pending_request_id);
@@ -372,7 +372,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
         // store
         char *pending_request_id = generate_uuid_str();
         get_skissm_plugin()->db_handler.store_pending_request_data(
-            sender_address, REMOVE_GROUP_MEMBERS_REQUEST, pending_request_id, request_data, request_data_len
+            sender_address, pending_request_id, REMOVE_GROUP_MEMBERS_REQUEST, request_data, request_data_len
         );
         // release
         free(pending_request_id);
@@ -410,7 +410,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
         // store
         char *pending_request_id = generate_uuid_str();
         get_skissm_plugin()->db_handler.store_pending_request_data(
-            sender_address, SEND_GROUP_MSG_REQUEST, pending_request_id, request_data, request_data_len
+            sender_address, pending_request_id, SEND_GROUP_MSG_REQUEST, request_data, request_data_len
         );
         // release
         free(pending_request_id);
