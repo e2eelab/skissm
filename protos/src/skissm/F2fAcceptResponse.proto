@@ -31,4 +31,3 @@ message F2fAcceptResponse {
     ResponseCode code = 1;
     string msg = 2;
 }
- 

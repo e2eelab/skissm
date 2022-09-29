@@ -30,4 +30,3 @@ import "skissm/F2fAcceptMsg.proto";
 message F2fAcceptRequest {
     F2fAcceptMsg msg = 1;
 }
- 

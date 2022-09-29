@@ -30,4 +30,3 @@ import "skissm/F2fInviteMsg.proto";
 message F2fInviteRequest {
     F2fInviteMsg msg = 1;
 }
- 

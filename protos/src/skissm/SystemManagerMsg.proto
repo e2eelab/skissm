@@ -25,8 +25,15 @@ option java_outer_classname = "SystemManagerMsgProto";
 option objc_class_prefix = "Objc";
 option swift_prefix="Swift";
 
+enum SystemOp {
+    WELCOME_MSG = 0;
+    REGISTER_MSG = 1;
+    REGISTER_SUCCESS_MSG = 2;
+    ANNOUNCEMENT_MSG = 3;
+}
+
 message SystemManagerMsg {
-    string system_notif_id = 1;
-    repeated string args = 2;
-    int64 server_t = 3;
+    int64 modifiedDate = 1;
+    SystemOp op = 2;
+    repeated string args = 3;
 }

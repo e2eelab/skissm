@@ -27,19 +27,20 @@ option swift_prefix="Swift";
 
 import "skissm/E2eeAddress.proto";
 
-enum NewFriendOp {
-    ADDING_SEND = 0;
-    ADDING_RECEIVE = 1;
-    ADDED = 2;
-    BLOCKED = 3;
-    UNBLOCKED = 4;
-    DELETED = 5;
-    RECOMMEND = 6;
+enum FriendOp {
+    ADDING_SEND_MSG = 0;
+    ADDING_RECEIVE_MSG = 1;
+    ADDED_MSG = 2;
+    BLOCKED_MSG = 3;
+    UNBLOCKED_MSG = 4;
+    DELETED_MSG = 5;
+    RECOMMEND_MSG = 6;
 }
 
 message FriendManagerMsg {
     int64 modifiedDate = 1;
     E2eeAddress user_address = 2;
     string user_name = 3;
-    NewFriendOp op = 4;
+    FriendOp op = 4;
+    repeated string args = 5;
 }

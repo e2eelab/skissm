@@ -29,4 +29,3 @@ message ProtoMsgTag {
     int64 proto_msg_t = 1;
     string proto_msg_id = 2;
 }
-
