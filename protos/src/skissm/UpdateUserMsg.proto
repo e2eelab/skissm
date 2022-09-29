@@ -28,7 +28,8 @@ option swift_prefix="Swift";
 import "skissm/E2eeAddress.proto";
 
 message UpdateUserMsg {
-    E2eeAddress user_address = 1;
-    string user_name = 2;
-    string user_avatar = 3;
+    int64 modifiedDate = 1;
+    E2eeAddress user_address = 2;
+    string user_name = 3;
+    string user_avatar = 4;
 }

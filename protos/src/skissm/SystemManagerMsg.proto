@@ -28,4 +28,5 @@ option swift_prefix="Swift";
 message SystemManagerMsg {
     string system_notif_id = 1;
     repeated string args = 2;
+    int64 server_t = 3;
 }

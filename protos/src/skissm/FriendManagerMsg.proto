@@ -38,7 +38,8 @@ enum NewFriendOp {
 }
 
 message FriendManagerMsg {
-    E2eeAddress user_address = 1;
-    string user_name = 2;
-    NewFriendOp op = 3;
+    int64 modifiedDate = 1;
+    E2eeAddress user_address = 2;
+    string user_name = 3;
+    NewFriendOp op = 4;
 }
