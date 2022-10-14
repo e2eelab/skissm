@@ -42,9 +42,12 @@ Skissm__CreateGroupRequest *produce_create_group_request(
 
     copy_address_from_address(&(msg->sender_address), sender_address);
     msg->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
-    msg->group_name = strdup(group_name);
-    msg->n_group_members = group_members_num;
-    copy_group_members(&(msg->group_members), group_members, group_members_num);
+    Skissm__GroupInfo *group_info = msg->group_info;
+    group_info = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
+    skissm__group_info__init(group_info);
+    group_info->group_name = strdup(group_name);
+    group_info->n_group_members = group_members_num;
+    copy_group_members(&(group_info->group_members), group_members, group_members_num);
 
     //done
     request->msg = msg;
@@ -71,9 +74,9 @@ bool consume_create_group_response(
 
 bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg) {
     const char *e2ee_pack_id = msg->e2ee_pack_id;
-    Skissm__E2eeAddress *group_address = msg->group_address;
-    size_t group_members_num = msg->n_group_members;
-    Skissm__GroupMember **group_members = msg->group_members;
+    Skissm__E2eeAddress *group_address = msg->group_info->group_address;
+    size_t group_members_num = msg->group_info->n_group_members;
+    Skissm__GroupMember **group_members = msg->group_info->group_members;
 
     // create a new outbound group session
     create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, group_members, group_members_num, NULL);

@@ -26,6 +26,7 @@ option objc_class_prefix = "Objc";
 option swift_prefix="Swift";
 
 import "skissm/E2eeAddress.proto";
+import "skissm/GroupInfo.proto";
 import "skissm/ResponseCode.proto";
 
 message RegisterUserResponse {
@@ -37,5 +38,5 @@ message RegisterUserResponse {
 
     repeated E2eeAddress other_device_addresses = 5;
     repeated E2eeAddress other_user_addresses = 6;
-    repeated E2eeAddress group_addresses = 7;
+    repeated GroupInfo group_info_list = 7;
 }

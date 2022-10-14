@@ -30,7 +30,8 @@
         "string_view": "c",
         "ranges": "c",
         "*.inc": "c",
-        "memory": "c"
+        "memory": "c",
+        "__mutex_base": "c"
     },
     "cmake.configureOnOpen": true,
 }

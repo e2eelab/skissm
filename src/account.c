@@ -25,23 +25,20 @@
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/mem_util.h"
 
-static Skissm__Account *local_account = NULL;
+account_context *account_context_list = NULL;
 
-static void update_signed_pre_key() {
+void account_begin() {
+    // load accounts that may be null
     Skissm__Account **accounts = NULL;
     size_t account_num = get_skissm_plugin()->db_handler.load_accounts(&accounts);
 
-    if (account_num == 0) {
-        if (accounts != NULL) {
-            ssm_notify_error(BAD_ACCOUNT, "update_signed_pre_key()");
-        }
-        return;
-    }
     Skissm__Account *cur_account = NULL;
     int64_t now;
     size_t i;
     for (i = 0; i < account_num; i++) {
         cur_account = accounts[i];
+        set_account(cur_account);
+
         // check if the signed pre-key expired
         now = get_skissm_plugin()->common_handler.gen_ts();
         if (now > cur_account->signed_pre_key->ttl) {
@@ -56,26 +53,33 @@ static void update_signed_pre_key() {
         // check if there are too many "used" one-time pre-keys
         free_one_time_pre_key(cur_account);
 
+        // resend the pending data if necessary
+        resume_connection_internal(cur_account);
+
         // release
         skissm__account__free_unpacked(cur_account, NULL);
         cur_account = NULL;
     }
-    free(accounts);
-}
-
-void account_begin() {
-    // load the first account that may be null
-    uint64_t account_id = 1;
-    get_skissm_plugin()->db_handler.load_account(account_id, &local_account);
-
-    // check and keep a updated signed pre-key
-    update_signed_pre_key();
+    if (accounts != NULL)
+        free(accounts);
 }
 
 void account_end() {
-    if (local_account != NULL) {
-        skissm__account__free_unpacked(local_account, NULL);
-        local_account = NULL;
+    if (account_context_list != NULL) {
+        account_context *cur_account_context = account_context_list;
+        while (cur_account_context != NULL) {
+            account_context *temp_account_context = cur_account_context;
+            cur_account_context = cur_account_context->next;
+            if (temp_account_context->local_account != NULL) {
+                skissm__account__free_unpacked(temp_account_context->local_account, NULL);
+                temp_account_context->local_account = NULL;
+            }
+            if (temp_account_context->f2f_session_mid != NULL) {
+                skissm__session__free_unpacked(temp_account_context->f2f_session_mid, NULL);
+                temp_account_context->f2f_session_mid = NULL;
+            }
+            temp_account_context->next = NULL;
+        }
     }
 }
 
@@ -115,30 +119,37 @@ Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
     return account;
 }
 
-Skissm__Account *get_account() {
-    return local_account;
+account_context *get_account_context(Skissm__E2eeAddress *address) {
+    if (account_context_list != NULL) {
+        account_context *cur_account_context = account_context_list;
+        while (cur_account_context != NULL) {
+            if (compare_address(cur_account_context->local_account->address, address)) {
+                return cur_account_context;
+            }
+            cur_account_context = cur_account_context->next;
+        }
+    }
+    return NULL;
 }
 
 void set_account(Skissm__Account *account) {
-    if (local_account == account)
+    if (account == NULL)
         return;
-    if (local_account != NULL) {
-        skissm__account__free_unpacked(local_account, NULL);
-        local_account = NULL;
-    }
-    local_account = account;
-}
-
-Skissm__Account *switch_account(Skissm__E2eeAddress *address) {
-    if (local_account != NULL) {
-        if ((local_account->address) && compare_address(local_account->address, address)) {
-            return local_account;
+    if (account_context_list != NULL) {
+        account_context *cur_account_context = account_context_list;
+        while (cur_account_context->next != NULL) {
+            cur_account_context = cur_account_context->next;
         }
-        skissm__account__free_unpacked(local_account, NULL);
-        local_account = NULL;
+        cur_account_context->next = (account_context *)malloc(sizeof(account_context));
+        copy_account_from_account(&(cur_account_context->next->local_account), account);
+        cur_account_context->next->f2f_session_mid = NULL;
+        cur_account_context->next->next = NULL;
+    } else {
+        account_context_list = (account_context *)malloc(sizeof(account_context));
+        copy_account_from_account(&(account_context_list->local_account), account);
+        account_context_list->f2f_session_mid = NULL;
+        account_context_list->next = NULL;
     }
-    get_skissm_plugin()->db_handler.load_account_by_address(address, &local_account);
-    return local_account;
 }
 
 size_t generate_signed_pre_key(Skissm__Account *account) {

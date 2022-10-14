@@ -278,9 +278,9 @@ void resume_connection_internal(Skissm__Account *account) {
                 succ = consume_create_group_response(
                     account->e2ee_pack_id,
                     address,
-                    create_group_request->msg->group_name,
-                    create_group_request->msg->group_members,
-                    create_group_request->msg->n_group_members,
+                    create_group_request->msg->group_info->group_name,
+                    create_group_request->msg->group_info->group_members,
+                    create_group_request->msg->group_info->n_group_members,
                     create_group_response
                 );
                 if (succ) {
