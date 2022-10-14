@@ -16,20 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-syntax = "proto3";
+#ifndef MOCK_SERVER_SENDING_H_
+#define MOCK_SERVER_SENDING_H_
 
-package skissm;
+#include "skissm/skissm.h"
 
-option java_package = "org.e2eelab.proto.skissm";
-option java_outer_classname = "CreateGroupMsgProto";
-option objc_class_prefix = "Objc";
-option swift_prefix="Swift";
+void send_proto_msg(Skissm__ProtoMsg *proto_msg);
 
-import "skissm/E2eeAddress.proto";
-import "skissm/GroupInfo.proto";
+void start_mock_server_sending();
 
-message CreateGroupMsg {
-    string e2ee_pack_id = 1;
-    E2eeAddress sender_address = 2;
-    GroupInfo group_info = 3;
-}
+void stop_mock_server_sending();
+
+#endif /* MOCK_SERVER_SENDING_H_ */

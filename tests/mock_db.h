@@ -19,6 +19,7 @@
 #ifndef MOCK_DB_H_
 #define MOCK_DB_H_
 
+#include <stdbool.h>
 #include <sqlite3.h>
 
 #include "skissm/skissm.h"
@@ -37,7 +38,7 @@ char *load_version(
 protobuf_c_boolean load_saved(
     uint64_t account_id
 );
-void load_address(
+bool load_address(
     uint64_t account_id,
     Skissm__E2eeAddress **address
 );
@@ -69,7 +70,7 @@ uint32_t load_next_signed_pre_key_id(
 uint32_t load_next_one_time_pre_key_id(
     uint64_t account_id
 );
-void load_id_by_address(
+bool load_id_by_address(
     Skissm__E2eeAddress *address,
     sqlite_int64 *account_id
 );

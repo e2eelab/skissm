@@ -587,7 +587,8 @@ typedef enum {
     CREATE_GROUP_REQUEST,
     ADD_GROUP_MEMBERS_REQUEST,
     REMOVE_GROUP_MEMBERS_REQUEST,
-    SEND_GROUP_MSG_REQUEST
+    SEND_GROUP_MSG_REQUEST,
+    PROTO_MSG
 } resendable_request;
 
 const e2ee_pack_t *get_e2ee_pack(const char *e2ee_pack_id);

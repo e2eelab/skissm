@@ -12,8 +12,6 @@
 #include "skissm/ratchet.h"
 #include "skissm/session.h"
 
-Skissm__Session *f2f_session_mid = NULL;
-
 static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     // load pending plaintext data(may be the group pre-key or the common plaintext)
     uint32_t pending_plaintext_data_list_num;
@@ -127,14 +125,18 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
             }
 
             // store the group pre-keys if necessary
-            char *pending_plaintext_id = generate_uuid_str();
-            get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-                from,
-                their_pre_key_bundles[i]->user_address,
-                pending_plaintext_id,
-                group_pre_key_plaintext_data,
-                group_pre_key_plaintext_data_len
-            );
+            if (group_pre_key_plaintext_data != NULL) {
+                char *pending_plaintext_id = generate_uuid_str();
+                get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                    from,
+                    their_pre_key_bundles[i]->user_address,
+                    pending_plaintext_id,
+                    group_pre_key_plaintext_data,
+                    group_pre_key_plaintext_data_len
+                );
+                // release
+                free(pending_plaintext_id);
+            }
 
             // prepare to create an outbound session
             const char *e2ee_pack_id = their_pre_key_bundles[i]->e2ee_pack_id;
@@ -147,7 +149,6 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 session_suite->new_outbound_session(outbound_session, account, their_pre_key_bundles[i]);
             // release
             skissm__account__free_unpacked(account, NULL);
-            free(pending_plaintext_id);
             skissm__session__free_unpacked(outbound_session, NULL);
 
             // error check
@@ -639,6 +640,20 @@ bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAc
         return false;
     }
 
+    // get the corresponding account
+    account_context *context = get_account_context(receiver_address);
+
+    if (context == NULL) {
+        ssm_notify_error(BAD_ACCOUNT, "consume_f2f_accept_msg()");
+        return NULL;
+    }
+
+    Skissm__Session *f2f_session_mid = context->f2f_session_mid;
+    if (f2f_session_mid == NULL) {
+        ssm_notify_error(BAD_SESSION, "consume_f2f_accept_msg()");
+        return false;
+    }
+
     const session_suite_t *session_suite = get_e2ee_pack(msg->e2ee_pack_id)->session_suite;
 
     // check f2f_session_mid
@@ -662,10 +677,6 @@ bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAc
         // send the face-to-face outbound message to other devices if they are available
         send_f2f_session_msg(msg->to, f2f_session_mid);
     }
-
-    // release
-    skissm__session__free_unpacked(f2f_session_mid, NULL);
-    f2f_session_mid = NULL;
 
     return result == (size_t)(0);
 }

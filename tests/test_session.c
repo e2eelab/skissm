@@ -31,6 +31,7 @@
 #include "skissm/session_manager.h"
 #include "skissm/skissm.h"
 
+#include "mock_server_sending.h"
 #include "test_plugin.h"
 #include "test_util.h"
 
@@ -66,11 +67,19 @@ static void on_inbound_session_invited(Skissm__E2eeAddress *from) {
 }
 
 static void on_inbound_session_ready(Skissm__Session *inbound_session){
-    printf("on_inbound_session_ready\n");
+    if (inbound_session->f2f == true) {
+        printf("the face-to-face inbound session is ready\n");
+    } else {
+        printf("on_inbound_session_ready\n");
+    }
 }
 
 static void on_outbound_session_ready(Skissm__Session *outbound_session){
-    printf("on_outbound_session_ready\n");
+    if (outbound_session->f2f == true) {
+        printf("the face-to-face outbound session is ready\n");
+    } else {
+        printf("on_outbound_session_ready\n");
+    }
 }
 
 static void on_f2f_password_created(uint8_t *password, size_t password_len) {
@@ -156,9 +165,13 @@ static void test_begin(){
     f2f_password_len = 0;
 
     get_skissm_plugin()->event_handler = test_event_handler;
+
+    start_mock_server_sending();
 }
 
 static void test_end(){
+    stop_mock_server_sending();
+
     skissm__account__free_unpacked(account_data[0], NULL);
     account_data[0] = NULL;
     skissm__account__free_unpacked(account_data[1], NULL);
@@ -212,13 +225,6 @@ static void test_encryption(
 
     // send encrypted msg
     send_one2one_msg(from_address, to_user_id, to_domain, plaintext, plaintext_len);
-    if (plaintext_store.plaintext == NULL){
-        printf("Test failed!!!\n");
-        assert(false);
-        return;
-    }
-    assert(plaintext_len == plaintext_store.plaintext_len);
-    assert(memcmp(plaintext, plaintext_store.plaintext, plaintext_len) == 0);
 }
 
 static void test_basic_session(){
@@ -238,6 +244,7 @@ static void test_basic_session(){
     Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
     assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
+    sleep(1);
     // load the outbound session
     Skissm__Session *outbound_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session);
@@ -255,6 +262,7 @@ static void test_basic_session(){
     test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
 
     // test stop
+    skissm__invite_response__free_unpacked(response, NULL);
     skissm__session__free_unpacked(outbound_session, NULL);
     skissm__session__free_unpacked(inbound_session, NULL);
     test_end();
@@ -282,6 +290,7 @@ static void test_interaction(){
     Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
     assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
+    sleep(1);
     // Alice loads the outbound session
     get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session_a);
     assert(outbound_session_a != NULL);
@@ -296,6 +305,7 @@ static void test_interaction(){
     Skissm__InviteResponse *response1 = invite(bob_address, alice_user_id, alice_domain);
     assert(response1 != NULL && response1->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
+    sleep(1);
     // Bob loads the outbound session
     get_skissm_plugin()->db_handler.load_outbound_session(bob_address, alice_address, &outbound_session_b);
     assert(outbound_session_b != NULL);
@@ -307,6 +317,8 @@ static void test_interaction(){
     test_encryption(bob_address, alice_user_id, alice_domain, plaintext_2, plaintext_len_2);
 
     // test stop
+    skissm__invite_response__free_unpacked(response, NULL);
+    skissm__invite_response__free_unpacked(response1, NULL);
     skissm__session__free_unpacked(outbound_session_a, NULL);
     skissm__session__free_unpacked(outbound_session_b, NULL);
     test_end();
@@ -341,6 +353,7 @@ static void test_continual_messages(){
     }
 
     // test stop
+    skissm__invite_response__free_unpacked(response, NULL);
     skissm__session__free_unpacked(outbound_session, NULL);
     test_end();
     tear_down();
@@ -368,6 +381,7 @@ static void test_one_to_many(){
     Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
     assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
+    sleep(3);
     // load the outbound sessions
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(alice_address, bob_user_id, &outbound_sessions);
@@ -397,6 +411,7 @@ static void test_one_to_many(){
     test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
 
     // test stop
+    skissm__invite_response__free_unpacked(response, NULL);
     size_t i;
     for (i = 0; i < outbound_sessions_num; i++) {
         skissm__session__free_unpacked(outbound_sessions[i], NULL);
@@ -431,6 +446,7 @@ static void test_face_to_face() {
     // Alice invites Bob to create a face-to-face session
     f2f_invite(alice_address, bob_address, 0, password, password_len);
 
+    sleep(1);
     // load the outbound session
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(alice_address, bob_user_id, &outbound_sessions);
@@ -476,6 +492,7 @@ static void test_replace_session_with_f2f() {
     // Alice invites Bob to create a face-to-face session
     f2f_invite(alice_address, bob_address, 0, password, password_len);
 
+    sleep(1);
     // load the outbound session
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(alice_address, bob_user_id, &outbound_sessions);
@@ -519,6 +536,7 @@ static void test_f2f_interaction() {
     // Alice invites Bob to create a face-to-face session
     f2f_invite(alice_address, bob_address, 0, password, password_len);
 
+    sleep(1);
     // check if Bob's outbound session is face-to-face
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(bob_address, alice_user_id, &outbound_sessions);
@@ -588,6 +606,7 @@ static void test_many_to_one() {
     // Alice invites Bob to create a session
     invite(device_1, bob_user_id, bob_domain);
 
+    sleep(3);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "This message will be sent to Bob and Alice's other two devices.";
     size_t plaintext_len = sizeof(plaintext) - 1;
@@ -656,6 +675,7 @@ static void test_many_to_many() {
     // Alice invites Bob to create a session
     invite(alice_address_1, bob_user_id, bob_domain);
 
+    sleep(3);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "This message will be sent to Bob's three devices and Alice's other two devices.";
     size_t plaintext_len = sizeof(plaintext) - 1;
@@ -664,6 +684,7 @@ static void test_many_to_many() {
     // Bob invites Alice to create a session
     invite(bob_address_1, alice_user_id, alice_domain);
 
+    sleep(1);
     // Bob sends an encrypted message to Alice, and Alice decrypts the message
     uint8_t plaintext_2[] = "This message will be sent to Alice's three devices and Bob's other two devices.";
     size_t plaintext_2_len = sizeof(plaintext_2) - 1;
@@ -735,6 +756,7 @@ static void test_f2f_multiple_devices() {
     on_f2f_password_created(password_ab, password_ab_len);
     f2f_invite(alice_address_1, bob_address_1, 0, password_ab, password_ab_len);
 
+    sleep(3);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "This message will be sent to Bob's three devices and Alice's other two devices via face-to-face sessions.";
     size_t plaintext_len = sizeof(plaintext) - 1;

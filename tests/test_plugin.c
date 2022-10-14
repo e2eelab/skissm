@@ -32,6 +32,7 @@
 #include "skissm/mem_util.h"
 
 #include "mock_server.h"
+#include "mock_server_sending.h"
 #include "mock_db.h"
 #include "test_util.h"
 
@@ -152,5 +153,6 @@ void tear_up() {
 void tear_down() {
     mock_db_end();
     mock_server_end();
+    stop_mock_server_sending();
     skissm_end();
 }

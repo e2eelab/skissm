@@ -719,15 +719,7 @@ protobuf_c_boolean load_saved(uint64_t account_id) {
     return saved;
 }
 
-void load_address(uint64_t account_id, Skissm__E2eeAddress **address) {
-    // allocate memory
-    *address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-    skissm__e2ee_address__init(*address);
-
-    (*address)->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
-    skissm__peer_user__init((*address)->user);
-    (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
-
+bool load_address(uint64_t account_id, Skissm__E2eeAddress **address) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_LOAD_ADDRESS, &stmt);
@@ -738,6 +730,13 @@ void load_address(uint64_t account_id, Skissm__E2eeAddress **address) {
 
     // load
     if (succ) {
+        // allocate memory
+        *address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
+        skissm__e2ee_address__init(*address);
+
+        (*address)->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
+        skissm__peer_user__init((*address)->user);
+        (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
         (*address)->domain = strdup((char *)sqlite3_column_text(stmt, 0));
         (*address)->user->user_id = strdup((char *)sqlite3_column_text(stmt, 1));
         (*address)->user->device_id = strdup((char *)sqlite3_column_text(stmt, 2));
@@ -745,6 +744,8 @@ void load_address(uint64_t account_id, Skissm__E2eeAddress **address) {
 
     // release
     sqlite_finalize(stmt);
+
+    return succ;
 }
 
 void load_password(uint64_t account_id, char *password) {
@@ -1001,7 +1002,7 @@ uint32_t load_next_one_time_pre_key_id(uint64_t account_id) {
     return next_one_time_pre_key_id;
 }
 
-void load_id_by_address(Skissm__E2eeAddress *address, sqlite_int64 *account_id) {
+bool load_id_by_address(Skissm__E2eeAddress *address, sqlite_int64 *account_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_ACCOUNT_ID_BY_ADDRESS, &stmt);
@@ -1010,13 +1011,16 @@ void load_id_by_address(Skissm__E2eeAddress *address, sqlite_int64 *account_id) 
     sqlite3_bind_text(stmt, 3, address->user->device_id, -1, SQLITE_TRANSIENT);
 
     // step
-    sqlite_step(stmt, SQLITE_ROW);
+    bool succ = sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    *account_id = sqlite3_column_int64(stmt, 0);
+    if (succ)
+        *account_id = sqlite3_column_int64(stmt, 0);
 
     // release
     sqlite_finalize(stmt);
+
+    return succ;
 }
 
 static sqlite_int64 address_row_id(Skissm__E2eeAddress *address) {
@@ -1549,26 +1553,36 @@ void store_account(Skissm__Account *account) {
 }
 
 void load_account(uint64_t account_id, Skissm__Account **account) {
-    *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
-    skissm__account__init((*account));
+    Skissm__E2eeAddress *address = NULL;
+    bool succ = load_address(account_id, &address);
+    if (succ) {
+        *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
+        skissm__account__init((*account));
 
-    (*account)->account_id = account_id;
-    (*account)->version = load_version(account_id);
-    (*account)->saved = load_saved(account_id);
-    (*account)->e2ee_pack_id = load_e2ee_pack_id(account_id);
-    load_address(account_id, &((*account)->address));
-    load_password(account_id, (*account)->password);
+        (*account)->account_id = account_id;
+        (*account)->version = load_version(account_id);
+        (*account)->saved = load_saved(account_id);
+        (*account)->e2ee_pack_id = load_e2ee_pack_id(account_id);
+        (*account)->address = address;
+        load_password(account_id, (*account)->password);
 
-    load_signed_pre_key_pair(account_id, &((*account)->signed_pre_key));
-    load_identity_key_pair(account_id, &((*account)->identity_key));
-    (*account)->n_one_time_pre_keys = load_one_time_pre_keys(account_id, &((*account)->one_time_pre_keys));
-    (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(account_id);
+        load_signed_pre_key_pair(account_id, &((*account)->signed_pre_key));
+        load_identity_key_pair(account_id, &((*account)->identity_key));
+        (*account)->n_one_time_pre_keys = load_one_time_pre_keys(account_id, &((*account)->one_time_pre_keys));
+        (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(account_id);
+    } else {
+        *account = NULL;
+    }
 }
 
 void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **account) {
     sqlite_int64 account_id;
-    load_id_by_address(address, &account_id);
-    load_account(account_id, account);
+    bool succ = load_id_by_address(address, &account_id);
+    if (succ)
+        load_account(account_id, account);
+    else
+        *account = NULL;
+    
 }
 
 size_t load_accounts(Skissm__Account ***accounts) {

@@ -1,0 +1,269 @@
+/*
+ * Copyright © 2020-2021 by Academia Sinica
+ *
+ * This file is part of SKISSM.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SKISSM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include "skissm/e2ee_client.h"
+#include "skissm/mem_util.h"
+
+#include "mock_server_sending.h"
+#include "test_util.h"
+#include "test_plugin.h"
+
+#define account_data_max 10
+
+static Skissm__Account *account_data[account_data_max];
+
+static uint8_t account_data_insert_pos;
+
+typedef struct store_plaintext {
+    uint8_t *plaintext;
+    size_t plaintext_len;
+} store_plaintext;
+
+store_plaintext plaintext_store = {NULL, 0};
+
+static uint8_t *f2f_password = NULL;
+static size_t f2f_password_len = 0;
+
+static void on_error(ErrorCode error_code, const char *error_msg) {
+    print_error((char *)error_msg, error_code);
+}
+
+static void on_user_registered(Skissm__Account *account){
+    copy_account_from_account(&(account_data[account_data_insert_pos]), account);
+    account_data_insert_pos++;
+}
+
+static void on_inbound_session_invited(Skissm__E2eeAddress *from) {
+    printf("on_inbound_session_invited\n");
+}
+
+static void on_inbound_session_ready(Skissm__Session *inbound_session){
+    if (inbound_session->f2f == true) {
+        printf("the face-to-face inbound session is ready\n");
+    } else {
+        printf("on_inbound_session_ready\n");
+    }
+}
+
+static void on_outbound_session_ready(Skissm__Session *outbound_session){
+    if (outbound_session->f2f == true) {
+        printf("the face-to-face outbound session is ready\n");
+    } else {
+        printf("on_outbound_session_ready\n");
+    }
+}
+
+static void on_f2f_password_created(uint8_t *password, size_t password_len) {
+    if (f2f_password != NULL)
+        free(f2f_password);
+    f2f_password_len = password_len;
+    f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * f2f_password_len);
+    memcpy(f2f_password, password, password_len);
+}
+
+static void on_f2f_password_acquired(uint8_t **password, size_t *password_len) {
+    *password_len = f2f_password_len;
+    *password = (uint8_t *)malloc(sizeof(uint8_t) * f2f_password_len);
+    memcpy(*password, f2f_password, f2f_password_len);
+}
+
+static void on_one2one_msg_received(
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
+    print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
+    if (plaintext_store.plaintext != NULL){
+        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
+    }
+    plaintext_store.plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
+    memcpy(plaintext_store.plaintext, plaintext, plaintext_len);
+    plaintext_store.plaintext_len = plaintext_len;
+}
+
+static void on_other_device_msg_received(
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
+    print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
+    if (plaintext_store.plaintext != NULL){
+        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
+    }
+    plaintext_store.plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
+    memcpy(plaintext_store.plaintext, plaintext, plaintext_len);
+    plaintext_store.plaintext_len = plaintext_len;
+}
+
+static void on_f2f_session_ready(Skissm__Session *session) {
+    if (session->from->user->device_id != NULL) {
+        printf("New outbound face-to-face session created.\n");
+        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
+        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
+        printf("From: %s\n", session->from->user->user_id);
+        printf("to: %s\n", session->to->user->user_id);
+    } else {
+        printf("New inbound face-to-face session created.\n");
+        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
+        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
+        printf("From: %s\n", session->from->user->user_id);
+        printf("to: %s\n", session->to->user->user_id);
+    }
+}
+
+static skissm_event_handler_t test_event_handler = {
+    on_error,
+    on_user_registered,
+    on_inbound_session_invited,
+    on_inbound_session_ready,
+    on_outbound_session_ready,
+    on_f2f_password_acquired,
+    on_one2one_msg_received,
+    on_other_device_msg_received,
+    on_f2f_session_ready,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
+static void test_begin(){
+    account_data[0] = NULL;
+    account_data[1] = NULL;
+    account_data_insert_pos = 0;
+
+    f2f_password = NULL;
+    f2f_password_len = 0;
+
+    get_skissm_plugin()->event_handler = test_event_handler;
+
+    start_mock_server_sending();
+}
+
+static void test_end(){
+    stop_mock_server_sending();
+
+    skissm__account__free_unpacked(account_data[0], NULL);
+    account_data[0] = NULL;
+    skissm__account__free_unpacked(account_data[1], NULL);
+    account_data[1] = NULL;
+    account_data_insert_pos = 0;
+
+    if (f2f_password != NULL)
+        free(f2f_password);
+    f2f_password_len = 0;
+}
+
+static void mock_alice_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "alice@domain.com.tw";
+    const char *auth_code = "123456";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+}
+
+static void mock_bob_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "bob@domain.com.tw";
+    const char *auth_code = "654321";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+}
+
+static void test_encryption(
+    Skissm__E2eeAddress *from_address, const char *to_user_id, const char *to_domain,
+    uint8_t *plaintext, size_t plaintext_len
+) {
+    if (plaintext_store.plaintext != NULL){
+        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
+    }
+
+    // send encrypted msg
+    send_one2one_msg(from_address, to_user_id, to_domain, plaintext, plaintext_len);
+}
+
+static void test_basic(){
+    // test start
+    tear_up();
+    test_begin();
+
+    mock_alice_account(1, "alice");
+    mock_bob_account(2, "bob");
+
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    char *alice_user_id = alice_address->user->user_id;
+    char *alice_domain = alice_address->domain;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
+
+    // Alice invites Bob to create a session
+    Skissm__InviteResponse *response_1 = invite(alice_address, bob_user_id, bob_domain);
+    // Bob invites Alice to create a session
+    Skissm__InviteResponse *response_2 = invite(bob_address, alice_user_id, alice_domain);
+
+    // Alice add a new device
+    mock_alice_account(3, "alice");
+
+    Skissm__E2eeAddress *device_2 = account_data[2]->address;
+
+    // face-to-face session creation between Alice's two devices
+    uint8_t password_1[] = "password 1";
+    size_t password_1_len = sizeof(password_1) - 1;
+    on_f2f_password_created(password_1, password_1_len);
+
+    f2f_invite(device_2, alice_address, 0, password_1, password_1_len);
+
+    sleep(5);
+    // Alice sends an encrypted message to Bob
+    uint8_t plaintext[] = "This message will be sent to Bob and Alice's first device.";
+    size_t plaintext_len = sizeof(plaintext) - 1;
+    test_encryption(device_2, bob_user_id, bob_domain, plaintext, plaintext_len);
+
+    // test stop
+    skissm__invite_response__free_unpacked(response_1, NULL);
+    skissm__invite_response__free_unpacked(response_2, NULL);
+    test_end();
+    tear_down();
+}
+
+int main() {
+    test_basic();
+    return 0;
+}

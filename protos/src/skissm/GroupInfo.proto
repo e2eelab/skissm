@@ -20,16 +20,16 @@ syntax = "proto3";
 
 package skissm;
 
-option java_package = "org.e2eelab.proto.skissm";
-option java_outer_classname = "CreateGroupMsgProto";
+option java_package = "org.e2eelab.skissm.proto";
+option java_outer_classname = "GroupInfoProto";
 option objc_class_prefix = "Objc";
 option swift_prefix="Swift";
 
 import "skissm/E2eeAddress.proto";
-import "skissm/GroupInfo.proto";
+import "skissm/GroupMember.proto";
 
-message CreateGroupMsg {
-    string e2ee_pack_id = 1;
-    E2eeAddress sender_address = 2;
-    GroupInfo group_info = 3;
+message GroupInfo {
+    string group_name = 1;
+    E2eeAddress group_address = 2;
+    repeated GroupMember group_members = 3;
 }
