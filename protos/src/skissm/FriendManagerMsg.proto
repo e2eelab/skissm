@@ -20,7 +20,7 @@ syntax = "proto3";
 
 package skissm;
 
-option java_package = "org.e2eelab.skissm.proto";
+option java_package = "org.e2eelab.proto.skissm";
 option java_outer_classname = "FriendManagerMsgProto";
 option objc_class_prefix = "Objc";
 option swift_prefix="Swift";
@@ -28,19 +28,31 @@ option swift_prefix="Swift";
 import "skissm/E2eeAddress.proto";
 
 enum FriendOp {
-    ADDING_SEND_MSG = 0;
-    ADDING_RECEIVE_MSG = 1;
-    ADDED_MSG = 2;
-    BLOCKED_MSG = 3;
-    UNBLOCKED_MSG = 4;
-    DELETED_MSG = 5;
-    RECOMMEND_MSG = 6;
+    ADDING_SEND = 0;
+    ADDING_RECEIVE = 1;
+    ADDED = 2;
+    BLOCKED = 3;
+    UNBLOCKED = 4;
+    REMOVED = 5;
+    UPDATE_MEMONAME = 6;
+    RECOMMEND = 7;
+}
+
+message FriendshipDTO {
+    int64 modified_date = 1;
+    string from_user = 2;
+    string to_user = 3;
+    string nickname = 4;
+    string memoname = 5;
+    int32 block_state = 6;
+    int32 friend_status = 7;
 }
 
 message FriendManagerMsg {
-    int64 modifiedDate = 1;
-    E2eeAddress user_address = 2;
-    string user_name = 3;
-    FriendOp op = 4;
-    repeated string args = 5;
+    int64 modified_date = 1;
+    string msgId = 2;
+    E2eeAddress user_address = 3;
+    string user_name = 4;
+    FriendOp op = 5;
+    FriendshipDTO friend = 6;
 }

@@ -20,7 +20,7 @@ syntax = "proto3";
 
 package skissm;
 
-option java_package = "org.e2eelab.skissm.proto";
+option java_package = "org.e2eelab.proto.skissm";
 option java_outer_classname = "SkippedMsgKeyNodeProto";
 option objc_class_prefix = "Objc";
 option swift_prefix="Swift";

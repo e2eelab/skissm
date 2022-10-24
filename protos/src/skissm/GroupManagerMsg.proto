@@ -20,7 +20,7 @@ syntax = "proto3";
 
 package skissm;
 
-option java_package = "org.e2eelab.skissm.proto";
+option java_package = "org.e2eelab.proto.skissm";
 option java_outer_classname = "GroupManagerMsgProto";
 option objc_class_prefix = "Objc";
 option swift_prefix="Swift";
@@ -38,9 +38,10 @@ enum GroupOp {
 }
 
 message GroupManagerMsg {
-    int64 modifiedDate = 1;
-    E2eeAddress group_address = 2;
-    string group_name = 3;
-    GroupOp op = 4;
-    repeated string args = 5;
+    int64 modified_date = 1;
+    string msgId = 2;
+    E2eeAddress group_address = 3;
+    string group_name = 4;
+    GroupOp op = 5;
+    repeated string args = 6;
 }
