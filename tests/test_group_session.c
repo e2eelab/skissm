@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "skissm/account.h"
 #include "skissm/account_manager.h"
@@ -27,6 +28,7 @@
 #include "skissm/group_session_manager.h"
 #include "skissm/mem_util.h"
 
+#include "mock_server_sending.h"
 #include "test_util.h"
 #include "test_plugin.h"
 
@@ -38,22 +40,22 @@ static Skissm__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
-typedef struct store_plaintext {
-    uint8_t *plaintext;
-    size_t plaintext_len;
-} store_plaintext;
-
 typedef struct store_group {
     Skissm__E2eeAddress *group_address;
     char *group_name;
 } store_group;
 
-store_plaintext plaintext_store = {NULL, 0};
-
 store_group group = {NULL, NULL};
 
-static uint8_t *f2f_password = NULL;
-static size_t f2f_password_len = 0;
+typedef struct f2f_password_data {
+    Skissm__E2eeAddress *sender;
+    Skissm__E2eeAddress *receiver;
+    uint8_t *f2f_password;
+    size_t f2f_password_len;
+    struct f2f_password_data *next;
+} f2f_password_data;
+
+static f2f_password_data *f2f_pw_data = NULL;
 
 static void on_error(ErrorCode error_code, const char *error_msg) { print_error((char *)error_msg, error_code); }
 
@@ -76,18 +78,69 @@ static void on_outbound_session_ready(Skissm__Session *outbound_session){
     printf("on_outbound_session_ready\n");
 }
 
-static void on_f2f_password_created(uint8_t *password, size_t password_len) {
-    if (f2f_password != NULL)
-        free(f2f_password);
-    f2f_password_len = password_len;
-    f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * f2f_password_len);
-    memcpy(f2f_password, password, password_len);
+static void on_f2f_password_created(
+    Skissm__E2eeAddress *sender,
+    Skissm__E2eeAddress *receiver,
+    uint8_t *password,
+    size_t password_len
+) {
+    if (f2f_pw_data != NULL) {
+        f2f_password_data *cur_data = f2f_pw_data;
+        while (cur_data->next != NULL) {
+            cur_data = cur_data->next;
+        }
+        cur_data->next = (f2f_password_data *)malloc(sizeof(f2f_password_data));
+        copy_address_from_address(&(cur_data->next->sender), sender);
+        copy_address_from_address(&(cur_data->next->receiver), receiver);
+        cur_data->next->f2f_password_len = password_len;
+        cur_data->next->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
+        memcpy(cur_data->next->f2f_password, password, password_len);
+        cur_data = cur_data->next;
+        cur_data->next = (f2f_password_data *)malloc(sizeof(f2f_password_data));
+        copy_address_from_address(&(cur_data->next->sender), receiver);
+        copy_address_from_address(&(cur_data->next->receiver), sender);
+        cur_data->next->f2f_password_len = password_len;
+        cur_data->next->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
+        memcpy(cur_data->next->f2f_password, password, password_len);
+        cur_data->next->next = NULL;
+    } else {
+        f2f_pw_data = (f2f_password_data *)malloc(sizeof(f2f_password_data));
+        copy_address_from_address(&(f2f_pw_data->sender), sender);
+        copy_address_from_address(&(f2f_pw_data->receiver), receiver);
+        f2f_pw_data->f2f_password_len = password_len;
+        f2f_pw_data->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
+        memcpy(f2f_pw_data->f2f_password, password, password_len);
+        f2f_pw_data->next = (f2f_password_data *)malloc(sizeof(f2f_password_data));
+        copy_address_from_address(&(f2f_pw_data->next->sender), receiver);
+        copy_address_from_address(&(f2f_pw_data->next->receiver), sender);
+        f2f_pw_data->next->f2f_password_len = password_len;
+        f2f_pw_data->next->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
+        memcpy(f2f_pw_data->next->f2f_password, password, password_len);
+        f2f_pw_data->next->next = NULL;
+    }
 }
 
-static void on_f2f_password_acquired(uint8_t **password, size_t *password_len) {
-    *password_len = f2f_password_len;
-    *password = (uint8_t *)malloc(sizeof(uint8_t) * f2f_password_len);
-    memcpy(*password, f2f_password, f2f_password_len);
+static void on_f2f_password_acquired(
+    Skissm__E2eeAddress *sender,
+    Skissm__E2eeAddress *receiver,
+    uint8_t **password,
+    size_t *password_len
+) {
+    f2f_password_data *cur_data = f2f_pw_data;
+    while (cur_data != NULL) {
+        if (!compare_address(cur_data->sender, sender) || !compare_address(cur_data->receiver, receiver)) {
+            cur_data = cur_data->next;
+        } else {
+            break;
+        }
+    }
+
+    if (cur_data == NULL)
+        return;
+
+    *password_len = cur_data->f2f_password_len;
+    *password = (uint8_t *)malloc(sizeof(uint8_t) * cur_data->f2f_password_len);
+    memcpy(*password, cur_data->f2f_password, *password_len);
 }
 
 static void on_one2one_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
@@ -116,13 +169,6 @@ static void on_f2f_session_ready(Skissm__Session *session) {
 
 static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
-
-    if (plaintext_store.plaintext != NULL) {
-        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
-    }
-    plaintext_store.plaintext = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_len);
-    memcpy(plaintext_store.plaintext, plaintext, plaintext_len);
-    plaintext_store.plaintext_len = plaintext_len;
 }
 
 static void on_group_created(Skissm__E2eeAddress *group_address, const char *group_name) {
@@ -173,13 +219,14 @@ static void test_begin() {
     group.group_address = NULL;
     group.group_name = NULL;
 
-    plaintext_store.plaintext = NULL;
-    plaintext_store.plaintext_len = 0;
-
     get_skissm_plugin()->event_handler = test_event_handler;
+
+    start_mock_server_sending();
 }
 
 static void test_end() {
+    stop_mock_server_sending();
+
     skissm__account__free_unpacked(account_data[0], NULL);
     account_data[0] = NULL;
     skissm__account__free_unpacked(account_data[1], NULL);
@@ -192,11 +239,6 @@ static void test_end() {
     if (group.group_name != NULL) {
         free(group.group_name);
     }
-
-    if (plaintext_store.plaintext != NULL) {
-        free(plaintext_store.plaintext);
-    }
-    plaintext_store.plaintext_len = 0;
 }
 
 static void mock_alice_account(uint64_t account_id, const char *user_name) {
@@ -248,16 +290,10 @@ static void mock_claire_account(uint64_t account_id, const char *user_name) {
 }
 
 static void test_encryption(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext_data, size_t plaintext_data_len) {
-    if (plaintext_store.plaintext != NULL){
-        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
-    }
-    
     Skissm__SendGroupMsgResponse *response = send_group_msg(sender_address,
         group_address, plaintext_data, plaintext_data_len);
     
     assert(response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
-    assert(plaintext_data_len == plaintext_store.plaintext_len);
-    assert(memcmp(plaintext_data, plaintext_store.plaintext, plaintext_data_len) == 0);
     
     // release
     skissm__send_group_msg_response__free_unpacked(response, NULL);
@@ -265,6 +301,7 @@ static void test_encryption(Skissm__E2eeAddress *sender_address, Skissm__E2eeAdd
 
 static void test_create_group() {
     // test start
+    printf("test_create_group begin!!!\n");
     tear_up();
     test_begin();
 
@@ -273,7 +310,6 @@ static void test_create_group() {
     mock_bob_account(2, "bob");
 
     // Alice invites Bob to create a group
-    switch_account(account_data[0]->address);
     invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     // the first group member is Alice
@@ -295,6 +331,7 @@ static void test_create_group() {
     assert(create_group_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
     Skissm__E2eeAddress *group_address = create_group_response->group_address;
 
+    sleep(2);
     // Alice sends a message to the group
     uint8_t plaintext_data[] = "This is the group session test.";
     size_t plaintext_data_len = sizeof(plaintext_data) - 1;
@@ -309,10 +346,12 @@ static void test_create_group() {
     // test stop
     test_end();
     tear_down();
+    printf("====================================\n");
 }
 
 static void test_add_group_members() {
     // test start
+    printf("test_add_group_members begin!!!\n");
     tear_up();
     test_begin();
 
@@ -354,6 +393,7 @@ static void test_add_group_members() {
     Skissm__AddGroupMembersResponse *add_group_members_response = add_group_members(account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
     assert(add_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
 
+    sleep(3);
     // Alice sends a message to the group
     uint8_t plaintext_data[] = "This message will be sent to Bob and Claire.";
     size_t plaintext_data_len = sizeof(plaintext_data) - 1;
@@ -371,10 +411,12 @@ static void test_add_group_members() {
     // test stop
     test_end();
     tear_down();
+    printf("====================================\n");
 }
 
 static void test_remove_group_members() {
     // test start
+    printf("test_remove_group_members begin!!!\n");
     tear_up();
     test_begin();
 
@@ -422,6 +464,7 @@ static void test_remove_group_members() {
     Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(account_data[0]->address, group.group_address, removing_group_members, removing_group_member_num);
     assert(remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
 
+    sleep(3);
     // Alice sends a message to the group
     uint8_t plaintext[] = "This message will be sent to Bob only.";
     size_t plaintext_len = sizeof(plaintext) - 1;
@@ -440,10 +483,12 @@ static void test_remove_group_members() {
     // test stop
     test_end();
     tear_down();
+    printf("====================================\n");
 }
 
 static void test_create_add_remove() {
     // test start
+    printf("test_create_add_remove begin!!!\n");
     tear_up();
     test_begin();
 
@@ -489,6 +534,7 @@ static void test_create_add_remove() {
     // add the new group member to the group
     Skissm__AddGroupMembersResponse *add_group_members_response = add_group_members(account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
 
+    sleep(3);
     // Alice sends a message to the group
     uint8_t plaintext_2[] = "This message will be sent to Bob and Claire.";
     size_t plaintext_len_2 = sizeof(plaintext_2) - 1;
@@ -497,6 +543,7 @@ static void test_create_add_remove() {
     // Alice removes Claire out of the group
     Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
 
+    sleep(1);
     // Alice sends a message to the group
     uint8_t plaintext_3[] = "This message will be sent to Bob only.";
     size_t plaintext_len_3 = sizeof(plaintext_3) - 1;
@@ -515,10 +562,12 @@ static void test_create_add_remove() {
     // test stop
     test_end();
     tear_down();
+    printf("====================================\n");
 }
 
 static void test_interaction() {
     // test start
+    printf("test_interaction begin!!!\n");
     tear_up();
     test_begin();
 
@@ -537,6 +586,7 @@ static void test_interaction() {
     invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
     invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
+    sleep(3);
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
@@ -559,6 +609,7 @@ static void test_interaction() {
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
 
+    sleep(2);
     // Alice sends a message to the group
     uint8_t plaintext_data_a[] = "This message will be sent to Bob and Claire.";
     size_t plaintext_data_a_len = sizeof(plaintext_data_a) - 1;
@@ -584,10 +635,12 @@ static void test_interaction() {
     // test stop
     test_end();
     tear_down();
+    printf("====================================\n");
 }
 
 static void test_continual() {
     // test start
+    printf("test_continual begin!!!\n");
     tear_up();
     test_begin();
 
@@ -606,6 +659,7 @@ static void test_continual() {
     invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
     invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
+    sleep(3);
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
     group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
@@ -627,6 +681,8 @@ static void test_continual() {
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
+
+    sleep(2);
 
     int i;
     // Alice sends a message to the group
@@ -660,10 +716,12 @@ static void test_continual() {
     // test stop
     test_end();
     tear_down();
+    printf("====================================\n");
 }
 
 void test_multiple_devices() {
     // test start
+    printf("test_multiple_devices begin!!!\n");
     tear_up();
     test_begin();
 
@@ -691,18 +749,20 @@ void test_multiple_devices() {
     // face-to-face session between each member's devices
     uint8_t password_alice[] = "password alice";
     size_t password_alice_len = sizeof(password_alice) - 1;
-    on_f2f_password_created(password_alice, password_alice_len);
+    on_f2f_password_created(alice_address_1, alice_address_2, password_alice, password_alice_len);
     f2f_invite(alice_address_1, alice_address_2, 0, password_alice, password_alice_len);
 
     uint8_t password_bob[] = "password bob";
     size_t password_bob_len = sizeof(password_bob) - 1;
-    on_f2f_password_created(password_bob, password_bob_len);
+    on_f2f_password_created(bob_address_1, bob_address_2, password_bob, password_bob_len);
     f2f_invite(bob_address_1, bob_address_2, 0, password_bob, password_bob_len);
 
     uint8_t password_claire[] = "password claire";
     size_t password_claire_len = sizeof(password_claire) - 1;
-    on_f2f_password_created(password_claire, password_claire_len);
+    on_f2f_password_created(claire_address_1, claire_address_2, password_claire, password_claire_len);
     f2f_invite(claire_address_1, claire_address_2, 0, password_claire, password_claire_len);
+
+    sleep(3);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
@@ -726,6 +786,7 @@ void test_multiple_devices() {
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(alice_address_1, "Group name", group_members, 3);
 
+    sleep(2);
     // Alice sends a message to the group via the first device
     uint8_t plaintext_1[] = "This message is from Alice's first device.";
     size_t plaintext_1_len = sizeof(plaintext_1) - 1;
@@ -751,6 +812,7 @@ void test_multiple_devices() {
     // test stop
     test_end();
     tear_down();
+    printf("====================================\n");
 }
 
 int main() {

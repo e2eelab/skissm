@@ -29,9 +29,15 @@ extern "C" {
 
 #include "skissm/skissm.h"
 
+typedef struct f2f_session_mid{
+    Skissm__E2eeAddress *peer_address;
+    Skissm__Session *f2f_session;
+    struct f2f_session_mid *next;
+} f2f_session_mid;
+
 typedef struct account_context{
     Skissm__Account *local_account;
-    Skissm__Session *f2f_session_mid;
+    f2f_session_mid *f2f_session_mid_list;
     struct account_context *next;
 } account_context;
 

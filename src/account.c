@@ -65,21 +65,33 @@ void account_begin() {
 }
 
 void account_end() {
-    if (account_context_list != NULL) {
-        account_context *cur_account_context = account_context_list;
-        while (cur_account_context != NULL) {
-            account_context *temp_account_context = cur_account_context;
-            cur_account_context = cur_account_context->next;
-            if (temp_account_context->local_account != NULL) {
-                skissm__account__free_unpacked(temp_account_context->local_account, NULL);
-                temp_account_context->local_account = NULL;
-            }
-            if (temp_account_context->f2f_session_mid != NULL) {
-                skissm__session__free_unpacked(temp_account_context->f2f_session_mid, NULL);
-                temp_account_context->f2f_session_mid = NULL;
-            }
-            temp_account_context->next = NULL;
+    account_context *temp_account_context = NULL;
+    while (account_context_list != NULL) {
+        temp_account_context = account_context_list;
+        account_context_list = account_context_list->next;
+        if (temp_account_context->local_account != NULL) {
+            skissm__account__free_unpacked(temp_account_context->local_account, NULL);
+            temp_account_context->local_account = NULL;
         }
+        f2f_session_mid *temp_f2f_session_mid = NULL;
+        while (temp_account_context->f2f_session_mid_list != NULL) {
+            temp_f2f_session_mid = temp_account_context->f2f_session_mid_list;
+            temp_account_context->f2f_session_mid_list = temp_account_context->f2f_session_mid_list->next;
+            if (temp_f2f_session_mid->peer_address != NULL) {
+                skissm__e2ee_address__free_unpacked(temp_f2f_session_mid->peer_address, NULL);
+                temp_f2f_session_mid->peer_address = NULL;
+            }
+            if (temp_f2f_session_mid->f2f_session != NULL) {
+                skissm__session__free_unpacked(temp_f2f_session_mid->f2f_session, NULL);
+                temp_f2f_session_mid->f2f_session = NULL;
+            }
+            temp_f2f_session_mid->next = NULL;
+            free_mem((void **)&temp_f2f_session_mid, sizeof(f2f_session_mid));
+        }
+        temp_account_context->next = NULL;
+
+        // release
+        free_mem((void **)&temp_account_context, sizeof(account_context));
     }
 }
 
@@ -142,12 +154,12 @@ void set_account(Skissm__Account *account) {
         }
         cur_account_context->next = (account_context *)malloc(sizeof(account_context));
         copy_account_from_account(&(cur_account_context->next->local_account), account);
-        cur_account_context->next->f2f_session_mid = NULL;
+        cur_account_context->next->f2f_session_mid_list = NULL;
         cur_account_context->next->next = NULL;
     } else {
         account_context_list = (account_context *)malloc(sizeof(account_context));
         copy_account_from_account(&(account_context_list->local_account), account);
-        account_context_list->f2f_session_mid = NULL;
+        account_context_list->f2f_session_mid_list = NULL;
         account_context_list->next = NULL;
     }
 }

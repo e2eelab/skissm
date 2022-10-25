@@ -497,10 +497,15 @@ typedef struct skissm_event_handler_t {
     void (*on_outbound_session_ready)(Skissm__Session *);
     /**
      * @brief get the face-to-face password
+     * @param sender
+     * @param receiver
      * @param password
      * @param password_len
      */
-    void (*on_f2f_password_acquired)(uint8_t **, size_t *);
+    void (*on_f2f_password_acquired)(
+        Skissm__E2eeAddress *, Skissm__E2eeAddress *,
+        uint8_t **, size_t *
+    );
     /**
      * @brief notify one2one msg received event
      * @param from_address

@@ -142,14 +142,16 @@ static size_t find_friend_addresses(uint8_t user_index, Skissm__E2eeAddress ***f
     uint8_t i;
     for (i = 0; i < user_data_max; i++) {
         if (session_record[user_index][i] == true) {
-            friends_num++;
+            if (!safe_strcmp(user_data_set[user_index].address->user->user_id, user_data_set[i].address->user->user_id))
+                friends_num++;
         }
     }
     *friend_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * friends_num);
     uint8_t j = 0;
     for (i = 0; i < user_data_max; i++) {
         if (session_record[user_index][i] == true) {
-            copy_address_from_address(&((*friend_addresses)[j++]), user_data_set[i].address);
+            if (!safe_strcmp(user_data_set[user_index].address->user->user_id, user_data_set[i].address->user->user_id))
+                copy_address_from_address(&((*friend_addresses)[j++]), user_data_set[i].address);
         }
     }
     return friends_num;
@@ -337,14 +339,9 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
         copy_address_from_address(&(proto_msg->new_user_device_msg->user_address), cur_data->address);
 
         send_proto_msg(proto_msg);
-        // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-        // uint8_t proto_msg_data[proto_msg_data_len];
-        // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-        // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
         // release
         skissm__proto_msg__free_unpacked(proto_msg, NULL);
-        // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
     }
 
     // release
@@ -447,10 +444,6 @@ Skissm__InviteResponse *mock_invite(Skissm__InviteRequest *request) {
     proto_msg->invite_msg = skissm__invite_msg__unpack(NULL, invite_msg_data_len, invite_msg_data);
 
     send_proto_msg(proto_msg);
-    // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-    // uint8_t proto_msg_data[proto_msg_data_len];
-    // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-    // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
     // prepare response
     Skissm__InviteResponse *response = (Skissm__InviteResponse *)malloc(sizeof(Skissm__InviteResponse));
@@ -459,7 +452,6 @@ Skissm__InviteResponse *mock_invite(Skissm__InviteRequest *request) {
 
     // release
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
-    // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
 
     // done
     return response;
@@ -480,10 +472,6 @@ Skissm__AcceptResponse *mock_accept(Skissm__AcceptRequest *request) {
     proto_msg->accept_msg = skissm__accept_msg__unpack(NULL, accept_msg_data_len, accept_msg_data);
 
     send_proto_msg(proto_msg);
-    // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-    // uint8_t proto_msg_data[proto_msg_data_len];
-    // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-    // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
     // set the session record
     uint8_t inviter = find_address(accept_msg->to);
@@ -497,7 +485,6 @@ Skissm__AcceptResponse *mock_accept(Skissm__AcceptRequest *request) {
 
     // release
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
-    // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
 
     // done
     return response;
@@ -541,10 +528,6 @@ Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__F2fInviteRequest *request) {
     proto_msg->f2f_invite_msg = skissm__f2f_invite_msg__unpack(NULL, f2f_invite_msg_data_len, f2f_invite_msg_data);
 
     send_proto_msg(proto_msg);
-    // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-    // uint8_t proto_msg_data[proto_msg_data_len];
-    // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-    // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
     // prepare response
     Skissm__F2fInviteResponse *response = (Skissm__F2fInviteResponse *)malloc(sizeof(Skissm__F2fInviteResponse));
@@ -554,7 +537,6 @@ Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__F2fInviteRequest *request) {
 
     // release
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
-    // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
 
     // done
     return response;
@@ -575,10 +557,6 @@ Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__F2fAcceptRequest *request) {
     proto_msg->f2f_accept_msg = skissm__f2f_accept_msg__unpack(NULL, f2f_accept_msg_data_len, f2f_accept_msg_data);
 
     send_proto_msg(proto_msg);
-    // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-    // uint8_t proto_msg_data[proto_msg_data_len];
-    // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-    // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
     // prepare response
     Skissm__F2fAcceptResponse *response = (Skissm__F2fAcceptResponse *)malloc(sizeof(Skissm__F2fAcceptResponse));
@@ -587,7 +565,6 @@ Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__F2fAcceptRequest *request) {
 
     // release
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
-    // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
 
     // done
     return response;
@@ -691,14 +668,9 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__SendOne2oneMsgRequ
         proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
 
         send_proto_msg(proto_msg);
-        // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-        // uint8_t proto_msg_data[proto_msg_data_len];
-        // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-        // consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
         // release
         skissm__proto_msg__free_unpacked(proto_msg, NULL);
-        // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
     } else {
         Skissm__E2eeAddress **to_addresses = NULL;
         size_t to_address_num = find_user_addresses(e2ee_msg->to->user->user_id, &to_addresses);
@@ -713,14 +685,9 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__SendOne2oneMsgRequ
             proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
 
             send_proto_msg(proto_msg);
-            // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-            // uint8_t proto_msg_data[proto_msg_data_len];
-            // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-            // consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
         }
     }
 
@@ -786,14 +753,9 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__CreateGroupRequest *reque
             proto_msg->create_group_msg = skissm__create_group_msg__unpack(NULL, create_group_msg_data_len, create_group_msg_data);
 
             send_proto_msg(proto_msg);
-            // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-            // uint8_t proto_msg_data[proto_msg_data_len];
-            // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-            // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
             skissm__e2ee_address__free_unpacked(to_member_address, NULL);
         }
         // release
@@ -887,14 +849,9 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
             proto_msg->add_group_members_msg = skissm__add_group_members_msg__unpack(NULL, add_group_members_msg_data_len, add_group_members_msg_data);
 
             send_proto_msg(proto_msg);
-            // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-            // uint8_t proto_msg_data[proto_msg_data_len];
-            // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-            // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
             skissm__e2ee_address__free_unpacked(to_member_address, NULL);
         }
         // release
@@ -989,14 +946,9 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
             proto_msg->remove_group_members_msg = skissm__remove_group_members_msg__unpack(NULL, remove_group_members_msg_data_len, remove_group_members_msg_data);
 
             send_proto_msg(proto_msg);
-            // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-            // uint8_t proto_msg_data[proto_msg_data_len];
-            // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-            // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
             skissm__e2ee_address__free_unpacked(to_member_address, NULL);
         }
         // release
@@ -1080,14 +1032,9 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__SendGroupMsgRequest *r
             proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
 
             send_proto_msg(proto_msg);
-            // size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
-            // uint8_t proto_msg_data[proto_msg_data_len];
-            // skissm__proto_msg__pack(proto_msg, proto_msg_data);
-            // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = process_proto_msg(proto_msg_data, proto_msg_data_len);
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            // skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
             skissm__e2ee_address__free_unpacked(to_member_address, NULL);
         }
         // release

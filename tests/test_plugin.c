@@ -147,6 +147,7 @@ struct skissm_plugin_t ssm_plugin = {
 
 void tear_up() {
     mock_db_begin();
+    mock_server_begin();
     skissm_begin(&ssm_plugin);
 }
 

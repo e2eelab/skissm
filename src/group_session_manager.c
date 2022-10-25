@@ -42,8 +42,8 @@ Skissm__CreateGroupRequest *produce_create_group_request(
 
     copy_address_from_address(&(msg->sender_address), sender_address);
     msg->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
+    msg->group_info = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     Skissm__GroupInfo *group_info = msg->group_info;
-    group_info = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     skissm__group_info__init(group_info);
     group_info->group_name = strdup(group_name);
     group_info->n_group_members = group_members_num;

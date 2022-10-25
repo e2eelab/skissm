@@ -512,7 +512,7 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
 
     uint8_t *password = NULL;
     size_t password_len;
-    get_skissm_plugin()->event_handler.on_f2f_password_acquired(&password, &password_len);
+    get_skissm_plugin()->event_handler.on_f2f_password_acquired(from, to, &password, &password_len);
 
     // hkdf(produce the AES key)
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -648,7 +648,16 @@ bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAc
         return NULL;
     }
 
-    Skissm__Session *f2f_session_mid = context->f2f_session_mid;
+    f2f_session_mid *cur_f2f_session_mid = context->f2f_session_mid_list;
+    Skissm__Session *f2f_session_mid = NULL;
+    while (cur_f2f_session_mid != NULL) {
+        if (compare_address(cur_f2f_session_mid->peer_address, msg->from)) {
+            f2f_session_mid = cur_f2f_session_mid->f2f_session;
+            break;
+        }
+        cur_f2f_session_mid = cur_f2f_session_mid->next;
+    }
+
     if (f2f_session_mid == NULL) {
         ssm_notify_error(BAD_SESSION, "consume_f2f_accept_msg()");
         return false;

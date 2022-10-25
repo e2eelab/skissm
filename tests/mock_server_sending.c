@@ -25,7 +25,7 @@
 
 #include "skissm/e2ee_client.h"
 
-#define QUEUE_SIZE 1024
+#define QUEUE_SIZE 16384
 
 pthread_mutex_t lock;
 bool running;
@@ -42,9 +42,8 @@ void send_proto_msg(Skissm__ProtoMsg *proto_msg) {
     skissm__proto_msg__pack(proto_msg, proto_msg_data);
     Skissm__ProtoMsg *cloned_proto_msg = skissm__proto_msg__unpack(NULL, proto_msg_data_len, proto_msg_data);
 
-    //pthread_mutex_lock(&lock);
     // keep proto_msg in proto_msg_queue
-    printf("tail: %d", proto_msg_queue_insert_tail);
+    // printf("tail: %d", proto_msg_queue_insert_tail);
     proto_msg_queue[proto_msg_queue_insert_tail] = cloned_proto_msg;
     pthread_mutex_lock(&lock);
     proto_msg_queue_insert_tail++;
@@ -52,8 +51,7 @@ void send_proto_msg(Skissm__ProtoMsg *proto_msg) {
         proto_msg_queue_insert_tail = 0;
     pthread_mutex_unlock(&lock);
     assert(proto_msg_queue_insert_tail != proto_msg_queue_insert_head);
-    printf(" -> %d\n", proto_msg_queue_insert_tail);
-    //pthread_mutex_unlock(&lock);
+    // printf(" -> %d\n", proto_msg_queue_insert_tail);
 }
 
 static bool has_proto_msg_data() {
@@ -66,12 +64,10 @@ static bool has_proto_msg_data() {
 
 void *process_outgoing_queue() {
     while (running || has_proto_msg_data()) {
-        //pthread_mutex_lock(&lock);
-
         Skissm__ProtoMsg *proto_msg = proto_msg_queue[proto_msg_queue_insert_head];
 
         if (proto_msg != NULL) {
-            printf("head: %d", proto_msg_queue_insert_head);
+            // printf("head: %d", proto_msg_queue_insert_head);
             // send proto_msg to client
             size_t proto_msg_data_len = skissm__proto_msg__get_packed_size(proto_msg);
             uint8_t proto_msg_data[proto_msg_data_len];
@@ -89,20 +85,18 @@ void *process_outgoing_queue() {
             if (proto_msg_queue_insert_head == QUEUE_SIZE)
                 proto_msg_queue_insert_head = 0;
             pthread_mutex_unlock(&lock);
-            printf(" -> %d\n", proto_msg_queue_insert_head);
+            // printf(" -> %d\n", proto_msg_queue_insert_head);
         } else {
             // printf("sleep\n");
             usleep(100000);
         }
-
-        //pthread_mutex_unlock(&lock);
     }
 }
 
 void start_mock_server_sending() {
     if (pthread_mutex_init(&lock, NULL) != 0) {
         printf("\n mutex init failed\n");
-        return 1;
+        return;
     }
     running = true;
     pthread_create(&thread, NULL, process_outgoing_queue, "process outgoing queue");

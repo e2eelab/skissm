@@ -142,20 +142,38 @@ size_t f2f_invite(
 
     if (context == NULL) {
         ssm_notify_error(BAD_ACCOUNT, "f2f_invite()");
-        return NULL;
+        return (size_t)(-1);
     }
     // create a face-to-face outbound session
-    if (context->f2f_session_mid != NULL) {
-        skissm__session__free_unpacked(context->f2f_session_mid, NULL);
-        context->f2f_session_mid = NULL;
-    }
-    context->f2f_session_mid = (Skissm__Session *) malloc(sizeof(Skissm__Session));
     char *e2ee_pack_id = f2f_pre_key_invite_msg->e2ee_pack_id;
-    initialise_session(context->f2f_session_mid, e2ee_pack_id, from, to);
-    copy_address_from_address(&(context->f2f_session_mid->session_owner), from);
-
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-    session_suite->new_f2f_outbound_session(context->f2f_session_mid, f2f_pre_key_invite_msg);
+    if (context->f2f_session_mid_list != NULL) {
+        f2f_session_mid *cur_f2f_session_mid = context->f2f_session_mid_list;
+        while (cur_f2f_session_mid->next != NULL) {
+            cur_f2f_session_mid = cur_f2f_session_mid->next;
+        }
+        cur_f2f_session_mid->next = (f2f_session_mid *)malloc(sizeof(f2f_session_mid));
+        copy_address_from_address(&(cur_f2f_session_mid->next->peer_address), to);
+
+        cur_f2f_session_mid->next->f2f_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+        Skissm__Session *f2f_session = cur_f2f_session_mid->next->f2f_session;
+        initialise_session(f2f_session, e2ee_pack_id, from, to);
+        copy_address_from_address(&(f2f_session->session_owner), from);
+        session_suite->new_f2f_outbound_session(f2f_session, f2f_pre_key_invite_msg);
+
+        cur_f2f_session_mid->next->next = NULL;
+    } else {
+        context->f2f_session_mid_list = (f2f_session_mid *)malloc(sizeof(f2f_session_mid));
+        copy_address_from_address(&(context->f2f_session_mid_list->peer_address), to);
+
+        context->f2f_session_mid_list->f2f_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+        Skissm__Session *f2f_session = context->f2f_session_mid_list->f2f_session;
+        initialise_session(f2f_session, e2ee_pack_id, from, to);
+        copy_address_from_address(&(f2f_session->session_owner), from);
+        session_suite->new_f2f_outbound_session(f2f_session, f2f_pre_key_invite_msg);
+
+        context->f2f_session_mid_list->next = NULL;
+    }
 
     // send face-to-face invite message to the other
     Skissm__F2fInviteResponse *response = f2f_invite_internal(from, to, e2ee_pack_id, encrypted_f2f_pre_shared_key, encrypted_f2f_pre_shared_key_len);
