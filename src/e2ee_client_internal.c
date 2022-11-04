@@ -194,10 +194,8 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
 }
 
 void resume_connection_internal(Skissm__Account *account) {
-    // check if the account exists
-    if (account == NULL) {
+    if (account == NULL)
         return;
-    }
 
     Skissm__E2eeAddress *address = account->address;
     // load all pending request data
@@ -332,7 +330,6 @@ void resume_connection_internal(Skissm__Account *account) {
                 skissm__group_session__free_unpacked(outbound_group_session_3, NULL);
                 break;
             }
-        
             default:
                 break;
         };

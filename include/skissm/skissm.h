@@ -497,8 +497,8 @@ typedef struct skissm_event_handler_t {
     void (*on_outbound_session_ready)(Skissm__Session *);
     /**
      * @brief get the face-to-face password
-     * @param sender
-     * @param receiver
+     * @param sender_address
+     * @param receiver_address
      * @param password
      * @param password_len
      */

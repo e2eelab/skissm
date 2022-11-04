@@ -58,8 +58,9 @@ void account_begin() {
 
         // release
         skissm__account__free_unpacked(cur_account, NULL);
-        cur_account = NULL;
     }
+
+    // release
     if (accounts != NULL)
         free(accounts);
 }

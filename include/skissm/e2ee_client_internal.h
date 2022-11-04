@@ -134,6 +134,11 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
     const uint8_t *plaintext_data, size_t plaintext_data_len
 );
 
+/**
+ * @brief Resume connection with a given account.
+ *
+ * @param account
+ */
 void resume_connection_internal(Skissm__Account *account);
 
 #ifdef __cplusplus

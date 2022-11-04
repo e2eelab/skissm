@@ -532,7 +532,21 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
     return response;
 }
 
-// void resume_connection() {
-//     Skissm__Account *local_account = get_account();
-//     resume_connection_internal(local_account);
-// }
+void resume_connection() {
+    // loop on all accounts
+    Skissm__Account **accounts = NULL;
+    size_t account_num = get_skissm_plugin()->db_handler.load_accounts(&accounts);
+
+    Skissm__Account *cur_account = NULL;
+    size_t i;
+    for (i = 0; i < account_num; i++) {
+        cur_account = accounts[i];
+        resume_connection_internal(cur_account);
+        // release
+        skissm__account__free_unpacked(cur_account, NULL);
+    }
+
+    // release
+    if (accounts != NULL)
+        free(accounts);
+}
