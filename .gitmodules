@@ -6,3 +6,7 @@
 	path = lib/protobuf
 	url = https://github.com/protocolbuffers/protobuf.git
     tag = v3.19.2
+[submodule "protos"]
+	path = protos
+	url = https://github.com/ziv-e2eelab-org/skissm-protos
+    branch = master
