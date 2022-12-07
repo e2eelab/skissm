@@ -63,6 +63,8 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
         copy_address_from_address(&(account->address), response->address);
         account->saved = true;
         account->password = strdup(response->password);
+        account->jwt = strdup(response->jwt);
+        account->expires_in = response->expires_in;
         // save to db
         get_skissm_plugin()->db_handler.store_account(account);
         ssm_notify_user_registered(account);
