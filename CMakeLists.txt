@@ -58,10 +58,6 @@ if(NOT PROTOC_EXECUTABLE)
   message(FATAL_ERROR "protoc excutable not found! Please install protoc")
 endif()
 
-if(NOT GRPC_CPP_PLUGIN)
-  find_program(GRPC_CPP_PLUGIN grpc_cpp_plugin)
-endif()
-
 if(CMAKE_SYSTEM_NAME MATCHES iOS)
   add_compile_options(-Wno-shorten-64-to-32)
 else()
@@ -126,9 +122,6 @@ file(GLOB skissm_PROTOS ${PROTO_SRC_DIR}/skissm/*.proto)
 set(PROTOBUF_PROTOC_EXECUTABLE
     "/usr/local/bin/protoc"
     CACHE STRING "Protoc binary on host")
-set(GRPC_CPP_PLUGIN_EXECUTABLE
-    "/usr/local/bin/grpc_cpp_plugin"
-    CACHE STRING "gRPC CPP plugin binary on host")
 
 set(proto_gen_src "")
 set(proto_gen_header "")
@@ -139,8 +132,7 @@ foreach(proto ${skissm_PROTOS})
   execute_process(
     COMMAND
       ${PROTOC_EXECUTABLE} -I=skissm --proto_path=${PROTO_SRC_DIR}
-      --c_out=${PROTO_DIS_DIR}/skissm
-      --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN} ${proto_name}.proto
+      --c_out=${PROTO_DIS_DIR}/skissm ${proto_name}.proto
     RESULT_VARIABLE rv
     OUTPUT_VARIABLE protoc_output
     WORKING_DIRECTORY ${PROTO_SRC_DIR})

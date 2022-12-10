@@ -333,6 +333,26 @@ void copy_group_members(Skissm__GroupMember ***dest, Skissm__GroupMember **src, 
     }
 }
 
+void copy_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *src) {
+    *dest = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
+    skissm__group_info__init(*dest);
+    if (src != NULL) {
+        if (src->group_name != NULL)
+            (*dest)->group_name = strdup(src->group_name);
+        if (src->group_address != NULL)
+            copy_address_from_address(
+                &((*dest)->group_address), src->group_address
+            );
+        (*dest)->n_group_members = src->n_group_members;
+        if (src->group_members != NULL)
+            copy_group_members(
+                &((*dest)->group_members),
+                src->group_members,
+                src->n_group_members
+            );
+    }
+}
+
 void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num) {
     size_t i;
     for (i = 0; i < group_members_num; i++) {

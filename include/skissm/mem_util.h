@@ -320,6 +320,13 @@ void copy_group_member(Skissm__GroupMember **dest, Skissm__GroupMember *src);
  */
 void copy_group_members(Skissm__GroupMember ***dest, Skissm__GroupMember **src, size_t group_members_num);
 
+/**
+ * @brief Copy Skissm__GroupInfo from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *src);
 
 /**
  * @brief Release memory of Skissm__GroupMember array.

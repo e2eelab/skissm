@@ -64,7 +64,7 @@ bool consume_create_group_response(
 ) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         Skissm__E2eeAddress *group_address = response->group_address;
-        create_outbound_group_session(e2ee_pack_id, sender_address, group_address, group_members, group_members_num, NULL);
+        create_outbound_group_session(e2ee_pack_id, sender_address, group_name, group_address, group_members, group_members_num, NULL);
         ssm_notify_group_created(group_address, group_name);
         return true;
     } else {
@@ -74,12 +74,21 @@ bool consume_create_group_response(
 
 bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg) {
     const char *e2ee_pack_id = msg->e2ee_pack_id;
+    const char *group_name = msg->group_info->group_name;
     Skissm__E2eeAddress *group_address = msg->group_info->group_address;
     size_t group_members_num = msg->group_info->n_group_members;
     Skissm__GroupMember **group_members = msg->group_info->group_members;
 
     // create a new outbound group session
-    create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, group_members, group_members_num, NULL);
+    create_outbound_group_session(
+        e2ee_pack_id,
+        receiver_address,
+        group_name,
+        group_address,
+        group_members,
+        group_members_num,
+        NULL
+    );
 
     // done
     return true;
@@ -120,7 +129,7 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
 
     msg->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
-    copy_address_from_address(&(msg->group_address), outbound_group_session->group_address);
+    copy_address_from_address(&(msg->group_address), outbound_group_session->group_info->group_address);
     msg->n_adding_members = adding_members_num;
     copy_group_members(&(msg->adding_members), adding_members, adding_members_num);
 
@@ -136,20 +145,29 @@ bool consume_add_group_members_response(
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         const char *e2ee_pack_id = outbound_group_session->e2ee_pack_id;
         Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
-        Skissm__E2eeAddress *group_address = outbound_group_session->group_address;
+        Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
         size_t new_group_members_num = response->n_group_members;
         Skissm__GroupMember **new_group_members = response->group_members;
 
         // delete the old outbound group session
         get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
         char *old_session_id = strdup(outbound_group_session->session_id);
+        const char* group_name = strdup(outbound_group_session->group_info->group_name);
 
         // generate a new outbound group session
-        create_outbound_group_session(e2ee_pack_id, session_owner, group_address, new_group_members,
-                                      new_group_members_num, old_session_id);
+        create_outbound_group_session(
+            e2ee_pack_id,
+            session_owner,
+            group_name,
+            group_address,
+            new_group_members,
+            new_group_members_num,
+            old_session_id
+        );
 
         // release
         free_mem((void **) &old_session_id, strlen(old_session_id));
+        free_mem((void **) &group_name, strlen(group_name));
 
         // done
         return true;
@@ -173,18 +191,28 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
     if (outbound_group_session != NULL) {
         get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
         char *old_session_id = strdup(outbound_group_session->session_id);
+        const char *group_name = strdup(outbound_group_session->group_info->group_name);
         // create a new outbound group session
-        create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, old_session_id);
+        create_outbound_group_session(
+            e2ee_pack_id,
+            receiver_address,
+            group_name,
+            group_address,
+            new_group_members,
+            new_group_members_num,
+            old_session_id
+        );
         // release
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
         free_mem((void **) &old_session_id, strlen(old_session_id));
+        free_mem((void **) &group_name, strlen(group_name));
+        // done
+        return true;
     } else{
-        // create an outbound group session
-        create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, NULL);
+        get_skissm_plugin()->event_handler.on_error(BAD_GROUP_SESSION, "outbound group session should have been created before adding members");
+        // done
+        return false;
     }
-
-    // done
-    return true;
 }
 
 Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
@@ -202,7 +230,7 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
 
     msg->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
-    copy_address_from_address(&(msg->group_address), outbound_group_session->group_address);
+    copy_address_from_address(&(msg->group_address), outbound_group_session->group_info->group_address);
     msg->n_removing_members = removing_group_members_num;
     copy_group_members(&(msg->removing_members), removing_group_members, removing_group_members_num);
 
@@ -218,24 +246,35 @@ bool consume_remove_group_members_response(
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         const char *e2ee_pack_id = outbound_group_session->e2ee_pack_id;
         Skissm__E2eeAddress *sender_address = outbound_group_session->session_owner;
-        Skissm__E2eeAddress *group_address = outbound_group_session->group_address;
+        Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
         Skissm__GroupMember **group_members = response->group_members;
         size_t group_members_num = response->n_group_members;
 
         // delete the old outbound group session
         get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
         char *old_session_id = strdup(outbound_group_session->session_id);
+        const char *group_name = strdup(outbound_group_session->group_info->group_name);
 
         // generate a new outbound group session
-        create_outbound_group_session(e2ee_pack_id, sender_address, group_address, group_members,
-                                      group_members_num, old_session_id);
+        create_outbound_group_session(
+            e2ee_pack_id,
+            sender_address,
+            group_name,
+            group_address,
+            group_members,
+            group_members_num,
+            old_session_id
+        );
 
         // release
         free_mem((void **) &old_session_id, strlen(old_session_id));
+        free_mem((void **) &group_name, strlen(group_name));
 
         // done
         return true;
     } else {
+        get_skissm_plugin()->event_handler.on_error(BAD_GROUP_SESSION, "outbound group session should have been created before removing members");
+        // done
         return false;
     }
 }
@@ -281,18 +320,28 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
     if (outbound_group_session != NULL) {
         get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
         char *old_session_id = strdup(outbound_group_session->session_id);
+        const char *group_name = strdup(outbound_group_session->group_info->group_name);
         // create a new outbound group session
-        create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, old_session_id);
+        create_outbound_group_session(
+            e2ee_pack_id,
+            receiver_address,
+            group_name,
+            group_address,
+            new_group_members,
+            new_group_members_num,
+            old_session_id
+        );
         // release
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
         free_mem((void **) &old_session_id, strlen(old_session_id));
+        free_mem((void **) &group_name, strlen(group_name));
+        // done
+        return true;
     } else{
-        // create an outbound group session
-        create_outbound_group_session(e2ee_pack_id, receiver_address, group_address, new_group_members, new_group_members_num, NULL);
+        get_skissm_plugin()->event_handler.on_error(BAD_GROUP_SESSION, "outbound group session should have been created before removing members");
+        // done
+        return false;
     }
-
-    // done
-    return true;
 }
 
 Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
@@ -316,7 +365,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     e2ee_msg->session_id = strdup(outbound_group_session->session_id);
     e2ee_msg->msg_id = generate_uuid_str();
     copy_address_from_address(&(e2ee_msg->from), outbound_group_session->session_owner);
-    copy_address_from_address(&(e2ee_msg->to), outbound_group_session->group_address);
+    copy_address_from_address(&(e2ee_msg->to), outbound_group_session->group_info->group_address);
     e2ee_msg->payload_case = SKISSM__E2EE_MSG__PAYLOAD_GROUP_MSG;
 
     // Prepare a group_msg_payload
@@ -418,7 +467,7 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     if (plaintext_data_len <= 0){
         ssm_notify_error(BAD_MESSAGE_DECRYPTION, "consume_group_msg()");
     } else {
-        ssm_notify_group_msg(e2ee_msg->from, inbound_group_session->group_address, plaintext_data, plaintext_data_len);
+        ssm_notify_group_msg(e2ee_msg->from, inbound_group_session->group_info->group_address, plaintext_data, plaintext_data_len);
         free_mem((void **)&plaintext_data, plaintext_data_len);
     }
 

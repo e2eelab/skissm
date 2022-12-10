@@ -71,14 +71,16 @@ void test_unload_inbound_group_session(){
     group_session->version = strdup(E2EE_PROTOCOL_VERSION);
 
     copy_address_from_address(&(group_session->session_owner), Alice);
-
-    copy_address_from_address(&(group_session->group_address), group_address);
-
     group_session->session_id = generate_uuid_str();
 
-    group_session->n_group_members = 2;
-
-    copy_group_members(&(group_session->group_members), group_members, group_session->n_group_members);
+    group_session->group_info =
+    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    Skissm__GroupInfo *group_info = group_session->group_info;
+    skissm__group_info__init(group_info);
+    group_info->group_name = strdup("test_group");
+    copy_address_from_address(&(group_info->group_address), group_address);
+    group_info->n_group_members = 2;
+    copy_group_members(&(group_info->group_members), group_members, group_info->n_group_members);
 
     group_session->sequence = 0;
 

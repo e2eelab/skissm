@@ -1973,7 +1973,7 @@ void store_group_session(Skissm__GroupSession *group_session) {
     skissm__group_session__pack(group_session, group_session_data);
 
     int owner_id = insert_address(group_session->session_owner);
-    int address_id = insert_address(group_session->group_address);
+    int address_id = insert_address(group_session->group_info->group_address);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -2002,7 +2002,7 @@ void unload_group_session(Skissm__GroupSession *group_session) {
     // bind
     sqlite3_bind_text(stmt, 1, group_session->session_owner->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, group_session->session_owner->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, group_session->group_address->group->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, group_session->group_info->group_address->group->group_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

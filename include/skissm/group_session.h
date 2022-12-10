@@ -46,6 +46,7 @@ size_t pack_group_pre_key_plaintext(
  *
  * @param e2ee_pack_id
  * @param user_address
+ * @param group_name,
  * @param group_address
  * @param group_members
  * @param group_members_num
@@ -54,6 +55,7 @@ size_t pack_group_pre_key_plaintext(
 void create_outbound_group_session(
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
+    const char *group_name,
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **group_members,
     size_t group_members_num,

@@ -72,13 +72,17 @@ static void test_one_group_pre_key() {
 
     outbound_group_session->version = strdup(E2EE_PROTOCOL_VERSION);
     outbound_group_session->e2ee_pack_id = strdup(e2ee_pack_id);
-
     copy_address_from_address(&(outbound_group_session->session_owner), user_address);
-    copy_address_from_address(&(outbound_group_session->group_address), group_address);
-
     outbound_group_session->session_id = generate_uuid_str();
-    outbound_group_session->n_group_members = group_members_num;
-    copy_group_members(&(outbound_group_session->group_members), group_members, group_members_num);
+
+    outbound_group_session->group_info =
+    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    Skissm__GroupInfo *group_info = outbound_group_session->group_info;
+    skissm__group_info__init(group_info);
+    group_info->group_name = strdup("test_group");
+    copy_address_from_address(&(group_info->group_address), group_address);
+    group_info->n_group_members = group_members_num;
+    copy_group_members(&(group_info->group_members), group_members, group_members_num);
 
     outbound_group_session->sequence = 0;
 

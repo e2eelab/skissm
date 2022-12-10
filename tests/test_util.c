@@ -448,13 +448,13 @@ bool is_equal_group_session(Skissm__GroupSession *group_session_1, Skissm__Group
             return false;
         }
     }
-    if (is_not_null(group_session_1->group_address, group_session_2->group_address)) {
-        if (!compare_address(group_session_1->group_address, group_session_2->group_address)) {
+    if (is_not_null(group_session_1->group_info, group_session_2->group_info) && is_not_null(group_session_1->group_info->group_address, group_session_2->group_info->group_address)) {
+        if (!compare_address(group_session_1->group_info->group_address, group_session_2->group_info->group_address)) {
             printf("group_address not match");
             return false;
         }
     } else {
-        if (!is_null(group_session_1->group_address, group_session_2->group_address)) {
+        if (!is_null(group_session_1->group_info, group_session_2->group_info)) {
             printf("group_address not match");
             return false;
         }
