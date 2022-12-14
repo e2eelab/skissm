@@ -34,7 +34,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
                 pending_plaintext_data_list[i],
                 pending_plaintext_data_len_list[i]
             );
-            if (response != NULL || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
                 get_skissm_plugin()->db_handler.unload_pending_plaintext_data(
                     outbound_session->from, outbound_session->to, pending_plaintext_id_list[i]
                 );
