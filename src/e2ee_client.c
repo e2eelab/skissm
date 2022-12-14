@@ -188,13 +188,62 @@ size_t f2f_invite(
     return encrypted_f2f_pre_shared_key_len;
 }
 
+static void store_pending_common_plaintext_data(
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    uint8_t *common_plaintext_data,
+    size_t common_plaintext_data_len
+) {
+    char *pending_plaintext_id = generate_uuid_str();
+    get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+        from,
+        to,
+        pending_plaintext_id,
+        common_plaintext_data,
+        common_plaintext_data_len
+    );
+    
+    // release
+    free(pending_plaintext_id);
+    free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+}
+
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 ) {
+    // pack common plaintext before sending it
+    uint8_t *common_plaintext_data = NULL;
+    size_t common_plaintext_data_len;
+    pack_common_plaintext(
+        plaintext_data, plaintext_data_len,
+        SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG,
+        &common_plaintext_data, &common_plaintext_data_len
+    );
+    
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num <= (size_t)(0) || outbound_sessions == NULL) {
+        // save common_plaintext_data with flag responded = false
+        Skissm__E2eeAddress *to = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
+        skissm__e2ee_address__init(to);
+        to->domain = strdup(to_domain);
+        Skissm__PeerUser *peer_user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
+        skissm__peer_user__init(peer_user);
+        peer_user->user_id = strdup(to_user_id);
+        // no specific deviceId currently
+        to->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
+        to->user = peer_user;
+        store_pending_common_plaintext_data(
+            from,
+            to,
+            common_plaintext_data,
+            common_plaintext_data_len
+        );
+        // release
+        skissm__e2ee_address__free_unpacked(to, NULL);
+        free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+        // notify
         ssm_notify_error(BAD_SESSION, "send_one2one_msg() no outbound session available");
         return NULL;
     }
@@ -202,29 +251,15 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     size_t i;
     for (i = 0; i < outbound_sessions_num; i++) {
         Skissm__Session *outbound_session = outbound_sessions[i];
-
-        // pack common plaintext before sending it
-        uint8_t *common_plaintext_data = NULL;
-        size_t common_plaintext_data_len;
-        pack_common_plaintext(
-            plaintext_data, plaintext_data_len,
-            SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG,
-            &common_plaintext_data, &common_plaintext_data_len
-        );
-
         if (outbound_session->responded == false) {
-            // save common_plaintext_data with flag responded = false
-            char *pending_plaintext_id = generate_uuid_str();
-            get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+            // store pending common_plaintext_data
+            store_pending_common_plaintext_data(
                 outbound_session->from,
                 outbound_session->to,
-                pending_plaintext_id,
                 common_plaintext_data,
                 common_plaintext_data_len
             );
-            // release
-            free(pending_plaintext_id);
-            free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+            //release
             skissm__session__free_unpacked(outbound_session, NULL);
             continue;
         }
@@ -233,7 +268,6 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         response = send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
 
         // release
-        free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
         skissm__session__free_unpacked(outbound_session, NULL);
 
         // check if i is the last index
@@ -244,42 +278,49 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         }
     }
 
+    // release
+    free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+    free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
+
     // send the message to other self devices
     Skissm__Session **self_outbound_sessions = NULL;
     size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, &self_outbound_sessions);
+    
+    if (self_outbound_sessions_num <= (size_t)(0) || self_outbound_sessions == NULL) {
+        // there is no other self devices
+        // done
+        return response;
+    }
+    
+    // pack syncing plaintext before sending it
+    pack_common_plaintext(
+        plaintext_data, plaintext_data_len,
+        SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG,
+        &common_plaintext_data, &common_plaintext_data_len
+    );
+    
     for (i = 0; i < self_outbound_sessions_num; i++) {
         // check if the device is different from the sender's
         if (strcmp(self_outbound_sessions[i]->to->user->device_id, from->user->device_id) == 0)
             continue;
 
-        Skissm__Session *self_outbound_session = self_outbound_sessions[i];
-
-        // pack common plaintext before sending it
-        uint8_t *common_plaintext_data = NULL;
-        size_t common_plaintext_data_len;
-        pack_common_plaintext(
-            plaintext_data, plaintext_data_len,
-            SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG,
-            &common_plaintext_data, &common_plaintext_data_len
-        );
-
         // send message to server
-        Skissm__SendOne2oneMsgResponse *response;
-        response = send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
+        Skissm__Session *self_outbound_session = self_outbound_sessions[i];
+        Skissm__SendOne2oneMsgResponse *sync_response;
+        sync_response = send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
 
         // release
-        free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
         skissm__session__free_unpacked(self_outbound_session, NULL);
-        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+        skissm__send_one2one_msg_response__free_unpacked(sync_response, NULL);
     }
 
     // release
-    free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
+    free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
     if (self_outbound_sessions_num > 0) {
         free_mem((void **)(&self_outbound_sessions), sizeof(Skissm__Session *) * self_outbound_sessions_num);
     }
 
-    // done;
+    // done
     return response;
 }
 
