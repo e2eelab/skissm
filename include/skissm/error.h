@@ -50,7 +50,7 @@ typedef enum ErrorCode ErrorCode;
 /**
  * @brief Get the string representation of a given error code.
  *
- * @param error The error code
+ * @param error_code The error code
  * @return The error string
  */
 const char *error_string(ErrorCode error_code);

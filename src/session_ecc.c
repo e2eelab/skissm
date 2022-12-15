@@ -245,7 +245,7 @@ size_t crypto_curve25519_new_f2f_outbound_session(
     Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(f2f_pre_key_invite_msg->e2ee_pack_id)->cipher_suite;
-    int key_len = cipher_suite->get_crypto_param().asym_key_len;
+    // int key_len = cipher_suite->get_crypto_param().asym_key_len;
 
     // set the version
     outbound_session->version = strdup(f2f_pre_key_invite_msg->version);

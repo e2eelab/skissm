@@ -79,14 +79,6 @@ bool consume_create_group_msg(
 );
 
 /**
- * @brief Create a GetGroupRequest message to be sent to server.
- *
- * @param group_address
- * @return Skissm__GetGroupRequest*
- */
-Skissm__GetGroupRequest *produce_get_group_request(Skissm__E2eeAddress *group_address);
-
-/**
  * @brief Process an incoming GetGroupResponse message.
  *
  * @param response

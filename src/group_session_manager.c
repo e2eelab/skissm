@@ -94,13 +94,6 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
     return true;
 }
 
-Skissm__GetGroupRequest *produce_get_group_request(Skissm__E2eeAddress *group_address) {
-    Skissm__GetGroupRequest *request = (Skissm__GetGroupRequest *)malloc(sizeof(Skissm__GetGroupRequest));
-    skissm__get_group_request__init(request);
-    copy_address_from_address(&(request->group_address), group_address);
-    return request;
-}
-
 bool consume_get_group_response(Skissm__GetGroupResponse *response) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         char *group_name = response->group_name;

@@ -104,13 +104,13 @@ void crypto_aes_encrypt_gcm(const uint8_t *plaintext_data,
                             uint8_t *ciphertext_data) {
   mbedtls_gcm_context ctx;
   unsigned char *tag_buf = ciphertext_data + plaintext_data_len;
-  int ret;
   mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
   int key_len = 256;
 
   mbedtls_gcm_init(&ctx);
-  ret = mbedtls_gcm_setkey(&ctx, cipher, key, key_len);
-  ret = mbedtls_gcm_crypt_and_tag(&ctx, MBEDTLS_GCM_ENCRYPT,
+  // TODO: error handling, int ret = 0;
+  mbedtls_gcm_setkey(&ctx, cipher, key, key_len);
+  mbedtls_gcm_crypt_and_tag(&ctx, MBEDTLS_GCM_ENCRYPT,
                                   plaintext_data_len, iv,
                                   AES256_IV_LENGTH, add, add_len, plaintext_data,
                                   ciphertext_data, AES256_GCM_TAG_LENGTH, tag_buf);
@@ -175,13 +175,14 @@ void crypto_hmac_sha256(const uint8_t *key, size_t key_len,
 }
 
 void crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
-  int buflen, ret = 0;
+  int buflen;
   mbedtls_sha256_context ctx;
 
   mbedtls_sha256_init(&ctx);
-  ret = mbedtls_sha256_starts_ret(&ctx, 0);
-  ret = mbedtls_sha256_update_ret(&ctx, msg, msg_len);
-  ret = mbedtls_sha256_finish_ret(&ctx, hash_out);
+  // TODO: error handling, int ret = 0;
+  mbedtls_sha256_starts_ret(&ctx, 0);
+  mbedtls_sha256_update_ret(&ctx, msg, msg_len);
+  mbedtls_sha256_finish_ret(&ctx, hash_out);
 
   mbedtls_sha256_free(&ctx);
 }
