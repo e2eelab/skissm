@@ -205,7 +205,6 @@ static void store_pending_common_plaintext_data(
     
     // release
     free(pending_plaintext_id);
-    free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
 }
 
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
@@ -220,7 +219,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG,
         &common_plaintext_data, &common_plaintext_data_len
     );
-    
+
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num <= (size_t)(0) || outbound_sessions == NULL) {
@@ -285,20 +284,20 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     // send the message to other self devices
     Skissm__Session **self_outbound_sessions = NULL;
     size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, &self_outbound_sessions);
-    
+
     if (self_outbound_sessions_num <= (size_t)(0) || self_outbound_sessions == NULL) {
         // there is no other self devices
         // done
         return response;
     }
-    
+
     // pack syncing plaintext before sending it
     pack_common_plaintext(
         plaintext_data, plaintext_data_len,
         SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG,
         &common_plaintext_data, &common_plaintext_data_len
     );
-    
+
     for (i = 0; i < self_outbound_sessions_num; i++) {
         // check if the device is different from the sender's
         if (strcmp(self_outbound_sessions[i]->to->user->device_id, from->user->device_id) == 0)
