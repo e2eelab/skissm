@@ -34,7 +34,7 @@ static void test_one_group_pre_key() {
     // test start
     tear_up();
 
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     // mock address
@@ -42,7 +42,7 @@ static void test_one_group_pre_key() {
     mock_address(&user_address, "alice", "alice's domain", "alice's device");
     mock_address(&member_address, "bob", "bob's domain", "bob's device");
 
-    int key_len = test_cipher_suite->get_crypto_param().sign_pub_key_len;
+    int key_len = test_cipher_suite->get_crypto_param().sign_key_len;
 
     size_t group_members_num = 2;
     // the first group member is Alice
@@ -100,24 +100,22 @@ static void test_one_group_pre_key() {
     size_t group_pre_key_plaintext_len = pack_group_pre_key_plaintext(outbound_group_session, &group_pre_key_plaintext, NULL);
 
     // store group pre-key
-    char *pending_plaintext_id = generate_uuid_str();
     get_skissm_plugin()->db_handler.store_pending_plaintext_data(
         user_address,
         member_address,
-        pending_plaintext_id,
+        false,
         group_pre_key_plaintext,
         group_pre_key_plaintext_len
     );
 
     // load group pre-key
     uint32_t n_group_pre_keys;
-    char **pending_plaintext_id_list;
     uint8_t **group_pre_key_plaintext_data_list;
     size_t *group_pre_key_plaintext_data_len_list;
     n_group_pre_keys = get_skissm_plugin()->db_handler.load_pending_plaintext_data(
         user_address,
         member_address,
-        &pending_plaintext_id_list,
+        false,
         &group_pre_key_plaintext_data_list,
         &group_pre_key_plaintext_data_len_list
     );
@@ -125,14 +123,13 @@ static void test_one_group_pre_key() {
     assert(memcmp(group_pre_key_plaintext, group_pre_key_plaintext_data_list[0], group_pre_key_plaintext_data_len_list[0]) == 0);
 
     // unload group pre-key
-    get_skissm_plugin()->db_handler.unload_pending_plaintext_data(user_address, member_address, pending_plaintext_id_list[0]);
-    char **pending_plaintext_id_list_null;
+    get_skissm_plugin()->db_handler.unload_pending_plaintext_data(user_address, member_address, false);
     uint8_t **group_pre_key_plaintext_data_list_null;
     size_t *group_pre_key_plaintext_data_len_list_null;
     get_skissm_plugin()->db_handler.load_pending_plaintext_data(
         user_address,
         member_address,
-        &pending_plaintext_id_list_null,
+        false,
         &group_pre_key_plaintext_data_list_null,
         &group_pre_key_plaintext_data_len_list_null
     );
@@ -144,113 +141,18 @@ static void test_one_group_pre_key() {
     skissm__e2ee_address__free_unpacked(member_address, NULL);
     skissm__e2ee_address__free_unpacked(group_address, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
-    free(pending_plaintext_id);
-    free(pending_plaintext_id_list[0]);
-    free_mem((void **)&pending_plaintext_id_list, sizeof(char *) * n_group_pre_keys);
-    free_mem((void **)&(group_pre_key_plaintext_data_list[0]), group_pre_key_plaintext_data_len_list[0]);
-    free_mem((void **)&group_pre_key_plaintext_data_list, sizeof(uint8_t *) * n_group_pre_keys);
-    free_mem((void **)&group_pre_key_plaintext_data_len_list, sizeof(size_t) * n_group_pre_keys);
 
     // test stop
     tear_down();
 }
 
-static void test_multiple_group_pre_keys() {
-    // test start
-    tear_up();
-
-    // mock address
-    Skissm__E2eeAddress *user_address, *member_address;
-    mock_address(&user_address, "alice", "alice's domain", "alice's device");
-    mock_address(&member_address, "bob", "bob's domain", "bob's device");
-
-    // mock plaintext
-    uint8_t plaintext_1[] = "abcdefghijklmnopqrstuvwxyz";
-    size_t plaintext_1_len = sizeof(plaintext_1) - 1;
-    uint8_t plaintext_2[] = "12345678901234567890";
-    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
-    uint8_t plaintext_3[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    size_t plaintext_3_len = sizeof(plaintext_3) - 1;
-
-    // store group pre-key
-    char *pending_plaintext_1_id = generate_uuid_str();
-    char *pending_plaintext_2_id = generate_uuid_str();
-    char *pending_plaintext_3_id = generate_uuid_str();
-    get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-        user_address,
-        member_address,
-        pending_plaintext_1_id,
-        plaintext_1,
-        plaintext_1_len
-    );
-    get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-        user_address,
-        member_address,
-        pending_plaintext_2_id,
-        plaintext_2,
-        plaintext_2_len
-    );
-    get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-        user_address,
-        member_address,
-        pending_plaintext_3_id,
-        plaintext_3,
-        plaintext_3_len
-    );
-
-    // load pending plaintext
-    uint32_t n_pending_plaintext;
-    char **pending_plaintext_id_list;
-    uint8_t **pending_plaintext_data_list;
-    size_t *pending_plaintext_data_len_list;
-    n_pending_plaintext = get_skissm_plugin()->db_handler.load_pending_plaintext_data(
-        user_address,
-        member_address,
-        &pending_plaintext_id_list,
-        &pending_plaintext_data_list,
-        &pending_plaintext_data_len_list
-    );
-    assert(n_pending_plaintext == 3);
-
-    // unload group pre-key
-    get_skissm_plugin()->db_handler.unload_pending_plaintext_data(user_address, member_address, pending_plaintext_2_id);
-
-    // load pending plaintext again
-    uint32_t n_pending_plaintext_left;
-    char **pending_plaintext_id_left_list;
-    uint8_t **pending_plaintext_data_left_list;
-    size_t *pending_plaintext_data_len_left_list;
-    n_pending_plaintext_left = get_skissm_plugin()->db_handler.load_pending_plaintext_data(
-        user_address,
-        member_address,
-        &pending_plaintext_id_left_list,
-        &pending_plaintext_data_left_list,
-        &pending_plaintext_data_len_left_list
-    );
-    assert(n_pending_plaintext_left == 2);
-
-    // release
-    skissm__e2ee_address__free_unpacked(user_address, NULL);
-    skissm__e2ee_address__free_unpacked(member_address, NULL);
-    free(pending_plaintext_1_id);
-    free(pending_plaintext_2_id);
-    free(pending_plaintext_3_id);
-    free_mem((void **)&pending_plaintext_id_list, sizeof(char *) * n_pending_plaintext);
-    free_mem((void **)&pending_plaintext_data_list, sizeof(uint8_t *) * n_pending_plaintext);
-    free_mem((void **)&pending_plaintext_data_len_list, sizeof(size_t) * n_pending_plaintext);
-    free_mem((void **)&pending_plaintext_id_left_list, sizeof(char *) * n_pending_plaintext_left);
-    free_mem((void **)&pending_plaintext_data_left_list, sizeof(uint8_t *) * n_pending_plaintext_left);
-    free_mem((void **)&pending_plaintext_data_len_left_list, sizeof(size_t) * n_pending_plaintext_left);
-
-    // test stop
-    tear_down();
-}
+static void test_multiple_group_pre_keys() {}
 
 static void test_pending_request_data() {
     // test start
     tear_up();
 
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
 
     // mock address
     Skissm__E2eeAddress *alice_address, *bob_address;
@@ -265,38 +167,30 @@ static void test_pending_request_data() {
     skissm__accept_request__pack(accept_request, request_data);
 
     // store
-    char *pending_request_id = generate_uuid_str();
-    get_skissm_plugin()->db_handler.store_pending_request_data(
-        alice_address, pending_request_id, ACCEPT_REQUEST, request_data, request_data_len
-    );
+    get_skissm_plugin()->db_handler.store_pending_request_data(alice_address, ACCEPT_REQUEST, request_data, request_data_len);
 
     // load
-    char **pending_request_id_list;
-    uint8_t *request_type_list;
+    int *request_type;
     uint8_t **request_data_list;
     size_t *request_data_len_list;
     size_t pending_request_data_num =
         get_skissm_plugin()->db_handler.load_pending_request_data(
-            alice_address, &pending_request_id_list, &request_type_list, &request_data_list, &request_data_len_list
+            alice_address, &request_type, &request_data_list, &request_data_len_list
         );
 
     // assert
     assert(pending_request_data_num == 1);
-    assert(request_type_list[0] == ACCEPT_REQUEST);
+    assert(request_type[0] == ACCEPT_REQUEST);
     assert(request_data_len_list[0] == request_data_len);
     assert(memcmp(request_data_list[0], request_data, request_data_len) == 0);
 
     // release
-    skissm__e2ee_address__free_unpacked(alice_address, NULL);
-    skissm__e2ee_address__free_unpacked(bob_address, NULL);
     skissm__accept_request__free_unpacked(accept_request, NULL);
     free_mem((void **)&request_data, request_data_len);
-    free(pending_request_id);
-    free_mem((void **)&pending_request_id_list, sizeof(char *) * pending_request_data_num);
-    free_mem((void **)&request_type_list, sizeof(int) * pending_request_data_num);
+    free_mem((void **)&request_type, pending_request_data_num);
     free_mem((void **)&(request_data_list[0]), request_data_len_list[0]);
-    free_mem((void **)&request_data_list, sizeof(uint8_t *) * pending_request_data_num);
-    free_mem((void **)&request_data_len_list, sizeof(size_t) * pending_request_data_num);
+    free_mem((void **)&request_data_list, pending_request_data_num);
+    free_mem((void **)&request_data_len_list, pending_request_data_num);
 
     // test stop
     tear_down();

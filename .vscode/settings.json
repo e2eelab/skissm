@@ -30,6 +30,7 @@
         "string_view": "c",
         "ranges": "c",
         "*.inc": "c",
+<<<<<<< HEAD
         "memory": "c",
         "__mutex_base": "c",
         "bitset": "cpp",
@@ -40,6 +41,9 @@
         "sstream": "cpp",
         "regex": "cpp",
         "random": "c"
+=======
+        "memory": "c"
+>>>>>>> fadcc6504324c39da2daf8ba7b39c52d46109b9c
     },
     "cmake.configureOnOpen": true,
 }
