@@ -303,17 +303,13 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         }
 
         // send message to server
+        // only keep last response
+        if (response != NULL)
+            skissm__send_one2one_msg_response__free_unpacked(response, NULL);
         response = send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
 
         // release
         skissm__session__free_unpacked(outbound_session, NULL);
-
-        // check if i is the last index
-        if (i != (outbound_sessions_num - 1)) {
-            // release response
-            if (response != NULL)
-                skissm__send_one2one_msg_response__free_unpacked(response, NULL);
-        }
     }
 
     // release
