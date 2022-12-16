@@ -427,11 +427,11 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     Skissm__GroupMsgPayload *group_msg_payload = e2ee_msg->group_msg;
 
     // verify the signature
-    size_t result = cipher_suite->verify(
+    int succ = cipher_suite->verify(
         group_msg_payload->signature.data,
         inbound_group_session->signature_public_key.data,
         group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len);
-    if (result < 0){
+    if (succ < 0){
         ssm_notify_error(BAD_SIGNATURE, "consume_group_msg()");
         skissm__group_session__free_unpacked(inbound_group_session, NULL);
         return false;
@@ -469,5 +469,5 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     // group_msg_payload is within e2ee_msg
     skissm__msg_key__free_unpacked(msg_key, NULL);
 
-    return result>0;
+    return succ>=0;
 }

@@ -126,8 +126,9 @@ typedef struct cipher_suite_t {
    * @param public_key
    * @param msg
    * @param msg_len
+   * @return value < 0 for error
    */
-  size_t (*verify)(uint8_t *,
+  int (*verify)(uint8_t *,
                    uint8_t *,
                    uint8_t *, size_t);
 

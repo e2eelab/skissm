@@ -178,7 +178,7 @@ static size_t verify_and_decrypt(
         plaintext_data
     );
 
-    if (result == (size_t)(-1))
+    if (result == 0)
         ssm_notify_error(BAD_MESSAGE_DECRYPTION, "verify_and_decrypt()");
 
     return result;
@@ -193,13 +193,13 @@ static size_t verify_and_decrypt_for_existing_chain(
 ) {
     if (payload->sequence < chain->index) {
         ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
-        return (size_t)(-1);
+        return 0;
     }
 
     // limit the number of hashes we're prepared to compute
     if (payload->sequence - chain->index > MAX_CHAIN_INDEX) {
         ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
-        return (size_t)(-2);
+        return 0;
     }
 
     Skissm__ChainKey *new_chain = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
@@ -240,13 +240,13 @@ static size_t verify_and_decrypt_for_new_chain(
      * for ECDH or Decaps. */
     if (ratchet->sender_chain == NULL) {
         ssm_notify_error(BAD_MESSAGE_DECRYPTION, "verify_and_decrypt_for_new_chain()");
-        return (size_t)(-1);
+        return 0;
     }
 
     // Limit the number of hashes we're prepared to compute
     if (payload->sequence > MAX_CHAIN_INDEX) {
         ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
-        return (size_t)(-2);
+        return 0;
     }
 
     assert(payload->ratchet_key.len == cipher_suite->get_crypto_param().asym_key_len);
@@ -439,12 +439,12 @@ size_t decrypt_ratchet(
     if (!payload->ratchet_key.data
         || !payload->ciphertext.data) {
         ssm_notify_error(BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
-        return (size_t)(-1);
+        return 0;
     }
 
     if (payload->ratchet_key.len != key_len) {
         ssm_notify_error(BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
-        return (size_t)(-2);
+        return 0;
     }
 
     Skissm__ReceiverChainNode *chain = NULL;
@@ -461,7 +461,7 @@ size_t decrypt_ratchet(
         }
     }
 
-    size_t result = (size_t)(-1);
+    size_t result = 0;
     if (!chain) {
         /* They have started using a new ephemeral ratchet key.
          * We will check if we can decrypt the message correctly.
@@ -471,14 +471,14 @@ size_t decrypt_ratchet(
             cipher_suite,
             ratchet, ad, payload, plaintext_data
         );
-        if (result < (size_t)(0)) {
+        if (result == 0) {
             ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
-            return (size_t)(-3);
+            return 0;
         }
     } else if (chain->chain_key->index > payload->sequence) {
         /* Chain already advanced beyond the key for this message
          * Check if the message keys are in the skipped key list. */
-        size_t i;
+        size_t i, j;
         for (i = 0; i < ratchet->n_skipped_msg_keys; i++){
             if (payload->sequence == ratchet->skipped_msg_keys[i]->msg_key->index
                 && 0 == memcmp(ratchet->skipped_msg_keys[i]->ratchet_key_public.data, payload->ratchet_key.data,
@@ -490,15 +490,31 @@ size_t decrypt_ratchet(
                     plaintext_data
                 );
 
-                if (result >= 0){
-                    skissm__skipped_msg_key_node__free_unpacked(ratchet->skipped_msg_keys[i], NULL);
-                    ratchet->skipped_msg_keys[i] = NULL;
+                if (result > 0){
+                    Skissm__SkippedMsgKeyNode **temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_keys - 1));
+                    for (j = 0; j < ratchet->n_skipped_msg_keys; j++) {
+                        if (j == i) {
+                            // remove node
+                            continue;
+                        }
+                        temp_skipped_message_keys[j] = (Skissm__SkippedMsgKeyNode *) malloc(sizeof(Skissm__SkippedMsgKeyNode));
+                        skissm__skipped_msg_key_node__init(temp_skipped_message_keys[j]);
+                        copy_protobuf_from_protobuf(&(temp_skipped_message_keys[j]->ratchet_key_public), &(ratchet->skipped_msg_keys[i]->ratchet_key_public));
+                        temp_skipped_message_keys[j]->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+                        skissm__msg_key__init(temp_skipped_message_keys[j]->msg_key);
+                        temp_skipped_message_keys[j]->msg_key->index = ratchet->skipped_msg_keys[i]->msg_key->index;
+                        copy_protobuf_from_protobuf(&(temp_skipped_message_keys[j]->msg_key->derived_key), &(ratchet->skipped_msg_keys[i]->msg_key->derived_key));
+                    }
+                    free_skipped_message_key(&(ratchet->skipped_msg_keys), ratchet->n_skipped_msg_keys);
+                    ratchet->skipped_msg_keys = temp_skipped_message_keys;
+                    (ratchet->n_skipped_msg_keys)--;
+                    break;
                 }
             }
         }
-        if (result < (size_t)(0)) {
+        if (result == 0) {
             ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
-            return (size_t)(-4);
+            return 0;
         }
     } else {
         // they use the same ratchet key
@@ -507,9 +523,9 @@ size_t decrypt_ratchet(
             ad, chain->chain_key,
             payload, plaintext_data
         );
-        if (result < (size_t)(0)) {
+        if (result == 0) {
             ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
-            return (size_t)(-5);
+            return 0;
         }
     }
 

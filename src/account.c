@@ -259,7 +259,7 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *ac
     return inserted_one_time_pre_key_list_node;
 }
 
-size_t mark_opk_as_used(Skissm__Account *account, uint32_t id) {
+int mark_opk_as_used(Skissm__Account *account, uint32_t id) {
     Skissm__OneTimePreKey **cur = account->one_time_pre_keys;
     size_t i;
     for (i = 0; i < account->n_one_time_pre_keys; i++) {
@@ -270,7 +270,7 @@ size_t mark_opk_as_used(Skissm__Account *account, uint32_t id) {
     }
 
     ssm_notify_error(ERROR_REMOVE_OPK, "mark_opk_as_used()");
-    return (size_t)(-1);
+    return -1;
 }
 
 static void copy_one_time_pre_keys(Skissm__OneTimePreKey **dest, Skissm__OneTimePreKey **src, size_t num) {

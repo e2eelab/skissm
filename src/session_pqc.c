@@ -39,7 +39,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_sessi
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_key_len;
     // verify the signature
-    size_t result;
+    int result;
     if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len) ||
         (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)) {
         ssm_notify_error(BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
@@ -120,7 +120,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_sessi
     return response;
 }
 
-size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *local_account, Skissm__InviteMsg *msg) {
+int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *local_account, Skissm__InviteMsg *msg) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
 
     // verify the signed pre-key
@@ -130,7 +130,7 @@ size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account
         get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->account_id, msg->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
             ssm_notify_error(BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
-            return (size_t)(-1);
+            return -1;
         } else {
             old_spk = 1;
         }
@@ -162,7 +162,7 @@ size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account
 
         if (!our_one_time_pre_key) {
             ssm_notify_error(BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
-            return (size_t)(-1);
+            return -1;
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
             get_skissm_plugin()->db_handler.update_one_time_pre_key(local_account->account_id, our_one_time_pre_key->opk_id);
@@ -222,10 +222,10 @@ size_t pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account
     skissm__accept_response__free_unpacked(response, NULL);
 
     // done
-    return (size_t)(0);
+    return 0;
 }
 
-size_t pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__AcceptMsg *msg) {
+int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__AcceptMsg *msg) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
 
     outbound_session->responded = true;
@@ -237,7 +237,7 @@ size_t pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__
     initialise_as_alice(cipher_suite, outbound_session->ratchet, pos, outbound_session->alice_ephemeral_key.len, NULL, NULL);
 
     // done
-    return (size_t)(0);
+    return 0;
 }
 
 const session_suite_t E2EE_SESSION_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256 = {

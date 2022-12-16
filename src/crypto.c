@@ -90,11 +90,9 @@ void crypto_curve25519_sign(uint8_t *private_key, uint8_t *msg, size_t msg_len,
   curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
 }
 
-size_t crypto_curve25519_verify(uint8_t *signature_in, uint8_t *public_key,
+int crypto_curve25519_verify(uint8_t *signature_in, uint8_t *public_key,
                                 uint8_t *msg, size_t msg_len) {
-  int result;
-  result = curve25519_verify(signature_in, public_key, msg, msg_len);
-  return (size_t)(result);
+  return curve25519_verify(signature_in, public_key, msg, msg_len);
 }
 
 void crypto_aes_encrypt_gcm(const uint8_t *plaintext_data,
@@ -146,7 +144,7 @@ size_t crypto_aes_decrypt_gcm(const uint8_t *ciphertext_data,
   if (diff == 0) {
     return (ciphertext_data_len - AES256_GCM_TAG_LENGTH);
   } else {
-    return (size_t)(-1);
+    return 0;
   }
 }
 

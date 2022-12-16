@@ -48,9 +48,9 @@ typedef struct session_suite_t {
      * @param session The inbound session
      * @param local_account Our account
      * @param request The invite message
-     * @return Success or not
+     * @return value < 0 for error
      */
-    size_t (*new_inbound_session)(
+    int (*new_inbound_session)(
         Skissm__Session *,
         Skissm__Account *,
         Skissm__InviteMsg *
@@ -61,9 +61,9 @@ typedef struct session_suite_t {
      *
      * @param outbound_session The outbound session
      * @param msg The accept message
-     * @return Success or not
+     * @return value < 0 for error
      */
-    size_t (*complete_outbound_session)(
+    int (*complete_outbound_session)(
         Skissm__Session *,
         Skissm__AcceptMsg *
     );
@@ -73,9 +73,9 @@ typedef struct session_suite_t {
      *
      * @param outbound_session The outbound session
      * @param f2f_pre_key_invite_msg The face-to-face message to create a session
-     * @return Success or not
+     * @return value < 0 for error
      */
-    size_t (*new_f2f_outbound_session)(
+    int (*new_f2f_outbound_session)(
         Skissm__Session *,
         Skissm__F2fPreKeyInviteMsg *
     );
@@ -86,9 +86,9 @@ typedef struct session_suite_t {
      * @param inbound_session The inbound session
      * @param local_account Our account
      * @param secret The shared secret bytes
-     * @return Success or not
+     * @return value < 0 for error
      */
-    size_t (*new_f2f_inbound_session)(
+    int (*new_f2f_inbound_session)(
         Skissm__Session *,
         Skissm__Account *,
         uint8_t *
@@ -99,9 +99,9 @@ typedef struct session_suite_t {
      *
      * @param outbound_session The outbound session
      * @param msg The face-to-face accept message
-     * @return Success or not
+     * @return value < 0 for error
      */
-    size_t (*complete_f2f_outbound_session)(
+    int (*complete_f2f_outbound_session)(
         Skissm__Session *,
         Skissm__F2fAcceptMsg *
     );
@@ -150,13 +150,13 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     Skissm__PreKeyBundle *their_pre_key_bundle
 );
 
-size_t crypto_curve25519_new_inbound_session(
+int crypto_curve25519_new_inbound_session(
     Skissm__Session *session,
     Skissm__Account *local_account,
     Skissm__InviteMsg *msg
 );
 
-size_t crypto_curve25519_complete_outbound_session(
+int crypto_curve25519_complete_outbound_session(
     Skissm__Session *outbound_session,
     Skissm__AcceptMsg *msg
 );
@@ -168,13 +168,13 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     Skissm__PreKeyBundle *their_pre_key_bundle
 );
 
-size_t pqc_new_inbound_session(
+int pqc_new_inbound_session(
     Skissm__Session *session,
     Skissm__Account *local_account,
     Skissm__InviteMsg *msg
 );
 
-size_t pqc_complete_outbound_session(
+int pqc_complete_outbound_session(
     Skissm__Session *outbound_session,
     Skissm__AcceptMsg *msg
 );

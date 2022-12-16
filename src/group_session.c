@@ -186,7 +186,7 @@ void create_outbound_group_session(
             outbound_group_session->session_owner, group_member_address->user->user_id, &outbound_sessions
         );
 
-        if (outbound_sessions_num > (size_t)(0) && outbound_sessions != NULL) {
+        if (outbound_sessions_num > 0 && outbound_sessions != NULL) {
             for (j = 0; j < outbound_sessions_num; j++) {
                 Skissm__Session *outbound_session = outbound_sessions[j];
                 if (compare_address(outbound_session->to, outbound_group_session->session_owner))

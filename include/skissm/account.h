@@ -106,9 +106,9 @@ Skissm__OneTimePreKey **generate_opks(
  *
  * @param account The account to be processed
  * @param id The id of one-time pre-key that will be marked as used.
- * @return Success or not
+ * @return value < 0 for error
  */
-size_t mark_opk_as_used(
+int mark_opk_as_used(
     Skissm__Account *account,
     uint32_t id
 );

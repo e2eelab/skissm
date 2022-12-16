@@ -77,8 +77,8 @@ void encrypt_ratchet(
  * @param ad
  * @param payload
  * @param plaintext_data
- * @return true
- * @return false
+ * @return length of plaintext_data
+ * @return 0 for error
  */
 size_t decrypt_ratchet(
     const cipher_suite_t *cipher_suite,

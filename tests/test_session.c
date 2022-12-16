@@ -892,7 +892,7 @@ static void test_f2f_multiple_devices() {
 int main() {
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
 
-    test_basic_session();
+    //test_basic_session();
     test_interaction();
     test_continual_messages();
     test_multiple_devices();

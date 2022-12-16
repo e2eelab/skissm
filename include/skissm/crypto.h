@@ -68,7 +68,7 @@ void crypto_curve25519_sign(uint8_t *private_key,
     uint8_t *msg, size_t msg_len, uint8_t *signature_out
 );
 
-size_t crypto_curve25519_verify(
+int crypto_curve25519_verify(
     uint8_t *signature_in, uint8_t *public_key,
     uint8_t *msg, size_t msg_len);
 
