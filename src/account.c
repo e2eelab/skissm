@@ -187,11 +187,11 @@ size_t generate_signed_pre_key(Skissm__Account *account) {
     account->signed_pre_key->spk_id = next_signed_pre_key_id;
 
     // generate a signature
-    int key_len = cipher_suite->get_crypto_param().asym_key_len;
+    int pub_key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
     int sig_len = cipher_suite->get_crypto_param().sig_len;
     account->signed_pre_key->signature.data = (uint8_t *)malloc(sig_len);
     account->signed_pre_key->signature.len = sig_len;
-    cipher_suite->sign(account->identity_key->sign_key_pair->private_key.data, account->signed_pre_key->key_pair->public_key.data, key_len, account->signed_pre_key->signature.data);
+    cipher_suite->sign(account->identity_key->sign_key_pair->private_key.data, account->signed_pre_key->key_pair->public_key.data, pub_key_len, account->signed_pre_key->signature.data);
 
     int64_t now = get_skissm_plugin()->common_handler.gen_ts();
     account->signed_pre_key->ttl = now + SIGNED_PRE_KEY_EXPIRATION_MS;

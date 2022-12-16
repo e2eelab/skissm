@@ -37,14 +37,18 @@ option(SKISSM_TESTS "Build skissm tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 option(CMAKE_BUILD_TYPE "Build types" Debug)
 
+add_definitions(-DPARAMS=sphincs-shake-256f)
+
 set(EXTERNAL_LIB_DIR "${CMAKE_CURRENT_BINARY_DIR}/lib")
 
 # library path
 set(lib_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 set(curve25519_DIR "${lib_DIR}/curve25519")
+set(kyber_DIR "${lib_DIR}/kyber")
 set(mbedcrypto_DIR "${lib_DIR}/mbedcrypto")
 set(protobuf_DIR "${lib_DIR}/protobuf")
 set(protobuf-c_DIR "${lib_DIR}/protobuf-c")
+set(sphincsplus_DIR "${lib_DIR}/sphincsplus")
 
 # protobuf flags
 set(protobuf_BUILD_SHARED_LIBS OFF)
@@ -71,7 +75,9 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 add_subdirectory(${curve25519_DIR} ${EXTERNAL_LIB_DIR}/curve25519)
+add_subdirectory(${kyber_DIR} ${EXTERNAL_LIB_DIR}/kyber)
 add_subdirectory(${mbedcrypto_DIR} ${EXTERNAL_LIB_DIR}/mbedcrypto)
+add_subdirectory(${sphincsplus_DIR} ${EXTERNAL_LIB_DIR}/sphincsplus)
 if(SKISSM_BUILD_PROTOBUF)
   add_subdirectory(${protobuf_DIR}/cmake)
 endif()
@@ -185,7 +191,7 @@ set_target_properties(
               ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
 target_link_options(skissm_static PUBLIC "LINKER:-undefined,dynamic_lookup")
-target_link_libraries(skissm_static PUBLIC mbedcrypto curve25519
+target_link_libraries(skissm_static PUBLIC mbedcrypto curve25519 kyber sphincsplus
                                             protobuf::libprotobuf protobuf-c)
 
 install(TARGETS skissm_static

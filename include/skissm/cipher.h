@@ -86,7 +86,7 @@ typedef struct cipher_suite_t {
    * @param ciphertext_data The output cipher text
    * @return Success or not
    */
-  size_t (*encrypt)(const uint8_t *,
+  size_t (*encrypt)(const ProtobufCBinaryData *,
                     const uint8_t *,
                     const uint8_t *, size_t,
                     uint8_t **);
@@ -101,7 +101,7 @@ typedef struct cipher_suite_t {
    * @param plaintext_data The output plain text
    * @return The length of plaintext_data or -1 for decryption error
    */
-  size_t (*decrypt)(const uint8_t *,
+  size_t (*decrypt)(const ProtobufCBinaryData *,
                     const uint8_t *,
                     const uint8_t *, size_t,
                     uint8_t **);
@@ -183,7 +183,7 @@ typedef struct cipher_suite_t {
  * @param ciphertext_data
  * @return size_t length of ciphertext_data
  */
-size_t aes256_gcm_encrypt(const uint8_t *ad, const uint8_t *aes_key,
+size_t aes256_gcm_encrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
     const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **ciphertext_data
 );
 
@@ -197,7 +197,7 @@ size_t aes256_gcm_encrypt(const uint8_t *ad, const uint8_t *aes_key,
  * @param plaintext_data
  * @return size_t length of plaintext_data
  */
-size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
+size_t aes256_gcm_decrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
     const uint8_t *ciphertext_data, size_t ciphertext_data_len, uint8_t **plaintext_data
 );
 

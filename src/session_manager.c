@@ -529,8 +529,10 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     );
 
     // decrypt
-    uint8_t ad[64];
-    memset(ad, 0, 64);
+    ProtobufCBinaryData *ad = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+    ad->len = 64;
+    ad->data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
+    memset(ad->data, 0, 64);
     uint8_t *f2f_pre_key_plaintext = NULL;
     size_t f2f_pre_key_plaintext_len = cipher_suite->decrypt(
         ad,
@@ -584,6 +586,8 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     // release
     free_mem((void **)&password, password_len);
     free_mem((void **)&aes_key, aes_key_len);
+    free_mem((void **)&(ad->data), ad->len);
+    free_mem((void **)&ad, sizeof(ProtobufCBinaryData));
     free_mem((void **)&f2f_pre_key_plaintext, f2f_pre_key_plaintext_len);
     skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);
     skissm__account__free_unpacked(account, NULL);

@@ -20,34 +20,63 @@
 
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "skissm/crypto.h"
 
 static inline size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length) {
-  return plaintext_data_length + AES256_GCM_TAG_LENGTH;
+    return plaintext_data_length + AES256_GCM_TAG_LENGTH;
 }
 
 static inline size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len) {
-  return ciphertext_data_len - AES256_GCM_TAG_LENGTH;
+    return ciphertext_data_len - AES256_GCM_TAG_LENGTH;
 }
 
-size_t aes256_gcm_encrypt(const uint8_t *ad, const uint8_t *aes_key,
-                          const uint8_t *plaintext_data, size_t plaintext_data_len,
-                          uint8_t **ciphertext_data) {
-  uint8_t *iv = (uint8_t *)aes_key + AES256_KEY_LENGTH;
-  size_t ciphertext_data_len = aes256_gcm_ciphertext_data_len(plaintext_data_len);
-  *ciphertext_data = (uint8_t *)malloc(ciphertext_data_len);
-  crypto_aes_encrypt_gcm(plaintext_data, plaintext_data_len, aes_key, iv, ad, AD_LENGTH,
-                         *ciphertext_data);
-  return ciphertext_data_len;
+size_t aes256_gcm_encrypt(
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key,
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    uint8_t **ciphertext_data
+) {
+    uint8_t *iv = (uint8_t *)aes_key + AES256_KEY_LENGTH;
+    size_t ciphertext_data_len = aes256_gcm_ciphertext_data_len(plaintext_data_len);
+    *ciphertext_data = (uint8_t *)malloc(ciphertext_data_len);
+    crypto_aes_encrypt_gcm(plaintext_data, plaintext_data_len, aes_key, iv, ad->data, ad->len, *ciphertext_data);
+    return ciphertext_data_len;
 }
 
-size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
-                          const uint8_t *ciphertext_data,
-                          size_t ciphertext_data_len, uint8_t **plaintext_data) {
-  uint8_t *iv = (uint8_t *)aes_key + AES256_KEY_LENGTH;
-  size_t plaintext_data_len = aes256_gcm_plaintext_data_len(ciphertext_data_len);
-  *plaintext_data = (uint8_t *)malloc(plaintext_data_len);
-  return crypto_aes_decrypt_gcm(ciphertext_data, ciphertext_data_len, aes_key, iv, ad,
-                                AD_LENGTH, *plaintext_data);
+size_t aes256_gcm_decrypt(
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key,
+    const uint8_t *ciphertext_data,
+    size_t ciphertext_data_len, uint8_t **plaintext_data
+) {
+    uint8_t *iv = (uint8_t *)aes_key + AES256_KEY_LENGTH;
+    size_t plaintext_data_len = aes256_gcm_plaintext_data_len(ciphertext_data_len);
+    *plaintext_data = (uint8_t *)malloc(plaintext_data_len);
+    return crypto_aes_decrypt_gcm(ciphertext_data, ciphertext_data_len, aes_key, iv, ad->data, ad->len, *plaintext_data);
+}
+
+bool encrypt_aes_file(const char *in_file_path, const char *out_file_path, uint8_t *aes_key) {
+    FILE *infile, *outfile;
+    infile = fopen(in_file_path, "r");
+    outfile = fopen(out_file_path, "a");
+
+    long long max_plaintext_size = 2^32;
+    char in_buffer[max_plaintext_size];
+    char out_buffer[8192];
+
+    while (feof(infile) == 0) {
+        fread(in_buffer, sizeof(char), max_plaintext_size, infile);
+    }
+
+    fclose(outfile);
+    fclose(infile);
+
+    return true;
+}
+
+bool decrypt_aes_file(const char *in_file_path, const char *out_file_path, uint8_t *aes_key) {
+    FILE *infile = fopen(in_file_path, "r+");
+    fseek(infile, 0, SEEK_END);
+    long size = ftell(infile);
+    fseek(infile, 0, SEEK_SET);
 }

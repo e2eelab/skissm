@@ -95,7 +95,12 @@ size_t f2f_invite(
     skissm__f2f_pre_key_invite_msg__init(f2f_pre_key_invite_msg);
 
     f2f_pre_key_invite_msg->version = strdup(E2EE_PROTOCOL_VERSION);
-    f2f_pre_key_invite_msg->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
+
+    // get the e2ee_pack_id
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
+    f2f_pre_key_invite_msg->e2ee_pack_id = strdup(account->e2ee_pack_id);
+
     f2f_pre_key_invite_msg->session_id = generate_uuid_str();
 
     copy_address_from_address(&(f2f_pre_key_invite_msg->from), from);
@@ -127,8 +132,10 @@ size_t f2f_invite(
     );
 
     // encrypt
-    uint8_t ad[64];
-    memset(ad, 0, 64);
+    ProtobufCBinaryData *ad = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+    ad->len = 64;
+    ad->data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
+    memset(ad->data, 0, 64);
     uint8_t *encrypted_f2f_pre_shared_key = NULL;
     size_t encrypted_f2f_pre_shared_key_len = cipher_suite->encrypt(
         ad,
@@ -179,10 +186,13 @@ size_t f2f_invite(
     Skissm__F2fInviteResponse *response = f2f_invite_internal(from, to, e2ee_pack_id, encrypted_f2f_pre_shared_key, encrypted_f2f_pre_shared_key_len);
 
     // release
+    skissm__account__free_unpacked(account, NULL);
     free_mem((void **)&encrypted_f2f_pre_shared_key, encrypted_f2f_pre_shared_key_len);
     skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);
     free_mem((void **)&f2f_pre_key_plaintext, f2f_pre_key_plaintext_len);
     free_mem((void **)&aes_key, aes_key_len);
+    free_mem((void **)&(ad->data), ad->len);
+    free_mem((void **)&ad, sizeof(ProtobufCBinaryData));
     skissm__f2f_invite_response__free_unpacked(response, NULL);
 
     return encrypted_f2f_pre_shared_key_len;

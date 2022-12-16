@@ -31,7 +31,15 @@
         "ranges": "c",
         "*.inc": "c",
         "memory": "c",
-        "__mutex_base": "c"
+        "__mutex_base": "c",
+        "bitset": "cpp",
+        "cmath": "cpp",
+        "complex": "cpp",
+        "ios": "cpp",
+        "locale": "cpp",
+        "sstream": "cpp",
+        "regex": "cpp",
+        "random": "c"
     },
     "cmake.configureOnOpen": true,
 }

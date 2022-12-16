@@ -226,7 +226,7 @@ static void test_end(){
 }
 
 static void mock_alice_account(uint64_t account_id, const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     const char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
@@ -242,7 +242,7 @@ static void mock_alice_account(uint64_t account_id, const char *user_name) {
 }
 
 static void mock_bob_account(uint64_t account_id, const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     const char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";

@@ -46,7 +46,7 @@ void test_load_outbound_session()
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
     copy_address_from_address(&(session->session_owner), from);
 
     // create mock public keys
@@ -106,11 +106,11 @@ void test_load_outbound_sessions()
     mock_address(&to_3, "bob", "bob's domain", "bob's device 3");
 
     // initialise sessions
-    initialise_session(session_1, TEST_E2EE_PACK_ID, from, to_1);
+    initialise_session(session_1, TEST_E2EE_PACK_ID_ECC, from, to_1);
     copy_address_from_address(&(session_1->session_owner), from);
-    initialise_session(session_2, TEST_E2EE_PACK_ID, from, to_2);
+    initialise_session(session_2, TEST_E2EE_PACK_ID_ECC, from, to_2);
     copy_address_from_address(&(session_2->session_owner), from);
-    initialise_session(session_3, TEST_E2EE_PACK_ID, from, to_3);
+    initialise_session(session_3, TEST_E2EE_PACK_ID_ECC, from, to_3);
     copy_address_from_address(&(session_3->session_owner), from);
 
     // create mock public keys for session_1
@@ -217,7 +217,7 @@ void test_load_inbound_session()
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
     copy_address_from_address(&(session->session_owner), to);
 
     // create mock public keys
@@ -432,7 +432,7 @@ void test_store_session()
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
     copy_address_from_address(&(session->session_owner), from);
 
     // create mock public keys
@@ -506,7 +506,7 @@ void test_equal_ratchet_outbound()
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
     copy_address_from_address(&(session->session_owner), from);
 
     // create mock public keys
@@ -575,7 +575,7 @@ void test_equal_ratchet_inbound()
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
-    initialise_session(session, TEST_E2EE_PACK_ID, from, to);
+    initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
     copy_address_from_address(&(session->session_owner), to);
 
     // create mock public keys
@@ -651,7 +651,7 @@ void test_equal_ratchet_inbound()
 }
 
 int main(){
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
+    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
 
     test_load_outbound_session();
     test_load_outbound_sessions();

@@ -32,7 +32,7 @@
 void test_load_old_signed_pre_key(){
     tear_up();
 
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
+    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
@@ -82,7 +82,7 @@ void test_load_old_signed_pre_key(){
 void test_remove_expired_signed_pre_key(){
     tear_up();
 
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID);
+    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);

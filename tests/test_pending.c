@@ -34,7 +34,7 @@ static void test_one_group_pre_key() {
     // test start
     tear_up();
 
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     // mock address
@@ -42,7 +42,7 @@ static void test_one_group_pre_key() {
     mock_address(&user_address, "alice", "alice's domain", "alice's device");
     mock_address(&member_address, "bob", "bob's domain", "bob's device");
 
-    int key_len = test_cipher_suite->get_crypto_param().sign_key_len;
+    int key_len = test_cipher_suite->get_crypto_param().sign_pub_key_len;
 
     size_t group_members_num = 2;
     // the first group member is Alice
@@ -250,7 +250,7 @@ static void test_pending_request_data() {
     // test start
     tear_up();
 
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
 
     // mock address
     Skissm__E2eeAddress *alice_address, *bob_address;

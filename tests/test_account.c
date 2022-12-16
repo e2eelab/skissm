@@ -70,7 +70,7 @@ static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_on
 
 static void create_account_test(uint64_t account_id) {
     // Register test
-    Skissm__Account *account = create_account(account_id, TEST_E2EE_PACK_ID);
+    Skissm__Account *account = create_account(account_id, TEST_E2EE_PACK_ID_ECC);
 
     assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
