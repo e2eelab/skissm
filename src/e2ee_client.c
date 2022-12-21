@@ -202,7 +202,7 @@ static void store_pending_common_plaintext_data(
         common_plaintext_data,
         common_plaintext_data_len
     );
-    
+
     // release
     free(pending_plaintext_id);
 }
@@ -262,7 +262,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num == 0 || outbound_sessions == NULL) {
-        // save common_plaintext_data with flag responded = false
+        // save common_plaintext_data and will be resent after the first outbound session established
         Skissm__E2eeAddress *to = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
         skissm__e2ee_address__init(to);
         to->domain = strdup(to_domain);
@@ -281,10 +281,13 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         // release
         skissm__e2ee_address__free_unpacked(to, NULL);
         free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
-        // notify
-        ssm_notify_error(BAD_SESSION, "send_one2one_msg() no outbound session available");
-        return NULL;
+        // done
+        Skissm__SendOne2oneMsgResponse *response = ( Skissm__SendOne2oneMsgResponse *) malloc(sizeof( Skissm__SendOne2oneMsgResponse));
+        skissm__send_one2one_msg_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+        return response;
     }
+
     Skissm__SendOne2oneMsgResponse *response = NULL;
     size_t i;
     for (i = 0; i < outbound_sessions_num; i++) {
