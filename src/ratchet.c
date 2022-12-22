@@ -447,7 +447,7 @@ size_t decrypt_ratchet(
         return 0;
     }
 
-    Skissm__ReceiverChainNode *chain = NULL;
+    Skissm__ReceiverChainNode *receiver_chain = NULL;
 
     // find the corresponding receiving chain
     Skissm__ReceiverChainNode **cur = ratchet->receiver_chains;
@@ -455,14 +455,14 @@ size_t decrypt_ratchet(
         size_t i;
         for (i = 0; i < ratchet->n_receiver_chains; i++){
             if (0 == memcmp(cur[i]->ratchet_key_public.data, payload->ratchet_key.data, key_len)){
-                chain = cur[i];
+                receiver_chain = cur[i];
                 break;
             }
         }
     }
 
     size_t result = 0;
-    if (!chain) {
+    if (!receiver_chain) {
         /* They have started using a new ephemeral ratchet key.
          * We will check if we can decrypt the message correctly.
          * We will not store our new chain key now.
@@ -475,8 +475,8 @@ size_t decrypt_ratchet(
             ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
             return 0;
         }
-    } else if (chain->chain_key->index > payload->sequence) {
-        /* Chain already advanced beyond the key for this message
+    } else if (receiver_chain->chain_key->index > payload->sequence) {
+        /* receiver_chain already advanced beyond the key for this message
          * Check if the message keys are in the skipped key list. */
         size_t i, j;
         for (i = 0; i < ratchet->n_skipped_msg_keys; i++){
@@ -492,18 +492,21 @@ size_t decrypt_ratchet(
 
                 if (result > 0){
                     Skissm__SkippedMsgKeyNode **temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_keys - 1));
+                    
+                    size_t k = 0;
                     for (j = 0; j < ratchet->n_skipped_msg_keys; j++) {
                         if (j == i) {
                             // remove node
                             continue;
                         }
-                        temp_skipped_message_keys[j] = (Skissm__SkippedMsgKeyNode *) malloc(sizeof(Skissm__SkippedMsgKeyNode));
-                        skissm__skipped_msg_key_node__init(temp_skipped_message_keys[j]);
-                        copy_protobuf_from_protobuf(&(temp_skipped_message_keys[j]->ratchet_key_public), &(ratchet->skipped_msg_keys[i]->ratchet_key_public));
-                        temp_skipped_message_keys[j]->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
-                        skissm__msg_key__init(temp_skipped_message_keys[j]->msg_key);
-                        temp_skipped_message_keys[j]->msg_key->index = ratchet->skipped_msg_keys[i]->msg_key->index;
-                        copy_protobuf_from_protobuf(&(temp_skipped_message_keys[j]->msg_key->derived_key), &(ratchet->skipped_msg_keys[i]->msg_key->derived_key));
+                        temp_skipped_message_keys[k] = (Skissm__SkippedMsgKeyNode *) malloc(sizeof(Skissm__SkippedMsgKeyNode));
+                        skissm__skipped_msg_key_node__init(temp_skipped_message_keys[k]);
+                        copy_protobuf_from_protobuf(&(temp_skipped_message_keys[k]->ratchet_key_public), &(ratchet->skipped_msg_keys[j]->ratchet_key_public));
+                        temp_skipped_message_keys[k]->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+                        skissm__msg_key__init(temp_skipped_message_keys[k]->msg_key);
+                        temp_skipped_message_keys[k]->msg_key->index = ratchet->skipped_msg_keys[j]->msg_key->index;
+                        copy_protobuf_from_protobuf(&(temp_skipped_message_keys[k]->msg_key->derived_key), &(ratchet->skipped_msg_keys[j]->msg_key->derived_key));
+                        k++;
                     }
                     free_skipped_message_key(&(ratchet->skipped_msg_keys), ratchet->n_skipped_msg_keys);
                     ratchet->skipped_msg_keys = temp_skipped_message_keys;
@@ -520,7 +523,7 @@ size_t decrypt_ratchet(
         // they use the same ratchet key
         result = verify_and_decrypt_for_existing_chain(
             cipher_suite,
-            ad, chain->chain_key,
+            ad, receiver_chain->chain_key,
             payload, plaintext_data
         );
         if (result == 0) {
@@ -529,24 +532,25 @@ size_t decrypt_ratchet(
         }
     }
 
-    if (!chain) {
+    // ready to advance chain key of receiver_chain
+    if (!receiver_chain) {
         /* They have started using a new ephemeral ratchet key.
          * We need to derive a new set of chain keys.
          * We can discard our previous empheral ratchet key.
          * We will generate a new key when we send the next message. */
 
-        chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
-        skissm__receiver_chain_node__init(chain);
+        receiver_chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
+        skissm__receiver_chain_node__init(receiver_chain);
 
-        copy_protobuf_from_protobuf(&(chain->ratchet_key_public), &(payload->ratchet_key));
+        copy_protobuf_from_protobuf(&(receiver_chain->ratchet_key_public), &(payload->ratchet_key));
 
         /* Create a new chain key */
-        chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
-        skissm__chain_key__init(chain->chain_key);
+        receiver_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
+        skissm__chain_key__init(receiver_chain->chain_key);
         create_chain_key(
             cipher_suite,
-            ratchet->root_key, &(ratchet->sender_chain->ratchet_key), &(chain->ratchet_key_public),
-            &(ratchet->root_key), chain->chain_key
+            ratchet->root_key, &(ratchet->sender_chain->ratchet_key), &(receiver_chain->ratchet_key_public),
+            &(ratchet->root_key), receiver_chain->chain_key
         );
         if (ratchet->receiver_chains == NULL){
             ratchet->receiver_chains = (Skissm__ReceiverChainNode **) malloc(sizeof(Skissm__ReceiverChainNode *));
@@ -564,21 +568,21 @@ size_t decrypt_ratchet(
             }
             ratchet->receiver_chains = temp_receiver_chains;
         }
-        ratchet->receiver_chains[ratchet->n_receiver_chains] = chain;
+        ratchet->receiver_chains[ratchet->n_receiver_chains] = receiver_chain;
         (ratchet->n_receiver_chains)++;
     }
 
-    if (chain->chain_key->index < payload->sequence){
+    if (receiver_chain->chain_key->index < payload->sequence){
         /* We skipped some messages.
          * We will generate the corresponding message keys and store them
          * together with their ratchet key in the skipped message key list. */
-        while (chain->chain_key->index < payload->sequence){
+        while (receiver_chain->chain_key->index < payload->sequence){
             Skissm__SkippedMsgKeyNode *key = (Skissm__SkippedMsgKeyNode *) malloc(sizeof(Skissm__SkippedMsgKeyNode));
             skissm__skipped_msg_key_node__init(key);
             key->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
             skissm__msg_key__init(key->msg_key);
-            create_msg_keys(cipher_suite, chain->chain_key, key->msg_key);
-            copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(chain->ratchet_key_public));
+            create_msg_keys(cipher_suite, receiver_chain->chain_key, key->msg_key);
+            copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(receiver_chain->ratchet_key_public));
             if (ratchet->skipped_msg_keys == NULL){
                 ratchet->skipped_msg_keys = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *));
             } else{
@@ -597,11 +601,11 @@ size_t decrypt_ratchet(
             }
             ratchet->skipped_msg_keys[ratchet->n_skipped_msg_keys] = key;
             (ratchet->n_skipped_msg_keys)++;
-            advance_chain_key(cipher_suite, chain->chain_key);
+            advance_chain_key(cipher_suite, receiver_chain->chain_key);
         }
     }
 
-    advance_chain_key(cipher_suite, chain->chain_key);
+    advance_chain_key(cipher_suite, receiver_chain->chain_key);
 
     return result;
 }
