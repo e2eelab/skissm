@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "skissm/crypto.h"
+#include "skissm/mem_util.h"
 
 static inline size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length) {
   return plaintext_data_length + AES256_GCM_TAG_LENGTH;
@@ -48,6 +49,10 @@ size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
   uint8_t *iv = (uint8_t *)aes_key + AES256_KEY_LENGTH;
   size_t plaintext_data_len = aes256_gcm_plaintext_data_len(ciphertext_data_len);
   *plaintext_data = (uint8_t *)malloc(plaintext_data_len);
-  return crypto_aes_decrypt_gcm(ciphertext_data, ciphertext_data_len, aes_key, iv, ad,
+  size_t decrypted_data_len = crypto_aes_decrypt_gcm(ciphertext_data, ciphertext_data_len, aes_key, iv, ad,
                                 AD_LENGTH, *plaintext_data);
+  if (decrypted_data_len == 0) {
+    free_mem((void **)plaintext_data, plaintext_data_len);
+  }
+  return decrypted_data_len;
 }
