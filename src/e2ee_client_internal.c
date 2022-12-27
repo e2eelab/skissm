@@ -341,7 +341,7 @@ void resume_connection_internal(Skissm__Account *account) {
     // release
     if (pending_request_data_num > 0) {
         free_mem((void **)&pending_request_id_list, sizeof(char *) * pending_request_data_num);
-        free_mem((void **)&request_type_list, sizeof(int) * pending_request_data_num);
+        free_mem((void **)&request_type_list, sizeof(uint8_t) * pending_request_data_num);
         free_mem((void **)&request_data_list, sizeof(uint8_t *) * pending_request_data_num);
         free_mem((void **)&request_data_len_list, sizeof(size_t) * pending_request_data_num);
     }

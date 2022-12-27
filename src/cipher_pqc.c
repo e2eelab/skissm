@@ -23,15 +23,15 @@
 
 #include "skissm/crypto.h"
 
-const struct cipher_suite_t E2EE_CIPHER_NTRUP_SPHINCS_SHA256_256S_AES256_GCM_SHA256 = {
-    NULL, // not determined yet(get param)
-    NULL, // not determined yet(gen kem key)
-    NULL, // not determined yet(gen sign key)
-    NULL, // not determined yet(dh)
+const struct cipher_suite_t E2EE_CIPHER_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256 = {
+    get_kyber1024_sphincsplus_aes256_gcm_sha256_param,
+    crypto_kyber1024_generate_key_pair,
+    crypto_sphincsplus_shake256_generate_key_pair,
+    crypto_kyber1024_shared_secret,
     aes256_gcm_encrypt,
     aes256_gcm_decrypt,
-    NULL, // not determined yet(sign)
-    NULL, // not determined yet(verify)
+    crypto_sphincsplus_shake256_sign,
+    crypto_sphincsplus_shake256_verify,
     crypto_hkdf_sha256,
     crypto_hmac_sha256,
     crypto_sha256

@@ -29,28 +29,39 @@
 static const cipher_suite_t *test_cipher_suite;
 
 static void test_alice_to_bob(
-  Skissm__KeyPair alice_ratchet_key,
-  Skissm__KeyPair bob_spk,
-  char *session_id,
-  ProtobufCBinaryData ad,
-  uint8_t *shared_secret
+    Skissm__KeyPair alice_ratchet_key,
+    Skissm__KeyPair bob_spk,
+    char *session_id,
+    ProtobufCBinaryData ad,
+    uint8_t *shared_secret
 ) {
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
-    initialise_as_alice(test_cipher_suite,
-                        alice_ratchet, shared_secret,
-                        strlen((const char *)shared_secret), &alice_ratchet_key,
-                        &(bob_spk.public_key));
-    initialise_as_bob(test_cipher_suite, bob_ratchet, shared_secret, strlen((const char *)shared_secret),
-                      &bob_spk);
-    int key_len = test_cipher_suite->get_crypto_param().asym_key_len;
+    initialise_as_alice(
+        test_cipher_suite,
+        alice_ratchet,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &alice_ratchet_key,
+        &(bob_spk.public_key)
+    );
+    initialise_as_bob(
+        test_cipher_suite,
+        bob_ratchet,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &bob_spk
+    );
+    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
     assert(
         memcmp(
             bob_spk.private_key.data,
             bob_ratchet->sender_chain->ratchet_key.data,
-            key_len) == 0);
+            key_len
+        ) == 0
+    );
 
     uint8_t plaintext[] = "Message";
     size_t plaintext_length = sizeof(plaintext) - 1;
@@ -69,9 +80,9 @@ static void test_alice_to_bob(
     assert(result);
 
     if (result) {
-      print_result("Decryption success!!!", true);
+        print_result("Decryption success!!!", true);
     } else {
-      print_result("Decryption failed!!!", false);
+        print_result("Decryption failed!!!", false);
     }
 
     skissm__one2one_msg_payload__free_unpacked(message, NULL);
@@ -81,20 +92,30 @@ static void test_alice_to_bob(
 }
 
 static void test_out_of_order(
-  Skissm__KeyPair alice_ratchet_key,
-  Skissm__KeyPair bob_spk,
-  char *session_id,
-  ProtobufCBinaryData ad, uint8_t *shared_secret
+    Skissm__KeyPair alice_ratchet_key,
+    Skissm__KeyPair bob_spk,
+    char *session_id,
+    ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
-    initialise_as_alice(test_cipher_suite, alice_ratchet, shared_secret,
-                        strlen((const char *)shared_secret), &alice_ratchet_key,
-                        &(bob_spk.public_key));
-    initialise_as_bob(test_cipher_suite, bob_ratchet, shared_secret, strlen((const char *)shared_secret),
-                      &bob_spk);
+    initialise_as_alice(
+        test_cipher_suite,
+        alice_ratchet,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &alice_ratchet_key,
+        &(bob_spk.public_key)
+    );
+    initialise_as_bob(
+        test_cipher_suite,
+        bob_ratchet,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &bob_spk
+    );
 
     uint8_t plaintext_1[] = "First Message";
     size_t plaintext_1_length = sizeof(plaintext_1) - 1;
@@ -117,18 +138,18 @@ static void test_out_of_order(
     bool result = is_equal(plaintext_2, output_1, plaintext_2_length);
     assert(result);
     if (result) {
-      print_result("The first decryption success!!!", true);
+        print_result("The first decryption success!!!", true);
     } else {
-      print_result("The first decryption failed!!!", false);
+        print_result("The first decryption failed!!!", false);
     }
 
     uint8_t *output_2;
     output_2_length = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_1, &output_2);
     assert(result = is_equal(plaintext_1, output_2, plaintext_1_length));
     if (result) {
-      print_result("The second decryption success!!!", true);
+        print_result("The second decryption success!!!", true);
     } else {
-      print_result("The second decryption failed!!!!", false);
+        print_result("The second decryption failed!!!!", false);
     }
 
     skissm__one2one_msg_payload__free_unpacked(message_1, NULL);
@@ -140,34 +161,54 @@ static void test_out_of_order(
 }
 
 static void test_two_ratchets(
-  Skissm__KeyPair alice_ratchet_key,
-  Skissm__KeyPair bob_ratchet_key,
-  Skissm__KeyPair bob_spk,
-  Skissm__KeyPair alice_spk,
-  char *session_id,
-  ProtobufCBinaryData ad, uint8_t *shared_secret
+    Skissm__KeyPair alice_ratchet_key,
+    Skissm__KeyPair bob_ratchet_key,
+    Skissm__KeyPair bob_spk,
+    Skissm__KeyPair alice_spk,
+    char *session_id,
+    ProtobufCBinaryData ad, uint8_t *shared_secret
 ) {
     /* This ratchet is used only for Alice to Bob. */
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     initialise_ratchet(&alice_ratchet);
     initialise_ratchet(&bob_ratchet);
 
-    initialise_as_alice(test_cipher_suite, alice_ratchet, shared_secret,
-                        strlen((const char *)shared_secret), &alice_ratchet_key,
-                        &(bob_spk.public_key));
-    initialise_as_bob(test_cipher_suite, bob_ratchet, shared_secret, strlen((const char *)shared_secret),
-                      &bob_spk);
+    initialise_as_alice(
+        test_cipher_suite,
+        alice_ratchet,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &alice_ratchet_key,
+        &(bob_spk.public_key)
+    );
+    initialise_as_bob(
+        test_cipher_suite,
+        bob_ratchet,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &bob_spk
+    );
 
     /* This ratchet is used only for Bob to Alice. */
     Skissm__Ratchet *alice_ratchet_2 = NULL, *bob_ratchet_2 = NULL;
     initialise_ratchet(&alice_ratchet_2);
     initialise_ratchet(&bob_ratchet_2);
 
-    initialise_as_alice(test_cipher_suite, bob_ratchet_2, shared_secret,
-                        strlen((const char *)shared_secret), &bob_ratchet_key,
-                        &(alice_spk.public_key));
-    initialise_as_bob(test_cipher_suite, alice_ratchet_2, shared_secret, strlen((const char *)shared_secret),
-                      &alice_spk);
+    initialise_as_alice(
+        test_cipher_suite,
+        bob_ratchet_2,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &bob_ratchet_key,
+        &(alice_spk.public_key)
+    );
+    initialise_as_bob(
+        test_cipher_suite,
+        alice_ratchet_2,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &alice_spk
+    );
 
     /* Alice prepares a message */
     uint8_t plaintext_alice[] = "Hello, Bob!";
@@ -217,7 +258,7 @@ static void test_two_ratchets(
 int main() {
     // test start
     tear_up();
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID)->cipher_suite;
+    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key, bob_ratchet_key;
     test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
@@ -235,7 +276,7 @@ int main() {
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < 64; i++) {
-      ad.data[i] = associated_data[i];
+        ad.data[i] = associated_data[i];
     }
 
     char *session_id = generate_uuid_str();

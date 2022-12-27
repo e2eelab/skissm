@@ -111,14 +111,15 @@ Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
     account->account_id = account_id;
 
     // generate the identity key pair
-    account->identity_key = (Skissm__IdentityKey *)malloc(sizeof(Skissm__IdentityKey));
-    skissm__identity_key__init(account->identity_key);
-    account->identity_key->asym_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-    skissm__key_pair__init(account->identity_key->asym_key_pair);
-
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
+    account->identity_key = (Skissm__IdentityKey *)malloc(sizeof(Skissm__IdentityKey));
+    skissm__identity_key__init(account->identity_key);
+
+    account->identity_key->asym_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
+    skissm__key_pair__init(account->identity_key->asym_key_pair);
     cipher_suite->asym_key_gen(&(account->identity_key->asym_key_pair->public_key), &(account->identity_key->asym_key_pair->private_key));
+
     account->identity_key->sign_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->identity_key->sign_key_pair);
     cipher_suite->sign_key_gen(&(account->identity_key->sign_key_pair->public_key), &(account->identity_key->sign_key_pair->private_key));
@@ -187,11 +188,11 @@ size_t generate_signed_pre_key(Skissm__Account *account) {
     account->signed_pre_key->spk_id = next_signed_pre_key_id;
 
     // generate a signature
-    int key_len = cipher_suite->get_crypto_param().asym_key_len;
+    int pub_key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
     int sig_len = cipher_suite->get_crypto_param().sig_len;
     account->signed_pre_key->signature.data = (uint8_t *)malloc(sig_len);
     account->signed_pre_key->signature.len = sig_len;
-    cipher_suite->sign(account->identity_key->sign_key_pair->private_key.data, account->signed_pre_key->key_pair->public_key.data, key_len, account->signed_pre_key->signature.data);
+    cipher_suite->sign(account->identity_key->sign_key_pair->private_key.data, account->signed_pre_key->key_pair->public_key.data, pub_key_len, account->signed_pre_key->signature.data);
 
     int64_t now = get_skissm_plugin()->common_handler.gen_ts();
     account->signed_pre_key->ttl = now + SIGNED_PRE_KEY_EXPIRATION_MS;

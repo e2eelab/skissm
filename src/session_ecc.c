@@ -34,7 +34,7 @@
 
 Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
-    int key_len = cipher_suite->get_crypto_param().asym_key_len;
+    int key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
     // verify the signature
     int result;
     if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len) ||
@@ -161,7 +161,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
         x3dh_epoch = 4;
     }
 
-    int key_len = cipher_suite->get_crypto_param().asym_key_len;
+    int key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
     int ad_len = 2 * key_len;
     inbound_session->associated_data.len = ad_len;
     inbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
@@ -246,7 +246,6 @@ int crypto_curve25519_new_f2f_outbound_session(
     Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(f2f_pre_key_invite_msg->e2ee_pack_id)->cipher_suite;
-    // int key_len = cipher_suite->get_crypto_param().asym_key_len;
 
     // set the version
     outbound_session->version = strdup(f2f_pre_key_invite_msg->version);

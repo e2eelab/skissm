@@ -40,138 +40,157 @@ extern "C" {
 struct cipher;
 
 typedef struct cipher_suite_t {
-  /**
-   * @brief Get the parameters of this cipher suite.
-   * @return crypto_param_t
-   */
-  struct crypto_param_t (*get_crypto_param)(void);
+    /**
+     * @brief Get the parameters of this cipher suite.
+     * @return crypto_param_t
+     */
+    struct crypto_param_t (*get_crypto_param)(void);
 
-  /**
-   * @brief Generate a random key pair that will be used to calculate shared secret keys.
-   *
-   * @param pub_key
-   * @param priv_key
-   */
-  void (*asym_key_gen)(ProtobufCBinaryData *,
-                       ProtobufCBinaryData *);
+    /**
+     * @brief Generate a random key pair that will be used to calculate shared secret keys.
+     *
+     * @param pub_key
+     * @param priv_key
+     */
+    void (*asym_key_gen)(
+        ProtobufCBinaryData *,              
+        ProtobufCBinaryData *
+    );
 
-  /**
-   * @brief Generate a random key pair that will be used to generate or verity a signature.
-   *
-   * @param pub_key
-   * @param priv_key
-   */
-  void (*sign_key_gen)(ProtobufCBinaryData *,
-                       ProtobufCBinaryData *);
+    /**
+     * @brief Generate a random key pair that will be used to generate or verity a signature.
+     *
+     * @param pub_key
+     * @param priv_key
+     */
+    void (*sign_key_gen)(
+        ProtobufCBinaryData *,
+        ProtobufCBinaryData *
+    );
 
-  /**
-   * @brief Calculate shared secret key.
-   *
-   * @param our_key
-   * @param their_key
-   * @param shared_secret
-   * @return Cipher text (optional) that could be used to calculate shared secret key.
-   */
-  uint8_t *(*ss_key_gen)(const ProtobufCBinaryData *,
-                         const ProtobufCBinaryData *,
-                         uint8_t *);
+    /**
+    * @brief Calculate shared secret key.
+    *
+    * @param our_key
+    * @param their_key
+    * @param shared_secret
+    * @return Cipher text (optional) that could be used to calculate shared secret key.
+    */
+    uint8_t *(*ss_key_gen)(
+        const ProtobufCBinaryData *,
+        const ProtobufCBinaryData *,
+        uint8_t *
+    );
 
-  /**
-   * @brief Encrypt a given plaintext.
-   *
-   * @param ad The associated data
-   * @param key The secret key
-   * @param plaintext_data The plain text to encrypt
-   * @param plaintext_data_len The plain text length
-   * @param ciphertext_data The output cipher text
-   * @return Success or not
-   */
-  size_t (*encrypt)(const uint8_t *,
-                    const uint8_t *,
-                    const uint8_t *, size_t,
-                    uint8_t **);
+    /**
+     * @brief Encrypt a given plaintext.
+     *
+     * @param ad The associated data
+     * @param key The secret key
+     * @param plaintext_data The plain text to encrypt
+     * @param plaintext_data_len The plain text length
+     * @param ciphertext_data The output cipher text
+     * @return Success or not
+     */
+    size_t (*encrypt)(
+        const ProtobufCBinaryData *,
+        const uint8_t *,
+        const uint8_t *, size_t,
+        uint8_t **
+    );
 
-  /**
-   * @brief Decrypt a given ciphertext.
-   *
-   * @param ad The associated data
-   * @param key The secret key
-   * @param ciphertext_data The cipher text to decrypt
-   * @param ciphertext_data_len The cipher text length
-   * @param plaintext_data The output plain text
-   * @return The length of plaintext_data or -1 for decryption error
-   */
-  size_t (*decrypt)(const uint8_t *,
-                    const uint8_t *,
-                    const uint8_t *, size_t,
-                    uint8_t **);
+    /**
+     * @brief Decrypt a given ciphertext.
+     *
+     * @param ad The associated data
+     * @param key The secret key
+     * @param ciphertext_data The cipher text to decrypt
+     * @param ciphertext_data_len The cipher text length
+     * @param plaintext_data The output plain text
+     * @return The length of plaintext_data or -1 for decryption error
+     */
+    size_t (*decrypt)(
+        const ProtobufCBinaryData *,
+        const uint8_t *,
+        const uint8_t *, size_t,
+        uint8_t **
+    );
 
-  /**
-   * @brief Sign a message.
-   *
-   * @param private_key
-   * @param msg
-   * @param msg_len
-   * @param signature_out
-   */
-  void (*sign)(uint8_t *,
-               uint8_t *,
-               size_t,
-               uint8_t *);
+    /**
+     * @brief Sign a message.
+     *
+     * @param private_key
+     * @param msg
+     * @param msg_len
+     * @param signature_out
+     */
+    void (*sign)(
+        uint8_t *,
+        uint8_t *, size_t,
+        uint8_t *
+    );
 
-  /**
-   * @brief Verify a signature with a given message.
-   *
-   * @param signature_in
-   * @param public_key
-   * @param msg
-   * @param msg_len
-   * @return value < 0 for error
-   */
-  int (*verify)(uint8_t *,
-                   uint8_t *,
-                   uint8_t *, size_t);
+    /**
+     * @brief Verify a signature with a given message.
+     *
+     * @param signature_in
+     * @param public_key
+     * @param msg
+     * @param msg_len
+     * @return value < 0 for error
+     */
+    int (*verify)(
+        uint8_t *,
+        uint8_t *,
+        uint8_t *, size_t
+    );
 
-  /**
-   * @brief HMAC-based key derivation function.
-   *
-   * @param input
-   * @param input_len
-   * @param salt
-   * @param salt_len
-   * @param info
-   * @param info_len
-   * @param output
-   * @param output_len
-   */
-  void (*hkdf)(const uint8_t *, size_t,
-               const uint8_t *, size_t,
-               const uint8_t *, size_t,
-               uint8_t *, size_t);
+    /**
+     * @brief HMAC-based key derivation function.
+     *
+     * @param input
+     * @param input_len
+     * @param salt
+     * @param salt_len
+     * @param info
+     * @param info_len
+     * @param output
+     * @param output_len
+     */
+    void (*hkdf)(
+        const uint8_t *, size_t,
+        const uint8_t *, size_t,
+        const uint8_t *, size_t,
+        uint8_t *, size_t
+    );
 
-  /**
-   * @brief Keyed-Hashing for message authentication.
-   *
-   * @param key
-   * @param key_len
-   * @param input
-   * @param input_len
-   * @param output
-   */
-  void (*hmac)(const uint8_t *, size_t,
-               const uint8_t *, size_t,
-               uint8_t *);
+    /**
+     * @brief Keyed-Hashing for message authentication.
+     *
+     * @param key
+     * @param key_len
+     * @param input
+     * @param input_len
+     * @param output
+     */
+    void (*hmac)(
+        const uint8_t *, size_t,
+        const uint8_t *, size_t,
+        uint8_t *
+    );
 
-  /**
-   * @brief Hash function.
-   *
-   * @param msg
-   * @param msg_len
-   * @param hash_out
-   */
-  void (*hash)(const uint8_t *,
-               size_t,
-               uint8_t *);
+    /**
+     * @brief Hash function.
+     *
+     * @param msg
+     * @param msg_len
+     * @param hash_out
+     */
+    void (*hash)(
+        const uint8_t *,
+        size_t,
+        uint8_t *
+    );
 } cipher_suite_t;
 
 /**
@@ -184,7 +203,7 @@ typedef struct cipher_suite_t {
  * @param ciphertext_data
  * @return size_t length of ciphertext_data
  */
-size_t aes256_gcm_encrypt(const uint8_t *ad, const uint8_t *aes_key,
+size_t aes256_gcm_encrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
     const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **ciphertext_data
 );
 
@@ -198,7 +217,7 @@ size_t aes256_gcm_encrypt(const uint8_t *ad, const uint8_t *aes_key,
  * @param plaintext_data
  * @return size_t length of plaintext_data
  */
-size_t aes256_gcm_decrypt(const uint8_t *ad, const uint8_t *aes_key,
+size_t aes256_gcm_decrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
     const uint8_t *ciphertext_data, size_t ciphertext_data_len, uint8_t **plaintext_data
 );
 

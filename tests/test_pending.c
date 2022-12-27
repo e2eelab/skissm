@@ -34,7 +34,7 @@ static void test_one_group_pre_key() {
     // test start
     tear_up();
 
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     // mock address
@@ -42,7 +42,7 @@ static void test_one_group_pre_key() {
     mock_address(&user_address, "alice", "alice's domain", "alice's device");
     mock_address(&member_address, "bob", "bob's domain", "bob's device");
 
-    int key_len = test_cipher_suite->get_crypto_param().sign_key_len;
+    int key_len = test_cipher_suite->get_crypto_param().sign_pub_key_len;
 
     size_t group_members_num = 2;
     // the first group member is Alice
@@ -140,6 +140,7 @@ static void test_one_group_pre_key() {
         &group_pre_key_plaintext_data_list_null,
         &group_pre_key_plaintext_data_len_list_null
     );
+    assert(pending_plaintext_id_list_null == NULL);
     assert(group_pre_key_plaintext_data_list_null == NULL);
     assert(group_pre_key_plaintext_data_len_list_null == NULL);
 
@@ -149,9 +150,9 @@ static void test_one_group_pre_key() {
     skissm__e2ee_address__free_unpacked(group_address, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
     free(pending_plaintext_id);
+    free_mem((void **)&(group_pre_key_plaintext_data_list[0]), group_pre_key_plaintext_data_len_list[0]);
     free(pending_plaintext_id_list[0]);
     free_mem((void **)&pending_plaintext_id_list, sizeof(char *) * n_group_pre_keys);
-    free_mem((void **)&(group_pre_key_plaintext_data_list[0]), group_pre_key_plaintext_data_len_list[0]);
     free_mem((void **)&group_pre_key_plaintext_data_list, sizeof(uint8_t *) * n_group_pre_keys);
     free_mem((void **)&group_pre_key_plaintext_data_len_list, sizeof(size_t) * n_group_pre_keys);
 
@@ -254,7 +255,7 @@ static void test_pending_request_data() {
     // test start
     tear_up();
 
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID;
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
 
     // mock address
     Skissm__E2eeAddress *alice_address, *bob_address;
@@ -297,7 +298,7 @@ static void test_pending_request_data() {
     free_mem((void **)&request_data, request_data_len);
     free(pending_request_id);
     free_mem((void **)&pending_request_id_list, sizeof(char *) * pending_request_data_num);
-    free_mem((void **)&request_type_list, sizeof(int) * pending_request_data_num);
+    free_mem((void **)&request_type_list, sizeof(uint8_t) * pending_request_data_num);
     free_mem((void **)&(request_data_list[0]), request_data_len_list[0]);
     free_mem((void **)&request_data_list, sizeof(uint8_t *) * pending_request_data_num);
     free_mem((void **)&request_data_len_list, sizeof(size_t) * pending_request_data_num);

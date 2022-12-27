@@ -52,9 +52,22 @@ extern "C" {
 /** length of an aes256 gcm tag */
 #define AES256_GCM_TAG_LENGTH 16
 
+/** length of an aes256 initialisation vector for file encryption */
+#define AES256_FILE_IV_LENGTH 12
+
 crypto_param_t get_ecdh_x25519_aes256_gcm_sha256_param();
 
+crypto_param_t get_kyber1024_sphincsplus_aes256_gcm_sha256_param();
+
 void crypto_curve25519_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+void crypto_kyber1024_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+void crypto_sphincsplus_shake256_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
@@ -64,13 +77,31 @@ uint8_t *crypto_curve25519_dh(
     uint8_t *shared_secret
 );
 
+uint8_t *crypto_kyber1024_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
 void crypto_curve25519_sign(uint8_t *private_key,
     uint8_t *msg, size_t msg_len, uint8_t *signature_out
 );
 
+void crypto_sphincsplus_shake256_sign(
+    uint8_t *private_key,
+    uint8_t *msg, size_t msg_len,
+    uint8_t *signature_out
+);
+
 int crypto_curve25519_verify(
     uint8_t *signature_in, uint8_t *public_key,
-    uint8_t *msg, size_t msg_len);
+    uint8_t *msg, size_t msg_len
+);
+
+int crypto_sphincsplus_shake256_verify(
+    uint8_t *signature_in, uint8_t *public_key,
+    uint8_t *msg, size_t msg_len
+);
 
 /** HMAC-based Key Derivation Function (HKDF)
  * https://tools.ietf.org/html/rfc5869
@@ -118,7 +149,8 @@ void crypto_aes_encrypt_gcm(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     const uint8_t *key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
-    uint8_t *ciphertext_data);
+    uint8_t *ciphertext_data
+);
 
 /**
  * @brief AES256 decrypt function in GCM mode
@@ -137,7 +169,8 @@ size_t crypto_aes_decrypt_gcm(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
     const uint8_t *key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
-    uint8_t *plaintext_data);
+    uint8_t *plaintext_data
+);
 
 /**
  * @brief Encode to base64 string

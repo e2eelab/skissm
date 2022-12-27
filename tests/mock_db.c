@@ -1786,7 +1786,7 @@ void store_session(Skissm__Session *session) {
 
     // release
     sqlite_finalize(stmt);
-    free_mem((void **)(&session_data), session_data_len);
+    free_mem((void **)&session_data, session_data_len);
 }
 
 void unload_session(
@@ -1991,7 +1991,7 @@ void store_group_session(Skissm__GroupSession *group_session) {
 
     // release
     sqlite_finalize(stmt);
-    free_mem((void **)(&group_session_data), group_session_data_len);
+    free_mem((void **)&group_session_data, group_session_data_len);
 }
 
 void unload_group_session(Skissm__GroupSession *group_session) {
@@ -2098,6 +2098,7 @@ size_t load_pending_plaintext_data(
     // allocate memory
     size_t n_group_pre_keys = load_n_group_pre_keys(from_address, to_address);
     if (n_group_pre_keys == 0){
+        *pending_plaintext_id_list = NULL;
         *e2ee_plaintext_data_list = NULL;
         *e2ee_plaintext_data_len_list = NULL;
         return 0;

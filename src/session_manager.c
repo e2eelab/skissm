@@ -44,12 +44,12 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
 
         // release
         for (i = 0; i < pending_plaintext_data_list_num; i++) {
-            free_mem((void **) &(pending_plaintext_data_list[i]), pending_plaintext_data_len_list[i]);
+            free_mem((void **)&(pending_plaintext_data_list[i]), pending_plaintext_data_len_list[i]);
             free(pending_plaintext_id_list[i]);
         }
-        free_mem((void **) (&pending_plaintext_id_list), sizeof(char *) * pending_plaintext_data_list_num);
-        free_mem((void **) (&pending_plaintext_data_list), sizeof(uint8_t *) * pending_plaintext_data_list_num);
-        free_mem((void **) (&pending_plaintext_data_len_list), sizeof(size_t) * pending_plaintext_data_list_num);
+        free_mem((void **)&pending_plaintext_id_list, sizeof(char *) * pending_plaintext_data_list_num);
+        free_mem((void **)&pending_plaintext_data_list, sizeof(uint8_t *) * pending_plaintext_data_list_num);
+        free_mem((void **)&pending_plaintext_data_len_list, sizeof(size_t) * pending_plaintext_data_list_num);
     }
 }
 
@@ -82,13 +82,13 @@ static void send_f2f_session_msg(
         response = send_one2one_msg_internal(self_outbound_session, common_plaintext_data, common_plaintext_data_len);
 
         // release
-        free_mem((void **)(&common_plaintext_data), common_plaintext_data_len);
+        free_mem((void **)&common_plaintext_data, common_plaintext_data_len);
         skissm__session__free_unpacked(self_outbound_session, NULL);
         skissm__send_one2one_msg_response__free_unpacked(response, NULL);
     }
     // release
     if (self_outbound_sessions_num > 0) {
-        free_mem((void **)(&self_outbound_sessions), sizeof(Skissm__Session *) * self_outbound_sessions_num);
+        free_mem((void **)&self_outbound_sessions, sizeof(Skissm__Session *) * self_outbound_sessions_num);
     }
 }
 
@@ -537,8 +537,10 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     );
 
     // decrypt
-    uint8_t ad[64];
-    memset(ad, 0, 64);
+    ProtobufCBinaryData *ad = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+    ad->len = 64;
+    ad->data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
+    memset(ad->data, 0, 64);
     uint8_t *f2f_pre_key_plaintext = NULL;
     size_t f2f_pre_key_plaintext_len = cipher_suite->decrypt(
         ad,
@@ -593,6 +595,8 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     // release
     free_mem((void **)&password, password_len);
     free_mem((void **)&aes_key, aes_key_len);
+    free_mem((void **)&(ad->data), ad->len);
+    free_mem((void **)&ad, sizeof(ProtobufCBinaryData));
     free_mem((void **)&f2f_pre_key_plaintext, f2f_pre_key_plaintext_len);
     skissm__f2f_pre_key_invite_msg__free_unpacked(f2f_pre_key_invite_msg, NULL);
     skissm__account__free_unpacked(account, NULL);

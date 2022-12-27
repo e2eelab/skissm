@@ -33,6 +33,7 @@ typedef struct user_data{
     char *authenticator;
     Skissm__E2eeAddress *address;
     const char *user_name;
+    char *e2ee_pack_id;
     Skissm__IdentityKeyPublic *identity_key_public;
     Skissm__SignedPreKeyPublic *signed_pre_key_public;
     Skissm__OneTimePreKeyPublic **one_time_pre_keys;
@@ -47,14 +48,14 @@ typedef struct group_data{
 } group_data;
 
 static user_data user_data_set[user_data_max] = {
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, 0}};
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}};
 
 static group_data group_data_set[group_data_max] = {
     {NULL, NULL, 0, NULL},
@@ -218,7 +219,7 @@ void mock_server_end(){
                 cur_opk = NULL;
             }
         }
-        free_mem((void **)(&(user_data_set[i].one_time_pre_keys)), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);
+        free_mem((void **)&(user_data_set[i].one_time_pre_keys), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);
         user_data_set[i].user_name = NULL;
         user_data_set[i].identity_key_public = NULL;
         user_data_set[i].signed_pre_key_public = NULL;
@@ -238,7 +239,7 @@ void mock_server_end(){
                 cur_group_member = NULL;
             }
         }
-        free_mem((void **)(&(group_data_set[i].group_members)), sizeof(Skissm__GroupMember *) * group_data_set[i].group_members_num);
+        free_mem((void **)&(group_data_set[i].group_members), sizeof(Skissm__GroupMember *) * group_data_set[i].group_members_num);
         group_data_set[i].group_members_num = 0;
     }
     group_data_set_insert_pos = 0;
@@ -271,6 +272,7 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     user_data *cur_data = &(user_data_set[user_data_set_insert_pos]);
     cur_data->authenticator = strdup(request->authenticator);
     cur_data->user_name = strdup(request->user_name);
+    cur_data->e2ee_pack_id = strdup(request->e2ee_pack_id);
 
     copy_ik_public_from_ik_public(&(cur_data->identity_key_public), request->identity_key_public);
     copy_spk_public_from_spk_public(&(cur_data->signed_pre_key_public), request->signed_pre_key_public);
@@ -407,7 +409,7 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundle
         response->pre_key_bundles[j] = (Skissm__PreKeyBundle *) malloc(sizeof(Skissm__PreKeyBundle));
         skissm__pre_key_bundle__init(response->pre_key_bundles[j]);
 
-        response->pre_key_bundles[j]->e2ee_pack_id = strdup(TEST_E2EE_PACK_ID);
+        response->pre_key_bundles[j]->e2ee_pack_id = strdup(cur_data->e2ee_pack_id);
         copy_address_from_address(&(response->pre_key_bundles[j]->user_address), cur_data->address);
         copy_ik_public_from_ik_public(&(response->pre_key_bundles[j]->identity_key_public), cur_data->identity_key_public);
         copy_spk_public_from_spk_public(&(response->pre_key_bundles[j]->signed_pre_key_public), cur_data->signed_pre_key_public);
@@ -816,7 +818,7 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
         skissm__group_member__free_unpacked(cur_group_member, NULL);
         cur_group_member = NULL;
     }
-    free_mem((void **)(&(cur_group_data->group_members)), sizeof(Skissm__GroupMember *) * old_group_members_num);
+    free_mem((void **)&(cur_group_data->group_members), sizeof(Skissm__GroupMember *) * old_group_members_num);
     cur_group_data->group_members = temp_group_members;
 
     for (i = old_group_members_num; i < new_group_members_num; i++) {

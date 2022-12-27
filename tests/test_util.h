@@ -22,7 +22,8 @@
 #include "skissm/skissm.h"
 
 #define E2EELAB_DOMAIN          "e2eelab.org"
-#define TEST_E2EE_PACK_ID       "0"
+#define TEST_E2EE_PACK_ID_ECC       "0"
+#define TEST_E2EE_PACK_ID_PQC       "1"
 
 // debug msg to console
 void print_hex(char *title, uint8_t *msg, size_t msg_len);

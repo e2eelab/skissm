@@ -120,8 +120,12 @@ struct e2ee_pack_list_t {
 };
 
 typedef struct crypto_param_t {
-    uint32_t asym_key_len;
-    uint32_t sign_key_len;
+    bool pqc_param;
+    uint32_t asym_pub_key_len;
+    uint32_t asym_priv_key_len;
+    uint32_t kem_ciphertext_len;
+    uint32_t sign_pub_key_len;
+    uint32_t sign_priv_key_len;
     uint32_t sig_len;
     uint32_t hash_len;
     uint32_t aead_key_len;

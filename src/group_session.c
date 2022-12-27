@@ -132,7 +132,7 @@ void create_outbound_group_session(
     char *old_session_id
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-    int key_len = cipher_suite->get_crypto_param().sign_key_len;
+    int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
 
     Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(outbound_group_session);
@@ -159,11 +159,11 @@ void create_outbound_group_session(
 
     cipher_suite->sign_key_gen(&(outbound_group_session->signature_public_key), &(outbound_group_session->signature_private_key));
 
-    int ad_len = 2 * key_len;
+    int ad_len = 2 * sign_key_len;
     outbound_group_session->associated_data.len = ad_len;
     outbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
-    memcpy(outbound_group_session->associated_data.data, outbound_group_session->signature_public_key.data, key_len);
-    memcpy((outbound_group_session->associated_data.data) + key_len, outbound_group_session->signature_public_key.data, key_len);
+    memcpy(outbound_group_session->associated_data.data, outbound_group_session->signature_public_key.data, sign_key_len);
+    memcpy((outbound_group_session->associated_data.data) + sign_key_len, outbound_group_session->signature_public_key.data, sign_key_len);
 
     get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
@@ -213,7 +213,7 @@ void create_outbound_group_session(
                 skissm__session__free_unpacked(outbound_session, NULL);
             }
             // release outbound_sessions
-            free_mem((void **)(&outbound_sessions), sizeof(Skissm__Session *) * outbound_sessions_num);
+            free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
         } else {
             /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
             Skissm__InviteResponse *response = get_pre_key_bundle_internal(
@@ -254,12 +254,12 @@ void create_inbound_group_session(
     copy_protobuf_from_protobuf(&(inbound_group_session->signature_public_key), &(group_pre_key_bundle->signature_public_key));
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-    int key_len = cipher_suite->get_crypto_param().asym_key_len;
-    int ad_len = 2 * key_len;
+    int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
+    int ad_len = 2 * sign_key_len;
     inbound_group_session->associated_data.len = ad_len;
     inbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
-    memcpy(inbound_group_session->associated_data.data, inbound_group_session->signature_public_key.data, key_len);
-    memcpy((inbound_group_session->associated_data.data) + key_len, inbound_group_session->signature_public_key.data, key_len);
+    memcpy(inbound_group_session->associated_data.data, inbound_group_session->signature_public_key.data, sign_key_len);
+    memcpy((inbound_group_session->associated_data.data) + sign_key_len, inbound_group_session->signature_public_key.data, sign_key_len);
 
     get_skissm_plugin()->db_handler.store_group_session(inbound_group_session);
 
