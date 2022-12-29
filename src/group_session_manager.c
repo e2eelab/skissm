@@ -442,7 +442,8 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     int succ = cipher_suite->verify(
         group_msg_payload->signature.data,
         inbound_group_session->signature_public_key.data,
-        group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len);
+        group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len
+    );
     if (succ < 0){
         ssm_notify_error(BAD_SIGNATURE, "consume_group_msg()");
         skissm__group_session__free_unpacked(inbound_group_session, NULL);

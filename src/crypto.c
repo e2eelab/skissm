@@ -104,6 +104,43 @@ void crypto_curve25519_generate_key_pair(
     curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
 }
 
+void crypto_curve25519_signature_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    int result;
+
+    while (true) {
+        priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
+        priv_key->len = CURVE25519_KEY_LENGTH;
+
+        pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
+        pub_key->len = CURVE25519_KEY_LENGTH;
+
+        uint8_t random[CURVE25519_RANDOM_LENGTH];
+        get_skissm_plugin()->common_handler.gen_rand(random, sizeof(random));
+
+        memcpy(priv_key->data, random, CURVE25519_KEY_LENGTH);
+
+        curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
+
+        uint8_t msg[10] = {0};
+        uint8_t *signature = (uint8_t *)malloc(sizeof(uint8_t) * CURVE_SIGNATURE_LENGTH);
+        crypto_curve25519_sign(priv_key->data, msg, 10, signature);
+
+        result = crypto_curve25519_verify(signature, pub_key->data, msg, 10);
+        if (result != 0) {
+            // verify failed, regenerate the key pair
+            free_mem((void **)&(priv_key->data), sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
+            free_mem((void **)&(pub_key->data), sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
+        } else {
+            // success
+            break;
+        }
+
+        free_mem((void **)&signature, sizeof(uint8_t) * CURVE_SIGNATURE_LENGTH);
+    }
+}
+
 void crypto_kyber1024_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {

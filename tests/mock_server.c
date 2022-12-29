@@ -278,7 +278,7 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     copy_spk_public_from_spk_public(&(cur_data->signed_pre_key_public), request->signed_pre_key_public);
     cur_data->n_one_time_pre_keys = request->n_one_time_pre_keys;
     cur_data->one_time_pre_keys = (Skissm__OneTimePreKeyPublic **) malloc(sizeof(Skissm__OneTimePreKeyPublic *) * cur_data->n_one_time_pre_keys);
-    size_t i;
+    size_t i, j;
     for (i = 0; i < cur_data->n_one_time_pre_keys; i++) {
         copy_opk_public_from_opk_public(&(cur_data->one_time_pre_keys[i]), request->one_time_pre_keys[i]);
     }
@@ -330,15 +330,26 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     }
 
     // send the new device message to other devices and users
-    for (i = 0; i < receiver_num; i++) {
+    for (j = 0; j < receiver_num; j++) {
         Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
         skissm__proto_msg__init(proto_msg);
         copy_address_from_address(&(proto_msg->from), cur_data->address);
-        copy_address_from_address(&(proto_msg->to), receiver_addresses[i]);
+        copy_address_from_address(&(proto_msg->to), receiver_addresses[j]);
         proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_NEW_USER_DEVICE_MSG;
         proto_msg->new_user_device_msg = (Skissm__NewUserDeviceMsg *)malloc(sizeof(Skissm__NewUserDeviceMsg));
         skissm__new_user_device_msg__init(proto_msg->new_user_device_msg);
         copy_address_from_address(&(proto_msg->new_user_device_msg->user_address), cur_data->address);
+        proto_msg->new_user_device_msg->n_group_info_list = group_num;
+        proto_msg->new_user_device_msg->group_info_list = (Skissm__GroupInfo **)malloc(sizeof(Skissm__GroupInfo *) * group_num);
+        for (i = 0; i < group_num; i++) {
+            (proto_msg->new_user_device_msg->group_info_list)[i] = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
+            Skissm__GroupInfo *cur_group = (proto_msg->new_user_device_msg->group_info_list)[i];
+            skissm__group_info__init(cur_group);
+            cur_group->group_name = strdup(group_info_list[i]->group_name);
+            copy_address_from_address(&(cur_group->group_address), group_info_list[i]->group_address);
+            cur_group->n_group_members = group_info_list[i]->n_group_members;
+            copy_group_members(&(cur_group->group_members), group_info_list[i]->group_members, group_info_list[i]->n_group_members);
+        }
 
         send_proto_msg(proto_msg);
 

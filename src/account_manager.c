@@ -88,7 +88,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                 create_outbound_group_session(
                     account->e2ee_pack_id, account->address,
                     cur_group->group_name,
-                    cur_group->group_address,cur_group->group_members,
+                    cur_group->group_address, cur_group->group_members,
                     cur_group->n_group_members, NULL
                 );
             }

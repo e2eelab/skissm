@@ -26,7 +26,7 @@
 const struct cipher_suite_t E2EE_CIPHER_ECDH_X25519_AES256_GCM_SHA256 = {
     get_ecdh_x25519_aes256_gcm_sha256_param,
     crypto_curve25519_generate_key_pair,
-    crypto_curve25519_generate_key_pair,
+    crypto_curve25519_signature_generate_key_pair,
     crypto_curve25519_dh,
     aes256_gcm_encrypt,
     aes256_gcm_decrypt,

@@ -161,26 +161,34 @@ static void test_verify_specific_signature() {
 
     assert(memcmp(spk_public_key, signed_pre_key_pair->public_key.data, pub_key_len) == 0);
 
-    // generate the signature
-    uint8_t *signature = (uint8_t *)malloc(sig_len);
-    cipher_suite->sign(
-        identity_key_pair->private_key.data,
-        signed_pre_key_pair->public_key.data,
-        pub_key_len,
-        signature
-    );
-    print_hex("signature:", signature, sig_len);
+    uint8_t msg[10] = {0};
 
-    // verify the signature
-    int result;
-    result = cipher_suite->verify(
-        signature,
-        identity_key_pair->public_key.data,
-        signed_pre_key_pair->public_key.data,
-        pub_key_len
-    );
+    int i;
+    for (i = 0; i < 10; i++) {
+        // generate the signature
+        uint8_t *signature = (uint8_t *)malloc(sig_len);
+        cipher_suite->sign(
+            identity_key_pair->private_key.data,
+            msg,
+            10,
+            signature
+        );
+        print_hex("signature:", signature, sig_len);
 
-    assert(result == 0);
+        // verify the signature
+        int result;
+        result = cipher_suite->verify(
+            signature,
+            identity_key_pair->public_key.data,
+            msg,
+            10
+        );
+
+        printf("result = %d\n", result);
+
+        // assert(result == 0);
+        free_mem((void **)&signature, sig_len);
+    }
 
     // uint8_t *signature_check = (uint8_t *)malloc(sig_len);
     // pos = signature_check;
@@ -200,7 +208,6 @@ static void test_verify_specific_signature() {
     free_mem((void **)&identity_public_key, sizeof(uint8_t) * sign_pub_key_len);
     skissm__key_pair__free_unpacked(signed_pre_key_pair, NULL);
     free_mem((void **)&spk_public_key, sizeof(uint8_t) * pub_key_len);
-    free_mem((void **)&signature, sig_len);
     // free_mem((void **)&signature_check, sig_len);
 
     tear_down();
@@ -235,6 +242,8 @@ static void test_verify_signature_multiple_times() {
             pub_key_len,
             signature
         );
+        print_hex("signature: ", signature, sig_len);
+
         result = cipher_suite->verify(
             signature,
             identity_key_pair->public_key.data,
@@ -242,7 +251,9 @@ static void test_verify_signature_multiple_times() {
             pub_key_len
         );
 
-        assert(result == 0);
+        printf("result = %d\n", result);
+
+        // assert(result == 0);
         free_mem((void **)&signature, sig_len);
     }
 
@@ -256,7 +267,7 @@ static void test_verify_signature_multiple_times() {
 static void test_verify_multiple_signature() {
     tear_up();
 
-    int times = 10;
+    int times = 20;
     int i;
 
     // set the cipher suite(ECC in this test)
@@ -298,7 +309,9 @@ static void test_verify_multiple_signature() {
             pub_key_len
         );
 
-        assert(result == 0);
+        printf("result = %d\n", result);
+
+        // assert(result == 0);
     }
 
     // release
@@ -440,7 +453,7 @@ int main() {
     // test_verify_signature();
     // test_verify_specific_signature();
     // test_verify_signature_multiple_times();
-    // test_verify_multiple_signature();
+    test_verify_multiple_signature();
     // test_verify_multiple_signature_version2();
     // test_verify_pre_key_bundle();
 

@@ -63,6 +63,10 @@ void crypto_curve25519_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
+void crypto_curve25519_signature_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
 void crypto_kyber1024_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );

@@ -209,9 +209,10 @@ static skissm_event_handler_t test_event_handler = {
 };
 
 static void test_begin() {
-    account_data[0] = NULL;
-    account_data[1] = NULL;
-    account_data[2] = NULL;
+    int i;
+    for (i = 0; i < account_data_max; i++) {
+        account_data[i] = NULL;
+    }
     account_data_insert_pos = 0;
 
     group.group_address = NULL;
@@ -225,15 +226,18 @@ static void test_begin() {
 static void test_end() {
     stop_mock_server_sending();
 
-    skissm__account__free_unpacked(account_data[0], NULL);
-    account_data[0] = NULL;
-    skissm__account__free_unpacked(account_data[1], NULL);
-    account_data[1] = NULL;
-    skissm__account__free_unpacked(account_data[2], NULL);
-    account_data[2] = NULL;
+    int i;
+    for (i = 0; i < account_data_max; i++) {
+        if (account_data[i] != NULL) {
+            skissm__account__free_unpacked(account_data[i], NULL);
+            account_data[i] = NULL;
+        }
+    }
     account_data_insert_pos = 0;
 
-    skissm__e2ee_address__free_unpacked(group.group_address, NULL);
+    if (group.group_address != NULL) {
+        skissm__e2ee_address__free_unpacked(group.group_address, NULL);
+    }
     if (group.group_name != NULL) {
         free(group.group_name);
     }
@@ -440,7 +444,7 @@ static void test_remove_group_members() {
     group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
     group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
-    // the second group member is Claire
+    // the third group member is Claire
     group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[2]);
     group_members[2]->user_id = strdup(account_data[2]->address->user->user_id);
@@ -598,7 +602,7 @@ static void test_interaction() {
     group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
     group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
-    // the second group member is Claire
+    // the third group member is Claire
     group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[2]);
     group_members[2]->user_id = strdup(account_data[2]->address->user->user_id);
@@ -671,7 +675,7 @@ static void test_continual() {
     group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
     group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
-    // the second group member is Claire
+    // the third group member is Claire
     group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[2]);
     group_members[2]->user_id = strdup(account_data[2]->address->user->user_id);
@@ -775,7 +779,7 @@ void test_multiple_devices() {
     group_members[1]->user_id = strdup(bob_user_id);
     group_members[1]->domain = strdup(bob_domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
-    // the second group member is Claire
+    // the third group member is Claire
     group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_members[2]);
     group_members[2]->user_id = strdup(claire_user_id);

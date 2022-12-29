@@ -32,7 +32,9 @@
 /** length of the shared secret created by a PQC operation */
 #define CRYPTO_BYTES_KEY 32
 
-Skissm__InviteResponse *pqc_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
+Skissm__InviteResponse *pqc_new_outbound_session(
+    Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle
+) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
     // verify the signature

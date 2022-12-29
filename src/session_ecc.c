@@ -32,23 +32,29 @@
 /** length of the shared secret created by a Curve25519 ECDH operation */
 #define CURVE25519_SHARED_SECRET_LENGTH 32
 
-Skissm__InviteResponse *crypto_curve25519_new_outbound_session(Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle) {
+Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
+    Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle
+) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
     // verify the signature
     int result;
-    if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len) || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len) ||
-        (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)) {
+    if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len)
+        || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len)
+        || (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)
+    ) {
         ssm_notify_error(BAD_PRE_KEY_BUNDLE, "crypto_curve25519_new_outbound_session()");
         return NULL;
     }
-    result = cipher_suite->verify(their_pre_key_bundle->signed_pre_key_public->signature.data, their_pre_key_bundle->identity_key_public->sign_public_key.data,
-                                  their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len);
-    // TODO check
-    //if (result < 0) {
-    //    ssm_notify_error(BAD_SIGNATURE, "crypto_curve25519_new_outbound_session()");
-    //    return NULL;
-    //}
+    result = cipher_suite->verify(
+        their_pre_key_bundle->signed_pre_key_public->signature.data,
+        their_pre_key_bundle->identity_key_public->sign_public_key.data,
+        their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len
+    );
+    if (result < 0) {
+       ssm_notify_error(BAD_SIGNATURE, "crypto_curve25519_new_outbound_session()");
+       return NULL;
+    }
 
     // set the version
     outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);

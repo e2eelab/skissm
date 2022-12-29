@@ -213,8 +213,10 @@ static skissm_event_handler_t test_event_handler = {
 };
 
 static void test_begin(){
-    account_data[0] = NULL;
-    account_data[1] = NULL;
+    int i;
+    for (i = 0; i < account_data_max; i++) {
+        account_data[i] = NULL;
+    }
     account_data_insert_pos = 0;
 
     f2f_pw_data = NULL;
@@ -227,10 +229,13 @@ static void test_begin(){
 static void test_end(){
     stop_mock_server_sending();
 
-    skissm__account__free_unpacked(account_data[0], NULL);
-    account_data[0] = NULL;
-    skissm__account__free_unpacked(account_data[1], NULL);
-    account_data[1] = NULL;
+    int i;
+    for (i = 0; i < account_data_max; i++) {
+        if (account_data[i] != NULL) {
+            skissm__account__free_unpacked(account_data[i], NULL);
+            account_data[i] = NULL;
+        }
+    }
     account_data_insert_pos = 0;
 
     if (f2f_pw_data != NULL) {
