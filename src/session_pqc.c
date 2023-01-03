@@ -247,11 +247,25 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
 
     outbound_session->responded = true;
 
-    uint8_t *pos = outbound_session->alice_ephemeral_key.data;
-    cipher_suite->ss_key_gen(&(outbound_session->alice_identity_key), &(msg->pre_shared_keys[0]), pos);
+    // load account to get the private identity key
+    Skissm__Account *loacl_account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->from, &loacl_account);
+    if (loacl_account == NULL) {
+        ssm_notify_error(BAD_ACCOUNT, "pqc_complete_outbound_session()");
+        return -1;
+    }
 
-    // create the root key and chain keys(????????????????)
+    uint8_t *pos = outbound_session->alice_ephemeral_key.data;
+    uint8_t *temp_shared_secret = (uint8_t *)malloc(sizeof(uint8_t) * CRYPTO_BYTES_KEY);
+    cipher_suite->ss_key_gen(&(loacl_account->identity_key->asym_key_pair->private_key), &(msg->pre_shared_keys[0]), temp_shared_secret);
+    memcpy(pos, temp_shared_secret, CRYPTO_BYTES_KEY);
+
+    // create the root key and chain keys
     initialise_as_alice(cipher_suite, outbound_session->ratchet, pos, outbound_session->alice_ephemeral_key.len, NULL, &(outbound_session->bob_signed_pre_key));
+
+    // release
+    skissm__account__free_unpacked(loacl_account, NULL);
+    free_mem((void **)&temp_shared_secret, CRYPTO_BYTES_KEY);
 
     // done
     return 0;

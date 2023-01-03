@@ -946,13 +946,10 @@ static void test_basic_pqc_session(){
     // load the outbound session
     Skissm__Session *outbound_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session);
-    // assert(outbound_session != NULL);
-    // assert(outbound_session->responded == true);
 
     // load the inbound session
     Skissm__Session *inbound_session = NULL;
     get_skissm_plugin()->db_handler.load_inbound_session(outbound_session->session_id, outbound_session->to, &inbound_session);
-    // assert(compare_protobuf(&(outbound_session->ratchet->receiver_chains[0]->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "PQC test.";
@@ -980,7 +977,7 @@ int main() {
     test_many_to_one();
     test_many_to_many();
     test_f2f_multiple_devices();
-    // test_basic_pqc_session();
+    test_basic_pqc_session();
 
     return 0;
 }
