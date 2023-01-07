@@ -943,14 +943,6 @@ static void test_basic_pqc_session(){
     assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     sleep(1);
-    // load the outbound session
-    Skissm__Session *outbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session);
-
-    // load the inbound session
-    Skissm__Session *inbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_inbound_session(outbound_session->session_id, outbound_session->to, &inbound_session);
-
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "PQC test.";
     size_t plaintext_len = sizeof(plaintext) - 1;
@@ -958,8 +950,89 @@ static void test_basic_pqc_session(){
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
-    skissm__session__free_unpacked(outbound_session, NULL);
-    skissm__session__free_unpacked(inbound_session, NULL);
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
+static void test_pqc_many_to_many() {
+    // test start
+    printf("test_pqc_many_to_many begin!!!\n");
+    tear_up();
+    test_begin();
+
+    mock_alice_pqc_account(1, "Alice");
+    mock_alice_pqc_account(2, "Alice");
+    mock_alice_pqc_account(3, "Alice");
+    mock_bob_pqc_account(4, "Bob");
+    mock_bob_pqc_account(5, "Bob");
+    mock_bob_pqc_account(6, "Bob");
+
+    sleep(2);
+
+    Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
+    Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
+    Skissm__E2eeAddress *alice_address_3 = account_data[2]->address;
+    char *alice_user_id = alice_address_1->user->user_id;
+    char *alice_domain = alice_address_1->domain;
+    Skissm__E2eeAddress *bob_address_1 = account_data[3]->address;
+    Skissm__E2eeAddress *bob_address_2 = account_data[4]->address;
+    Skissm__E2eeAddress *bob_address_3 = account_data[5]->address;
+    char *bob_user_id = bob_address_1->user->user_id;
+    char *bob_domain = bob_address_1->domain;
+
+    // Alice creates face-to-face session between each device
+    uint8_t password_1[] = "password 1";
+    size_t password_1_len = sizeof(password_1) - 1;
+    on_f2f_password_created(alice_address_1, alice_address_2, password_1, password_1_len);
+    f2f_invite(alice_address_1, alice_address_2, 0, password_1, password_1_len);
+
+    uint8_t password_2[] = "password 2";
+    size_t password_2_len = sizeof(password_2) - 1;
+    on_f2f_password_created(alice_address_2, alice_address_3, password_2, password_2_len);
+    f2f_invite(alice_address_2, alice_address_3, 0, password_2, password_2_len);
+
+    uint8_t password_3[] = "password 3";
+    size_t password_3_len = sizeof(password_3) - 1;
+    on_f2f_password_created(alice_address_1, alice_address_3, password_3, password_3_len);
+    f2f_invite(alice_address_1, alice_address_3, 0, password_3, password_3_len);
+
+    // Bob creates face-to-face session between each device
+    uint8_t password_4[] = "password 4";
+    size_t password_4_len = sizeof(password_4) - 1;
+    on_f2f_password_created(bob_address_1, bob_address_2, password_4, password_4_len);
+    f2f_invite(bob_address_1, bob_address_2, 0, password_4, password_4_len);
+
+    uint8_t password_5[] = "password 5";
+    size_t password_5_len = sizeof(password_5) - 1;
+    on_f2f_password_created(bob_address_2, bob_address_3, password_5, password_5_len);
+    f2f_invite(bob_address_2, bob_address_3, 0, password_5, password_5_len);
+
+    uint8_t password_6[] = "password 6";
+    size_t password_6_len = sizeof(password_6) - 1;
+    on_f2f_password_created(bob_address_1, bob_address_3, password_6, password_6_len);
+    f2f_invite(bob_address_1, bob_address_3, 0, password_6, password_6_len);
+
+    sleep(2);
+    // Alice invites Bob to create a session
+    invite(alice_address_1, bob_user_id, bob_domain);
+
+    sleep(1);
+    // Alice sends an encrypted message to Bob, and Bob decrypts the message
+    uint8_t plaintext[] = "This message will be sent to Bob's three devices and Alice's other two devices via pqc session.";
+    size_t plaintext_len = sizeof(plaintext) - 1;
+    test_encryption(alice_address_1, bob_user_id, bob_domain, plaintext, plaintext_len);
+
+    // Bob invites Alice to create a session
+    invite(bob_address_1, alice_user_id, alice_domain);
+
+    sleep(1);
+    // Bob sends an encrypted message to Alice, and Alice decrypts the message
+    uint8_t plaintext_2[] = "This message will be sent to Alice's three devices and Bob's other two devices via pqc session.";
+    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
+    test_encryption(bob_address_1, alice_user_id, alice_domain, plaintext_2, plaintext_2_len);
+
+    // test stop
     test_end();
     tear_down();
     printf("====================================\n");
@@ -978,6 +1051,7 @@ int main() {
     test_many_to_many();
     test_f2f_multiple_devices();
     test_basic_pqc_session();
+    test_pqc_many_to_many();
 
     return 0;
 }

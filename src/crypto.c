@@ -322,31 +322,6 @@ void crypto_aes_encrypt_gcm(
     mbedtls_gcm_free(&ctx);
 }
 
-void crypto_aes_gcm_encrypt_file(
-    const uint8_t *plaintext_data, size_t plaintext_data_len,
-    const uint8_t *key,
-    const uint8_t *add, size_t add_len,
-    uint8_t *ciphertext_data
-) {
-    mbedtls_gcm_context ctx;
-    unsigned char *tag_buf = ciphertext_data + plaintext_data_len;
-    int ret;
-    mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
-    int key_len = 256;
-    uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
-
-    mbedtls_gcm_init(&ctx);
-    ret = mbedtls_gcm_setkey(&ctx, cipher, key, key_len);
-    ret = mbedtls_gcm_crypt_and_tag(
-        &ctx, MBEDTLS_GCM_ENCRYPT,
-        plaintext_data_len, iv,
-        AES256_FILE_IV_LENGTH, add, add_len, plaintext_data,
-        ciphertext_data, AES256_GCM_TAG_LENGTH, tag_buf
-    );
-
-    mbedtls_gcm_free(&ctx);
-}
-
 size_t crypto_aes_decrypt_gcm(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
     const uint8_t *key, const uint8_t *iv,
@@ -380,6 +355,145 @@ size_t crypto_aes_decrypt_gcm(
     } else {
         return 0;
     }
+}
+
+int encrypt_aes_file(
+    const char *in_file_path, const char *out_file_path,
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key
+) {
+    FILE *infile, *outfile;
+    infile = fopen(in_file_path, "r");
+    outfile = fopen(out_file_path, "a");
+
+    fseek(infile, 0, SEEK_END);
+    long size = ftell(infile);
+    fseek(infile, 0, SEEK_SET);
+
+    int max_plaintext_size = 8192;
+    char in_buffer[max_plaintext_size];
+    char out_buffer[8192];
+
+    int times = size / max_plaintext_size;
+    int rest = size % max_plaintext_size;
+
+    mbedtls_gcm_context ctx;
+    mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
+    int ret;
+    int key_len = 256;
+    mbedtls_gcm_init(&ctx);
+    ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
+    if (ret == 0) {
+        uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_FILE_IV_LENGTH, ad->data, ad->len);
+    }
+
+    if (ret == 0) {
+        int i;
+        for (i = 0; i < times; i++) {
+            fread(in_buffer, sizeof(char), max_plaintext_size, infile);
+            if ((ret = mbedtls_gcm_update(&ctx, max_plaintext_size, in_buffer, out_buffer)) != 0)
+                break;
+            fwrite(out_buffer, sizeof(char), max_plaintext_size, outfile);
+        }
+    }
+    if (ret == 0) {
+        if (rest > 0) {
+            fread(in_buffer, sizeof(char), rest, infile);
+            if ((ret = mbedtls_gcm_update(&ctx, rest, in_buffer, out_buffer)) == 0) {
+                fwrite(out_buffer, sizeof(char), rest, outfile);
+            }
+        }
+    }
+
+    if (ret == 0) {
+        uint8_t tag[AES256_GCM_TAG_LENGTH];
+        if ((ret = mbedtls_gcm_finish(&ctx, tag, AES256_GCM_TAG_LENGTH)) == 0) {
+            fwrite(tag, sizeof(char), AES256_GCM_TAG_LENGTH, outfile);
+        }
+    }
+
+    mbedtls_gcm_free(&ctx);
+
+    fclose(outfile);
+    fclose(infile);
+
+    return ret;
+}
+
+int decrypt_aes_file(
+    const char *in_file_path, const char *out_file_path,
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key
+) {
+    FILE *infile, *outfile;
+    infile = fopen(in_file_path, "r+");
+    outfile = fopen(out_file_path, "a");
+
+    fseek(infile, 0, SEEK_END);
+    long size = ftell(infile);
+    fseek(infile, 0, SEEK_SET);
+
+    int max_ciphertext_size = 8192;
+    char in_buffer[max_ciphertext_size];
+    char out_buffer[8192];
+
+    int times = (size - AES256_GCM_TAG_LENGTH) / max_ciphertext_size;
+    int rest = (size - AES256_GCM_TAG_LENGTH) % max_ciphertext_size;
+
+    mbedtls_gcm_context ctx;
+    mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
+    int ret;
+    int key_len = 256;
+    int i;
+    mbedtls_gcm_init(&ctx);
+    ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
+    if (ret == 0) {
+        uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_FILE_IV_LENGTH, ad->data, ad->len);
+    }
+
+    if (ret == 0) {
+        for (i = 0; i < times; i++) {
+            fread(in_buffer, sizeof(char), max_ciphertext_size, infile);
+            if ((ret = mbedtls_gcm_update(&ctx, max_ciphertext_size, in_buffer, out_buffer)) != 0)
+                break;
+            fwrite(out_buffer, sizeof(char), max_ciphertext_size, outfile);
+        }
+    }
+    if (ret == 0) {
+        if (rest > 0) {
+            fread(in_buffer, sizeof(char), rest, infile);
+            if ((ret = mbedtls_gcm_update(&ctx, rest, in_buffer, out_buffer)) == 0) {
+                fwrite(out_buffer, sizeof(char), rest, outfile);
+            }
+        }
+    }
+
+    if (ret == 0) {
+        uint8_t tag[AES256_GCM_TAG_LENGTH];
+        if ((ret = mbedtls_gcm_finish(&ctx, tag, AES256_GCM_TAG_LENGTH)) == 0) {
+            fwrite(tag, sizeof(char), AES256_GCM_TAG_LENGTH, outfile);
+            // verify tag
+            uint8_t input_tag[AES256_GCM_TAG_LENGTH];
+            fread(input_tag, sizeof(uint8_t), AES256_GCM_TAG_LENGTH, infile);
+
+            // verify tag in "constant-time"
+            int diff = 0;
+            for (i = 0; i < AES256_GCM_TAG_LENGTH; i++)
+                diff |= input_tag[i] ^ tag[i];
+            if (diff == 0) {
+                ret = 0;
+            } else {
+                ret = -1;
+            }
+        }
+    }
+
+    mbedtls_gcm_free(&ctx);
+
+    fclose(outfile);
+    fclose(infile);
+
+    return ret;
 }
 
 void crypto_hkdf_sha256(

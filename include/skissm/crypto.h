@@ -176,6 +176,16 @@ size_t crypto_aes_decrypt_gcm(
     uint8_t *plaintext_data
 );
 
+int encrypt_aes_file(
+    const char *in_file_path, const char *out_file_path,
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key
+);
+
+int decrypt_aes_file(
+    const char *in_file_path, const char *out_file_path,
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key
+);
+
 /**
  * @brief Encode to base64 string
  *

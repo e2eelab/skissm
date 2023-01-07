@@ -271,8 +271,125 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     return 0;
 }
 
+int pqc_new_f2f_outbound_session(
+    Skissm__Session *outbound_session,
+    Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg
+) {
+    // set the version
+    outbound_session->version = strdup(f2f_pre_key_invite_msg->version);
+    // set the cipher suite id
+    outbound_session->e2ee_pack_id = strdup(f2f_pre_key_invite_msg->e2ee_pack_id);
+
+    // set the session id
+    outbound_session->session_id = strdup(f2f_pre_key_invite_msg->session_id);
+
+    // set the address
+    copy_address_from_address(&(outbound_session->from), f2f_pre_key_invite_msg->from);
+    copy_address_from_address(&(outbound_session->to), f2f_pre_key_invite_msg->to);
+
+    // store the secret bytes(store in the associated_data)
+    copy_protobuf_from_protobuf(&(outbound_session->associated_data), &(f2f_pre_key_invite_msg->secret));
+
+    outbound_session->responded = false;
+
+    // this is a face-to-face session
+    outbound_session->f2f = true;
+
+    // done
+    return 0;
+}
+
+int pqc_new_f2f_inbound_session(
+    Skissm__Session *inbound_session,
+    Skissm__Account *local_account,
+    uint8_t *secret
+) {
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
+
+    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, 4 * CRYPTO_BYTES_KEY, local_account->signed_pre_key->key_pair);
+
+    // this is a face-to-face session
+    inbound_session->f2f = true;
+
+    // insert the associated data
+    int key_len = local_account->identity_key->asym_key_pair->public_key.len;
+    int ad_len = 2 * key_len;
+    inbound_session->associated_data.len = ad_len;
+    inbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
+    uint8_t *key_data = local_account->identity_key->asym_key_pair->public_key.data;
+    memcpy(inbound_session->associated_data.data, key_data, key_len);
+    memcpy((inbound_session->associated_data.data) + key_len, key_data, key_len);
+
+    Skissm__E2eeAddress *sender_address = NULL;
+    copy_address_from_address(&(sender_address), inbound_session->from);
+    if (strcmp(inbound_session->from->user->user_id, inbound_session->to->user->user_id) != 0) {
+        // no need to record the device id of the sender's address in the face-to-face inbound session
+        free(inbound_session->from->user->device_id);
+        inbound_session->from->user->device_id = strdup("");
+    }
+
+    // store sesson state
+    get_skissm_plugin()->db_handler.store_session(inbound_session);
+
+    /** The one who sends the accept message will be the one who received the invitation message.
+     *  Thus, the "from" and "to" of acception message will be different from those in the session. */
+    Skissm__F2fAcceptResponse *response = f2f_accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, sender_address, local_account);
+
+    // release
+    skissm__e2ee_address__free_unpacked(sender_address, NULL);
+    skissm__f2f_accept_response__free_unpacked(response, NULL);
+
+    // done
+    return 0;
+}
+
+int pqc_complete_f2f_outbound_session(Skissm__Session *outbound_session, Skissm__F2fAcceptMsg *msg) {
+    // get the cipher suite
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+
+    // unpack
+    Skissm__F2fPreKeyAcceptMsg *f2f_pre_key_accept_msg = skissm__f2f_pre_key_accept_msg__unpack(NULL, msg->pre_key_msg.len, msg->pre_key_msg.data);
+
+    // set the other's signed pre-key
+    copy_protobuf_from_protobuf(&(outbound_session->bob_signed_pre_key), &(f2f_pre_key_accept_msg->bob_signed_pre_key));
+
+    // create the root key and chain keys
+    initialise_as_alice(
+        cipher_suite, outbound_session->ratchet,
+        outbound_session->associated_data.data, outbound_session->associated_data.len,
+        NULL, &(outbound_session->bob_signed_pre_key)
+    );
+
+    // replace the associated data
+    free_mem((void **)&(outbound_session->associated_data.data), outbound_session->associated_data.len);
+    int key_len = f2f_pre_key_accept_msg->bob_identity_public_key.len;
+    int ad_len = 2 * key_len;
+    outbound_session->associated_data.len = ad_len;
+    outbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
+    uint8_t *key_data = f2f_pre_key_accept_msg->bob_identity_public_key.data;
+    memcpy(outbound_session->associated_data.data, key_data, key_len);
+    memcpy((outbound_session->associated_data.data) + key_len, key_data, key_len);
+
+    if (strcmp(outbound_session->from->user->user_id, outbound_session->to->user->user_id) != 0) {
+        // no need to record the device id of the receiver's address in the face-to-face outbound session
+        free(outbound_session->to->user->device_id);
+        outbound_session->to->user->device_id = strdup("");
+    }
+
+    outbound_session->responded = true;
+
+    // release
+    skissm__f2f_pre_key_accept_msg__free_unpacked(f2f_pre_key_accept_msg, NULL);
+
+    // done
+    return 0;
+}
+
 const session_suite_t E2EE_SESSION_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256 = {
     pqc_new_outbound_session,
     pqc_new_inbound_session,
-    pqc_complete_outbound_session
+    pqc_complete_outbound_session,
+    pqc_new_f2f_outbound_session,
+    pqc_new_f2f_inbound_session,
+    pqc_complete_f2f_outbound_session
 };

@@ -251,8 +251,6 @@ int crypto_curve25519_new_f2f_outbound_session(
     Skissm__Session *outbound_session,
     Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg
 ) {
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(f2f_pre_key_invite_msg->e2ee_pack_id)->cipher_suite;
-
     // set the version
     outbound_session->version = strdup(f2f_pre_key_invite_msg->version);
     // set the cipher suite id
@@ -343,9 +341,11 @@ int crypto_curve25519_complete_f2f_outbound_session(Skissm__Session *outbound_se
     );
 
     // replace the associated data
+    free_mem((void **)&(outbound_session->associated_data.data), outbound_session->associated_data.len);
     int key_len = f2f_pre_key_accept_msg->bob_identity_public_key.len;
     int ad_len = 2 * key_len;
     outbound_session->associated_data.len = ad_len;
+    outbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
     uint8_t *key_data = f2f_pre_key_accept_msg->bob_identity_public_key.data;
     memcpy(outbound_session->associated_data.data, key_data, key_len);
     memcpy((outbound_session->associated_data.data) + key_len, key_data, key_len);

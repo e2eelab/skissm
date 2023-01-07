@@ -61,31 +61,3 @@ size_t aes256_gcm_decrypt(
     }
     return decrypted_data_len;
 }
-
-bool encrypt_aes_file(const char *in_file_path, const char *out_file_path, uint8_t *aes_key) {
-    FILE *infile, *outfile;
-    infile = fopen(in_file_path, "r");
-    outfile = fopen(out_file_path, "a");
-
-    long long max_plaintext_size = 1LLU<<32;
-    char in_buffer[max_plaintext_size];
-    char out_buffer[8192];
-
-    while (feof(infile) == 0) {
-        fread(in_buffer, sizeof(char), max_plaintext_size, infile);
-    }
-
-    fclose(outfile);
-    fclose(infile);
-
-    return true;
-}
-
-bool decrypt_aes_file(const char *in_file_path, const char *out_file_path, uint8_t *aes_key) {
-    FILE *infile = fopen(in_file_path, "r+");
-    fseek(infile, 0, SEEK_END);
-    long size = ftell(infile);
-    fseek(infile, 0, SEEK_SET);
-
-    return true;
-}
