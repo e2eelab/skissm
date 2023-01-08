@@ -99,7 +99,7 @@ void start_mock_server_sending() {
         return;
     }
     running = true;
-    pthread_create(&thread, NULL, process_outgoing_queue, "process outgoing queue");
+    pthread_create(&thread, NULL, (void *)process_outgoing_queue, "process outgoing queue");
 }
 
 void stop_mock_server_sending() {
