@@ -53,12 +53,12 @@ typedef struct cipher_suite_t {
      * @param priv_key
      */
     void (*asym_key_gen)(
-        ProtobufCBinaryData *,              
+        ProtobufCBinaryData *,
         ProtobufCBinaryData *
     );
 
     /**
-     * @brief Generate a random key pair that will be used to generate or verity a signature.
+     * @brief Generate a random key pair that will be used to generate or verify a signature.
      *
      * @param pub_key
      * @param priv_key
