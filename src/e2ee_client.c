@@ -271,6 +271,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num == 0 || outbound_sessions == NULL) {
+        printf("<c>send_one2one_msg() no outbound sessions\n");
         // save common_plaintext_data and will be resent after the first outbound session established
         Skissm__E2eeAddress *to = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
         skissm__e2ee_address__init(to);
@@ -302,6 +303,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     for (i = 0; i < outbound_sessions_num; i++) {
         Skissm__Session *outbound_session = outbound_sessions[i];
         if (outbound_session->responded == false) {
+            printf("<c>send_one2one_msg() outbound session[%s] not responded\n", outbound_session->session_id);
             // store pending common_plaintext_data
             store_pending_common_plaintext_data(
                 outbound_session->from,

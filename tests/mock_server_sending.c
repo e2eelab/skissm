@@ -62,7 +62,7 @@ static bool has_proto_msg_data() {
     return has_data;    
 }
 
-void *process_outgoing_queue() {
+void process_outgoing_queue() {
     while (running || has_proto_msg_data()) {
         Skissm__ProtoMsg *proto_msg = proto_msg_queue[proto_msg_queue_insert_head];
 
