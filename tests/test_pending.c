@@ -28,11 +28,32 @@
 #include "test_util.h"
 #include "test_plugin.h"
 
+static void on_error(ErrorCode error_code, const char *error_msg) {
+    print_error((char *)error_msg, error_code);
+}
+
+static skissm_event_handler_t test_event_handler = {
+    on_error,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
 static const cipher_suite_t *test_cipher_suite;
 
 static void test_one_group_pre_key() {
     // test start
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;

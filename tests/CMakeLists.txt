@@ -62,6 +62,7 @@ target_include_directories(test_util
 set(TEST_SKISSM
     test_aes
     test_gcm
+    test_file_gcm
     test_sha
     test_account
     test_crypto
@@ -106,6 +107,7 @@ file(COPY data DESTINATION .)
 
 add_test(AES test_aes)
 add_test(GCM test_gcm)
+add_test(FILE_GCM test_file_gcm)
 add_test(SHA test_sha)
 add_test(Account test_account)
 add_test(Crypto test_crypto)

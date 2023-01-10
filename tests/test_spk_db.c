@@ -29,8 +29,29 @@
 #include "test_plugin.h"
 #include "test_util.h"
 
+static void on_error(ErrorCode error_code, const char *error_msg) {
+    print_error((char *)error_msg, error_code);
+}
+
+static skissm_event_handler_t test_event_handler = {
+    on_error,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
 void test_load_old_signed_pre_key(){
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
     // generate a random address
@@ -81,6 +102,7 @@ void test_load_old_signed_pre_key(){
 
 void test_remove_expired_signed_pre_key(){
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
     // generate a random address

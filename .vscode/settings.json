@@ -31,7 +31,10 @@
         "ranges": "c",
         "*.inc": "c",
         "memory": "c",
-        "__mutex_base": "c"
+        "__mutex_base": "c",
+        "test_util.h": "c",
+        "regex": "c",
+        "sstream": "c"
     },
     "cmake.configureOnOpen": true,
 }

@@ -520,7 +520,7 @@ size_t decrypt_ratchet(
             ratchet, ad, payload, plaintext_data
         );
         if (result == 0) {
-            ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
+            ssm_notify_error(BAD_MESSAGE_MAC, "verify_and_decrypt_for_new_chain() in decrypt_ratchet()");
             return 0;
         }
     } else if (receiver_chain->chain_key->index > payload->sequence) {
@@ -560,22 +560,26 @@ size_t decrypt_ratchet(
                     ratchet->skipped_msg_keys = temp_skipped_message_keys;
                     (ratchet->n_skipped_msg_keys)--;
                     break;
+                } else {
+                    ssm_notify_error(BAD_MESSAGE_MAC, "verify_and_decrypt() in decrypt_ratchet()");
+                    return 0;
                 }
             }
         }
         if (result == 0) {
-            ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
-            return 0;
+            // the corresponding message key not found
+            ssm_notify_error(MESSAGE_KEY_NOT_FOUND, "decrypt_ratchet()");
         }
     } else {
-        // they use the same ratchet key
+        /* They use the same ratchet key. The sequence of the payload(incoming message) 
+         * may be bigger than or equal to the index of our receiver chain. */
         result = verify_and_decrypt_for_existing_chain(
             cipher_suite,
             ad, receiver_chain->chain_key,
             payload, plaintext_data
         );
         if (result == 0) {
-            ssm_notify_error(BAD_MESSAGE_MAC, "decrypt_ratchet()");
+            ssm_notify_error(BAD_MESSAGE_MAC, "verify_and_decrypt_for_existing_chain() in decrypt_ratchet()");
             return 0;
         }
     }
@@ -653,7 +657,11 @@ size_t decrypt_ratchet(
         }
     }
 
-    advance_chain_key(cipher_suite, receiver_chain->chain_key);
+    if (receiver_chain->chain_key->index == payload->sequence) {
+        /* If we decrypt the incoming message by a skipped message key,
+         * we will not need to advance the chain key. */
+        advance_chain_key(cipher_suite, receiver_chain->chain_key);
+    }
 
     return result;
 }

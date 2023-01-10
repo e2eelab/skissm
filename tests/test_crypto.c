@@ -31,11 +31,15 @@
 #include "test_plugin.h"
 #include "test_util.h"
 
+static void on_error(ErrorCode error_code, const char *error_msg) {
+    print_error((char *)error_msg, error_code);
+}
+
 static void on_user_registered(Skissm__Account *account){
 }
 
 static skissm_event_handler_t test_event_handler = {
-    NULL,
+    on_error,
     on_user_registered,
     NULL,
     NULL,
@@ -52,6 +56,7 @@ static skissm_event_handler_t test_event_handler = {
 
 static void test_verify_signature() {
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     // set the cipher suite(ECC in this test)
     const cipher_suite_t *cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
@@ -97,6 +102,7 @@ static void test_verify_signature() {
 
 static void test_verify_specific_signature() {
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     const uint8_t CURVE25519_BASEPOINT[32] = {9};
 
@@ -215,6 +221,7 @@ static void test_verify_specific_signature() {
 
 static void test_verify_signature_multiple_times() {
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     // set the cipher suite(ECC in this test)
     const cipher_suite_t *cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
@@ -266,6 +273,7 @@ static void test_verify_signature_multiple_times() {
 
 static void test_verify_multiple_signature() {
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     int times = 20;
     int i;
@@ -329,6 +337,7 @@ static void test_verify_multiple_signature() {
 
 static void test_verify_multiple_signature_version2() {
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     int times = 10;
     int i;

@@ -32,6 +32,26 @@
 #include "test_plugin.h"
 #include "test_util.h"
 
+static void on_error(ErrorCode error_code, const char *error_msg) {
+    print_error((char *)error_msg, error_code);
+}
+
+static skissm_event_handler_t test_event_handler = {
+    on_error,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
 // test about account db
 void test_setup()
 {
@@ -125,6 +145,7 @@ void test_init_account()
 {
     fprintf(stderr, "test_init_account\n");
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
@@ -143,6 +164,7 @@ void test_update_identity_key()
 {
     fprintf(stderr, "test_update_identity_key\n");
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
@@ -168,6 +190,7 @@ void test_update_signed_pre_key()
 {
     fprintf(stderr, "test_update_signed_pre_key\n");
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
@@ -194,6 +217,7 @@ void test_update_address()
 {
     fprintf(stderr, "test_update_address\n");
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
@@ -220,6 +244,7 @@ void test_add_one_time_pre_key()
 {
     fprintf(stderr, "test_add_one_time_pre_key\n");
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
@@ -246,6 +271,7 @@ void test_load_account()
 {
     fprintf(stderr, "test_load_account\n");
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
     Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
@@ -272,6 +298,7 @@ void test_two_accounts()
 {
     fprintf(stderr, "test_two_accounts\n");
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
 
     // create the first account
     Skissm__Account *account_1 = create_account(1, TEST_E2EE_PACK_ID_ECC);
