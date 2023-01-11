@@ -68,7 +68,7 @@ void ssm_notify_log(LogCode log_code, const char *msg_fmt, ...) {
         char msg[256] = {0};
         va_list arg;
         va_start(arg, msg_fmt);
-        snprintf(msg, 256, msg_fmt, arg);
+        vsnprintf(msg, 256, msg_fmt, arg);
         va_end(arg);
         skissm_plugin->event_handler.on_log(log_code, msg);
     }
