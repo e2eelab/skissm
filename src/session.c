@@ -24,7 +24,6 @@
 #include "skissm/account.h"
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client.h"
-#include "skissm/error.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"

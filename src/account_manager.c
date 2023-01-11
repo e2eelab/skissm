@@ -171,7 +171,7 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
         since our published one-time pre-keys are going to used up. */
 
     if (!compare_address(receiver_address, msg->user_address)){
-        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
+        ssm_notify_log(BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
         return false;
     }
 
@@ -181,7 +181,7 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
     get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
 
     if (account == NULL || !(account->saved)) {
-        ssm_notify_error(BAD_ONE_TIME_PRE_KEY, "consume_supply_opks_msg()");
+        ssm_notify_log(BAD_ONE_TIME_PRE_KEY, "consume_supply_opks_msg()");
         return false;
     }
 

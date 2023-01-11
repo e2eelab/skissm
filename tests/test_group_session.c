@@ -55,7 +55,9 @@ typedef struct f2f_password_data {
 
 static f2f_password_data *f2f_pw_data = NULL;
 
-static void on_error(ErrorCode error_code, const char *error_msg) { print_error((char *)error_msg, error_code); }
+static void on_log(LogCode log_code, const char *log_msg) {
+    print_log((char *)log_msg, log_code);
+}
 
 static void on_user_registered(Skissm__Account *account) {
     print_msg("on_user_registered: user_id", (uint8_t *)account->address->user->user_id, strlen(account->address->user->user_id));
@@ -193,7 +195,7 @@ static void on_group_members_removed(Skissm__E2eeAddress *group_address, const c
 }
 
 static skissm_event_handler_t test_event_handler = {
-    on_error,
+    on_log,
     on_user_registered,
     on_inbound_session_invited,
     on_inbound_session_ready,

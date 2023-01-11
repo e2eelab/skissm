@@ -6,7 +6,6 @@
 #include "skissm/account.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/e2ee_client_internal.h"
-#include "skissm/error.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
@@ -34,10 +33,12 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
                 pending_plaintext_data_list[i],
                 pending_plaintext_data_len_list[i]
             );
-            if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-                get_skissm_plugin()->db_handler.unload_pending_plaintext_data(
-                    outbound_session->from, outbound_session->to, pending_plaintext_id_list[i]
-                );
+            // always unload
+            get_skissm_plugin()->db_handler.unload_pending_plaintext_data(
+                outbound_session->from, outbound_session->to, pending_plaintext_id_list[i]
+            );
+            // release
+            if (response != NULL) {
                 skissm__send_one2one_msg_response__free_unpacked(response, NULL);
             }
         }
@@ -120,7 +121,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
             Skissm__Account *account = NULL;
             get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
             if (account == NULL) {
-                ssm_notify_error(BAD_ACCOUNT, "consume_get_pre_key_bundle_response()");
+                ssm_notify_log(BAD_ACCOUNT, "consume_get_pre_key_bundle_response()");
                 return NULL;
             }
 
@@ -159,7 +160,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 else
                     skissm__invite_response__free_unpacked(invite_response, NULL);
             } else {
-                ssm_notify_error(BAD_SESSION, "consume_get_pre_key_bundle_response()");
+                ssm_notify_log(BAD_SESSION, "consume_get_pre_key_bundle_response()");
                 return NULL;
             }
         }
@@ -199,9 +200,10 @@ bool consume_send_one2one_msg_response(
     Skissm__Session *outbound_session,
     Skissm__SendOne2oneMsgResponse *response
 ) {
+    // store sesson state
+    get_skissm_plugin()->db_handler.store_session(outbound_session);
+
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        // store sesson state
-        get_skissm_plugin()->db_handler.store_session(outbound_session);
         return true;
     } else {
         return false;
@@ -229,7 +231,7 @@ static bool process_f2f_session(Skissm__Session *f2f_session, Skissm__E2eeMsg *e
         copy_address_from_address(&(f2f_session->session_owner), e2ee_msg->to);
     } else {
         // error
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_one2one_msg()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_one2one_msg()");
         return false;
     }
     get_skissm_plugin()->db_handler.store_session(f2f_session);
@@ -240,7 +242,7 @@ static bool process_f2f_session(Skissm__Session *f2f_session, Skissm__E2eeMsg *e
 
 bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg) {
     if (e2ee_msg->session_id == NULL) {
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_one2one_msg(), wrong session_id");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_one2one_msg(), wrong session_id");
         // wrong session_id, just consume it
         return true;
     }
@@ -249,7 +251,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
     Skissm__Session *inbound_session = NULL;
     get_skissm_plugin()->db_handler.load_inbound_session(e2ee_msg->session_id, receiver_address, &inbound_session);
     if (inbound_session == NULL) {
-        ssm_notify_error(BAD_SESSION, "consume_one2one_msg(), no inbound session");
+        ssm_notify_log(BAD_SESSION, "consume_one2one_msg(), no inbound session");
         // no inbound session, just consume it
         return true;
     }
@@ -284,13 +286,13 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                 skissm__plaintext__free_unpacked(plaintext, NULL);
                 // success
             } else {
-                ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_one2one_msg(), plaintext data unpack error");
+                ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_one2one_msg(), plaintext data unpack error");
                 // error
             }
             // release
             free_mem((void **)&plain_text_data, plain_text_data_len);
         } else {
-            ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_one2one_msg() wrong plaintext data");
+            ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_one2one_msg() wrong plaintext data");
         }
     }
 
@@ -315,7 +317,7 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         Skissm__Account *account = NULL;
         get_skissm_plugin()->db_handler.load_account_by_address(receiver_address, &account);
         if (account == NULL) {
-            ssm_notify_error(BAD_ACCOUNT, "consume_new_user_device_msg()");
+            ssm_notify_log(BAD_ACCOUNT, "consume_new_user_device_msg()");
             return false;
         }
 
@@ -403,7 +405,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     Skissm__E2eeAddress *to = msg->to;
 
     if (!compare_address(receiver_address, to)){
-        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_invite_msg()");
+        ssm_notify_log(BAD_SERVER_MESSAGE, "consume_invite_msg()");
         return false;
     }
 
@@ -414,7 +416,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(to, &account);
     if (account == NULL) {
-        ssm_notify_error(BAD_ACCOUNT, "consume_invite_msg()");
+        ssm_notify_log(BAD_ACCOUNT, "consume_invite_msg()");
         return false;
     }
     // create a new inbound session
@@ -430,7 +432,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
 
     if (result != 0
         || safe_strcmp(inbound_session->session_id, msg->session_id) == false) {
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_invite_msg()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_invite_msg()");
         result = -1;
     } else {
         // notify
@@ -484,7 +486,7 @@ bool consume_accept_response(Skissm__AcceptResponse *response) {
 
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg) {
     if (!compare_address(receiver_address, msg->to)){
-        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_accept_msg()");
+        ssm_notify_log(BAD_SERVER_MESSAGE, "consume_accept_msg()");
         return false;
     }
 
@@ -492,7 +494,7 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
     // Is it unique?
     get_skissm_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &outbound_session);
     if (outbound_session == NULL){
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_accept_msg()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_accept_msg()");
         return false;
     }
     const session_suite_t *session_suite = get_e2ee_pack(msg->e2ee_pack_id)->session_suite;
@@ -548,7 +550,7 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     Skissm__E2eeAddress *to = msg->to;
 
     if (!compare_address(receiver_address, to)){
-        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_f2f_invite_msg()");
+        ssm_notify_log(BAD_SERVER_MESSAGE, "consume_f2f_invite_msg()");
         return false;
     }
 
@@ -594,7 +596,7 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(to, &account);
     if (account == NULL) {
-        ssm_notify_error(BAD_ACCOUNT, "consume_f2f_invite_msg()");
+        ssm_notify_log(BAD_ACCOUNT, "consume_f2f_invite_msg()");
         return false;
     }
     // create a new inbound session
@@ -611,7 +613,7 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     if (result < 0
         || safe_strcmp(inbound_session->session_id, f2f_pre_key_invite_msg->session_id) == false
     ) {
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_f2f_invite_msg()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_f2f_invite_msg()");
         succ = false;
     } else {
         // notify
@@ -684,7 +686,7 @@ bool consume_f2f_accept_response(Skissm__F2fAcceptResponse *response) {
 
 bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAcceptMsg *msg) {
     if (!compare_address(receiver_address, msg->to)){
-        ssm_notify_error(BAD_SERVER_MESSAGE, "consume_f2f_accept_msg()");
+        ssm_notify_log(BAD_SERVER_MESSAGE, "consume_f2f_accept_msg()");
         return false;
     }
 
@@ -692,7 +694,7 @@ bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAc
     account_context *context = get_account_context(receiver_address);
 
     if (context == NULL) {
-        ssm_notify_error(BAD_ACCOUNT, "consume_f2f_accept_msg()");
+        ssm_notify_log(BAD_ACCOUNT, "consume_f2f_accept_msg()");
         return false;
     }
 
@@ -707,7 +709,7 @@ bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAc
     }
 
     if (f2f_session_mid == NULL) {
-        ssm_notify_error(BAD_SESSION, "consume_f2f_accept_msg()");
+        ssm_notify_log(BAD_SESSION, "consume_f2f_accept_msg()");
         return false;
     }
 

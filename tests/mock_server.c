@@ -247,7 +247,7 @@ void mock_server_end(){
 
 Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request) {
     if ((request == NULL) || (request->authenticator == NULL)) {
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "mock_register_user()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "mock_register_user()");
         return NULL;
     }
 
@@ -370,7 +370,7 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
 
 Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundleRequest *request) {
     if ((request->user_id == NULL) || (request->domain == NULL)) {
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "mock_get_pre_key_bundle()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "mock_get_pre_key_bundle()");
         return NULL;
     }
 

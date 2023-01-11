@@ -270,7 +270,7 @@ int mark_opk_as_used(Skissm__Account *account, uint32_t id) {
         }
     }
 
-    ssm_notify_error(BAD_REMOVE_OPK, "mark_opk_as_used() opk id not found");
+    ssm_notify_log(BAD_REMOVE_OPK, "mark_opk_as_used() opk id not found");
     return -1;
 }
 

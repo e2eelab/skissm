@@ -211,7 +211,7 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
         // done
         return true;
     } else{
-        get_skissm_plugin()->event_handler.on_error(BAD_GROUP_SESSION, "outbound group session should have been created before adding members");
+        get_skissm_plugin()->event_handler.on_log(BAD_GROUP_SESSION, "outbound group session should have been created before adding members");
         // done
         return false;
     }
@@ -279,7 +279,7 @@ bool consume_remove_group_members_response(
         // done
         return true;
     } else {
-        get_skissm_plugin()->event_handler.on_error(BAD_GROUP_SESSION, "outbound group session should have been created before removing members");
+        get_skissm_plugin()->event_handler.on_log(BAD_GROUP_SESSION, "outbound group session should have been created before removing members");
         // done
         return false;
     }
@@ -344,7 +344,7 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
         // done
         return true;
     } else{
-        get_skissm_plugin()->event_handler.on_error(BAD_GROUP_SESSION, "outbound group session should have been created before removing members");
+        get_skissm_plugin()->event_handler.on_log(BAD_GROUP_SESSION, "outbound group session should have been created before removing members");
         // done
         return false;
     }
@@ -409,14 +409,14 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
 }
 
 bool consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session, Skissm__SendGroupMsgResponse *response) {
-    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        // Prepare a new chain key for next encryption
-        const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
-        advance_group_chain_key(cipher_suite, &(outbound_group_session->chain_key), outbound_group_session->sequence);
-        outbound_group_session->sequence += 1;
+    // Prepare a new chain key for next encryption
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
+    advance_group_chain_key(cipher_suite, &(outbound_group_session->chain_key), outbound_group_session->sequence);
+    outbound_group_session->sequence += 1;
+    // store sesson state
+    get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
-        // store sesson state
-        get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         return true;
     } else {
         return false;
@@ -429,7 +429,7 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     get_skissm_plugin()->db_handler.load_inbound_group_session(receiver_address, e2ee_msg->session_id, &inbound_group_session);
 
     if (inbound_group_session == NULL){
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "consume_group_msg()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_group_msg()");
         return false;
     }
 
@@ -445,7 +445,7 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
         group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len
     );
     if (succ < 0){
-        ssm_notify_error(BAD_SIGNATURE, "consume_group_msg()");
+        ssm_notify_log(BAD_SIGNATURE, "consume_group_msg()");
         skissm__group_session__free_unpacked(inbound_group_session, NULL);
         return false;
     }
@@ -471,7 +471,7 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     );
 
     if (plaintext_data_len <= 0){
-        ssm_notify_error(BAD_MESSAGE_DECRYPTION, "consume_group_msg()");
+        ssm_notify_log(BAD_MESSAGE_DECRYPTION, "consume_group_msg()");
     } else {
         ssm_notify_group_msg(e2ee_msg->from, inbound_group_session->group_info->group_address, plaintext_data, plaintext_data_len);
         free_mem((void **)&plaintext_data, plaintext_data_len);

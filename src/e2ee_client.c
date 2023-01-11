@@ -148,7 +148,7 @@ size_t f2f_invite(
     account_context *context = get_account_context(from);
 
     if (context == NULL) {
-        ssm_notify_error(BAD_ACCOUNT, "f2f_invite()");
+        ssm_notify_log(BAD_ACCOUNT, "f2f_invite()");
         return 0;
     }
     // create a face-to-face outbound session
@@ -271,7 +271,6 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num == 0 || outbound_sessions == NULL) {
-        printf("<c>send_one2one_msg() no outbound sessions\n");
         // save common_plaintext_data and will be resent after the first outbound session established
         Skissm__E2eeAddress *to = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
         skissm__e2ee_address__init(to);
@@ -346,7 +345,7 @@ Skissm__CreateGroupResponse *create_group(
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
     if (account == NULL) {
-        ssm_notify_error(BAD_ACCOUNT, "create_group()");
+        ssm_notify_log(BAD_ACCOUNT, "create_group()");
         return NULL;
     }
 
@@ -385,7 +384,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
-        ssm_notify_error(BAD_GROUP_SESSION, "add_group_members()");
+        ssm_notify_log(BAD_GROUP_SESSION, "add_group_members()");
         return NULL;
     }
 
@@ -425,7 +424,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
 
     if (outbound_group_session == NULL) {
-        ssm_notify_error(BAD_GROUP_SESSION, "remove_group_members()");
+        ssm_notify_log(BAD_GROUP_SESSION, "remove_group_members()");
         return NULL;
     }
 

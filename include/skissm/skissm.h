@@ -97,7 +97,7 @@ extern "C" {
 
 #include "skissm/session.h"
 #include "skissm/cipher.h"
-#include "skissm/error.h"
+#include "skissm/log_code.h"
 
 #define E2EE_PROTOCOL_VERSION           "E2EE_PROTOCOL_v1.0"
 #define E2EE_GROUP_PRE_KEY_VERSION      "E2EE_GROUP_PRE_KEY_v1.0"
@@ -474,11 +474,11 @@ typedef struct e2ee_proto_handler_t {
 
 typedef struct skissm_event_handler_t {
     /**
-     * @brief notify error
-     * @param error_code
-     * @param error_msg
+     * @brief notify log msg
+     * @param log_code
+     * @param log_msg
      */
-    void (*on_error)(ErrorCode, const char *);
+    void (*on_log)(LogCode, const char *);
     /**
      * @brief notify user registered event
      * @param account
@@ -608,7 +608,7 @@ void skissm_end();
 
 skissm_plugin_t *get_skissm_plugin();
 
-void ssm_notify_error(ErrorCode, char *);
+void ssm_notify_log(LogCode, const char *, ...);
 void ssm_notify_user_registered(Skissm__Account *account);
 void ssm_notify_inbound_session_invited(Skissm__E2eeAddress *from);
 void ssm_notify_inbound_session_ready(Skissm__Session *inbound_session);

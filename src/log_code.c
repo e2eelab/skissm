@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "skissm/error.h"
+#include "skissm/log_code.h"
 
-static const char * ERROR_STRINGS[] = {
-    "SUCCESS",
+static const char * LOG_CODE_STRINGS[] = {
+    "DEBUG_LOG",
     "BAD_ACCOUNT",
     "BAD_SESSION",
     "BAD_GROUP_SESSION",
@@ -31,7 +31,7 @@ static const char * ERROR_STRINGS[] = {
     "BAD_MESSAGE_FORMAT",
     "BAD_MESSAGE_MAC",
     "BAD_MESSAGE_SEQUENCE",
-    "MESSAGE_KEY_NOT_FOUND",
+    "BAD_MESSAGE_KEY",
     "BAD_SIGN_KEY",
     "BAD_SIGNED_PRE_KEY",
     "BAD_ONE_TIME_PRE_KEY",
@@ -42,10 +42,10 @@ static const char * ERROR_STRINGS[] = {
     "NOT_ENOUGH_SPACE"
 };
 
-const char *error_string(ErrorCode error_code){
-    if (error_code < (sizeof(ERROR_STRINGS)/sizeof(ERROR_STRINGS[0]))) {
-        return ERROR_STRINGS[error_code];
+const char *logcode_string(LogCode log_code){
+    if (log_code < (sizeof(LOG_CODE_STRINGS)/sizeof(LOG_CODE_STRINGS[0]))) {
+        return LOG_CODE_STRINGS[log_code];
     } else {
-        return "UNKNOWN_ERROR";
+        return "UNKNOWN_LOG_CODE";
     }
 }

@@ -39,9 +39,13 @@ void print_hex(char *title, uint8_t *msg, size_t msg_len) {
     printf("\n");
 }
 
-void print_msg(char *title, uint8_t *msg, size_t len) { printf("😊 %s [msg len=%zu]: %.*s\n", title, len, (int)len, msg); }
+void print_msg(char *title, uint8_t *msg, size_t len) {
+    printf("😊 %s [msg len=%zu]: %.*s\n", title, len, (int)len, msg);
+}
 
-void print_error(char *error_msg, int error_code) { printf("💀 [ErrorCode=%d]: %s\n", error_code, error_msg); }
+void print_log(char *log_msg, int log_code) {
+    printf("💀 [ErrorCode=%d]: %s\n", log_code, log_msg);
+}
 
 void print_result(char *title, bool success) {
     if (success)

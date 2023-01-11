@@ -31,15 +31,15 @@
 #include "test_plugin.h"
 #include "test_util.h"
 
-static void on_error(ErrorCode error_code, const char *error_msg) {
-    print_error((char *)error_msg, error_code);
+static void on_log(LogCode log_code, const char *log_msg) {
+    print_log((char *)log_msg, log_code);
 }
 
 static void on_user_registered(Skissm__Account *account){
 }
 
 static skissm_event_handler_t test_event_handler = {
-    on_error,
+    on_log,
     on_user_registered,
     NULL,
     NULL,

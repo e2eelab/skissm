@@ -22,14 +22,13 @@
 #include <stdio.h>
 
 #include "skissm/cipher.h"
-#include "skissm/error.h"
 #include "skissm/mem_util.h"
 
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
-static const size_t MAX_RECEIVER_CHAIN_NODES = 4;
-static const size_t MAX_SKIPPED_MESSAGE_KEY_NODES = 32;
-static const size_t MAX_CHAIN_INDEX = 512;
+static const size_t MAX_RECEIVER_CHAIN_NODES = 8;
+static const size_t MAX_SKIPPED_MESSAGE_KEY_NODES = 1024;
+static const size_t MAX_CHAIN_INDEX = 1024;
 
 static void copy_receiver_chain_node(
     Skissm__ReceiverChainNode **dest,
@@ -192,7 +191,7 @@ static size_t verify_and_decrypt(
     );
 
     if (result == 0)
-        ssm_notify_error(BAD_MESSAGE_DECRYPTION, "verify_and_decrypt()");
+        ssm_notify_log(BAD_MESSAGE_DECRYPTION, "verify_and_decrypt()");
 
     return result;
 }
@@ -205,13 +204,13 @@ static size_t verify_and_decrypt_for_existing_chain(
     uint8_t **plaintext_data
 ) {
     if (payload->sequence < chain->index) {
-        ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
+        ssm_notify_log(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
         return 0;
     }
 
     // limit the number of hashes we're prepared to compute
     if (payload->sequence - chain->index > MAX_CHAIN_INDEX) {
-        ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
+        ssm_notify_log(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
         return 0;
     }
 
@@ -252,13 +251,13 @@ static size_t verify_and_decrypt_for_new_chain(
     /** The sender_chain will not be released since we need our ratchet key
      * for ECDH or Decaps. */
     if (ratchet->sender_chain == NULL) {
-        ssm_notify_error(BAD_MESSAGE_DECRYPTION, "verify_and_decrypt_for_new_chain()");
+        ssm_notify_log(BAD_MESSAGE_DECRYPTION, "verify_and_decrypt_for_new_chain()");
         return 0;
     }
 
     // Limit the number of hashes we're prepared to compute
     if (payload->sequence > MAX_CHAIN_INDEX) {
-        ssm_notify_error(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
+        ssm_notify_log(BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
         return 0;
     }
 
@@ -444,6 +443,8 @@ void encrypt_ratchet(
     advance_chain_key(cipher_suite, ratchet->sender_chain->chain_key);
 
     uint32_t sequence = msg_key->index;
+    ssm_notify_log(DEBUG_LOG, "encrypt_ratchet() seq: %d\n", sequence);
+    
     uint32_t ratchet_key_len;
     if (cipher_suite->get_crypto_param().pqc_param == false) {
         ratchet_key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
@@ -477,6 +478,8 @@ size_t decrypt_ratchet(
     Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload,
     uint8_t **plaintext_data
 ) {
+    ssm_notify_log(DEBUG_LOG, "decrypt_ratchet() seq: %d\n", payload->sequence);
+
     int ratchet_key_len;
     if (cipher_suite->get_crypto_param().pqc_param == false) {
         ratchet_key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
@@ -486,12 +489,12 @@ size_t decrypt_ratchet(
 
     if (!payload->ratchet_key.data
         || !payload->ciphertext.data) {
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
         return 0;
     }
 
     if (payload->ratchet_key.len != ratchet_key_len) {
-        ssm_notify_error(BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
         return 0;
     }
 
@@ -520,7 +523,7 @@ size_t decrypt_ratchet(
             ratchet, ad, payload, plaintext_data
         );
         if (result == 0) {
-            ssm_notify_error(BAD_MESSAGE_MAC, "verify_and_decrypt_for_new_chain() in decrypt_ratchet()");
+            ssm_notify_log(BAD_MESSAGE_MAC, "verify_and_decrypt_for_new_chain() in decrypt_ratchet()");
             return 0;
         }
     } else if (receiver_chain->chain_key->index > payload->sequence) {
@@ -561,14 +564,14 @@ size_t decrypt_ratchet(
                     (ratchet->n_skipped_msg_keys)--;
                     break;
                 } else {
-                    ssm_notify_error(BAD_MESSAGE_MAC, "verify_and_decrypt() in decrypt_ratchet()");
+                    ssm_notify_log(BAD_MESSAGE_MAC, "verify_and_decrypt() in decrypt_ratchet()");
                     return 0;
                 }
             }
         }
         if (result == 0) {
             // the corresponding message key not found
-            ssm_notify_error(MESSAGE_KEY_NOT_FOUND, "decrypt_ratchet()");
+            ssm_notify_log(BAD_MESSAGE_KEY, "decrypt_ratchet()");
         }
     } else {
         /* They use the same ratchet key. The sequence of the payload(incoming message) 
@@ -579,7 +582,7 @@ size_t decrypt_ratchet(
             payload, plaintext_data
         );
         if (result == 0) {
-            ssm_notify_error(BAD_MESSAGE_MAC, "verify_and_decrypt_for_existing_chain() in decrypt_ratchet()");
+            ssm_notify_log(BAD_MESSAGE_MAC, "verify_and_decrypt_for_existing_chain() in decrypt_ratchet()");
             return 0;
         }
     }

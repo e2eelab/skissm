@@ -24,7 +24,6 @@
 #include "skissm/account.h"
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client_internal.h"
-#include "skissm/error.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
@@ -43,7 +42,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(
         || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len)
         || (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)
     ) {
-        ssm_notify_error(BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
+        ssm_notify_log(BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
         return NULL;
     }
     result = cipher_suite->verify(
@@ -52,7 +51,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(
         their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len
     );
     if (result < 0) {
-        ssm_notify_error(BAD_SIGNATURE, "pqc_new_outbound_session()");
+        ssm_notify_log(BAD_SIGNATURE, "pqc_new_outbound_session()");
         return NULL;
     }
 
@@ -143,7 +142,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
     if (local_account->signed_pre_key->spk_id != msg->bob_signed_pre_key_id) {
         get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->account_id, msg->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
-            ssm_notify_error(BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
+            ssm_notify_log(BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
             return -1;
         } else {
             old_spk = 1;
@@ -175,7 +174,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
         our_one_time_pre_key = lookup_one_time_pre_key(local_account, msg->bob_one_time_pre_key_id);
 
         if (!our_one_time_pre_key) {
-            ssm_notify_error(BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
+            ssm_notify_log(BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
             return -1;
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
@@ -251,7 +250,7 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     Skissm__Account *loacl_account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->from, &loacl_account);
     if (loacl_account == NULL) {
-        ssm_notify_error(BAD_ACCOUNT, "pqc_complete_outbound_session()");
+        ssm_notify_log(BAD_ACCOUNT, "pqc_complete_outbound_session()");
         return -1;
     }
 

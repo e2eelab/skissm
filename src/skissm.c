@@ -18,6 +18,9 @@
  */
 #include "skissm/skissm.h"
 
+#include <stdarg.h>
+#include <stdio.h>
+
 #include "skissm/account.h"
 #include "skissm/mem_util.h"
 
@@ -60,9 +63,15 @@ skissm_plugin_t *get_skissm_plugin() {
     return skissm_plugin;
 }
 
-void ssm_notify_error(ErrorCode error_code, char *error_msg) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_error(error_code, error_msg);
+void ssm_notify_log(LogCode log_code, const char *msg_fmt, ...) {
+    if (skissm_plugin != NULL) {
+        char msg[256] = {0};
+        va_list arg;
+        va_start(arg, msg_fmt);
+        snprintf(msg, 256, msg_fmt, arg);
+        va_end(arg);
+        skissm_plugin->event_handler.on_log(log_code, msg);
+    }
 }
 
 void ssm_notify_user_registered(Skissm__Account *account){

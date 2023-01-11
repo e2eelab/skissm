@@ -92,9 +92,9 @@ set(skissm_src
     src/crypto.c
     src/e2ee_client_internal.c
     src/e2ee_client.c
-    src/error.c
     src/group_session.c
     src/group_session_manager.c
+    src/log_code.c
     src/mem_util.c
     src/ratchet.c
     src/session.c
@@ -110,9 +110,9 @@ set(src_headers
     include/skissm/crypto.h
     include/skissm/e2ee_client_internal.h
     include/skissm/e2ee_client.h
-    include/skissm/error.h
     include/skissm/group_session.h
     include/skissm/group_session_manager.h
+    include/skissm/log_code.h
     include/skissm/mem_util.h
     include/skissm/ratchet.h
     include/skissm/session.h

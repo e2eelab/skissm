@@ -58,8 +58,8 @@ typedef struct f2f_password_data {
 
 static f2f_password_data *f2f_pw_data = NULL;
 
-static void on_error(ErrorCode error_code, const char *error_msg) {
-    print_error((char *)error_msg, error_code);
+static void on_log(LogCode log_code, const char *log_msg) {
+    print_log((char *)log_msg, log_code);
 }
 
 static void on_user_registered(Skissm__Account *account){
@@ -197,7 +197,7 @@ static void on_f2f_session_ready(Skissm__Session *session) {
 }
 
 static skissm_event_handler_t test_event_handler = {
-    on_error,
+    on_log,
     on_user_registered,
     on_inbound_session_invited,
     on_inbound_session_ready,

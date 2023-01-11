@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ERROR_H_
-#define ERROR_H_
+#ifndef LOG_CODE_H_
+#define LOG_CODE_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-enum ErrorCode {
-  SUCCESS = 0,
+enum LogCode {
+  DEBUG_LOG = 0,
   BAD_ACCOUNT = 1,
   BAD_SESSION = 2,
   BAD_GROUP_SESSION = 3,
@@ -36,7 +36,7 @@ enum ErrorCode {
   BAD_MESSAGE_FORMAT = 9,
   BAD_MESSAGE_MAC = 10,
   BAD_MESSAGE_SEQUENCE = 11,
-  MESSAGE_KEY_NOT_FOUND = 12,
+  BAD_MESSAGE_KEY = 12,
   BAD_SIGN_KEY = 13,
   BAD_SIGNED_PRE_KEY = 14,
   BAD_ONE_TIME_PRE_KEY = 15,
@@ -47,18 +47,18 @@ enum ErrorCode {
   NOT_ENOUGH_SPACE = 20
 };
 
-typedef enum ErrorCode ErrorCode;
+typedef enum LogCode LogCode;
 
 /**
- * @brief Get the string representation of a given error code.
+ * @brief Get the string representation of a given log code.
  *
- * @param error_code The error code
- * @return The error string
+ * @param log_code The log code
+ * @return The log code string
  */
-const char *error_string(ErrorCode error_code);
+const char *logcode_string(LogCode log_code);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* ERROR_H_ */
+#endif /* LOG_CODE_H_ */
