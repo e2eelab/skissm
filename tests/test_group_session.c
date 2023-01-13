@@ -247,7 +247,7 @@ static void test_end() {
 
 static void mock_alice_account(uint64_t account_id, const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
-    const char *device_id = generate_uuid_str();
+    char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
@@ -259,11 +259,15 @@ static void mock_alice_account(uint64_t account_id, const char *user_name) {
             auth_code);
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_bob_account(uint64_t account_id, const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
-    const char *device_id = generate_uuid_str();
+    char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response =
@@ -275,11 +279,15 @@ static void mock_bob_account(uint64_t account_id, const char *user_name) {
             auth_code);
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_claire_account(uint64_t account_id, const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
-    const char *device_id = generate_uuid_str();
+    char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
     Skissm__RegisterUserResponse *response =
@@ -291,6 +299,70 @@ static void mock_claire_account(uint64_t account_id, const char *user_name) {
             auth_code);
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
+}
+
+static void mock_alice_pqc_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    char *device_id = generate_uuid_str();
+    const char *authenticator = "alice@domain.com.tw";
+    const char *auth_code = "123456";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
+}
+
+static void mock_bob_pqc_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    char *device_id = generate_uuid_str();
+    const char *authenticator = "bob@domain.com.tw";
+    const char *auth_code = "654321";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
+}
+
+static void mock_claire_pqc_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    char *device_id = generate_uuid_str();
+    const char *authenticator = "claire@domain.com.tw";
+    const char *auth_code = "987654";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
 }
 
 static void test_encryption(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext_data, size_t plaintext_data_len) {
@@ -723,7 +795,7 @@ static void test_continual() {
     printf("====================================\n");
 }
 
-void test_multiple_devices() {
+static void test_multiple_devices() {
     // test start
     printf("test_multiple_devices begin!!!\n");
     tear_up();
@@ -819,6 +891,104 @@ void test_multiple_devices() {
     printf("====================================\n");
 }
 
+static void test_pqc_multiple_devices() {
+    // test start
+    printf("test_pqc_multiple_devices begin!!!\n");
+    tear_up();
+    test_begin();
+
+    // Prepare account
+    mock_alice_pqc_account(1, "Alice");
+    mock_alice_pqc_account(2, "Alice");
+    mock_bob_pqc_account(3, "Bob");
+    mock_bob_pqc_account(4, "Bob");
+    mock_claire_pqc_account(5, "Claire");
+    mock_claire_pqc_account(6, "Claire");
+
+    sleep(2);
+
+    Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
+    Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
+    char *alice_user_id = alice_address_1->user->user_id;
+    char *alice_domain = alice_address_1->domain;
+    Skissm__E2eeAddress *bob_address_1 = account_data[2]->address;
+    Skissm__E2eeAddress *bob_address_2 = account_data[3]->address;
+    char *bob_user_id = bob_address_1->user->user_id;
+    char *bob_domain = bob_address_1->domain;
+    Skissm__E2eeAddress *claire_address_1 = account_data[4]->address;
+    Skissm__E2eeAddress *claire_address_2 = account_data[5]->address;
+    char *claire_user_id = claire_address_1->user->user_id;
+    char *claire_domain = claire_address_1->domain;
+
+    // face-to-face session between each member's devices
+    uint8_t password_alice[] = "password alice";
+    size_t password_alice_len = sizeof(password_alice) - 1;
+    on_f2f_password_created(alice_address_1, alice_address_2, password_alice, password_alice_len);
+    f2f_invite(alice_address_1, alice_address_2, 0, password_alice, password_alice_len);
+
+    uint8_t password_bob[] = "password bob";
+    size_t password_bob_len = sizeof(password_bob) - 1;
+    on_f2f_password_created(bob_address_1, bob_address_2, password_bob, password_bob_len);
+    f2f_invite(bob_address_1, bob_address_2, 0, password_bob, password_bob_len);
+
+    uint8_t password_claire[] = "password claire";
+    size_t password_claire_len = sizeof(password_claire) - 1;
+    on_f2f_password_created(claire_address_1, claire_address_2, password_claire, password_claire_len);
+    f2f_invite(claire_address_1, claire_address_2, 0, password_claire, password_claire_len);
+
+    sleep(3);
+
+    // the first group member is Alice
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
+    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup(alice_user_id);
+    group_members[0]->domain = strdup(alice_domain);
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    // the second group member is Bob
+    group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup(bob_user_id);
+    group_members[1]->domain = strdup(bob_domain);
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the third group member is Claire
+    group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[2]);
+    group_members[2]->user_id = strdup(claire_user_id);
+    group_members[2]->domain = strdup(claire_domain);
+    group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // create the group
+    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address_1, "Group name", group_members, 3);
+
+    sleep(2);
+    // Alice sends a message to the group via the first device
+    uint8_t plaintext_1[] = "This message is from Alice's first device via pqc session.";
+    size_t plaintext_1_len = sizeof(plaintext_1) - 1;
+    test_encryption(account_data[0]->address, group.group_address, plaintext_1, plaintext_1_len);
+
+    // Bob sends a message to the group via the second device
+    uint8_t plaintext_2[] = "This message is from Bob's second device via pqc session.";
+    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
+    test_encryption(account_data[3]->address, group.group_address, plaintext_2, plaintext_2_len);
+
+    // Claire sends a message to the group via the second device
+    uint8_t plaintext_3[] = "This message is from Claire's second device via pqc session.";
+    size_t plaintext_3_len = sizeof(plaintext_3) - 1;
+    test_encryption(account_data[5]->address, group.group_address, plaintext_3, plaintext_3_len);
+
+    // release
+    skissm__group_member__free_unpacked(group_members[0], NULL);
+    skissm__group_member__free_unpacked(group_members[1], NULL);
+    skissm__group_member__free_unpacked(group_members[2], NULL);
+    free(group_members);
+    skissm__create_group_response__free_unpacked(create_group_response, NULL);
+
+    // test stop
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
 int main() {
     test_create_group();
     test_add_group_members();
@@ -827,6 +997,7 @@ int main() {
     test_interaction();
     test_continual();
     test_multiple_devices();
+    test_pqc_multiple_devices();
 
     return 0;
 }

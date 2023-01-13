@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include <unistd.h>
 #include <assert.h>
 
 #include "skissm/crypto.h"
@@ -38,14 +39,17 @@ static void test_file(){
     uint8_t *plaintext, *decrypted_plaintext;
     size_t plaintext_len, decrypted_plaintext_len;
 
+    char *cur_path = getcwd(NULL, 0);
+    size_t cur_path_len = strlen(cur_path);
+
     size_t tot_test = 2000;
     FILE *fptr;
     int i;
     for (i = 0; i < tot_test; i++){
-        char in_str[20], out_str[20];
+        char in_str[20], out_str[cur_path_len + 50];
         sprintf(in_str, "./data/%d", i);
         if ((fptr = fopen(in_str, "r")) == NULL){
-            printf("Error! opening file");
+            printf("Error! Opening file in the data folder failed!\n");
             // Program exits if the file pointer returns NULL.
             exit(1);
         } else{
@@ -57,14 +61,16 @@ static void test_file(){
             fclose(fptr);
         }
 
-        // sprintf(out_str, "./data/%d", i);
+        sprintf(out_str, "%s/encrypted_file_%d", cur_path, i);
         encrypt_aes_file(in_str, out_str, ad, key);
 
-        char decrypted_file[20];
-        // sprintf(decrypted_file, "./data/%d", i);
-        decrypt_aes_file(out_str, decrypted_file, ad, key);
+        char decrypted_file[cur_path_len + 50];
+        sprintf(decrypted_file, "%s/decrypted_file_%d", cur_path, i);
+        if (decrypt_aes_file(out_str, decrypted_file, ad, key) == -1) {
+            printf("Fail decryption!!!\n");
+        }
         if ((fptr = fopen(decrypted_file, "r")) == NULL){
-            printf("Error! opening file");
+            printf("Error! Opening the decrypted file failed!\n");
             // Program exits if the file pointer returns NULL.
             exit(1);
         } else{
@@ -83,8 +89,12 @@ static void test_file(){
         free_mem((void **)&plaintext, plaintext_len);
         free_mem((void **)&decrypted_plaintext, decrypted_plaintext_len);
     }
+
+    free(cur_path);
 }
 
 int main() {
+    test_file();
+
     return 0;
 }

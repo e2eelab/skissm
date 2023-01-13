@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "skissm/cipher.h"
+#include "skissm/e2ee_client.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
 #include "skissm/session_manager.h"
@@ -323,6 +324,50 @@ static void test_pending_request_data() {
     free_mem((void **)&(request_data_list[0]), request_data_len_list[0]);
     free_mem((void **)&request_data_list, sizeof(uint8_t *) * pending_request_data_num);
     free_mem((void **)&request_data_len_list, sizeof(size_t) * pending_request_data_num);
+
+    // test stop
+    tear_down();
+}
+
+static void test_sending_before_accept() {
+    // test start
+    tear_up();
+
+    // register
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    char *alice_device_id = generate_uuid_str();
+    const char *alice_authenticator = "alice@domain.com.tw";
+    const char *alice_auth_code = "123456";
+    Skissm__RegisterUserResponse *alice_response = register_user(
+        1, e2ee_pack_id, "Alice", alice_device_id, alice_authenticator, alice_auth_code
+    );
+    char *bob_device_id = generate_uuid_str();
+    const char *bob_authenticator = "bob@domain.com.tw";
+    const char *bob_auth_code = "654321";
+    Skissm__RegisterUserResponse *bob_response = register_user(
+        2, e2ee_pack_id, "Bob", bob_device_id, bob_authenticator, bob_auth_code
+    );
+
+    Skissm__E2eeAddress *alice_address = alice_response->address, *bob_address = bob_response->address;
+
+    // send the message first
+    uint8_t plaintext[] = "This message will be sent to Bob before he accepts Alice's invitation.";
+    size_t plaintext_len = sizeof(plaintext) - 1;
+
+    int i;
+    for (i = 0; i < 20; i++) {
+        send_one2one_msg(alice_address, bob_address->user->user_id, bob_address->domain, plaintext, plaintext_len);
+    }
+
+    // invite
+    Skissm__InviteResponse *response = invite(alice_address, bob_address->user->user_id, bob_address->domain);
+
+    // release
+    free(alice_device_id);
+    free(bob_device_id);
+    skissm__register_user_response__free_unpacked(alice_response, NULL);
+    skissm__register_user_response__free_unpacked(bob_response, NULL);
+    skissm__invite_response__free_unpacked(response, NULL);
 
     // test stop
     tear_down();

@@ -177,7 +177,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
         size_t request_data_len = skissm__send_one2one_msg_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__send_one2one_msg_request__pack(request, request_data);
-        // store prnding request
+        // store pending request
         char *pending_request_id = generate_uuid_str();
         get_skissm_plugin()->db_handler.store_pending_request_data(
             outbound_session->session_owner, pending_request_id, SEND_ONE2ONE_MSG_REQUEST, request_data, request_data_len

@@ -256,7 +256,7 @@ static void test_end(){
 
 static void mock_alice_account(uint64_t account_id, const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
-    const char *device_id = generate_uuid_str();
+    char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
@@ -268,11 +268,15 @@ static void mock_alice_account(uint64_t account_id, const char *user_name) {
             auth_code);
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_bob_account(uint64_t account_id, const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
-    const char *device_id = generate_uuid_str();
+    char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response =
@@ -284,11 +288,15 @@ static void mock_bob_account(uint64_t account_id, const char *user_name) {
             auth_code);
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_alice_pqc_account(uint64_t account_id, const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
-    const char *device_id = generate_uuid_str();
+    char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
@@ -300,11 +308,15 @@ static void mock_alice_pqc_account(uint64_t account_id, const char *user_name) {
             auth_code);
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_bob_pqc_account(uint64_t account_id, const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
-    const char *device_id = generate_uuid_str();
+    char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response =
@@ -316,6 +328,10 @@ static void mock_bob_pqc_account(uint64_t account_id, const char *user_name) {
             auth_code);
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
 }
 
 static void test_encryption(

@@ -162,7 +162,7 @@ size_t f2f_invite(
         cur_f2f_session_mid->next = (f2f_session_mid *)malloc(sizeof(f2f_session_mid));
         copy_address_from_address(&(cur_f2f_session_mid->next->peer_address), to);
 
-        cur_f2f_session_mid->next->f2f_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+        cur_f2f_session_mid->next->f2f_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
         Skissm__Session *f2f_session = cur_f2f_session_mid->next->f2f_session;
         initialise_session(f2f_session, e2ee_pack_id, from, to);
         copy_address_from_address(&(f2f_session->session_owner), from);
@@ -173,7 +173,7 @@ size_t f2f_invite(
         context->f2f_session_mid_list = (f2f_session_mid *)malloc(sizeof(f2f_session_mid));
         copy_address_from_address(&(context->f2f_session_mid_list->peer_address), to);
 
-        context->f2f_session_mid_list->f2f_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+        context->f2f_session_mid_list->f2f_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
         Skissm__Session *f2f_session = context->f2f_session_mid_list->f2f_session;
         initialise_session(f2f_session, e2ee_pack_id, from, to);
         copy_address_from_address(&(f2f_session->session_owner), from);
@@ -291,7 +291,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         skissm__e2ee_address__free_unpacked(to, NULL);
         free_mem((void **)&common_plaintext_data, common_plaintext_data_len);
         // done
-        Skissm__SendOne2oneMsgResponse *response = ( Skissm__SendOne2oneMsgResponse *) malloc(sizeof( Skissm__SendOne2oneMsgResponse));
+        Skissm__SendOne2oneMsgResponse *response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
         skissm__send_one2one_msg_response__init(response);
         response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
         return response;
@@ -310,7 +310,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
                 common_plaintext_data,
                 common_plaintext_data_len
             );
-            //release
+            // release
             skissm__session__free_unpacked(outbound_session, NULL);
             continue;
         }

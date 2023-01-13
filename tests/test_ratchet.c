@@ -28,6 +28,26 @@
 
 static const cipher_suite_t *test_cipher_suite;
 
+static void on_log(LogCode log_code, const char *log_msg) {
+    print_log((char *)log_msg, log_code);
+}
+
+static skissm_event_handler_t test_event_handler = {
+    on_log,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+};
+
 static void test_alice_to_bob(
     Skissm__KeyPair alice_ratchet_key,
     Skissm__KeyPair bob_spk,
@@ -258,6 +278,7 @@ static void test_two_ratchets(
 int main() {
     // test start
     tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
     test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key, bob_ratchet_key;

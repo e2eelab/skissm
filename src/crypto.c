@@ -359,15 +359,15 @@ int encrypt_aes_file(
 ) {
     FILE *infile, *outfile;
     infile = fopen(in_file_path, "r");
-    outfile = fopen(out_file_path, "a");
+    outfile = fopen(out_file_path, "w");
 
     fseek(infile, 0, SEEK_END);
     long size = ftell(infile);
     fseek(infile, 0, SEEK_SET);
 
     int max_plaintext_size = 8192;
-    char in_buffer[max_plaintext_size];
-    char out_buffer[8192];
+    unsigned char in_buffer[max_plaintext_size];
+    unsigned char out_buffer[8192];
 
     int times = size / max_plaintext_size;
     int rest = size % max_plaintext_size;
@@ -422,15 +422,15 @@ int decrypt_aes_file(
 ) {
     FILE *infile, *outfile;
     infile = fopen(in_file_path, "r+");
-    outfile = fopen(out_file_path, "a");
+    outfile = fopen(out_file_path, "w");
 
     fseek(infile, 0, SEEK_END);
     long size = ftell(infile);
     fseek(infile, 0, SEEK_SET);
 
     int max_ciphertext_size = 8192;
-    char in_buffer[max_ciphertext_size];
-    char out_buffer[8192];
+    unsigned char in_buffer[max_ciphertext_size];
+    unsigned char out_buffer[8192];
 
     int times = (size - AES256_GCM_TAG_LENGTH) / max_ciphertext_size;
     int rest = (size - AES256_GCM_TAG_LENGTH) % max_ciphertext_size;
@@ -467,7 +467,7 @@ int decrypt_aes_file(
     if (ret == 0) {
         uint8_t tag[AES256_GCM_TAG_LENGTH];
         if ((ret = mbedtls_gcm_finish(&ctx, tag, AES256_GCM_TAG_LENGTH)) == 0) {
-            fwrite(tag, sizeof(char), AES256_GCM_TAG_LENGTH, outfile);
+            // fwrite(tag, sizeof(char), AES256_GCM_TAG_LENGTH, outfile);
             // verify tag
             uint8_t input_tag[AES256_GCM_TAG_LENGTH];
             fread(input_tag, sizeof(uint8_t), AES256_GCM_TAG_LENGTH, infile);
