@@ -49,6 +49,9 @@
 /** amount of random data required to create a Curve25519 keypair */
 #define CURVE25519_RANDOM_LENGTH CURVE25519_KEY_LENGTH
 
+/** buffer length for file encryption/decryption */
+#define FILE_ENCRYPTION_BUFFER_LENGTH 8192
+
 static const uint8_t CURVE25519_BASEPOINT[32] = {9};
 
 static crypto_param_t ecdh_x25519_aes256_gcm_sha256_param = {
@@ -304,7 +307,7 @@ void crypto_aes_encrypt_gcm(
     unsigned char *tag_buf = ciphertext_data + plaintext_data_len;
     int ret;
     mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
-    int key_len = 256;
+    int key_len = AES256_KEY_LENGTH * 8;
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, key, key_len);
@@ -330,7 +333,7 @@ size_t crypto_aes_decrypt_gcm(
     unsigned char tag_buf[AES256_GCM_TAG_LENGTH];
     int ret;
     mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
-    int key_len = 256;
+    int key_len = AES256_KEY_LENGTH * 8;
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, key, key_len);
@@ -355,7 +358,8 @@ size_t crypto_aes_decrypt_gcm(
 
 int encrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
-    const ProtobufCBinaryData *ad, const uint8_t *aes_key
+    const uint8_t ad[AD_LENGTH],
+    const uint8_t aes_key[AES256_KEY_LENGTH]
 ) {
     FILE *infile, *outfile;
     infile = fopen(in_file_path, "r");
@@ -365,9 +369,10 @@ int encrypt_aes_file(
     long size = ftell(infile);
     fseek(infile, 0, SEEK_SET);
 
-    int max_plaintext_size = 8192;
+    int max_plaintext_size = FILE_ENCRYPTION_BUFFER_LENGTH;
     unsigned char in_buffer[max_plaintext_size];
-    unsigned char out_buffer[8192];
+    unsigned char out_buffer[FILE_ENCRYPTION_BUFFER_LENGTH];
+    int key_len = AES256_KEY_LENGTH * 8;
 
     int times = size / max_plaintext_size;
     int rest = size % max_plaintext_size;
@@ -375,12 +380,11 @@ int encrypt_aes_file(
     mbedtls_gcm_context ctx;
     mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
     int ret;
-    int key_len = 256;
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
         uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
-        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_FILE_IV_LENGTH, ad->data, ad->len);
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_FILE_IV_LENGTH, ad, AD_LENGTH);
     }
 
     if (ret == 0) {
@@ -418,19 +422,21 @@ int encrypt_aes_file(
 
 int decrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
-    const ProtobufCBinaryData *ad, const uint8_t *aes_key
+    const uint8_t ad[AD_LENGTH],
+    const uint8_t aes_key[AES256_KEY_LENGTH]
 ) {
     FILE *infile, *outfile;
     infile = fopen(in_file_path, "r+");
     outfile = fopen(out_file_path, "w");
+    int key_len = AES256_KEY_LENGTH * 8;
 
     fseek(infile, 0, SEEK_END);
     long size = ftell(infile);
     fseek(infile, 0, SEEK_SET);
 
-    int max_ciphertext_size = 8192;
+    int max_ciphertext_size = FILE_ENCRYPTION_BUFFER_LENGTH;
     unsigned char in_buffer[max_ciphertext_size];
-    unsigned char out_buffer[8192];
+    unsigned char out_buffer[FILE_ENCRYPTION_BUFFER_LENGTH];
 
     int times = (size - AES256_GCM_TAG_LENGTH) / max_ciphertext_size;
     int rest = (size - AES256_GCM_TAG_LENGTH) % max_ciphertext_size;
@@ -438,13 +444,12 @@ int decrypt_aes_file(
     mbedtls_gcm_context ctx;
     mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
     int ret;
-    int key_len = 256;
     int i;
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
         uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
-        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_FILE_IV_LENGTH, ad->data, ad->len);
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_FILE_IV_LENGTH, ad, AD_LENGTH);
     }
 
     if (ret == 0) {

@@ -178,12 +178,14 @@ size_t crypto_aes_decrypt_gcm(
 
 int encrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
-    const ProtobufCBinaryData *ad, const uint8_t *aes_key
+    const uint8_t ad[AD_LENGTH],
+    const uint8_t aes_key[AES256_KEY_LENGTH]
 );
 
 int decrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
-    const ProtobufCBinaryData *ad, const uint8_t *aes_key
+    const uint8_t ad[AD_LENGTH],
+    const uint8_t aes_key[AES256_KEY_LENGTH]
 );
 
 /**
