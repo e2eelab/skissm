@@ -49,6 +49,9 @@
 /** amount of random data required to create a Curve25519 keypair */
 #define CURVE25519_RANDOM_LENGTH CURVE25519_KEY_LENGTH
 
+#define AES256_FILE_AD "SKISSM ---> file encryption with AES256/GCM/Nopadding algorithm"
+#define AES256_FILE_AD_LEN 64
+
 /** buffer length for file encryption/decryption */
 #define FILE_ENCRYPTION_BUFFER_LENGTH 8192
 
@@ -358,7 +361,6 @@ size_t crypto_aes_decrypt_gcm(
 
 int encrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
-    const uint8_t *ad, size_t ad_len,
     const uint8_t aes_key[AES256_KEY_LENGTH]
 ) {
     FILE *infile, *outfile;
@@ -372,7 +374,9 @@ int encrypt_aes_file(
     int max_plaintext_size = FILE_ENCRYPTION_BUFFER_LENGTH;
     unsigned char in_buffer[max_plaintext_size];
     unsigned char out_buffer[FILE_ENCRYPTION_BUFFER_LENGTH];
+
     int key_len = AES256_KEY_LENGTH * 8;
+    uint8_t AD[AES256_FILE_AD_LEN] = AES256_FILE_AD;
 
     int times = size / max_plaintext_size;
     int rest = size % max_plaintext_size;
@@ -384,7 +388,7 @@ int encrypt_aes_file(
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
         uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
-        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_FILE_IV_LENGTH, ad, ad_len);
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_FILE_IV_LENGTH, AD, AES256_FILE_AD_LEN);
     }
 
     if (ret == 0) {
@@ -422,13 +426,14 @@ int encrypt_aes_file(
 
 int decrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
-    const uint8_t *ad, size_t ad_len,
     const uint8_t aes_key[AES256_KEY_LENGTH]
 ) {
     FILE *infile, *outfile;
     infile = fopen(in_file_path, "r+");
     outfile = fopen(out_file_path, "w");
+
     int key_len = AES256_KEY_LENGTH * 8;
+    uint8_t AD[AES256_FILE_AD_LEN] = AES256_FILE_AD;
 
     fseek(infile, 0, SEEK_END);
     long size = ftell(infile);
@@ -449,7 +454,7 @@ int decrypt_aes_file(
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
         uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
-        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_FILE_IV_LENGTH, ad, ad_len);
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_FILE_IV_LENGTH, AD, AES256_FILE_AD_LEN);
     }
 
     if (ret == 0) {
