@@ -358,7 +358,7 @@ size_t crypto_aes_decrypt_gcm(
 
 int encrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
-    const uint8_t ad[AD_LENGTH],
+    const uint8_t *ad, size_t ad_len,
     const uint8_t aes_key[AES256_KEY_LENGTH]
 ) {
     FILE *infile, *outfile;
@@ -384,7 +384,7 @@ int encrypt_aes_file(
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
         uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
-        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_FILE_IV_LENGTH, ad, AD_LENGTH);
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_FILE_IV_LENGTH, ad, ad_len);
     }
 
     if (ret == 0) {
@@ -422,7 +422,7 @@ int encrypt_aes_file(
 
 int decrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
-    const uint8_t ad[AD_LENGTH],
+    const uint8_t *ad, size_t ad_len,
     const uint8_t aes_key[AES256_KEY_LENGTH]
 ) {
     FILE *infile, *outfile;
@@ -449,7 +449,7 @@ int decrypt_aes_file(
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
         uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
-        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_FILE_IV_LENGTH, ad, AD_LENGTH);
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_FILE_IV_LENGTH, ad, ad_len);
     }
 
     if (ret == 0) {
