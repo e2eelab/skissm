@@ -52,6 +52,9 @@
 #define AES256_FILE_AD "SKISSM ---> file encryption with AES256/GCM/Nopadding algorithm"
 #define AES256_FILE_AD_LEN 64
 
+#define AES256_DATA_AD "SKISSM ---> data encryption with AES256/GCM/Nopadding algorithm"
+#define AES256_DATA_AD_LEN 64
+
 /** buffer length for file encryption/decryption */
 #define FILE_ENCRYPTION_BUFFER_LENGTH 8192
 
@@ -302,7 +305,7 @@ int crypto_sphincsplus_shake256_verify(
 
 void crypto_aes_encrypt_gcm(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
-    const uint8_t *key, const uint8_t *iv,
+    const uint8_t *aes_key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
     uint8_t *ciphertext_data
 ) {
@@ -313,20 +316,22 @@ void crypto_aes_encrypt_gcm(
     int key_len = AES256_KEY_LENGTH * 8;
 
     mbedtls_gcm_init(&ctx);
-    ret = mbedtls_gcm_setkey(&ctx, cipher, key, key_len);
-    ret = mbedtls_gcm_crypt_and_tag(
-        &ctx, MBEDTLS_GCM_ENCRYPT,
-        plaintext_data_len, iv,
-        AES256_IV_LENGTH, add, add_len, plaintext_data,
-        ciphertext_data, AES256_GCM_TAG_LENGTH, tag_buf
-    );
+    ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
+    if (ret == 0) {
+        ret = mbedtls_gcm_crypt_and_tag(
+            &ctx, MBEDTLS_GCM_ENCRYPT,
+            plaintext_data_len, iv,
+            AES256_IV_LENGTH, add, add_len, plaintext_data,
+            ciphertext_data, AES256_GCM_TAG_LENGTH, tag_buf
+        );
+    }
 
     mbedtls_gcm_free(&ctx);
 }
 
 size_t crypto_aes_decrypt_gcm(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
-    const uint8_t *key, const uint8_t *iv,
+    const uint8_t *aes_key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
     uint8_t *plaintext_data
 ) {
@@ -339,13 +344,15 @@ size_t crypto_aes_decrypt_gcm(
     int key_len = AES256_KEY_LENGTH * 8;
 
     mbedtls_gcm_init(&ctx);
-    ret = mbedtls_gcm_setkey(&ctx, cipher, key, key_len);
-    ret = mbedtls_gcm_crypt_and_tag(
-        &ctx, MBEDTLS_GCM_DECRYPT,
-        ciphertext_data_len - AES256_GCM_TAG_LENGTH, iv,
-        AES256_IV_LENGTH, add, add_len, ciphertext_data,
-        plaintext_data, AES256_GCM_TAG_LENGTH, tag_buf
-    );
+    ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
+    if (ret == 0) {
+        ret = mbedtls_gcm_crypt_and_tag(
+            &ctx, MBEDTLS_GCM_DECRYPT,
+            ciphertext_data_len - AES256_GCM_TAG_LENGTH, iv,
+            AES256_IV_LENGTH, add, add_len, ciphertext_data,
+            plaintext_data, AES256_GCM_TAG_LENGTH, tag_buf
+        );
+    }
     mbedtls_gcm_free(&ctx);
 
     // verify tag in "constant-time"
@@ -354,6 +361,79 @@ size_t crypto_aes_decrypt_gcm(
         diff |= input_tag_buf[i] ^ tag_buf[i];
     if (diff == 0) {
         return (ciphertext_data_len - AES256_GCM_TAG_LENGTH);
+    } else {
+        return 0;
+    }
+}
+
+size_t encrypt_aes_data(
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    const uint8_t aes_key[AES256_KEY_LENGTH],
+    uint8_t **ciphertext_data
+) {
+    size_t ciphertext_data_len = aes256_gcm_ciphertext_data_len(plaintext_data_len);
+    *ciphertext_data = (uint8_t *)malloc(ciphertext_data_len);
+
+    mbedtls_gcm_context ctx;
+    unsigned char *tag_buf = *ciphertext_data + plaintext_data_len;
+    int ret;
+    mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
+
+    int key_len = AES256_KEY_LENGTH * 8;
+    uint8_t AD[AES256_DATA_AD_LEN] = AES256_DATA_AD;
+
+    mbedtls_gcm_init(&ctx);
+    ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
+    if (ret == 0) {
+        uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
+        ret = mbedtls_gcm_crypt_and_tag(
+            &ctx, MBEDTLS_GCM_ENCRYPT,
+            plaintext_data_len, iv,
+            AES256_DATA_IV_LENGTH, AD, AES256_DATA_AD_LEN, plaintext_data,
+            *ciphertext_data, AES256_GCM_TAG_LENGTH, tag_buf
+        );
+    }
+
+    mbedtls_gcm_free(&ctx);
+}
+
+size_t decrypt_aes_data(
+    const uint8_t *ciphertext_data, size_t ciphertext_data_len,
+    const uint8_t aes_key[AES256_KEY_LENGTH],
+    uint8_t **plaintext_data
+) {
+    size_t plaintext_data_len = aes256_gcm_plaintext_data_len(ciphertext_data_len);
+    *plaintext_data = (uint8_t *)malloc(plaintext_data_len);
+
+    mbedtls_gcm_context ctx;
+    unsigned char *input_tag_buf =
+        (unsigned char *)(ciphertext_data + ciphertext_data_len - AES256_GCM_TAG_LENGTH);
+    unsigned char tag_buf[AES256_GCM_TAG_LENGTH];
+    int ret;
+    mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
+
+    int key_len = AES256_KEY_LENGTH * 8;
+    uint8_t AD[AES256_DATA_AD_LEN] = AES256_DATA_AD;
+
+    mbedtls_gcm_init(&ctx);
+    ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
+    if (ret == 0) {
+        uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
+        ret = mbedtls_gcm_crypt_and_tag(
+            &ctx, MBEDTLS_GCM_DECRYPT,
+            plaintext_data_len, iv,
+            AES256_DATA_IV_LENGTH, AD, AES256_DATA_AD_LEN, ciphertext_data,
+            *plaintext_data, AES256_GCM_TAG_LENGTH, tag_buf
+        );
+    }
+    mbedtls_gcm_free(&ctx);
+
+    // verify tag in "constant-time"
+    int diff = 0, i;
+    for (i = 0; i < AES256_GCM_TAG_LENGTH; i++)
+        diff |= input_tag_buf[i] ^ tag_buf[i];
+    if (diff == 0) {
+        return plaintext_data_len;
     } else {
         return 0;
     }
@@ -387,8 +467,8 @@ int encrypt_aes_file(
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
-        uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
-        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_FILE_IV_LENGTH, AD, AES256_FILE_AD_LEN);
+        uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_DATA_IV_LENGTH, AD, AES256_FILE_AD_LEN);
     }
 
     if (ret == 0) {
@@ -453,8 +533,8 @@ int decrypt_aes_file(
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
-        uint8_t iv[AES256_FILE_IV_LENGTH] = {0};
-        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_FILE_IV_LENGTH, AD, AES256_FILE_AD_LEN);
+        uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
+        ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_DATA_IV_LENGTH, AD, AES256_FILE_AD_LEN);
     }
 
     if (ret == 0) {

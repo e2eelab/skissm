@@ -53,7 +53,7 @@ extern "C" {
 #define AES256_GCM_TAG_LENGTH 16
 
 /** length of an aes256 initialisation vector for file encryption */
-#define AES256_FILE_IV_LENGTH 12
+#define AES256_DATA_IV_LENGTH 12
 
 crypto_param_t get_ecdh_x25519_aes256_gcm_sha256_param();
 
@@ -133,17 +133,12 @@ void crypto_sha256(
 );
 
 /**
- * Calculate output length for AES256 GCM mode encryption.
- */
-size_t crypto_aes_encrypt_gcm_length(size_t input_length);
-
-/**
  * @brief AES256 encrypt function in GCM mode
  * @see [AES256 GCM mode](https://datatracker.ietf.org/doc/html/rfc5288)
  *
  * @param plaintext_data
  * @param plaintext_data_len
- * @param key
+ * @param aes_key
  * @param iv
  * @param add
  * @param add_len
@@ -151,7 +146,7 @@ size_t crypto_aes_encrypt_gcm_length(size_t input_length);
  */
 void crypto_aes_encrypt_gcm(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
-    const uint8_t *key, const uint8_t *iv,
+    const uint8_t *aes_key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
     uint8_t *ciphertext_data
 );
@@ -162,25 +157,71 @@ void crypto_aes_encrypt_gcm(
  *
  * @param ciphertext_data
  * @param ciphertext_data_len
- * @param key
+ * @param aes_key
  * @param iv
  * @param add
  * @param add_len
  * @param plaintext_data
- * @return size_t
+ * @return size_t plaintext data length
  */
 size_t crypto_aes_decrypt_gcm(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
-    const uint8_t *key, const uint8_t *iv,
+    const uint8_t *aes_key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
     uint8_t *plaintext_data
 );
 
+/**
+ * @brief AES256 encrypt data in GCM mode
+ *
+ * @param plaintext_data
+ * @param plaintext_data_len
+ * @param aes_key
+ * @param ciphertext_data
+ * @return size_t ciphertext data length
+ */
+size_t encrypt_aes_data(
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    const uint8_t aes_key[AES256_KEY_LENGTH],
+    uint8_t **ciphertext_data
+);
+
+/**
+ * @brief AES256 decrypt data in GCM mode
+ *
+ * @param ciphertext_data
+ * @param ciphertext_data_len
+ * @param aes_key
+ * @param plaintext_data
+ * @return size_t plaintext data length
+ */
+size_t decrypt_aes_data(
+    const uint8_t *ciphertext_data, size_t ciphertext_data_len,
+    const uint8_t aes_key[AES256_KEY_LENGTH],
+    uint8_t **plaintext_data
+);
+
+/**
+ * @brief AES256 encrypt file in GCM mode
+ *
+ * @param in_file_path
+ * @param out_file_path
+ * @param aes_key
+ * @return int 0 for success
+ */
 int encrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t aes_key[AES256_KEY_LENGTH]
 );
 
+/**
+ * @brief AES256 decrypt file in GCM mode
+ *
+ * @param in_file_path
+ * @param out_file_path
+ * @param aes_key
+ * @return int 0 for success
+ */
 int decrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t aes_key[AES256_KEY_LENGTH]

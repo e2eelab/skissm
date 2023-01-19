@@ -57,11 +57,11 @@ static void test_file(){
         }
 
         sprintf(out_file_path, "%s/encrypted_file_%d", cur_path, i);
-        encrypt_aes_file(in_file_path, out_file_path, AD, 64, key);
+        encrypt_aes_file(in_file_path, out_file_path, key);
 
         char decrypted_file[cur_path_len + 50];
         sprintf(decrypted_file, "%s/decrypted_file_%d", cur_path, i);
-        if (decrypt_aes_file(out_file_path, decrypted_file, AD, 64, key) == -1) {
+        if (decrypt_aes_file(out_file_path, decrypted_file, key) == -1) {
             printf("Fail decryption!!!\n");
         }
         if ((fptr = fopen(decrypted_file, "r")) == NULL){

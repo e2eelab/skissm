@@ -194,6 +194,22 @@ typedef struct cipher_suite_t {
 } cipher_suite_t;
 
 /**
+ * @brief Calculate ciphertext data len for AES GCM.
+ *
+ * @param plaintext_data_length
+ * @return size_t length of ciphertext data
+ */
+size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length);
+
+/**
+ * @brief Calculate plaintext data len for AES GCM.
+ *
+ * @param ciphertext_data_len
+ * @return size_t length of plaintext data
+ */
+size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len);
+
+/**
  * @brief Encrypt plaintext with AES GCM.
  *
  * @param ad

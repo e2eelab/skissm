@@ -25,11 +25,11 @@
 #include "skissm/crypto.h"
 #include "skissm/mem_util.h"
 
-static inline size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length) {
+size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length) {
     return plaintext_data_length + AES256_GCM_TAG_LENGTH;
 }
 
-static inline size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len) {
+size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len) {
     return ciphertext_data_len - AES256_GCM_TAG_LENGTH;
 }
 
