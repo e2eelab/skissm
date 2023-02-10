@@ -88,6 +88,17 @@ static crypto_param_t kyber1024_sphincsplus_aes256_gcm_sha256_param = {
     AES256_GCM_TAG_LENGTH
 };
 
+static void crypto_curve25519_generate_private_key(uint8_t *private_key) {
+    uint8_t random[CURVE25519_RANDOM_LENGTH];
+    get_skissm_plugin()->common_handler.gen_rand(random, sizeof(random));
+
+    random[0] &= 248;
+    random[31] &= 127;
+    random[31] |= 64;
+
+    memcpy(private_key, random, CURVE25519_KEY_LENGTH);
+}
+
 crypto_param_t get_ecdh_x25519_aes256_gcm_sha256_param() {
     return ecdh_x25519_aes256_gcm_sha256_param;
 }
@@ -105,10 +116,7 @@ void crypto_curve25519_generate_key_pair(
     pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
     pub_key->len = CURVE25519_KEY_LENGTH;
 
-    uint8_t random[CURVE25519_RANDOM_LENGTH];
-    get_skissm_plugin()->common_handler.gen_rand(random, sizeof(random));
-
-    memcpy(priv_key->data, random, CURVE25519_KEY_LENGTH);
+    crypto_curve25519_generate_private_key(priv_key->data);
 
     curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
 }
@@ -126,11 +134,9 @@ void crypto_curve25519_signature_generate_key_pair(
 
     uint8_t msg[10] = {0};
     uint8_t signature[CURVE_SIGNATURE_LENGTH];
-    uint8_t random[CURVE25519_RANDOM_LENGTH];
 
     while (true) {
-        get_skissm_plugin()->common_handler.gen_rand(random, sizeof(random));
-        memcpy(priv_key->data, random, CURVE25519_KEY_LENGTH);
+        crypto_curve25519_generate_private_key(priv_key->data);
 
         curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
         crypto_curve25519_sign(priv_key->data, msg, 10, signature);
