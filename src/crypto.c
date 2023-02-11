@@ -401,6 +401,15 @@ size_t encrypt_aes_data(
     }
 
     mbedtls_gcm_free(&ctx);
+
+    // done
+    if (ret == 0) {
+        return ciphertext_data_len;
+    } else {
+        free_mem((void **)ciphertext_data, ciphertext_data_len);
+        *ciphertext_data = NULL;
+        return 0;
+    }
 }
 
 size_t decrypt_aes_data(
