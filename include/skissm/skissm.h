@@ -104,6 +104,7 @@ extern "C" {
 #define E2EE_PLAINTEXT_VERSION          "E2EE_PLAINTEXT_v1.0"
 #define UUID_LEN                        16
 #define SIGNED_PRE_KEY_EXPIRATION_MS    604800000 // 7 days
+#define INVITE_WAITING_TIME_MS          60000 // 1 minute
 
 typedef struct e2ee_pack_t {
     const char *e2ee_pack_id;

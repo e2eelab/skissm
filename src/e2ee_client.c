@@ -64,21 +64,47 @@ Skissm__RegisterUserResponse *register_user(
     return response;
 }
 
+Skissm__InviteResponse *reinvite(Skissm__Session *session) {
+    Skissm__InviteResponse *response = NULL;
+    if (!session->responded) {
+        // check the time we invited last time
+        int64_t now = get_skissm_plugin()->common_handler.gen_ts();
+        if (now < session->t_invite + INVITE_WAITING_TIME_MS)
+            return NULL;
+
+        // update the invitation time and resend
+        session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
+        get_skissm_plugin()->db_handler.store_session(session);
+        response = invite_internal(session);
+
+        if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            // unload outbound_session to enable retry
+            get_skissm_plugin()->db_handler.unload_session(session->session_owner, session->from, session->to);
+        }
+    }
+
+    return response;
+}
+
 Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
     Skissm__Session **outbound_sessions = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num == 0) {
         return get_pre_key_bundle_internal(from, to_user_id, to_domain, NULL, NULL, 0);
     } else {
+        Skissm__InviteResponse *response = NULL;
         size_t i;
         for (i = 0; i < outbound_sessions_num; i++) {
-            if (!outbound_sessions[i]->responded) {
-                // resend ?
-                // invite_internal
-                // the parameters are different between ECC and PQC
+            Skissm__Session *cur_outbound_session = outbound_sessions[i];
+            response = reinvite(cur_outbound_session);
+
+            // release
+            if (response != NULL) {
+                skissm__invite_response__free_unpacked(response, NULL);
+                response = NULL;
             }
             // release
-            skissm__session__free_unpacked(outbound_sessions[i], NULL);
+            skissm__session__free_unpacked(cur_outbound_session, NULL);
         }
         // release
         free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);

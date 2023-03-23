@@ -110,13 +110,10 @@ bool consume_new_user_device_msg(
  * @brief Create a Skissm__InviteRequest message to be sent to server.
  *
  * @param outbound_session
- * @param pre_shared_keys
- * @param pre_shared_keys_num
  * @return Skissm__InviteRequest*
  */
 Skissm__InviteRequest *produce_invite_request(
-    Skissm__Session *outbound_session,
-    ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num
+    Skissm__Session *outbound_session
 );
 
 /**

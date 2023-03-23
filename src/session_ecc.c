@@ -111,13 +111,17 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     // this is not a face-to-face session
     outbound_session->f2f = false;
 
+    // prepare the pre_shared_keys
+    outbound_session->n_pre_shared_keys = 1;
+    outbound_session->pre_shared_keys = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+    copy_protobuf_from_protobuf(outbound_session->pre_shared_keys, &(outbound_session->alice_ephemeral_key));
+
     // store sesson state before send invite
+    outbound_session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
-    // the pre_shared_keys is an array with only one element in it
-    ProtobufCBinaryData *pre_shared_keys[1] = {&(outbound_session->alice_ephemeral_key)};
     // send the invite request to the peer
-    Skissm__InviteResponse *response = invite_internal(outbound_session, pre_shared_keys, 1);
+    Skissm__InviteResponse *response = invite_internal(outbound_session);
 
     if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // unload outbound_session to enable retry

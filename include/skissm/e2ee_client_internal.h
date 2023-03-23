@@ -54,8 +54,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
  * @return Skissm__InviteResponse *
  */
 Skissm__InviteResponse *invite_internal(
-    Skissm__Session *outbound_session,
-    ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num
+    Skissm__Session *outbound_session
 );
 
 /**

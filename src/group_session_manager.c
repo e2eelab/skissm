@@ -359,12 +359,12 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     Skissm__SendGroupMsgRequest *request = (Skissm__SendGroupMsgRequest *)malloc(sizeof(Skissm__SendGroupMsgRequest));
     skissm__send_group_msg_request__init(request);
 
-    // Create the message key
+    // create the message key
     Skissm__MsgKey *msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
     skissm__msg_key__init(msg_key);
     create_group_message_key(cipher_suite, &(outbound_group_session->chain_key), msg_key);
 
-    // Prepare an e2ee message
+    // prepare an e2ee message
     Skissm__E2eeMsg *e2ee_msg = (Skissm__E2eeMsg *) malloc(sizeof(Skissm__E2eeMsg));
     skissm__e2ee_msg__init(e2ee_msg);
     e2ee_msg->version = strdup(outbound_group_session->version);
@@ -374,12 +374,12 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     copy_address_from_address(&(e2ee_msg->to), outbound_group_session->group_info->group_address);
     e2ee_msg->payload_case = SKISSM__E2EE_MSG__PAYLOAD_GROUP_MSG;
 
-    // Prepare a group_msg_payload
+    // prepare a group_msg_payload
     Skissm__GroupMsgPayload *group_msg_payload = (Skissm__GroupMsgPayload *) malloc(sizeof(Skissm__GroupMsgPayload));
     skissm__group_msg_payload__init(group_msg_payload);
     group_msg_payload->sequence = outbound_group_session->sequence;
 
-    // Encryption
+    // encryption
     group_msg_payload->ciphertext.len = cipher_suite->encrypt(
         &(outbound_group_session->associated_data),
         msg_key->derived_key.data,
@@ -388,7 +388,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
         &(group_msg_payload->ciphertext.data)
     );
 
-    // Signature
+    // signature
     int sig_len = cipher_suite->get_crypto_param().sig_len;
     group_msg_payload->signature.len = sig_len;
     group_msg_payload->signature.data = (uint8_t *) malloc(sizeof(uint8_t) * sig_len);
@@ -409,7 +409,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
 }
 
 bool consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session, Skissm__SendGroupMsgResponse *response) {
-    // Prepare a new chain key for next encryption
+    // prepare a new chain key for next encryption
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
     advance_group_chain_key(cipher_suite, &(outbound_group_session->chain_key), outbound_group_session->sequence);
     outbound_group_session->sequence += 1;

@@ -87,8 +87,8 @@ typedef struct cipher_suite_t {
      *
      * @param ad The associated data
      * @param key The secret key
-     * @param plaintext_data The plain text to encrypt
-     * @param plaintext_data_len The plain text length
+     * @param plaintext_data The plaintext to encrypt
+     * @param plaintext_data_len The plaintext length
      * @param ciphertext_data The output cipher text
      * @return Success or not
      */
@@ -104,9 +104,9 @@ typedef struct cipher_suite_t {
      *
      * @param ad The associated data
      * @param key The secret key
-     * @param ciphertext_data The cipher text to decrypt
-     * @param ciphertext_data_len The cipher text length
-     * @param plaintext_data The output plain text
+     * @param ciphertext_data The ciphertext to decrypt
+     * @param ciphertext_data_len The ciphertext length
+     * @param plaintext_data The output plaintext
      * @return The length of plaintext_data or -1 for decryption error
      */
     size_t (*decrypt)(
@@ -224,7 +224,7 @@ size_t aes256_gcm_encrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
 );
 
 /**
- * @brief Decrypt a ciphertex with AES GCM.
+ * @brief Decrypt a ciphertext with AES GCM.
  *
  * @param ad
  * @param aes_key

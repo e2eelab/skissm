@@ -108,7 +108,7 @@ size_t pack_group_pre_key_plaintext(
     copy_protobuf_from_protobuf(&(group_pre_key_bundle->chain_key), &(outbound_group_session->chain_key));
     copy_protobuf_from_protobuf(&(group_pre_key_bundle->signature_public_key), &(outbound_group_session->signature_public_key));
 
-    // pack the e2ee_plaintext
+    // pack the group_pre_key_bundle
     size_t group_pre_key_plaintext_data_len;
     pack_group_pre_key(
         group_pre_key_bundle,

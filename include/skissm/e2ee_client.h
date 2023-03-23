@@ -28,6 +28,13 @@ Skissm__RegisterUserResponse *register_user(
 );
 
 /**
+ * @brief Send invite request again if the outbound session has not been responded.
+ * @param session The outbound session
+ * @return  Skissm__InviteResponse *
+ */
+Skissm__InviteResponse *reinvite(Skissm__Session *session);
+
+/**
  * @brief Send invite request and create a new outbound session
  * that needs to be responded before it can be used
  * to send encryption message.

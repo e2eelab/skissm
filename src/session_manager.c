@@ -359,8 +359,7 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
 }
 
 Skissm__InviteRequest *produce_invite_request(
-    Skissm__Session *outbound_session,
-    ProtobufCBinaryData **pre_shared_keys, size_t pre_shared_keys_num
+    Skissm__Session *outbound_session
 ) {
     Skissm__InviteRequest *request = (Skissm__InviteRequest *) malloc(sizeof(Skissm__InviteRequest));
     skissm__invite_request__init(request);
@@ -376,12 +375,14 @@ Skissm__InviteRequest *produce_invite_request(
 
     copy_protobuf_from_protobuf(&(msg->alice_identity_key), &(outbound_session->alice_identity_key));
 
+    size_t pre_shared_keys_num = outbound_session->n_pre_shared_keys;
+    ProtobufCBinaryData *pre_shared_keys = outbound_session->pre_shared_keys;
     msg->n_pre_shared_keys = pre_shared_keys_num;
     if (pre_shared_keys_num > 0 && pre_shared_keys != NULL) {
         msg->pre_shared_keys = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * pre_shared_keys_num);
         size_t i = 0;
         for (i = 0; i < pre_shared_keys_num; i++) {
-            copy_protobuf_from_protobuf(&(msg->pre_shared_keys[i]), pre_shared_keys[i]);
+            copy_protobuf_from_protobuf(&(msg->pre_shared_keys[i]), &(pre_shared_keys[i]));
         }
     }
     msg->bob_signed_pre_key_id = outbound_session->bob_signed_pre_key_id;

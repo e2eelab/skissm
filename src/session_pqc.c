@@ -115,13 +115,19 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     // set the session ID
     outbound_session->session_id = generate_uuid_str();
 
+    // prepare the pre_shared_keys
+    outbound_session->n_pre_shared_keys = 3;
+    outbound_session->pre_shared_keys = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * 3);
+    copy_protobuf_from_protobuf(&(outbound_session->pre_shared_keys[0]), ciphertext_2);
+    copy_protobuf_from_protobuf(&(outbound_session->pre_shared_keys[1]), ciphertext_3);
+    copy_protobuf_from_protobuf(&(outbound_session->pre_shared_keys[2]), ciphertext_4);
+
     // store sesson state before send invite
+    outbound_session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
     // send the invite request to the peer
-    size_t pre_shared_keys_num = 3;
-    ProtobufCBinaryData *pre_shared_keys[3] = {ciphertext_2, ciphertext_3, ciphertext_4};
-    Skissm__InviteResponse *response = invite_internal(outbound_session, pre_shared_keys, pre_shared_keys_num);
+    Skissm__InviteResponse *response = invite_internal(outbound_session);
 
     // release
     unset(secret, sizeof(secret));
