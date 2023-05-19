@@ -185,7 +185,7 @@ typedef struct skissm_db_handler_t {
      */
     void (*load_signed_pre_key)(uint64_t, uint32_t, Skissm__SignedPreKey **);
     /**
-     * @brief remove expired signed pre-key of account from db
+     * @brief remove expired signed pre-key (keep last two) of account from db
      * @param account_id
      */
     void (*remove_expired_signed_pre_key)(uint64_t);
@@ -307,10 +307,10 @@ typedef struct skissm_db_handler_t {
      */
     void (*store_group_session)(Skissm__GroupSession *);
     /**
-     * @brief delete group session
-     * @param group_session
+     * @brief delete outbound group session
+     * @param outbound_group_session
      */
-    void (*unload_group_session)(Skissm__GroupSession *);
+    void (*unload_outbound_group_session)(Skissm__GroupSession *);
     /**
      * @brief delete old inbound group session
      * @param user_address

@@ -42,6 +42,8 @@ size_t aes256_gcm_encrypt(
     size_t ciphertext_data_len = aes256_gcm_ciphertext_data_len(plaintext_data_len);
     *ciphertext_data = (uint8_t *)malloc(ciphertext_data_len);
     crypto_aes_encrypt_gcm(plaintext_data, plaintext_data_len, aes_key, iv, ad->data, ad->len, *ciphertext_data);
+
+    ssm_notify_log(DEBUG_LOG, "aes256_gcm_encrypt(aes_key: %s) return ciphertext_data_len = %d, ======> ciphertext_data: %s\n", aes_key, ciphertext_data_len, ciphertext_data);
     return ciphertext_data_len;
 }
 
@@ -59,5 +61,7 @@ size_t aes256_gcm_decrypt(
     if (decrypted_data_len == 0) {
         free_mem((void **)plaintext_data, plaintext_data_len);
     }
+
+    ssm_notify_log(DEBUG_LOG, "aes256_gcm_decrypt(aes_key: %s) return decrypted_data_len = %d, plaintext_data: %s\n", aes_key, decrypted_data_len, plaintext_data);
     return decrypted_data_len;
 }

@@ -444,7 +444,7 @@ void encrypt_ratchet(
 
     uint32_t sequence = msg_key->index;
     ssm_notify_log(DEBUG_LOG, "encrypt_ratchet() seq: %d\n", sequence);
-    
+
     uint32_t ratchet_key_len;
     if (cipher_suite->get_crypto_param().pqc_param == false) {
         ratchet_key_len = cipher_suite->get_crypto_param().asym_pub_key_len;

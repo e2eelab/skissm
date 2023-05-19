@@ -202,8 +202,8 @@ size_t load_inbound_group_sessions(
 void store_group_session(
     Skissm__GroupSession *group_session
 );
-void unload_group_session(
-    Skissm__GroupSession *group_session
+void unload_outbound_group_session(
+    Skissm__GroupSession *outbound_group_session
 );
 void unload_inbound_group_session(
     Skissm__E2eeAddress *receiver_address,

@@ -127,6 +127,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
 
             // store the group pre-keys if necessary
             if (group_pre_key_plaintext_data != NULL) {
+                ssm_notify_log(DEBUG_LOG, "consume_get_pre_key_bundle_response() store the group pre-keys");
                 char *pending_plaintext_id = generate_uuid_str();
                 get_skissm_plugin()->db_handler.store_pending_plaintext_data(
                     from,
@@ -256,6 +257,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
         return true;
     }
 
+    ssm_notify_log(DEBUG_LOG, "consume_one2one_msg(), session_id: %s", e2ee_msg->session_id);
     Skissm__One2oneMsgPayload *payload = NULL;
     size_t plain_text_data_len = -1;
     if (e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG) {
@@ -329,7 +331,7 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
             Skissm__GroupSession *outbound_group_session = NULL;
             get_skissm_plugin()->db_handler.load_outbound_group_session(receiver_address, cur_group->group_address, &outbound_group_session);
             if (outbound_group_session != NULL) {
-                get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
+                get_skissm_plugin()->db_handler.unload_outbound_group_session(outbound_group_session);
                 old_session_id = strdup(outbound_group_session->session_id);
                 skissm__group_session__free_unpacked(outbound_group_session, NULL);
             }

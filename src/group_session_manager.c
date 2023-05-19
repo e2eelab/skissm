@@ -152,7 +152,7 @@ bool consume_add_group_members_response(
         Skissm__GroupMember **new_group_members = response->group_members;
 
         // delete the old outbound group session
-        get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
+        get_skissm_plugin()->db_handler.unload_outbound_group_session(outbound_group_session);
         char *old_session_id = strdup(outbound_group_session->session_id);
         const char* group_name = strdup(outbound_group_session->group_info->group_name);
 
@@ -191,7 +191,7 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
     get_skissm_plugin()->db_handler.load_outbound_group_session(receiver_address, group_address, &outbound_group_session);
     // delete the old outbound group session if it exists
     if (outbound_group_session != NULL) {
-        get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
+        get_skissm_plugin()->db_handler.unload_outbound_group_session(outbound_group_session);
         char *old_session_id = strdup(outbound_group_session->session_id);
         const char *group_name = strdup(outbound_group_session->group_info->group_name);
         // create a new outbound group session
@@ -257,7 +257,7 @@ bool consume_remove_group_members_response(
         size_t group_members_num = response->n_group_members;
 
         // delete the old outbound group session
-        get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
+        get_skissm_plugin()->db_handler.unload_outbound_group_session(outbound_group_session);
         char *old_session_id = strdup(outbound_group_session->session_id);
         const char *group_name = strdup(outbound_group_session->group_info->group_name);
 
@@ -296,7 +296,7 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
             Skissm__GroupSession *outbound_group_session = NULL;
             get_skissm_plugin()->db_handler.load_outbound_group_session(receiver_address, group_address, &outbound_group_session);
             if (outbound_group_session != NULL) {
-                get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
+                get_skissm_plugin()->db_handler.unload_outbound_group_session(outbound_group_session);
                 // release
                 skissm__group_session__free_unpacked(outbound_group_session, NULL);
             }
@@ -305,7 +305,7 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
             size_t inbound_group_sessions_num = get_skissm_plugin()->db_handler.load_inbound_group_sessions(receiver_address, group_address, &inbound_group_sessions);
             size_t j;
             for (j = 0; j < inbound_group_sessions_num; j++) {
-                get_skissm_plugin()->db_handler.unload_group_session(inbound_group_sessions[j]);
+                get_skissm_plugin()->db_handler.unload_outbound_group_session(inbound_group_sessions[j]);
                 // release
                 skissm__group_session__free_unpacked(inbound_group_sessions[j], NULL);
             }
@@ -324,7 +324,7 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
     get_skissm_plugin()->db_handler.load_outbound_group_session(receiver_address, group_address, &outbound_group_session);
     // delete the old outbound group session if it exists
     if (outbound_group_session != NULL) {
-        get_skissm_plugin()->db_handler.unload_group_session(outbound_group_session);
+        get_skissm_plugin()->db_handler.unload_outbound_group_session(outbound_group_session);
         char *old_session_id = strdup(outbound_group_session->session_id);
         const char *group_name = strdup(outbound_group_session->group_info->group_name);
         // create a new outbound group session

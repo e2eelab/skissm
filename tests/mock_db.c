@@ -1994,15 +1994,15 @@ void store_group_session(Skissm__GroupSession *group_session) {
     free_mem((void **)&group_session_data, group_session_data_len);
 }
 
-void unload_group_session(Skissm__GroupSession *group_session) {
+void unload_outbound_group_session(Skissm__GroupSession *outbound_group_session) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_OWNER_AND_ADDRESS, &stmt);
 
     // bind
-    sqlite3_bind_text(stmt, 1, group_session->session_owner->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, group_session->session_owner->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, group_session->group_info->group_address->group->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, outbound_group_session->session_owner->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, outbound_group_session->session_owner->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, outbound_group_session->group_info->group_address->group->group_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

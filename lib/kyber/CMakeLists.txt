@@ -1,14 +1,14 @@
 project(kyber C ASM)
 
 set(KYBER_SRCS
-  src/ref/kex.c 
-  src/ref/kem.c 
-  src/ref/indcpa.c 
-  src/ref/polyvec.c 
-  src/ref/poly.c 
-  src/ref/ntt.c 
-  src/ref/cbd.c 
-  src/ref/reduce.c 
+  src/ref/kex.c
+  src/ref/kem.c
+  src/ref/indcpa.c
+  src/ref/polyvec.c
+  src/ref/poly.c
+  src/ref/ntt.c
+  src/ref/cbd.c
+  src/ref/reduce.c
   src/ref/verify.c
   src/ref/randombytes.c
 )
