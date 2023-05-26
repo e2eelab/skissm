@@ -51,6 +51,7 @@
 
 #define AES256_FILE_AD "SKISSM ---> file encryption with AES256/GCM/Nopadding algorithm"
 #define AES256_FILE_AD_LEN 64
+#define AES256_FILE_KDF_INFO "FILE"
 
 #define AES256_DATA_AD "SKISSM ---> data encryption with AES256/GCM/Nopadding algorithm"
 #define AES256_DATA_AD_LEN 64
@@ -595,6 +596,48 @@ int decrypt_aes_file(
     fclose(infile);
 
     return ret;
+}
+
+int encrypt_file(
+    const char *in_file_path, const char *out_file_path,
+    const uint8_t password,
+    const size_t password_len
+) {
+    // prepare aes_key
+    size_t salt_len = 0;
+    uint8_t salt[salt_len];
+    uint8_t aes_key[AES256_KEY_LENGTH];
+
+    crypto_hkdf_sha256(
+        password, password_len,
+        salt, salt_len,
+        (uint8_t *)AES256_FILE_KDF_INFO, sizeof(AES256_FILE_KDF_INFO) - 1,
+        aes_key, AES256_KEY_LENGTH
+    );
+
+    // perform aes encryption
+    return encrypt_aes_file(in_file_path, out_file_path, aes_key);
+}
+
+int decrypt_file(
+    const char *in_file_path, const char *out_file_path,
+    const uint8_t password,
+    const size_t password_len
+) {
+    // prepare aes_key
+    size_t salt_len = 0;
+    uint8_t salt[salt_len];
+    uint8_t aes_key[AES256_KEY_LENGTH];
+
+    crypto_hkdf_sha256(
+        password, password_len,
+        salt, salt_len,
+        (uint8_t *)AES256_FILE_KDF_INFO, sizeof(AES256_FILE_KDF_INFO) - 1,
+        aes_key, AES256_KEY_LENGTH
+    );
+
+    // perform aes decryption
+    return decrypt_aes_file(in_file_path, out_file_path, aes_key);
 }
 
 void crypto_hkdf_sha256(

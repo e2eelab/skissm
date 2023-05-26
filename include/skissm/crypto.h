@@ -107,9 +107,20 @@ int crypto_sphincsplus_shake256_verify(
     uint8_t *msg, size_t msg_len
 );
 
-/** HMAC-based Key Derivation Function (HKDF)
+/**
+ * @brief HMAC-based Key Derivation Function (HKDF).
  * https://tools.ietf.org/html/rfc5869
- * Derives key material from the input bytes. */
+ * Derives key material from the input bytes.
+ *
+ * @param input
+ * @param input_len
+ * @param salt
+ * @param salt_len
+ * @param info
+ * @param info_len
+ * @param output
+ * @param output_len
+ */
 void crypto_hkdf_sha256(
     const uint8_t *input, size_t input_len,
     const uint8_t *salt, size_t salt_len,
@@ -117,25 +128,42 @@ void crypto_hkdf_sha256(
     uint8_t *output, size_t output_len
 );
 
-/** HMAC: Keyed-Hashing for Message Authentication
+/**
+ * @brief Keyed-Hashing for Message Authentication (HMAC).
  * http://tools.ietf.org/html/rfc2104
- * Computes HMAC-SHA-256 of the input for the key. The output buffer must
- * be at least SHA256_OUTPUT_LENGTH (32) bytes long. */
+ * Computes HMAC-SHA-256 of the input for the key.
+ * The output buffer must be at least SHA256_OUTPUT_LENGTH (32) bytes long.
+ *
+ * @param key
+ * @param key_len
+ * @param input
+ * @param input_len
+ * @param output
+ */
 void crypto_hmac_sha256(
     const uint8_t *key, size_t key_len,
     const uint8_t *input, size_t input_len,
     uint8_t *output
 );
 
+/**
+ * @brief Secure Hash Algorithms (SHAs)
+ * https://www.rfc-editor.org/rfc/rfc6234
+ * Computes HMAC-SHA-256 of the input for the key.
+ * The output buffer must be at least SHA256_OUTPUT_LENGTH (32) bytes long.
+ *
+ * @param msg
+ * @param msg_len
+ * @param hash_out
+ */
 void crypto_sha256(
     const uint8_t *msg, size_t msg_len,
     uint8_t *hash_out
 );
 
 /**
- * @brief AES256 encrypt function in GCM mode
+ * @brief AES256 encrypt function in GCM mode.
  * @see [AES256 GCM mode](https://datatracker.ietf.org/doc/html/rfc5288)
- *
  * @param plaintext_data
  * @param plaintext_data_len
  * @param aes_key
@@ -152,7 +180,7 @@ void crypto_aes_encrypt_gcm(
 );
 
 /**
- * @brief AES256 decrypt function in GCM mode
+ * @brief AES256 decrypt function in GCM mode.
  * @see [AES256 GCM mode](https://datatracker.ietf.org/doc/html/rfc5288)
  *
  * @param ciphertext_data
@@ -172,7 +200,7 @@ size_t crypto_aes_decrypt_gcm(
 );
 
 /**
- * @brief AES256 encrypt data in GCM mode
+ * @brief AES256 encrypt data in GCM mode.
  *
  * @param plaintext_data
  * @param plaintext_data_len
@@ -187,7 +215,7 @@ size_t encrypt_aes_data(
 );
 
 /**
- * @brief AES256 decrypt data in GCM mode
+ * @brief AES256 decrypt data in GCM mode.
  *
  * @param ciphertext_data
  * @param ciphertext_data_len
@@ -202,7 +230,7 @@ size_t decrypt_aes_data(
 );
 
 /**
- * @brief AES256 encrypt file in GCM mode
+ * @brief AES256 encrypt file in GCM mode.
  *
  * @param in_file_path
  * @param out_file_path
@@ -215,7 +243,7 @@ int encrypt_aes_file(
 );
 
 /**
- * @brief AES256 decrypt file in GCM mode
+ * @brief AES256 decrypt file in GCM mode.
  *
  * @param in_file_path
  * @param out_file_path
@@ -228,7 +256,37 @@ int decrypt_aes_file(
 );
 
 /**
- * @brief Encode to base64 string
+ * @brief AES256 encrypt file in GCM mode with arbitrary password length.
+ *
+ * @param in_file_path
+ * @param out_file_path
+ * @param password
+ * @param password_len
+ * @return int 0 for success
+ */
+int encrypt_file(
+    const char *in_file_path, const char *out_file_path,
+    const uint8_t password,
+    const size_t password_len
+);
+
+/**
+ * @brief AES256 decrypt file in GCM mode with arbitrary password length.
+ *
+ * @param in_file_path
+ * @param out_file_path
+ * @param password
+ * @param password_len
+ * @return int 0 for success
+ */
+int decrypt_file(
+    const char *in_file_path, const char *out_file_path,
+    const uint8_t password,
+    const size_t password_len
+);
+
+/**
+ * @brief Encode to base64 string.
  *
  * @param msg
  * @param msg_len
@@ -237,7 +295,7 @@ int decrypt_aes_file(
 char *crypto_base64_encode(const uint8_t *msg, size_t msg_len);
 
 /**
- * @brief Decode from base64 string
+ * @brief Decode from base64 string.
  *
  * @param base64_data
  * @param base64_data_len
