@@ -56,6 +56,8 @@ typedef struct f2f_password_data {
 static f2f_password_data *f2f_pw_data = NULL;
 
 static void on_log(LogCode log_code, const char *log_msg) {
+    if (log_code == 0)
+        return;
     print_log((char *)log_msg, log_code);
 }
 
@@ -455,6 +457,7 @@ static void test_add_group_members() {
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
 
+    sleep(2);
     // Alice invites Claire to join the group
     invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // the new group member is Claire
@@ -469,7 +472,7 @@ static void test_add_group_members() {
     Skissm__AddGroupMembersResponse *add_group_members_response = add_group_members(account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
     assert(add_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
 
-    sleep(3);
+    sleep(4);
     // Alice sends a message to the group
     uint8_t plaintext_data[] = "This message will be sent to Bob and Claire.";
     size_t plaintext_data_len = sizeof(plaintext_data) - 1;
@@ -527,6 +530,7 @@ static void test_remove_group_members() {
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
 
+    sleep(2);
     // the removing group member is Claire
     Skissm__GroupMember **removing_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *));
     removing_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
@@ -540,7 +544,7 @@ static void test_remove_group_members() {
     Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(account_data[0]->address, group.group_address, removing_group_members, removing_group_member_num);
     assert(remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
 
-    sleep(3);
+    sleep(4);
     // Alice sends a message to the group
     uint8_t plaintext[] = "This message will be sent to Bob only.";
     size_t plaintext_len = sizeof(plaintext) - 1;
@@ -592,6 +596,7 @@ static void test_create_add_remove() {
     // create the group
     Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
 
+    sleep(2);
     // Alice sends a message to the group
     uint8_t plaintext[] = "This is the group session test.";
     size_t plaintext_len = sizeof(plaintext) - 1;
@@ -610,7 +615,7 @@ static void test_create_add_remove() {
     // add the new group member to the group
     Skissm__AddGroupMembersResponse *add_group_members_response = add_group_members(account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
 
-    sleep(3);
+    sleep(4);
     // Alice sends a message to the group
     uint8_t plaintext_2[] = "This message will be sent to Bob and Claire.";
     size_t plaintext_len_2 = sizeof(plaintext_2) - 1;
@@ -619,7 +624,7 @@ static void test_create_add_remove() {
     // Alice removes Claire out of the group
     Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
 
-    sleep(1);
+    sleep(2);
     // Alice sends a message to the group
     uint8_t plaintext_3[] = "This message will be sent to Bob only.";
     size_t plaintext_len_3 = sizeof(plaintext_3) - 1;

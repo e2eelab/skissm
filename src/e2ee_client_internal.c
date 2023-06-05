@@ -291,7 +291,7 @@ void resume_connection_internal(Skissm__Account *account) {
                 Skissm__AddGroupMembersRequest *add_group_members_request = skissm__add_group_members_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
                 Skissm__AddGroupMembersResponse *add_group_members_response = get_skissm_plugin()->proto_handler.add_group_members(add_group_members_request);
                 Skissm__GroupSession *outbound_group_session_1 = NULL;
-                get_skissm_plugin()->db_handler.load_outbound_group_session(address, add_group_members_request->msg->group_address, &outbound_group_session_1);
+                get_skissm_plugin()->db_handler.load_outbound_group_session(address, add_group_members_request->msg->group_info->group_address, &outbound_group_session_1);
                 succ = consume_add_group_members_response(outbound_group_session_1, add_group_members_response);
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(address, pending_request_id_list[i]);

@@ -117,6 +117,15 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
         size_t n_pre_key_bundles = response->n_pre_key_bundles;
         size_t i;
         for (i = 0; i < n_pre_key_bundles; i++) {
+            Skissm__PreKeyBundle *cur_pre_key_bundle = their_pre_key_bundles[i];
+            Skissm__E2eeAddress *cur_address = cur_pre_key_bundle->user_address;
+
+            // skip if the pre-key bundle is from this device
+            if (safe_strcmp(from->user->user_id, cur_address->user->user_id)) {
+                if (compare_address(from, cur_address))
+                    continue;
+            }
+
             // find an account
             Skissm__Account *account = NULL;
             get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
@@ -131,7 +140,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 char *pending_plaintext_id = generate_uuid_str();
                 get_skissm_plugin()->db_handler.store_pending_plaintext_data(
                     from,
-                    their_pre_key_bundles[i]->user_address,
+                    cur_address,
                     pending_plaintext_id,
                     group_pre_key_plaintext_data,
                     group_pre_key_plaintext_data_len
@@ -141,14 +150,14 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
             }
 
             // prepare to create an outbound session
-            const char *e2ee_pack_id = their_pre_key_bundles[i]->e2ee_pack_id;
+            const char *e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
             Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
-            initialise_session(outbound_session, e2ee_pack_id, from, their_pre_key_bundles[i]->user_address);
+            initialise_session(outbound_session, e2ee_pack_id, from, cur_address);
             copy_address_from_address(&(outbound_session->session_owner), from);
 
             const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
             Skissm__InviteResponse *invite_response =
-                session_suite->new_outbound_session(outbound_session, account, their_pre_key_bundles[i]);
+                session_suite->new_outbound_session(outbound_session, account, cur_pre_key_bundle);
             // release
             skissm__account__free_unpacked(account, NULL);
             skissm__session__free_unpacked(outbound_session, NULL);
@@ -412,6 +421,14 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         return false;
     }
 
+    // try to load the corresponding inbound session if it exists
+    Skissm__Session *inbound_session = NULL;
+    get_skissm_plugin()->db_handler.load_inbound_session(msg->session_id, receiver_address, &inbound_session);
+    if (inbound_session != NULL) {
+        // the corresponding inbound session has already existed
+        return true;
+    }
+
     // notify
     ssm_notify_inbound_session_invited(from);
 
@@ -423,7 +440,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         return false;
     }
     // create a new inbound session
-    Skissm__Session *inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
+    inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     initialise_session(inbound_session, e2ee_pack_id, from, to);
     copy_address_from_address(&(inbound_session->session_owner), to);
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;

@@ -82,7 +82,7 @@ static crypto_param_t kyber1024_sphincsplus_aes256_gcm_sha256_param = {
     pqcrystals_kyber1024_CIPHERTEXTBYTES,
     SPX_PK_BYTES,
     SPX_SK_BYTES,
-    SPX_BYTES,
+    SPX_BYTES,  // 49856
     SHA256_OUTPUT_LENGTH,
     AES256_KEY_LENGTH,
     AES256_IV_LENGTH,
@@ -600,7 +600,7 @@ int decrypt_aes_file(
 
 int encrypt_file(
     const char *in_file_path, const char *out_file_path,
-    const uint8_t password,
+    const uint8_t *password,
     const size_t password_len
 ) {
     // prepare aes_key
@@ -621,7 +621,7 @@ int encrypt_file(
 
 int decrypt_file(
     const char *in_file_path, const char *out_file_path,
-    const uint8_t password,
+    const uint8_t *password,
     const size_t password_len
 ) {
     // prepare aes_key

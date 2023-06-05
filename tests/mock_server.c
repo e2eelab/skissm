@@ -797,8 +797,8 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
     // find the group
     uint8_t group_data_find = 0;
     while (group_data_find < group_data_set_insert_pos) {
-        if ((group_data_set[group_data_find].group_address) && (request->msg->group_address)
-            && compare_address(group_data_set[group_data_find].group_address, request->msg->group_address)
+        if ((group_data_set[group_data_find].group_address) && (add_group_members_msg->group_info->group_address)
+            && compare_address(group_data_set[group_data_find].group_address, add_group_members_msg->group_info->group_address)
         ) {
             break;
         }
@@ -817,7 +817,7 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
 
     // update the data
     size_t old_group_members_num = cur_group_data->group_members_num;
-    size_t new_group_members_num = cur_group_data->group_members_num + request->msg->n_adding_members;
+    size_t new_group_members_num = cur_group_data->group_members_num + add_group_members_msg->n_adding_members;
     cur_group_data->group_members_num = new_group_members_num;
 
     Skissm__GroupMember **temp_group_members = NULL;
@@ -833,7 +833,7 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
     cur_group_data->group_members = temp_group_members;
 
     for (i = old_group_members_num; i < new_group_members_num; i++) {
-        copy_group_member(&(cur_group_data->group_members[i]), (request->msg->adding_members)[i - old_group_members_num]);
+        copy_group_member(&(cur_group_data->group_members[i]), (add_group_members_msg->adding_members)[i - old_group_members_num]);
     }
 
     // send the message to all the other members in the group

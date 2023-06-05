@@ -266,7 +266,7 @@ int decrypt_aes_file(
  */
 int encrypt_file(
     const char *in_file_path, const char *out_file_path,
-    const uint8_t password,
+    const uint8_t *password,
     const size_t password_len
 );
 
@@ -281,7 +281,7 @@ int encrypt_file(
  */
 int decrypt_file(
     const char *in_file_path, const char *out_file_path,
-    const uint8_t password,
+    const uint8_t *password,
     const size_t password_len
 );
 
