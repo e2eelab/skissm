@@ -160,6 +160,8 @@ static void on_one2one_msg_received(
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
     if (plaintext_store.plaintext != NULL){
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
+        plaintext_store.plaintext = NULL;
+        plaintext_store.plaintext_len = 0;
     }
     plaintext_store.plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
     memcpy(plaintext_store.plaintext, plaintext, plaintext_len);
@@ -174,6 +176,8 @@ static void on_other_device_msg_received(
     print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
     if (plaintext_store.plaintext != NULL){
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
+        plaintext_store.plaintext = NULL;
+        plaintext_store.plaintext_len = 0;
     }
     plaintext_store.plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
     memcpy(plaintext_store.plaintext, plaintext, plaintext_len);
@@ -340,6 +344,8 @@ static void test_encryption(
 ) {
     if (plaintext_store.plaintext != NULL){
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
+        plaintext_store.plaintext = NULL;
+        plaintext_store.plaintext_len = 0;
     }
 
     // send encrypted msg
@@ -431,7 +437,7 @@ static void test_interaction(){
     Skissm__InviteResponse *response1 = invite(bob_address, alice_user_id, alice_domain);
     assert(response1 != NULL && response1->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
-    sleep(1);
+    sleep(5);
     // Bob loads the outbound session
     get_skissm_plugin()->db_handler.load_outbound_session(bob_address, alice_address, &outbound_session_b);
     assert(outbound_session_b != NULL);

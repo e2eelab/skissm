@@ -22,9 +22,9 @@
 
 #include "skissm/crypto.h"
 
-bool is_equal(const uint8_t *buffer_a, const uint8_t *buffer_b, size_t length) {
+bool is_equal(const uint8_t *buffer_a, const uint8_t *buffer_b, size_t len) {
     uint8_t volatile result = 0;
-    while (length--) {
+    while (len--) {
         result |= (*(buffer_a++)) ^ (*(buffer_b++));
     }
 
@@ -36,6 +36,20 @@ char *generate_uuid_str() {
     get_skissm_plugin()->common_handler.gen_uuid(uuid);
     // to base64
     return crypto_base64_encode(uuid, UUID_LEN);
+}
+
+size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char *hex_str, size_t hex_str_len) {
+    char *p = &hex_str[0];
+    int i, n;
+    size_t output_len = 0;
+    for (i = 0; (i < buffer_len) && (output_len <= hex_str_len); i++) {
+        n = sprintf(p, "%02X", buffer[i]);
+        p += n;
+        output_len += n;
+    }
+    *p = '\0';
+
+    return output_len + 1;
 }
 
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
@@ -51,11 +65,11 @@ bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
     return false;
 }
 
-bool safe_strcmp(const char *str1, const char *str2) {
-    if (str1 == NULL && str2 == NULL)
+bool safe_strcmp(const char *str_1, const char *str_2) {
+    if (str_1 == NULL && str_2 == NULL)
         return true;
-    if (str1 != NULL && str2 != NULL) {
-        return strcmp(str1, str2) == 0;
+    if (str_1 != NULL && str_2 != NULL) {
+        return strcmp(str_1, str_2) == 0;
     }
     return false;
 }

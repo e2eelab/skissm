@@ -896,8 +896,8 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
     // find the group
     uint8_t group_data_find = 0;
     while (group_data_find < group_data_set_insert_pos) {
-        if ((group_data_set[group_data_find].group_address) && (request->msg->group_address)
-            && compare_address(group_data_set[group_data_find].group_address, request->msg->group_address)
+        if ((group_data_set[group_data_find].group_address) && (request->msg->group_info->group_address)
+            && compare_address(group_data_set[group_data_find].group_address, request->msg->group_info->group_address)
         ) {
             break;
         }

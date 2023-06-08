@@ -44,7 +44,10 @@ void print_msg(char *title, uint8_t *msg, size_t len) {
 }
 
 void print_log(char *log_msg, int log_code) {
-    printf("💀 [ErrorCode=%d]: %s\n", log_code, log_msg);
+    if (log_code == DEBUG_LOG)
+        printf("🔭 : %s\n", log_msg);
+    else
+        printf("💀 [ErrorCode=%d]: %s\n", log_code, log_msg);
 }
 
 void print_result(char *title, bool success) {

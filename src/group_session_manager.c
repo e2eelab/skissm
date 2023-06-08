@@ -241,7 +241,11 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
     msg->e2ee_pack_id = strdup(account->e2ee_pack_id);
 
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
-    copy_address_from_address(&(msg->group_address), outbound_group_session->group_info->group_address);
+
+    msg->group_info = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
+    skissm__group_info__init(msg->group_info);
+    copy_address_from_address(&(msg->group_info->group_address), outbound_group_session->group_info->group_address);
+
     msg->n_removing_members = removing_group_members_num;
     copy_group_members(&(msg->removing_members), removing_group_members, removing_group_members_num);
 
@@ -292,7 +296,7 @@ bool consume_remove_group_members_response(
 }
 
 bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveGroupMembersMsg *msg) {
-    Skissm__E2eeAddress *group_address = msg->group_address;
+    Skissm__E2eeAddress *group_address = msg->group_info->group_address;
 
     // if the receiver is the one who is going to be removed, the receiver should unload his or her own group session
     size_t i;
@@ -322,8 +326,8 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
     }
 
     // renew outbound group session
-    size_t new_group_members_num = msg->n_all_members;
-    Skissm__GroupMember **new_group_members = msg->all_members;
+    size_t new_group_members_num = msg->group_info->n_group_members;
+    Skissm__GroupMember **new_group_members = msg->group_info->group_members;
     const char *e2ee_pack_id = msg->e2ee_pack_id;
 
     Skissm__GroupSession *outbound_group_session = NULL;

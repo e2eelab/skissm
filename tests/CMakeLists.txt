@@ -22,6 +22,8 @@ enable_testing()
 
 set(sqlite3_DIR "${lib_DIR}/sqlite3")
 
+# https://www.sqlite.org/threadsafe.html
+add_compile_definitions(SQLITE_THREADSAFE=1)
 if(NOT sqlite3)
   add_subdirectory(${sqlite3_DIR} "${CMAKE_CURRENT_BINARY_DIR}/lib/sqlite3")
 endif()

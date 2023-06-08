@@ -33,15 +33,22 @@ extern "C" {
 bool is_equal(
     const uint8_t *buffer_a,
     const uint8_t *buffer_b,
-    size_t length
+    size_t len
 );
 
 /**
- * @brief Generate a UUID string
+ * @brief Generate a UUID string.
  *
  * @return char*
  */
 char *generate_uuid_str();
+
+/**
+ * @brief Generate hex string from given uint8 array.
+ *
+ * @return char*
+ */
+size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char *hex_str, size_t hex_str_len);
 
 /**
  * @brief Compare two ProtobufCBinaryData objects.
@@ -56,12 +63,12 @@ bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2);
 /**
  * @brief Compare two char string that can be NULL.
  *
- * @param str1
- * @param str2
+ * @param str_1
+ * @param str_2
  * @return true
  * @return false
  */
-bool safe_strcmp(const char *str1, const char *str2);
+bool safe_strcmp(const char *str_1, const char *str_2);
 
 /**
  * @brief Compare two user's ids.
