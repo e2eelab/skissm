@@ -70,7 +70,9 @@ bool consume_create_group_response(
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         Skissm__E2eeAddress *group_address = response->group_address;
         create_outbound_group_session(e2ee_pack_id, sender_address, group_name, group_address, group_members, group_members_num, NULL);
+        // notify
         ssm_notify_group_created(group_address, group_name);
+        // done
         return true;
     } else {
         return false;
@@ -94,6 +96,9 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
         group_members_num,
         NULL
     );
+
+    // notify
+    ssm_notify_group_created(group_address, group_name);
 
     // done
     return true;
@@ -142,7 +147,9 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
 
 bool consume_add_group_members_response(
     Skissm__GroupSession *outbound_group_session,
-    Skissm__AddGroupMembersResponse *response
+    Skissm__AddGroupMembersResponse *response,
+    Skissm__GroupMember **adding_members,
+    size_t adding_members_num
 ) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         const char *e2ee_pack_id = outbound_group_session->e2ee_pack_id;
@@ -167,6 +174,14 @@ bool consume_add_group_members_response(
             old_session_id
         );
 
+        // notify
+        ssm_notify_group_members_added(
+                group_address,
+                group_name,
+                adding_members,
+                adding_members_num
+        );
+
         // release
         free_mem((void **)&old_session_id, strlen(old_session_id));
         free_mem((void **)&group_name, strlen(group_name));
@@ -181,8 +196,8 @@ bool consume_add_group_members_response(
 bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddGroupMembersMsg *msg) {
     Skissm__E2eeAddress *group_address = msg->group_info->group_address;
     const char *group_name = msg->group_info->group_name;
-    size_t new_group_members_num = msg->group_info->n_group_members;
-    Skissm__GroupMember **new_group_members = msg->group_info->group_members;
+    Skissm__GroupMember **group_members = msg->group_info->group_members;
+    size_t group_members_num = msg->group_info->n_group_members;
     const char *e2ee_pack_id = msg->e2ee_pack_id;
 
     /** The old group members have their own outbound group sessions, so they need to delete them.
@@ -200,8 +215,8 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
             receiver_address,
             group_name,
             group_address,
-            new_group_members,
-            new_group_members_num,
+            group_members,
+            group_members_num,
             old_session_id
         );
         // release
@@ -214,11 +229,20 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
             receiver_address,
             group_name,
             group_address,
-            new_group_members,
-            new_group_members_num,
+            group_members,
+            group_members_num,
             NULL
         );
     }
+
+    // notify
+    ssm_notify_group_members_added(
+        group_address,
+        group_name,
+        msg->adding_members,
+        msg->n_adding_members
+    );
+
     // done
     return true;
 }
@@ -257,7 +281,9 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
 
 bool consume_remove_group_members_response(
     Skissm__GroupSession *outbound_group_session,
-    Skissm__RemoveGroupMembersResponse *response
+    Skissm__RemoveGroupMembersResponse *response,
+    Skissm__GroupMember **removing_members,
+    size_t removing_members_num
 ) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         const char *e2ee_pack_id = outbound_group_session->e2ee_pack_id;
@@ -280,6 +306,14 @@ bool consume_remove_group_members_response(
             group_members,
             group_members_num,
             old_session_id
+        );
+
+        // notify
+        ssm_notify_group_members_removed(
+                group_address,
+                group_name,
+                removing_members,
+                removing_members_num
         );
 
         // release
@@ -319,8 +353,21 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
                 // release
                 skissm__group_session__free_unpacked(inbound_group_sessions[j], NULL);
             }
-            free(inbound_group_sessions);
 
+            // notify
+            const char *group_name = strdup(outbound_group_session->group_info->group_name);
+            ssm_notify_group_members_removed(
+                    group_address,
+                    group_name,
+                    msg->removing_members,
+                    msg->n_removing_members
+            );
+
+            // release
+            free(inbound_group_sessions);
+            free_mem((void **)&group_name, strlen(group_name));
+
+            // done
             return true;
         }
     }
@@ -351,6 +398,15 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
         free_mem((void **)&old_session_id, strlen(old_session_id));
         free_mem((void **)&group_name, strlen(group_name));
+
+        // notify
+        ssm_notify_group_members_removed(
+                group_address,
+                group_name,
+                msg->removing_members,
+                msg->n_removing_members
+        );
+
         // done
         return true;
     } else{

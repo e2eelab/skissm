@@ -419,7 +419,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
     // send message to server
     Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
     Skissm__AddGroupMembersResponse *response = get_skissm_plugin()->proto_handler.add_group_members(request);
-    bool succ = consume_add_group_members_response(outbound_group_session, response);
+    bool succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
     if (!succ) {
         // pack
         size_t request_data_len = skissm__add_group_members_request__get_packed_size(request);
@@ -459,7 +459,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     // send message to server
     Skissm__RemoveGroupMembersRequest *request = produce_remove_group_members_request(outbound_group_session, removing_members, removing_members_num);
     Skissm__RemoveGroupMembersResponse *response = get_skissm_plugin()->proto_handler.remove_group_members(request);
-    bool succ = consume_remove_group_members_response(outbound_group_session, response);
+    bool succ = consume_remove_group_members_response(outbound_group_session, response, removing_members, removing_members_num);
     if (!succ) {
         // pack
         size_t request_data_len = skissm__remove_group_members_request__get_packed_size(request);

@@ -53,8 +53,7 @@ Skissm__CreateGroupRequest *produce_create_group_request(
  * @param group_members
  * @param group_members_num
  * @param response
- * @return true
- * @return false
+ * @return true for success
  */
 bool consume_create_group_response(
     const char *e2ee_pack_id,
@@ -70,8 +69,7 @@ bool consume_create_group_response(
  *
  * @param receiver_address
  * @param msg
- * @return true
- * @return false
+ * @return true for success
  */
 bool consume_create_group_msg(
     Skissm__E2eeAddress *receiver_address,
@@ -105,12 +103,15 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
  *
  * @param outbound_group_session
  * @param response
- * @return true
- * @return false
+ * @param adding_members
+ * @param adding_members_num
+ * @return true for success
  */
 bool consume_add_group_members_response(
     Skissm__GroupSession *outbound_group_session,
-    Skissm__AddGroupMembersResponse *response
+    Skissm__AddGroupMembersResponse *response,
+    Skissm__GroupMember **adding_members,
+    size_t adding_members_num
 );
 
 /**
@@ -118,8 +119,7 @@ bool consume_add_group_members_response(
  *
  * @param receiver_address
  * @param msg
- * @return true
- * @return false
+ * @return true for success
  */
 bool consume_add_group_members_msg(
     Skissm__E2eeAddress *receiver_address,
@@ -145,12 +145,15 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
  *
  * @param outbound_group_session
  * @param response
- * @return true
- * @return false
+ * @param removing_members
+ * @param removing_members_num
+ * @return true for success
  */
 bool consume_remove_group_members_response(
     Skissm__GroupSession *outbound_group_session,
-    Skissm__RemoveGroupMembersResponse *response
+    Skissm__RemoveGroupMembersResponse *response,
+    Skissm__GroupMember **removing_members,
+    size_t removing_members_num
 );
 
 /**
@@ -158,8 +161,7 @@ bool consume_remove_group_members_response(
  *
  * @param receiver_address
  * @param msg
- * @return true
- * @return false
+ * @return true for success
  */
 bool consume_remove_group_members_msg(
     Skissm__E2eeAddress *receiver_address,
@@ -184,8 +186,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
  *
  * @param outbound_group_session
  * @param response
- * @return true
- * @return false
+ * @return true for success
  */
 bool consume_send_group_msg_response(
     Skissm__GroupSession *outbound_group_session,
@@ -197,8 +198,7 @@ bool consume_send_group_msg_response(
  *
  * @param receiver_address
  * @param e2ee_msg
- * @return true
- * @return false
+ * @return true for success
  */
 bool consume_group_msg(
     Skissm__E2eeAddress *receiver_address,
