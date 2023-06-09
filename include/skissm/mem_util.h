@@ -350,6 +350,20 @@ void add_group_members_to_group_info(
 );
 
 /**
+ * @brief Remove some Skissm__GroupMember from old_group_info.
+ *
+ * @param dest
+ * @param old_group_info
+ * @param removing_members
+ * @param removing_members_num
+ */
+void remove_group_members_from_group_info(
+    Skissm__GroupInfo **dest,
+    Skissm__GroupInfo *old_group_info,
+    Skissm__GroupMember **removing_members, size_t removing_members_num
+);
+
+/**
  * @brief Release memory of Skissm__GroupMember array.
  *
  * @param dest

@@ -391,6 +391,34 @@ void add_group_members_to_group_info(
     }
 }
 
+void remove_group_members_from_group_info(
+    Skissm__GroupInfo **dest,
+    Skissm__GroupInfo *old_group_info,
+    Skissm__GroupMember **removing_members, size_t removing_members_num
+) {
+    size_t old_group_members_num = old_group_info->n_group_members;
+    size_t new_group_members_num = old_group_members_num - removing_members_num;
+    *dest = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
+    skissm__group_info__init(*dest);
+    if (old_group_info->group_name != NULL)
+        (*dest)->group_name = strdup(old_group_info->group_name);
+    if (old_group_info->group_address != NULL)
+        copy_address_from_address(&((*dest)->group_address), old_group_info->group_address);
+    (*dest)->n_group_members = new_group_members_num;
+    (*dest)->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
+    size_t i, cur_pos = 0;
+    for (i = 0; i < old_group_members_num; i++) {
+        if (((old_group_info->group_members)[i]->role != removing_members[cur_pos]->role)
+            || !safe_strcmp((old_group_info->group_members)[i]->user_id, removing_members[cur_pos]->user_id)
+            || !safe_strcmp((old_group_info->group_members)[i]->domain, removing_members[cur_pos]->domain)
+        ) {
+            copy_group_member(&(((*dest)->group_members)[i - cur_pos]), (old_group_info->group_members)[i]);
+        } else {
+            cur_pos++;
+        }
+    }
+}
+
 void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num) {
     size_t i;
     for (i = 0; i < group_members_num; i++) {
