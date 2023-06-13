@@ -32,7 +32,7 @@
 #include "test_util.h"
 #include "test_plugin.h"
 
-#define account_data_max 10
+#define account_data_max 20
 
 static Skissm__Account *account_data[account_data_max];
 
@@ -359,6 +359,20 @@ static void mock_claire_pqc_account(uint64_t account_id, const char *user_name) 
             device_id,
             authenticator,
             auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
+}
+
+static void mock_user_pqc_account(uint64_t account_id, const char *user_name, const char *authenticator, const char *auth_code) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    char *device_id = generate_uuid_str();
+    Skissm__RegisterUserResponse *response = register_user(
+        account_id, e2ee_pack_id, user_name, device_id, authenticator, auth_code
+    );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -969,17 +983,17 @@ static void test_pqc_multiple_devices() {
     // Alice sends a message to the group via the first device
     uint8_t plaintext_1[] = "This message is from Alice's first device via pqc session.";
     size_t plaintext_1_len = sizeof(plaintext_1) - 1;
-    test_encryption(account_data[0]->address, group.group_address, plaintext_1, plaintext_1_len);
+    test_encryption(alice_address_1, group.group_address, plaintext_1, plaintext_1_len);
 
     // Bob sends a message to the group via the second device
     uint8_t plaintext_2[] = "This message is from Bob's second device via pqc session.";
     size_t plaintext_2_len = sizeof(plaintext_2) - 1;
-    test_encryption(account_data[3]->address, group.group_address, plaintext_2, plaintext_2_len);
+    test_encryption(bob_address_2, group.group_address, plaintext_2, plaintext_2_len);
 
     // Claire sends a message to the group via the second device
     uint8_t plaintext_3[] = "This message is from Claire's second device via pqc session.";
     size_t plaintext_3_len = sizeof(plaintext_3) - 1;
-    test_encryption(account_data[5]->address, group.group_address, plaintext_3, plaintext_3_len);
+    test_encryption(claire_address_2, group.group_address, plaintext_3, plaintext_3_len);
 
     // release
     skissm__group_member__free_unpacked(group_members[0], NULL);
@@ -987,6 +1001,262 @@ static void test_pqc_multiple_devices() {
     skissm__group_member__free_unpacked(group_members[2], NULL);
     free(group_members);
     skissm__create_group_response__free_unpacked(create_group_response, NULL);
+
+    // test stop
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
+static void test_medium_group() {
+    // test start
+    printf("test_medium_group begin!!!\n");
+    tear_up();
+    test_begin();
+
+    // prepare account
+    mock_user_pqc_account(1, "Alice", "alice@domain.com.tw", "123456");
+    mock_user_pqc_account(2, "Bob", "bob@domain.com.tw", "234567");
+    mock_user_pqc_account(3, "Claire", "claire@domain.com.tw", "345678");
+    mock_user_pqc_account(4, "David", "david@domain.com.tw", "456789");
+    mock_user_pqc_account(5, "Emily", "emily@domain.com.tw", "567890");
+    mock_user_pqc_account(6, "Frank", "frank@domain.com.tw", "678901");
+    mock_user_pqc_account(7, "Grace", "grace@domain.com.tw", "789012");
+    mock_user_pqc_account(8, "Harry", "harry@domain.com.tw", "890123");
+    mock_user_pqc_account(9, "Ivy", "ivy@domain.com.tw", "901234");
+    mock_user_pqc_account(10, "Jack", "jack@domain.com.tw", "012345");
+    mock_user_pqc_account(11, "Karen", "karen@domain.com.tw", "111111");
+    mock_user_pqc_account(12, "Leo", "leo@domain.com.tw", "222222");
+    mock_user_pqc_account(13, "Mary", "mary@domain.com.tw", "333333");
+    mock_user_pqc_account(14, "Nick", "nick@domain.com.tw", "444444");
+
+    sleep(10);
+
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    char *alice_user_id = alice_address->user->user_id;
+    char *alice_domain = alice_address->domain;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
+    Skissm__E2eeAddress *claire_address = account_data[2]->address;
+    char *claire_user_id = claire_address->user->user_id;
+    char *claire_domain = claire_address->domain;
+    Skissm__E2eeAddress *david_address = account_data[3]->address;
+    char *david_user_id = david_address->user->user_id;
+    char *david_domain = david_address->domain;
+    Skissm__E2eeAddress *emily_address = account_data[4]->address;
+    char *emily_user_id = emily_address->user->user_id;
+    char *emily_domain = emily_address->domain;
+    Skissm__E2eeAddress *frank_address = account_data[5]->address;
+    char *frank_user_id = frank_address->user->user_id;
+    char *frank_domain = frank_address->domain;
+    Skissm__E2eeAddress *grace_address = account_data[6]->address;
+    char *grace_user_id = grace_address->user->user_id;
+    char *grace_domain = grace_address->domain;
+    Skissm__E2eeAddress *harry_address = account_data[7]->address;
+    char *harry_user_id = harry_address->user->user_id;
+    char *harry_domain = harry_address->domain;
+    Skissm__E2eeAddress *ivy_address = account_data[8]->address;
+    char *ivy_user_id = ivy_address->user->user_id;
+    char *ivy_domain = ivy_address->domain;
+    Skissm__E2eeAddress *jack_address = account_data[9]->address;
+    char *jack_user_id = jack_address->user->user_id;
+    char *jack_domain = jack_address->domain;
+    Skissm__E2eeAddress *karen_address = account_data[10]->address;
+    char *karen_user_id = karen_address->user->user_id;
+    char *karen_domain = karen_address->domain;
+    Skissm__E2eeAddress *leo_address = account_data[11]->address;
+    char *leo_user_id = leo_address->user->user_id;
+    char *leo_domain = leo_address->domain;
+    Skissm__E2eeAddress *mary_address = account_data[12]->address;
+    char *mary_user_id = mary_address->user->user_id;
+    char *mary_domain = mary_address->domain;
+    Skissm__E2eeAddress *nick_address = account_data[13]->address;
+    char *nick_user_id = nick_address->user->user_id;
+    char *nick_domain = nick_address->domain;
+
+    // the first group member is Alice
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 10);
+    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup(alice_user_id);
+    group_members[0]->domain = strdup(alice_domain);
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    // the second group member is Bob
+    group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup(bob_user_id);
+    group_members[1]->domain = strdup(bob_domain);
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the third group member is Claire
+    group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[2]);
+    group_members[2]->user_id = strdup(claire_user_id);
+    group_members[2]->domain = strdup(claire_domain);
+    group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the fourth group member is David
+    group_members[3] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[3]);
+    group_members[3]->user_id = strdup(david_user_id);
+    group_members[3]->domain = strdup(david_domain);
+    group_members[3]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the fifth group member is Emily
+    group_members[4] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[4]);
+    group_members[4]->user_id = strdup(emily_user_id);
+    group_members[4]->domain = strdup(emily_domain);
+    group_members[4]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the sixth group member is Frank
+    group_members[5] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[5]);
+    group_members[5]->user_id = strdup(frank_user_id);
+    group_members[5]->domain = strdup(frank_domain);
+    group_members[5]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the seventh group member is Grace
+    group_members[6] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[6]);
+    group_members[6]->user_id = strdup(grace_user_id);
+    group_members[6]->domain = strdup(grace_domain);
+    group_members[6]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the eighth group member is Harry
+    group_members[7] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[7]);
+    group_members[7]->user_id = strdup(harry_user_id);
+    group_members[7]->domain = strdup(harry_domain);
+    group_members[7]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the ninth group member is Ivy
+    group_members[8] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[8]);
+    group_members[8]->user_id = strdup(ivy_user_id);
+    group_members[8]->domain = strdup(ivy_domain);
+    group_members[8]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the tenth group member is Jack
+    group_members[9] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[9]);
+    group_members[9]->user_id = strdup(jack_user_id);
+    group_members[9]->domain = strdup(jack_domain);
+    group_members[9]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+
+    // create the group
+    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 10);
+
+    sleep(10);
+
+    // group message
+    uint8_t plaintext_1[] = "Alice's message.";
+    size_t plaintext_1_len = sizeof(plaintext_1) - 1;
+    test_encryption(alice_address, group.group_address, plaintext_1, plaintext_1_len);
+
+    uint8_t plaintext_2[] = "David's message.";
+    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
+    test_encryption(david_address, group.group_address, plaintext_2, plaintext_2_len);
+
+    uint8_t plaintext_3[] = "Grace's message.";
+    size_t plaintext_3_len = sizeof(plaintext_3) - 1;
+    test_encryption(grace_address, group.group_address, plaintext_3, plaintext_3_len);
+
+    sleep(3);
+
+    // new group members
+    Skissm__GroupMember **new_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 4);
+    new_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(new_group_members[0]);
+    new_group_members[0]->user_id = strdup(karen_user_id);
+    new_group_members[0]->domain = strdup(karen_domain);
+    new_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    new_group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(new_group_members[1]);
+    new_group_members[1]->user_id = strdup(leo_user_id);
+    new_group_members[1]->domain = strdup(leo_domain);
+    new_group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    new_group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(new_group_members[2]);
+    new_group_members[2]->user_id = strdup(mary_user_id);
+    new_group_members[2]->domain = strdup(mary_domain);
+    new_group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    new_group_members[3] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(new_group_members[3]);
+    new_group_members[3]->user_id = strdup(nick_user_id);
+    new_group_members[3]->domain = strdup(nick_domain);
+    new_group_members[3]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    size_t new_group_member_num = 4;
+
+    // add new group members to the group
+    Skissm__AddGroupMembersResponse *add_group_members_response = add_group_members(
+        alice_address, group.group_address, new_group_members, new_group_member_num
+    );
+
+    sleep(10);
+
+    // group message
+    uint8_t plaintext_4[] = "Jack's message.";
+    size_t plaintext_4_len = sizeof(plaintext_4) - 1;
+    test_encryption(jack_address, group.group_address, plaintext_4, plaintext_4_len);
+
+    uint8_t plaintext_5[] = "Karen's message.";
+    size_t plaintext_5_len = sizeof(plaintext_5) - 1;
+    test_encryption(karen_address, group.group_address, plaintext_5, plaintext_5_len);
+
+    uint8_t plaintext_6[] = "Nick's message.";
+    size_t plaintext_6_len = sizeof(plaintext_6) - 1;
+    test_encryption(nick_address, group.group_address, plaintext_6, plaintext_6_len);
+
+    sleep(5);
+
+    // remove group members
+    Skissm__GroupMember **removing_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 4);
+    removing_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(removing_group_members[0]);
+    removing_group_members[0]->user_id = strdup(david_user_id);
+    removing_group_members[0]->domain = strdup(david_domain);
+    removing_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    removing_group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(removing_group_members[1]);
+    removing_group_members[1]->user_id = strdup(ivy_user_id);
+    removing_group_members[1]->domain = strdup(ivy_domain);
+    removing_group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    removing_group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(removing_group_members[2]);
+    removing_group_members[2]->user_id = strdup(karen_user_id);
+    removing_group_members[2]->domain = strdup(karen_domain);
+    removing_group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    removing_group_members[3] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(removing_group_members[3]);
+    removing_group_members[3]->user_id = strdup(leo_user_id);
+    removing_group_members[3]->domain = strdup(leo_domain);
+    removing_group_members[3]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    size_t removing_group_member_num = 4;
+
+    Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(
+        alice_address, group.group_address, removing_group_members, removing_group_member_num
+    );
+
+    sleep(10);
+
+    // group message
+    uint8_t plaintext_7[] = "Bob's message.";
+    size_t plaintext_7_len = sizeof(plaintext_7) - 1;
+    test_encryption(bob_address, group.group_address, plaintext_7, plaintext_7_len);
+
+    uint8_t plaintext_8[] = "Mary's message.";
+    size_t plaintext_8_len = sizeof(plaintext_8) - 1;
+    test_encryption(mary_address, group.group_address, plaintext_8, plaintext_8_len);
+
+    // release
+    int i;
+    for (i = 0; i < 10; i++) {
+        skissm__group_member__free_unpacked(group_members[i], NULL);
+    }
+    free(group_members);
+    skissm__create_group_response__free_unpacked(create_group_response, NULL);
+    for (i = 0; i < 4; i++) {
+        skissm__group_member__free_unpacked(new_group_members[i], NULL);
+        skissm__group_member__free_unpacked(removing_group_members[i], NULL);
+    }
+    free(new_group_members);
+    free(removing_group_members);
+    skissm__add_group_members_response__free_unpacked(add_group_members_response, NULL);
+    skissm__remove_group_members_response__free_unpacked(remove_group_members_response, NULL);
 
     // test stop
     test_end();
@@ -1003,6 +1273,7 @@ int main() {
     test_continual();
     test_multiple_devices();
     test_pqc_multiple_devices();
+    test_medium_group();
 
     return 0;
 }

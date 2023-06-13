@@ -328,6 +328,7 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
             // unload outbound group session
             Skissm__GroupSession *outbound_group_session = NULL;
             get_skissm_plugin()->db_handler.load_outbound_group_session(receiver_address, group_address, &outbound_group_session);
+            const char *group_name = outbound_group_session->group_info->group_name;
             if (outbound_group_session != NULL) {
                 get_skissm_plugin()->db_handler.unload_outbound_group_session(outbound_group_session);
                 // release
@@ -344,7 +345,6 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
             }
 
             // notify
-            const char *group_name = outbound_group_session->group_info->group_name;
             ssm_notify_group_members_removed(
                 group_address,
                 group_name,
