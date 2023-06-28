@@ -74,7 +74,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
             for (i = 0; i < response->n_other_user_addresses; i++) {
                 Skissm__E2eeAddress *to_address = (response->other_user_addresses)[i];
                 Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
-                    account->address, to_address->user->user_id, to_address->domain, to_address->user->device_id, NULL, 0
+                    account->address, account->jwt, to_address->user->user_id, to_address->domain, to_address->user->device_id, NULL, 0
                 );
                 if (invite_response != NULL) {
                     skissm__invite_response__free_unpacked(invite_response, NULL);

@@ -40,10 +40,12 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
 /**
  * @brief Get the pre-key bundle object
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__GetPreKeyBundleResponse* 
  */
-Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundleRequest *request);
+Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *from, const char *auth, Skissm__GetPreKeyBundleRequest *request);
 
 /**
  * @brief 
@@ -51,94 +53,116 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundle
  * @param request 
  * @return Skissm__InviteResponse* 
  */
-Skissm__InviteResponse *mock_invite(Skissm__InviteRequest *request);
+Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__InviteRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__AcceptResponse* 
  */
-Skissm__AcceptResponse *mock_accept(Skissm__AcceptRequest *request);
+Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth, Skissm__AcceptRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__F2fInviteResponse* 
  */
-Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__F2fInviteRequest *request);
+Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fInviteRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__F2fAcceptResponse* 
  */
-Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__F2fAcceptRequest *request);
+Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fAcceptRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__PublishSpkResponse* 
  */
-Skissm__PublishSpkResponse *mock_publish_spk(Skissm__PublishSpkRequest *request);
+Skissm__PublishSpkResponse *mock_publish_spk(Skissm__E2eeAddress *from, const char *auth, Skissm__PublishSpkRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__SupplyOpksResponse* 
  */
-Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__SupplyOpksRequest *request);
+Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__E2eeAddress *from, const char *auth, Skissm__SupplyOpksRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__SendOne2oneMsgResponse* 
  */
-Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__SendOne2oneMsgRequest *request);
+Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendOne2oneMsgRequest *request);
 
 /**
  * @brief Create a group object
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__CreateGroupResponse* 
  */
-Skissm__CreateGroupResponse *mock_create_group(Skissm__CreateGroupRequest *request);
+Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const char *auth, Skissm__CreateGroupRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__AddGroupMembersResponse* 
  */
-Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersRequest *request);
+Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMembersRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__RemoveGroupMembersResponse* 
  */
-Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGroupMembersRequest *request);
+Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__RemoveGroupMembersRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__SendGroupMsgResponse* 
  */
-Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__SendGroupMsgRequest *request);
+Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendGroupMsgRequest *request);
 
 /**
  * @brief 
  * 
+ * @param from 
+ * @param auth 
  * @param request 
  * @return Skissm__ConsumeProtoMsgResponse* 
  */
-Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__ConsumeProtoMsgRequest *request);
+Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__ConsumeProtoMsgRequest *request);
 
 #endif /* MOCK_SERVER_H_ */

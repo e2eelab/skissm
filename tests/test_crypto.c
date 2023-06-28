@@ -428,7 +428,7 @@ static void test_verify_pre_key_bundle() {
     char *domain = account->address->domain;
 
     Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = produce_get_pre_key_bundle_request(user_id, domain, device_id);
-    Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(get_pre_key_bundle_request);
+    Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(account->address, account->jwt, get_pre_key_bundle_request);
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_pub_key_len;

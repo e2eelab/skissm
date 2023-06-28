@@ -395,82 +395,106 @@ typedef struct e2ee_proto_handler_t {
     Skissm__RegisterUserResponse * (*register_user)(Skissm__RegisterUserRequest *);
     /**
      * @brief Get pre-key bundle
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__GetPreKeyBundleResponse * (*get_pre_key_bundle)(Skissm__GetPreKeyBundleRequest *);
+    Skissm__GetPreKeyBundleResponse * (*get_pre_key_bundle)(Skissm__E2eeAddress *from, const char *auth, Skissm__GetPreKeyBundleRequest *);
     /**
      * @brief Invite
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__InviteResponse * (*invite)(Skissm__InviteRequest *);
+    Skissm__InviteResponse * (*invite)(Skissm__E2eeAddress *from, const char *auth, Skissm__InviteRequest *);
     /**
      * @brief Accept
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__AcceptResponse * (*accept)(Skissm__AcceptRequest *);
+    Skissm__AcceptResponse * (*accept)(Skissm__E2eeAddress *from, const char *auth, Skissm__AcceptRequest *);
     /**
      * @brief Face-to-face invite
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__F2fInviteResponse * (*f2f_invite)(Skissm__F2fInviteRequest *);
+    Skissm__F2fInviteResponse * (*f2f_invite)(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fInviteRequest *);
     /**
      * @brief Face-to-face accept
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__F2fAcceptResponse * (*f2f_accept)(Skissm__F2fAcceptRequest *);
+    Skissm__F2fAcceptResponse * (*f2f_accept)(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fAcceptRequest *);
     /**
      * @brief Publish signed pre-key
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__PublishSpkResponse * (*publish_spk)(Skissm__PublishSpkRequest *);
+    Skissm__PublishSpkResponse * (*publish_spk)(Skissm__E2eeAddress *from, const char *auth, Skissm__PublishSpkRequest *);
     /**
      * @brief Supply onetime pre-key
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__SupplyOpksResponse * (*supply_opks)(Skissm__SupplyOpksRequest *);
+    Skissm__SupplyOpksResponse * (*supply_opks)(Skissm__E2eeAddress *from, const char *auth, Skissm__SupplyOpksRequest *);
     /**
      * @brief Send one2one message
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__SendOne2oneMsgResponse * (*send_one2one_msg)(Skissm__SendOne2oneMsgRequest *);
+    Skissm__SendOne2oneMsgResponse * (*send_one2one_msg)(Skissm__E2eeAddress *from, const char *auth, Skissm__SendOne2oneMsgRequest *);
     /**
      * @brief Create group
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__CreateGroupResponse * (*create_group)(Skissm__CreateGroupRequest *);
+    Skissm__CreateGroupResponse * (*create_group)(Skissm__E2eeAddress *from, const char *auth, Skissm__CreateGroupRequest *);
     /**
      * @brief Add group members
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__AddGroupMembersResponse * (*add_group_members)(Skissm__AddGroupMembersRequest *);
+    Skissm__AddGroupMembersResponse * (*add_group_members)(Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMembersRequest *);
     /**
      * @brief Remove group members
      * @param request
      * @return response
      */
-    Skissm__RemoveGroupMembersResponse * (*remove_group_members)(Skissm__RemoveGroupMembersRequest *);
+    Skissm__RemoveGroupMembersResponse * (*remove_group_members)(Skissm__E2eeAddress *from, const char *auth, Skissm__RemoveGroupMembersRequest *);
     /**
      * @brief Send group message
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__SendGroupMsgResponse * (*send_group_msg)(Skissm__SendGroupMsgRequest *);
+    Skissm__SendGroupMsgResponse * (*send_group_msg)(Skissm__E2eeAddress *from, const char *auth, Skissm__SendGroupMsgRequest *);
     /**
      * @brief Consume a ProtoMsg
+     * @param from
+     * @param auth
      * @param request
      * @return response
      */
-    Skissm__ConsumeProtoMsgResponse * (*consume_proto_msg)(Skissm__ConsumeProtoMsgRequest *);
+    Skissm__ConsumeProtoMsgResponse * (*consume_proto_msg)(Skissm__E2eeAddress *from, const char *auth, Skissm__ConsumeProtoMsgRequest *);
 } e2ee_proto_handler_t;
 
 typedef struct skissm_event_handler_t {

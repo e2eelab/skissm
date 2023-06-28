@@ -404,7 +404,7 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     return response;
 }
 
-Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundleRequest *request) {
+Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *from, const char *auth, Skissm__GetPreKeyBundleRequest *request) {
     if ((request->user_id == NULL) || (request->domain == NULL)) {
         ssm_notify_log(BAD_MESSAGE_FORMAT, "mock_get_pre_key_bundle()");
         return NULL;
@@ -478,7 +478,7 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__GetPreKeyBundle
     return response;
 }
 
-Skissm__InviteResponse *mock_invite(Skissm__InviteRequest *request) {
+Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__InviteRequest *request) {
     Skissm__InviteMsg *invite_msg = request->msg;
     size_t invite_msg_data_len = skissm__invite_msg__get_packed_size(invite_msg);
     uint8_t invite_msg_data[invite_msg_data_len];
@@ -506,7 +506,7 @@ Skissm__InviteResponse *mock_invite(Skissm__InviteRequest *request) {
     return response;
 }
 
-Skissm__AcceptResponse *mock_accept(Skissm__AcceptRequest *request) {
+Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth, Skissm__AcceptRequest *request) {
     Skissm__AcceptMsg *accept_msg = request->msg;
     size_t accept_msg_data_len = skissm__accept_msg__get_packed_size(accept_msg);
     uint8_t accept_msg_data[accept_msg_data_len];
@@ -539,7 +539,7 @@ Skissm__AcceptResponse *mock_accept(Skissm__AcceptRequest *request) {
     return response;
 }
 
-Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__F2fInviteRequest *request) {
+Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fInviteRequest *request) {
     Skissm__F2fInviteMsg *f2f_invite_msg = request->msg;
 
     uint8_t user_data_find = 0;
@@ -591,7 +591,7 @@ Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__F2fInviteRequest *request) {
     return response;
 }
 
-Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__F2fAcceptRequest *request) {
+Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fAcceptRequest *request) {
     Skissm__F2fAcceptMsg *f2f_accept_msg = request->msg;
     size_t f2f_accept_msg_data_len = skissm__f2f_accept_msg__get_packed_size(f2f_accept_msg);
     uint8_t f2f_accept_msg_data[f2f_accept_msg_data_len];
@@ -619,7 +619,7 @@ Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__F2fAcceptRequest *request) {
     return response;
 }
 
-Skissm__PublishSpkResponse *mock_publish_spk(Skissm__PublishSpkRequest *request) {
+Skissm__PublishSpkResponse *mock_publish_spk(Skissm__E2eeAddress *from, const char *auth, Skissm__PublishSpkRequest *request) {
     uint8_t user_data_find = 0;
     while (user_data_find < user_data_set_insert_pos)
     {
@@ -652,7 +652,7 @@ Skissm__PublishSpkResponse *mock_publish_spk(Skissm__PublishSpkRequest *request)
     return response;
 }
 
-Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__SupplyOpksRequest *request) {
+Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__E2eeAddress *from, const char *auth, Skissm__SupplyOpksRequest *request) {
     uint8_t user_data_find = 0;
     while (user_data_find < user_data_set_insert_pos)
     {
@@ -698,7 +698,7 @@ Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__SupplyOpksRequest *request)
     return response;
 }
 
-Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__SendOne2oneMsgRequest *request) {
+Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendOne2oneMsgRequest *request) {
     Skissm__E2eeMsg *e2ee_msg = request->msg;
     size_t e2ee_msg_data_len = skissm__e2ee_msg__get_packed_size(e2ee_msg);
     uint8_t e2ee_msg_data[e2ee_msg_data_len];
@@ -749,7 +749,7 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__SendOne2oneMsgRequ
     return response;
 }
 
-Skissm__CreateGroupResponse *mock_create_group(Skissm__CreateGroupRequest *request) {
+Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const char *auth, Skissm__CreateGroupRequest *request) {
     if (request == NULL) {
         return NULL;
     }
@@ -824,7 +824,7 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__CreateGroupRequest *reque
     return response;
 }
 
-Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersRequest *request) {
+Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMembersRequest *request) {
     Skissm__AddGroupMembersMsg *add_group_members_msg = request->msg;
     size_t add_group_members_msg_data_len = skissm__add_group_members_msg__get_packed_size(add_group_members_msg);
     uint8_t add_group_members_msg_data[add_group_members_msg_data_len];
@@ -923,7 +923,7 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__AddGroupMembersR
     return response;
 }
 
-Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGroupMembersRequest *request) {
+Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__RemoveGroupMembersRequest *request) {
     Skissm__RemoveGroupMembersMsg *remove_group_members_msg = request->msg;
     size_t remove_group_members_msg_data_len = skissm__remove_group_members_msg__get_packed_size(remove_group_members_msg);
     uint8_t remove_group_members_msg_data[remove_group_members_msg_data_len];
@@ -1027,7 +1027,7 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__RemoveGrou
     return response;
 }
 
-Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__SendGroupMsgRequest *request) {
+Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendGroupMsgRequest *request) {
     Skissm__E2eeMsg *e2ee_msg = request->msg;
     size_t e2ee_msg_data_len = skissm__e2ee_msg__get_packed_size(e2ee_msg);
     uint8_t e2ee_msg_data[e2ee_msg_data_len];
@@ -1098,7 +1098,7 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__SendGroupMsgRequest *r
     return response;
 }
 
-Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__ConsumeProtoMsgRequest *request) {
+Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__ConsumeProtoMsgRequest *request) {
     size_t request_data_len = skissm__consume_proto_msg_request__get_packed_size(request);
     uint8_t *request_data = (uint8_t *)malloc(request_data_len);
     skissm__consume_proto_msg_request__pack(request, request_data);

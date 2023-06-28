@@ -144,10 +144,11 @@ Skissm__SendGroupMsgResponse *send_group_msg(
 /**
  * @brief Send consume_proto_msg request to server.
  *
+ * @param sender_address
  * @param proto_msg_id
  * @return Skissm__ConsumeProtoMsgResponse *
  */
-Skissm__ConsumeProtoMsgResponse *consume_proto_msg(const char *proto_msg_id);
+Skissm__ConsumeProtoMsgResponse *consume_proto_msg(Skissm__E2eeAddress *sender_address, const char *proto_msg_id);
 
 /**
  * @brief Process incoming protocol messages.

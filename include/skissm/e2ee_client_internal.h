@@ -29,6 +29,7 @@ extern "C" {
  * @brief Get the pre-key bundle internal object.
  *
  * @param from
+ * @param auth
  * @param to_user_id
  * @param to_domain
  * @param to_device_id
@@ -38,6 +39,7 @@ extern "C" {
  */
 Skissm__InviteResponse *get_pre_key_bundle_internal(
     Skissm__E2eeAddress *from,
+    const char *auth,
     const char *to_user_id,
     const char *to_domain,
     const char *to_device_id,

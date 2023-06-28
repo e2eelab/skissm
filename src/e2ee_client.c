@@ -87,12 +87,19 @@ Skissm__InviteResponse *reinvite(Skissm__Session *session) {
 }
 
 Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
+    if (account == NULL) {
+        ssm_notify_log(BAD_ACCOUNT, "invite()");
+        return NULL;
+    }
+    
     Skissm__Session **outbound_sessions = NULL;
+    Skissm__InviteResponse *response = NULL;
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num == 0) {
-        return get_pre_key_bundle_internal(from, to_user_id, to_domain, NULL, NULL, 0);
+        response = get_pre_key_bundle_internal(from, account->jwt, to_user_id, to_domain, NULL, NULL, 0);
     } else {
-        Skissm__InviteResponse *response = NULL;
         size_t i;
         for (i = 0; i < outbound_sessions_num; i++) {
             Skissm__Session *cur_outbound_session = outbound_sessions[i];
@@ -109,8 +116,14 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
         // release
         free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
         // TODO: return what
-        return NULL;
+        response = NULL;
     }
+    
+    // release
+    skissm__account__free_unpacked(account, NULL);
+    
+    // done
+    return response;
 }
 
 size_t f2f_invite(
@@ -379,7 +392,7 @@ Skissm__CreateGroupResponse *create_group(
 
     // send message to server
     Skissm__CreateGroupRequest *request = produce_create_group_request(sender_address, group_name, group_members, group_members_num);
-    Skissm__CreateGroupResponse *response = get_skissm_plugin()->proto_handler.create_group(request);
+    Skissm__CreateGroupResponse *response = get_skissm_plugin()->proto_handler.create_group(account->address, account->jwt, request);
     bool succ = consume_create_group_response(account->e2ee_pack_id, sender_address, group_name, group_members, group_members_num, response);
     if (!succ) {
         // pack
@@ -409,6 +422,13 @@ Skissm__AddGroupMembersResponse *add_group_members(
     Skissm__GroupMember **adding_members,
     size_t adding_members_num
 ) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
+    if (account == NULL) {
+        ssm_notify_log(BAD_ACCOUNT, "add_group_members()");
+        return NULL;
+    }
+    
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
@@ -418,7 +438,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
 
     // send message to server
     Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
-    Skissm__AddGroupMembersResponse *response = get_skissm_plugin()->proto_handler.add_group_members(request);
+    Skissm__AddGroupMembersResponse *response = get_skissm_plugin()->proto_handler.add_group_members(account->address, account->jwt, request);
     bool succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
     if (!succ) {
         // pack
@@ -435,6 +455,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
     }
 
     // release
+    skissm__account__free_unpacked(account, NULL);
     skissm__add_group_members_request__free_unpacked(request, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
@@ -448,6 +469,13 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     Skissm__GroupMember **removing_members,
     size_t removing_members_num
 ) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
+    if (account == NULL) {
+        ssm_notify_log(BAD_ACCOUNT, "remove_group_members()");
+        return NULL;
+    }
+    
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
 
@@ -458,7 +486,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
 
     // send message to server
     Skissm__RemoveGroupMembersRequest *request = produce_remove_group_members_request(outbound_group_session, removing_members, removing_members_num);
-    Skissm__RemoveGroupMembersResponse *response = get_skissm_plugin()->proto_handler.remove_group_members(request);
+    Skissm__RemoveGroupMembersResponse *response = get_skissm_plugin()->proto_handler.remove_group_members(account->address, account->jwt, request);
     bool succ = consume_remove_group_members_response(outbound_group_session, response, removing_members, removing_members_num);
     if (!succ) {
         // pack
@@ -475,6 +503,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     }
 
     // release
+    skissm__account__free_unpacked(account, NULL);
     skissm__remove_group_members_request__free_unpacked(request, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
@@ -488,6 +517,13 @@ Skissm__SendGroupMsgResponse *send_group_msg(
     const uint8_t *plaintext_data,
     size_t plaintext_data_len
 ) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
+    if (account == NULL) {
+        ssm_notify_log(BAD_ACCOUNT, "send_group_msg()");
+        return NULL;
+    }
+    
     // load the outbound group session
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
@@ -496,7 +532,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
         return NULL;
     }
     Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, plaintext_data, plaintext_data_len);
-    Skissm__SendGroupMsgResponse *response = get_skissm_plugin()->proto_handler.send_group_msg(request);
+    Skissm__SendGroupMsgResponse *response = get_skissm_plugin()->proto_handler.send_group_msg(account->address, account->jwt,  request);
     bool succ = consume_send_group_msg_response(outbound_group_session, response);
     if (!succ) {
         // pack
@@ -513,6 +549,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
     }
 
     // release
+    skissm__account__free_unpacked(account, NULL);
     skissm__send_group_msg_request__free_unpacked(request, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
@@ -520,13 +557,21 @@ Skissm__SendGroupMsgResponse *send_group_msg(
     return response;
 }
 
-Skissm__ConsumeProtoMsgResponse *consume_proto_msg(const char *proto_msg_id) {
+Skissm__ConsumeProtoMsgResponse *consume_proto_msg(Skissm__E2eeAddress *sender_address, const char *proto_msg_id) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
+    if (account == NULL) {
+        ssm_notify_log(BAD_ACCOUNT, "consume_proto_msg()");
+        return NULL;
+    }
+    
     Skissm__ConsumeProtoMsgRequest *request = (Skissm__ConsumeProtoMsgRequest*)malloc(sizeof(Skissm__ConsumeProtoMsgRequest));
     skissm__consume_proto_msg_request__init(request);
     request->proto_msg_id = strdup(proto_msg_id);
-    Skissm__ConsumeProtoMsgResponse *response = get_skissm_plugin()->proto_handler.consume_proto_msg(request);
+    Skissm__ConsumeProtoMsgResponse *response = get_skissm_plugin()->proto_handler.consume_proto_msg(account->address, account->jwt,  request);
 
     // release
+    skissm__account__free_unpacked(account, NULL);
     skissm__consume_proto_msg_request__free_unpacked(request, NULL);
 
     // done
@@ -582,7 +627,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
     Skissm__ConsumeProtoMsgResponse *response = NULL;
     if (consumed) {
         if (proto_msg->tag != NULL) {
-            response = consume_proto_msg(proto_msg->tag->proto_msg_id);
+            response = consume_proto_msg(proto_msg->to, proto_msg->tag->proto_msg_id);
             if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
                 size_t request_data_len = skissm__proto_msg__get_packed_size(proto_msg);
                 uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
