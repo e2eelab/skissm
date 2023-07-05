@@ -137,7 +137,7 @@ void create_outbound_group_session(
         ssm_notify_log(BAD_ACCOUNT, "create_outbound_group_session()");
         return;
     }
-    
+
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
     int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
 
@@ -225,7 +225,7 @@ void create_outbound_group_session(
             /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
             Skissm__InviteResponse *response = get_pre_key_bundle_internal(
                 outbound_group_session->session_owner,
-                account->jwt,
+                account->auth,
                 group_member_address->user->user_id, group_member_address->domain,
                 NULL,
                 group_pre_key_plaintext_data, group_pre_key_plaintext_data_len

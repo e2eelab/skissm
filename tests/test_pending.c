@@ -22,6 +22,7 @@
 
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client.h"
+#include "skissm/e2ee_client_internal.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
 #include "skissm/session_manager.h"
@@ -286,16 +287,12 @@ static void test_pending_request_data() {
 
     Skissm__AcceptRequest *accept_request = produce_accept_request(e2ee_pack_id, alice_address, bob_address, NULL);
 
-    // pack
+    // pack reuest to request_data
     size_t request_data_len = skissm__accept_request__get_packed_size(accept_request);
     uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
     skissm__accept_request__pack(accept_request, request_data);
 
-    // store
-    char *pending_request_id = generate_uuid_str();
-    get_skissm_plugin()->db_handler.store_pending_request_data(
-        alice_address, pending_request_id, ACCEPT_REQUEST, request_data, request_data_len
-    );
+    store_pending_request_internal(alice_address, SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST, request_data, request_data_len, NULL, 0);
 
     // load
     char **pending_request_id_list;
@@ -307,18 +304,20 @@ static void test_pending_request_data() {
             alice_address, &pending_request_id_list, &request_type_list, &request_data_list, &request_data_len_list
         );
 
+    Skissm__PendingRequest *pending_request = skissm__pending_request__unpack(NULL, request_data_len_list[0], request_data_list[0]);
+
     // assert
     assert(pending_request_data_num == 1);
-    assert(request_type_list[0] == ACCEPT_REQUEST);
-    assert(request_data_len_list[0] == request_data_len);
-    assert(memcmp(request_data_list[0], request_data, request_data_len) == 0);
+    assert(request_type_list[0] == SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST);
+    assert(pending_request->request_data.len == request_data_len);
+    assert(memcmp((void *)(pending_request->request_data.data), (void *)(request_data), request_data_len) == 0);
 
     // release
     skissm__e2ee_address__free_unpacked(alice_address, NULL);
     skissm__e2ee_address__free_unpacked(bob_address, NULL);
     skissm__accept_request__free_unpacked(accept_request, NULL);
-    free_mem((void **)&request_data, request_data_len);
-    free(pending_request_id);
+    skissm__pending_request__free_unpacked(pending_request, NULL);
+    free_mem((void *)&request_data, request_data_len);
     free_mem((void **)&pending_request_id_list, sizeof(char *) * pending_request_data_num);
     free_mem((void **)&request_type_list, sizeof(uint8_t) * pending_request_data_num);
     free_mem((void **)&(request_data_list[0]), request_data_len_list[0]);

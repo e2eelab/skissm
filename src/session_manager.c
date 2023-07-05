@@ -322,10 +322,10 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         ssm_notify_log(BAD_ACCOUNT, "consume_new_user_device_msg()");
         return false;
     }
-    
+
     Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
         receiver_address,
-        account->jwt,
+        account->auth,
         msg->user_address->user->user_id,
         msg->user_address->domain,
         msg->user_address->user->device_id,
@@ -359,15 +359,15 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
                 }
             }
         }
-    
+
         // release
         skissm__invite_response__free_unpacked(invite_response, NULL);
-        
+
         succ = true;
     } else {
         succ = false;
     }
-    
+
     // release
     skissm__account__free_unpacked(account, NULL);
 

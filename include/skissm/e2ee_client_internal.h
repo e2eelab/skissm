@@ -136,6 +136,18 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
 );
 
 /**
+ * @brief Store pending request to db.
+ *
+ * @param user_address
+ * @param type
+ * @param request_data
+ * @param request_data_len
+ * @param args_data
+ * @param args_data_len
+ */
+void store_pending_request_internal(Skissm__E2eeAddress *user_address, Skissm__PendingRequestType type, uint8_t *request_data, size_t request_data_len, uint8_t *args_data, size_t args_data_len);
+
+/**
  * @brief Resume connection with a given account.
  *
  * @param account

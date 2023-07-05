@@ -63,18 +63,43 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
         copy_address_from_address(&(account->address), response->address);
         account->saved = true;
         account->password = strdup(response->password);
-        account->jwt = strdup(response->jwt);
+        account->auth = strdup(response->auth);
         account->expires_in = response->expires_in;
         // save to db
         get_skissm_plugin()->db_handler.store_account(account);
         ssm_notify_user_registered(account);
+        // create outbound sessions to other devices
+        if (response->n_other_device_addresses > 0) {
+            size_t i;
+            for (i = 0; i < response->n_other_device_addresses; i++) {
+                Skissm__E2eeAddress *other_device_address = (response->other_device_addresses)[i];
+                Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(account->address,
+                    account->auth,
+                    other_device_address->user->user_id,
+                    other_device_address->domain,
+                    other_device_address->user->device_id,
+                    NULL, 0
+                );
+                if (invite_response != NULL) {
+                    skissm__invite_response__free_unpacked(invite_response, NULL);
+                    invite_response = NULL;
+                }
+            }
+        }
+
         // send to other friends if necessary
         if (response->n_other_user_addresses > 0) {
             size_t i;
             for (i = 0; i < response->n_other_user_addresses; i++) {
                 Skissm__E2eeAddress *to_address = (response->other_user_addresses)[i];
+                // skip the same user device
+                if (safe_strcmp(account->address->user->device_id,  to_address->user->device_id)) {
+                    ssm_notify_log(DEBUG_LOG, "consume_register_response(): skip invite the same user device: %s", to_address->user->device_id);
+                    continue;
+                }
+
                 Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
-                    account->address, account->jwt, to_address->user->user_id, to_address->domain, to_address->user->device_id, NULL, 0
+                    account->address, account->auth, to_address->user->user_id, to_address->domain, to_address->user->device_id, NULL, 0
                 );
                 if (invite_response != NULL) {
                     skissm__invite_response__free_unpacked(invite_response, NULL);

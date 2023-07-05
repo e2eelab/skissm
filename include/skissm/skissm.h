@@ -64,6 +64,7 @@
 #include "skissm/One2oneMsgPayload.pb-c.h"
 #include "skissm/OneTimePreKey.pb-c.h"
 #include "skissm/OneTimePreKeyPublic.pb-c.h"
+#include "skissm/PendingRequest.pb-c.h"
 #include "skissm/Plaintext.pb-c.h"
 #include "skissm/PreKeyBundle.pb-c.h"
 #include "skissm/ProtoMsg.pb-c.h"
@@ -611,19 +612,6 @@ typedef struct skissm_plugin_t {
     e2ee_proto_handler_t proto_handler;
     skissm_event_handler_t event_handler;
 } skissm_plugin_t;
-
-typedef enum {
-    INVITE_REQUEST,
-    ACCEPT_REQUEST,
-    PUBLISH_SPK_REQUEST,
-    SUPPLY_OPKS_REQUEST,
-    SEND_ONE2ONE_MSG_REQUEST,
-    CREATE_GROUP_REQUEST,
-    ADD_GROUP_MEMBERS_REQUEST,
-    REMOVE_GROUP_MEMBERS_REQUEST,
-    SEND_GROUP_MSG_REQUEST,
-    PROTO_MSG
-} resendable_request;
 
 const e2ee_pack_t *get_e2ee_pack(const char *e2ee_pack_id);
 
