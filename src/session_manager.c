@@ -26,6 +26,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
             &pending_plaintext_data_len_list
         );
     if (pending_plaintext_data_list_num > 0) {
+        ssm_notify_log(DEBUG_LOG, "send_pending_plaintext_data(): list num = %d", pending_plaintext_data_list_num);
         uint32_t i;
         for (i = 0; i < pending_plaintext_data_list_num; i++) {
             Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(
@@ -526,14 +527,14 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
     const session_suite_t *session_suite = get_e2ee_pack(msg->e2ee_pack_id)->session_suite;
     int result = session_suite->complete_outbound_session(outbound_session, msg);
 
-    // try to send group pre-keys if necessary
-    send_pending_plaintext_data(outbound_session);
-
     // store sesson state
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
     // notify
     ssm_notify_outbound_session_ready(outbound_session);
+
+    // try to send group pre-keys if necessary
+    send_pending_plaintext_data(outbound_session);
 
     return result >= 0;
 }

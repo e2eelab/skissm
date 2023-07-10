@@ -248,29 +248,40 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
 }
 
 int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__AcceptMsg *msg) {
+    ssm_notify_log(DEBUG_LOG, "pqc_complete_outbound_session()");
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
 
     outbound_session->responded = true;
 
     // load account to get the private identity key
-    Skissm__Account *loacl_account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->from, &loacl_account);
-    if (loacl_account == NULL) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->from, &account);
+    if (account == NULL) {
         ssm_notify_log(BAD_ACCOUNT, "pqc_complete_outbound_session()");
         return -1;
     }
 
-    uint8_t *pos = outbound_session->alice_ephemeral_key.data;
-    uint8_t *temp_shared_secret = (uint8_t *)malloc(sizeof(uint8_t) * CRYPTO_BYTES_KEY);
-    cipher_suite->ss_key_gen(&(loacl_account->identity_key->asym_key_pair->private_key), &(msg->pre_shared_keys[0]), temp_shared_secret);
-    memcpy(pos, temp_shared_secret, CRYPTO_BYTES_KEY);
+    outbound_session->alice_ephemeral_key.data = (uint8_t *)malloc(sizeof(uint8_t) * CRYPTO_BYTES_KEY);
+    outbound_session->alice_ephemeral_key.len = CRYPTO_BYTES_KEY;
+    cipher_suite->ss_key_gen(&(account->identity_key->asym_key_pair->private_key), &(msg->pre_shared_keys[0]), outbound_session->alice_ephemeral_key.data);
 
     // create the root key and chain keys
-    initialise_as_alice(cipher_suite, outbound_session->ratchet, pos, outbound_session->alice_ephemeral_key.len, NULL, &(outbound_session->bob_signed_pre_key));
+    initialise_ratchet(&(outbound_session->ratchet));
+    initialise_as_alice(cipher_suite, outbound_session->ratchet, outbound_session->alice_ephemeral_key.data, outbound_session->alice_ephemeral_key.len, NULL, &(outbound_session->bob_signed_pre_key));
 
     // release
-    skissm__account__free_unpacked(loacl_account, NULL);
-    free_mem((void **)&temp_shared_secret, CRYPTO_BYTES_KEY);
+    // release outbound_session pre_shared_keys
+    size_t pre_shared_keys_num = outbound_session->n_pre_shared_keys;
+    size_t i = 0;
+    for (i = 0; i < pre_shared_keys_num; i++) {
+        free_protobuf(&(outbound_session->pre_shared_keys[i]));
+    }
+    free(outbound_session->pre_shared_keys);
+    outbound_session->pre_shared_keys = NULL;
+    outbound_session->n_pre_shared_keys = 0;
+
+    // release account
+    skissm__account__free_unpacked(account, NULL);
 
     // done
     return 0;

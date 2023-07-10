@@ -276,14 +276,25 @@ static void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_da
             Skissm__Session *self_outbound_session = self_outbound_sessions[i];
             // if the device is different from the sender's
             if (strcmp(self_outbound_session->to->user->device_id, from->user->device_id) != 0) {
-                // send syncing plaintext to server
-                Skissm__SendOne2oneMsgResponse *sync_response = send_one2one_msg_internal(
-                        self_outbound_session,
+                if (self_outbound_session->responded == true) {
+                    // send syncing plaintext to server
+                    Skissm__SendOne2oneMsgResponse *sync_response = send_one2one_msg_internal(
+                            self_outbound_session,
+                            common_plaintext_data,
+                            common_plaintext_data_len
+                    );
+                    // release
+                    skissm__send_one2one_msg_response__free_unpacked(sync_response, NULL);
+                } else {
+                    ssm_notify_log(DEBUG_LOG, "send_sync_msg(): outbound session[%s] (user_id:deviceid = %s, %s) not responded, store common_plaintext_data", self_outbound_session->session_id, self_outbound_session->to->user->user_id, self_outbound_session->to->user->device_id);
+                    // store pending common_plaintext_data
+                    store_pending_common_plaintext_data(
+                        self_outbound_session->from,
+                        self_outbound_session->to,
                         common_plaintext_data,
                         common_plaintext_data_len
-                );
-                // release
-                skissm__send_one2one_msg_response__free_unpacked(sync_response, NULL);
+                    );
+                }
             }
             // release
             skissm__session__free_unpacked(self_outbound_session, NULL);
@@ -469,7 +480,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
         ssm_notify_log(BAD_ACCOUNT, "remove_group_members()");
         return NULL;
     }
-    
+
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
 
@@ -487,7 +498,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
         size_t request_data_len = skissm__remove_group_members_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__remove_group_members_request__pack(request, request_data);
-        
+
         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__REMOVE_GROUP_MEMBERS_REQUEST, request_data, request_data_len, NULL, 0);
         //release
         free_mem((void *)&request_data, request_data_len);
@@ -530,7 +541,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
         size_t request_data_len = skissm__send_group_msg_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__send_group_msg_request__pack(request, request_data);
-        
+
         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__SEND_GROUP_MSG_REQUEST, request_data, request_data_len, NULL, 0);
         //release
         free_mem((void *)&request_data, request_data_len);
