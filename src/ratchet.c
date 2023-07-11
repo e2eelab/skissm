@@ -183,6 +183,16 @@ static size_t verify_and_decrypt(
     const Skissm__One2oneMsgPayload *payload,
     uint8_t **plaintext_data
 ) {
+    // debug log
+    //char *derived_key_str;
+    //size_t derived_key_str_len = to_hex_str(message_key->derived_key.data, message_key->derived_key.len, &derived_key_str);
+    //ssm_notify_log(DEBUG_LOG, "verify_and_decrypt() derived_key[len = %d]: %s\n", message_key->derived_key.len, derived_key_str);
+    //free(derived_key_str);
+    //char *ciphertext_str;
+    //size_t ciphertext_str_len = to_hex_str(payload->ciphertext.data, payload->ciphertext.len, &ciphertext_str);
+    //ssm_notify_log(DEBUG_LOG, "verify_and_decrypt() ciphertext[len = %d]: %s\n", ciphertext_str_len, ciphertext_str);
+    //free(ciphertext_str);
+    
     size_t result = cipher_suite->decrypt(
         &ad,
         message_key->derived_key.data,
@@ -443,8 +453,6 @@ void encrypt_ratchet(
     advance_chain_key(cipher_suite, ratchet->sender_chain->chain_key);
 
     uint32_t sequence = msg_key->index;
-    ssm_notify_log(DEBUG_LOG, "encrypt_ratchet() seq: %d\n", sequence);
-
     uint32_t ratchet_key_len;
     if (cipher_suite->get_crypto_param().pqc_param == false) {
         ratchet_key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
@@ -465,6 +473,16 @@ void encrypt_ratchet(
         plaintext_data, plaintext_data_len,
         &((*payload)->ciphertext.data)
     );
+    
+    // debug log
+    //char *derived_key_str;
+    //size_t derived_key_str_len = to_hex_str(msg_key->derived_key.data, msg_key->derived_key.len, &derived_key_str);
+    //ssm_notify_log(DEBUG_LOG, "encrypt_ratchet() seq: %d, derived_key[len = %d]: %s\n", sequence, msg_key->derived_key.len, derived_key_str);
+    //free(derived_key_str);
+    //char *plaintext_str;
+    //size_t plaintext_str_len = to_hex_str(plaintext_data, plaintext_data_len, &plaintext_str);
+    //ssm_notify_log(DEBUG_LOG, "encrypt_ratchet() seq: %d, plaintext[len = %d]: %s\n", sequence, plaintext_data_len, plaintext_str);
+    //free(plaintext_str);
 
     // release
     skissm__msg_key__free_unpacked(msg_key, NULL);

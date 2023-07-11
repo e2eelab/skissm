@@ -29,7 +29,7 @@
 #include "skissm/ratchet.h"
 
 /** length of the shared secret created by a PQC operation */
-#define CRYPTO_BYTES_KEY 32
+#define CRYPTO_BYTES_KEY_LEN 32
 
 Skissm__InviteResponse *pqc_new_outbound_session(
     Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle
@@ -83,7 +83,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     memcpy((outbound_session->associated_data.data) + key_len, their_pre_key_bundle->identity_key_public->asym_public_key.data, key_len);
 
     // calculate the shared secret S via encapsulation
-    uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY];
+    uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY_LEN];
     uint8_t *pos = secret;
     ProtobufCBinaryData *ciphertext_2, *ciphertext_3, *ciphertext_4;
     ciphertext_2 = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
@@ -94,11 +94,11 @@ Skissm__InviteResponse *pqc_new_outbound_session(
 
     ciphertext_2->len = ciphertext_len;
     ciphertext_2->data = cipher_suite->ss_key_gen(NULL, &(their_pre_key_bundle->identity_key_public->asym_public_key), pos);
-    pos += CRYPTO_BYTES_KEY;
+    pos += CRYPTO_BYTES_KEY_LEN;
     ciphertext_3->len = ciphertext_len;
     ciphertext_3->data = cipher_suite->ss_key_gen(NULL, &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
     if (x3dh_epoch == 3) {
-        pos += CRYPTO_BYTES_KEY;
+        pos += CRYPTO_BYTES_KEY_LEN;
         ciphertext_4->len = ciphertext_len;
         ciphertext_4->data = cipher_suite->ss_key_gen(NULL, &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
     } else{
@@ -106,11 +106,11 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     }
 
     // the first part of the shared secret will be determined after receiving the acception message
-    char zero_array[CRYPTO_BYTES_KEY] = {0};
-    outbound_session->alice_ephemeral_key.len = (x3dh_epoch + 1) * CRYPTO_BYTES_KEY;
+    char zero_array[CRYPTO_BYTES_KEY_LEN] = {0};
+    outbound_session->alice_ephemeral_key.len = (x3dh_epoch + 1) * CRYPTO_BYTES_KEY_LEN;
     outbound_session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_session->alice_ephemeral_key.len);
-    memcpy(outbound_session->alice_ephemeral_key.data, zero_array, CRYPTO_BYTES_KEY);
-    memcpy(outbound_session->alice_ephemeral_key.data + CRYPTO_BYTES_KEY, secret, x3dh_epoch * CRYPTO_BYTES_KEY);
+    memcpy(outbound_session->alice_ephemeral_key.data, zero_array, CRYPTO_BYTES_KEY_LEN);
+    memcpy(outbound_session->alice_ephemeral_key.data + CRYPTO_BYTES_KEY_LEN, secret, x3dh_epoch * CRYPTO_BYTES_KEY_LEN);
 
     // set the session ID
     outbound_session->session_id = generate_uuid_str();
@@ -207,7 +207,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
     }
 
     // calculate the shared secret S via KEM
-    uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY];
+    uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY_LEN];
     uint8_t *pos = secret;
     ProtobufCBinaryData *ciphertext_1 = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
 
@@ -215,18 +215,18 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
 
     ciphertext_1->len = ciphertext_len;
     ciphertext_1->data = cipher_suite->ss_key_gen(NULL, &(inbound_session->alice_identity_key), pos);
-    pos += CRYPTO_BYTES_KEY;
+    pos += CRYPTO_BYTES_KEY_LEN;
     cipher_suite->ss_key_gen(&(bob_identity_key->private_key), &(msg->pre_shared_keys[0]), pos);
-    pos += CRYPTO_BYTES_KEY;
+    pos += CRYPTO_BYTES_KEY_LEN;
     cipher_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &(msg->pre_shared_keys[1]), pos);
     if (x3dh_epoch == 4) {
-        pos += CRYPTO_BYTES_KEY;
+        pos += CRYPTO_BYTES_KEY_LEN;
         cipher_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), &(msg->pre_shared_keys[2]), pos);
     }
 
-    inbound_session->alice_ephemeral_key.len = x3dh_epoch * CRYPTO_BYTES_KEY;
+    inbound_session->alice_ephemeral_key.len = x3dh_epoch * CRYPTO_BYTES_KEY_LEN;
     inbound_session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * inbound_session->alice_ephemeral_key.len);
-    memcpy(inbound_session->alice_ephemeral_key.data, secret, x3dh_epoch * CRYPTO_BYTES_KEY);
+    memcpy(inbound_session->alice_ephemeral_key.data, secret, x3dh_epoch * CRYPTO_BYTES_KEY_LEN);
 
     initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key);
 
@@ -260,11 +260,10 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
         ssm_notify_log(BAD_ACCOUNT, "pqc_complete_outbound_session()");
         return -1;
     }
-
-    outbound_session->alice_ephemeral_key.data = (uint8_t *)malloc(sizeof(uint8_t) * CRYPTO_BYTES_KEY);
-    outbound_session->alice_ephemeral_key.len = CRYPTO_BYTES_KEY;
+    
+    // generated alice ephemeral key len == CRYPTO_BYTES_KEY_LEN
     cipher_suite->ss_key_gen(&(account->identity_key->asym_key_pair->private_key), &(msg->pre_shared_keys[0]), outbound_session->alice_ephemeral_key.data);
-
+    
     // create the root key and chain keys
     initialise_ratchet(&(outbound_session->ratchet));
     initialise_as_alice(cipher_suite, outbound_session->ratchet, outbound_session->alice_ephemeral_key.data, outbound_session->alice_ephemeral_key.len, NULL, &(outbound_session->bob_signed_pre_key));
@@ -322,7 +321,7 @@ int pqc_new_f2f_inbound_session(
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
 
-    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, 4 * CRYPTO_BYTES_KEY, local_account->signed_pre_key->key_pair);
+    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, 4 * CRYPTO_BYTES_KEY_LEN, local_account->signed_pre_key->key_pair);
 
     // this is a face-to-face session
     inbound_session->f2f = true;

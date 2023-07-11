@@ -38,8 +38,10 @@ char *generate_uuid_str() {
     return crypto_base64_encode(uuid, UUID_LEN);
 }
 
-size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char *hex_str, size_t hex_str_len) {
-    char *p = &hex_str[0];
+size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char **hex_str) {
+    size_t hex_str_len = buffer_len * 2 + 1;
+    *hex_str = (char *)malloc(hex_str_len*sizeof(char));
+    char *p = &(*hex_str[0]);
     int i, n;
     size_t output_len = 0;
     for (i = 0; (i < buffer_len) && (output_len <= hex_str_len); i++) {
@@ -49,7 +51,7 @@ size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char *hex_str, size_
     }
     *p = '\0';
 
-    return output_len + 1;
+    return hex_str_len;
 }
 
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
