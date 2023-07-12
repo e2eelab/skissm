@@ -113,6 +113,8 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     size_t group_pre_key_plaintext_data_len,
     Skissm__GetPreKeyBundleResponse *response
 ) {
+    ssm_notify_log(DEBUG_LOG, "consume_get_pre_key_bundle_response() from[%s:%s]", from->user->user_id, from->user->device_id);
+
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         Skissm__PreKeyBundle **their_pre_key_bundles = response->pre_key_bundles;
         size_t n_pre_key_bundles = response->n_pre_key_bundles;
@@ -252,6 +254,7 @@ static bool process_f2f_session(Skissm__Session *f2f_session, Skissm__E2eeMsg *e
 }
 
 bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg) {
+    ssm_notify_log(DEBUG_LOG, "consume_one2one_msg(): from [%s:%s], to [%s:%s]", e2ee_msg->from->user->user_id, e2ee_msg->from->user->device_id, e2ee_msg->to->user->user_id, e2ee_msg->to->user->device_id);
     if (e2ee_msg->session_id == NULL) {
         ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_one2one_msg(), wrong session_id");
         // wrong session_id, just consume it
@@ -317,6 +320,8 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 }
 
 bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg) {
+    ssm_notify_log(DEBUG_LOG, "consume_new_user_device_msg(): receiver_address [%s:%s], new user [%s:%s]", receiver_address->user->user_id, receiver_address->user->device_id, msg->user_address->user->user_id, msg->user_address->user->device_id);
+
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(receiver_address, &account);
     if (account == NULL) {
@@ -419,6 +424,8 @@ bool consume_invite_response(Skissm__InviteResponse *response) {
 }
 
 bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *msg) {
+    ssm_notify_log(DEBUG_LOG, "consume_invite_msg(): from [%s:%s], to [%s:%s]", msg->from->user->user_id, msg->from->user->device_id, msg->to->user->user_id, msg->to->user->device_id);
+
     const char *e2ee_pack_id = msg->e2ee_pack_id;
     Skissm__E2eeAddress *from = msg->from;
     Skissm__E2eeAddress *to = msg->to;
@@ -512,6 +519,8 @@ bool consume_accept_response(Skissm__AcceptResponse *response) {
 }
 
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg) {
+    ssm_notify_log(DEBUG_LOG, "consume_accept_msg(): from [%s:%s], to [%s:%s]", msg->to->user->user_id, msg->to->user->device_id, msg->from->user->user_id, msg->from->user->device_id);
+
     if (!compare_address(receiver_address, msg->to)){
         ssm_notify_log(BAD_SERVER_MESSAGE, "consume_accept_msg()");
         return false;
@@ -521,7 +530,7 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
     // Is it unique?
     get_skissm_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &outbound_session);
     if (outbound_session == NULL){
-        ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_accept_msg()");
+        ssm_notify_log(BAD_MESSAGE_FORMAT, "consume_accept_msg() from [], to []: can't load outbount session and make it a complete and responded session.", msg->to->user->user_id, msg->to->user->device_id, msg->from->user->user_id, msg->from->user->device_id);
         return false;
     }
     const session_suite_t *session_suite = get_e2ee_pack(msg->e2ee_pack_id)->session_suite;
@@ -572,6 +581,8 @@ bool consume_f2f_invite_response(Skissm__F2fInviteRequest *request, Skissm__F2fI
 }
 
 bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fInviteMsg *msg) {
+    ssm_notify_log(DEBUG_LOG, "consume_f2f_invite_msg(): from [%s:%s], to [%s:%s]", msg->from->user->user_id, msg->from->user->device_id, msg->to->user->user_id, msg->to->user->device_id);
+
     const char *e2ee_pack_id = msg->e2ee_pack_id;
     Skissm__E2eeAddress *from = msg->from;
     Skissm__E2eeAddress *to = msg->to;

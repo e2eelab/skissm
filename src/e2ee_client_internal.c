@@ -18,6 +18,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
     );
 
     if (invite_response == NULL || invite_response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        ssm_notify_log(DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request witll be stored.");
         // pack reuest to request_data which will be freeed inside store_pending_request_internal
         size_t request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);

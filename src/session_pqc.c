@@ -123,6 +123,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     copy_protobuf_from_protobuf(&(outbound_session->pre_shared_keys[2]), ciphertext_4);
 
     // store sesson state before send invite
+    ssm_notify_log(DEBUG_LOG, "pqc_new_outbound_session() store sesson state before send invite session_id=%s, from [%s:%s], to [%s:%s]", outbound_session->session_id, outbound_session->from->user->user_id, outbound_session->from->user->device_id, outbound_session->to->user->user_id, outbound_session->to->user->device_id);
     outbound_session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
@@ -260,10 +261,10 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
         ssm_notify_log(BAD_ACCOUNT, "pqc_complete_outbound_session()");
         return -1;
     }
-    
+
     // generated alice ephemeral key len == CRYPTO_BYTES_KEY_LEN
     cipher_suite->ss_key_gen(&(account->identity_key->asym_key_pair->private_key), &(msg->pre_shared_keys[0]), outbound_session->alice_ephemeral_key.data);
-    
+
     // create the root key and chain keys
     initialise_ratchet(&(outbound_session->ratchet));
     initialise_as_alice(cipher_suite, outbound_session->ratchet, outbound_session->alice_ephemeral_key.data, outbound_session->alice_ephemeral_key.len, NULL, &(outbound_session->bob_signed_pre_key));
