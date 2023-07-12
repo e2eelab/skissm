@@ -159,18 +159,65 @@ static const char *SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO = "DELETE FROM SESSI
 static const char *GROUP_SESSION_DROP_TABLE = "DROP TABLE IF EXISTS GROUP_SESSION;";
 static const char *GROUP_SESSION_CREATE_TABLE = "CREATE TABLE GROUP_SESSION( "
                                                 "ID TEXT NOT NULL, "
+                                                "SENDER INTEGER NOT NULL, "
                                                 "OWNER INTEGER NOT NULL, "
                                                 "ADDRESS INTEGER NOT NULL, "
                                                 "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
                                                 "GROUP_DATA BLOB NOT NULL, "
                                                 "IS_OUTBOUND INTEGER NOT NULL, "
+                                                "FOREIGN KEY(SENDER) REFERENCES ADDRESS(ID), "
                                                 "FOREIGN KEY(OWNER) REFERENCES ADDRESS(ID), "
                                                 "FOREIGN KEY(ADDRESS) REFERENCES ADDRESS(ID), "
-                                                "PRIMARY KEY (ID, ADDRESS, OWNER));";
+                                                "PRIMARY KEY (ID, ADDRESS, SENDER, OWNER));";
 
 static const char *GROUP_SESSION_INSERT_OR_REPLACE = "INSERT OR REPLACE INTO GROUP_SESSION "
-                                                     "(ID, OWNER, ADDRESS, GROUP_DATA, IS_OUTBOUND) "
+                                                     "(ID, SENDER, OWNER, ADDRESS, GROUP_DATA) "
                                                      "VALUES (?, ?, ?, ?, ?);";
+
+static const char *GROUP_SESSION_LOAD_DATA_BY_ADDRESS =
+    "SELECT GROUP_DATA FROM GROUP_SESSION "
+    "INNER JOIN ADDRESS AS a1 "
+    "ON GROUP_SESSION.SENDER = a1.ID "
+    "INNER JOIN ADDRESS as a2 "
+    "ON GROUP_SESSION.OWNER = a2.ID "
+    "INNER JOIN ADDRESS as a3 "
+    "ON GROUP_SESSION.ADDRESS = a3.ID "
+    "WHERE a1.DOMAIN is (?) AND a1.USER_ID is (?) AND a1.DEVICE_ID is (?) AND "
+    "a2.DOMAIN is (?) AND a2.USER_ID is (?) AND a2.DEVICE_ID is (?) AND "
+    "a3.GROUP_ID is (?);";
+
+static const char *GROUP_SESSION_LOAD_DATA_BY_ID =
+    "SELECT GROUP_DATA FROM GROUP_SESSION "
+    "INNER JOIN ADDRESS AS a1 "
+    "ON GROUP_SESSION.SENDER = a1.ID "
+    "INNER JOIN ADDRESS AS a2 "
+    "ON GROUP_SESSION.OWNER = a2.ID "
+    "WHERE GROUP_SESSION.ID is (?) AND a1.USER_ID is (?) AND a1.DOMAIN is (?) AND a1.DEVICE_ID is (?) "
+    "AND a2.USER_ID is (?) AND a2.DOMAIN is (?) AND a2.DEVICE_ID is (?);";
+
+static const char *N_GROUP_SESSION_LOAD =
+    "SELECT COUNT(*) FROM GROUP_SESSION "
+    "INNER JOIN ADDRESS AS a1 "
+    "ON GROUP_SESSION.SENDER = a1.ID "
+    "INNER JOIN ADDRESS as a2 "
+    "ON GROUP_SESSION.OWNER = a2.ID "
+    "INNER JOIN ADDRESS as a3 "
+    "ON GROUP_SESSION.ADDRESS = a3.ID "
+    "WHERE a1.DOMAIN is (?) AND a1.USER_ID is (?) AND a1.DEVICE_ID is (?) AND "
+    "a2.DOMAIN is (?) AND a2.USER_ID is (?) AND a2.DEVICE_ID is (?) AND "
+    "a3.GROUP_ID is (?);";
+
+static const char *GROUP_SESSIONS_LOAD =
+    "SELECT GROUP_DATA FROM GROUP_SESSION "
+    "INNER JOIN ADDRESS AS a1 "
+    "ON GROUP_SESSION.SENDER = a1.ID "
+    "INNER JOIN ADDRESS as a2 "
+    "ON GROUP_SESSION.OWNER = a2.ID "
+    "INNER JOIN ADDRESS as a3 "
+    "ON GROUP_SESSION.ADDRESS = a3.ID "
+    "WHERE a1.DOMAIN is (?) AND a1.USER_ID is (?) AND a1.DEVICE_ID is (?) AND "
+    "a2.DOMAIN is (?) AND a2.USER_ID is (?) AND a2.DEVICE_ID is (?) AND "
+    "a3.GROUP_ID is (?);";
 
 static const char *GROUP_SESSION_LOAD_DATA_BY_ID_AND_OWNER =
     "SELECT GROUP_DATA FROM GROUP_SESSION "
@@ -1860,6 +1907,172 @@ void load_outbound_group_session(
     return;
 }
 
+void load_group_session_by_address(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *owner_address,
+    Skissm__E2eeAddress *group_address,
+    Skissm__GroupSession **group_session
+) {
+    // prepare
+    sqlite3_stmt *stmt;
+    if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_ADDRESS, &stmt)) {
+        *group_session = NULL;
+        return;
+    }
+
+    // bind
+    sqlite3_bind_text(stmt, 1, sender_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, sender_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, sender_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, owner_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 6, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 7, group_address->group->group_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    if (!sqlite_step(stmt, SQLITE_ROW)) {
+        *group_session = NULL;
+        sqlite_finalize(stmt);
+        return;
+    }
+
+    // load
+    size_t group_session_data_len = sqlite3_column_bytes(stmt, 0);
+    uint8_t *group_session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+    // no data
+    if (group_session_data_len == 0) {
+        *group_session = NULL;
+        sqlite_finalize(stmt);
+        return;
+    }
+
+    // unpack
+    *group_session = skissm__group_session__unpack(NULL, group_session_data_len, group_session_data);
+
+    // release
+    sqlite_finalize(stmt);
+
+    return;
+}
+
+void load_group_session_by_id(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *owner_address,
+    char *session_id,
+    Skissm__GroupSession **group_session
+) {
+    // prepare
+    sqlite3_stmt *stmt;
+    if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_ID, &stmt)) {
+        *group_session = NULL;
+        return;
+    }
+
+    // bind
+    sqlite3_bind_text(stmt, 1, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, sender_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, sender_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, sender_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 6, owner_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 7, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    if (!sqlite_step(stmt, SQLITE_ROW)) {
+        *group_session = NULL;
+        sqlite_finalize(stmt);
+        return;
+    }
+
+    // load
+    size_t group_session_data_len = sqlite3_column_bytes(stmt, 0);
+    uint8_t *group_session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+    // no data
+    if (group_session_data_len == 0) {
+        *group_session = NULL;
+        sqlite_finalize(stmt);
+        return;
+    }
+
+    // unpack
+    *group_session = skissm__group_session__unpack(NULL, group_session_data_len, group_session_data);
+
+    // release
+    sqlite_finalize(stmt);
+
+    return;
+}
+
+int load_n_group_sessions(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *owner_address,
+    Skissm__E2eeAddress *group_address
+) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(N_GROUP_SESSION_LOAD, &stmt);
+    sqlite3_bind_text(stmt, 1, sender_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, sender_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, sender_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, owner_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 6, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 7, group_address->group->group_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
+
+    // load
+    int n_group_sessions = (int)sqlite3_column_int(stmt, 0);
+
+    // release
+    sqlite_finalize(stmt);
+
+    return n_group_sessions;
+}
+
+size_t load_group_sessions(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *owner_address,
+    Skissm__E2eeAddress *group_address,
+    Skissm__GroupSession ***group_sessions
+) {
+    // allocate memory
+    size_t n_group_sessions = load_n_group_sessions(sender_address, owner_address, group_address);
+    (*group_sessions) = (Skissm__GroupSession **)malloc(
+        n_group_sessions * sizeof(Skissm__GroupSession *));
+
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(GROUP_SESSIONS_LOAD, &stmt);
+    sqlite3_bind_text(stmt, 1, sender_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, sender_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, sender_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, owner_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 6, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 7, group_address->group->group_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    for (int i = 0; i < n_group_sessions; i++) {
+        sqlite3_step(stmt);
+
+        // load
+        size_t group_session_data_len = sqlite3_column_bytes(stmt, 0);
+        uint8_t *group_session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
+
+        // unpack
+        (*group_sessions)[i] = skissm__group_session__unpack(NULL, group_session_data_len, group_session_data);
+    }
+
+    // release
+    sqlite_finalize(stmt);
+
+    return n_group_sessions;
+}
+
 void load_inbound_group_session(
     Skissm__E2eeAddress *receiver_address,
     char *session_id,
@@ -1972,6 +2185,7 @@ void store_group_session(Skissm__GroupSession *group_session) {
     uint8_t *group_session_data = (uint8_t *)malloc(group_session_data_len);
     skissm__group_session__pack(group_session, group_session_data);
 
+    int sender_id = insert_address(group_session->sender);
     int owner_id = insert_address(group_session->session_owner);
     int address_id = insert_address(group_session->group_info->group_address);
 
@@ -1981,10 +2195,10 @@ void store_group_session(Skissm__GroupSession *group_session) {
 
     // bind
     sqlite3_bind_text(stmt, 1, group_session->session_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_int(stmt, 2, owner_id);
-    sqlite3_bind_int(stmt, 3, address_id);
-    sqlite3_bind_blob(stmt, 4, group_session_data, group_session_data_len, SQLITE_STATIC);
-    sqlite3_bind_int(stmt, 5, group_session->signature_private_key.len ? 1 : 0);
+    sqlite3_bind_int(stmt, 2, sender_id);
+    sqlite3_bind_int(stmt, 3, owner_id);
+    sqlite3_bind_int(stmt, 4, address_id);
+    sqlite3_bind_blob(stmt, 5, group_session_data, group_session_data_len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

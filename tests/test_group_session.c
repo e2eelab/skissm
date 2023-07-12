@@ -402,7 +402,7 @@ static void test_create_group() {
     mock_bob_account(2, "bob");
 
     // Alice invites Bob to create a group
-    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
@@ -430,6 +430,7 @@ static void test_create_group() {
     test_encryption(account_data[0]->address, group_address, plaintext_data, plaintext_data_len);
 
     // release
+    skissm__invite_response__free_unpacked(response, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     free(group_members);
@@ -453,7 +454,7 @@ static void test_add_group_members() {
     mock_claire_account(3, "claire");
 
     // Alice invites Bob to create a group
-    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
@@ -473,7 +474,7 @@ static void test_add_group_members() {
 
     sleep(2);
     // Alice invites Claire to join the group
-    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
+    Skissm__InviteResponse *response2 = invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // the new group member is Claire
     Skissm__GroupMember **new_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *));
     new_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
@@ -493,6 +494,8 @@ static void test_add_group_members() {
     test_encryption(account_data[0]->address, group.group_address, plaintext_data, plaintext_data_len);
 
     // release
+    skissm__invite_response__free_unpacked(response, NULL);
+    skissm__invite_response__free_unpacked(response2, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     free(group_members);
@@ -519,8 +522,8 @@ static void test_remove_group_members() {
     mock_claire_account(3, "claire");
 
     // Alice invites Bob and Claire to join the group
-    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
-    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
+    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response2 = invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
@@ -565,6 +568,8 @@ static void test_remove_group_members() {
     test_encryption(account_data[0]->address, group.group_address, plaintext, plaintext_len);
 
     // release
+    skissm__invite_response__free_unpacked(response, NULL);
+    skissm__invite_response__free_unpacked(response2, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     skissm__group_member__free_unpacked(group_members[2], NULL);
@@ -592,7 +597,7 @@ static void test_create_add_remove() {
     mock_claire_account(3, "claire");
 
     // Alice invites Bob to create a group
-    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
@@ -617,7 +622,7 @@ static void test_create_add_remove() {
     test_encryption(account_data[0]->address, group.group_address, plaintext, plaintext_len);
 
     // Alice invites Claire to join the group
-    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
+    Skissm__InviteResponse *response2 = invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // the new group member is Claire
     Skissm__GroupMember **new_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *));
     new_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
@@ -645,6 +650,8 @@ static void test_create_add_remove() {
     test_encryption(account_data[0]->address, group.group_address, plaintext_3, plaintext_len_3);
 
     // release
+    skissm__invite_response__free_unpacked(response, NULL);
+    skissm__invite_response__free_unpacked(response2, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     free(group_members);
@@ -672,14 +679,14 @@ static void test_interaction() {
     mock_claire_account(3, "claire");
 
     // Alice invites Bob and Claire to join the group
-    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
-    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
+    Skissm__InviteResponse *response_1 = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response_2 = invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Bob invites Alice and Claire to join the group
-    invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
-    invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
+    Skissm__InviteResponse *response_3 = invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
+    Skissm__InviteResponse *response_4 = invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Claire invites Alice and Bob to join the group
-    invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
-    invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response_5 = invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
+    Skissm__InviteResponse *response_6 = invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     sleep(3);
     // the first group member is Alice
@@ -721,6 +728,12 @@ static void test_interaction() {
     test_encryption(account_data[2]->address, group.group_address, plaintext_data_c, plaintext_data_c_len);
 
     // release
+    skissm__invite_response__free_unpacked(response_1, NULL);
+    skissm__invite_response__free_unpacked(response_2, NULL);
+    skissm__invite_response__free_unpacked(response_3, NULL);
+    skissm__invite_response__free_unpacked(response_4, NULL);
+    skissm__invite_response__free_unpacked(response_5, NULL);
+    skissm__invite_response__free_unpacked(response_6, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     skissm__group_member__free_unpacked(group_members[2], NULL);
@@ -745,14 +758,14 @@ static void test_continual() {
     mock_claire_account(3, "claire");
 
     // Alice invites Bob and Claire to join the group
-    invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
-    invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
+    Skissm__InviteResponse *response_1 = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response_2 = invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Bob invites Alice and Claire to join the group
-    invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
-    invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
+    Skissm__InviteResponse *response_3 = invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
+    Skissm__InviteResponse *response_4 = invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Claire invites Alice and Bob to join the group
-    invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
-    invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response_5 = invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
+    Skissm__InviteResponse *response_6 = invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     sleep(3);
     // the first group member is Alice
@@ -802,6 +815,12 @@ static void test_continual() {
     }
 
     // release
+    skissm__invite_response__free_unpacked(response_1, NULL);
+    skissm__invite_response__free_unpacked(response_2, NULL);
+    skissm__invite_response__free_unpacked(response_3, NULL);
+    skissm__invite_response__free_unpacked(response_4, NULL);
+    skissm__invite_response__free_unpacked(response_5, NULL);
+    skissm__invite_response__free_unpacked(response_6, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     skissm__group_member__free_unpacked(group_members[2], NULL);

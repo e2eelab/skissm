@@ -50,6 +50,20 @@ Skissm__InviteResponse *invite(
 );
 
 /**
+ * @brief Send invite request to create a new outbound session
+ * and delete the old outbound session.
+ * @param from From address
+ * @param to_user_id The receiver's user_id
+ * @param to_domain The receiver's domain
+ * @return  Skissm__InviteResponse *
+ */
+Skissm__InviteResponse *new_invite(
+    Skissm__E2eeAddress *from,
+    const char *to_user_id,
+    const char *to_domain
+);
+
+/**
  * @brief Send a face-to-face invite request and create a new outbound session.
  * @param from From address
  * @param to To Address

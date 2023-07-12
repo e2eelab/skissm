@@ -50,6 +50,7 @@
 #include "skissm/GetPreKeyBundleRequest.pb-c.h"
 #include "skissm/GetPreKeyBundleResponse.pb-c.h"
 #include "skissm/GroupMember.pb-c.h"
+#include "skissm/GroupMemberID.pb-c.h"
 #include "skissm/GroupMsgPayload.pb-c.h"
 #include "skissm/GroupPreKeyBundle.pb-c.h"
 #include "skissm/GroupSession.pb-c.h"
@@ -269,6 +270,45 @@ typedef struct skissm_db_handler_t {
     );
 
     // group session related handlers
+    /**
+     * @brief find a group session by address
+     * @param sender_address
+     * @param owner_address
+     * @param group_address
+     * @param group_session
+     */
+    void (*load_group_session_by_address)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        Skissm__GroupSession **
+    );
+    /**
+     * @brief find a group session by id
+     * @param sender_address
+     * @param owner_address
+     * @param session_id
+     * @param group_session
+     */
+    void (*load_group_session_by_id)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        char *,
+        Skissm__GroupSession **
+    );
+    /**
+     * @brief find group sessions
+     * @param sender_address
+     * @param owner_address
+     * @param group_address
+     * @param group_sessions
+     */
+    size_t (*load_group_sessions)(
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        Skissm__E2eeAddress *,
+        Skissm__GroupSession ***
+    );
     /**
      * @brief find outbound group session
      * @param sender_address

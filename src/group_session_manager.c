@@ -81,10 +81,22 @@ bool consume_create_group_response(
 
 bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg) {
     const char *e2ee_pack_id = msg->e2ee_pack_id;
-    const char *group_name = msg->group_info->group_name;
-    Skissm__E2eeAddress *group_address = msg->group_info->group_address;
-    size_t group_members_num = msg->group_info->n_group_members;
-    Skissm__GroupMember **group_members = msg->group_info->group_members;
+    Skissm__GroupInfo *group_info = msg->group_info;
+    const char *group_name = group_info->group_name;
+    Skissm__E2eeAddress *sender_address = msg->sender_address;
+    Skissm__E2eeAddress *group_address = group_info->group_address;
+    size_t group_members_num = group_info->n_group_members;
+    Skissm__GroupMember **group_members = group_info->group_members;
+
+    // try to load inbound group session
+    Skissm__GroupSession *inbound_group_session = NULL;
+    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, receiver_address, group_address, &inbound_group_session);
+    if (inbound_group_session == NULL) {
+        size_t i;
+        for (i = 0; i < msg->n_member_ids; i++) {
+            Skissm__GroupMemberID *cur_group_member_id = (msg->member_ids)[i];
+        }
+    }
 
     // create a new outbound group session
     create_outbound_group_session(
@@ -463,7 +475,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
 bool consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session, Skissm__SendGroupMsgResponse *response) {
     // prepare a new chain key for next encryption
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
-    advance_group_chain_key(cipher_suite, &(outbound_group_session->chain_key), outbound_group_session->sequence);
+    advance_group_chain_key(cipher_suite, &(outbound_group_session->chain_key));
     outbound_group_session->sequence += 1;
     // store sesson state
     get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
@@ -504,7 +516,7 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
 
     // advance the chain key
     while (inbound_group_session->sequence < group_msg_payload->sequence){
-        advance_group_chain_key(cipher_suite, &(inbound_group_session->chain_key), inbound_group_session->sequence);
+        advance_group_chain_key(cipher_suite, &(inbound_group_session->chain_key));
         inbound_group_session->sequence += 1;
     }
 

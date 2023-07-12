@@ -126,6 +126,37 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
     return response;
 }
 
+Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
+    if (account == NULL) {
+        ssm_notify_log(BAD_ACCOUNT, "invite()");
+        return NULL;
+    }
+
+    Skissm__Session **outbound_sessions = NULL;
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
+    // unload the old outbound sessions
+    size_t i;
+    for (i = 0; i < outbound_sessions_num; i++) {
+        Skissm__Session *outbound_session = outbound_sessions[i];
+        get_skissm_plugin()->db_handler.unload_session(
+            outbound_session->session_owner, outbound_session->from, outbound_session->to
+        );
+        skissm__session__free_unpacked(outbound_session, NULL);
+    }
+    free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
+
+    Skissm__InviteResponse *response = NULL;
+    response = get_pre_key_bundle_internal(from, account->auth, to_user_id, to_domain, NULL, NULL, 0);
+
+    // release
+    skissm__account__free_unpacked(account, NULL);
+
+    // done
+    return response;
+}
+
 size_t f2f_invite(
     Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, bool responded,
     uint8_t *password, size_t password_len
@@ -266,9 +297,9 @@ static void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_da
         uint8_t *common_plaintext_data = NULL;
         size_t common_plaintext_data_len;
         pack_common_plaintext(
-                plaintext_data, plaintext_data_len,
-                SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG,
-                &common_plaintext_data, &common_plaintext_data_len
+            plaintext_data, plaintext_data_len,
+            SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG,
+            &common_plaintext_data, &common_plaintext_data_len
         );
 
         size_t i;
@@ -278,9 +309,9 @@ static void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_da
             if (strcmp(self_outbound_session->to->user->device_id, from->user->device_id) != 0) {
                 // send syncing plaintext to server
                 Skissm__SendOne2oneMsgResponse *sync_response = send_one2one_msg_internal(
-                        self_outbound_session,
-                        common_plaintext_data,
-                        common_plaintext_data_len
+                    self_outbound_session,
+                    common_plaintext_data,
+                    common_plaintext_data_len
                 );
                 // release
                 skissm__send_one2one_msg_response__free_unpacked(sync_response, NULL);
@@ -336,6 +367,30 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         skissm__send_one2one_msg_response__init(response);
         response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
         return response;
+    } else {
+        // rebuild an outbound session if the chain index is maximum
+        size_t i;
+        bool rebuild = false;
+        for (i = 0; i < outbound_sessions_num; i++) {
+            Skissm__Session *outbound_session = outbound_sessions[i];
+            if (outbound_session->ratchet->sender_chain->chain_key->index >= 1000) {
+                rebuild = true;
+                break;
+            }
+        }
+        if (rebuild) {
+            for (i = 0; i < outbound_sessions_num; i++) {
+                Skissm__Session *outbound_session = outbound_sessions[i];
+                get_skissm_plugin()->db_handler.unload_session(
+                    outbound_session->session_owner, outbound_session->from, outbound_session->to
+                );
+                // release
+                skissm__session__free_unpacked(outbound_session, NULL);
+            }
+            free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
+
+            // invite again
+        }
     }
 
     Skissm__SendOne2oneMsgResponse *response = NULL;
@@ -401,7 +456,7 @@ Skissm__CreateGroupResponse *create_group(
         skissm__create_group_request__pack(request, request_data);
         
         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__CREATE_GROUP_REQUEST, request_data, request_data_len, NULL, 0);
-        //release
+        // release
         free_mem((void *)&request_data, request_data_len);
     }
 

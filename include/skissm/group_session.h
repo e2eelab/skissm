@@ -80,12 +80,10 @@ void create_inbound_group_session(
  *
  * @param cipher_suite
  * @param chain_key
- * @param iteration
  */
 void advance_group_chain_key(
     const cipher_suite_t *cipher_suite,
-    ProtobufCBinaryData *chain_key,
-    uint32_t iteration
+    ProtobufCBinaryData *chain_key
 );
 
 
