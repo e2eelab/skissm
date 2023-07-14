@@ -42,7 +42,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(
         || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len)
         || (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)
     ) {
-        ssm_notify_log(BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
+        ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
         return NULL;
     }
     result = cipher_suite->verify(
@@ -51,7 +51,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(
         their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len
     );
     if (result < 0) {
-        ssm_notify_log(BAD_SIGNATURE, "pqc_new_outbound_session()");
+        ssm_notify_log(outbound_session->session_owner, BAD_SIGNATURE, "pqc_new_outbound_session()");
         return NULL;
     }
 
@@ -123,7 +123,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     copy_protobuf_from_protobuf(&(outbound_session->pre_shared_keys[2]), ciphertext_4);
 
     // store sesson state before send invite
-    ssm_notify_log(DEBUG_LOG, "pqc_new_outbound_session() store sesson state before send invite session_id=%s, from [%s:%s], to [%s:%s]", outbound_session->session_id, outbound_session->from->user->user_id, outbound_session->from->user->device_id, outbound_session->to->user->user_id, outbound_session->to->user->device_id);
+    ssm_notify_log(outbound_session->session_owner, DEBUG_LOG, "pqc_new_outbound_session() store sesson state before send invite session_id=%s, from [%s:%s], to [%s:%s]", outbound_session->session_id, outbound_session->from->user->user_id, outbound_session->from->user->device_id, outbound_session->to->user->user_id, outbound_session->to->user->device_id);
     outbound_session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
@@ -149,7 +149,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
     if (local_account->signed_pre_key->spk_id != msg->bob_signed_pre_key_id) {
         get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->account_id, msg->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
-            ssm_notify_log(BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
+            ssm_notify_log(NULL, BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
             return -1;
         } else {
             old_spk = 1;
@@ -181,7 +181,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
         our_one_time_pre_key = lookup_one_time_pre_key(local_account, msg->bob_one_time_pre_key_id);
 
         if (!our_one_time_pre_key) {
-            ssm_notify_log(BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
+            ssm_notify_log(NULL, BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
             return -1;
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
@@ -249,7 +249,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
 }
 
 int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__AcceptMsg *msg) {
-    ssm_notify_log(DEBUG_LOG, "pqc_complete_outbound_session()");
+    ssm_notify_log(NULL, DEBUG_LOG, "pqc_complete_outbound_session()");
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
 
     outbound_session->responded = true;
@@ -258,7 +258,7 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->from, &account);
     if (account == NULL) {
-        ssm_notify_log(BAD_ACCOUNT, "pqc_complete_outbound_session()");
+        ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");
         return -1;
     }
 

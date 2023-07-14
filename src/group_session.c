@@ -134,7 +134,7 @@ void create_outbound_group_session(
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
     if (account == NULL) {
-        ssm_notify_log(BAD_ACCOUNT, "create_outbound_group_session()");
+        ssm_notify_log(user_address, BAD_ACCOUNT, "create_outbound_group_session()");
         return;
     }
 

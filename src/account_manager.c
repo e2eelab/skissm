@@ -94,7 +94,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                 Skissm__E2eeAddress *to_address = (response->other_user_addresses)[i];
                 // skip the same user device
                 if (safe_strcmp(account->address->user->device_id,  to_address->user->device_id)) {
-                    ssm_notify_log(DEBUG_LOG, "consume_register_response(): skip invite the same user device: %s", to_address->user->device_id);
+                    ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response(): skip invite the same user device: %s", to_address->user->device_id);
                     continue;
                 }
 
@@ -196,7 +196,7 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
         since our published one-time pre-keys are going to used up. */
 
     if (!compare_address(receiver_address, msg->user_address)){
-        ssm_notify_log(BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
+        ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
         return false;
     }
 
@@ -206,7 +206,7 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
     get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
 
     if (account == NULL || !(account->saved)) {
-        ssm_notify_log(BAD_ONE_TIME_PRE_KEY, "consume_supply_opks_msg()");
+        ssm_notify_log(receiver_address, BAD_ONE_TIME_PRE_KEY, "consume_supply_opks_msg()");
         return false;
     }
 
