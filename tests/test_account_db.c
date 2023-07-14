@@ -32,7 +32,7 @@
 #include "test_plugin.h"
 #include "test_util.h"
 
-static void on_log(LogCode log_code, const char *log_msg) {
+static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
     print_log((char *)log_msg, log_code);
 }
 
