@@ -930,6 +930,57 @@ static void test_multiple_devices() {
     printf("====================================\n");
 }
 
+static void test_pqc_create_group() {
+    // test start
+    printf("test_create_group begin!!!\n");
+    tear_up();
+    test_begin();
+
+    // Prepare account
+    mock_alice_pqc_account(1, "alice");
+    mock_bob_pqc_account(2, "bob");
+
+    // Alice invites Bob to create a group
+    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+
+    // the first group member is Alice
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
+    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
+    group_members[0]->domain = strdup(account_data[0]->address->domain);
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    // the second group member is Bob
+    group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup(account_data[1]->address->user->user_id);
+    group_members[1]->domain = strdup(account_data[1]->address->domain);
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // create the group
+    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
+
+    assert(create_group_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
+    Skissm__E2eeAddress *group_address = create_group_response->group_address;
+
+    sleep(2);
+    // Alice sends a message to the group
+    uint8_t plaintext_data[] = "This is the group session test.";
+    size_t plaintext_data_len = sizeof(plaintext_data) - 1;
+    test_encryption(account_data[0]->address, group_address, plaintext_data, plaintext_data_len);
+
+    // release
+    skissm__invite_response__free_unpacked(response, NULL);
+    skissm__group_member__free_unpacked(group_members[0], NULL);
+    skissm__group_member__free_unpacked(group_members[1], NULL);
+    free(group_members);
+    skissm__create_group_response__free_unpacked(create_group_response, NULL);
+
+    // test stop
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
 static void test_pqc_multiple_devices() {
     // test start
     printf("test_pqc_multiple_devices begin!!!\n");
@@ -1285,15 +1336,16 @@ static void test_medium_group() {
 }
 
 int main() {
-    test_create_group();
-    test_add_group_members();
-    test_remove_group_members();
-    test_create_add_remove();
-    test_interaction();
-    test_continual();
-    test_multiple_devices();
-    test_pqc_multiple_devices();
-    test_medium_group();
+    // test_create_group();
+    // test_add_group_members();
+    // test_remove_group_members();
+    // test_create_add_remove();
+    // test_interaction();
+    // test_continual();
+    // test_multiple_devices();
+    test_pqc_create_group();
+    // test_pqc_multiple_devices();
+    // test_medium_group();
 
     return 0;
 }

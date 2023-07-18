@@ -379,12 +379,12 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
                     skissm__group_session__free_unpacked(outbound_group_session, NULL);
                 }
                 // create a new outbound group session
-                create_outbound_group_session(
-                    account->e2ee_pack_id, receiver_address,
-                    cur_group->group_name,
-                    cur_group->group_address, cur_group->group_members,
-                    cur_group->n_group_members, old_session_id
-                );
+                // create_outbound_group_session(
+                //     account->e2ee_pack_id, receiver_address,
+                //     cur_group->group_name,
+                //     cur_group->group_address, cur_group->group_members,
+                //     cur_group->n_group_members, old_session_id
+                // );
                 // release
                 if (old_session_id != NULL) {
                     free_mem((void **)&old_session_id, strlen(old_session_id));

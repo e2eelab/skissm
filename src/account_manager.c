@@ -110,12 +110,12 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
             size_t i;
             for (i = 0; i < response->n_group_info_list; i++) {
                 Skissm__GroupInfo *cur_group = (response->group_info_list)[i];
-                create_outbound_group_session(
-                    account->e2ee_pack_id, account->address,
-                    cur_group->group_name,
-                    cur_group->group_address, cur_group->group_members,
-                    cur_group->n_group_members, NULL
-                );
+                // create_outbound_group_session(
+                //     account->e2ee_pack_id, account->address,
+                //     cur_group->group_name,
+                //     cur_group->group_address, cur_group->group_members,
+                //     cur_group->n_group_members, NULL
+                // );
             }
         }
         return true;

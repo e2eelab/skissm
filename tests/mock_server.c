@@ -843,7 +843,7 @@ Skissm__CreateGroupResponse *mock_create_group(
 
     // total #(address) to be sent
     size_t to_member_addresses_total_num = 0;
-    size_t i;
+    size_t i, j;
     // NOTE: count the total number of addresses
     for (i = 0; i < group_data_set[group_data_set_insert_pos].group_members_num; i++) {
         const char *member_user_id = cur_group_data->group_members[i]->user_id;
@@ -859,7 +859,6 @@ Skissm__CreateGroupResponse *mock_create_group(
 
     size_t to_member_addresses_num = 0;
     // NOTE: copy data into member_id
-    size_t i, j;
     for (i = 0; i < group_data_set[group_data_set_insert_pos].group_members_num; i++) {
         // send to other group members
         const char *member_user_id = cur_group_data->group_members[i]->user_id;
@@ -899,7 +898,6 @@ Skissm__CreateGroupResponse *mock_create_group(
     copy_group_members(&(cur_group_data->group_members), group_info->group_members, group_info->n_group_members);
 
     // send msg to each group member
-    size_t i, j;
     for (i = 0; i < group_data_set[group_data_set_insert_pos].group_members_num; i++) {
         // send to other group members
         const char *member_user_id = cur_group_data->group_members[i]->user_id;
@@ -1115,7 +1113,6 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(
 
     // total #(address) to be sent
     size_t to_member_addresses_total_num = 0;
-    size_t i;
     // NOTE: count the total number of addresses
     for (i = 0; i < cur_group_data->group_members_num; i++) {
         const char *member_user_id = cur_group_data->group_members[i]->user_id;
@@ -1128,7 +1125,6 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(
 
     size_t to_member_addresses_num = 0;
     // NOTE: copy data into member_id
-    size_t i, j;
     for (i = 0; i < cur_group_data->group_members_num; i++) {
         const char *member_user_id = cur_group_data->group_members[i]->user_id;
         to_member_addresses_num = 0;
