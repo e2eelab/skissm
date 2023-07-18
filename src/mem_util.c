@@ -55,8 +55,7 @@ size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char **hex_str) {
 }
 
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
-    if (src_1 == NULL && src_2 == NULL)
-        return true;
+    if (src_1 == NULL && src_2 == NULL) return true;
     if (src_1 != NULL && src_2 != NULL) {
         if (src_1->len == src_2->len) {
             if (memcmp(src_1->data, src_2->data, src_1->len) == 0) {
@@ -68,87 +67,96 @@ bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
 }
 
 bool safe_strcmp(const char *str_1, const char *str_2) {
-    if (str_1 == NULL && str_2 == NULL)
-        return true;
+    if (str_1 == NULL && str_2 == NULL) return true;
     if (str_1 != NULL && str_2 != NULL) {
         return strcmp(str_1, str_2) == 0;
     }
     return false;
 }
 
-bool compare_user_id(Skissm__E2eeAddress *address, const char *user_id, const char *domain) {
-    if (address == NULL && user_id == NULL && domain == NULL)
-        return true;
-    if ((user_id == NULL && domain != NULL)
-        || (user_id != NULL && domain == NULL))
+bool compare_user_id(Skissm__E2eeAddress *address, const char *user_id,
+                     const char *domain) {
+    if (address == NULL && user_id == NULL && domain == NULL) return true;
+    if ((user_id == NULL && domain != NULL) ||
+        (user_id != NULL && domain == NULL))
         return false;
-    if ((address == NULL && user_id != NULL)
-        || (address != NULL && user_id == NULL))
+    if ((address == NULL && user_id != NULL) ||
+        (address != NULL && user_id == NULL))
         return false;
 
-    return safe_strcmp(address->domain, domain)
-        && (address->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER)
-        && (safe_strcmp(address->user->user_id, user_id));
+    return safe_strcmp(address->domain, domain) &&
+           (address->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER) &&
+           (safe_strcmp(address->user->user_id, user_id));
 }
 
-bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *address_2) {
-    if (address_1 == NULL && address_2 == NULL)
-        return true;
-    if ((address_1 == NULL && address_2 != NULL)
-        || (address_1 != NULL && address_2 == NULL))
+bool compare_address(Skissm__E2eeAddress *address_1,
+                     Skissm__E2eeAddress *address_2) {
+    if (address_1 == NULL && address_2 == NULL) return true;
+    if ((address_1 == NULL && address_2 != NULL) ||
+        (address_1 != NULL && address_2 == NULL))
         return false;
 
-    return safe_strcmp(address_1->domain, address_2->domain)
-        && (address_1->peer_case == address_2->peer_case)
-        && (((address_1->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER)
-                && (safe_strcmp(address_1->user->user_id, address_2->user->user_id)
-                && safe_strcmp(address_1->user->device_id, address_2->user->device_id)))
-            || ((address_1->peer_case == SKISSM__E2EE_ADDRESS__PEER_GROUP)
-                && (safe_strcmp(address_1->group->group_id, address_2->group->group_id))));
+    return safe_strcmp(address_1->domain, address_2->domain) &&
+           (address_1->peer_case == address_2->peer_case) &&
+           (((address_1->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER) &&
+             (safe_strcmp(address_1->user->user_id, address_2->user->user_id) &&
+              safe_strcmp(address_1->user->device_id,
+                          address_2->user->device_id))) ||
+            ((address_1->peer_case == SKISSM__E2EE_ADDRESS__PEER_GROUP) &&
+             (safe_strcmp(address_1->group->group_id,
+                          address_2->group->group_id))));
 }
 
-bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_member_num_1, Skissm__GroupMember **group_members_2, size_t group_member_num_2) {
-    if (group_members_1 == NULL && group_members_2 == NULL)
-        return true;
-    if ((group_members_1 == NULL && group_members_2 != NULL)
-        || (group_members_1 != NULL && group_members_2 == NULL))
+bool compare_group_member(Skissm__GroupMember **group_members_1,
+                          size_t group_member_num_1,
+                          Skissm__GroupMember **group_members_2,
+                          size_t group_member_num_2) {
+    if (group_members_1 == NULL && group_members_2 == NULL) return true;
+    if ((group_members_1 == NULL && group_members_2 != NULL) ||
+        (group_members_1 != NULL && group_members_2 == NULL))
         return false;
-    if (group_member_num_1 != group_member_num_2)
-        return false;
+    if (group_member_num_1 != group_member_num_2) return false;
 
     size_t i;
     for (i = 0; i < group_member_num_1; i++) {
-        if ((group_members_1[i]->role != group_members_2[i]->role)
-            || !safe_strcmp(group_members_1[i]->user_id, group_members_2[i]->user_id)
-            || !safe_strcmp(group_members_1[i]->domain, group_members_2[i]->domain)
-        )
+        if ((group_members_1[i]->role != group_members_2[i]->role) ||
+            !safe_strcmp(group_members_1[i]->user_id,
+                         group_members_2[i]->user_id) ||
+            !safe_strcmp(group_members_1[i]->domain,
+                         group_members_2[i]->domain))
             return false;
     }
     return true;
 }
 
-void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src) {
+void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest,
+                                 const ProtobufCBinaryData *src) {
     dest->len = src->len;
     dest->data = (uint8_t *)malloc(sizeof(uint8_t) * src->len);
     memcpy(dest->data, src->data, src->len);
 }
 
-void copy_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src, size_t len) {
+void copy_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src,
+                              size_t len) {
     dest->len = len;
     dest->data = (uint8_t *)malloc(sizeof(uint8_t) * len);
     memcpy(dest->data, src, len);
 }
 
-void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src) { memcpy(dest->data, src, dest->len); }
+void overwrite_protobuf_from_array(ProtobufCBinaryData *dest,
+                                   const uint8_t *src) {
+    memcpy(dest->data, src, dest->len);
+}
 
-void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAddress *src) {
+void copy_address_from_address(Skissm__E2eeAddress **dest,
+                               const Skissm__E2eeAddress *src) {
     *dest = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(*dest);
     if (src != NULL) {
-        if (src->domain != NULL)
-            (*dest)->domain = strdup(src->domain);
+        if (src->domain != NULL) (*dest)->domain = strdup(src->domain);
         if (src->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER) {
-            (*dest)->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
+            (*dest)->user =
+                (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
             skissm__peer_user__init((*dest)->user);
             (*dest)->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
             if (src->user->user_id != NULL)
@@ -156,7 +164,8 @@ void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAdd
             if (src->user->device_id != NULL)
                 (*dest)->user->device_id = strdup(src->user->device_id);
         } else if (src->peer_case == SKISSM__E2EE_ADDRESS__PEER_GROUP) {
-            (*dest)->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
+            (*dest)->group =
+                (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
             skissm__peer_group__init((*dest)->group);
             (*dest)->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
             if (src->group->group_id != NULL)
@@ -188,11 +197,14 @@ void copy_spk_from_spk(Skissm__SignedPreKey **dest, Skissm__SignedPreKey *src) {
     (*dest)->ttl = src->ttl;
 }
 
-void copy_opks_from_opks(Skissm__OneTimePreKey ***dest, Skissm__OneTimePreKey **src, size_t opk_num) {
-    *dest = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * opk_num);
+void copy_opks_from_opks(Skissm__OneTimePreKey ***dest,
+                         Skissm__OneTimePreKey **src, size_t opk_num) {
+    *dest = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) *
+                                             opk_num);
     size_t i;
     for (i = 0; i < opk_num; i++) {
-        (*dest)[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
+        (*dest)[i] =
+            (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
         skissm__one_time_pre_key__init((*dest)[i]);
         (*dest)[i]->opk_id = src[i]->opk_id;
         (*dest)[i]->used = src[i]->used;
@@ -218,13 +230,15 @@ void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src) {
         copy_spk_from_spk(&((*dest)->signed_pre_key), src->signed_pre_key);
     }
     if (src->one_time_pre_keys) {
-        copy_opks_from_opks(&((*dest)->one_time_pre_keys), src->one_time_pre_keys, src->n_one_time_pre_keys);
+        copy_opks_from_opks(&((*dest)->one_time_pre_keys),
+                            src->one_time_pre_keys, src->n_one_time_pre_keys);
     }
     (*dest)->n_one_time_pre_keys = src->n_one_time_pre_keys;
     (*dest)->next_one_time_pre_key_id = src->next_one_time_pre_key_id;
 }
 
-void copy_chain_key_from_chain_key(Skissm__ChainKey **dest, Skissm__ChainKey *src) {
+void copy_chain_key_from_chain_key(Skissm__ChainKey **dest,
+                                   Skissm__ChainKey *src) {
     *dest = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
     skissm__chain_key__init(*dest);
     (*dest)->index = src->index;
@@ -238,9 +252,8 @@ void copy_msg_key_from_msg_key(Skissm__MsgKey **dest, Skissm__MsgKey *src) {
     copy_protobuf_from_protobuf(&((*dest)->derived_key), &(src->derived_key));
 }
 
-void copy_sender_chain_from_sender_chain(
-    Skissm__SenderChainNode **dest, Skissm__SenderChainNode *src
-) {
+void copy_sender_chain_from_sender_chain(Skissm__SenderChainNode **dest,
+                                         Skissm__SenderChainNode *src) {
     *dest = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
     skissm__sender_chain_node__init(*dest);
     copy_protobuf_from_protobuf(&((*dest)->ratchet_key), &(src->ratchet_key));
@@ -249,28 +262,33 @@ void copy_sender_chain_from_sender_chain(
 
 void copy_receiver_chains_from_receiver_chains(
     Skissm__ReceiverChainNode ***dest, Skissm__ReceiverChainNode **src,
-    size_t receiver_chains_num
-) {
-    *dest = (Skissm__ReceiverChainNode **)malloc(sizeof(Skissm__ReceiverChainNode *) * receiver_chains_num);
+    size_t receiver_chains_num) {
+    *dest = (Skissm__ReceiverChainNode **)malloc(
+        sizeof(Skissm__ReceiverChainNode *) * receiver_chains_num);
     size_t i;
     for (i = 0; i < receiver_chains_num; i++) {
-        (*dest)[i] = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
+        (*dest)[i] = (Skissm__ReceiverChainNode *)malloc(
+            sizeof(Skissm__ReceiverChainNode));
         skissm__receiver_chain_node__init((*dest)[i]);
-        copy_protobuf_from_protobuf(&((*dest)[i]->ratchet_key_public), &(src[i]->ratchet_key_public));
-        copy_chain_key_from_chain_key(&((*dest)[i]->chain_key), src[i]->chain_key);
+        copy_protobuf_from_protobuf(&((*dest)[i]->ratchet_key_public),
+                                    &(src[i]->ratchet_key_public));
+        copy_chain_key_from_chain_key(&((*dest)[i]->chain_key),
+                                      src[i]->chain_key);
     }
 }
 
 void copy_skipped_msg_keys_from_skipped_msg_keys(
     Skissm__SkippedMsgKeyNode ***dest, Skissm__SkippedMsgKeyNode **src,
-    size_t skipped_msg_keys_num
-) {
-    *dest = (Skissm__SkippedMsgKeyNode **)malloc(sizeof(Skissm__SkippedMsgKeyNode *) * skipped_msg_keys_num);
+    size_t skipped_msg_keys_num) {
+    *dest = (Skissm__SkippedMsgKeyNode **)malloc(
+        sizeof(Skissm__SkippedMsgKeyNode *) * skipped_msg_keys_num);
     size_t i;
     for (i = 0; i < skipped_msg_keys_num; i++) {
-        (*dest)[i] = (Skissm__SkippedMsgKeyNode *)malloc(sizeof(Skissm__SkippedMsgKeyNode));
+        (*dest)[i] = (Skissm__SkippedMsgKeyNode *)malloc(
+            sizeof(Skissm__SkippedMsgKeyNode));
         skissm__skipped_msg_key_node__init((*dest)[i]);
-        copy_protobuf_from_protobuf(&((*dest)[i]->ratchet_key_public), &(src[i]->ratchet_key_public));
+        copy_protobuf_from_protobuf(&((*dest)[i]->ratchet_key_public),
+                                    &(src[i]->ratchet_key_public));
         copy_msg_key_from_msg_key(&((*dest)[i]->msg_key), src[i]->msg_key);
     }
 }
@@ -279,11 +297,16 @@ void copy_ratchet_from_ratchet(Skissm__Ratchet **dest, Skissm__Ratchet *src) {
     *dest = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
     skissm__ratchet__init(*dest);
     copy_protobuf_from_protobuf(&((*dest)->root_key), &(src->root_key));
-    copy_sender_chain_from_sender_chain(&((*dest)->sender_chain), src->sender_chain);
+    copy_sender_chain_from_sender_chain(&((*dest)->sender_chain),
+                                        src->sender_chain);
     (*dest)->n_receiver_chains = src->n_receiver_chains;
-    copy_receiver_chains_from_receiver_chains(&((*dest)->receiver_chains), src->receiver_chains, src->n_receiver_chains);
+    copy_receiver_chains_from_receiver_chains(&((*dest)->receiver_chains),
+                                              src->receiver_chains,
+                                              src->n_receiver_chains);
     (*dest)->n_skipped_msg_keys = src->n_skipped_msg_keys;
-    copy_skipped_msg_keys_from_skipped_msg_keys(&((*dest)->skipped_msg_keys), src->skipped_msg_keys, src->n_skipped_msg_keys);
+    copy_skipped_msg_keys_from_skipped_msg_keys(&((*dest)->skipped_msg_keys),
+                                                src->skipped_msg_keys,
+                                                src->n_skipped_msg_keys);
 }
 
 void copy_session_from_session(Skissm__Session **dest, Skissm__Session *src) {
@@ -296,53 +319,85 @@ void copy_session_from_session(Skissm__Session **dest, Skissm__Session *src) {
     copy_address_from_address(&((*dest)->from), src->from);
     copy_address_from_address(&((*dest)->to), src->to);
     copy_ratchet_from_ratchet(&((*dest)->ratchet), src->ratchet);
-    copy_protobuf_from_protobuf(&((*dest)->alice_identity_key), &(src->alice_identity_key));
-    copy_protobuf_from_protobuf(&((*dest)->alice_ephemeral_key), &(src->alice_ephemeral_key));
-    copy_protobuf_from_protobuf(&((*dest)->bob_signed_pre_key), &(src->bob_signed_pre_key));
+    copy_protobuf_from_protobuf(&((*dest)->alice_identity_key),
+                                &(src->alice_identity_key));
+    copy_protobuf_from_protobuf(&((*dest)->alice_ephemeral_key),
+                                &(src->alice_ephemeral_key));
+    copy_protobuf_from_protobuf(&((*dest)->bob_signed_pre_key),
+                                &(src->bob_signed_pre_key));
     (*dest)->bob_signed_pre_key_id = src->bob_signed_pre_key_id;
-    copy_protobuf_from_protobuf(&((*dest)->bob_one_time_pre_key), &(src->bob_one_time_pre_key));
+    copy_protobuf_from_protobuf(&((*dest)->bob_one_time_pre_key),
+                                &(src->bob_one_time_pre_key));
     (*dest)->bob_one_time_pre_key_id = src->bob_one_time_pre_key_id;
     (*dest)->f2f = src->f2f;
     (*dest)->responded = src->responded;
-    copy_protobuf_from_protobuf(&((*dest)->associated_data), &(src->associated_data));
+    copy_protobuf_from_protobuf(&((*dest)->associated_data),
+                                &(src->associated_data));
 }
 
-void copy_ik_public_from_ik_public(Skissm__IdentityKeyPublic **dest, Skissm__IdentityKeyPublic *src){
-    *dest = (Skissm__IdentityKeyPublic *)malloc(sizeof(Skissm__IdentityKeyPublic));
+void copy_ik_public_from_ik_public(Skissm__IdentityKeyPublic **dest,
+                                   Skissm__IdentityKeyPublic *src) {
+    *dest =
+        (Skissm__IdentityKeyPublic *)malloc(sizeof(Skissm__IdentityKeyPublic));
     skissm__identity_key_public__init(*dest);
-    copy_protobuf_from_protobuf(&((*dest)->asym_public_key), &(src->asym_public_key));
-    copy_protobuf_from_protobuf(&((*dest)->sign_public_key), &(src->sign_public_key));
+    copy_protobuf_from_protobuf(&((*dest)->asym_public_key),
+                                &(src->asym_public_key));
+    copy_protobuf_from_protobuf(&((*dest)->sign_public_key),
+                                &(src->sign_public_key));
 }
 
-void copy_spk_public_from_spk_public(Skissm__SignedPreKeyPublic **dest, Skissm__SignedPreKeyPublic *src){
-    *dest = (Skissm__SignedPreKeyPublic *)malloc(sizeof(Skissm__SignedPreKeyPublic));
+void copy_spk_public_from_spk_public(Skissm__SignedPreKeyPublic **dest,
+                                     Skissm__SignedPreKeyPublic *src) {
+    *dest = (Skissm__SignedPreKeyPublic *)malloc(
+        sizeof(Skissm__SignedPreKeyPublic));
     skissm__signed_pre_key_public__init(*dest);
     (*dest)->spk_id = src->spk_id;
     copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
     copy_protobuf_from_protobuf(&((*dest)->signature), &(src->signature));
 }
 
-void copy_opk_public_from_opk_public(Skissm__OneTimePreKeyPublic **dest, Skissm__OneTimePreKeyPublic *src){
-    *dest = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
+void copy_opk_public_from_opk_public(Skissm__OneTimePreKeyPublic **dest,
+                                     Skissm__OneTimePreKeyPublic *src) {
+    *dest = (Skissm__OneTimePreKeyPublic *)malloc(
+        sizeof(Skissm__OneTimePreKeyPublic));
     skissm__one_time_pre_key_public__init(*dest);
     (*dest)->opk_id = src->opk_id;
     copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
 }
+// DONE: added in mem_util.h
+///-----------------copy member_id-----------------///
+void copy_member_id(Skissm__GroupMemberID **dest, Skissm__GroupMemberID *src) {
+    *dest = (Skissm__GroupMemberID *)malloc(sizeof(Skissm__GroupMemberID));
+    skissm__group_member_id__init(*dest);
 
+    copy_address_from_address(&((*dest)->group_member_address),
+                              src->group_member_address);
+    copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
+}
+void copy_members_id(Skissm__GroupMemberID ***dest, Skissm__GroupMemberID **src,
+                     size_t to_member_addresses_total_num) {
+    *dest = (Skissm__GroupMemberID **)malloc(sizeof(Skissm__GroupMemberID *) *
+                                             to_member_addresses_total_num);
+    size_t i;
+    for (i = 0; i < to_member_addresses_total_num; i++) {
+        copy_member_id(&((*dest)[i]), src[i]);
+    }
+}
+
+///-----------------GroupMember-----------------///
 void copy_group_member(Skissm__GroupMember **dest, Skissm__GroupMember *src) {
     *dest = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(*dest);
     if (src != NULL) {
-        if (src->user_id != NULL)
-            (*dest)->user_id = strdup(src->user_id);
-        if (src->domain != NULL)
-            (*dest)->domain = strdup(src->domain);
-        (*dest)->role =  src->role;
+        if (src->user_id != NULL) (*dest)->user_id = strdup(src->user_id);
+        if (src->domain != NULL) (*dest)->domain = strdup(src->domain);
+        (*dest)->role = src->role;
     }
 }
-
-void copy_group_members(Skissm__GroupMember ***dest, Skissm__GroupMember **src, size_t group_members_num) {
-    *dest = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * group_members_num);
+void copy_group_members(Skissm__GroupMember ***dest, Skissm__GroupMember **src,
+                        size_t group_members_num) {
+    *dest = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) *
+                                           group_members_num);
     size_t i;
     for (i = 0; i < group_members_num; i++) {
         copy_group_member(&((*dest)[i]), src[i]);
@@ -356,24 +411,18 @@ void copy_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *src) {
         if (src->group_name != NULL)
             (*dest)->group_name = strdup(src->group_name);
         if (src->group_address != NULL)
-            copy_address_from_address(
-                &((*dest)->group_address), src->group_address
-            );
+            copy_address_from_address(&((*dest)->group_address),
+                                      src->group_address);
         (*dest)->n_group_members = src->n_group_members;
         if (src->group_members != NULL)
-            copy_group_members(
-                &((*dest)->group_members),
-                src->group_members,
-                src->n_group_members
-            );
+            copy_group_members(&((*dest)->group_members), src->group_members,
+                               src->n_group_members);
     }
 }
-
-void add_group_members_to_group_info(
-    Skissm__GroupInfo **dest,
-    Skissm__GroupInfo *old_group_info,
-    Skissm__GroupMember **adding_members, size_t adding_members_num
-) {
+void add_group_members_to_group_info(Skissm__GroupInfo **dest,
+                                     Skissm__GroupInfo *old_group_info,
+                                     Skissm__GroupMember **adding_members,
+                                     size_t adding_members_num) {
     size_t old_group_members_num = old_group_info->n_group_members;
     size_t new_group_members_num = old_group_members_num + adding_members_num;
     *dest = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
@@ -381,23 +430,25 @@ void add_group_members_to_group_info(
     if (old_group_info->group_name != NULL)
         (*dest)->group_name = strdup(old_group_info->group_name);
     if (old_group_info->group_address != NULL)
-        copy_address_from_address(&((*dest)->group_address), old_group_info->group_address);
+        copy_address_from_address(&((*dest)->group_address),
+                                  old_group_info->group_address);
     (*dest)->n_group_members = new_group_members_num;
-    (*dest)->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
+    (*dest)->group_members = (Skissm__GroupMember **)malloc(
+        sizeof(Skissm__GroupMember *) * new_group_members_num);
     size_t i;
     for (i = 0; i < old_group_members_num; i++) {
-        copy_group_member(&(((*dest)->group_members)[i]), (old_group_info->group_members)[i]);
+        copy_group_member(&(((*dest)->group_members)[i]),
+                          (old_group_info->group_members)[i]);
     }
     for (i = old_group_members_num; i < new_group_members_num; i++) {
-        copy_group_member(&(((*dest)->group_members)[i]), adding_members[i - old_group_members_num]);
+        copy_group_member(&(((*dest)->group_members)[i]),
+                          adding_members[i - old_group_members_num]);
     }
 }
 
 void remove_group_members_from_group_info(
-    Skissm__GroupInfo **dest,
-    Skissm__GroupInfo *old_group_info,
-    Skissm__GroupMember **removing_members, size_t removing_members_num
-) {
+    Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info,
+    Skissm__GroupMember **removing_members, size_t removing_members_num) {
     size_t old_group_members_num = old_group_info->n_group_members;
     size_t new_group_members_num = old_group_members_num - removing_members_num;
     *dest = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
@@ -405,17 +456,22 @@ void remove_group_members_from_group_info(
     if (old_group_info->group_name != NULL)
         (*dest)->group_name = strdup(old_group_info->group_name);
     if (old_group_info->group_address != NULL)
-        copy_address_from_address(&((*dest)->group_address), old_group_info->group_address);
+        copy_address_from_address(&((*dest)->group_address),
+                                  old_group_info->group_address);
     (*dest)->n_group_members = new_group_members_num;
-    (*dest)->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
+    (*dest)->group_members = (Skissm__GroupMember **)malloc(
+        sizeof(Skissm__GroupMember *) * new_group_members_num);
     size_t i, cur_pos = 0;
     for (i = 0; i < old_group_members_num; i++) {
-        if ((cur_pos == removing_members_num)
-            ||((old_group_info->group_members)[i]->role != removing_members[cur_pos]->role)
-            || !safe_strcmp((old_group_info->group_members)[i]->user_id, removing_members[cur_pos]->user_id)
-            || !safe_strcmp((old_group_info->group_members)[i]->domain, removing_members[cur_pos]->domain)
-        ) {
-            copy_group_member(&(((*dest)->group_members)[i - cur_pos]), (old_group_info->group_members)[i]);
+        if ((cur_pos == removing_members_num) ||
+            ((old_group_info->group_members)[i]->role !=
+             removing_members[cur_pos]->role) ||
+            !safe_strcmp((old_group_info->group_members)[i]->user_id,
+                         removing_members[cur_pos]->user_id) ||
+            !safe_strcmp((old_group_info->group_members)[i]->domain,
+                         removing_members[cur_pos]->domain)) {
+            copy_group_member(&(((*dest)->group_members)[i - cur_pos]),
+                              (old_group_info->group_members)[i]);
         } else {
             cur_pos++;
         }

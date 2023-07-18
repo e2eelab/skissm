@@ -1,6 +1,7 @@
 build
 build-xcode
 
+clang-format
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
