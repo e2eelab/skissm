@@ -54,7 +54,7 @@ static f2f_password_data *f2f_pw_data = NULL;
 static uint8_t *f2f_password = NULL;
 static size_t f2f_password_len = 0;
 
-static void on_log(LogCode log_code, const char *log_msg) {
+static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
     print_log((char *)log_msg, log_code);
 }
 
@@ -63,11 +63,11 @@ static void on_user_registered(Skissm__Account *account){
     account_data_insert_pos++;
 }
 
-static void on_inbound_session_invited(Skissm__E2eeAddress *from) {
+static void on_inbound_session_invited(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from) {
     printf("on_inbound_session_invited\n");
 }
 
-static void on_inbound_session_ready(Skissm__Session *inbound_session){
+static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *inbound_session){
     if (inbound_session->f2f == true) {
         printf("the face-to-face inbound session is ready\n");
     } else {
@@ -75,7 +75,7 @@ static void on_inbound_session_ready(Skissm__Session *inbound_session){
     }
 }
 
-static void on_outbound_session_ready(Skissm__Session *outbound_session){
+static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *outbound_session){
     if (outbound_session->f2f == true) {
         printf("the face-to-face outbound session is ready\n");
     } else {
@@ -83,7 +83,7 @@ static void on_outbound_session_ready(Skissm__Session *outbound_session){
     }
 }
 
-static void on_f2f_password_created(
+static void f2f_password_created(
     Skissm__E2eeAddress *sender,
     Skissm__E2eeAddress *receiver,
     uint8_t *password,
@@ -126,6 +126,7 @@ static void on_f2f_password_created(
 }
 
 static void on_f2f_password_acquired(
+    Skissm__E2eeAddress *user_address, 
     Skissm__E2eeAddress *sender,
     Skissm__E2eeAddress *receiver,
     uint8_t **password,
@@ -149,6 +150,7 @@ static void on_f2f_password_acquired(
 }
 
 static void on_one2one_msg_received(
+    Skissm__E2eeAddress *user_address, 
     Skissm__E2eeAddress *from_address,
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
@@ -157,6 +159,7 @@ static void on_one2one_msg_received(
 }
 
 static void on_other_device_msg_received(
+    Skissm__E2eeAddress *user_address, 
     Skissm__E2eeAddress *from_address,
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
@@ -164,7 +167,7 @@ static void on_other_device_msg_received(
     print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-static void on_f2f_session_ready(Skissm__Session *session) {
+static void on_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *session) {
     if (session->from->user->device_id != NULL) {
         printf("New outbound face-to-face session created.\n");
         printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
@@ -180,18 +183,18 @@ static void on_f2f_session_ready(Skissm__Session *session) {
     }
 }
 
-static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_group_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-static void on_group_created(Skissm__E2eeAddress *group_address, const char *group_name) {
+static void on_group_created(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name) {
     print_msg("on_group_created: group_name", (uint8_t *)group_name, strlen(group_name));
 
     copy_address_from_address(&(group.group_address), group_address);
     group.group_name = strdup(group_name);
 }
 
-static void on_group_members_added(Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **added_group_members, size_t added_group_members_num) {
+static void on_group_members_added(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **added_group_members, size_t added_group_members_num) {
     print_msg("on_group_members_added: group_name", (uint8_t *)group_name, strlen(group_name));
     size_t i;
     for (i = 0; i < added_group_members_num; i++) {
@@ -199,7 +202,7 @@ static void on_group_members_added(Skissm__E2eeAddress *group_address, const cha
     }
 }
 
-static void on_group_members_removed(Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **removed_group_members, size_t removed_group_members_num) {
+static void on_group_members_removed(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **removed_group_members, size_t removed_group_members_num) {
     print_msg("on_group_members_removed: group_name", (uint8_t *)group_name, strlen(group_name));
     size_t i;
     for (i = 0; i < removed_group_members_num; i++) {
@@ -372,7 +375,7 @@ static void test_two_members_session(){
     // face-to-face session creation between Alice's two devices
     uint8_t password_1[] = "password 1";
     size_t password_1_len = sizeof(password_1) - 1;
-    on_f2f_password_created(device_2, alice_address, password_1, password_1_len);
+    f2f_password_created(device_2, alice_address, password_1, password_1_len);
 
     f2f_invite(device_2, alice_address, 0, password_1, password_1_len);
 
@@ -456,7 +459,7 @@ static void test_three_members_group_session() {
     // face-to-face session creation between Alice's two devices
     uint8_t password_1[] = "password 1";
     size_t password_1_len = sizeof(password_1) - 1;
-    on_f2f_password_created(alice_address_2, alice_address, password_1, password_1_len);
+    f2f_password_created(alice_address_2, alice_address, password_1, password_1_len);
 
     f2f_invite(alice_address_2, alice_address, 0, password_1, password_1_len);
 

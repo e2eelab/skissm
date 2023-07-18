@@ -58,7 +58,7 @@ typedef struct f2f_password_data {
 
 static f2f_password_data *f2f_pw_data = NULL;
 
-static void on_log(LogCode log_code, const char *log_msg) {
+static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
     print_log((char *)log_msg, log_code);
 }
 
@@ -67,11 +67,11 @@ static void on_user_registered(Skissm__Account *account){
     account_data_insert_pos++;
 }
 
-static void on_inbound_session_invited(Skissm__E2eeAddress *from) {
+static void on_inbound_session_invited(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from) {
     printf("on_inbound_session_invited\n");
 }
 
-static void on_inbound_session_ready(Skissm__Session *inbound_session){
+static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *inbound_session){
     if (inbound_session->f2f == true) {
         printf("the face-to-face inbound session is ready\n");
     } else {
@@ -79,7 +79,7 @@ static void on_inbound_session_ready(Skissm__Session *inbound_session){
     }
 }
 
-static void on_outbound_session_ready(Skissm__Session *outbound_session){
+static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *outbound_session){
     if (outbound_session->f2f == true) {
         printf("the face-to-face outbound session is ready\n");
     } else {
@@ -87,7 +87,7 @@ static void on_outbound_session_ready(Skissm__Session *outbound_session){
     }
 }
 
-static void on_f2f_password_created(
+static void f2f_password_created(
     Skissm__E2eeAddress *sender,
     Skissm__E2eeAddress *receiver,
     uint8_t *password,
@@ -130,6 +130,7 @@ static void on_f2f_password_created(
 }
 
 static void on_f2f_password_acquired(
+    Skissm__E2eeAddress *user_address, 
     Skissm__E2eeAddress *sender,
     Skissm__E2eeAddress *receiver,
     uint8_t **password,
@@ -153,6 +154,7 @@ static void on_f2f_password_acquired(
 }
 
 static void on_one2one_msg_received(
+    Skissm__E2eeAddress *user_address, 
     Skissm__E2eeAddress *from_address,
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
@@ -169,6 +171,7 @@ static void on_one2one_msg_received(
 }
 
 static void on_other_device_msg_received(
+    Skissm__E2eeAddress *user_address, 
     Skissm__E2eeAddress *from_address,
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
@@ -184,7 +187,7 @@ static void on_other_device_msg_received(
     plaintext_store.plaintext_len = plaintext_len;
 }
 
-static void on_f2f_session_ready(Skissm__Session *session) {
+static void on_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *session) {
     if (session->from->user->device_id != NULL) {
         printf("New outbound face-to-face session created.\n");
         printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
@@ -603,7 +606,7 @@ static void test_face_to_face() {
     // generate a password
     uint8_t password[] = "password";
     size_t password_len = sizeof(password) - 1;
-    on_f2f_password_created(alice_address, bob_address, password, password_len);
+    f2f_password_created(alice_address, bob_address, password, password_len);
 
     // Alice invites Bob to create a face-to-face session
     f2f_invite(alice_address, bob_address, 0, password, password_len);
@@ -651,7 +654,7 @@ static void test_replace_session_with_f2f() {
     // generate a password
     uint8_t password[] = "password";
     size_t password_len = sizeof(password) - 1;
-    on_f2f_password_created(alice_address, bob_address, password, password_len);
+    f2f_password_created(alice_address, bob_address, password, password_len);
 
     // Alice invites Bob to create a face-to-face session
     f2f_invite(alice_address, bob_address, 0, password, password_len);
@@ -698,7 +701,7 @@ static void test_f2f_interaction() {
     // generate a password
     uint8_t password[] = "password";
     size_t password_len = sizeof(password) - 1;
-    on_f2f_password_created(alice_address, bob_address, password, password_len);
+    f2f_password_created(alice_address, bob_address, password, password_len);
 
     // Alice invites Bob to create a face-to-face session
     f2f_invite(alice_address, bob_address, 0, password, password_len);
@@ -754,21 +757,21 @@ static void test_many_to_one() {
     // face-to-face session between device_1 and device_2
     uint8_t password_1[] = "password 1";
     size_t password_1_len = sizeof(password_1) - 1;
-    on_f2f_password_created(device_1, device_2, password_1, password_1_len);
+    f2f_password_created(device_1, device_2, password_1, password_1_len);
 
     f2f_invite(device_1, device_2, 0, password_1, password_1_len);
 
     // face-to-face session between device_2 and device_3
     uint8_t password_2[] = "password 2";
     size_t password_2_len = sizeof(password_2) - 1;
-    on_f2f_password_created(device_2, device_3, password_2, password_2_len);
+    f2f_password_created(device_2, device_3, password_2, password_2_len);
 
     f2f_invite(device_2, device_3, 0, password_2, password_2_len);
 
     // face-to-face session between device_1 and device_3
     uint8_t password_3[] = "password 3";
     size_t password_3_len = sizeof(password_3) - 1;
-    on_f2f_password_created(device_1, device_3, password_3, password_3_len);
+    f2f_password_created(device_1, device_3, password_3, password_3_len);
 
     f2f_invite(device_1, device_3, 0, password_3, password_3_len);
 
@@ -815,33 +818,33 @@ static void test_many_to_many() {
     // Alice creates face-to-face session between each device
     uint8_t password_1[] = "password 1";
     size_t password_1_len = sizeof(password_1) - 1;
-    on_f2f_password_created(alice_address_1, alice_address_2, password_1, password_1_len);
+    f2f_password_created(alice_address_1, alice_address_2, password_1, password_1_len);
     f2f_invite(alice_address_1, alice_address_2, 0, password_1, password_1_len);
 
     uint8_t password_2[] = "password 2";
     size_t password_2_len = sizeof(password_2) - 1;
-    on_f2f_password_created(alice_address_2, alice_address_3, password_2, password_2_len);
+    f2f_password_created(alice_address_2, alice_address_3, password_2, password_2_len);
     f2f_invite(alice_address_2, alice_address_3, 0, password_2, password_2_len);
 
     uint8_t password_3[] = "password 3";
     size_t password_3_len = sizeof(password_3) - 1;
-    on_f2f_password_created(alice_address_1, alice_address_3, password_3, password_3_len);
+    f2f_password_created(alice_address_1, alice_address_3, password_3, password_3_len);
     f2f_invite(alice_address_1, alice_address_3, 0, password_3, password_3_len);
 
     // Bob creates face-to-face session between each device
     uint8_t password_4[] = "password 4";
     size_t password_4_len = sizeof(password_4) - 1;
-    on_f2f_password_created(bob_address_1, bob_address_2, password_4, password_4_len);
+    f2f_password_created(bob_address_1, bob_address_2, password_4, password_4_len);
     f2f_invite(bob_address_1, bob_address_2, 0, password_4, password_4_len);
 
     uint8_t password_5[] = "password 5";
     size_t password_5_len = sizeof(password_5) - 1;
-    on_f2f_password_created(bob_address_2, bob_address_3, password_5, password_5_len);
+    f2f_password_created(bob_address_2, bob_address_3, password_5, password_5_len);
     f2f_invite(bob_address_2, bob_address_3, 0, password_5, password_5_len);
 
     uint8_t password_6[] = "password 6";
     size_t password_6_len = sizeof(password_6) - 1;
-    on_f2f_password_created(bob_address_1, bob_address_3, password_6, password_6_len);
+    f2f_password_created(bob_address_1, bob_address_3, password_6, password_6_len);
     f2f_invite(bob_address_1, bob_address_3, 0, password_6, password_6_len);
 
     // Alice invites Bob to create a session
@@ -897,39 +900,39 @@ static void test_f2f_multiple_devices() {
     // Alice creates face-to-face session between each device
     uint8_t password_1[] = "password 1";
     size_t password_1_len = sizeof(password_1) - 1;
-    on_f2f_password_created(alice_address_1, alice_address_2, password_1, password_1_len);
+    f2f_password_created(alice_address_1, alice_address_2, password_1, password_1_len);
     f2f_invite(alice_address_1, alice_address_2, 0, password_1, password_1_len);
 
     uint8_t password_2[] = "password 2";
     size_t password_2_len = sizeof(password_2) - 1;
-    on_f2f_password_created(alice_address_2, alice_address_3, password_2, password_2_len);
+    f2f_password_created(alice_address_2, alice_address_3, password_2, password_2_len);
     f2f_invite(alice_address_2, alice_address_3, 0, password_2, password_2_len);
 
     uint8_t password_3[] = "password 3";
     size_t password_3_len = sizeof(password_3) - 1;
-    on_f2f_password_created(alice_address_1, alice_address_3, password_3, password_3_len);
+    f2f_password_created(alice_address_1, alice_address_3, password_3, password_3_len);
     f2f_invite(alice_address_1, alice_address_3, 0, password_3, password_3_len);
 
     // Bob creates face-to-face session between each device
     uint8_t password_4[] = "password 4";
     size_t password_4_len = sizeof(password_4) - 1;
-    on_f2f_password_created(bob_address_1, bob_address_2, password_4, password_4_len);
+    f2f_password_created(bob_address_1, bob_address_2, password_4, password_4_len);
     f2f_invite(bob_address_1, bob_address_2, 0, password_4, password_4_len);
 
     uint8_t password_5[] = "password 5";
     size_t password_5_len = sizeof(password_5) - 1;
-    on_f2f_password_created(bob_address_2, bob_address_3, password_5, password_5_len);
+    f2f_password_created(bob_address_2, bob_address_3, password_5, password_5_len);
     f2f_invite(bob_address_2, bob_address_3, 0, password_5, password_5_len);
 
     uint8_t password_6[] = "password 6";
     size_t password_6_len = sizeof(password_6) - 1;
-    on_f2f_password_created(bob_address_1, bob_address_3, password_6, password_6_len);
+    f2f_password_created(bob_address_1, bob_address_3, password_6, password_6_len);
     f2f_invite(bob_address_1, bob_address_3, 0, password_6, password_6_len);
 
     // Alice invites Bob to create a face-to-face session
     uint8_t password_ab[] = "password";
     size_t password_ab_len = sizeof(password_ab) - 1;
-    on_f2f_password_created(alice_address_1, bob_address_1, password_ab, password_ab_len);
+    f2f_password_created(alice_address_1, bob_address_1, password_ab, password_ab_len);
     f2f_invite(alice_address_1, bob_address_1, 0, password_ab, password_ab_len);
 
     sleep(3);
@@ -1010,33 +1013,33 @@ static void test_pqc_many_to_many() {
     // Alice creates face-to-face session between each device
     uint8_t password_1[] = "password 1";
     size_t password_1_len = sizeof(password_1) - 1;
-    on_f2f_password_created(alice_address_1, alice_address_2, password_1, password_1_len);
+    f2f_password_created(alice_address_1, alice_address_2, password_1, password_1_len);
     f2f_invite(alice_address_1, alice_address_2, 0, password_1, password_1_len);
 
     uint8_t password_2[] = "password 2";
     size_t password_2_len = sizeof(password_2) - 1;
-    on_f2f_password_created(alice_address_2, alice_address_3, password_2, password_2_len);
+    f2f_password_created(alice_address_2, alice_address_3, password_2, password_2_len);
     f2f_invite(alice_address_2, alice_address_3, 0, password_2, password_2_len);
 
     uint8_t password_3[] = "password 3";
     size_t password_3_len = sizeof(password_3) - 1;
-    on_f2f_password_created(alice_address_1, alice_address_3, password_3, password_3_len);
+    f2f_password_created(alice_address_1, alice_address_3, password_3, password_3_len);
     f2f_invite(alice_address_1, alice_address_3, 0, password_3, password_3_len);
 
     // Bob creates face-to-face session between each device
     uint8_t password_4[] = "password 4";
     size_t password_4_len = sizeof(password_4) - 1;
-    on_f2f_password_created(bob_address_1, bob_address_2, password_4, password_4_len);
+    f2f_password_created(bob_address_1, bob_address_2, password_4, password_4_len);
     f2f_invite(bob_address_1, bob_address_2, 0, password_4, password_4_len);
 
     uint8_t password_5[] = "password 5";
     size_t password_5_len = sizeof(password_5) - 1;
-    on_f2f_password_created(bob_address_2, bob_address_3, password_5, password_5_len);
+    f2f_password_created(bob_address_2, bob_address_3, password_5, password_5_len);
     f2f_invite(bob_address_2, bob_address_3, 0, password_5, password_5_len);
 
     uint8_t password_6[] = "password 6";
     size_t password_6_len = sizeof(password_6) - 1;
-    on_f2f_password_created(bob_address_1, bob_address_3, password_6, password_6_len);
+    f2f_password_created(bob_address_1, bob_address_3, password_6, password_6_len);
     f2f_invite(bob_address_1, bob_address_3, 0, password_6, password_6_len);
 
     sleep(2);

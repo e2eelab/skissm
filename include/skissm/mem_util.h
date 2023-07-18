@@ -46,9 +46,12 @@ char *generate_uuid_str();
 /**
  * @brief Generate hex string from given uint8 array.
  *
- * @return char*
+ * @param buffer
+ * @param buffer_len
+ * @param hex_str output hex str
+ * @return the length of output hex str
  */
-size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char *hex_str, size_t hex_str_len);
+size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char **hex_str);
 
 /**
  * @brief Compare two ProtobufCBinaryData objects.
