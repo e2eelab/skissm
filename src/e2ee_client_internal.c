@@ -381,9 +381,9 @@ static void resend_pending_request(Skissm__Account *account) {
             }
             case SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBERS_REQUEST: {
                 Skissm__AddGroupMembersRequest *add_group_members_request = skissm__add_group_members_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
-                Skissm__AddGroupMembersResponse *add_group_members_response = get_skissm_plugin()->proto_handler.add_group_members(user_address, auth,  add_group_members_request);
+                Skissm__AddGroupMembersResponse *add_group_members_response = get_skissm_plugin()->proto_handler.add_group_members(user_address, auth, add_group_members_request);
                 Skissm__GroupSession *outbound_group_session_1 = NULL;
-                get_skissm_plugin()->db_handler.load_outbound_group_session(user_address, add_group_members_request->msg->group_info->group_address, &outbound_group_session_1);
+                get_skissm_plugin()->db_handler.load_group_session_by_address(user_address, user_address, add_group_members_request->msg->group_info->group_address, &outbound_group_session_1);
                 succ = consume_add_group_members_response(outbound_group_session_1, add_group_members_response, add_group_members_request->msg->adding_members, add_group_members_request->msg->n_adding_members);
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
@@ -397,7 +397,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 Skissm__RemoveGroupMembersRequest *remove_group_members_request = skissm__remove_group_members_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__RemoveGroupMembersResponse *remove_group_members_response = get_skissm_plugin()->proto_handler.remove_group_members(user_address, auth, remove_group_members_request);
                 Skissm__GroupSession *outbound_group_session_2 = NULL;
-                get_skissm_plugin()->db_handler.load_outbound_group_session(user_address, remove_group_members_request->msg->group_info->group_address, &outbound_group_session_2);
+                get_skissm_plugin()->db_handler.load_group_session_by_address(user_address, user_address, remove_group_members_request->msg->group_info->group_address, &outbound_group_session_2);
                 succ = consume_remove_group_members_response(outbound_group_session_2, remove_group_members_response, remove_group_members_request->msg->removing_members, remove_group_members_request->msg->n_removing_members);
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
@@ -411,7 +411,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 Skissm__SendGroupMsgRequest *send_group_msg_request = skissm__send_group_msg_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__SendGroupMsgResponse *send_group_msg_response = get_skissm_plugin()->proto_handler.send_group_msg(user_address, auth, send_group_msg_request);
                 Skissm__GroupSession *outbound_group_session_3 = NULL;
-                get_skissm_plugin()->db_handler.load_outbound_group_session(user_address, send_group_msg_request->msg->to, &outbound_group_session_3);
+                get_skissm_plugin()->db_handler.load_group_session_by_address(user_address, user_address, send_group_msg_request->msg->to, &outbound_group_session_3);
                 succ = consume_send_group_msg_response(outbound_group_session_3, send_group_msg_response);
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);

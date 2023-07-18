@@ -29,6 +29,30 @@ extern "C" {
 #include "skissm/skissm.h"
 
 /**
+ * @brief Advance the chain key of group session.
+ *
+ * @param cipher_suite
+ * @param chain_key
+ */
+void advance_group_chain_key(
+    const cipher_suite_t *cipher_suite,
+    ProtobufCBinaryData *chain_key
+);
+
+/**
+ * @brief Create group message key.
+ *
+ * @param cipher_suite
+ * @param chain_key
+ * @param message_key
+ */
+void create_group_message_key(
+    const cipher_suite_t *cipher_suite,
+    const ProtobufCBinaryData *chain_key,
+    Skissm__MsgKey *message_key
+);
+
+/**
  * @brief Pack the group pre-keys.
  *
  * @param outbound_group_session
@@ -44,6 +68,10 @@ size_t pack_group_pre_key_plaintext(
 /**
  * @brief Create an outbound group session.
  *
+ * @param sender
+ * @param seed_secret
+ * @param n_member_ids
+ * @param member_ids
  * @param e2ee_pack_id
  * @param user_address
  * @param group_name,
@@ -52,32 +80,11 @@ size_t pack_group_pre_key_plaintext(
  * @param group_members_num
  * @param old_session_id
  */
-void create_outbound_group_session(
-    const char *e2ee_pack_id,
-    Skissm__E2eeAddress *user_address,
-    const char *group_name,
-    Skissm__E2eeAddress *group_address,
-    Skissm__GroupMember **group_members,
-    size_t group_members_num,
-    char *old_session_id
-);
-
-// /**
-//  * @brief Create an inbound group session.
-//  *
-//  * @param e2ee_pack_id
-//  * @param group_pre_key_bundle
-//  * @param user_address
-//  */
-// void create_inbound_group_session(
-//     const char *e2ee_pack_id,
-//     Skissm__GroupPreKeyBundle *group_pre_key_bundle,
-//     Skissm__E2eeAddress *user_address
-// );
-
 void new_outbound_group_session(
     bool sender,
     const ProtobufCBinaryData *seed_secret,
+    size_t n_member_ids,
+    Skissm__GroupMemberID **member_ids,
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     const char *group_name,
@@ -87,6 +94,15 @@ void new_outbound_group_session(
     char *old_session_id
 );
 
+/**
+ * @brief Create an inbound group session.
+ *
+ * @param e2ee_pack_id
+ * @param user_address
+ * @param group_pre_key_bundle
+ * @param group_member_id
+ * @param group_info
+ */
 void new_inbound_group_session(
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
@@ -105,31 +121,6 @@ void complete_inbound_group_session(
 void new_and_complete_inbound_group_session(
     Skissm__GroupMemberID *group_member_id,
     Skissm__GroupSession *other_inbound_group_session
-);
-
-/**
- * @brief Advance the chain key of group session.
- *
- * @param cipher_suite
- * @param chain_key
- */
-void advance_group_chain_key(
-    const cipher_suite_t *cipher_suite,
-    ProtobufCBinaryData *chain_key
-);
-
-
-/**
- * @brief Create group message key.
- *
- * @param cipher_suite
- * @param chain_key
- * @param message_key
- */
-void create_group_message_key(
-    const cipher_suite_t *cipher_suite,
-    const ProtobufCBinaryData *chain_key,
-    Skissm__MsgKey *message_key
 );
 
 #ifdef __cplusplus

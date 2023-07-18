@@ -50,28 +50,84 @@ typedef struct group_data {
 } group_data;
 
 static user_data user_data_set[user_data_max] = {
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}};
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}
+};
 
-static group_data group_data_set[group_data_max] = {{NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL},
-                                                    {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}};
+static group_data group_data_set[group_data_max] = {
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL}
+};
 
 static bool session_record[user_data_max][user_data_max] = {
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+};
 
-static bool group_record[user_data_max][group_data_max] = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0},
-                                                           {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0},
-                                                           {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0},
-                                                           {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
+static bool group_record[user_data_max][group_data_max] = {
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0}
+};
 
 static uint8_t user_data_set_insert_pos = 0;
 
@@ -121,7 +177,10 @@ static size_t find_num_user_addresses(const char *user_id) {
     return user_addresses_num;
 }
 /*------------------------------------*/
-static size_t find_user_addresses(const char *user_id, Skissm__E2eeAddress ***user_addresses) {
+static size_t find_user_addresses(
+    const char *user_id,
+    Skissm__E2eeAddress ***user_addresses
+) {
     size_t user_addresses_num = 0;
     uint8_t i;
     for (i = 0; i < user_data_max; i++) {
@@ -142,7 +201,10 @@ static size_t find_user_addresses(const char *user_id, Skissm__E2eeAddress ***us
     return user_addresses_num;
 }
 
-static size_t find_friend_addresses(uint8_t user_index, Skissm__E2eeAddress ***friend_addresses) {
+static size_t find_friend_addresses(
+    uint8_t user_index,
+    Skissm__E2eeAddress ***friend_addresses
+) {
     size_t friends_num = 0;
     uint8_t i;
     for (i = 0; i < user_data_max; i++) {
@@ -162,7 +224,10 @@ static size_t find_friend_addresses(uint8_t user_index, Skissm__E2eeAddress ***f
     return friends_num;
 }
 
-static size_t find_group_data(uint8_t user_index, Skissm__GroupInfo ***group_info_list) {
+static size_t find_group_data(
+    uint8_t user_index,
+    Skissm__GroupInfo ***group_info_list
+) {
     size_t group_num = 0;
     uint8_t i;
     for (i = 0; i < group_data_max; i++) {
@@ -247,7 +312,9 @@ void mock_server_end() {
     group_data_set_insert_pos = 0;
 }
 
-Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request) {
+Skissm__RegisterUserResponse *mock_register_user(
+    Skissm__RegisterUserRequest *request
+) {
     if ((request == NULL) || (request->authenticator == NULL)) {
         ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "mock_register_user()");
         return NULL;
@@ -367,7 +434,10 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     return response;
 }
 
-Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *from, const char *auth, Skissm__GetPreKeyBundleRequest *request) {
+Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__GetPreKeyBundleRequest *request
+) {
     if ((request->user_id == NULL) || (request->domain == NULL)) {
         ssm_notify_log(from, BAD_MESSAGE_FORMAT, "mock_get_pre_key_bundle()");
         return NULL;
@@ -388,8 +458,11 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *fr
     } else {
         for (i = 0; i < user_data_set_insert_pos; i++) {
             cur_address = user_data_set[i].address;
-            if ((cur_address != NULL) && safe_strcmp(cur_address->domain, request->domain) && safe_strcmp(cur_address->user->user_id, request->user_id) &&
-                safe_strcmp(cur_address->user->device_id, request->device_id)) {
+            if ((cur_address != NULL) &&
+                safe_strcmp(cur_address->domain, request->domain) &&
+                safe_strcmp(cur_address->user->user_id, request->user_id) &&
+                safe_strcmp(cur_address->user->device_id, request->device_id)
+            ) {
                 user_data_find[user_device_num] = i;
                 user_device_num++;
             }
@@ -438,7 +511,10 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *fr
     return response;
 }
 
-Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__InviteRequest *request) {
+Skissm__InviteResponse *mock_invite(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__InviteRequest *request
+) {
     Skissm__InviteMsg *invite_msg = request->msg;
     size_t invite_msg_data_len = skissm__invite_msg__get_packed_size(invite_msg);
     uint8_t invite_msg_data[invite_msg_data_len];
@@ -466,7 +542,10 @@ Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth,
     return response;
 }
 
-Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth, Skissm__AcceptRequest *request) {
+Skissm__AcceptResponse *mock_accept(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__AcceptRequest *request
+) {
     Skissm__AcceptMsg *accept_msg = request->msg;
     size_t accept_msg_data_len = skissm__accept_msg__get_packed_size(accept_msg);
     uint8_t accept_msg_data[accept_msg_data_len];
@@ -499,12 +578,18 @@ Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth,
     return response;
 }
 
-Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fInviteRequest *request) {
+Skissm__F2fInviteResponse *mock_f2f_invite(
+    Skissm__E2eeAddress *from,
+    const char *auth,
+    Skissm__F2fInviteRequest *request
+) {
     Skissm__F2fInviteMsg *f2f_invite_msg = request->msg;
 
     uint8_t user_data_find = 0;
     while (user_data_find < user_data_set_insert_pos) {
-        if ((user_data_set[user_data_find].address) && (f2f_invite_msg->to) && compare_address(user_data_set[user_data_find].address, f2f_invite_msg->to)) {
+        if ((user_data_set[user_data_find].address) && (f2f_invite_msg->to) &&
+            compare_address(user_data_set[user_data_find].address, f2f_invite_msg->to)
+        ) {
             break;
         }
         user_data_find++;
@@ -548,7 +633,11 @@ Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__E2eeAddress *from, const char
     return response;
 }
 
-Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fAcceptRequest *request) {
+Skissm__F2fAcceptResponse *mock_f2f_accept(
+    Skissm__E2eeAddress *from,
+    const char *auth,
+    Skissm__F2fAcceptRequest *request
+) {
     Skissm__F2fAcceptMsg *f2f_accept_msg = request->msg;
     size_t f2f_accept_msg_data_len = skissm__f2f_accept_msg__get_packed_size(f2f_accept_msg);
     uint8_t f2f_accept_msg_data[f2f_accept_msg_data_len];
@@ -576,10 +665,16 @@ Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__E2eeAddress *from, const char
     return response;
 }
 
-Skissm__PublishSpkResponse *mock_publish_spk(Skissm__E2eeAddress *from, const char *auth, Skissm__PublishSpkRequest *request) {
+Skissm__PublishSpkResponse *mock_publish_spk(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__PublishSpkRequest *request
+) {
     uint8_t user_data_find = 0;
     while (user_data_find < user_data_set_insert_pos) {
-        if ((user_data_set[user_data_find].address) && (request->user_address) && compare_address(user_data_set[user_data_find].address, request->user_address)) {
+        if ((user_data_set[user_data_find].address) &&
+            (request->user_address) &&
+            compare_address(user_data_set[user_data_find].address, request->user_address)
+        ) {
             break;
         }
         user_data_find++;
@@ -606,10 +701,16 @@ Skissm__PublishSpkResponse *mock_publish_spk(Skissm__E2eeAddress *from, const ch
     return response;
 }
 
-Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__E2eeAddress *from, const char *auth, Skissm__SupplyOpksRequest *request) {
+Skissm__SupplyOpksResponse *mock_supply_opks(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__SupplyOpksRequest *request
+) {
     uint8_t user_data_find = 0;
     while (user_data_find < user_data_set_insert_pos) {
-        if ((user_data_set[user_data_find].address) && (request->user_address) && compare_address(user_data_set[user_data_find].address, request->user_address)) {
+        if ((user_data_set[user_data_find].address) &&
+            (request->user_address) &&
+            compare_address(user_data_set[user_data_find].address, request->user_address)
+        ) {
             break;
         }
         user_data_find++;
@@ -649,7 +750,10 @@ Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__E2eeAddress *from, const ch
     return response;
 }
 
-Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendOne2oneMsgRequest *request) {
+Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__SendOne2oneMsgRequest *request
+) {
     Skissm__E2eeMsg *e2ee_msg = request->msg;
     size_t e2ee_msg_data_len = skissm__e2ee_msg__get_packed_size(e2ee_msg);
     uint8_t e2ee_msg_data[e2ee_msg_data_len];
@@ -701,7 +805,10 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from,
 }
 
 // NOTE: CREATE GROUP
-Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const char *auth, Skissm__CreateGroupRequest *request) {
+Skissm__CreateGroupResponse *mock_create_group(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__CreateGroupRequest *request
+) {
     if (request == NULL) {
         return NULL;
     }
@@ -844,7 +951,10 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const 
     return response;
 }
 
-Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMembersRequest *request) {
+Skissm__AddGroupMembersResponse *mock_add_group_members(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__AddGroupMembersRequest *request
+) {
     Skissm__AddGroupMembersMsg *add_group_members_msg = request->msg;
     size_t add_group_members_msg_data_len = skissm__add_group_members_msg__get_packed_size(add_group_members_msg);
     uint8_t add_group_members_msg_data[add_group_members_msg_data_len];
@@ -853,8 +963,10 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
     // find the group
     uint8_t group_data_find = 0;
     while (group_data_find < group_data_set_insert_pos) {
-        if ((group_data_set[group_data_find].group_address) && (add_group_members_msg->group_info->group_address) &&
-            compare_address(group_data_set[group_data_find].group_address, add_group_members_msg->group_info->group_address)) {
+        if ((group_data_set[group_data_find].group_address) &&
+            (add_group_members_msg->group_info->group_address) &&
+            compare_address(group_data_set[group_data_find].group_address, add_group_members_msg->group_info->group_address)
+        ) {
             break;
         }
         group_data_find++;
@@ -942,14 +1054,18 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
     return response;
 }
 
-Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__RemoveGroupMembersRequest *request) {
+Skissm__RemoveGroupMembersResponse *mock_remove_group_members(
+    Skissm__E2eeAddress *from, const char *auth, Skissm__RemoveGroupMembersRequest *request
+) {
     Skissm__RemoveGroupMembersMsg *remove_group_members_msg = request->msg;
 
     // find the group
     uint8_t group_data_find = 0;
     while (group_data_find < group_data_set_insert_pos) {
-        if ((group_data_set[group_data_find].group_address) && (request->msg->group_info->group_address) &&
-            compare_address(group_data_set[group_data_find].group_address, request->msg->group_info->group_address)) {
+        if ((group_data_set[group_data_find].group_address) &&
+            (request->msg->group_info->group_address) &&
+            compare_address(group_data_set[group_data_find].group_address, request->msg->group_info->group_address)
+        ) {
             break;
         }
         group_data_find++;
@@ -1088,7 +1204,10 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
     return response;
 }
 
-Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendGroupMsgRequest *request) {
+Skissm__SendGroupMsgResponse *mock_send_group_msg(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__SendGroupMsgRequest *request
+) {
     Skissm__E2eeMsg *e2ee_msg = request->msg;
     size_t e2ee_msg_data_len = skissm__e2ee_msg__get_packed_size(e2ee_msg);
     uint8_t e2ee_msg_data[e2ee_msg_data_len];
@@ -1101,7 +1220,9 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, con
     // find the group
     uint8_t group_data_find = 0;
     while (group_data_find < group_data_set_insert_pos) {
-        if ((group_data_set[group_data_find].group_address) && group_address && compare_address(group_data_set[group_data_find].group_address, group_address)) {
+        if ((group_data_set[group_data_find].group_address) && group_address &&
+            compare_address(group_data_set[group_data_find].group_address, group_address)
+        ) {
             break;
         }
         group_data_find++;
@@ -1157,7 +1278,10 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, con
     return response;
 }
 
-Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__ConsumeProtoMsgRequest *request) {
+Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(
+    Skissm__E2eeAddress *from, const char *auth,
+    Skissm__ConsumeProtoMsgRequest *request
+) {
     size_t request_data_len = skissm__consume_proto_msg_request__get_packed_size(request);
     uint8_t *request_data = (uint8_t *)malloc(request_data_len);
     skissm__consume_proto_msg_request__pack(request, request_data);

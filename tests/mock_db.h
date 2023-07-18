@@ -180,11 +180,6 @@ void unload_session(
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to
 );
-void load_outbound_group_session(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *group_address,
-    Skissm__GroupSession **group_session
-);
 void load_group_session_by_address(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *owner_address,
@@ -208,28 +203,15 @@ size_t load_group_sessions(
     Skissm__E2eeAddress *group_address,
     Skissm__GroupSession ***group_sessions
 );
-void load_inbound_group_session(
-    Skissm__E2eeAddress *receiver_address,
-    char *session_id,
-    Skissm__GroupSession **group_session
-);
-int load_n_inbound_group_sessions(
-    Skissm__E2eeAddress *owner,
-    Skissm__E2eeAddress *group_address
-);
-size_t load_inbound_group_sessions(
-    Skissm__E2eeAddress *owner,
-    Skissm__E2eeAddress *group_address,
-    Skissm__GroupSession ***inbound_group_sessions
-);
 void store_group_session(
     Skissm__GroupSession *group_session
 );
-void unload_outbound_group_session(
-    Skissm__GroupSession *outbound_group_session
+void unload_group_session_by_address(
+    Skissm__E2eeAddress *session_owner,
+    Skissm__E2eeAddress *group_address
 );
-void unload_inbound_group_session(
-    Skissm__E2eeAddress *receiver_address,
+void unload_group_session_by_id(
+    Skissm__E2eeAddress *session_owner,
     char *session_id
 );
 void store_pending_plaintext_data(

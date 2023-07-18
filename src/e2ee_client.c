@@ -132,7 +132,7 @@ Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_use
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
     if (account == NULL) {
-        ssm_notify_log(BAD_ACCOUNT, "invite()");
+        ssm_notify_log(from, BAD_ACCOUNT, "invite()");
         return NULL;
     }
 
@@ -497,7 +497,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
     }
     
     Skissm__GroupSession *outbound_group_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
+    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
         ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_members()");
         return NULL;
@@ -541,7 +541,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     }
 
     Skissm__GroupSession *outbound_group_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
+    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
 
     if (outbound_group_session == NULL) {
         ssm_notify_log(sender_address, BAD_GROUP_SESSION, "remove_group_members()");
@@ -587,7 +587,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
 
     // load the outbound group session
     Skissm__GroupSession *outbound_group_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
+    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
         // outbound_group_session does not exist
         return NULL;

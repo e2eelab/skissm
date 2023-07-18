@@ -304,42 +304,22 @@ typedef struct skissm_db_handler_t {
         Skissm__GroupSession ***
     );
     /**
-     * @brief find outbound group session
-     * @param sender_address
-     * @param group_address
-     * @param outbound_group_session
-     */
-    void (*load_outbound_group_session)(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address, Skissm__GroupSession **outbound_group_session);
-    /**
-     * @brief find inbound group session
-     * @param receiver_address
-     * @param session_id
-     * @param inbound_group_session
-     */
-    void (*load_inbound_group_session)(Skissm__E2eeAddress *receiver_address, char *session_id, Skissm__GroupSession **inbound_group_session);
-    /**
-     * @brief find inbound group session
-     * @param receiver_address
-     * @param group_address
-     * @param inbound_group_sessions
-     */
-    size_t (*load_inbound_group_sessions)(Skissm__E2eeAddress *receiver_address, Skissm__E2eeAddress *group_address, Skissm__GroupSession ***inbound_group_sessions);
-    /**
      * @brief store group session
      * @param group_session
      */
     void (*store_group_session)(Skissm__GroupSession *group_session);
     /**
-     * @brief delete outbound group session
-     * @param outbound_group_session
+     * @brief delete group sessions by address
+     * @param session_owner
+     * @param group_address
      */
-    void (*unload_outbound_group_session)(Skissm__GroupSession *outbound_group_session);
+    void (*unload_group_session_by_address)(Skissm__E2eeAddress *, Skissm__E2eeAddress *);
     /**
-     * @brief delete old inbound group session
-     * @param user_address
-     * @param old_session_id
+     * @brief delete group sessions by session id
+     * @param session_owner
+     * @param session_id
      */
-    void (*unload_inbound_group_session)(Skissm__E2eeAddress *user_address, char *old_session_id);
+    void (*unload_group_session_by_id)(Skissm__E2eeAddress *, char *);
 
     // pending plaintext related handlers
     /**
