@@ -804,7 +804,6 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(
     return response;
 }
 
-// NOTE: CREATE GROUP
 Skissm__CreateGroupResponse *mock_create_group(
     Skissm__E2eeAddress *from, const char *auth,
     Skissm__CreateGroupRequest *request
@@ -822,47 +821,33 @@ Skissm__CreateGroupResponse *mock_create_group(
     // generate a random address
     mock_random_group_address(&(cur_group_data->group_address));
 
-    // pack CreateGroupMsg
-    // request->msg; is Skissm__CreateGroupMsg
+    // complete create_group_msg
     Skissm__CreateGroupMsg *create_group_msg = request->msg;
 
     copy_address_from_address(&(create_group_msg->group_info->group_address), cur_group_data->group_address);
 
-    // init response to take the copy of member_id
-    Skissm__CreateGroupResponse *response = (Skissm__CreateGroupResponse *)malloc(sizeof(Skissm__CreateGroupResponse));
-    skissm__create_group_response__init(response);
-
-    // NOTE: --COPY KEY INTO create_group_msg-------------------/
-
-    Skissm__E2eeAddress *sender_address = NULL;
-    copy_address_from_address(&(sender_address), create_group_msg->sender_address);
-
-    const char *sender_user_id = sender_address->user->user_id;
-
-    Skissm__E2eeAddress **to_member_addresses = NULL;
-
+    /*-------------------insert each group member's identity key into create_group_msg-------------------*/
     // total #(address) to be sent
     size_t to_member_addresses_total_num = 0;
+    const char *member_user_id;
     size_t i, j;
     // NOTE: count the total number of addresses
     for (i = 0; i < group_data_set[group_data_set_insert_pos].group_members_num; i++) {
-        const char *member_user_id = cur_group_data->group_members[i]->user_id;
+        member_user_id = cur_group_data->group_members[i]->user_id;
         to_member_addresses_total_num += find_num_user_addresses(member_user_id);
     }
 
     create_group_msg->n_member_ids = to_member_addresses_total_num;
-    response->n_member_ids = to_member_addresses_total_num;
-    // Now, allocate memory for each individual GroupMemberID
-    // TODO: Not yet free!
-    // 2d array
-    Skissm__GroupMemberID **common_member_ids = (Skissm__GroupMemberID **)malloc(to_member_addresses_total_num * sizeof(Skissm__GroupMemberID *));
 
-    size_t to_member_addresses_num = 0;
+    // Now, allocate memory for each individual GroupMemberID
+    // 2d array
+    Skissm__GroupMemberID **common_member_ids = (Skissm__GroupMemberID **)malloc(sizeof(Skissm__GroupMemberID *) * to_member_addresses_total_num);
+
+    size_t to_member_addresses_num, member_id_insert_pos = 0;
     // NOTE: copy data into member_id
     for (i = 0; i < group_data_set[group_data_set_insert_pos].group_members_num; i++) {
         // send to other group members
-        const char *member_user_id = cur_group_data->group_members[i]->user_id;
-        to_member_addresses_num = 0;
+        member_user_id = cur_group_data->group_members[i]->user_id;
         Skissm__E2eeAddress **to_member_addresses = NULL;
         to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);
 
@@ -875,17 +860,21 @@ Skissm__CreateGroupResponse *mock_create_group(
              "find_address" O(n) ,需要開空間儲存嗎? 但如果單純用 array,
              如果成員太多可能會出現sparse 最好是用 map, 但有必要嗎? 必須手刻*/
 
-            copy_address_from_address(&(common_member_ids[j]->group_member_address), to_member_address);
-            copy_protobuf_from_protobuf(&(common_member_ids[j]->public_key), &(user_data_set[member_pos].identity_key_public->sign_public_key));
+            // insert the group member data
+            common_member_ids[member_id_insert_pos] = (Skissm__GroupMemberID *)malloc(sizeof(Skissm__GroupMemberID));
+            Skissm__GroupMemberID *cur_common_member_id = common_member_ids[member_id_insert_pos];
+            skissm__group_member_id__init(cur_common_member_id);
+            copy_address_from_address(&(cur_common_member_id->group_member_address), to_member_address);
+            copy_protobuf_from_protobuf(&(cur_common_member_id->public_key), &(user_data_set[member_pos].identity_key_public->sign_public_key));
+            member_id_insert_pos++;
         }
     }
 
-    copy_members_id(&(create_group_msg->member_ids), common_member_ids, to_member_addresses_total_num);
-
-    copy_members_id(&(response->member_ids), common_member_ids, to_member_addresses_total_num);
+    copy_group_member_ids(&(create_group_msg->member_ids), common_member_ids, to_member_addresses_total_num);
 
     /*--------------------------------------*/
 
+    // pack CreateGroupMsg
     size_t create_group_msg_data_len = skissm__create_group_msg__get_packed_size(create_group_msg);
     uint8_t create_group_msg_data[create_group_msg_data_len];
 
@@ -898,9 +887,11 @@ Skissm__CreateGroupResponse *mock_create_group(
     copy_group_members(&(cur_group_data->group_members), group_info->group_members, group_info->n_group_members);
 
     // send msg to each group member
+    Skissm__E2eeAddress *sender_address = create_group_msg->sender_address;
+    const char *sender_user_id = sender_address->user->user_id;
     for (i = 0; i < group_data_set[group_data_set_insert_pos].group_members_num; i++) {
         // send to other group members
-        const char *member_user_id = cur_group_data->group_members[i]->user_id;
+        member_user_id = cur_group_data->group_members[i]->user_id;
         // NOTE: forward a copy of CreateGroupMsg
         Skissm__E2eeAddress **to_member_addresses = NULL;
         size_t to_member_addresses_num = find_user_addresses(member_user_id, &to_member_addresses);
@@ -940,9 +931,19 @@ Skissm__CreateGroupResponse *mock_create_group(
     /*-------------------------------------*/
 
     // prepare response
+    Skissm__CreateGroupResponse *response = (Skissm__CreateGroupResponse *)malloc(sizeof(Skissm__CreateGroupResponse));
+    skissm__create_group_response__init(response);
+    response->n_member_ids = to_member_addresses_total_num;
+    copy_group_member_ids(&(response->member_ids), common_member_ids, to_member_addresses_total_num);
     copy_address_from_address(&(response->group_address), cur_group_data->group_address);
 
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+
+    // release
+    for (i = 0; i < to_member_addresses_total_num; i++) {
+        skissm__group_member_id__free_unpacked(common_member_ids[i], NULL);
+    }
+    free_mem((void **)&common_member_ids, sizeof(Skissm__GroupMemberID *) * to_member_addresses_total_num);
 
     // done
     group_data_set_insert_pos++;

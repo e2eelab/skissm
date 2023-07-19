@@ -269,9 +269,22 @@ void copy_spk_public_from_spk_public(Skissm__SignedPreKeyPublic **dest, Skissm__
  */
 void copy_opk_public_from_opk_public(Skissm__OneTimePreKeyPublic **dest, Skissm__OneTimePreKeyPublic *src);
 
-// NOTE: NEWLY ADDED 2023-07-17 14:54:52
-void copy_member_id(Skissm__GroupMemberID **dest, Skissm__GroupMemberID *src);
-void copy_members_id(
+/**
+ * @brief Copy Skissm__GroupMemberID from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_group_member_id(Skissm__GroupMemberID **dest, Skissm__GroupMemberID *src);
+
+/**
+ * @brief Copy Skissm__GroupMemberID array from src to dest.
+ *
+ * @param dest
+ * @param src
+ * @param to_member_addresses_total_num
+ */
+void copy_group_member_ids(
     Skissm__GroupMemberID ***dest, Skissm__GroupMemberID **src, size_t to_member_addresses_total_num
 );
 
