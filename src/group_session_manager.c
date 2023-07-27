@@ -323,15 +323,15 @@ bool consume_remove_group_members_response(
 
 bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveGroupMembersMsg *msg) {
     Skissm__E2eeAddress *group_address = msg->group_info->group_address;
+    const char *group_name = msg->group_info->group_name;
 
     // if the receiver is the one who is going to be removed, the receiver should unload his or her own group session
     size_t i;
     for (i = 0; i < msg->n_removing_members; i++) {
-        if (safe_strcmp(receiver_address->user->user_id, msg->removing_members[i]->user_id)) {
+        if (safe_strcmp(receiver_address->user->user_id, msg->removing_members[i]->user_id) && safe_strcmp(receiver_address->domain, msg->removing_members[i]->domain)) {
             // unload outbound group session
             Skissm__GroupSession *outbound_group_session = NULL;
             get_skissm_plugin()->db_handler.load_outbound_group_session(receiver_address, group_address, &outbound_group_session);
-            const char *group_name = outbound_group_session->group_info->group_name;
             if (outbound_group_session != NULL) {
                 get_skissm_plugin()->db_handler.unload_outbound_group_session(outbound_group_session);
                 // release
@@ -346,6 +346,10 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
                 // release
                 skissm__group_session__free_unpacked(inbound_group_sessions[j], NULL);
             }
+            // release
+            if (inbound_group_sessions_num > 0) {
+                free_mem((void **)&inbound_group_sessions, sizeof(Skissm__Session *) * inbound_group_sessions_num);
+            }
 
             // notify
             ssm_notify_group_members_removed(
@@ -356,16 +360,20 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
                 msg->n_removing_members
             );
 
-            // release
-            free(inbound_group_sessions);
-
             // done
+            // no need to renew outbound group session
+            get_skissm_plugin()->event_handler.on_log(receiver_address, DEBUG_LOG, "consume_remove_group_members_msg() skip renew outbound group session because local user is removed");
             return true;
         }
     }
 
     // renew outbound group session
     size_t new_group_members_num = msg->group_info->n_group_members;
+    if (new_group_members_num == 0) {
+        // no need to renew outbound group session
+        get_skissm_plugin()->event_handler.on_log(receiver_address, DEBUG_LOG, "consume_remove_group_members_msg() skip renew outbound group session with 0 members");
+        return true;
+    }
     Skissm__GroupMember **new_group_members = msg->group_info->group_members;
     const char *e2ee_pack_id = msg->e2ee_pack_id;
 
