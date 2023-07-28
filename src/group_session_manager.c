@@ -337,23 +337,24 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
                 // release
                 skissm__group_session__free_unpacked(outbound_group_session, NULL);
             }
+
             // unload inbound group sessions
             Skissm__GroupSession **inbound_group_sessions = NULL;
             size_t inbound_group_sessions_num = get_skissm_plugin()->db_handler.load_inbound_group_sessions(receiver_address, group_address, &inbound_group_sessions);
-            size_t j;
-            for (j = 0; j < inbound_group_sessions_num; j++) {
-                get_skissm_plugin()->db_handler.unload_inbound_group_session(receiver_address, inbound_group_sessions[j]->session_id);
-                // release
-                skissm__group_session__free_unpacked(inbound_group_sessions[j], NULL);
-            }
-            // release
             if (inbound_group_sessions_num > 0) {
+                size_t j;
+                for (j = 0; j < inbound_group_sessions_num; j++) {
+                    get_skissm_plugin()->db_handler.unload_inbound_group_session(receiver_address, inbound_group_sessions[j]->session_id);
+                    // release
+                    skissm__group_session__free_unpacked(inbound_group_sessions[j], NULL);
+                }
+                // release
                 free_mem((void **)&inbound_group_sessions, sizeof(Skissm__Session *) * inbound_group_sessions_num);
             }
 
             // notify
             ssm_notify_group_members_removed(
-                outbound_group_session->session_owner,
+                receiver_address,
                 group_address,
                 group_name,
                 msg->removing_members,
