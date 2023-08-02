@@ -121,8 +121,10 @@ bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_me
         if ((group_members_1[i]->role != group_members_2[i]->role)
             || !safe_strcmp(group_members_1[i]->user_id, group_members_2[i]->user_id)
             || !safe_strcmp(group_members_1[i]->domain, group_members_2[i]->domain)
-        )
+        ) {
+            // skip comparing member role ?
             return false;
+        }
     }
     return true;
 }
