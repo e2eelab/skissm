@@ -12,6 +12,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
     Skissm__E2eeAddress *from, const char *auth, const char *to_user_id, const char *to_domain, const char *to_device_id,
     uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len
 ) {
+    // to_device_id can be null
     Skissm__GetPreKeyBundleRequest *request = produce_get_pre_key_bundle_request(to_user_id, to_domain, to_device_id);
     Skissm__GetPreKeyBundleResponse *response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(from, auth, request);
     Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(

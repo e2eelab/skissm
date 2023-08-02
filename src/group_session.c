@@ -227,7 +227,7 @@ void create_outbound_group_session(
                 outbound_group_session->session_owner,
                 account->auth,
                 group_member_address->user->user_id, group_member_address->domain,
-                NULL,
+                NULL, // device_id is unknown currently 
                 group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
             );
             // release

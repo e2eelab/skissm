@@ -152,7 +152,10 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 free(pending_plaintext_id);
             }
 
-            // prepare to create an outbound session
+            // create or renew an outbound session
+            // unload session first to prevent multiple outbound sessions
+            get_skissm_plugin()->db_handler.unload_session(from, from, cur_address);
+
             const char *e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
             Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
             initialise_session(outbound_session, e2ee_pack_id, from, cur_address);
@@ -161,6 +164,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
             const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
             Skissm__InviteResponse *invite_response =
                 session_suite->new_outbound_session(outbound_session, account, cur_pre_key_bundle);
+
             // release
             skissm__account__free_unpacked(account, NULL);
             skissm__session__free_unpacked(outbound_session, NULL);
@@ -430,7 +434,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     Skissm__E2eeAddress *from = msg->from;
     Skissm__E2eeAddress *to = msg->to;
 
-    if (!compare_address(receiver_address, to)){
+    if (!compare_address(receiver_address, to)) {
         ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_invite_msg()");
         return false;
     }
@@ -496,7 +500,7 @@ Skissm__AcceptRequest *produce_accept_request(
     copy_address_from_address(&(msg->from), from);
     copy_address_from_address(&(msg->to), to);
 
-    if (ciphertext_1 == NULL){
+    if (ciphertext_1 == NULL) {
         msg->n_pre_shared_keys = 0;
         msg->pre_shared_keys = NULL;
     } else{
@@ -521,7 +525,7 @@ bool consume_accept_response(Skissm__AcceptResponse *response) {
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg) {
     ssm_notify_log(receiver_address, DEBUG_LOG, "consume_accept_msg(): from [%s:%s], to [%s:%s]", msg->to->user->user_id, msg->to->user->device_id, msg->from->user->user_id, msg->from->user->device_id);
 
-    if (!compare_address(receiver_address, msg->to)){
+    if (!compare_address(receiver_address, msg->to)) {
         ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_accept_msg()");
         return false;
     }
@@ -529,7 +533,7 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
     Skissm__Session *outbound_session = NULL;
     // Is it unique?
     get_skissm_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &outbound_session);
-    if (outbound_session == NULL){
+    if (outbound_session == NULL) {
         ssm_notify_log(receiver_address, BAD_MESSAGE_FORMAT, "consume_accept_msg() from [], to []: can't load outbount session and make it a complete and responded session.", msg->to->user->user_id, msg->to->user->device_id, msg->from->user->user_id, msg->from->user->device_id);
         return false;
     }
@@ -587,7 +591,7 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
     Skissm__E2eeAddress *from = msg->from;
     Skissm__E2eeAddress *to = msg->to;
 
-    if (!compare_address(receiver_address, to)){
+    if (!compare_address(receiver_address, to)) {
         ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_f2f_invite_msg()");
         return false;
     }
@@ -723,7 +727,7 @@ bool consume_f2f_accept_response(Skissm__F2fAcceptResponse *response) {
 }
 
 bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAcceptMsg *msg) {
-    if (!compare_address(receiver_address, msg->to)){
+    if (!compare_address(receiver_address, msg->to)) {
         ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_f2f_accept_msg()");
         return false;
     }
@@ -760,7 +764,7 @@ bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAc
     Skissm__Session *outbound_session = NULL;
 
     get_skissm_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &outbound_session);
-    if (outbound_session != NULL){
+    if (outbound_session != NULL) {
         get_skissm_plugin()->db_handler.unload_session(outbound_session->session_owner, outbound_session->from, outbound_session->to);
     }
 
