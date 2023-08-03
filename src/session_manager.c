@@ -347,8 +347,8 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
             size_t i;
             for (i = 0; i < msg->n_group_info_list; i++) {
                 Skissm__GroupInfo *cur_group = (msg->group_info_list)[i];
-                char *old_session_id = NULL;
                 // delete the old outbound group session
+                char *old_session_id = NULL;
                 Skissm__GroupSession *outbound_group_session = NULL;
                 get_skissm_plugin()->db_handler.load_outbound_group_session(receiver_address, cur_group->group_address, &outbound_group_session);
                 if (outbound_group_session != NULL) {
