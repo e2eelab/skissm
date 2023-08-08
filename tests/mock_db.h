@@ -193,12 +193,10 @@ void load_group_session_by_id(
     Skissm__GroupSession **group_session
 );
 int load_n_group_sessions(
-    Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *owner_address,
     Skissm__E2eeAddress *group_address
 );
 size_t load_group_sessions(
-    Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *owner_address,
     Skissm__E2eeAddress *group_address,
     Skissm__GroupSession ***group_sessions

@@ -33,7 +33,7 @@
 #include "mock_db.h"
 #include "test_util.h"
 
-void test_unload_inbound_group_session(){
+void test_unload_group_session_by_id(){
     tear_up();
 
     // create two addresses
@@ -70,6 +70,7 @@ void test_unload_inbound_group_session(){
 
     group_session->version = strdup(E2EE_PROTOCOL_VERSION);
 
+    copy_address_from_address(&(group_session->sender), Alice);
     copy_address_from_address(&(group_session->session_owner), Alice);
     group_session->session_id = generate_uuid_str();
 
@@ -88,25 +89,23 @@ void test_unload_inbound_group_session(){
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     get_skissm_plugin()->common_handler.gen_rand(group_session->chain_key.data, 32);
 
-    crypto_curve25519_generate_key_pair(&(group_session->signature_public_key), &(group_session->signature_private_key));
-
     group_session->associated_data.len = AD_LENGTH;
     group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
     memcpy(group_session->associated_data.data, group_session->chain_key.data, 32);
-    memcpy((group_session->associated_data.data) + 32, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    memcpy((group_session->associated_data.data) + 32, group_session->chain_key.data, CURVE25519_KEY_LENGTH);
 
     // insert to the db
     store_group_session(group_session);
 
     // unload the group session
-    unload_inbound_group_session(Alice, group_session->session_id);
+    unload_group_session_by_id(Alice, group_session->session_id);
 
     // try to load the unloaded group session
     Skissm__GroupSession *group_session_copy = NULL;
-    load_inbound_group_session(Alice, group_session->session_id, &group_session_copy);
+    load_group_session_by_id(Alice, Alice, group_session->session_id, &group_session_copy);
 
     // assert group_session_copy is NULL
-    print_result("test_unload_inbound_group_session", (group_session_copy == NULL));
+    print_result("test_unload_group_session_by_id", (group_session_copy == NULL));
 
     // free
     skissm__e2ee_address__free_unpacked(Alice, NULL);
@@ -122,6 +121,6 @@ void test_unload_inbound_group_session(){
 }
 
 int main(){
-    test_unload_inbound_group_session();
+    test_unload_group_session_by_id();
     return 0;
 }

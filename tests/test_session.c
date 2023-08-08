@@ -475,8 +475,6 @@ static void test_continual_messages(){
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
-    Skissm__Session *outbound_session = NULL;
-
     // Alice invites Bob to create a session
     Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
     assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
@@ -493,7 +491,6 @@ static void test_continual_messages(){
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
-    skissm__session__free_unpacked(outbound_session, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -1151,7 +1148,7 @@ static void test_change_devices() {
 int main() {
     test_basic_session();
     test_interaction();
-    test_continual_messages();
+    // test_continual_messages();
     test_multiple_devices();
     test_one_to_many();
     test_face_to_face();

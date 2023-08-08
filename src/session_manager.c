@@ -297,32 +297,41 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     Skissm__GroupPreKeyBundle *group_pre_key_bundle = plaintext->group_pre_key_bundle;
 
                     // unload the old outbound and inbound group sessions
-                    get_skissm_plugin()->db_handler.unload_group_session_by_id(receiver_address, group_pre_key_bundle->old_session_id);
+                    if ((group_pre_key_bundle->old_session_id)[0] != '\0')
+                        get_skissm_plugin()->db_handler.unload_group_session_by_id(receiver_address, group_pre_key_bundle->old_session_id);
 
                     // try to load the new group sessions
                     Skissm__GroupInfo *cur_group_info = group_pre_key_bundle->group_info;
                     Skissm__GroupSession **inbound_group_sessions = NULL;
                     size_t inbound_group_sessions_num = get_skissm_plugin()->db_handler.load_group_sessions(
-                        e2ee_msg->from, receiver_address, cur_group_info->group_address, &inbound_group_sessions
+                        receiver_address, group_pre_key_bundle->group_info->group_address, &inbound_group_sessions
                     );
                     if (inbound_group_sessions_num > 0) {
                         size_t i;
                         for (i = 0; i < inbound_group_sessions_num; i++) {
-                            complete_inbound_group_session(inbound_group_sessions[i], group_pre_key_bundle, NULL, NULL);
+                            complete_inbound_group_session_by_pre_key_bundle(inbound_group_sessions[i], group_pre_key_bundle);
                         }
-                        new_outbound_group_session(
-                            false, &(group_pre_key_bundle->seed_secret), 0, NULL,
+                        new_outbound_group_session_by_receiver(
+                            &(group_pre_key_bundle->seed_secret),
                             group_pre_key_bundle->e2ee_pack_id,
                             receiver_address,
                             cur_group_info->group_name,
                             cur_group_info->group_address,
+                            group_pre_key_bundle->session_id,
                             cur_group_info->group_members,
-                            cur_group_info->n_group_members,
-                            group_pre_key_bundle->old_session_id
+                            cur_group_info->n_group_members
                         );
                     } else {
-                        new_inbound_group_session(group_pre_key_bundle->e2ee_pack_id, receiver_address, group_pre_key_bundle, NULL, NULL);
+                        new_inbound_group_session_by_pre_key_bundle(group_pre_key_bundle->e2ee_pack_id, receiver_address, group_pre_key_bundle);
                     }
+                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_RATCHET_STATE) {
+                    Skissm__GroupRatchetState *group_ratchet_state = plaintext->group_ratchet_state;
+
+                    if (group_ratchet_state->adding == true) {
+                        // create the outbound group session
+                        new_outbound_group_session_invited(group_ratchet_state, receiver_address);
+                    }
+                    new_and_complete_inbound_group_session_with_ratchet_state(group_ratchet_state, receiver_address);
                 }
                 skissm__plaintext__free_unpacked(plaintext, NULL);
                 // success

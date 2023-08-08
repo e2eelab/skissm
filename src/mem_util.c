@@ -146,6 +146,8 @@ void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAdd
             (*dest)->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
             skissm__peer_user__init((*dest)->user);
             (*dest)->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
+            if (src->user->user_name != NULL)
+                (*dest)->user->user_name = strdup(src->user->user_name);
             if (src->user->user_id != NULL)
                 (*dest)->user->user_id = strdup(src->user->user_id);
             if (src->user->device_id != NULL)
@@ -154,6 +156,8 @@ void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAdd
             (*dest)->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
             skissm__peer_group__init((*dest)->group);
             (*dest)->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
+            if (src->group->group_name != NULL)
+                (*dest)->group->group_name = strdup(src->group->group_name);
             if (src->group->group_id != NULL)
                 (*dest)->group->group_id = strdup(src->group->group_id);
         }
@@ -377,42 +381,10 @@ void copy_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *src) {
             copy_group_members(&((*dest)->group_members), src->group_members, src->n_group_members);
     }
 }
-/*struct  _Skissm__RemoveGroupMembersMsg
-{
-  ProtobufCMessage base;
-  char *e2ee_pack_id;
-  Skissm__E2eeAddress *sender_address;
-  Skissm__GroupInfo *group_info;
-  size_t n_member_ids;
-  Skissm__GroupMemberID **member_ids;
-  size_t n_removing_members;
-  Skissm__GroupMember **removing_members;
-};*/
 
-/*struct  _Skissm__CreateGroupMsg
-{
-  ProtobufCMessage base;
-  char *e2ee_pack_id;
-  Skissm__E2eeAddress *sender_address;
-  Skissm__GroupInfo *group_info;
-  size_t n_member_ids;
-  Skissm__GroupMemberID **member_ids;
-};*/
+///---------------------copy msg---------------------///
 
-/*struct  _Skissm__AddGroupMembersMsg
-{
-  ProtobufCMessage base;
-  char *e2ee_pack_id;
-  Skissm__E2eeAddress *sender_address;
-  Skissm__GroupInfo *group_info;
-  size_t n_adding_member_ids;
-  Skissm__GroupMemberID **adding_member_ids;
-  size_t n_adding_members;
-  Skissm__GroupMember **adding_members;
-};*/
-///---------------------copy  msg---------------------///
-
-void copy_create_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg *src) {
+void copy_create_group_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg *src) {
     *dest = (Skissm__CreateGroupMsg *)malloc(sizeof(Skissm__CreateGroupMsg));
     skissm__create_group_msg__init(*dest);
     if (src != NULL) {
@@ -427,7 +399,28 @@ void copy_create_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg *src)
             copy_group_member_ids(&((*dest)->member_ids), src->member_ids, src->n_member_ids);
     }
 }
-void copy_remove_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm__RemoveGroupMembersMsg *src) {
+
+void copy_add_group_members_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGroupMembersMsg *src) {
+    *dest = (Skissm__AddGroupMembersMsg *)malloc(sizeof(Skissm__AddGroupMembersMsg));
+    skissm__add_group_members_msg__init(*dest);
+    if (src != NULL) {
+        if (src->e2ee_pack_id != NULL)
+            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        if (src->sender_address != NULL)
+            copy_address_from_address(&((*dest)->sender_address), src->sender_address);
+        (*dest)->sequence = src->sequence;
+        if (src->group_info != NULL)
+            copy_group_info(&((*dest)->group_info), src->group_info);
+        (*dest)->n_adding_member_ids = src->n_adding_member_ids;
+        if (src->adding_member_ids != NULL)
+            copy_group_member_ids(&((*dest)->adding_member_ids), src->adding_member_ids, src->n_adding_member_ids);
+        (*dest)->n_adding_members = src->n_adding_members;
+        if (src->adding_members != NULL)
+            copy_group_members(&((*dest)->adding_members), src->adding_members, src->n_adding_members);
+    }
+}
+
+void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm__RemoveGroupMembersMsg *src) {
     *dest = (Skissm__RemoveGroupMembersMsg *)malloc(sizeof(Skissm__RemoveGroupMembersMsg));
     skissm__remove_group_members_msg__init(*dest);
     if (src != NULL) {
@@ -446,24 +439,6 @@ void copy_remove_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm__RemoveGroupMe
     }
 }
 
-void copy_add_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGroupMembersMsg *src) {
-    *dest = (Skissm__AddGroupMembersMsg *)malloc(sizeof(Skissm__AddGroupMembersMsg));
-    skissm__add_group_members_msg__init(*dest);
-    if (src != NULL) {
-        if (src->e2ee_pack_id != NULL)
-            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
-        if (src->sender_address != NULL)
-            copy_address_from_address(&((*dest)->sender_address), src->sender_address);
-        if (src->group_info != NULL)
-            copy_group_info(&((*dest)->group_info), src->group_info);
-        (*dest)->n_adding_member_ids = src->n_adding_member_ids;
-        if (src->adding_member_ids != NULL)
-            copy_group_member_ids(&((*dest)->adding_member_ids), src->adding_member_ids, src->n_adding_member_ids);
-        (*dest)->n_adding_members = src->n_adding_members;
-        if (src->adding_members != NULL)
-            copy_group_members(&((*dest)->adding_members), src->adding_members, src->n_adding_members);
-    }
-}
 ///-----------------add or remove group members-----------------///
 
 void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **adding_members, size_t adding_members_num) {

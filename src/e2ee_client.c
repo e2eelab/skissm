@@ -495,7 +495,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
         ssm_notify_log(sender_address, BAD_ACCOUNT, "add_group_members()");
         return NULL;
     }
-    
+
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
@@ -504,6 +504,31 @@ Skissm__AddGroupMembersResponse *add_group_members(
     }
 
     // send message to server
+    // size_t i;
+    // Skissm__AddGroupMembersRequest *request;
+    // Skissm__AddGroupMembersResponse *response;
+    // bool succ;
+    // for (i = 0; i < adding_members_num; i++) {
+    //     request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
+    //     response = get_skissm_plugin()->proto_handler.add_group_members(account->address, account->auth, request);
+    //     succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
+    //     if (!succ) {
+    //         // pack reuest to request_data
+    //         size_t request_data_len = skissm__add_group_members_request__get_packed_size(request);
+    //         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+    //         skissm__add_group_members_request__pack(request, request_data);
+            
+    //         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBERS_REQUEST, request_data, request_data_len, NULL, 0);
+    //         // release
+    //         free_mem((void *)&request_data, request_data_len);
+    //     }
+
+    //     // release
+    //     skissm__add_group_members_request__free_unpacked(request, NULL);
+    //     if (response != NULL) {
+    //         skissm__add_group_members_response__free_unpacked(response, NULL);
+    //     }
+    // }
     Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
     Skissm__AddGroupMembersResponse *response = get_skissm_plugin()->proto_handler.add_group_members(account->address, account->auth, request);
     bool succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
@@ -514,7 +539,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
         skissm__add_group_members_request__pack(request, request_data);
         
         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBERS_REQUEST, request_data, request_data_len, NULL, 0);
-        //release
+        // release
         free_mem((void *)&request_data, request_data_len);
     }
 
@@ -559,7 +584,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
         skissm__remove_group_members_request__pack(request, request_data);
 
         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__REMOVE_GROUP_MEMBERS_REQUEST, request_data, request_data_len, NULL, 0);
-        //release
+        // release
         free_mem((void *)&request_data, request_data_len);
     }
 
@@ -602,7 +627,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
         skissm__send_group_msg_request__pack(request, request_data);
 
         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__SEND_GROUP_MSG_REQUEST, request_data, request_data_len, NULL, 0);
-        //release
+        // release
         free_mem((void *)&request_data, request_data_len);
     }
 
@@ -693,7 +718,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
                 skissm__proto_msg__pack(proto_msg, request_data);
                 
                 store_pending_request_internal(proto_msg->to, SKISSM__PENDING_REQUEST_TYPE__PROTO_MSG, request_data, request_data_len, NULL, 0);
-                //release
+                // release
                 free_mem((void *)&request_data, request_data_len);
             }
         } else {

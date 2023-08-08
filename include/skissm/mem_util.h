@@ -299,13 +299,22 @@ void copy_group_members(Skissm__GroupMember ***dest, Skissm__GroupMember **src, 
  * @param src
  */
 void copy_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *src);
+
 /**
  * @brief Copy Skissm__CreateGroupMsg from src to dest.
  *
  * @param dest
  * @param src
  */
-void copy_create_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg *src);
+void copy_create_group_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg *src);
+
+/**
+ * @brief Copy Skissm__AddGroupMembersMsg from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_add_group_members_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGroupMembersMsg *src);
 
 /**
  * @brief Copy Skissm__RemoveGroupMembersMsg from src to dest.
@@ -313,14 +322,7 @@ void copy_create_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg *src)
  * @param dest
  * @param src
  */
-void copy_remove_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm__RemoveGroupMembersMsg *src);
-/**
- * @brief Copy Skissm__AddGroupMembersMsg from src to dest.
- *
- * @param dest
- * @param src
- */
-void copy_add_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGroupMembersMsg *src);
+void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm__RemoveGroupMembersMsg *src);
 
 /**
  * @brief Add new Skissm__GroupMember array to dest.

@@ -19,13 +19,14 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
 
     if (invite_response == NULL || invite_response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request witll be stored.");
-        // pack reuest to request_data which will be freeed inside store_pending_request_internal
+        // pack request to request_data which will be freed inside store_pending_request_internal
         size_t request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__get_pre_key_bundle_request__pack(request, request_data);
 
         store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__GET_PRE_KEY_BUNDLE_REQUEST, request_data, request_data_len, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
-        //release
+
+        // release
         free_mem((void *)&request_data, request_data_len);
     }
 

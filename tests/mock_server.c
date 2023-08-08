@@ -46,47 +46,88 @@ typedef struct group_data {
     Skissm__GroupMember **group_members;
 } group_data;
 
-/* TODO: combining group_address and member_pos */
-typedef struct group_member_address_idx {
-    Skissm__E2eeAddress *group_address;
-    size_t index; // find the member's index in user_data_set
-} group_member_address_idx;
-
 /* TODO : LINKED LIST */
-typedef struct Node {
-    size_t data;
-    struct Node *next;
-} node;
-
-typedef struct Node {
-    size_t idx;
+typedef struct index_node {
+    size_t index;
     Skissm__E2eeAddress *device_address;
-    struct Node *next;
-} idxNode;
+    struct index_node *next;
+} index_node;
 
 static user_data user_data_set[user_data_max] = {
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}, {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}};
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0}};
 
-static group_data group_data_set[group_data_max] = {{NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL},
-                                                    {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}, {NULL, NULL, 0, NULL}};
+static group_data group_data_set[group_data_max] = {
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL},
+    {NULL, NULL, 0, NULL}};
 
 static bool session_record[user_data_max][user_data_max] = {
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-static bool group_record[user_data_max][group_data_max] = {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0},
-                                                           {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0},
-                                                           {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0},
-                                                           {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}};
+static bool group_record[user_data_max][group_data_max] = {
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},                                       
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0}};
 
 static uint8_t user_data_set_insert_pos = 0;
 
@@ -116,54 +157,16 @@ static uint8_t find_address(Skissm__E2eeAddress *user_address) {
     }
     return -1;
 }
-/* NOTE:
-1. count the number of other involving members
-2. copy each involving member's address into "user_addresses"
-*/
 
-/*---: get number without copying addresses-------------------------------*/
-
-static size_t find_num_user_addresses(const char *user_id) {
-    size_t user_addresses_num = 0;
-    uint8_t i;
-    for (i = 0; i < user_data_max; i++) {
-        if (user_data_set[i].address != NULL) {
-            // return non-zero if not equal
-            if (safe_strcmp(user_data_set[i].address->user->user_id, user_id))
-                user_addresses_num++;
-        }
-    }
-    return user_addresses_num;
-}
-
-// TODO : remember to free
-// TODO : if ok, remeber to declare in header file
-/*
-static size_t insert_node(node **head, size_t new_data) {
-    node *new_node = (node *)malloc(sizeof(node));
-    new_node->data = new_data;
-    new_node->next = NULL;
-    if (*head == NULL) {
-        *head = new_node;
-        return 1;
-    }
-    node *cur_node = *head;
-    while (cur_node->next != NULL) {
-        cur_node = cur_node->next;
-    }
-    cur_node->next = new_node;
-    return 1;
-}*/
-
-static void new_insert_node(idxNode **head, idxNode **tail, size_t idx, Skissm__E2eeAddress *device_address) {
-    idxNode *new_node = (idxNode *)malloc(sizeof(idxNode));
-    new_node->idx = idx;
+static void insert_index_node(index_node **head, index_node **tail, size_t index, Skissm__E2eeAddress *device_address) {
+    index_node *new_node = (index_node *)malloc(sizeof(index_node));
+    new_node->index = index;
     copy_address_from_address(&(new_node->device_address), device_address);
     new_node->next = NULL;
 
     if (*head == NULL) {
         *head = new_node;
-        *tail = head;
+        *tail = *head;
         return;
     }
 
@@ -173,29 +176,11 @@ static void new_insert_node(idxNode **head, idxNode **tail, size_t idx, Skissm__
 }
 
 // NOTE: used when user delete a device, not yet used
-static size_t delete_node(node **head, size_t target_data) {
-    node *cur_node = *head;
-    node *prev_node = NULL;
+static size_t new_delete_node(index_node **head, size_t target_data) {
+    index_node *cur_node = *head;
+    index_node *prev_node = NULL;
     while (cur_node != NULL) {
-        if (cur_node->data == target_data) {
-            if (prev_node == NULL) { // head
-                *head = cur_node->next;
-            } else {
-                prev_node->next = cur_node->next;
-            }
-            free(cur_node);
-            return 1;
-        }
-        prev_node = cur_node;
-        cur_node = cur_node->next;
-    }
-    return 0;
-}
-static size_t new_delete_node(idxNode **head, size_t target_data) {
-    idxNode *cur_node = *head;
-    idxNode *prev_node = NULL;
-    while (cur_node != NULL) {
-        if (cur_node->idx == target_data) {
+        if (cur_node->index == target_data) {
             if (prev_node == NULL) { // head
                 *head = cur_node->next;
             } else {
@@ -210,11 +195,9 @@ static size_t new_delete_node(idxNode **head, size_t target_data) {
     return 0;
 }
 
-/* TODO new LL(include address and idx) */
-
-static size_t new_LL_find_device_addresses(const char *user_id, idxNode **user_devices_addresses) {
+static size_t find_device_index_and_addresses(const char *user_id, index_node **user_devices_addresses) {
     size_t user_addresses_num = 0;
-    idxNode *tail = NULL;
+    index_node *tail = NULL;
     uint8_t i;
 
     for (i = 0; i < user_data_max; i++) {
@@ -223,7 +206,7 @@ static size_t new_LL_find_device_addresses(const char *user_id, idxNode **user_d
             if (safe_strcmp(user_data_set[i].address->user->user_id, user_id)) {
                 user_addresses_num++;
                 // input one user's device address, tail node and index , address
-                new_insert_node(user_devices_addresses, &(tail), i, user_data_set[i].address);
+                insert_index_node(user_devices_addresses, &(tail), i, user_data_set[i].address);
             }
         }
     }
@@ -231,88 +214,6 @@ static size_t new_LL_find_device_addresses(const char *user_id, idxNode **user_d
     return user_addresses_num;
 }
 
-/*not used:
-static size_t LL_find_device_addresses(const char *user_id, group_member_address_idx ***user_addresses, size_t group_members_num, int pos) {
-    // "pos" correspond to the idx in the order of cur_group_data->group_members_num
-    size_t user_addresses_num = 0;
-    uint8_t i;
-
-    // init array of LL to store index of each addresses
-    node **member_idx_LL = (node **)malloc(sizeof(node *) * group_members_num);
-
-    //  create array of pointer
-    node **cur_ptr_to_member_idx_LL = (node **)malloc(sizeof(node *) * group_members_num);
-
-    // count the number of user devices and make LL nodes of corresponding addresses and index
-    for (i = 0; i < user_data_max; i++) {
-        if (user_data_set[i].address != NULL) {
-            // return non-zero if not equal
-            if (safe_strcmp(user_data_set[i].address->user->user_id, user_id)) {
-                user_addresses_num++;
-                insert_node(member_idx_LL[pos], i);
-            }
-        }
-    }
-    // copy the pointer to the head of each LL
-    for (i = 0; i < group_members_num; i++) {
-        cur_ptr_to_member_idx_LL[i] = member_idx_LL[i];
-    }
-
-    *user_addresses = (group_member_address_idx **)malloc(sizeof(group_member_address_idx *) * user_addresses_num);
-    uint8_t j = 0;
-
-    for (i = 0; i < user_data_max; i++) {
-        if (user_data_set[i].address != NULL) {
-            if (safe_strcmp(user_data_set[i].address->user->user_id, user_id)) {
-                (*user_addresses)[j] = (group_member_address_idx *)malloc(sizeof(group_member_address_idx));
-                // (*user_addresses)[j]->group_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-
-                copy_address_from_address(&((*user_addresses)[j]->group_address), user_data_set[i].address);
-
-                // traversa to the kth node of the user's LL
-                if (cur_ptr_to_member_idx_LL[pos] != NULL) {
-                    node *tmp = cur_ptr_to_member_idx_LL[pos];
-                    (*user_addresses)[j++]->index = tmp->data;
-                    cur_ptr_to_member_idx_LL[pos] = cur_ptr_to_member_idx_LL[pos]->next;
-                }
-
-                // (*user_addresses)[j++]->index =
-                // find_address(user_data_set[i].address);
-            }
-        }
-    }
-
-    return user_addresses_num;
-}
-
-
-static size_t new_find_device_addresses(const char *user_id, group_member_address_idx ***users_addresses) {
-    size_t user_addresses_num = 0;
-    uint8_t i;
-    for (i = 0; i < user_data_max; i++) {
-        if (user_data_set[i].address != NULL) {
-            // return non-zero if not equal
-            if (safe_strcmp(user_data_set[i].address->user->user_id, user_id))
-                user_addresses_num++;
-        }
-    }
-    *users_addresses = (group_member_address_idx **)malloc(sizeof(group_member_address_idx *) * user_addresses_num);
-    uint8_t j = 0;
-    for (i = 0; i < user_data_max; i++) {
-        if (user_data_set[i].address != NULL) {
-            if (safe_strcmp(user_data_set[i].address->user->user_id, user_id)) {
-                (*users_addresses)[j] = (group_member_address_idx *)malloc(sizeof(group_member_address_idx));
-                // (*user_addresses)[j]->group_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-
-                copy_address_from_address(&((*users_addresses)[j]->group_address), user_data_set[i].address);
-
-                (*users_addresses)[j++]->index = find_address(user_data_set[i].address);
-            }
-        }
-    }
-    return user_addresses_num;
-}
-*/
 static size_t find_device_addresses(const char *user_id, Skissm__E2eeAddress ***user_addresses) {
     size_t user_addresses_num = 0;
     uint8_t i;
@@ -400,11 +301,24 @@ void mock_server_end() {
     for (i = 0; i < user_data_set_insert_pos; i++) {
         if (user_data_set[i].authenticator != NULL) {
             free(user_data_set[i].authenticator);
+            user_data_set[i].authenticator = NULL;
         }
-        skissm__e2ee_address__free_unpacked(user_data_set[i].address, NULL);
-        user_data_set[i].address = NULL;
 
-        free((void *)(user_data_set[i].user_name));
+        if (user_data_set[i].address != NULL) {
+            skissm__e2ee_address__free_unpacked(user_data_set[i].address, NULL);
+            user_data_set[i].address = NULL;
+        }
+
+        if (user_data_set[i].user_name != NULL) {
+            free((void *)(user_data_set[i].user_name));
+            user_data_set[i].user_name = NULL;
+        }
+
+        if (user_data_set[i].e2ee_pack_id != NULL) {
+            free(user_data_set[i].e2ee_pack_id);
+            user_data_set[i].e2ee_pack_id = NULL;
+        }
+
         skissm__identity_key_public__free_unpacked(user_data_set[i].identity_key_public, NULL);
         skissm__signed_pre_key_public__free_unpacked(user_data_set[i].signed_pre_key_public, NULL);
         for (j = 0; j < user_data_set[i].n_one_time_pre_keys; j++) {
@@ -415,7 +329,6 @@ void mock_server_end() {
             }
         }
         free_mem((void **)&(user_data_set[i].one_time_pre_keys), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);
-        user_data_set[i].user_name = NULL;
         user_data_set[i].identity_key_public = NULL;
         user_data_set[i].signed_pre_key_public = NULL;
         user_data_set[i].one_time_pre_keys = NULL;
@@ -907,76 +820,56 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const 
     // generate a random address
     mock_random_group_address(&(cur_group_data->group_address));
 
-    // complete create_group_msg
-    Skissm__CreateGroupMsg *create_group_msg;
-    copy_create_msg(&(create_group_msg), request->msg);
+    // prepare to store
+    Skissm__GroupInfo *group_info = request->msg->group_info;
+    cur_group_data->group_name = strdup(group_info->group_name);
+    cur_group_data->group_members_num = group_info->n_group_members;
+    copy_group_members(&(cur_group_data->group_members), group_info->group_members, group_info->n_group_members);
 
-    copy_address_from_address(&(create_group_msg->group_info->group_address), cur_group_data->group_address);
+    Skissm__E2eeAddress *group_address = cur_group_data->group_address;
+    size_t group_members_num = cur_group_data->group_members_num;
+
+    // create create_group_msg
+    Skissm__CreateGroupMsg *create_group_msg = NULL;
+    copy_create_group_msg(&(create_group_msg), request->msg);
+
+    copy_address_from_address(&(create_group_msg->group_info->group_address), group_address);
 
     /*-------------------insert each group member's identity key into create_group_msg-------------------*/
-    // total #(address) to be sent
+    // total #(address) to be sent, including users' every device
     size_t to_member_addresses_total_num = 0;
     size_t i, j;
 
-    /* NOTE: improve the performance of find_address */
-
     // store the number of addresses of each group member
-    size_t *store_to_member_addresses_num = (size_t *)malloc(sizeof(size_t) * cur_group_data->group_members_num);
+    size_t *to_member_addresses_num_list = (size_t *)malloc(sizeof(size_t) * group_members_num);
 
-    /* TODO ------------------------------------------------ */
-    idxNode **address_idx_LL = (idxNode **)malloc(sizeof(idxNode *) * cur_group_data->group_members_num);
+    index_node **index_address_list = (index_node **)malloc(sizeof(index_node *) * group_members_num);
 
-    // in order to store the position of tail node of each LL
-    // idxNode **tails = (idxNode **)malloc(sizeof(idxNode *) * cur_group_data->group_members_num);
+    for (i = 0; i < group_members_num; i++) {
+        index_address_list[i] = NULL;
 
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        // init for each LL head
-        address_idx_LL[i] = NULL;
-        // tails[i] = NULL;
-        store_to_member_addresses_num[i] = new_LL_find_device_addresses(cur_group_data->group_members[i]->user_id, &(address_idx_LL[i]));
+        to_member_addresses_num_list[i] = find_device_index_and_addresses(cur_group_data->group_members[i]->user_id, &(index_address_list[i]));
 
-        to_member_addresses_total_num += store_to_member_addresses_num[i];
+        to_member_addresses_total_num += to_member_addresses_num_list[i];
     }
 
-    /* ------------------------------------------------------ */
-    // store the (address and index) of each group member
-    /*
-    group_member_address_idx ***group_member_address_idx_combine = (group_member_address_idx ***)malloc(sizeof(group_member_address_idx **) * cur_group_data->group_members_num);
-
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        // return the number of address that each user has
-
-        store_to_member_addresses_num[i] = LL_find_device_addresses(cur_group_data->group_members[i]->user_id, &(group_member_address_idx_combine[i]), cur_group_data->group_members_num, i);
-
-        // store_to_member_addresses_num[i] = new_find_device_addresses(cur_group_data->group_members[i]->user_id, &(group_member_address_idx_combine[i]));
-        to_member_addresses_total_num += store_to_member_addresses_num[i];
-    }*/
-    create_group_msg->member_ids = to_member_addresses_total_num;
+    create_group_msg->n_member_ids = to_member_addresses_total_num;
 
     Skissm__GroupMemberID **common_member_ids = (Skissm__GroupMemberID **)malloc(sizeof(Skissm__GroupMemberID *) * to_member_addresses_total_num);
 
     size_t member_id_insert_pos = 0;
-    /* NOTE: since "new_find_device_addresses" find user_id in the order of cur_group_data->group_members[i] and the order of group_member_address_idx_combine[i] is the same as
-     cur_group_data->group_members[i], so the order of common_member_ids is the same as cur_group_data->group_members[i]*/
+
+    index_node *ptr;
+    Skissm__E2eeAddress *to_member_address;
+    uint8_t member_pos;
 
     // copy addresses and public key into common_member_ids
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        idxNode *ptr = address_idx_LL[i];
+    for (i = 0; i < group_members_num; i++) {
+        ptr = index_address_list[i];
 
-        for (j = 0; j < store_to_member_addresses_num[i]; j++) {
-            Skissm__E2eeAddress *to_member_address;
-            uint8_t member_pos;
-
-            /* NOTE: use newLL to take address and index */
+        for (j = 0; j < to_member_addresses_num_list[i]; j++) {
             to_member_address = ptr->device_address;
-            member_pos = ptr->idx;
-            ptr = ptr->next;
-
-            /* ------ USE STRUCT ---------
-            // Skissm__E2eeAddress *to_member_address = group_member_address_idx_combine[i][j]->group_address;
-
-            // uint8_t member_pos = group_member_address_idx_combine[i][j]->index;
-            ------------------------------ */
+            member_pos = ptr->index;
 
             // insert the group member data
             common_member_ids[member_id_insert_pos] = (Skissm__GroupMemberID *)malloc(sizeof(Skissm__GroupMemberID));
@@ -985,58 +878,12 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const 
             copy_address_from_address(&(cur_common_member_id->group_member_address), to_member_address);
             copy_protobuf_from_protobuf(&(cur_common_member_id->public_key), &(user_data_set[member_pos].identity_key_public->sign_public_key));
             member_id_insert_pos++;
+
+            ptr = ptr->next;
         }
     }
     // copy common_member_ids into createMsg
     copy_group_member_ids(&(create_group_msg->member_ids), common_member_ids, to_member_addresses_total_num);
-
-    /* --------------------------------------------- */
-    //  count the total number of addresses
-    /* for (i = 0; i <
-    group_data_set[group_data_set_insert_pos].group_members_num; i++) {
-        member_user_id = cur_group_data->group_members[i]->user_id;
-        to_member_addresses_total_num +=
-    find_num_user_addresses(member_user_id);
-    }
-
-    create_group_msg->n_member_ids = to_member_addresses_total_num; */
-
-    // Now, allocate memory for each individual GroupMemberID
-    // 2d array
-
-    /*
-    Skissm__GroupMemberID **common_member_ids = (Skissm__GroupMemberID **)malloc(sizeof(Skissm__GroupMemberID *) * to_member_addresses_total_num);
-
-    size_t to_member_addresses_num, member_id_insert_pos = 0;
-    // NOTE: copy data into member_id
-    // for (i = 0; i < group_data_set[group_data_set_insert_pos].group_members_num; i++) {
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        member_user_id = cur_group_data->group_members[i]->user_id;
-        Skissm__E2eeAddress **to_member_addresses = NULL;
-        to_member_addresses_num = find_device_addresses(member_user_id, &to_member_addresses);
-
-        for (j = 0; j < to_member_addresses_num; j++) {
-            Skissm__E2eeAddress *to_member_address = to_member_addresses[j];
-
-            // member_pos finds the index of specific member in user_data_set
-            uint8_t member_pos = find_address(to_member_address);
-            /* TODO: 因為下面在SEND MSG到每個團體成員時，又需要call
-             "find_address" O(n) ,需要開空間儲存嗎? 但如果單純用 array,
-             如果成員太多可能會出現sparse 最好是用 map, 但有必要嗎? 必須手刻
-
-    // insert the group member data
-    common_member_ids[member_id_insert_pos] = (Skissm__GroupMemberID *)malloc(sizeof(Skissm__GroupMemberID));
-    Skissm__GroupMemberID *cur_common_member_id = common_member_ids[member_id_insert_pos];
-    skissm__group_member_id__init(cur_common_member_id);
-    copy_address_from_address(&(cur_common_member_id->group_member_address), to_member_address);
-    copy_protobuf_from_protobuf(&(cur_common_member_id->public_key), &(user_data_set[member_pos].identity_key_public->sign_public_key));
-    member_id_insert_pos++;
-}
-}
-
-copy_group_member_ids(&(create_group_msg->member_ids), common_member_ids, to_member_addresses_total_num);
-    * /
-    /*--------------------------------------*/
 
     // pack CreateGroupMsg
     size_t create_group_msg_data_len = skissm__create_group_msg__get_packed_size(create_group_msg);
@@ -1044,96 +891,41 @@ copy_group_member_ids(&(create_group_msg->member_ids), common_member_ids, to_mem
 
     skissm__create_group_msg__pack(create_group_msg, create_group_msg_data);
 
-    // prepare to store
-    Skissm__GroupInfo *group_info = create_group_msg->group_info;
-    cur_group_data->group_name = strdup(group_info->group_name);
-    cur_group_data->group_members_num = group_info->n_group_members;
-    copy_group_members(&(cur_group_data->group_members), group_info->group_members, group_info->n_group_members);
-
     // send msg to each group member
-    // DONE: NEW VERSION
     Skissm__E2eeAddress *sender_address = create_group_msg->sender_address;
     const char *sender_user_id = sender_address->user->user_id;
-    Skissm__E2eeAddress *to_member_address;
-    uint8_t member_pos;
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        idxNode *ptr = address_idx_LL[i];
 
-        for (j = 0; j < store_to_member_addresses_num[i]; j++) {
+    for (i = 0; i < group_members_num; i++) {
+        ptr = index_address_list[i];
+
+        for (j = 0; j < to_member_addresses_num_list[i]; j++) {
             to_member_address = ptr->device_address;
-            // Skissm__E2eeAddress *to_member_address = group_member_address_idx_combine[i][j]->group_address;
-            // member_pos finds the index of specific member in user_data_set
-            member_pos = ptr->idx;
+            member_pos = ptr->index;
+
+            group_record[member_pos][group_data_set_insert_pos] = true;
+
+            if (safe_strcmp(sender_user_id, to_member_address->user->user_id)) {
+                if (compare_address(sender_address, to_member_address)) {
+                    ptr = ptr->next;
+                    continue;
+                }
+            }
+
+            Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+            skissm__proto_msg__init(proto_msg);
+            copy_address_from_address(&(proto_msg->from), sender_address);
+            copy_address_from_address(&(proto_msg->to), to_member_address);
+            proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_CREATE_GROUP_MSG;
+            proto_msg->create_group_msg = skissm__create_group_msg__unpack(NULL, create_group_msg_data_len, create_group_msg_data);
+
+            send_proto_msg(proto_msg);
+
             ptr = ptr->next;
 
-            group_record[member_pos][group_data_set_insert_pos] = true;
-
-            if (safe_strcmp(sender_user_id, to_member_address->user->user_id)) {
-                if (compare_address(sender_address, to_member_address))
-                    continue;
-            }
-
-            Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
-            skissm__proto_msg__init(proto_msg);
-            copy_address_from_address(&(proto_msg->from), sender_address);
-            copy_address_from_address(&(proto_msg->to), to_member_address);
-            proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_CREATE_GROUP_MSG;
-            proto_msg->create_group_msg = skissm__create_group_msg__unpack(NULL, create_group_msg_data_len, create_group_msg_data);
-
-            send_proto_msg(proto_msg);
-
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            skissm__e2ee_address__free_unpacked(to_member_address, NULL);
         }
-        // NOTE: dont need to free since we dont use "to_member_addresses" to store addresses
-        // release
-        /* if (to_member_addresses != NULL) {
-            free((void *)to_member_addresses);
-        } */
     }
-    /*
-    Skissm__E2eeAddress *sender_address = create_group_msg->sender_address;
-    const char *sender_user_id = sender_address->user->user_id;
-    // for (i = 0; i < group_data_set[group_data_set_insert_pos].group_members_num; i++) {
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        // send to other group members
-        member_user_id = cur_group_data->group_members[i]->user_id;
-        // NOTE: forward a copy of CreateGroupMsg
-        Skissm__E2eeAddress **to_member_addresses = NULL;
-        size_t to_member_addresses_num = find_device_addresses(member_user_id, &to_member_addresses);
-
-        for (j = 0; j < to_member_addresses_num; j++) {
-            Skissm__E2eeAddress *to_member_address = to_member_addresses[j];
-
-            // member_pos finds the index of specific member in user_data_set
-            uint8_t member_pos = find_address(to_member_address);
-
-            group_record[member_pos][group_data_set_insert_pos] = true;
-
-            if (safe_strcmp(sender_user_id, to_member_address->user->user_id)) {
-                if (compare_address(sender_address, to_member_address))
-                    continue;
-            }
-
-            Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
-            skissm__proto_msg__init(proto_msg);
-            copy_address_from_address(&(proto_msg->from), sender_address);
-            copy_address_from_address(&(proto_msg->to), to_member_address);
-            proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_CREATE_GROUP_MSG;
-            proto_msg->create_group_msg = skissm__create_group_msg__unpack(NULL, create_group_msg_data_len, create_group_msg_data);
-
-            send_proto_msg(proto_msg);
-
-            // release
-            skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            skissm__e2ee_address__free_unpacked(to_member_address, NULL);
-        }
-        // release
-        if (to_member_addresses != NULL) {
-            free((void *)to_member_addresses);
-        }
-    }*/
 
     /*-------------------------------------*/
 
@@ -1142,31 +934,29 @@ copy_group_member_ids(&(create_group_msg->member_ids), common_member_ids, to_mem
     skissm__create_group_response__init(response);
     response->n_member_ids = to_member_addresses_total_num;
     copy_group_member_ids(&(response->member_ids), common_member_ids, to_member_addresses_total_num);
-    copy_address_from_address(&(response->group_address), cur_group_data->group_address);
+    copy_address_from_address(&(response->group_address), group_address);
 
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
-    // NOTE: release
-    //  cleanup for store_to_member_addresses_num
-    free_mem((void **)&store_to_member_addresses_num, sizeof(size_t) * cur_group_data->group_members_num);
-    // free(store_to_member_addresses_num);
+    // release
+    skissm__create_group_msg__free_unpacked(create_group_msg, NULL);
+    free_mem((void **)&to_member_addresses_num_list, sizeof(size_t) * group_members_num);
 
-    // cleanup for common_member_ids
     for (i = 0; i < to_member_addresses_total_num; i++) {
         skissm__group_member_id__free_unpacked(common_member_ids[i], NULL);
     }
     free_mem((void **)&common_member_ids, sizeof(Skissm__GroupMemberID *) * to_member_addresses_total_num);
 
-    // cleanup for address_idx_LL
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        idxNode *current = address_idx_LL[i];
+    index_node *current, *next;
+    for (i = 0; i < group_members_num; i++) {
+        current = index_address_list[i];
         while (current != NULL) {
-            idxNode *next = current->next;
-            free(current);
+            next = current->next;
+            free_mem((void **)&current, sizeof(index_node));
             current = next;
         }
     }
-    free_mem((void **)&address_idx_LL, sizeof(idxNode *) * to_member_addresses_total_num);
+    free_mem((void **)&index_address_list, sizeof(index_node *) * group_members_num);
 
     // done
     group_data_set_insert_pos++;
@@ -1174,8 +964,8 @@ copy_group_member_ids(&(create_group_msg->member_ids), common_member_ids, to_mem
 }
 
 Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMembersRequest *request) {
-    Skissm__AddGroupMembersMsg *add_group_members_msg;
-    copy_add_msg(&(add_group_members_msg), request->msg);
+    Skissm__AddGroupMembersMsg *add_group_members_msg = NULL;
+    copy_add_group_members_msg(&(add_group_members_msg), request->msg);
 
     // find the group
     uint8_t group_data_find = 0;
@@ -1204,7 +994,7 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
 
     Skissm__GroupMember **temp_group_members = NULL;
     temp_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
-    size_t i;
+    size_t i, j;
     for (i = 0; i < old_group_members_num; i++) {
         Skissm__GroupMember *cur_group_member = (cur_group_data->group_members)[i];
         copy_group_member(&(temp_group_members[i]), cur_group_member);
@@ -1219,63 +1009,61 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
         copy_group_member(&(cur_group_data->group_members[i]), (add_group_members_msg->adding_members)[i - old_group_members_num]);
     }
 
-    // DOING: add new members' member id
-    size_t new_added_members_num = add_group_members_msg->n_adding_members;
-    //  copy data into member_id
-    // DONE: free
-    Skissm__GroupMemberID **new_member_ids = (Skissm__GroupMemberID **)malloc(sizeof(Skissm__GroupMemberID *) * new_added_members_num);
+    size_t adding_members_num = add_group_members_msg->n_adding_members;
 
-    // NOTE: Using LL to store memberid
-    // DONE: free
-    size_t *new_member_store_to_member_addresses_num = (size_t *)malloc(sizeof(size_t) * new_added_members_num);
-    size_t *store_to_member_addresses_num = (size_t *)malloc(sizeof(size_t) * new_group_members_num);
+    size_t *adding_member_device_num_list = (size_t *)malloc(sizeof(size_t) * adding_members_num);
+    size_t *to_member_addresses_num_list = (size_t *)malloc(sizeof(size_t) * new_group_members_num);
 
-    idxNode **new_member_address_idx_LL = (idxNode **)malloc(sizeof(idxNode *) * new_added_members_num);
-    idxNode **address_idx_LL = (idxNode **)malloc(sizeof(idxNode *) * new_group_members_num);
-    size_t i, j;
-    size_t new_member_to_member_addresses_total_num = 0;
+    index_node **adding_member_index_address_list = (index_node **)malloc(sizeof(index_node *) * adding_members_num);
+    index_node **index_address_list = (index_node **)malloc(sizeof(index_node *) * new_group_members_num);
+    size_t adding_member_addresses_total_num = 0;
     size_t to_member_addresses_total_num = 0;
 
     // only for new members
-    for (i = 0; i < new_added_members_num; i++) {
-        new_member_address_idx_LL[i] = NULL;
-        new_member_store_to_member_addresses_num[i] = new_LL_find_device_addresses(add_group_members_msg->adding_members[i]->user_id, &(new_member_address_idx_LL[i]));
+    for (i = 0; i < adding_members_num; i++) {
+        adding_member_index_address_list[i] = NULL;
+        adding_member_device_num_list[i] = find_device_index_and_addresses(add_group_members_msg->adding_members[i]->user_id, &(adding_member_index_address_list[i]));
 
-        new_member_to_member_addresses_total_num += new_member_store_to_member_addresses_num[i];
+        adding_member_addresses_total_num += adding_member_device_num_list[i];
     }
     // for all members, including new members
     for (i = 0; i < new_group_members_num; i++) {
-        address_idx_LL[i] = NULL;
-        store_to_member_addresses_num[i] = new_LL_find_device_addresses(cur_group_data->group_members[i]->user_id, &(address_idx_LL[i]));
+        index_address_list[i] = NULL;
+        to_member_addresses_num_list[i] = find_device_index_and_addresses(cur_group_data->group_members[i]->user_id, &(index_address_list[i]));
 
-        to_member_addresses_total_num += store_to_member_addresses_num[i];
+        to_member_addresses_total_num += to_member_addresses_num_list[i];
     }
 
-    add_group_members_msg->n_adding_member_ids = new_member_to_member_addresses_total_num;
+    add_group_members_msg->n_adding_member_ids = adding_member_addresses_total_num;
 
-    // copy addresses and public key into new_member_ids
+    Skissm__GroupMemberID **adding_member_ids = (Skissm__GroupMemberID **)malloc(sizeof(Skissm__GroupMemberID *) * adding_member_addresses_total_num);
+
+    index_node *ptr;
+    Skissm__E2eeAddress *to_member_address;
+    uint8_t member_pos;
+
+    // copy addresses and public key into adding_member_ids
     size_t member_id_insert_pos = 0;
-    for (i = 0; i < new_added_members_num; i++) {
-        idxNode *ptr = new_member_address_idx_LL[i];
+    for (i = 0; i < adding_member_addresses_total_num; i++) {
+        ptr = adding_member_index_address_list[i];
 
-        for (j = 0; j < new_member_store_to_member_addresses_num[i]; j++) {
-            Skissm__E2eeAddress *to_member_address;
-            uint8_t member_pos;
-
+        for (j = 0; j < adding_member_device_num_list[i]; j++) {
             to_member_address = ptr->device_address;
-            member_pos = ptr->idx;
-            ptr = ptr->next;
+            member_pos = ptr->index;
+
             // insert the group member data
-            new_member_ids[member_id_insert_pos] = (Skissm__GroupMemberID *)malloc(sizeof(Skissm__GroupMemberID));
-            Skissm__GroupMemberID *cur_member_id = new_member_ids[member_id_insert_pos];
+            adding_member_ids[member_id_insert_pos] = (Skissm__GroupMemberID *)malloc(sizeof(Skissm__GroupMemberID));
+            Skissm__GroupMemberID *cur_member_id = adding_member_ids[member_id_insert_pos];
             skissm__group_member_id__init(cur_member_id);
             copy_address_from_address(&(cur_member_id->group_member_address), to_member_address);
             copy_protobuf_from_protobuf(&(cur_member_id->public_key), &(user_data_set[member_pos].identity_key_public->sign_public_key));
             member_id_insert_pos++;
+
+            ptr = ptr->next;
         }
     }
 
-    copy_group_member_ids(&(add_group_members_msg->adding_member_ids), new_member_ids, to_member_addresses_total_num);
+    copy_group_member_ids(&(add_group_members_msg->adding_member_ids), adding_member_ids, adding_member_addresses_total_num);
 
     /* ----------------------------------------- */
 
@@ -1287,33 +1075,23 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
     // send the message to all the other members in the group
     Skissm__E2eeAddress *sender_address = add_group_members_msg->sender_address;
     const char *sender_user_id = sender_address->user->user_id;
-    size_t j;
-    Skissm__E2eeAddress *to_member_address;
-    uint8_t member_pos;
 
-    // TODO: group_data_set[group_data_find].group_members_num not yet updated
-    //  send msg to all the other members in the group, including added members
+    // send msg to all the other members in the group, including added members
     for (i = 0; i < new_group_members_num; i++) {
-        idxNode *ptr = address_idx_LL[i];
+        ptr = index_address_list[i];
 
-        /*
-         send to other group members
-        // const char *member_user_id = cur_group_data->group_members[i]->user_id;
-        // forward a copy of AddGroupMembersMsg
-        // Skissm__E2eeAddress **to_member_addresses = NULL;
-        // size_t to_member_addresses_num = find_device_addresses(member_user_id, &to_member_addresses);*/
-
-        for (j = 0; j < store_to_member_addresses_num[i]; j++) {
+        for (j = 0; j < to_member_addresses_num_list[i]; j++) {
             to_member_address = ptr->device_address;
-            member_pos = ptr->idx;
-            ptr = ptr->next;
-            // Skissm__E2eeAddress *to_member_address = to_member_addresses[j];
-            // uint8_t member_pos = find_address(to_member_address);
+            member_pos = ptr->index;
+
             group_record[member_pos][group_data_find] = true;
             if (safe_strcmp(sender_user_id, to_member_address->user->user_id)) {
-                if (compare_address(sender_address, to_member_address))
+                if (compare_address(sender_address, to_member_address)) {
+                    ptr = ptr->next;
                     continue;
+                }
             }
+
             Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
             skissm__proto_msg__init(proto_msg);
             copy_address_from_address(&(proto_msg->from), sender_address);
@@ -1323,77 +1101,70 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
 
             send_proto_msg(proto_msg);
 
+            ptr = ptr->next;
+
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            skissm__e2ee_address__free_unpacked(to_member_address, NULL);
         }
-        // release
-        // if (to_member_addresses != NULL) {
-        //     free((void *)to_member_addresses);
-        // }
     }
 
+    // prepare response
     Skissm__AddGroupMembersResponse *response = (Skissm__AddGroupMembersResponse *)malloc(sizeof(Skissm__AddGroupMembersResponse));
     skissm__add_group_members_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
     response->n_group_members = new_group_members_num;
     response->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
-
-    // NOTE: add
-    copy_group_member_ids(&(response->adding_member_ids), new_member_ids, to_member_addresses_total_num);
-    response->n_adding_member_ids = new_member_to_member_addresses_total_num;
-
-    // NOTE: release
-
-    // clearup for new_member_ids
-    for (i = 0; i < new_member_to_member_addresses_total_num; i++) {
-        skissm__group_member_id__free_unpacked(new_member_ids[i], NULL);
-    }
-    free_mem((void **)&new_member_ids, sizeof(Skissm__GroupMemberID *) * to_member_addresses_total_num);
-
-    //  cleanup for new_member_store_to_member_addresses_num and store_to_member_addresses_num
-    free_mem((void **)&new_member_store_to_member_addresses_num, sizeof(size_t) * new_added_members_num);
-    free_mem((void **)&store_to_member_addresses_num, sizeof(size_t) * cur_group_data->group_members_num);
-
-    // cleanup for new_member_address_idx_LL
-    for (i = 0; i < new_added_members_num; i++) {
-        idxNode *current = new_member_address_idx_LL[i];
-        while (current != NULL) {
-            idxNode *next = current->next;
-            free(current);
-            current = next;
-        }
-    }
-    free_mem((void **)&new_member_address_idx_LL, sizeof(idxNode *) * new_member_to_member_addresses_total_num);
-
-    // cleanup for address_idx_LL
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        idxNode *current = address_idx_LL[i];
-        while (current != NULL) {
-            idxNode *next = current->next;
-            free(current);
-            current = next;
-        }
-    }
-    free_mem((void **)&address_idx_LL, sizeof(idxNode *) * to_member_addresses_total_num);
-
-    // send response
     for (i = 0; i < new_group_members_num; i++) {
         (response->group_members)[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
         skissm__group_member__init((response->group_members)[i]);
         copy_group_member(&((response->group_members)[i]), (cur_group_data->group_members)[i]);
     }
 
+    copy_group_member_ids(&(response->adding_member_ids), adding_member_ids, adding_member_addresses_total_num);
+    response->n_adding_member_ids = adding_member_addresses_total_num;
+
+    // release
+    skissm__add_group_members_msg__free_unpacked(add_group_members_msg, NULL);
+
+    for (i = 0; i < adding_member_addresses_total_num; i++) {
+        skissm__group_member_id__free_unpacked(adding_member_ids[i], NULL);
+    }
+    free_mem((void **)&adding_member_ids, sizeof(Skissm__GroupMemberID *) * adding_member_addresses_total_num);
+
+    free_mem((void **)&adding_member_device_num_list, sizeof(size_t) * adding_members_num);
+    free_mem((void **)&to_member_addresses_num_list, sizeof(size_t) * new_group_members_num);
+
+    index_node *current, *next;
+    for (i = 0; i < adding_members_num; i++) {
+        current = adding_member_index_address_list[i];
+        while (current != NULL) {
+            next = current->next;
+            free_mem((void **)&current, sizeof(index_node));
+            current = next;
+        }
+    }
+    free_mem((void **)&adding_member_index_address_list, sizeof(index_node *) * adding_members_num);
+
+    for (i = 0; i < new_group_members_num; i++) {
+        current = index_address_list[i];
+        while (current != NULL) {
+            next = current->next;
+            free_mem((void **)&current, sizeof(index_node));
+            current = next;
+        }
+    }
+    free_mem((void **)&index_address_list, sizeof(index_node *) * new_group_members_num);
+
     return response;
 }
 
 Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__RemoveGroupMembersRequest *request) {
     // remove_group_members_msg
-    Skissm__RemoveGroupMembersMsg *remove_group_members_msg_to_remained;
-    Skissm__RemoveGroupMembersMsg *remove_group_members_msg_to_removed;
+    Skissm__RemoveGroupMembersMsg *remove_group_members_msg_to_remained = NULL;
+    Skissm__RemoveGroupMembersMsg *remove_group_members_msg_to_removed = NULL;
 
-    copy_remove_msg(&(remove_group_members_msg_to_remained), request->msg);
-    copy_remove_msg(&(remove_group_members_msg_to_removed), request->msg);
+    copy_remove_group_members_msg(&(remove_group_members_msg_to_remained), request->msg);
+    copy_remove_group_members_msg(&(remove_group_members_msg_to_removed), request->msg);
 
     // find the group
     uint8_t group_data_find = 0;
@@ -1415,11 +1186,8 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
 
     group_data *cur_group_data = &(group_data_set[group_data_find]);
 
-    // update the data
     size_t original_group_members_num = cur_group_data->group_members_num;
     size_t new_group_members_num = original_group_members_num - request->msg->n_removing_members;
-    // NOTE: UPDATE NUMBER OF GROUP MEMBERS
-    cur_group_data->group_members_num = new_group_members_num;
 
     Skissm__GroupMember **temp_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     size_t i = 0, j = 0;
@@ -1440,70 +1208,51 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
             j++;
         }
     }
+
     /* ------------------------------------ */
-    // cur_group_data is updated
-    // DONE: 把MSG送到除了sender以外的所有人
-    // DONE: MSG裡面的 member__id 不包含被移除人的資料
-    // DONE: 送到 被移除人的 MSG 的 MEMBER_ID 直接設為 NULL
 
     Skissm__E2eeAddress *sender_address = remove_group_members_msg_to_remained->sender_address;
     const char *sender_user_id = sender_address->user->user_id;
 
-    /*DOING: new implementation with LL*/
     size_t to_member_addresses_total_num = 0;
-    // const char *member_user_id;
-    size_t i, j;
 
-    // DONE: Not yet free
     // store the number of addresses of each group member remaining
-    size_t *store_to_member_addresses_num = (size_t *)malloc(sizeof(size_t) * cur_group_data->group_members_num);
-    // DONE: Not yet free
-    idxNode **address_idx_LL = (idxNode **)malloc(sizeof(idxNode *) * cur_group_data->group_members_num);
+    size_t *to_member_addresses_num_list = (size_t *)malloc(sizeof(size_t) * new_group_members_num);
+    index_node **index_address_list = (index_node **)malloc(sizeof(index_node *) * new_group_members_num);
 
-    // in order to store the position of tail node of each LL
-    // idxNode **tails = (idxNode **)malloc(sizeof(idxNode *) * cur_group_data->group_members_num);
+    for (i = 0; i < new_group_members_num; i++) {
+        index_address_list[i] = NULL;
 
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        // init for each LL head
-        address_idx_LL[i] = NULL;
-        store_to_member_addresses_num[i] = new_LL_find_device_addresses(remove_group_members_msg_to_remained->group_info->group_members[i]->user_id, &(address_idx_LL[i]));
+        to_member_addresses_num_list[i] = find_device_index_and_addresses(remove_group_members_msg_to_remained->group_info->group_members[i]->user_id, &(index_address_list[i]));
 
-        to_member_addresses_total_num += store_to_member_addresses_num[i];
+        to_member_addresses_total_num += to_member_addresses_num_list[i];
     }
-
-    /*
-    // total #(address) to be sent
-    size_t to_member_addresses_total_num = 0;
-    // NOTE: count the total number of addresses
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        const char *member_user_id = cur_group_data->group_members[i]->user_id;
-        to_member_addresses_total_num += find_num_user_addresses(member_user_id);
-    }*/
 
     remove_group_members_msg_to_remained->n_member_ids = to_member_addresses_total_num;
 
-    // TODO: Not yet free, should be freed by receiver
-    // NOTE: only send GroupMemberID to remained members
-    remove_group_members_msg_to_remained->member_ids = (Skissm__GroupMemberID **)malloc(to_member_addresses_total_num * sizeof(Skissm__GroupMemberID *));
+    remove_group_members_msg_to_remained->member_ids = (Skissm__GroupMemberID **)malloc(sizeof(Skissm__GroupMemberID *) * to_member_addresses_total_num);
 
-    // NOTE: copy data into member_id
-    size_t k;
-    idxNode *ptr;
-    ProtobufCBinaryData *public_key;
+    size_t member_id_insert_pos = 0;
+
+    // copy data into member_id
+    index_node *ptr;
     Skissm__E2eeAddress *to_member_address;
     uint8_t member_pos;
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        ptr = address_idx_LL[i];
+    for (i = 0; i < new_group_members_num; i++) {
+        ptr = index_address_list[i];
 
-        for (j = 0; j < store_to_member_addresses_num[i]; j++) {
-
-            /* NOTE: use newLL to take address and index */
+        for (j = 0; j < to_member_addresses_num_list[i]; j++) {
             to_member_address = ptr->device_address;
-            member_pos = ptr->idx;
-            ptr = ptr->next;
+            member_pos = ptr->index;
 
-            copy_address_from_address(&(remove_group_members_msg_to_remained->member_ids[j]->group_member_address), to_member_address);
-            copy_protobuf_from_protobuf(&(remove_group_members_msg_to_remained->member_ids[j]->public_key), &(user_data_set[member_pos].identity_key_public->sign_public_key));
+            remove_group_members_msg_to_remained->member_ids[member_id_insert_pos] = (Skissm__GroupMemberID *)malloc(sizeof(Skissm__GroupMemberID));
+            Skissm__GroupMemberID *cur_group_member_id = remove_group_members_msg_to_remained->member_ids[member_id_insert_pos];
+            skissm__group_member_id__init(cur_group_member_id);
+            copy_address_from_address(&(cur_group_member_id->group_member_address), to_member_address);
+            copy_protobuf_from_protobuf(&(cur_group_member_id->public_key), &(user_data_set[member_pos].identity_key_public->sign_public_key));
+            member_id_insert_pos++;
+
+            ptr = ptr->next;
         }
     }
 
@@ -1519,16 +1268,11 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
     uint8_t remove_group_members_msg_data_to_remained[remove_group_members_msg_data_len_to_remained];
     skissm__remove_group_members_msg__pack(remove_group_members_msg_to_remained, remove_group_members_msg_data_to_remained);
 
-    // send the message to all the other members in the group
-
-    // NOTE: SEND TO REMOVED MEMBERS
-    // DONE: implement LL in find_address
+    // send to removed members
     for (i = 0; i < remove_group_members_msg_to_removed->n_removing_members; i++) {
-        // send to other group members
         const char *member_user_id = remove_group_members_msg_to_removed->removing_members[i]->user_id;
-        // forward a copy of RemoveGroupMembersMsg
-        Skissm__E2eeAddress **to_member_addresses = NULL;
 
+        Skissm__E2eeAddress **to_member_addresses = NULL;
         size_t to_member_addresses_num = find_device_addresses(member_user_id, &to_member_addresses);
 
         for (j = 0; j < to_member_addresses_num; j++) {
@@ -1552,28 +1296,23 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
         }
         // release
         if (to_member_addresses != NULL) {
-            free((void *)to_member_addresses);
+            free_mem((void **)&to_member_addresses, sizeof(Skissm__E2eeAddress *) * to_member_addresses_num);
         }
     }
 
-    // cur_group_data->group_members_num = new_group_members_num;
+    // send to remain members
+    for (i = 0; i < new_group_members_num; i++) {
+        ptr = index_address_list[i];
 
-    // NOTE: SEND TO REMAIN MEMBERS
-    idxNode *ptr;
-    uint8_t member_pos;
-    Skissm__E2eeAddress *to_member_address;
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        // send to other group members
-        ptr = address_idx_LL[i];
-
-        for (j = 0; j < store_to_member_addresses_num[i]; j++) {
+        for (j = 0; j < to_member_addresses_num_list[i]; j++) {
             to_member_address = ptr->device_address;
-            member_pos = ptr->idx;
-            ptr = ptr->next;
+            member_pos = ptr->index;
 
             if (safe_strcmp(sender_user_id, to_member_address->user->user_id)) {
-                if (compare_address(sender_address, to_member_address))
+                if (compare_address(sender_address, to_member_address)) {
+                    ptr = ptr->next;
                     continue;
+                }
             }
             Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
             skissm__proto_msg__init(proto_msg);
@@ -1584,22 +1323,25 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
 
             send_proto_msg(proto_msg);
 
+            ptr = ptr->next;
+
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            skissm__e2ee_address__free_unpacked(to_member_address, NULL);
         }
     }
 
-    // release the old group members
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
+    // release the old data
+    for (i = 0; i < original_group_members_num; i++) {
         skissm__group_member__free_unpacked((cur_group_data->group_members)[i], NULL);
         (cur_group_data->group_members)[i] = NULL;
     }
     free(cur_group_data->group_members);
 
     // update new member
+    cur_group_data->group_members_num = new_group_members_num;
     cur_group_data->group_members = temp_group_members;
 
+    // prepare response
     Skissm__RemoveGroupMembersResponse *response = (Skissm__RemoveGroupMembersResponse *)malloc(sizeof(Skissm__RemoveGroupMembersResponse));
     skissm__remove_group_members_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
@@ -1608,22 +1350,25 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
     for (i = 0; i < new_group_members_num; i++) {
         copy_group_member(&((response->group_members)[i]), (cur_group_data->group_members)[i]);
     }
-    // NOTE: release
+    response->n_member_ids = to_member_addresses_total_num;
+    copy_group_member_ids(&(response->member_ids), remove_group_members_msg_to_remained->member_ids, to_member_addresses_total_num);
 
-    //  cleanup for store_to_member_addresses_num
-    free_mem((void **)&store_to_member_addresses_num, sizeof(size_t) * cur_group_data->group_members_num);
-    // free(store_to_member_addresses_num);
+    // release
+    skissm__remove_group_members_msg__free_unpacked(remove_group_members_msg_to_remained, NULL);
+    skissm__remove_group_members_msg__free_unpacked(remove_group_members_msg_to_removed, NULL);
 
-    // cleanup for address_idx_LL
-    for (i = 0; i < cur_group_data->group_members_num; i++) {
-        idxNode *current = address_idx_LL[i];
+    free_mem((void **)&to_member_addresses_num_list, sizeof(size_t) * new_group_members_num);
+
+    index_node *current, *next;
+    for (i = 0; i < new_group_members_num; i++) {
+        current = index_address_list[i];
         while (current != NULL) {
-            idxNode *next = current->next;
-            free(current);
+            next = current->next;
+            free_mem((void **)&current, sizeof(index_node));
             current = next;
         }
     }
-    free_mem((void **)&address_idx_LL, sizeof(idxNode *) * to_member_addresses_total_num);
+    free_mem((void **)&index_address_list, sizeof(index_node *) * new_group_members_num);
 
     return response;
 }

@@ -73,9 +73,9 @@ set(TEST_SKISSM
     test_group_session
     test_new_device
     test_account_db
-    # test_session_db
-    # test_pending
-    # test_unload
+    test_session_db
+    test_pending
+    test_unload
     test_spk_db
     test_opk_db
   )
@@ -118,8 +118,8 @@ add_test(Session test_session)
 add_test(GroupSession test_group_session)
 add_test(NewDevice test_new_device)
 add_test(Account_db test_account_db)
-# add_test(Session_db test_session_db)
-# add_test(Pending test_pending)
-# add_test(Unload test_unload)
+add_test(Session_db test_session_db)
+add_test(Pending test_pending)
+add_test(Unload test_unload)
 add_test(SPK_db test_spk_db)
 add_test(OPK_db test_opk_db)

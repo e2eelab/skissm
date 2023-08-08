@@ -57,15 +57,24 @@ static void gen_uuid(uint8_t uuid[UUID_LEN]) {
 // ===============================================================
 // skissm_event_handler_t
 // callback handlers
-static void on_one2one_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_one2one_msg_received(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-static void on_other_device_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_other_device_msg_received(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_group_msg_received(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
 }
 

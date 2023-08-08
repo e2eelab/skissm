@@ -66,23 +66,19 @@ size_t pack_group_pre_key_plaintext(
 );
 
 /**
- * @brief Create an outbound group session.
+ * @brief Create an outbound group session by a group creator.
  *
- * @param sender
- * @param seed_secret
  * @param n_member_ids
  * @param member_ids
  * @param e2ee_pack_id
  * @param user_address
- * @param group_name,
+ * @param group_name
  * @param group_address
  * @param group_members
  * @param group_members_num
  * @param old_session_id
  */
-void new_outbound_group_session(
-    bool sender,
-    const ProtobufCBinaryData *seed_secret,
+void new_outbound_group_session_by_sender(
     size_t n_member_ids,
     Skissm__GroupMemberID **member_ids,
     const char *e2ee_pack_id,
@@ -95,32 +91,158 @@ void new_outbound_group_session(
 );
 
 /**
- * @brief Create an inbound group session.
+ * @brief Create an outbound group session by a group receiver.
+ *
+ * @param seed_secret
+ * @param e2ee_pack_id
+ * @param user_address
+ * @param group_name
+ * @param group_address
+ * @param session_id
+ * @param group_members
+ * @param group_members_num
+ */
+void new_outbound_group_session_by_receiver(
+    const ProtobufCBinaryData *seed_secret,
+    const char *e2ee_pack_id,
+    Skissm__E2eeAddress *user_address,
+    const char *group_name,
+    Skissm__E2eeAddress *group_address,
+    const char *session_id,
+    Skissm__GroupMember **group_members,
+    size_t group_members_num
+);
+
+/**
+ * @brief Create an outbound group session when receiving other group member's invitation.
+ *
+ * @param group_ratchet_state
+ * @param user_address
+ */
+void new_outbound_group_session_invited(
+    Skissm__GroupRatchetState *group_ratchet_state,
+    Skissm__E2eeAddress *user_address
+);
+
+/**
+ * @brief Create an inbound group session with group pre-key bundle.
  *
  * @param e2ee_pack_id
  * @param user_address
  * @param group_pre_key_bundle
+ */
+void new_inbound_group_session_by_pre_key_bundle(
+    const char *e2ee_pack_id,
+    Skissm__E2eeAddress *user_address,
+    Skissm__GroupPreKeyBundle *group_pre_key_bundle
+);
+
+/**
+ * @brief Create an inbound group session with other member's id.
+ *
+ * @param e2ee_pack_id
+ * @param user_address
  * @param group_member_id
  * @param group_info
  */
-void new_inbound_group_session(
+void new_inbound_group_session_by_member_id(
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
-    Skissm__GroupPreKeyBundle *group_pre_key_bundle,
     Skissm__GroupMemberID *group_member_id,
     Skissm__GroupInfo *group_info
 );
 
-void complete_inbound_group_session(
+/**
+ * @brief Complete an inbound group session with group pre-key bundle.
+ *
+ * @param inbound_group_session
+ * @param group_pre_key_bundle
+ */
+void complete_inbound_group_session_by_pre_key_bundle(
     Skissm__GroupSession *inbound_group_session,
-    Skissm__GroupPreKeyBundle *group_pre_key_bundle,
+    Skissm__GroupPreKeyBundle *group_pre_key_bundle
+);
+
+/**
+ * @brief Complete an inbound group session with other member's id.
+ *
+ * @param inbound_group_session
+ * @param group_member_id
+ * @param group_info
+ */
+void complete_inbound_group_session_by_member_id(
+    Skissm__GroupSession *inbound_group_session,
     Skissm__GroupMemberID *group_member_id,
     Skissm__E2eeAddress *group_address
 );
 
+/**
+ * @brief Create and complete an inbound group session.
+ *
+ * @param group_member_id
+ * @param other_inbound_group_session
+ */
 void new_and_complete_inbound_group_session(
     Skissm__GroupMemberID *group_member_id,
     Skissm__GroupSession *other_inbound_group_session
+);
+
+/**
+ * @brief Create and complete an inbound group session with other's chain key.
+ *
+ * @param group_member_id
+ * @param other_group_session
+ * @param their_chain_key
+ */
+void new_and_complete_inbound_group_session_with_chain_key(
+    Skissm__GroupMemberID *group_member_id,
+    Skissm__GroupSession *other_group_session,
+    ProtobufCBinaryData *their_chain_key
+);
+
+/**
+ * @brief Create and complete an inbound group session with other's ratchet state.
+ *
+ * @param group_ratchet_state
+ * @param user_address
+ */
+void new_and_complete_inbound_group_session_with_ratchet_state(
+    Skissm__GroupRatchetState *group_ratchet_state,
+    Skissm__E2eeAddress *user_address
+);
+
+/**
+ * @brief Renew the outbound group session when someone joins the group.
+ *
+ * @param outbound_group_session
+ * @param sender_chain_key
+ * @param sender_address
+ * @param n_adding_member_ids
+ * @param adding_member_ids
+ * @param adding_group_members_num
+ * @param adding_group_members
+ */
+void renew_outbound_group_session_by_welcome_and_add(
+    Skissm__GroupSession *outbound_group_session,
+    ProtobufCBinaryData *sender_chain_key,
+    Skissm__E2eeAddress *sender_address,
+    size_t n_adding_member_ids,
+    Skissm__GroupMemberID **adding_member_ids,
+    size_t adding_group_members_num,
+    Skissm__GroupMember **adding_group_members
+);
+
+/**
+ * @brief Renew the inbound group session when someone joins the group.
+ *
+ * @param sender
+ * @param inbound_group_session
+ * @param new_group_info
+ */
+void renew_inbound_group_session_by_welcome_and_add(
+    bool sender,
+    Skissm__GroupSession *inbound_group_session,
+    Skissm__GroupInfo *new_group_info
 );
 
 #ifdef __cplusplus

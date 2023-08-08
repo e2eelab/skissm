@@ -164,7 +164,6 @@ static const char *GROUP_SESSION_CREATE_TABLE = "CREATE TABLE GROUP_SESSION( "
                                                 "ADDRESS INTEGER NOT NULL, "
                                                 "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
                                                 "GROUP_DATA BLOB NOT NULL, "
-                                                "IS_OUTBOUND INTEGER NOT NULL, "
                                                 "FOREIGN KEY(SENDER) REFERENCES ADDRESS(ID), "
                                                 "FOREIGN KEY(OWNER) REFERENCES ADDRESS(ID), "
                                                 "FOREIGN KEY(ADDRESS) REFERENCES ADDRESS(ID), "
@@ -197,27 +196,19 @@ static const char *GROUP_SESSION_LOAD_DATA_BY_ID =
 
 static const char *N_GROUP_SESSION_LOAD =
     "SELECT COUNT(*) FROM GROUP_SESSION "
-    "INNER JOIN ADDRESS AS a1 "
-    "ON GROUP_SESSION.SENDER = a1.ID "
+    "INNER JOIN ADDRESS as a1 "
+    "ON GROUP_SESSION.ADDRESS = a1.ID "
     "INNER JOIN ADDRESS as a2 "
     "ON GROUP_SESSION.OWNER = a2.ID "
-    "INNER JOIN ADDRESS as a3 "
-    "ON GROUP_SESSION.ADDRESS = a3.ID "
-    "WHERE a1.DOMAIN is (?) AND a1.USER_ID is (?) AND a1.DEVICE_ID is (?) AND "
-    "a2.DOMAIN is (?) AND a2.USER_ID is (?) AND a2.DEVICE_ID is (?) AND "
-    "a3.GROUP_ID is (?);";
+    "WHERE a1.GROUP_ID is (?) AND a2.USER_ID is (?) AND a2.DOMAIN is (?) AND a2.DEVICE_ID is (?);";
 
 static const char *GROUP_SESSIONS_LOAD =
     "SELECT GROUP_DATA FROM GROUP_SESSION "
-    "INNER JOIN ADDRESS AS a1 "
-    "ON GROUP_SESSION.SENDER = a1.ID "
+    "INNER JOIN ADDRESS as a1 "
+    "ON GROUP_SESSION.ADDRESS = a1.ID "
     "INNER JOIN ADDRESS as a2 "
     "ON GROUP_SESSION.OWNER = a2.ID "
-    "INNER JOIN ADDRESS as a3 "
-    "ON GROUP_SESSION.ADDRESS = a3.ID "
-    "WHERE a1.DOMAIN is (?) AND a1.USER_ID is (?) AND a1.DEVICE_ID is (?) AND "
-    "a2.DOMAIN is (?) AND a2.USER_ID is (?) AND a2.DEVICE_ID is (?) AND "
-    "a3.GROUP_ID is (?);";
+    "WHERE a1.GROUP_ID is (?) AND a2.USER_ID is (?) AND a2.DOMAIN is (?) AND a2.DEVICE_ID is (?);";
 
 static const char *GROUP_SESSION_DELETE_DATA_BY_ADDRESS = "DELETE FROM GROUP_SESSION "
                                                           "WHERE OWNER IN "
@@ -1925,20 +1916,16 @@ void load_group_session_by_id(
 }
 
 int load_n_group_sessions(
-    Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *owner_address,
     Skissm__E2eeAddress *group_address
 ) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(N_GROUP_SESSION_LOAD, &stmt);
-    sqlite3_bind_text(stmt, 1, sender_address->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, sender_address->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, sender_address->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, owner_address->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 5, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 6, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 7, group_address->group->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, group_address->group->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, owner_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_ROW);
@@ -1953,26 +1940,22 @@ int load_n_group_sessions(
 }
 
 size_t load_group_sessions(
-    Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *owner_address,
     Skissm__E2eeAddress *group_address,
     Skissm__GroupSession ***group_sessions
 ) {
     // allocate memory
-    size_t n_group_sessions = load_n_group_sessions(sender_address, owner_address, group_address);
+    size_t n_group_sessions = load_n_group_sessions(owner_address, group_address);
     (*group_sessions) = (Skissm__GroupSession **)malloc(
         n_group_sessions * sizeof(Skissm__GroupSession *));
 
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(GROUP_SESSIONS_LOAD, &stmt);
-    sqlite3_bind_text(stmt, 1, sender_address->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, sender_address->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, sender_address->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, owner_address->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 5, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 6, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 7, group_address->group->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, group_address->group->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, owner_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
 
     // step
     for (int i = 0; i < n_group_sessions; i++) {
