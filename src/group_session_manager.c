@@ -450,8 +450,6 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
             new_group_members_num,
             old_session_id
         );
-        // release
-        skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
         // notify
         ssm_notify_group_members_removed(
@@ -461,6 +459,9 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
             msg->removing_members,
             msg->n_removing_members
         );
+
+        // release
+        skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
         // done
         return true;
