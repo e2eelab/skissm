@@ -330,16 +330,16 @@ void copy_opk_public_from_opk_public(Skissm__OneTimePreKeyPublic **dest, Skissm_
 
 ///-----------------copy group member id-----------------///
 
-void copy_group_member_id(Skissm__GroupMemberID **dest, Skissm__GroupMemberID *src) {
-    *dest = (Skissm__GroupMemberID *)malloc(sizeof(Skissm__GroupMemberID));
-    skissm__group_member_id__init(*dest);
+void copy_group_member_id(Skissm__GroupMemberInfo **dest, Skissm__GroupMemberInfo *src) {
+    *dest = (Skissm__GroupMemberInfo *)malloc(sizeof(Skissm__GroupMemberInfo));
+    skissm__group_member_info__init(*dest);
 
-    copy_address_from_address(&((*dest)->group_member_address), src->group_member_address);
-    copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
+    copy_address_from_address(&((*dest)->member_address), src->member_address);
+    copy_protobuf_from_protobuf(&((*dest)->sign_public_key), &(src->sign_public_key));
 }
 
-void copy_group_member_ids(Skissm__GroupMemberID ***dest, Skissm__GroupMemberID **src, size_t to_member_addresses_total_num) {
-    *dest = (Skissm__GroupMemberID **)malloc(sizeof(Skissm__GroupMemberID *) * to_member_addresses_total_num);
+void copy_group_member_ids(Skissm__GroupMemberInfo ***dest, Skissm__GroupMemberInfo **src, size_t to_member_addresses_total_num) {
+    *dest = (Skissm__GroupMemberInfo **)malloc(sizeof(Skissm__GroupMemberInfo *) * to_member_addresses_total_num);
     size_t i;
     for (i = 0; i < to_member_addresses_total_num; i++) {
         copy_group_member_id(&((*dest)[i]), src[i]);

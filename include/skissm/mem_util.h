@@ -259,21 +259,21 @@ void copy_spk_public_from_spk_public(Skissm__SignedPreKeyPublic **dest, Skissm__
 void copy_opk_public_from_opk_public(Skissm__OneTimePreKeyPublic **dest, Skissm__OneTimePreKeyPublic *src);
 
 /**
- * @brief Copy Skissm__GroupMemberID from src to dest.
+ * @brief Copy Skissm__GroupMemberInfo from src to dest.
  *
  * @param dest
  * @param src
  */
-void copy_group_member_id(Skissm__GroupMemberID **dest, Skissm__GroupMemberID *src);
+void copy_group_member_id(Skissm__GroupMemberInfo **dest, Skissm__GroupMemberInfo *src);
 
 /**
- * @brief Copy Skissm__GroupMemberID array from src to dest.
+ * @brief Copy Skissm__GroupMemberInfo array from src to dest.
  *
  * @param dest
  * @param src
  * @param to_member_addresses_total_num
  */
-void copy_group_member_ids(Skissm__GroupMemberID ***dest, Skissm__GroupMemberID **src, size_t to_member_addresses_total_num);
+void copy_group_member_ids(Skissm__GroupMemberInfo ***dest, Skissm__GroupMemberInfo **src, size_t to_member_addresses_total_num);
 
 /**
  * @brief Copy Skissm__GroupMember from src to dest.

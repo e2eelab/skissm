@@ -325,7 +325,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                         new_inbound_group_session_by_pre_key_bundle(group_pre_key_bundle->e2ee_pack_id, receiver_address, group_pre_key_bundle);
                     }
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_RATCHET_STATE) {
-                    Skissm__GroupRatchetState *group_ratchet_state = plaintext->group_ratchet_state;
+                    Skissm__GroupUpdateKeyBundle *group_ratchet_state = plaintext->group_ratchet_state;
 
                     if (group_ratchet_state->adding == true) {
                         // create the outbound group session

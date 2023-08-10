@@ -26,9 +26,6 @@
 
 void mock_db_begin();
 void mock_db_end();
-void load_id(
-    ProtobufCBinaryData **account_id
-);
 size_t load_ids(
     sqlite_int64 **account_ids
 );

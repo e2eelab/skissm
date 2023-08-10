@@ -98,15 +98,15 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
     get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, receiver_address, group_address, &inbound_group_session);
     if (inbound_group_session == NULL) {
         for (i = 0; i < msg->n_member_ids; i++) {
-            Skissm__GroupMemberID *cur_group_member_id = (msg->member_ids)[i];
-            if (!compare_address(cur_group_member_id->group_member_address, receiver_address))
+            Skissm__GroupMemberInfo *cur_group_member_id = (msg->member_ids)[i];
+            if (!compare_address(cur_group_member_id->member_address, receiver_address))
                 new_inbound_group_session_by_member_id(e2ee_pack_id, receiver_address, cur_group_member_id, group_info);
         }
     } else {
         for (i = 0; i < msg->n_member_ids; i++) {
-            Skissm__GroupMemberID *cur_group_member_id = (msg->member_ids)[i];
-            if (!compare_address(cur_group_member_id->group_member_address, sender_address)) {
-                if (!compare_address(cur_group_member_id->group_member_address, receiver_address))
+            Skissm__GroupMemberInfo *cur_group_member_id = (msg->member_ids)[i];
+            if (!compare_address(cur_group_member_id->member_address, sender_address)) {
+                if (!compare_address(cur_group_member_id->member_address, receiver_address))
                     new_and_complete_inbound_group_session(cur_group_member_id, inbound_group_session);
             } else {
                 complete_inbound_group_session_by_member_id(inbound_group_session, cur_group_member_id, group_address);
@@ -393,15 +393,15 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
 
     if (new_group_session == false) {
         for (i = 0; i < msg->n_member_ids; i++) {
-            Skissm__GroupMemberID *cur_group_member_id = (msg->member_ids)[i];
-            if (!compare_address(cur_group_member_id->group_member_address, receiver_address))
+            Skissm__GroupMemberInfo *cur_group_member_id = (msg->member_ids)[i];
+            if (!compare_address(cur_group_member_id->member_address, receiver_address))
                 new_inbound_group_session_by_member_id(e2ee_pack_id, receiver_address, cur_group_member_id, group_info);
         }
     } else {
         for (i = 0; i < msg->n_member_ids; i++) {
-            Skissm__GroupMemberID *cur_group_member_id = (msg->member_ids)[i];
-            if (!compare_address(cur_group_member_id->group_member_address, sender_address)) {
-                if (!compare_address(cur_group_member_id->group_member_address, receiver_address))
+            Skissm__GroupMemberInfo *cur_group_member_id = (msg->member_ids)[i];
+            if (!compare_address(cur_group_member_id->member_address, sender_address)) {
+                if (!compare_address(cur_group_member_id->member_address, receiver_address))
                     new_and_complete_inbound_group_session(cur_group_member_id, inbound_group_session);
             } else {
                 complete_inbound_group_session_by_member_id(inbound_group_session, cur_group_member_id, group_address);
@@ -434,6 +434,8 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
     if (inbound_group_session != NULL) {
         skissm__group_session__free_unpacked(inbound_group_session, NULL);
     }
+
+    return true;
 }
 
 Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
