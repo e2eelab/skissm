@@ -156,7 +156,7 @@ size_t pack_group_pre_key_plaintext(
     copy_group_info(&(group_pre_key_bundle->group_info), outbound_group_session->group_info);
 
     group_pre_key_bundle->sequence = outbound_group_session->sequence;
-    copy_protobuf_from_protobuf(&(group_pre_key_bundle->seed_secret), &(outbound_group_session->seed_secret));
+    copy_protobuf_from_protobuf(&(group_pre_key_bundle->group_seed), &(outbound_group_session->group_seed));
 
     // pack the group_pre_key_bundle
     size_t group_pre_key_plaintext_data_len;
@@ -173,15 +173,15 @@ size_t pack_group_pre_key_plaintext(
 }
 
 static void pack_group_ratchet_state(
-    Skissm__GroupUpdateKeyBundle *group_ratchet_state,
+    Skissm__GroupUpdateKeyBundle *group_update_key_bundle,
     uint8_t **group_ratchet_state_plaintext_data,
     size_t *group_ratchet_state_plaintext_data_len
 ) {
     Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
     skissm__plaintext__init(plaintext);
     plaintext->version = strdup(E2EE_PLAINTEXT_VERSION);
-    plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_GROUP_RATCHET_STATE;
-    plaintext->group_ratchet_state = group_ratchet_state;
+    plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_GROUP_UPDATE_KEY_BUNDLE;
+    plaintext->group_update_key_bundle = group_update_key_bundle;
 
     size_t len = skissm__plaintext__get_packed_size(plaintext);
     *group_ratchet_state_plaintext_data_len = len;
@@ -189,7 +189,7 @@ static void pack_group_ratchet_state(
     skissm__plaintext__pack(plaintext, *group_ratchet_state_plaintext_data);
 
     // release
-    // group_ratchet_state will also be released
+    // group_update_key_bundle will also be released
     skissm__plaintext__free_unpacked(plaintext, NULL);
 }
 
@@ -198,41 +198,41 @@ size_t pack_group_ratchet_state_plaintext(
     uint8_t **group_ratchet_state_plaintext_data,
     bool adding,
     ProtobufCBinaryData *identity_public_key,
-    size_t n_adding_member_ids,
-    Skissm__GroupMemberInfo **adding_member_ids
+    size_t n_adding_member_info_list,
+    Skissm__GroupMemberInfo **adding_member_info_list
 ) {
-    Skissm__GroupUpdateKeyBundle *group_ratchet_state = (Skissm__GroupUpdateKeyBundle *)malloc(sizeof(Skissm__GroupUpdateKeyBundle));
-    skissm__group_update_key_bundle__init(group_ratchet_state);
+    Skissm__GroupUpdateKeyBundle *group_update_key_bundle = (Skissm__GroupUpdateKeyBundle *)malloc(sizeof(Skissm__GroupUpdateKeyBundle));
+    skissm__group_update_key_bundle__init(group_update_key_bundle);
 
-    group_ratchet_state->version = strdup(outbound_group_session->version);
-    group_ratchet_state->e2ee_pack_id = strdup(outbound_group_session->e2ee_pack_id);
+    group_update_key_bundle->version = strdup(outbound_group_session->version);
+    group_update_key_bundle->e2ee_pack_id = strdup(outbound_group_session->e2ee_pack_id);
 
-    copy_address_from_address(&(group_ratchet_state->sender), outbound_group_session->sender);
+    copy_address_from_address(&(group_update_key_bundle->sender), outbound_group_session->sender);
 
-    group_ratchet_state->adding = adding;
+    group_update_key_bundle->adding = adding;
 
-    group_ratchet_state->session_id = strdup(outbound_group_session->session_id);
+    group_update_key_bundle->session_id = strdup(outbound_group_session->session_id);
 
-    copy_group_info(&(group_ratchet_state->group_info), outbound_group_session->group_info);
+    copy_group_info(&(group_update_key_bundle->group_info), outbound_group_session->group_info);
 
-    group_ratchet_state->sequence = outbound_group_session->sequence;
+    group_update_key_bundle->sequence = outbound_group_session->sequence;
 
-    copy_protobuf_from_protobuf(&(group_ratchet_state->chain_key), &(outbound_group_session->chain_key));
+    copy_protobuf_from_protobuf(&(group_update_key_bundle->chain_key), &(outbound_group_session->chain_key));
 
-    copy_protobuf_from_protobuf(&(group_ratchet_state->sign_public_key), identity_public_key);
+    copy_protobuf_from_protobuf(&(group_update_key_bundle->sign_public_key), identity_public_key);
 
-    group_ratchet_state->n_adding_member_ids = n_adding_member_ids;
-    copy_group_member_ids(&(group_ratchet_state->adding_member_ids), adding_member_ids, n_adding_member_ids);
+    group_update_key_bundle->n_adding_member_info_list = n_adding_member_info_list;
+    copy_group_member_ids(&(group_update_key_bundle->adding_member_info_list), adding_member_info_list, n_adding_member_info_list);
 
     // pack
     size_t group_ratchet_state_plaintext_data_len;
     pack_group_ratchet_state(
-        group_ratchet_state,
+        group_update_key_bundle,
         group_ratchet_state_plaintext_data, &group_ratchet_state_plaintext_data_len
     );
 
     // release
-    // group_ratchet_state is released in pack_group_ratchet_state()
+    // group_update_key_bundle is released in pack_group_ratchet_state()
 
     // done
     return group_ratchet_state_plaintext_data_len;
@@ -275,7 +275,7 @@ static void insert_outbound_group_session_data(
     // combine seed secret and ID
     size_t secret_len = SEED_SECRET_LEN + sign_key_len;
     uint8_t *secret = (uint8_t *) malloc(sizeof(uint8_t) * secret_len);
-    memcpy(secret, outbound_group_session->seed_secret.data, SEED_SECRET_LEN);
+    memcpy(secret, outbound_group_session->group_seed.data, SEED_SECRET_LEN);
     memcpy(secret + SEED_SECRET_LEN, identity_public_key, sign_key_len);
 
     // generate a chain key
@@ -318,8 +318,8 @@ static void insert_inbound_group_session_data(
 }
 
 void new_outbound_group_session_by_sender(
-    size_t n_member_ids,
-    Skissm__GroupMemberInfo **member_ids,
+    size_t n_member_info_list,
+    Skissm__GroupMemberInfo **member_info_list,
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     const char *group_name,
@@ -341,9 +341,9 @@ void new_outbound_group_session_by_sender(
     skissm__group_session__init(outbound_group_session);
 
     // the sender needs to generate a random seed secret
-    outbound_group_session->seed_secret.len = SEED_SECRET_LEN;
-    outbound_group_session->seed_secret.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->seed_secret.len);
-    get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->seed_secret.data, outbound_group_session->seed_secret.len);
+    outbound_group_session->group_seed.len = SEED_SECRET_LEN;
+    outbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
+    get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->group_seed.data, outbound_group_session->group_seed.len);
 
     insert_outbound_group_session_data(
         outbound_group_session, e2ee_pack_id,
@@ -413,14 +413,14 @@ void new_outbound_group_session_by_sender(
     }
 
     // create the inbound group sessions
-    for (i = 0; i < n_member_ids; i++) {
-        if (!compare_address(member_ids[i]->member_address, user_address))
-            new_and_complete_inbound_group_session(member_ids[i], outbound_group_session);
+    for (i = 0; i < n_member_info_list; i++) {
+        if (!compare_address(member_info_list[i]->member_address, user_address))
+            new_and_complete_inbound_group_session(member_info_list[i], outbound_group_session);
     }
 
     // we do not store the seed secret in the session
-    free_mem((void **)&(outbound_group_session->seed_secret.data), sizeof(uint8_t) * outbound_group_session->seed_secret.len);
-    outbound_group_session->seed_secret.len = 0;
+    free_mem((void **)&(outbound_group_session->group_seed.data), sizeof(uint8_t) * outbound_group_session->group_seed.len);
+    outbound_group_session->group_seed.len = 0;
 
     // store
     get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
@@ -432,7 +432,7 @@ void new_outbound_group_session_by_sender(
 }
 
 void new_outbound_group_session_by_receiver(
-    const ProtobufCBinaryData *seed_secret,
+    const ProtobufCBinaryData *group_seed,
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     const char *group_name,
@@ -454,9 +454,9 @@ void new_outbound_group_session_by_receiver(
     skissm__group_session__init(outbound_group_session);
 
     // the receiver gets the seed secret from the sender
-    outbound_group_session->seed_secret.len = seed_secret->len;
-    outbound_group_session->seed_secret.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->seed_secret.len);
-    memcpy(outbound_group_session->seed_secret.data, seed_secret->data, seed_secret->len);
+    outbound_group_session->group_seed.len = group_seed->len;
+    outbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
+    memcpy(outbound_group_session->group_seed.data, group_seed->data, group_seed->len);
 
     insert_outbound_group_session_data(
         outbound_group_session, e2ee_pack_id,
@@ -465,8 +465,8 @@ void new_outbound_group_session_by_receiver(
     );
 
     // we do not store the seed secret in the session
-    free_mem((void **)&(outbound_group_session->seed_secret.data), sizeof(uint8_t) * outbound_group_session->seed_secret.len);
-    outbound_group_session->seed_secret.len = 0;
+    free_mem((void **)&(outbound_group_session->group_seed.data), sizeof(uint8_t) * outbound_group_session->group_seed.len);
+    outbound_group_session->group_seed.len = 0;
 
     // store
     get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
@@ -477,7 +477,7 @@ void new_outbound_group_session_by_receiver(
 }
 
 void new_outbound_group_session_invited(
-    Skissm__GroupUpdateKeyBundle *group_ratchet_state,
+    Skissm__GroupUpdateKeyBundle *group_update_key_bundle,
     Skissm__E2eeAddress *user_address
 ) {
     Skissm__Account *account = NULL;
@@ -489,38 +489,38 @@ void new_outbound_group_session_invited(
 
     uint8_t *identity_public_key = account->identity_key->sign_key_pair->public_key.data;
 
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(group_ratchet_state->e2ee_pack_id)->cipher_suite;
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(group_update_key_bundle->e2ee_pack_id)->cipher_suite;
     int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
 
     Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(outbound_group_session);
 
-    outbound_group_session->version = strdup(group_ratchet_state->version);
-    outbound_group_session->e2ee_pack_id = strdup(group_ratchet_state->e2ee_pack_id);
+    outbound_group_session->version = strdup(group_update_key_bundle->version);
+    outbound_group_session->e2ee_pack_id = strdup(group_update_key_bundle->e2ee_pack_id);
 
     copy_address_from_address(&(outbound_group_session->sender), user_address);
     copy_address_from_address(&(outbound_group_session->session_owner), user_address);
-    outbound_group_session->session_id = strdup(group_ratchet_state->session_id);
+    outbound_group_session->session_id = strdup(group_update_key_bundle->session_id);
 
-    copy_group_info(&(outbound_group_session->group_info), group_ratchet_state->group_info);
+    copy_group_info(&(outbound_group_session->group_info), group_update_key_bundle->group_info);
 
     size_t i;
-    size_t n_adding_member_ids = group_ratchet_state->n_adding_member_ids;
-    ProtobufCBinaryData *sender_chain_key = &(group_ratchet_state->chain_key);
-    ProtobufCBinaryData **adding_members_chain_key = (ProtobufCBinaryData **)malloc(sizeof(ProtobufCBinaryData *) * n_adding_member_ids);
-    for (i = 0; i < n_adding_member_ids; i++) {
+    size_t n_adding_member_info_list = group_update_key_bundle->n_adding_member_info_list;
+    ProtobufCBinaryData *sender_chain_key = &(group_update_key_bundle->chain_key);
+    ProtobufCBinaryData **adding_members_chain_key = (ProtobufCBinaryData **)malloc(sizeof(ProtobufCBinaryData *) * n_adding_member_info_list);
+    for (i = 0; i < n_adding_member_info_list; i++) {
         // generate the chain keys, including the sender's and new members'
         advance_group_chain_key_by_welcome(cipher_suite, sender_chain_key, &adding_members_chain_key[i]);
         advance_group_chain_key_by_add(cipher_suite, adding_members_chain_key[i], sender_chain_key);
 
-        if (compare_address(group_ratchet_state->adding_member_ids[i]->member_address, user_address)) {
+        if (compare_address(group_update_key_bundle->adding_member_info_list[i]->member_address, user_address)) {
             // create an outbound group session
             copy_protobuf_from_protobuf(&(outbound_group_session->chain_key), adding_members_chain_key[i]);
             outbound_group_session->sequence = 0;
         } else {
             // create an inbound group session corresponding to other new members
             new_and_complete_inbound_group_session_with_chain_key(
-                group_ratchet_state->adding_member_ids[i],
+                group_update_key_bundle->adding_member_info_list[i],
                 outbound_group_session,
                 adding_members_chain_key[i]
             );
@@ -539,11 +539,11 @@ void new_outbound_group_session_invited(
     // release
     skissm__account__free_unpacked(account, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
-    for (i = 0; i < n_adding_member_ids; i++) {
+    for (i = 0; i < n_adding_member_info_list; i++) {
         free_protobuf(adding_members_chain_key[i]);
         free_mem((void **)&adding_members_chain_key[i], sizeof(ProtobufCBinaryData));
     }
-    free_mem((void **)&adding_members_chain_key, sizeof(ProtobufCBinaryData *) * n_adding_member_ids);
+    free_mem((void **)&adding_members_chain_key, sizeof(ProtobufCBinaryData *) * n_adding_member_info_list);
 }
 
 void new_inbound_group_session_by_pre_key_bundle(
@@ -569,10 +569,10 @@ void new_inbound_group_session_by_pre_key_bundle(
 
     inbound_group_session->sequence = group_pre_key_bundle->sequence;
 
-    ProtobufCBinaryData *seed_secret = &(group_pre_key_bundle->seed_secret);
-    inbound_group_session->seed_secret.len = seed_secret->len;
-    inbound_group_session->seed_secret.data = (uint8_t *) malloc(sizeof(uint8_t) * inbound_group_session->seed_secret.len);
-    memcpy(inbound_group_session->seed_secret.data, seed_secret->data, seed_secret->len);
+    ProtobufCBinaryData *group_seed = &(group_pre_key_bundle->group_seed);
+    inbound_group_session->group_seed.len = group_seed->len;
+    inbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * inbound_group_session->group_seed.len);
+    memcpy(inbound_group_session->group_seed.data, group_seed->data, group_seed->len);
 
     get_skissm_plugin()->db_handler.store_group_session(inbound_group_session);
 
@@ -626,7 +626,7 @@ void complete_inbound_group_session_by_pre_key_bundle(
     inbound_group_session->sequence = group_pre_key_bundle->sequence;
 
     // combine seed secret and ID
-    memcpy(secret, group_pre_key_bundle->seed_secret.data, SEED_SECRET_LEN);
+    memcpy(secret, group_pre_key_bundle->group_seed.data, SEED_SECRET_LEN);
     memcpy(secret + SEED_SECRET_LEN, inbound_group_session->associated_data.data, sign_key_len);  // only copy the first half
 
     // generate a chain key
@@ -668,12 +668,12 @@ void complete_inbound_group_session_by_member_id(
     memcpy((inbound_group_session->associated_data.data) + sign_key_len, group_member_id->sign_public_key.data, sign_key_len);
 
     // combine seed secret and ID
-    memcpy(secret, inbound_group_session->seed_secret.data, SEED_SECRET_LEN);
+    memcpy(secret, inbound_group_session->group_seed.data, SEED_SECRET_LEN);
     memcpy(secret + SEED_SECRET_LEN, group_member_id->sign_public_key.data, sign_key_len);
 
     // we do not store the seed secret in the session
-    free_mem((void **)&(inbound_group_session->seed_secret.data), sizeof(uint8_t) * inbound_group_session->seed_secret.len);
-    inbound_group_session->seed_secret.len = 0;
+    free_mem((void **)&(inbound_group_session->group_seed.data), sizeof(uint8_t) * inbound_group_session->group_seed.len);
+    inbound_group_session->group_seed.len = 0;
 
     // generate a chain key
     int hash_len = cipher_suite->get_crypto_param().hash_len;
@@ -708,13 +708,13 @@ void new_and_complete_inbound_group_session(
 
     uint8_t *identity_public_key = group_member_id->sign_public_key.data;
 
-    ProtobufCBinaryData *seed_secret = &(other_group_session->seed_secret);
+    ProtobufCBinaryData *group_seed = &(other_group_session->group_seed);
 
     size_t secret_len = SEED_SECRET_LEN + sign_key_len;
     uint8_t *secret = (uint8_t *) malloc(sizeof(uint8_t) * secret_len);
 
     // combine seed secret and ID
-    memcpy(secret, seed_secret->data, SEED_SECRET_LEN);
+    memcpy(secret, group_seed->data, SEED_SECRET_LEN);
     memcpy(secret + SEED_SECRET_LEN, identity_public_key, sign_key_len);
 
     // generate a chain key
@@ -775,36 +775,36 @@ void new_and_complete_inbound_group_session_with_chain_key(
 }
 
 void new_and_complete_inbound_group_session_with_ratchet_state(
-    Skissm__GroupUpdateKeyBundle *group_ratchet_state,
+    Skissm__GroupUpdateKeyBundle *group_update_key_bundle,
     Skissm__E2eeAddress *user_address
 ) {
     Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(inbound_group_session);
 
-    inbound_group_session->version = strdup(group_ratchet_state->version);
-    inbound_group_session->e2ee_pack_id = strdup(group_ratchet_state->e2ee_pack_id);
-    inbound_group_session->session_id = strdup(group_ratchet_state->session_id);
+    inbound_group_session->version = strdup(group_update_key_bundle->version);
+    inbound_group_session->e2ee_pack_id = strdup(group_update_key_bundle->e2ee_pack_id);
+    inbound_group_session->session_id = strdup(group_update_key_bundle->session_id);
 
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(group_ratchet_state->e2ee_pack_id)->cipher_suite;
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(group_update_key_bundle->e2ee_pack_id)->cipher_suite;
 
-    copy_address_from_address(&(inbound_group_session->sender), group_ratchet_state->sender);
+    copy_address_from_address(&(inbound_group_session->sender), group_update_key_bundle->sender);
 
     copy_address_from_address(&(inbound_group_session->session_owner), user_address);
 
-    copy_group_info(&(inbound_group_session->group_info), group_ratchet_state->group_info);
+    copy_group_info(&(inbound_group_session->group_info), group_update_key_bundle->group_info);
 
     /** We have generated the sender's chain key in new_outbound_group_session_invited(),
      *  so we just need to generate others' chain key.
      */
-    if (group_ratchet_state->adding == false) {
-        advance_group_chain_key_by_add(cipher_suite, &(group_ratchet_state->chain_key), &(group_ratchet_state->chain_key));
+    if (group_update_key_bundle->adding == false) {
+        advance_group_chain_key_by_add(cipher_suite, &(group_update_key_bundle->chain_key), &(group_update_key_bundle->chain_key));
     }
-    copy_protobuf_from_protobuf(&(inbound_group_session->chain_key), &(group_ratchet_state->chain_key));
+    copy_protobuf_from_protobuf(&(inbound_group_session->chain_key), &(group_update_key_bundle->chain_key));
     inbound_group_session->sequence = 0;
 
     int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
 
-    uint8_t *identity_public_key = group_ratchet_state->sign_public_key.data;
+    uint8_t *identity_public_key = group_update_key_bundle->sign_public_key.data;
 
     int ad_len = 2 * sign_key_len;
     inbound_group_session->associated_data.len = ad_len;
@@ -822,8 +822,8 @@ void renew_outbound_group_session_by_welcome_and_add(
     Skissm__GroupSession *outbound_group_session,
     ProtobufCBinaryData *sender_chain_key,
     Skissm__E2eeAddress *sender_address,
-    size_t n_adding_member_ids,
-    Skissm__GroupMemberInfo **adding_member_ids,
+    size_t n_adding_member_info_list,
+    Skissm__GroupMemberInfo **adding_member_info_list,
     size_t adding_group_members_num,
     Skissm__GroupMember **adding_group_members
 ) {
@@ -857,7 +857,7 @@ void renew_outbound_group_session_by_welcome_and_add(
         group_ratchet_state_plaintext_data_len = pack_group_ratchet_state_plaintext(
             outbound_group_session, &group_ratchet_state_plaintext_data,
             sender_chain_key == NULL, identity_public_key,
-            n_adding_member_ids, adding_member_ids
+            n_adding_member_info_list, adding_member_info_list
         );
 
         cur_user_id = adding_group_members[i]->user_id;
@@ -911,17 +911,17 @@ void renew_outbound_group_session_by_welcome_and_add(
         }
     }
 
-    ProtobufCBinaryData **their_chain_keys = (ProtobufCBinaryData **)malloc(sizeof(ProtobufCBinaryData *) * n_adding_member_ids);
+    ProtobufCBinaryData **their_chain_keys = (ProtobufCBinaryData **)malloc(sizeof(ProtobufCBinaryData *) * n_adding_member_info_list);
     // advance the chain key
     if (sender_chain_key == NULL) {
         // the sender
-        for (i = 0; i < n_adding_member_ids; i++) {
+        for (i = 0; i < n_adding_member_info_list; i++) {
             advance_group_chain_key_by_welcome(cipher_suite, &(outbound_group_session->chain_key), &their_chain_keys[i]);
             advance_group_chain_key_by_add(cipher_suite, their_chain_keys[i], &(outbound_group_session->chain_key));
         }
     } else {
         // the receiver
-        for (i = 0; i < n_adding_member_ids; i++) {
+        for (i = 0; i < n_adding_member_info_list; i++) {
             advance_group_chain_key_by_welcome(cipher_suite, sender_chain_key, &their_chain_keys[i]);
             advance_group_chain_key_by_add(cipher_suite, their_chain_keys[i], sender_chain_key);
         }
@@ -959,8 +959,8 @@ void renew_outbound_group_session_by_welcome_and_add(
     }
 
     // create the inbound group sessions
-    for (i = 0; i < n_adding_member_ids; i++) {
-        new_and_complete_inbound_group_session_with_chain_key(adding_member_ids[i], outbound_group_session, their_chain_keys[i]);
+    for (i = 0; i < n_adding_member_info_list; i++) {
+        new_and_complete_inbound_group_session_with_chain_key(adding_member_info_list[i], outbound_group_session, their_chain_keys[i]);
     }
 
     // release

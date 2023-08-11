@@ -79,7 +79,7 @@ Skissm__AcceptResponse *accept_internal(
     Skissm__E2eeAddress *to,
     ProtobufCBinaryData *ciphertext_1
 ) {
-    ssm_notify_log(from, DEBUG_LOG, "accept_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
+    // ssm_notify_log(from, DEBUG_LOG, "accept_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
     
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
@@ -114,7 +114,7 @@ Skissm__F2fInviteResponse *f2f_invite_internal(
     char *e2ee_pack_id,
     uint8_t *secret, size_t secret_len
 ) {
-    ssm_notify_log(from, DEBUG_LOG, "f2f_invite_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
+    // ssm_notify_log(from, DEBUG_LOG, "f2f_invite_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
     
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
@@ -141,7 +141,7 @@ Skissm__F2fAcceptResponse *f2f_accept_internal(
     Skissm__E2eeAddress *to,
     Skissm__Account *local_account
 ) {
-    ssm_notify_log(from, DEBUG_LOG, "f2f_accept_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
+    // ssm_notify_log(from, DEBUG_LOG, "f2f_accept_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
     
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
@@ -163,7 +163,7 @@ Skissm__F2fAcceptResponse *f2f_accept_internal(
 }
 
 Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
-    ssm_notify_log(account->address, DEBUG_LOG, "publish_spk_internal(): user_address [%s:%s]", account->address->user->user_id, account->address->user->device_id);
+    // ssm_notify_log(account->address, DEBUG_LOG, "publish_spk_internal(): user_address [%s:%s]", account->address->user->user_id, account->address->user->device_id);
     
     Skissm__PublishSpkRequest *request = produce_publish_spk_request(account);
     Skissm__PublishSpkResponse *response = get_skissm_plugin()->proto_handler.publish_spk(account->address, account->auth, request);

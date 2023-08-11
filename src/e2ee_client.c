@@ -87,7 +87,7 @@ Skissm__InviteResponse *reinvite(Skissm__Session *session) {
 }
 
 Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
-    ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to_user_id [%s]", from->user->user_id, from->user->device_id, to_user_id);
+    // ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to_user_id [%s]", from->user->user_id, from->user->device_id, to_user_id);
     
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
@@ -136,18 +136,18 @@ Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_use
         return NULL;
     }
 
-    Skissm__Session **outbound_sessions = NULL;
-    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
-    // unload the old outbound sessions
-    size_t i;
-    for (i = 0; i < outbound_sessions_num; i++) {
-        Skissm__Session *outbound_session = outbound_sessions[i];
-        get_skissm_plugin()->db_handler.unload_session(
-            outbound_session->session_owner, outbound_session->from, outbound_session->to
-        );
-        skissm__session__free_unpacked(outbound_session, NULL);
-    }
-    free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
+    // Skissm__Session **outbound_sessions = NULL;
+    // size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
+    // // unload the old outbound sessions
+    // size_t i;
+    // for (i = 0; i < outbound_sessions_num; i++) {
+    //     Skissm__Session *outbound_session = outbound_sessions[i];
+    //     get_skissm_plugin()->db_handler.unload_session(
+    //         outbound_session->session_owner, outbound_session->from, outbound_session->to
+    //     );
+    //     skissm__session__free_unpacked(outbound_session, NULL);
+    // }
+    // free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
 
     Skissm__InviteResponse *response = NULL;
     response = get_pre_key_bundle_internal(from, account->auth, to_user_id, to_domain, NULL, NULL, 0);
@@ -163,16 +163,21 @@ size_t f2f_invite(
     Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, bool responded,
     uint8_t *password, size_t password_len
 ) {
-    ssm_notify_log(from, DEBUG_LOG, "f2f_invite(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
-    
+    // ssm_notify_log(from, DEBUG_LOG, "f2f_invite(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
+
+    // get the e2ee_pack_id
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
+    if (account == NULL) {
+        ssm_notify_log(from, BAD_ACCOUNT, "f2f_invite()");
+        return NULL;
+    }
+
     Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg = (Skissm__F2fPreKeyInviteMsg *)malloc(sizeof(Skissm__F2fPreKeyInviteMsg));
     skissm__f2f_pre_key_invite_msg__init(f2f_pre_key_invite_msg);
 
     f2f_pre_key_invite_msg->version = strdup(E2EE_PROTOCOL_VERSION);
 
-    // get the e2ee_pack_id
-    Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
     f2f_pre_key_invite_msg->e2ee_pack_id = strdup(account->e2ee_pack_id);
 
     f2f_pre_key_invite_msg->session_id = generate_uuid_str();
@@ -405,6 +410,32 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
             free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
 
             // invite again
+            Skissm__InviteResponse *new_invite_response = new_invite(from, to_user_id, to_domain);
+
+            Skissm__E2eeAddress *to = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
+            skissm__e2ee_address__init(to);
+            to->domain = strdup(to_domain);
+            Skissm__PeerUser *peer_user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
+            skissm__peer_user__init(peer_user);
+            peer_user->user_id = strdup(to_user_id);
+            // no specific deviceId currently
+            to->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
+            to->user = peer_user;
+            // store pending common_plaintext_data
+            store_pending_common_plaintext_data(
+                from,
+                to,
+                common_plaintext_data,
+                common_plaintext_data_len
+            );
+
+            // release
+            if (new_invite_response != NULL)
+                skissm__invite_response__free_unpacked(new_invite_response, NULL);
+            skissm__e2ee_address__free_unpacked(to, NULL);
+            free_mem((void **)&common_plaintext_data, common_plaintext_data_len);
+
+            return NULL;
         }
     }
 

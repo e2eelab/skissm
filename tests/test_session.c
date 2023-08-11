@@ -356,7 +356,8 @@ static void test_encryption(
     response = send_one2one_msg(from_address, to_user_id, to_domain, plaintext, plaintext_len);
 
     // release
-    skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+    if (response != NULL)
+        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
 }
 
 static void test_basic_session(){
@@ -1148,7 +1149,7 @@ static void test_change_devices() {
 int main() {
     test_basic_session();
     test_interaction();
-    // test_continual_messages();
+    test_continual_messages();
     test_multiple_devices();
     test_one_to_many();
     test_face_to_face();

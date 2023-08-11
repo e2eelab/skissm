@@ -114,9 +114,9 @@ static void test_one_group_pre_key() {
     outbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
     get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
 
-    outbound_group_session->seed_secret.len = test_cipher_suite->get_crypto_param().hash_len;
-    outbound_group_session->seed_secret.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->seed_secret.len);
-    get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->seed_secret.data, outbound_group_session->seed_secret.len);
+    outbound_group_session->group_seed.len = test_cipher_suite->get_crypto_param().hash_len;
+    outbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
+    get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->group_seed.data, outbound_group_session->group_seed.len);
 
     int ad_len = 2 * key_len;
     outbound_group_session->associated_data.len = ad_len;

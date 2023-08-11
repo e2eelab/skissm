@@ -68,8 +68,8 @@ size_t pack_group_pre_key_plaintext(
 /**
  * @brief Create an outbound group session by a group creator.
  *
- * @param n_member_ids
- * @param member_ids
+ * @param n_member_info_list
+ * @param member_info_list
  * @param e2ee_pack_id
  * @param user_address
  * @param group_name
@@ -79,8 +79,8 @@ size_t pack_group_pre_key_plaintext(
  * @param old_session_id
  */
 void new_outbound_group_session_by_sender(
-    size_t n_member_ids,
-    Skissm__GroupMemberInfo **member_ids,
+    size_t n_member_info_list,
+    Skissm__GroupMemberInfo **member_info_list,
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     const char *group_name,
@@ -93,7 +93,7 @@ void new_outbound_group_session_by_sender(
 /**
  * @brief Create an outbound group session by a group receiver.
  *
- * @param seed_secret
+ * @param group_seed
  * @param e2ee_pack_id
  * @param user_address
  * @param group_name
@@ -103,7 +103,7 @@ void new_outbound_group_session_by_sender(
  * @param group_members_num
  */
 void new_outbound_group_session_by_receiver(
-    const ProtobufCBinaryData *seed_secret,
+    const ProtobufCBinaryData *group_seed,
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     const char *group_name,
@@ -116,11 +116,11 @@ void new_outbound_group_session_by_receiver(
 /**
  * @brief Create an outbound group session when receiving other group member's invitation.
  *
- * @param group_ratchet_state
+ * @param group_update_key_bundle
  * @param user_address
  */
 void new_outbound_group_session_invited(
-    Skissm__GroupUpdateKeyBundle *group_ratchet_state,
+    Skissm__GroupUpdateKeyBundle *group_update_key_bundle,
     Skissm__E2eeAddress *user_address
 );
 
@@ -203,11 +203,11 @@ void new_and_complete_inbound_group_session_with_chain_key(
 /**
  * @brief Create and complete an inbound group session with other's ratchet state.
  *
- * @param group_ratchet_state
+ * @param group_update_key_bundle
  * @param user_address
  */
 void new_and_complete_inbound_group_session_with_ratchet_state(
-    Skissm__GroupUpdateKeyBundle *group_ratchet_state,
+    Skissm__GroupUpdateKeyBundle *group_update_key_bundle,
     Skissm__E2eeAddress *user_address
 );
 
@@ -217,8 +217,8 @@ void new_and_complete_inbound_group_session_with_ratchet_state(
  * @param outbound_group_session
  * @param sender_chain_key
  * @param sender_address
- * @param n_adding_member_ids
- * @param adding_member_ids
+ * @param n_adding_member_info_list
+ * @param adding_member_info_list
  * @param adding_group_members_num
  * @param adding_group_members
  */
@@ -226,8 +226,8 @@ void renew_outbound_group_session_by_welcome_and_add(
     Skissm__GroupSession *outbound_group_session,
     ProtobufCBinaryData *sender_chain_key,
     Skissm__E2eeAddress *sender_address,
-    size_t n_adding_member_ids,
-    Skissm__GroupMemberInfo **adding_member_ids,
+    size_t n_adding_member_info_list,
+    Skissm__GroupMemberInfo **adding_member_info_list,
     size_t adding_group_members_num,
     Skissm__GroupMember **adding_group_members
 );

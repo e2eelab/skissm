@@ -398,9 +398,9 @@ void copy_create_group_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         if (src->group_info != NULL)
             copy_group_info(&((*dest)->group_info), src->group_info);
-        (*dest)->n_member_ids = src->n_member_ids;
-        if (src->member_ids != NULL)
-            copy_group_member_ids(&((*dest)->member_ids), src->member_ids, src->n_member_ids);
+        (*dest)->n_member_info_list = src->n_member_info_list;
+        if (src->member_info_list != NULL)
+            copy_group_member_ids(&((*dest)->member_info_list), src->member_info_list, src->n_member_info_list);
     }
 }
 
@@ -415,9 +415,9 @@ void copy_add_group_members_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGr
         (*dest)->sequence = src->sequence;
         if (src->group_info != NULL)
             copy_group_info(&((*dest)->group_info), src->group_info);
-        (*dest)->n_adding_member_ids = src->n_adding_member_ids;
-        if (src->adding_member_ids != NULL)
-            copy_group_member_ids(&((*dest)->adding_member_ids), src->adding_member_ids, src->n_adding_member_ids);
+        (*dest)->n_adding_member_info_list = src->n_adding_member_info_list;
+        if (src->adding_member_info_list != NULL)
+            copy_group_member_ids(&((*dest)->adding_member_info_list), src->adding_member_info_list, src->n_adding_member_info_list);
         (*dest)->n_adding_members = src->n_adding_members;
         if (src->adding_members != NULL)
             copy_group_members(&((*dest)->adding_members), src->adding_members, src->n_adding_members);
@@ -434,9 +434,9 @@ void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm_
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         if (src->group_info != NULL)
             copy_group_info(&((*dest)->group_info), src->group_info);
-        (*dest)->n_member_ids = src->n_member_ids;
-        if (src->member_ids != NULL)
-            copy_group_member_ids(&((*dest)->member_ids), src->member_ids, src->n_member_ids);
+        (*dest)->n_member_info_list = src->n_member_info_list;
+        if (src->member_info_list != NULL)
+            copy_group_member_ids(&((*dest)->member_info_list), src->member_info_list, src->n_member_info_list);
         (*dest)->n_removing_members = src->n_removing_members;
         if (src->removing_members != NULL)
             copy_group_members(&((*dest)->removing_members), src->removing_members, src->n_removing_members);
