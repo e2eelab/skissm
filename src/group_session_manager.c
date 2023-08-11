@@ -76,6 +76,7 @@ bool consume_create_group_response(
         );
         // notify
         ssm_notify_group_created(sender_address, group_address, group_name);
+
         // done
         return true;
     } else {
@@ -300,6 +301,18 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
     return request;
 }
 
+static bool user_in_group(Skissm__E2eeAddress *user_address, Skissm__GroupMember **group_members, size_t group_members_num) {
+    size_t i;
+    for (i = 0; i < group_members_num; i++) {
+        if (safe_strcmp(group_members[i]->user_id, user_address->user->user_id)
+            && safe_strcmp(group_members[i]->domain, user_address->domain)
+        ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool consume_remove_group_members_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__RemoveGroupMembersResponse *response,
@@ -318,11 +331,16 @@ bool consume_remove_group_members_response(
         get_skissm_plugin()->db_handler.unload_group_session_by_id(sender_address, old_session_id);
         const char *group_name = outbound_group_session->group_info->group_name;
 
-        // generate a new outbound group session
-        new_outbound_group_session_by_sender(
-            response->n_member_ids, response->member_ids,
-            e2ee_pack_id, sender_address, group_name, group_address, group_members, group_members_num, old_session_id
-        );
+        if (group_members_num > 0 && user_in_group(sender_address, group_members, group_members_num)) {
+            // generate a new outbound group session
+            new_outbound_group_session_by_sender(
+                response->n_member_ids, response->member_ids,
+                e2ee_pack_id, sender_address, group_name, group_address, group_members, group_members_num, old_session_id
+            );
+        } else {
+            // user is removed from group
+            get_skissm_plugin()->event_handler.on_log(sender_address, DEBUG_LOG, "consume_remove_group_members_response() skip renew outbound group session since user is not in group");
+        }
 
         // notify
         ssm_notify_group_members_removed(
@@ -352,7 +370,7 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
     // if the receiver is the one who is going to be removed, the receiver should unload his or her own group session
     size_t i;
     for (i = 0; i < msg->n_removing_members; i++) {
-        if (safe_strcmp(receiver_address->user->user_id, msg->removing_members[i]->user_id)) {
+        if (safe_strcmp(receiver_address->user->user_id, msg->removing_members[i]->user_id) && safe_strcmp(receiver_address->domain, msg->removing_members[i]->domain)) {
             // unload all outbound and inbound group sessions
             get_skissm_plugin()->db_handler.unload_group_session_by_address(receiver_address, group_address);
 
@@ -366,6 +384,8 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
             );
 
             // done
+            // no need to renew outbound group session
+            get_skissm_plugin()->event_handler.on_log(receiver_address, DEBUG_LOG, "consume_remove_group_members_msg() skip renew outbound group session because local user is removed");
             return true;
         }
     }

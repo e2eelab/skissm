@@ -6,11 +6,13 @@
 #include "skissm/group_session_manager.h"
 #include "skissm/mem_util.h"
 #include "skissm/session_manager.h"
+#include "skissm/e2ee_client.h"
 
 Skissm__InviteResponse *get_pre_key_bundle_internal(
     Skissm__E2eeAddress *from, const char *auth, const char *to_user_id, const char *to_domain, const char *to_device_id,
     uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len
 ) {
+    // to_device_id can be null
     Skissm__GetPreKeyBundleRequest *request = produce_get_pre_key_bundle_request(to_user_id, to_domain, to_device_id);
     Skissm__GetPreKeyBundleResponse *response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(from, auth, request);
     Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
@@ -382,44 +384,81 @@ static void resend_pending_request(Skissm__Account *account) {
             }
             case SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBERS_REQUEST: {
                 Skissm__AddGroupMembersRequest *add_group_members_request = skissm__add_group_members_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
-                Skissm__AddGroupMembersResponse *add_group_members_response = get_skissm_plugin()->proto_handler.add_group_members(user_address, auth, add_group_members_request);
+
                 Skissm__GroupSession *outbound_group_session_1 = NULL;
                 get_skissm_plugin()->db_handler.load_group_session_by_address(user_address, user_address, add_group_members_request->msg->group_info->group_address, &outbound_group_session_1);
-                succ = consume_add_group_members_response(outbound_group_session_1, add_group_members_response, add_group_members_request->msg->adding_members, add_group_members_request->msg->n_adding_members);
+
+                if (outbound_group_session_1 == NULL) {
+                    succ = false;
+                } else {
+                    Skissm__AddGroupMembersResponse *add_group_members_response = get_skissm_plugin()->proto_handler.add_group_members(user_address, auth, add_group_members_request);
+
+                    succ = consume_add_group_members_response(outbound_group_session_1, add_group_members_response, add_group_members_request->msg->adding_members, add_group_members_request->msg->n_adding_members);
+
+                    // release
+                    skissm__add_group_members_response__free_unpacked(add_group_members_response, NULL);
+                    skissm__group_session__free_unpacked(outbound_group_session_1, NULL);
+                }
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 }
+                // release
                 skissm__add_group_members_request__free_unpacked(add_group_members_request, NULL);
-                skissm__add_group_members_response__free_unpacked(add_group_members_response, NULL);
-                skissm__group_session__free_unpacked(outbound_group_session_1, NULL);
                 break;
             }
             case SKISSM__PENDING_REQUEST_TYPE__REMOVE_GROUP_MEMBERS_REQUEST: {
                 Skissm__RemoveGroupMembersRequest *remove_group_members_request = skissm__remove_group_members_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
-                Skissm__RemoveGroupMembersResponse *remove_group_members_response = get_skissm_plugin()->proto_handler.remove_group_members(user_address, auth, remove_group_members_request);
+
                 Skissm__GroupSession *outbound_group_session_2 = NULL;
                 get_skissm_plugin()->db_handler.load_group_session_by_address(user_address, user_address, remove_group_members_request->msg->group_info->group_address, &outbound_group_session_2);
-                succ = consume_remove_group_members_response(outbound_group_session_2, remove_group_members_response, remove_group_members_request->msg->removing_members, remove_group_members_request->msg->n_removing_members);
+
+                if (outbound_group_session_2 == NULL) {
+                    succ = false;
+                } else {
+                    Skissm__RemoveGroupMembersResponse *remove_group_members_response = get_skissm_plugin()->proto_handler.remove_group_members(user_address, auth, remove_group_members_request);
+                    succ = consume_remove_group_members_response(outbound_group_session_2, remove_group_members_response, remove_group_members_request->msg->removing_members, remove_group_members_request->msg->n_removing_members);
+                    // release
+                    skissm__remove_group_members_response__free_unpacked(remove_group_members_response, NULL);
+                    skissm__group_session__free_unpacked(outbound_group_session_2, NULL);
+                }
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 }
+                // release
                 skissm__remove_group_members_request__free_unpacked(remove_group_members_request, NULL);
-                skissm__remove_group_members_response__free_unpacked(remove_group_members_response, NULL);
-                skissm__group_session__free_unpacked(outbound_group_session_2, NULL);
                 break;
             }
             case SKISSM__PENDING_REQUEST_TYPE__SEND_GROUP_MSG_REQUEST: {
                 Skissm__SendGroupMsgRequest *send_group_msg_request = skissm__send_group_msg_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
-                Skissm__SendGroupMsgResponse *send_group_msg_response = get_skissm_plugin()->proto_handler.send_group_msg(user_address, auth, send_group_msg_request);
+
                 Skissm__GroupSession *outbound_group_session_3 = NULL;
                 get_skissm_plugin()->db_handler.load_group_session_by_address(user_address, user_address, send_group_msg_request->msg->to, &outbound_group_session_3);
-                succ = consume_send_group_msg_response(outbound_group_session_3, send_group_msg_response);
+
+                if (outbound_group_session_3 == NULL) {
+                    succ = false;
+                } else {
+                    Skissm__SendGroupMsgResponse *send_group_msg_response = get_skissm_plugin()->proto_handler.send_group_msg(user_address, auth, send_group_msg_request);
+
+                    succ = consume_send_group_msg_response(outbound_group_session_3, send_group_msg_response);
+                    // release
+                    skissm__send_group_msg_response__free_unpacked(send_group_msg_response, NULL);
+                    skissm__group_session__free_unpacked(outbound_group_session_3, NULL);
+                }
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 }
+                // release
                 skissm__send_group_msg_request__free_unpacked(send_group_msg_request, NULL);
-                skissm__send_group_msg_response__free_unpacked(send_group_msg_response, NULL);
-                skissm__group_session__free_unpacked(outbound_group_session_3, NULL);
+                break;
+            } 
+            case SKISSM__PENDING_REQUEST_TYPE__PROTO_MSG: {
+                Skissm__ProtoMsg *proto_msg = skissm__proto_msg__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
+                Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = consume_proto_msg(proto_msg->to, proto_msg->tag->proto_msg_id);
+                if (consume_proto_msg_response != NULL || consume_proto_msg_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                }
+                skissm__proto_msg__free_unpacked(proto_msg, NULL);
+                skissm__consume_proto_msg_response__free_unpacked(consume_proto_msg_response, NULL);
                 break;
             }
             default:

@@ -322,6 +322,46 @@ static void mock_claire_account(uint64_t account_id, const char *user_name) {
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 }
 
+static void mock_alice_pqc_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    char *device_id = generate_uuid_str();
+    const char *authenticator = "alice@domain.com.tw";
+    const char *auth_code = "123456";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
+}
+
+static void mock_bob_pqc_account(uint64_t account_id, const char *user_name) {
+    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    char *device_id = generate_uuid_str();
+    const char *authenticator = "bob@domain.com.tw";
+    const char *auth_code = "654321";
+    Skissm__RegisterUserResponse *response =
+        register_user(account_id,
+            e2ee_pack_id,
+            user_name,
+            device_id,
+            authenticator,
+            auth_code);
+    assert(safe_strcmp(device_id, response->address->user->device_id));
+    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
+}
+
 static void test_encryption(
     Skissm__E2eeAddress *from_address, const char *to_user_id, const char *to_domain,
     uint8_t *plaintext, size_t plaintext_len
@@ -344,7 +384,7 @@ static void test_group_encryption(
     skissm__send_group_msg_response__free_unpacked(response, NULL);
 }
 
-static void test_two_members_session(){
+static void test_two_members_session() {
     // test start
     printf("test_two_members_session begin!!!\n");
     tear_up();
@@ -384,6 +424,111 @@ static void test_two_members_session(){
     uint8_t plaintext[] = "This message will be sent to Bob and Alice's first device.";
     size_t plaintext_len = sizeof(plaintext) - 1;
     test_encryption(device_2, bob_user_id, bob_domain, plaintext, plaintext_len);
+
+    // release
+    skissm__invite_response__free_unpacked(response_1, NULL);
+    skissm__invite_response__free_unpacked(response_2, NULL);
+
+    // test stop
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
+static void test_two_members_four_devices() {
+    // test start
+    printf("test_two_members_four_devices begin!!!\n");
+    tear_up();
+    test_begin();
+
+    mock_alice_pqc_account(1, "alice");
+    mock_bob_pqc_account(2, "bob");
+
+    Skissm__E2eeAddress *alice_device_1 = account_data[0]->address;
+    char *alice_user_id = alice_device_1->user->user_id;
+    char *alice_domain = alice_device_1->domain;
+    Skissm__E2eeAddress *bob_device_1 = account_data[1]->address;
+    char *bob_user_id = bob_device_1->user->user_id;
+    char *bob_domain = bob_device_1->domain;
+
+    // Alice invites Bob to create a session
+    Skissm__InviteResponse *response_1 = invite(alice_device_1, bob_user_id, bob_domain);
+    // Bob invites Alice to create a session
+    Skissm__InviteResponse *response_2 = invite(bob_device_1, alice_user_id, alice_domain);
+
+    sleep(3);
+
+    // Alice sends a message to Bob
+    uint8_t plaintext_1[] = "This is Alice's message.";
+    size_t plaintext_1_len = sizeof(plaintext_1) - 1;
+    test_encryption(alice_device_1, bob_user_id, bob_domain, plaintext_1, plaintext_1_len);
+
+    // Bob sends a message to Alice
+    uint8_t plaintext_2[] = "This is Bob's message.";
+    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
+    test_encryption(bob_device_1, alice_user_id, alice_domain, plaintext_2, plaintext_2_len);
+
+    sleep(2);
+
+    // Alice adds a new device
+    mock_alice_pqc_account(3, "alice");
+
+    Skissm__E2eeAddress *alice_device_2 = account_data[2]->address;
+
+    // face-to-face session creation between Alice's two devices
+    uint8_t password_1[] = "password 1";
+    size_t password_1_len = sizeof(password_1) - 1;
+    f2f_password_created(alice_device_2, alice_device_1, password_1, password_1_len);
+
+    f2f_invite(alice_device_2, alice_device_1, 0, password_1, password_1_len);
+
+    sleep(1);
+
+    // Alice uses the first device to send a message
+    uint8_t plaintext_3[] = "This message will be sent to Bob and Alice's second device.";
+    size_t plaintext_3_len = sizeof(plaintext_3) - 1;
+    test_encryption(alice_device_1, bob_user_id, bob_domain, plaintext_3, plaintext_3_len);
+    // Alice uses the second device to send a message
+    uint8_t plaintext_4[] = "This message will be sent to Bob and Alice's first device.";
+    size_t plaintext_4_len = sizeof(plaintext_4) - 1;
+    test_encryption(alice_device_2, bob_user_id, bob_domain, plaintext_4, plaintext_4_len);
+    // Bob sends a message
+    uint8_t plaintext_5[] = "This message will be sent to Alice's two devices.";
+    size_t plaintext_5_len = sizeof(plaintext_5) - 1;
+    test_encryption(bob_device_1, alice_user_id, alice_domain, plaintext_5, plaintext_5_len);
+
+    sleep(2);
+
+    // Bob adds a new device
+    mock_bob_pqc_account(4, "bob");
+
+    Skissm__E2eeAddress *bob_device_2 = account_data[3]->address;
+
+    // face-to-face session creation between Alice's two devices
+    uint8_t password_2[] = "password 2";
+    size_t password_2_len = sizeof(password_2) - 1;
+    f2f_password_created(bob_device_2, bob_device_1, password_2, password_2_len);
+
+    f2f_invite(bob_device_2, bob_device_1, 0, password_2, password_2_len);
+
+    sleep(1);
+
+    // Bob uses the first device to send a message
+    uint8_t plaintext_6[] = "This message will be sent to Alice's two devices and Bob's second device.";
+    size_t plaintext_6_len = sizeof(plaintext_6) - 1;
+    test_encryption(bob_device_1, alice_user_id, alice_domain, plaintext_6, plaintext_6_len);
+    // Bob uses the second device to send a message
+    uint8_t plaintext_7[] = "This message will be sent to Alice's two devices and Bob's first device.";
+    size_t plaintext_7_len = sizeof(plaintext_7) - 1;
+    test_encryption(bob_device_2, alice_user_id, alice_domain, plaintext_7, plaintext_7_len);
+    // Alice uses the first device to send a message
+    uint8_t plaintext_8[] = "This message will be sent to Bob's two devices and Alice's second device.";
+    size_t plaintext_8_len = sizeof(plaintext_8) - 1;
+    test_encryption(alice_device_1, bob_user_id, bob_domain, plaintext_8, plaintext_8_len);
+    // Alice uses the second device to send a message
+    uint8_t plaintext_9[] = "This message will be sent to Bob's two devices and Alice's first device.";
+    size_t plaintext_9_len = sizeof(plaintext_9) - 1;
+    test_encryption(alice_device_2, bob_user_id, bob_domain, plaintext_9, plaintext_9_len);
 
     // release
     skissm__invite_response__free_unpacked(response_1, NULL);
@@ -495,6 +640,7 @@ static void test_three_members_group_session() {
 
 int main() {
     test_two_members_session();
+    test_two_members_four_devices();
     test_three_members_group_session();
     return 0;
 }
