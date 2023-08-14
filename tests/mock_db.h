@@ -61,9 +61,6 @@ uint32_t load_one_time_pre_keys(
     uint64_t account_id,
     Skissm__OneTimePreKey ***one_time_pre_keys
 );
-uint32_t load_next_signed_pre_key_id(
-    uint64_t account_id
-);
 uint32_t load_next_one_time_pre_key_id(
     uint64_t account_id
 );

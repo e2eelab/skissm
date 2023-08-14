@@ -136,19 +136,6 @@ Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_use
         return NULL;
     }
 
-    // Skissm__Session **outbound_sessions = NULL;
-    // size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
-    // // unload the old outbound sessions
-    // size_t i;
-    // for (i = 0; i < outbound_sessions_num; i++) {
-    //     Skissm__Session *outbound_session = outbound_sessions[i];
-    //     get_skissm_plugin()->db_handler.unload_session(
-    //         outbound_session->session_owner, outbound_session->from, outbound_session->to
-    //     );
-    //     skissm__session__free_unpacked(outbound_session, NULL);
-    // }
-    // free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
-
     Skissm__InviteResponse *response = NULL;
     response = get_pre_key_bundle_internal(from, account->auth, to_user_id, to_domain, NULL, NULL, 0);
 
@@ -534,32 +521,6 @@ Skissm__AddGroupMembersResponse *add_group_members(
         return NULL;
     }
 
-    // send message to server
-    // size_t i;
-    // Skissm__AddGroupMembersRequest *request;
-    // Skissm__AddGroupMembersResponse *response;
-    // bool succ;
-    // for (i = 0; i < adding_members_num; i++) {
-    //     request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
-    //     response = get_skissm_plugin()->proto_handler.add_group_members(account->address, account->auth, request);
-    //     succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
-    //     if (!succ) {
-    //         // pack reuest to request_data
-    //         size_t request_data_len = skissm__add_group_members_request__get_packed_size(request);
-    //         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-    //         skissm__add_group_members_request__pack(request, request_data);
-            
-    //         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBERS_REQUEST, request_data, request_data_len, NULL, 0);
-    //         // release
-    //         free_mem((void *)&request_data, request_data_len);
-    //     }
-
-    //     // release
-    //     skissm__add_group_members_request__free_unpacked(request, NULL);
-    //     if (response != NULL) {
-    //         skissm__add_group_members_response__free_unpacked(response, NULL);
-    //     }
-    // }
     Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
     Skissm__AddGroupMembersResponse *response = get_skissm_plugin()->proto_handler.add_group_members(account->address, account->auth, request);
     bool succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
