@@ -1,5 +1,9 @@
 build
 build-xcode
+.idea
+.vs
+cmake-build-debug
+
 
 CMakeLists.txt.user
 CMakeCache.txt
