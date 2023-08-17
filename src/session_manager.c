@@ -443,8 +443,12 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     Skissm__Session *inbound_session = NULL;
     get_skissm_plugin()->db_handler.load_inbound_session(msg->session_id, receiver_address, &inbound_session);
     if (inbound_session != NULL) {
-        // the corresponding inbound session has already existed
-        return true;
+        // unload this inbound_session and create a new inbound session for sending accept request
+        ssm_notify_log(receiver_address, DEBUG_LOG, "consume_invite_msg() corresponding inbound session has already existed, remove it");
+        get_skissm_plugin()->db_handler.unload_session(inbound_session->session_owner, inbound_session->from, inbound_session->to);
+
+        // release
+        skissm__session__free_unpacked(inbound_session, NULL);
     }
 
     // notify

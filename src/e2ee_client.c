@@ -69,8 +69,10 @@ Skissm__InviteResponse *reinvite(Skissm__Session *session) {
     if (!session->responded) {
         // check the time we invited last time
         int64_t now = get_skissm_plugin()->common_handler.gen_ts();
-        if (now < session->t_invite + INVITE_WAITING_TIME_MS)
+        if (now < session->t_invite + INVITE_WAITING_TIME_MS) {
+            ssm_notify_log(session->session_owner, DEBUG_LOG, "reinvite(): skipped for not exceed INVITE_WAITING_TIME_MS(60s)");
             return NULL;
+        }
 
         // update the invitation time and resend
         session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
