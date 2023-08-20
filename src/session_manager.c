@@ -449,6 +449,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
 
         // release
         skissm__session__free_unpacked(inbound_session, NULL);
+        inbound_session = NULL;
     }
 
     // notify
