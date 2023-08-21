@@ -30,7 +30,7 @@ Skissm__RegisterUserResponse *register_user(
  * @param session The outbound session
  * @return  Skissm__InviteResponse *
  */
-Skissm__InviteResponse *reinvite(Skissm__Session *session);
+Skissm__InviteResponse *reinvite(Skissm__Session *outbount_session);
 
 /**
  * @brief Send invite request and create a new outbound session

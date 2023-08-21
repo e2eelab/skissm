@@ -63,22 +63,25 @@ Skissm__RegisterUserResponse *register_user(
     return response;
 }
 
-Skissm__InviteResponse *reinvite(Skissm__Session *session) {
+Skissm__InviteResponse *reinvite(Skissm__Session *outbount_session) {
     Skissm__InviteResponse *response = NULL;
-    if (!session->responded) {
+    // only reinvite the outbound session that is not responded
+    if (!outbount_session->responded) {
         // check the time we invited last time
         int64_t now = get_skissm_plugin()->common_handler.gen_ts();
-        if (now < session->t_invite + INVITE_WAITING_TIME_MS)
+        if (now < outbount_session->t_invite + INVITE_WAITING_TIME_MS) {
+            ssm_notify_log(outbount_session->session_owner, DEBUG_LOG, "reinvite(): skipped for not exceed INVITE_WAITING_TIME_MS(60s)");
             return NULL;
+        }
 
         // update the invitation time and resend
-        session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
-        get_skissm_plugin()->db_handler.store_session(session);
-        response = invite_internal(session);
+        outbount_session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
+        get_skissm_plugin()->db_handler.store_session(outbount_session);
+        response = invite_internal(outbount_session);
 
         if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            // unload outbound_session to enable retry
-            get_skissm_plugin()->db_handler.unload_session(session->session_owner, session->from, session->to);
+            // keep outbound session to enable retry
+            ssm_notify_log(outbount_session->session_owner, DEBUG_LOG, "reinvite(): from [%s:%s] to[%s:%s] failed need another try", outbount_session->from->user->user_id, outbount_session->from->user->device_id, outbount_session->to->user->user_id, outbount_session->to->user->device_id);
         }
     }
 
@@ -102,23 +105,29 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
     if (outbound_sessions_num == 0) {
         response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
     } else {
+        // should we call get_pre_key_bundle_internal() again?
         size_t i;
         for (i = 0; i < outbound_sessions_num; i++) {
-            Skissm__Session *cur_outbound_session = outbound_sessions[i];
-            response = reinvite(cur_outbound_session);
+            Skissm__Session *outbound_session = outbound_sessions[i];
+            response = reinvite(outbound_session);
 
-            // release
-            if (response != NULL) {
+            // response will be null if outbound_session is already responded
+            if (response == NULL) {
+                ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to [%s@%s] skip sending invite request since outbound session is already responded", from->user->user_id, from->user->device_id, to_user_id, to_domain);
+            } else {
+                ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to [%s@%s]  reinvite got responsesince outbound session is already responded", from->user->user_id, from->user->device_id, to_user_id, to_domain, response->code);
+                // release previous response
                 skissm__invite_response__free_unpacked(response, NULL);
                 response = NULL;
             }
+
             // release
-            skissm__session__free_unpacked(cur_outbound_session, NULL);
+            skissm__session__free_unpacked(outbound_session, NULL);
+
+            // return last response
         }
         // release
         free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
-        // TODO: return what
-        response = NULL;
     }
 
     // release
@@ -144,6 +153,7 @@ Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_use
     free(auth);
 
     // done
+    // response can be Null
     return response;
 }
 
