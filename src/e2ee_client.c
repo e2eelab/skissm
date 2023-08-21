@@ -168,7 +168,7 @@ size_t f2f_invite(
     get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
     if (account == NULL) {
         ssm_notify_log(from, BAD_ACCOUNT, "f2f_invite()");
-        return NULL;
+        return 0;
     }
 
     Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg = (Skissm__F2fPreKeyInviteMsg *)malloc(sizeof(Skissm__F2fPreKeyInviteMsg));
