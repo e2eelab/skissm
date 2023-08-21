@@ -98,37 +98,10 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
         ssm_notify_log(from, BAD_ACCOUNT, "invite()");
         return NULL;
     }
+    // we should always call get_pre_key_bundle_internal() since there may have new devices for to_user_id@to_domain
+    // not just check outbound sessions in db currently.
 
-    Skissm__Session **outbound_sessions = NULL;
-    Skissm__InviteResponse *response = NULL;
-    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
-    if (outbound_sessions_num == 0) {
-        response = get_pre_key_bundle_internal(from, account->auth, to_user_id, to_domain, NULL, NULL, 0);
-    } else {
-        // should we call get_pre_key_bundle_internal() again?
-        size_t i;
-        for (i = 0; i < outbound_sessions_num; i++) {
-            Skissm__Session *outbound_session = outbound_sessions[i];
-            response = reinvite(outbound_session);
-
-            // response will be null if outbound_session is already responded
-            if (response == NULL) {
-                ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to [%s@%s] skip sending invite request since outbound session is already responded", from->user->user_id, from->user->device_id, to_user_id, to_domain);
-            } else {
-                ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to [%s@%s]  reinvite got responsesince outbound session is already responded", from->user->user_id, from->user->device_id, to_user_id, to_domain, response->code);
-                // release previous response
-                skissm__invite_response__free_unpacked(response, NULL);
-                response = NULL;
-            }
-
-            // release
-            skissm__session__free_unpacked(outbound_session, NULL);
-
-            // return last response
-        }
-        // release
-        free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
-    }
+    Skissm__InviteResponse *response = get_pre_key_bundle_internal(from, account->auth, to_user_id, to_domain, NULL, NULL, 0);
 
     // release
     skissm__account__free_unpacked(account, NULL);
