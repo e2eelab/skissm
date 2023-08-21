@@ -144,7 +144,7 @@ bool consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkRe
         // save to db
         if (account->saved == true) {
             Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;
-            get_skissm_plugin()->db_handler.update_signed_pre_key(account->account_id, signed_pre_key);
+            get_skissm_plugin()->db_handler.update_signed_pre_key(account->address, signed_pre_key);
         }
         return true;
     } else {
@@ -183,7 +183,7 @@ bool consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, S
         // save to db
         size_t i;
         for (i = 0; i < opks_num; i++) {
-            get_skissm_plugin()->db_handler.add_one_time_pre_key(account->account_id, account->one_time_pre_keys[old_opks_num + i]);
+            get_skissm_plugin()->db_handler.add_one_time_pre_key(account->address, account->one_time_pre_keys[old_opks_num + i]);
         }
         return true;
     } else {

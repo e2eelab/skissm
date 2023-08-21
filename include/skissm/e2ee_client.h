@@ -10,7 +10,6 @@ extern "C" {
 /**
  * @brief Register a new account.
  *
- * @param account_id The unique account id.
  * @param e2ee_pack_id The e2ee package id to be used.
  * @param user_name The user name that is creating the new account.
  * @param device_id The device id that will be binded to the new account.
@@ -19,7 +18,6 @@ extern "C" {
  * @return Skissm__RegisterUserResponse *
  */
 Skissm__RegisterUserResponse *register_user(
-    uint64_t account_id,
     const char *e2ee_pack_id,
     const char *user_name,
     const char *device_id,

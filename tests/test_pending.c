@@ -341,13 +341,13 @@ static void test_sending_before_accept() {
     const char *alice_authenticator = "alice@domain.com.tw";
     const char *alice_auth_code = "123456";
     Skissm__RegisterUserResponse *alice_response = register_user(
-        1, e2ee_pack_id, "Alice", alice_device_id, alice_authenticator, alice_auth_code
+        e2ee_pack_id, "Alice", alice_device_id, alice_authenticator, alice_auth_code
     );
     char *bob_device_id = generate_uuid_str();
     const char *bob_authenticator = "bob@domain.com.tw";
     const char *bob_auth_code = "654321";
     Skissm__RegisterUserResponse *bob_response = register_user(
-        2, e2ee_pack_id, "Bob", bob_device_id, bob_authenticator, bob_auth_code
+        e2ee_pack_id, "Bob", bob_device_id, bob_authenticator, bob_auth_code
     );
 
     Skissm__E2eeAddress *alice_address = alice_response->address, *bob_address = bob_response->address;

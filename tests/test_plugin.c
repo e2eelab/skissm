@@ -88,17 +88,15 @@ struct skissm_plugin_t ssm_plugin = {
     {
         // account
         store_account,
-        load_account,
         load_account_by_address,
         load_accounts,
-        update_identity_key,
         update_signed_pre_key,
         load_signed_pre_key,
         remove_expired_signed_pre_key,
-        update_address,
         add_one_time_pre_key,
         remove_one_time_pre_key,
         update_one_time_pre_key,
+        load_auth,
         // session
         load_inbound_session,
         load_outbound_session,

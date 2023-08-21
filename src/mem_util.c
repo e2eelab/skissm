@@ -211,7 +211,6 @@ void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src) {
     *dest = (Skissm__Account *)malloc(sizeof(Skissm__Account));
     skissm__account__init(*dest);
     (*dest)->version = strdup(src->version);
-    (*dest)->account_id = src->account_id;
     (*dest)->saved = src->saved;
     if (src->address) {
         copy_address_from_address(&((*dest)->address), src->address);

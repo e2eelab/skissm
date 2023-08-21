@@ -79,7 +79,16 @@ void test_insert_address()
     mock_address(&address, "alice", "alice's domain", "alice's device");
 
     // insert to the db
-    insert_address(address);
+    sqlite_int64 address_id = insert_address(address);
+
+    // try to load address
+    Skissm__E2eeAddress *address_copy = NULL;
+    load_address(address_id, &address_copy);
+
+    if (address_copy != NULL) {
+        assert(compare_address(address, address_copy));
+        free_address(address_copy);
+    }
 
     // free
     free_address(address);
@@ -148,37 +157,11 @@ void test_init_account()
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
     store_account(account);
-
-    // free
-    free_account(account);
-
-    tear_down();
-}
-
-void test_update_identity_key()
-{
-    fprintf(stderr, "test_update_identity_key\n");
-    tear_up();
-    get_skissm_plugin()->event_handler = test_event_handler;
-
-    // create account
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
-    mock_address(&(account->address), "alice", "alice's domain", "alice's device");
-
-    // insert to the db
-    store_account(account);
-
-    // keypair used to update
-    Skissm__IdentityKey *identity_key;
-    mock_identity_keypair(&identity_key, "new public key", "new private key");
-
-    // update_identity_key
-    update_identity_key(account->account_id, identity_key);
 
     // free
     free_account(account);
@@ -193,7 +176,7 @@ void test_update_signed_pre_key()
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
@@ -204,38 +187,11 @@ void test_update_signed_pre_key()
     mock_signed_pre_keypair(&signed_pre_key, 1, "hello public key", "hello private key", "hello signature");
 
     // update_signed_pre_key
-    update_signed_pre_key(account->account_id, signed_pre_key);
+    update_signed_pre_key(account->address, signed_pre_key);
 
     // free
     free_account(account);
     free_signed_pre_keypair(signed_pre_key);
-
-    tear_down();
-}
-
-void test_update_address()
-{
-    fprintf(stderr, "test_update_address\n");
-    tear_up();
-    get_skissm_plugin()->event_handler = test_event_handler;
-
-    // create account
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
-    mock_address(&(account->address), "alice", "alice's domain", "alice's device");
-
-    // insert to the db
-    store_account(account);
-
-    // create address
-    Skissm__E2eeAddress *new_address;
-    mock_address(&(new_address), "bob", "bob's domain", "bob's device");
-
-    // update_address
-    update_address(account->account_id, new_address);
-
-    // free
-    free_account(account);
-    free_address(new_address);
 
     tear_down();
 }
@@ -247,7 +203,7 @@ void test_add_one_time_pre_key()
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
@@ -258,7 +214,7 @@ void test_add_one_time_pre_key()
     mock_one_time_pre_keypair(&one_time_pre_key, 101, 0, "hello public key", "hello private key");
 
     // add_one_time_pre_key
-    add_one_time_pre_key(account->account_id, one_time_pre_key);
+    add_one_time_pre_key(account->address, one_time_pre_key);
 
     // free
     free_account(account);
@@ -274,15 +230,16 @@ void test_load_account()
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
+    account->auth = strdup("auth");
 
     // insert to the db
     store_account(account);
 
     // load_account
     Skissm__Account *account_copy;
-    load_account(account->account_id, &account_copy);
+    load_account_by_address(account->address, &account_copy);
 
     // assert account equals to account_copy
     assert(is_equal_account(account, account_copy));
@@ -301,14 +258,14 @@ void test_two_accounts()
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create the first account
-    Skissm__Account *account_1 = create_account(1, TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account_1 = create_account(TEST_E2EE_PACK_ID_ECC);
     mock_address(&(account_1->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
     store_account(account_1);
 
     // create the first account
-    Skissm__Account *account_2 = create_account(2, TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account_2 = create_account(TEST_E2EE_PACK_ID_ECC);
     mock_address(&(account_2->address), "bob", "bob's domain", "bob's device");
 
     // insert to the db
@@ -316,14 +273,14 @@ void test_two_accounts()
 
     // load the first account
     Skissm__Account *account_copy_1;
-    load_account(account_1->account_id, &account_copy_1);
+    load_account_by_address(account_1->address, &account_copy_1);
 
     // assert account_1 equals to account_copy_1
     assert(is_equal_account(account_1, account_copy_1));
 
     // load the second account
     Skissm__Account *account_copy_2;
-    load_account(account_2->account_id, &account_copy_2);
+    load_account_by_address(account_2->address, &account_copy_2);
 
     // assert account_2 equals to account_copy_2
     assert(is_equal_account(account_2, account_copy_2));
@@ -343,9 +300,7 @@ int main()
     test_insert_signed_pre_key();
     test_insert_one_time_pre_key();
     test_init_account();
-    test_update_identity_key();
     test_update_signed_pre_key();
-    test_update_address();
     test_add_one_time_pre_key();
     test_load_account();
     test_two_accounts();

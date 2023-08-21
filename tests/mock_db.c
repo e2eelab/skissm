@@ -341,10 +341,10 @@ static const char *ACCOUNT_DROP_TABLE = "DROP TABLE IF EXISTS ACCOUNT;";
 
 static const char *ACCOUNT_CREATE_TABLE = "CREATE TABLE ACCOUNT( "
                                           //   "ACCOUNT_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                                          "ADDRESS PRIMARY KEY INTEGER NOT NULL, "
+                                          "ADDRESS INTEGER PRIMARY KEY NOT NULL, "
                                           "VERSION TEXT NOT NULL, "
                                           "SAVED INTEGER NOT NULL, "
-                                          "AUTH TEXT NOT NULL," // newly added
+                                          "AUTH TEXT NOT NULL, " // newly added
                                           "PASSWORD TEXT NOT NULL, "
                                           "E2EE_PACK_ID TEXT NOT NULL, "
                                           "IDENTITY_KEY INTEGER NOT NULL, "
@@ -382,35 +382,34 @@ static const char *ACCOUNTS_NUM = "SELECT COUNT(*) FROM ACCOUNT;";
 static const char *ACCOUNT_LOAD_ALL_ADDRESS_ID = "SELECT ADDRESS FROM ACCOUNT;";
 
 // new
-static const char *ADDRESS_ID_LOAD_VERSION = "SELECT VERSION "
-                                             "FROM ACCOUNT "
-                                             "WHERE ACCOUNT.ADDRESS is (?);";
+static const char *LOAD_VERSION_BY_ADDRESS_ID = "SELECT VERSION "
+                                                "FROM ACCOUNT "
+                                                "WHERE ACCOUNT.ADDRESS is (?);";
 
 // new
-static const char *ADDRESS_ID_LOAD_SAVED = "SELECT SAVED "
-                                           "FROM ACCOUNT "
-                                           "WHERE ACCOUNT.ADDRESS is (?);";
-
-// new
-static const char *ADDRESS_ID_LOAD_ADDRESS = "SELECT "
-                                             "ADDRESS.DOMAIN, "
-                                             "ADDRESS.USER_ID, "
-                                             "ADDRESS.DEVICE_ID "
-                                             "FROM ACCOUNT "
-                                             "INNER JOIN ADDRESS "
-                                             "ON ACCOUNT.ADDRESS = ADDRESS.ID "
-                                             "WHERE ACCOUNT.ADDRESS is (?);";
-
-static const char *ADDRESS_ID_LOAD_PASSWORD = "SELECT PASSWORD "
+static const char *LOAD_SAVED_BY_ADDRESS_ID = "SELECT SAVED "
                                               "FROM ACCOUNT "
                                               "WHERE ACCOUNT.ADDRESS is (?);";
+
+// new
+static const char *LOAD_ADDRESS = "SELECT "
+                                  "DOMAIN, "
+                                  "USER_ID, "
+                                  "DEVICE_ID "
+                                  "FROM ADDRESS "
+                                  "WHERE ADDRESS.ID is (?);";
+
+static const char *LOAD_PASSWORD_BY_ADDRESS_ID = "SELECT PASSWORD "
+                                                 "FROM ACCOUNT "
+                                                 "WHERE ACCOUNT.ADDRESS is (?);";
 // newly added
-static const char *ADDRESS_ID_LOAD_AUTH = "SELECT AUTH "
-                                          "FROM ACCOUNT "
-                                          "WHERE ACCOUNT.ADDRESS is (?);";
-static const char *ADDRESS_ID_LOAD_E2EE_PACK_ID = "SELECT E2EE_PACK_ID "
-                                                  "FROM ACCOUNT "
-                                                  "WHERE ACCOUNT.ADDRESS is (?);";
+static const char *LOAD_AUTH_BY_ADDRESS_ID = "SELECT AUTH "
+                                             "FROM ACCOUNT "
+                                             "WHERE ACCOUNT.ADDRESS is (?);";
+
+static const char *LOAD_E2EE_PACK_ID_BY_ADDRESS_ID = "SELECT E2EE_PACK_ID "
+                                                     "FROM ACCOUNT "
+                                                     "WHERE ACCOUNT.ADDRESS is (?);";
 // not used
 static const char *ACCOUNT_LOAD_KEYPAIR = "SELECT KEYPAIR.PUBLIC_KEY, "
                                           "KEYPAIR.PRIVATE_KEY "
@@ -419,7 +418,7 @@ static const char *ACCOUNT_LOAD_KEYPAIR = "SELECT KEYPAIR.PUBLIC_KEY, "
                                           "ON ACCOUNT.IDENTITY_KEY = KEYPAIR.ID "
                                           "WHERE ACCOUNT.ADDRESS is (?);";
 
-static const char *ADDRESS_ID_LOAD_IDENTITY_KEY_ID = "SELECT IDENTITY_KEY "
+static const char *LOAD_IDENTITY_KEY_BY_ADDRESS_ID = "SELECT IDENTITY_KEY "
                                                      "FROM ACCOUNT "
                                                      "INNER JOIN IDENTITY_KEY "
                                                      "ON ACCOUNT.IDENTITY_KEY = IDENTITY_KEY.ID "
@@ -441,59 +440,59 @@ static const char *ACCOUNT_LOAD_IDENTITY_KEY_SIGN = "SELECT "
                                                     "ON IDENTITY_KEY.SIGN_KEYPAIR = KEYPAIR.ID "
                                                     "WHERE IDENTITY_KEY.ID is (?);";
 
-static const char *ADDRESS_ID_LOAD_SIGNED_PRE_KEY = "SELECT SIGNED_PRE_KEY.SPK_ID, "
-                                                    "KEYPAIR.PUBLIC_KEY, "
-                                                    "KEYPAIR.PRIVATE_KEY, "
-                                                    "SIGNED_PRE_KEY.SIGNATURE, "
-                                                    "SIGNED_PRE_KEY.TTL "
-                                                    "FROM ACCOUNT "
-                                                    "INNER JOIN SIGNED_PRE_KEY "
-                                                    "ON ACCOUNT.SIGNED_PRE_KEY = SIGNED_PRE_KEY.ID "
-                                                    "INNER JOIN KEYPAIR "
-                                                    "ON SIGNED_PRE_KEY.KEYPAIR = KEYPAIR.ID "
-                                                    "WHERE ACCOUNT.ADDRESS is (?);";
+static const char *LOAD_SIGNED_PRE_KEY_BY_ADDRESS_ID = "SELECT SIGNED_PRE_KEY.SPK_ID, "
+                                                       "KEYPAIR.PUBLIC_KEY, "
+                                                       "KEYPAIR.PRIVATE_KEY, "
+                                                       "SIGNED_PRE_KEY.SIGNATURE, "
+                                                       "SIGNED_PRE_KEY.TTL "
+                                                       "FROM ACCOUNT "
+                                                       "INNER JOIN SIGNED_PRE_KEY "
+                                                       "ON ACCOUNT.SIGNED_PRE_KEY = SIGNED_PRE_KEY.ID "
+                                                       "INNER JOIN KEYPAIR "
+                                                       "ON SIGNED_PRE_KEY.KEYPAIR = KEYPAIR.ID "
+                                                       "WHERE ACCOUNT.ADDRESS is (?);";
 
-static const char *ADDRESS_ID_LOAD_N_ONETIME_PRE_KEYS = "SELECT COUNT(*) "
+static const char *LOAD_N_ONETIME_PRE_KEYS_BY_ADDRESS_ID = "SELECT COUNT(*) "
+                                                           "FROM ACCOUNT_ONETIME_PRE_KEY "
+                                                           "INNER JOIN ACCOUNT "
+                                                           "ON ACCOUNT_ONETIME_PRE_KEY.ADDRESS_ID = ACCOUNT.ADDRESS "
+                                                           "WHERE ACCOUNT.ADDRESS is (?);";
+
+static const char *LOAD_ONETIME_PRE_KEYS_BY_ADDRESS_ID = "SELECT ONETIME_PRE_KEY.OPK_ID, "
+                                                         "ONETIME_PRE_KEY.USED, "
+                                                         "KEYPAIR.PUBLIC_KEY, "
+                                                         "KEYPAIR.PRIVATE_KEY "
+                                                         "FROM ACCOUNT_ONETIME_PRE_KEY "
+                                                         "INNER JOIN ACCOUNT "
+                                                         "ON ACCOUNT_ONETIME_PRE_KEY.ADDRESS_ID = ACCOUNT.ADDRESS "
+                                                         "INNER JOIN ONETIME_PRE_KEY "
+                                                         "ON ACCOUNT_ONETIME_PRE_KEY.ONETIME_PRE_KEY = "
+                                                         "ONETIME_PRE_KEY.ID "
+                                                         "INNER JOIN KEYPAIR "
+                                                         "ON ONETIME_PRE_KEY.KEYPAIR = KEYPAIR.ID "
+                                                         "WHERE ACCOUNT.ADDRESS is (?);";
+
+// static const char *ACCOUNT_LOAD_ONETIME_PRE_KEY = "SELECT ONETIME_PRE_KEY.ID "
+static const char *LOAD_ONETIME_PRE_KEY_BY_ADDRESS_ID = "SELECT ONETIME_PRE_KEY.ID "
                                                         "FROM ACCOUNT_ONETIME_PRE_KEY "
                                                         "INNER JOIN ACCOUNT "
                                                         "ON ACCOUNT_ONETIME_PRE_KEY.ADDRESS_ID = ACCOUNT.ADDRESS "
-                                                        "WHERE ACCOUNT.ADDRESS is (?);";
+                                                        "INNER JOIN ONETIME_PRE_KEY "
+                                                        "ON ACCOUNT_ONETIME_PRE_KEY.ONETIME_PRE_KEY = "
+                                                        "ONETIME_PRE_KEY.ID "
+                                                        "WHERE ACCOUNT.ADDRESS is (?) AND ONETIME_PRE_KEY.OPK_ID is (?);";
 
-static const char *ADDRESS_ID_LOAD_ONETIME_PRE_KEYS = "SELECT ONETIME_PRE_KEY.OPK_ID, "
-                                                      "ONETIME_PRE_KEY.USED, "
-                                                      "KEYPAIR.PUBLIC_KEY, "
-                                                      "KEYPAIR.PRIVATE_KEY "
-                                                      "FROM ACCOUNT_ONETIME_PRE_KEY "
-                                                      "INNER JOIN ACCOUNT "
-                                                      "ON ACCOUNT_ONETIME_PRE_KEY.ADDRESS_ID = ACCOUNT.ADDRESS "
-                                                      "INNER JOIN ONETIME_PRE_KEY "
-                                                      "ON ACCOUNT_ONETIME_PRE_KEY.ONETIME_PRE_KEY = "
-                                                      "ONETIME_PRE_KEY.ID "
-                                                      "INNER JOIN KEYPAIR "
-                                                      "ON ONETIME_PRE_KEY.KEYPAIR = KEYPAIR.ID "
-                                                      "WHERE ACCOUNT.ADDRESS is (?);";
+static const char *LOAD_NEXT_ONETIME_PRE_KEY_ID_BY_ADDRESS_ID = "SELECT NEXT_ONETIME_PRE_KEY_ID "
+                                                                "FROM ACCOUNT "
+                                                                "WHERE ADDRESS is (?);";
 
-// static const char *ACCOUNT_LOAD_ONETIME_PRE_KEY = "SELECT ONETIME_PRE_KEY.ID "
-static const char *ADDRESS_ID_LOAD_ONETIME_PRE_KEY = "SELECT ONETIME_PRE_KEY.ID "
-                                                     "FROM ACCOUNT_ONETIME_PRE_KEY "
-                                                     "INNER JOIN ACCOUNT "
-                                                     "ON ACCOUNT_ONETIME_PRE_KEY.ADDRESS_ID = ACCOUNT.ADDRESS "
-                                                     "INNER JOIN ONETIME_PRE_KEY "
-                                                     "ON ACCOUNT_ONETIME_PRE_KEY.ONETIME_PRE_KEY = "
-                                                     "ONETIME_PRE_KEY.ID "
-                                                     "WHERE ACCOUNT.ADDRESS is (?) AND ONETIME_PRE_KEY.OPK_ID is (?);";
-
-static const char *ADDRESS_ID_LOAD_NEXT_ONETIME_PRE_KEY_ID = "SELECT NEXT_ONETIME_PRE_KEY_ID "
-                                                             "FROM ACCOUNT "
-                                                             "WHERE ADDRESS is (?);";
-
-static const char *LOAD_ACCOUNT_ID_BY_ADDRESS = "SELECT ACCOUNT.ADDRESS "
-                                                "FROM ACCOUNT "
-                                                "INNER JOIN ADDRESS "
-                                                "ON ACCOUNT.ADDRESS = ADDRESS.ID "
-                                                "WHERE ADDRESS.DOMAIN is (?) AND "
-                                                "ADDRESS.USER_ID is (?) AND "
-                                                "ADDRESS.DEVICE_ID is (?);";
+static const char *LOAD_ADDRESS_ID = "SELECT ADDRESS "
+                                     "FROM ACCOUNT "
+                                     "INNER JOIN ADDRESS "
+                                     "ON ACCOUNT.ADDRESS = ADDRESS.ID "
+                                     "WHERE ADDRESS.DOMAIN is (?) AND "
+                                     "ADDRESS.USER_ID is (?) AND "
+                                     "ADDRESS.DEVICE_ID is (?);";
 
 static const char *ADDRESS_LOAD = "SELECT ROWID "
                                   "FROM ADDRESS "
@@ -530,9 +529,9 @@ static const char *ONETIME_PRE_KEY_DELETE = "DELETE FROM ONETIME_PRE_KEY "
 
 // NOTE: NEW
 static const char *ACCOUNT_INSERT = "INSERT INTO ACCOUNT "
-                                    // "(ACCOUNT_ID, "
                                     "(VERSION, "
                                     "SAVED, "
+                                    "AUTH, "
                                     "ADDRESS, "
                                     "PASSWORD, "
                                     "E2EE_PACK_ID, "
@@ -658,7 +657,7 @@ void mock_db_end() {
     sqlite3_shutdown();
 }
 // NOTE: NEW
-size_t load_ids(sqlite_int64 **address_ids) {
+size_t load_address_ids(sqlite_int64 **address_ids) {
     // find num of address_ids
     // prepare
     sqlite3_stmt *stmt1;
@@ -696,7 +695,7 @@ size_t load_ids(sqlite_int64 **address_ids) {
 char *load_version(uint64_t address_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_VERSION, &stmt);
+    sqlite_prepare(LOAD_VERSION_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -714,7 +713,7 @@ char *load_version(uint64_t address_id) {
 protobuf_c_boolean load_saved(uint64_t address_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_SAVED, &stmt);
+    sqlite_prepare(LOAD_SAVED_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -732,7 +731,7 @@ protobuf_c_boolean load_saved(uint64_t address_id) {
 bool load_address(uint64_t address_id, Skissm__E2eeAddress **address) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_ADDRESS, &stmt);
+    sqlite_prepare(LOAD_ADDRESS, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -761,7 +760,7 @@ bool load_address(uint64_t address_id, Skissm__E2eeAddress **address) {
 void load_password(uint64_t address_id, char *password) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_PASSWORD, &stmt);
+    sqlite_prepare(LOAD_PASSWORD_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -777,7 +776,7 @@ void load_password(uint64_t address_id, char *password) {
 char *load_e2ee_pack_id(uint64_t address_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_E2EE_PACK_ID, &stmt);
+    sqlite_prepare(LOAD_E2EE_PACK_ID_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -841,7 +840,7 @@ void load_identity_key_pair(uint64_t address_id, Skissm__IdentityKey **identity_
 
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_IDENTITY_KEY_ID, &stmt);
+    sqlite_prepare(LOAD_IDENTITY_KEY_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -867,7 +866,7 @@ void load_signed_pre_key_pair(uint64_t address_id, Skissm__SignedPreKey **signed
 
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_SIGNED_PRE_KEY, &stmt);
+    sqlite_prepare(LOAD_SIGNED_PRE_KEY_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -889,7 +888,7 @@ void load_signed_pre_key_pair(uint64_t address_id, Skissm__SignedPreKey **signed
 int load_n_one_time_pre_keys(uint64_t address_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_N_ONETIME_PRE_KEYS, &stmt);
+    sqlite_prepare(LOAD_N_ONETIME_PRE_KEYS_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -911,7 +910,7 @@ uint32_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***on
 
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_ONETIME_PRE_KEYS, &stmt);
+    sqlite_prepare(LOAD_ONETIME_PRE_KEYS_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -942,7 +941,7 @@ uint32_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***on
 uint32_t load_next_one_time_pre_key_id(uint64_t address_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_NEXT_ONETIME_PRE_KEY_ID, &stmt);
+    sqlite_prepare(LOAD_NEXT_ONETIME_PRE_KEY_ID_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
@@ -957,10 +956,10 @@ uint32_t load_next_one_time_pre_key_id(uint64_t address_id) {
     return next_one_time_pre_key_id;
 }
 
-bool load_id_by_address(Skissm__E2eeAddress *address, sqlite_int64 *address_id) {
+bool load_address_id(Skissm__E2eeAddress *address, sqlite_int64 *address_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(LOAD_ACCOUNT_ID_BY_ADDRESS, &stmt);
+    sqlite_prepare(LOAD_ADDRESS_ID, &stmt);
     sqlite3_bind_text(stmt, 1, address->domain, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, address->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, address->user->device_id, -1, SQLITE_TRANSIENT);
@@ -1121,8 +1120,11 @@ sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key) {
     return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_account(const char *version, protobuf_c_boolean saved, sqlite_int64 address_id, const char *password, const char *e2ee_pack_id, sqlite_int64 identity_key_pair_id,
-                            sqlite_int64 signed_pre_key_id, sqlite_int64 next_one_time_pre_key_id) {
+sqlite_int64 insert_account(
+    const char *version, protobuf_c_boolean saved, const char *auth, sqlite_int64 address_id,
+    const char *password, const char *e2ee_pack_id, sqlite_int64 identity_key_pair_id,
+    sqlite_int64 signed_pre_key_id, sqlite_int64 next_one_time_pre_key_id
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ACCOUNT_INSERT, &stmt);
@@ -1130,24 +1132,13 @@ sqlite_int64 insert_account(const char *version, protobuf_c_boolean saved, sqlit
     // bind
     sqlite3_bind_text(stmt, 1, version, strlen(version), NULL);
     sqlite3_bind_int(stmt, 2, (int)saved);
-    sqlite3_bind_int(stmt, 3, address_id);
-    sqlite3_bind_text(stmt, 4, password, strlen(password), NULL);
-    sqlite3_bind_text(stmt, 5, e2ee_pack_id, strlen(e2ee_pack_id), NULL);
-    sqlite3_bind_int(stmt, 6, identity_key_pair_id);
-    sqlite3_bind_int(stmt, 7, signed_pre_key_id);
-    sqlite3_bind_int(stmt, 8, next_one_time_pre_key_id);
-
-    /*
-    sqlite3_bind_int64(stmt, 1, account_id);
-    // sqlite3_bind_text(stmt, 2, version, strlen(version), NULL);
-    // sqlite3_bind_int(stmt, 3, (int)saved);
-    // sqlite3_bind_int(stmt, 4, address_id);
-    // sqlite3_bind_text(stmt, 5, password, strlen(password), NULL);
-    // sqlite3_bind_text(stmt, 6, e2ee_pack_id, strlen(e2ee_pack_id), NULL);
-    // sqlite3_bind_int(stmt, 7, identity_key_pair_id);
-    // sqlite3_bind_int(stmt, 8, signed_pre_key_id);
-    / sqlite3_bind_int(stmt, 9, next_one_time_pre_key_id);
-    */
+    sqlite3_bind_text(stmt, 3, auth, strlen(auth), NULL);
+    sqlite3_bind_int(stmt, 4, address_id);
+    sqlite3_bind_text(stmt, 5, password, strlen(password), NULL);
+    sqlite3_bind_text(stmt, 6, e2ee_pack_id, strlen(e2ee_pack_id), NULL);
+    sqlite3_bind_int(stmt, 7, identity_key_pair_id);
+    sqlite3_bind_int(stmt, 8, signed_pre_key_id);
+    sqlite3_bind_int(stmt, 9, next_one_time_pre_key_id);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -1193,7 +1184,7 @@ void insert_account_signed_pre_key_id(uint64_t address_id, sqlite_int64 signed_p
 void insert_account_one_time_pre_key_id(uint64_t address_id, sqlite_int64 one_time_pre_key_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_SIGNED_PRE_KEY_INSERT, &stmt);
+    sqlite_prepare(ADDRESS_ID_ONETIME_PRE_KEY_INSERT, &stmt);
 
     // bind
     sqlite3_bind_int(stmt, 1, address_id);
@@ -1206,27 +1197,13 @@ void insert_account_one_time_pre_key_id(uint64_t address_id, sqlite_int64 one_ti
     sqlite_finalize(stmt);
 }
 
-void update_identity_key(uint64_t address_id, Skissm__IdentityKey *identity_key) {
-    sqlite_int64 identity_key_id = insert_identity_key(identity_key);
+bool update_signed_pre_key(Skissm__E2eeAddress *address, Skissm__SignedPreKey *signed_pre_key) {
+    sqlite_int64 address_id;
+    bool succ = load_address_id(address, &address_id);
 
-    insert_account_identity_key_id(address_id, identity_key_id);
+    if (succ == false)
+        return false;
 
-    // prepare
-    sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_UPDATE_IDENTITY_KEY, &stmt);
-
-    // bind
-    sqlite3_bind_int(stmt, 1, identity_key_id);
-    sqlite3_bind_int64(stmt, 2, address_id);
-
-    // step
-    sqlite_step(stmt, SQLITE_DONE);
-
-    // release
-    sqlite_finalize(stmt);
-}
-
-void update_signed_pre_key(uint64_t address_id, Skissm__SignedPreKey *signed_pre_key) {
     sqlite_int64 signed_pre_key_id = insert_signed_pre_key(signed_pre_key);
 
     insert_account_signed_pre_key_id(address_id, signed_pre_key_id);
@@ -1244,9 +1221,17 @@ void update_signed_pre_key(uint64_t address_id, Skissm__SignedPreKey *signed_pre
 
     // release
     sqlite_finalize(stmt);
+
+    return true;
 }
 
-void load_signed_pre_key(uint64_t address_id, uint32_t spk_id, Skissm__SignedPreKey **signed_pre_key) {
+void load_signed_pre_key(Skissm__E2eeAddress *address, uint32_t spk_id, Skissm__SignedPreKey **signed_pre_key) {
+    sqlite_int64 address_id;
+    bool succ = load_address_id(address, &address_id);
+
+    if (succ == false)
+        *signed_pre_key = NULL;
+
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_OLD_SIGNED_PRE_KEY, &stmt);
@@ -1308,8 +1293,14 @@ static void delete_account_signed_pre_key(uint64_t address_id, sqlite_int64 sign
     sqlite_finalize(stmt);
 }
 
-void remove_expired_signed_pre_key(uint64_t address_id) {
+bool remove_expired_signed_pre_key(Skissm__E2eeAddress *address) {
     // delete old signed pre-keys and keep last two
+    sqlite_int64 address_id;
+    bool succ = load_address_id(address, &address_id);
+
+    if (succ == false)
+        return false;
+
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(ADDRESS_ID_SIGNED_PRE_KEY_SELECT_MORE_THAN_2, &stmt);
@@ -1324,27 +1315,17 @@ void remove_expired_signed_pre_key(uint64_t address_id) {
 
     // release
     sqlite_finalize(stmt);
+
+    return true;
 }
 
-void update_address(uint64_t address_id, Skissm__E2eeAddress *address) {
-    int new_address_id = insert_address(address);
+bool add_one_time_pre_key(Skissm__E2eeAddress *address, Skissm__OneTimePreKey *one_time_pre_key) {
+    sqlite_int64 address_id;
+    bool succ = load_address_id(address, &address_id);
 
-    // prepare
-    sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_UPDATE_ADDRESS, &stmt);
+    if (succ == false)
+        return false;
 
-    // bind
-    sqlite3_bind_int(stmt, 1, new_address_id);
-    sqlite3_bind_int64(stmt, 2, address_id);
-
-    // step
-    sqlite_step(stmt, SQLITE_DONE);
-
-    // release
-    sqlite_finalize(stmt);
-}
-
-void add_one_time_pre_key(uint64_t address_id, Skissm__OneTimePreKey *one_time_pre_key) {
     int one_time_pre_key_id = insert_one_time_pre_key(one_time_pre_key);
 
     // prepare
@@ -1360,6 +1341,8 @@ void add_one_time_pre_key(uint64_t address_id, Skissm__OneTimePreKey *one_time_p
 
     // release
     sqlite_finalize(stmt);
+
+    return true;
 }
 
 static void delete_one_time_pre_key(sqlite_int64 one_time_pre_key_id) {
@@ -1388,10 +1371,16 @@ static void delete_account_one_time_pre_key(uint64_t address_id, sqlite_int64 on
     sqlite_finalize(stmt);
 }
 
-void remove_one_time_pre_key(uint64_t address_id, uint32_t one_time_pre_key_id) {
+bool remove_one_time_pre_key(Skissm__E2eeAddress *address, uint32_t one_time_pre_key_id) {
+    sqlite_int64 address_id;
+    bool succ = load_address_id(address, &address_id);
+
+    if (succ == false)
+        return false;
+
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_ONETIME_PRE_KEY, &stmt);
+    sqlite_prepare(LOAD_ONETIME_PRE_KEY_BY_ADDRESS_ID, &stmt);
 
     // bind
     sqlite3_bind_int64(stmt, 1, address_id);
@@ -1406,6 +1395,8 @@ void remove_one_time_pre_key(uint64_t address_id, uint32_t one_time_pre_key_id) 
 
     // release
     sqlite_finalize(stmt);
+
+    return true;
 }
 
 static void mark_one_time_pre_key_as_used(sqlite_int64 one_time_pre_key_id) {
@@ -1423,10 +1414,16 @@ static void mark_one_time_pre_key_as_used(sqlite_int64 one_time_pre_key_id) {
     sqlite_finalize(stmt);
 }
 
-void update_one_time_pre_key(uint64_t address_id, uint32_t one_time_pre_key_id) {
+bool update_one_time_pre_key(Skissm__E2eeAddress *address, uint32_t one_time_pre_key_id) {
+    sqlite_int64 address_id;
+    bool succ = load_address_id(address, &address_id);
+
+    if (succ == false)
+        return false;
+
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_ONETIME_PRE_KEY, &stmt);
+    sqlite_prepare(LOAD_ONETIME_PRE_KEY_BY_ADDRESS_ID, &stmt);
 
     // bind
     sqlite3_bind_int64(stmt, 1, address_id);
@@ -1440,6 +1437,8 @@ void update_one_time_pre_key(uint64_t address_id, uint32_t one_time_pre_key_id) 
 
     // release
     sqlite_finalize(stmt);
+
+    return true;
 }
 
 void store_account(Skissm__Account *account) {
@@ -1459,8 +1458,11 @@ void store_account(Skissm__Account *account) {
     }
 
     // insert account
-    // sqlite_int64 account_id = account->account_id;
-    insert_account(account->version, account->saved, address_id, account->password, account->e2ee_pack_id, identity_key_pair_id, signed_pre_key_id, account->next_one_time_pre_key_id);
+    insert_account(
+        account->version, account->saved, account->auth, address_id,
+        account->password, account->e2ee_pack_id,
+        identity_key_pair_id, signed_pre_key_id, account->next_one_time_pre_key_id
+    );
 
     // insert ACCOUNT_SIGNED_PRE_KEY_PAIR
     insert_account_signed_pre_key_id(address_id, signed_pre_key_id);
@@ -1471,14 +1473,13 @@ void store_account(Skissm__Account *account) {
     }
 }
 // NOTE: new
-void load_account(uint64_t address_id, Skissm__Account **account) {
+void load_account_by_address_id(uint64_t address_id, Skissm__Account **account) {
     Skissm__E2eeAddress *address = NULL;
     bool succ = load_address(address_id, &address);
     if (succ) {
         *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
         skissm__account__init((*account));
 
-        // (*account)->account_id = account_id;
         (*account)->version = load_version(address_id);
         (*account)->saved = load_saved(address_id);
         (*account)->e2ee_pack_id = load_e2ee_pack_id(address_id);
@@ -1495,17 +1496,23 @@ void load_account(uint64_t address_id, Skissm__Account **account) {
 }
 
 // DONE: load auth , in Account.proto
-void load_auth(uint64_t address_id, char *auth) {
+void load_auth(Skissm__E2eeAddress *address, char **auth) {
+    sqlite_int64 address_id;
+    if (load_address_id(address, &address_id) == false) {
+        *auth = NULL;
+        return;
+    }
+
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(ADDRESS_ID_LOAD_AUTH, &stmt);
+    sqlite_prepare(LOAD_AUTH_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
     bool succ = sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    auth = succ ? strdup((char *)sqlite3_column_text(stmt, 0)) : NULL;
+    *auth = succ ? strdup((char *)sqlite3_column_text(stmt, 0)) : NULL;
 
     // release
     sqlite_finalize(stmt);
@@ -1513,17 +1520,30 @@ void load_auth(uint64_t address_id, char *auth) {
 
 void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **account) {
     sqlite_int64 address_id;
-    bool succ = load_id_by_address(address, &address_id);
-    if (succ)
-        load_account(address_id, account);
-    else
+    bool succ = load_address_id(address, &address_id);
+    if (succ) {
+        *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
+        skissm__account__init((*account));
+
+        (*account)->version = load_version(address_id);
+        (*account)->saved = load_saved(address_id);
+        (*account)->e2ee_pack_id = load_e2ee_pack_id(address_id);
+        copy_address_from_address(&((*account)->address), address);
+        load_password(address_id, (*account)->password);
+
+        load_signed_pre_key_pair(address_id, &((*account)->signed_pre_key));
+        load_identity_key_pair(address_id, &((*account)->identity_key));
+        (*account)->n_one_time_pre_keys = load_one_time_pre_keys(address_id, &((*account)->one_time_pre_keys));
+        (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(address_id);
+    } else {
         *account = NULL;
+    }
 }
 // NOTE:NEW
 size_t load_accounts(Skissm__Account ***accounts) {
     // load all address_ids
     sqlite_int64 *address_ids;
-    size_t num = load_ids(&address_ids);
+    size_t num = load_address_ids(&address_ids);
 
     // load all account by address_ids
     if (num == 0) {
@@ -1531,7 +1551,7 @@ size_t load_accounts(Skissm__Account ***accounts) {
     } else {
         *accounts = (Skissm__Account **)malloc(sizeof(Skissm__Account *) * num);
         for (int i = 0; i < num; i++) {
-            load_account(address_ids[i], &(*accounts)[i]);
+            load_account_by_address_id(address_ids[i], &(*accounts)[i]);
         }
 
         // release address_ids array

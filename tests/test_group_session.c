@@ -248,18 +248,19 @@ static void test_end() {
     }
 }
 
-static void mock_alice_account(uint64_t account_id, const char *user_name) {
+static void mock_alice_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -268,18 +269,19 @@ static void mock_alice_account(uint64_t account_id, const char *user_name) {
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void mock_bob_account(uint64_t account_id, const char *user_name) {
+static void mock_bob_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -288,18 +290,19 @@ static void mock_bob_account(uint64_t account_id, const char *user_name) {
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void mock_claire_account(uint64_t account_id, const char *user_name) {
+static void mock_claire_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -308,18 +311,19 @@ static void mock_claire_account(uint64_t account_id, const char *user_name) {
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void mock_alice_pqc_account(uint64_t account_id, const char *user_name) {
+static void mock_alice_pqc_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -328,18 +332,19 @@ static void mock_alice_pqc_account(uint64_t account_id, const char *user_name) {
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void mock_bob_pqc_account(uint64_t account_id, const char *user_name) {
+static void mock_bob_pqc_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -348,18 +353,19 @@ static void mock_bob_pqc_account(uint64_t account_id, const char *user_name) {
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void mock_claire_pqc_account(uint64_t account_id, const char *user_name) {
+static void mock_claire_pqc_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -368,11 +374,11 @@ static void mock_claire_pqc_account(uint64_t account_id, const char *user_name) 
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void mock_user_pqc_account(uint64_t account_id, const char *user_name, const char *authenticator, const char *auth_code) {
+static void mock_user_pqc_account(const char *user_name, const char *authenticator, const char *auth_code) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
     char *device_id = generate_uuid_str();
     Skissm__RegisterUserResponse *response = register_user(
-        account_id, e2ee_pack_id, user_name, device_id, authenticator, auth_code
+        e2ee_pack_id, user_name, device_id, authenticator, auth_code
     );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
@@ -399,8 +405,8 @@ static void test_create_group() {
     test_begin();
 
     // Prepare account
-    mock_alice_account(1, "alice");
-    mock_bob_account(2, "bob");
+    mock_alice_account("alice");
+    mock_bob_account("bob");
 
     // Alice invites Bob to create a group
     Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -450,9 +456,9 @@ static void test_add_group_members() {
     test_begin();
 
     // Prepare account
-    mock_alice_account(1, "alice");
-    mock_bob_account(2, "bob");
-    mock_claire_account(3, "claire");
+    mock_alice_account("alice");
+    mock_bob_account("bob");
+    mock_claire_account("claire");
 
     // Alice invites Bob to create a group
     Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -518,9 +524,9 @@ static void test_remove_group_members() {
     test_begin();
 
     // Prepare account
-    mock_alice_account(1, "alice");
-    mock_bob_account(2, "bob");
-    mock_claire_account(3, "claire");
+    mock_alice_account("alice");
+    mock_bob_account("bob");
+    mock_claire_account("claire");
 
     // Alice invites Bob and Claire to join the group
     Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -593,9 +599,9 @@ static void test_create_add_remove() {
     test_begin();
 
     // Prepare account
-    mock_alice_account(1, "alice");
-    mock_bob_account(2, "bob");
-    mock_claire_account(3, "claire");
+    mock_alice_account("alice");
+    mock_bob_account("bob");
+    mock_claire_account("claire");
 
     // Alice invites Bob to create a group
     Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -677,9 +683,9 @@ static void test_interaction() {
     test_begin();
 
     // Prepare account
-    mock_alice_account(1, "alice");
-    mock_bob_account(2, "bob");
-    mock_claire_account(3, "claire");
+    mock_alice_account("alice");
+    mock_bob_account("bob");
+    mock_claire_account("claire");
 
     // Alice invites Bob and Claire to join the group
     Skissm__InviteResponse *response_1 = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -756,9 +762,9 @@ static void test_continual() {
     test_begin();
 
     // Prepare account
-    mock_alice_account(1, "alice");
-    mock_bob_account(2, "bob");
-    mock_claire_account(3, "claire");
+    mock_alice_account("alice");
+    mock_bob_account("bob");
+    mock_claire_account("claire");
 
     // Alice invites Bob and Claire to join the group
     Skissm__InviteResponse *response_1 = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
@@ -843,12 +849,12 @@ static void test_multiple_devices() {
     test_begin();
 
     // Prepare account
-    mock_alice_account(1, "Alice");
-    mock_alice_account(2, "Alice");
-    mock_bob_account(3, "Bob");
-    mock_bob_account(4, "Bob");
-    mock_claire_account(5, "Claire");
-    mock_claire_account(6, "Claire");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
+    mock_bob_account("Bob");
+    mock_bob_account("Bob");
+    mock_claire_account("Claire");
+    mock_claire_account("Claire");
 
     Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
     Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
@@ -939,10 +945,10 @@ static void test_pqc_create_group() {
     test_begin();
 
     // prepare account
-    mock_user_pqc_account(1, "Alice", "alice@domain.com.tw", "123456");
-    mock_user_pqc_account(2, "Bob", "bob@domain.com.tw", "234567");
-    mock_user_pqc_account(3, "Claire", "claire@domain.com.tw", "345678");
-    mock_user_pqc_account(4, "David", "david@domain.com.tw", "456789");
+    mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
+    mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
+    mock_user_pqc_account("Claire", "claire@domain.com.tw", "345678");
+    mock_user_pqc_account("David", "david@domain.com.tw", "456789");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     char *alice_user_id = alice_address->user->user_id;
@@ -1027,10 +1033,10 @@ static void test_pqc_add_group_members() {
     tear_up();
     test_begin();
 
-    mock_user_pqc_account(1, "Alice", "alice@domain.com.tw", "123456");
-    mock_user_pqc_account(2, "Bob", "bob@domain.com.tw", "234567");
-    mock_user_pqc_account(3, "Claire", "claire@domain.com.tw", "345678");
-    mock_user_pqc_account(4, "David", "david@domain.com.tw", "456789");
+    mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
+    mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
+    mock_user_pqc_account("Claire", "claire@domain.com.tw", "345678");
+    mock_user_pqc_account("David", "david@domain.com.tw", "456789");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     char *alice_user_id = alice_address->user->user_id;
@@ -1123,10 +1129,10 @@ static void test_pqc_remove_group_members() {
     test_begin();
 
     // prepare account
-    mock_user_pqc_account(1, "Alice", "alice@domain.com.tw", "123456");
-    mock_user_pqc_account(2, "Bob", "bob@domain.com.tw", "234567");
-    mock_user_pqc_account(3, "Claire", "claire@domain.com.tw", "345678");
-    mock_user_pqc_account(4, "David", "david@domain.com.tw", "456789");
+    mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
+    mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
+    mock_user_pqc_account("Claire", "claire@domain.com.tw", "345678");
+    mock_user_pqc_account("David", "david@domain.com.tw", "456789");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     char *alice_user_id = alice_address->user->user_id;
@@ -1224,12 +1230,12 @@ static void test_pqc_multiple_devices() {
     test_begin();
 
     // Prepare account
-    mock_alice_pqc_account(1, "Alice");
-    mock_alice_pqc_account(2, "Alice");
-    mock_bob_pqc_account(3, "Bob");
-    mock_bob_pqc_account(4, "Bob");
-    mock_claire_pqc_account(5, "Claire");
-    mock_claire_pqc_account(6, "Claire");
+    mock_alice_pqc_account("Alice");
+    mock_alice_pqc_account("Alice");
+    mock_bob_pqc_account("Bob");
+    mock_bob_pqc_account("Bob");
+    mock_claire_pqc_account("Claire");
+    mock_claire_pqc_account("Claire");
 
     sleep(2);
 
@@ -1322,20 +1328,20 @@ static void test_medium_group() {
     test_begin();
 
     // prepare account
-    mock_user_pqc_account(1, "Alice", "alice@domain.com.tw", "123456");
-    mock_user_pqc_account(2, "Bob", "bob@domain.com.tw", "234567");
-    mock_user_pqc_account(3, "Claire", "claire@domain.com.tw", "345678");
-    mock_user_pqc_account(4, "David", "david@domain.com.tw", "456789");
-    mock_user_pqc_account(5, "Emily", "emily@domain.com.tw", "567890");
-    mock_user_pqc_account(6, "Frank", "frank@domain.com.tw", "678901");
-    mock_user_pqc_account(7, "Grace", "grace@domain.com.tw", "789012");
-    mock_user_pqc_account(8, "Harry", "harry@domain.com.tw", "890123");
-    mock_user_pqc_account(9, "Ivy", "ivy@domain.com.tw", "901234");
-    mock_user_pqc_account(10, "Jack", "jack@domain.com.tw", "012345");
-    mock_user_pqc_account(11, "Karen", "karen@domain.com.tw", "111111");
-    mock_user_pqc_account(12, "Leo", "leo@domain.com.tw", "222222");
-    mock_user_pqc_account(13, "Mary", "mary@domain.com.tw", "333333");
-    mock_user_pqc_account(14, "Nick", "nick@domain.com.tw", "444444");
+    mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
+    mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
+    mock_user_pqc_account("Claire", "claire@domain.com.tw", "345678");
+    mock_user_pqc_account("David", "david@domain.com.tw", "456789");
+    mock_user_pqc_account("Emily", "emily@domain.com.tw", "567890");
+    mock_user_pqc_account("Frank", "frank@domain.com.tw", "678901");
+    mock_user_pqc_account("Grace", "grace@domain.com.tw", "789012");
+    mock_user_pqc_account("Harry", "harry@domain.com.tw", "890123");
+    mock_user_pqc_account("Ivy", "ivy@domain.com.tw", "901234");
+    mock_user_pqc_account("Jack", "jack@domain.com.tw", "012345");
+    mock_user_pqc_account("Karen", "karen@domain.com.tw", "111111");
+    mock_user_pqc_account("Leo", "leo@domain.com.tw", "222222");
+    mock_user_pqc_account("Mary", "mary@domain.com.tw", "333333");
+    mock_user_pqc_account("Nick", "nick@domain.com.tw", "444444");
 
     sleep(10);
 

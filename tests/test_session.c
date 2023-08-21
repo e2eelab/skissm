@@ -41,13 +41,6 @@ static Skissm__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
-typedef struct store_plaintext {
-    uint8_t *plaintext;
-    size_t plaintext_len;
-} store_plaintext;
-
-store_plaintext plaintext_store = {NULL, 0};
-
 typedef struct f2f_password_data {
     Skissm__E2eeAddress *sender;
     Skissm__E2eeAddress *receiver;
@@ -160,14 +153,6 @@ static void on_one2one_msg_received(
     uint8_t *plaintext, size_t plaintext_len
 ) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
-    if (plaintext_store.plaintext != NULL){
-        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
-        plaintext_store.plaintext = NULL;
-        plaintext_store.plaintext_len = 0;
-    }
-    plaintext_store.plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
-    memcpy(plaintext_store.plaintext, plaintext, plaintext_len);
-    plaintext_store.plaintext_len = plaintext_len;
 }
 
 static void on_other_device_msg_received(
@@ -177,14 +162,6 @@ static void on_other_device_msg_received(
     uint8_t *plaintext, size_t plaintext_len
 ) {
     print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
-    if (plaintext_store.plaintext != NULL){
-        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
-        plaintext_store.plaintext = NULL;
-        plaintext_store.plaintext_len = 0;
-    }
-    plaintext_store.plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
-    memcpy(plaintext_store.plaintext, plaintext, plaintext_len);
-    plaintext_store.plaintext_len = plaintext_len;
 }
 
 static void on_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *session) {
@@ -261,18 +238,19 @@ static void test_end(){
     }
 }
 
-static void mock_alice_account(uint64_t account_id, const char *user_name) {
+static void mock_alice_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -281,18 +259,19 @@ static void mock_alice_account(uint64_t account_id, const char *user_name) {
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void mock_bob_account(uint64_t account_id, const char *user_name) {
+static void mock_bob_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -301,18 +280,19 @@ static void mock_bob_account(uint64_t account_id, const char *user_name) {
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void mock_alice_pqc_account(uint64_t account_id, const char *user_name) {
+static void mock_alice_pqc_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -321,18 +301,19 @@ static void mock_alice_pqc_account(uint64_t account_id, const char *user_name) {
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void mock_bob_pqc_account(uint64_t account_id, const char *user_name) {
+static void mock_bob_pqc_account(const char *user_name) {
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
@@ -345,12 +326,6 @@ static void test_encryption(
     Skissm__E2eeAddress *from_address, const char *to_user_id, const char *to_domain,
     uint8_t *plaintext, size_t plaintext_len
 ) {
-    if (plaintext_store.plaintext != NULL){
-        free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
-        plaintext_store.plaintext = NULL;
-        plaintext_store.plaintext_len = 0;
-    }
-
     // send encrypted msg
     Skissm__SendOne2oneMsgResponse *response = NULL;
     response = send_one2one_msg(from_address, to_user_id, to_domain, plaintext, plaintext_len);
@@ -366,8 +341,8 @@ static void test_basic_session(){
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "alice");
-    mock_bob_account(2, "bob");
+    mock_alice_account("alice");
+    mock_bob_account("bob");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     Skissm__E2eeAddress *bob_address = account_data[1]->address;
@@ -410,8 +385,8 @@ static void test_interaction(){
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "alice");
-    mock_bob_account(2, "bob");
+    mock_alice_account("alice");
+    mock_bob_account("bob");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     Skissm__E2eeAddress *bob_address = account_data[1]->address;
@@ -468,8 +443,8 @@ static void test_continual_messages(){
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "alice");
-    mock_bob_account(2, "bob");
+    mock_alice_account("alice");
+    mock_bob_account("bob");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     Skissm__E2eeAddress *bob_address = account_data[1]->address;
@@ -503,9 +478,9 @@ static void test_multiple_devices(){
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "Alice");
-    mock_alice_account(2, "Alice");
-    mock_alice_account(3, "Alice");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
 
     // Alice's user_id should be the same
     assert(strcmp(account_data[0]->address->user->user_id, account_data[1]->address->user->user_id) == 0);
@@ -523,10 +498,10 @@ static void test_one_to_many(){
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "Alice");
-    mock_bob_account(2, "Bob");
-    mock_bob_account(3, "Bob");
-    mock_bob_account(4, "Bob");
+    mock_alice_account("Alice");
+    mock_bob_account("Bob");
+    mock_bob_account("Bob");
+    mock_bob_account("Bob");
 
     sleep(3);
 
@@ -593,8 +568,8 @@ static void test_face_to_face() {
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "Alice");
-    mock_bob_account(2, "Bob");
+    mock_alice_account("Alice");
+    mock_bob_account("Bob");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     Skissm__E2eeAddress *bob_address = account_data[1]->address;
@@ -637,8 +612,8 @@ static void test_replace_session_with_f2f() {
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "Alice");
-    mock_bob_account(2, "Bob");
+    mock_alice_account("Alice");
+    mock_bob_account("Bob");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     Skissm__E2eeAddress *bob_address = account_data[1]->address;
@@ -686,8 +661,8 @@ static void test_f2f_interaction() {
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "Alice");
-    mock_bob_account(2, "Bob");
+    mock_alice_account("Alice");
+    mock_bob_account("Bob");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     char *alice_user_id = alice_address->user->user_id;
@@ -737,10 +712,10 @@ static void test_many_to_one() {
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "Alice");
-    mock_alice_account(2, "Alice");
-    mock_alice_account(3, "Alice");
-    mock_bob_account(4, "Bob");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
+    mock_bob_account("Bob");
 
     Skissm__E2eeAddress *device_1 = account_data[0]->address;
     Skissm__E2eeAddress *device_2 = account_data[1]->address;
@@ -795,12 +770,12 @@ static void test_many_to_many() {
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "Alice");
-    mock_alice_account(2, "Alice");
-    mock_alice_account(3, "Alice");
-    mock_bob_account(4, "Bob");
-    mock_bob_account(5, "Bob");
-    mock_bob_account(6, "Bob");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
+    mock_bob_account("Bob");
+    mock_bob_account("Bob");
+    mock_bob_account("Bob");
 
     Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
     Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
@@ -877,12 +852,12 @@ static void test_f2f_multiple_devices() {
     tear_up();
     test_begin();
 
-    mock_alice_account(1, "Alice");
-    mock_alice_account(2, "Alice");
-    mock_alice_account(3, "Alice");
-    mock_bob_account(4, "Bob");
-    mock_bob_account(5, "Bob");
-    mock_bob_account(6, "Bob");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
+    mock_bob_account("Bob");
+    mock_bob_account("Bob");
+    mock_bob_account("Bob");
 
     Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
     Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
@@ -953,12 +928,12 @@ static void test_f2f_multiple_devices() {
 
 static void test_basic_pqc_session(){
     // test start
-    printf("test_basic_session begin!!!\n");
+    printf("test_basic_pqc_session begin!!!\n");
     tear_up();
     test_begin();
 
-    mock_alice_pqc_account(1, "alice");
-    mock_bob_pqc_account(2, "bob");
+    mock_alice_pqc_account("alice");
+    mock_bob_pqc_account("bob");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     Skissm__E2eeAddress *bob_address = account_data[1]->address;
@@ -988,12 +963,12 @@ static void test_pqc_many_to_many() {
     tear_up();
     test_begin();
 
-    mock_alice_pqc_account(1, "Alice");
-    mock_alice_pqc_account(2, "Alice");
-    mock_alice_pqc_account(3, "Alice");
-    mock_bob_pqc_account(4, "Bob");
-    mock_bob_pqc_account(5, "Bob");
-    mock_bob_pqc_account(6, "Bob");
+    mock_alice_pqc_account("Alice");
+    mock_alice_pqc_account("Alice");
+    mock_alice_pqc_account("Alice");
+    mock_bob_pqc_account("Bob");
+    mock_bob_pqc_account("Bob");
+    mock_bob_pqc_account("Bob");
 
     sleep(2);
 
@@ -1073,10 +1048,10 @@ static void test_change_devices() {
     tear_up();
     test_begin();
 
-    mock_alice_pqc_account(1, "Alice");
-    mock_alice_pqc_account(2, "Alice");
-    mock_bob_pqc_account(3, "Bob");
-    mock_bob_pqc_account(4, "Bob");
+    mock_alice_pqc_account("Alice");
+    mock_alice_pqc_account("Alice");
+    mock_bob_pqc_account("Bob");
+    mock_bob_pqc_account("Bob");
 
     sleep(2);
 
@@ -1108,7 +1083,7 @@ static void test_change_devices() {
     sleep(2);
 
     // Alice adds a new device
-    mock_alice_pqc_account(5, "Alice");
+    mock_alice_pqc_account("Alice");
 
     sleep(1);
 

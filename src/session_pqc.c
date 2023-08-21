@@ -147,7 +147,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
     bool old_spk = 0;
     Skissm__SignedPreKey *old_spk_data = NULL;
     if (local_account->signed_pre_key->spk_id != msg->bob_signed_pre_key_id) {
-        get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->account_id, msg->bob_signed_pre_key_id, &old_spk_data);
+        get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->address, msg->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
             ssm_notify_log(NULL, BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
             return -1;
@@ -185,7 +185,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
             return -1;
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
-            get_skissm_plugin()->db_handler.update_one_time_pre_key(local_account->account_id, our_one_time_pre_key->opk_id);
+            get_skissm_plugin()->db_handler.update_one_time_pre_key(local_account->address, our_one_time_pre_key->opk_id);
             copy_protobuf_from_protobuf(&(inbound_session->bob_one_time_pre_key), &(our_one_time_pre_key->key_pair->public_key));
             inbound_session->bob_one_time_pre_key_id = our_one_time_pre_key->opk_id;
         }

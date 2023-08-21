@@ -163,15 +163,6 @@ typedef struct skissm_db_handler_t {
         Skissm__Account *
     );
     /**
-     * @brief load account from db
-     * @param account_id
-     * @param account
-     */
-    void (*load_account)(
-        uint64_t,
-        Skissm__Account **
-    );
-    /**
      * @brief load account from db by giving address
      * @param address
      * @param account
@@ -189,76 +180,67 @@ typedef struct skissm_db_handler_t {
         Skissm__Account ***
     );
     /**
-     * @brief update identity key of account to db
-     * @param account_id
-     * @param identity_key
-     */
-    void (*update_identity_key)(
-        uint64_t,
-        Skissm__IdentityKey *
-    );
-    /**
      * @brief update signed pre-key of account to db
-     * @param account_id
+     * @param address
      * @param signed_pre_key
      */
-    void (*update_signed_pre_key)(
-        uint64_t,
+    bool (*update_signed_pre_key)(
+        Skissm__E2eeAddress *,
         Skissm__SignedPreKey *
     );
     /**
      * @brief load old signed pre-key by spk_id
-     * @param account_id
+     * @param address
      * @param spk_id
      * @param signed_pre_key
      */
     void (*load_signed_pre_key)(
-        uint64_t,
+        Skissm__E2eeAddress *,
         uint32_t,
         Skissm__SignedPreKey **
     );
     /**
      * @brief remove expired signed pre-key (keep last two) of account from db
-     * @param account_id
-     */
-    void (*remove_expired_signed_pre_key)(
-        uint64_t
-    );
-    /**
-     * @brief update address of account to db
-     * @param account_id
      * @param address
      */
-    void (*update_address)(
-        uint64_t,
+    bool (*remove_expired_signed_pre_key)(
         Skissm__E2eeAddress *
     );
     /**
      * @brief add an one time pre-key of account to db
-     * @param account_id
+     * @param address
      * @param one_time_pre_key
      */
-    void (*add_one_time_pre_key)(
-        uint64_t,
+    bool (*add_one_time_pre_key)(
+        Skissm__E2eeAddress *,
         Skissm__OneTimePreKey *
     );
     /**
      * @brief remove an one time pre-key of account to db
-     * @param account_id
+     * @param address
      * @param one_time_pre_key_id
      */
-    void (*remove_one_time_pre_key)(
-        uint64_t,
+    bool (*remove_one_time_pre_key)(
+        Skissm__E2eeAddress *,
         uint32_t
     );
     /**
      * @brief update an one time pre-key of acount from db
-     * @param account_id
+     * @param address
      * @param one_time_pre_key_id
      */
-    void (*update_one_time_pre_key)(
-        uint64_t,
+    bool (*update_one_time_pre_key)(
+        Skissm__E2eeAddress *,
         uint32_t
+    );
+    /**
+     * @brief load auth from the account given by the address
+     * @param address
+     * @param auth
+     */
+    void (*load_auth)(
+        Skissm__E2eeAddress *,
+        char **
     );
 
     // session related handlers

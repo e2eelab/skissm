@@ -68,9 +68,9 @@ static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_on
     }
 }
 
-static void create_account_test(uint64_t account_id) {
+static void create_account_test() {
     // Register test
-    Skissm__Account *account = create_account(account_id, TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
 
     assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
@@ -99,11 +99,11 @@ static void create_account_test(uint64_t account_id) {
     // store account
     mock_random_user_address(&(account->address));
     get_skissm_plugin()->db_handler.store_account(account);
-    printf("stored account_id %" PRIu64 "\n", account->account_id);
+    printf("stored account\n");
 
     // load account
     Skissm__Account *loaded_account = NULL;
-    get_skissm_plugin()->db_handler.load_account(account_id, &loaded_account);
+    get_skissm_plugin()->db_handler.load_account_by_address(account->address, &loaded_account);
     assert(is_equal_account(account, loaded_account));
 
     // release
@@ -136,58 +136,58 @@ static void load_accounts_test(uint64_t num) {
     for (i = 0; i < accounts_num; i++) {
         Skissm__Account *unpacked_account  = skissm__account__unpack(NULL, accounts_data_len[i], accounts_data[i]);
         free_mem((void **)(&accounts_data[i]), accounts_data_len[i]);
-        assert(unpacked_account->account_id == (i+1));
         assert(is_equal_account(accounts[i], unpacked_account));
-        printf("pack/unpack verified: account_id %" PRIu64 "\n", accounts[i]->account_id);
+        printf("pack/unpack verified\n");
     }
     free_mem((void **)(&accounts_data_len), accounts_num * sizeof(size_t));
     free_mem((void **)(&accounts_data), accounts_num * sizeof(uint8_t *));
 }
 
 static void create_accounts_test(uint64_t num) {
-    for (uint64_t account_id = 1; account_id <= num; account_id++) {
-        create_account_test(account_id);
+    uint64_t i;
+    for (i = 1; i <= num; i++) {
+        create_account_test();
     }
 
     load_accounts_test(num);
 }
 
 void register_user_test() {
-    uint64_t account_id = 9;
     const char *e2ee_pack_id = "0";
     const char *user_name = "alice";
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 }
 
 void publish_spk_test() {
-    uint64_t account_id = 10;
     const char *e2ee_pack_id = "0";
     const char *user_name = "alice";
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
 
     // load account
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account(account_id, &account);
+    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account);
     uint32_t old_spk_id = account->signed_pre_key->spk_id;
 
     // update the signed pre-key
@@ -218,23 +218,23 @@ Skissm__ProtoMsg *mock_supply_opks_msg(Skissm__E2eeAddress *user_address, uint32
 }
 
 void supply_opks_test() {
-    uint64_t account_id = 11;
     const char *e2ee_pack_id = "0";
     const char *user_name = "alice";
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response =
-        register_user(account_id,
+        register_user(
             e2ee_pack_id,
             user_name,
             device_id,
             authenticator,
-            auth_code);
+            auth_code
+        );
 
     // load account
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account(account_id, &account);
+    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account);
 
     // the server asks the client to supply some one-time pre-keys
     uint32_t supply_opks_num = 50;
@@ -247,7 +247,7 @@ void supply_opks_test() {
 
     // assert
     Skissm__Account *account_new = NULL;
-    get_skissm_plugin()->db_handler.load_account(account_id, &account_new);
+    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account_new);
     assert(account_new->n_one_time_pre_keys == (100 + supply_opks_num));
 
     // release

@@ -62,7 +62,7 @@ void test_update_one_time_pre_key(){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
@@ -81,11 +81,14 @@ void test_update_one_time_pre_key(){
     uint32_t opk_id = account->one_time_pre_keys[used_opk]->opk_id;
 
     mark_opk_as_used(account, opk_id);
-    update_one_time_pre_key(account->account_id, opk_id);
+    update_one_time_pre_key(account->address, opk_id);
+
+    sqlite_int64 address_id;
+    load_address_id(account->address, &address_id);
 
     // load the one-time pre-keys
     Skissm__OneTimePreKey **opk_copy = NULL;
-    uint32_t opk_num = load_one_time_pre_keys(account->account_id, &opk_copy);
+    uint32_t opk_num = load_one_time_pre_keys(address_id, &opk_copy);
 
     // assert the opk is used
     assert(opk_copy[used_opk]->used == true);
@@ -101,7 +104,7 @@ void test_remove_one_time_pre_key(){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    Skissm__Account *account = create_account(1, TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
@@ -121,12 +124,15 @@ void test_remove_one_time_pre_key(){
     int used_opk_num = 80;
     int i;
     for (i = 0; i < used_opk_num; i++){
-        remove_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]->opk_id);
+        remove_one_time_pre_key(account->address, account->one_time_pre_keys[i]->opk_id);
     }
+
+    sqlite_int64 address_id;
+    load_address_id(account->address, &address_id);
 
     // load the one-time pre-keys
     Skissm__OneTimePreKey **opk_copy = NULL;
-    uint32_t opk_num = load_one_time_pre_keys(account->account_id, &opk_copy);
+    uint32_t opk_num = load_one_time_pre_keys(address_id, &opk_copy);
 
     // check if the opks are deleted
     assert(opk_num == origin_opk_num - used_opk_num);
