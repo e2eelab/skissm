@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "skissm/account.h"
 #include "skissm/account_manager.h"
@@ -40,6 +41,8 @@
 static Skissm__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
+
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct store_plaintext {
     uint8_t *plaintext;
@@ -159,6 +162,8 @@ static void on_one2one_msg_received(
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
+    pthread_mutex_lock(&mutex);
+    
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
     if (plaintext_store.plaintext != NULL){
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
@@ -168,6 +173,8 @@ static void on_one2one_msg_received(
     plaintext_store.plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
     memcpy(plaintext_store.plaintext, plaintext, plaintext_len);
     plaintext_store.plaintext_len = plaintext_len;
+    
+    pthread_mutex_unlock(&mutex);
 }
 
 static void on_other_device_msg_received(
@@ -176,6 +183,8 @@ static void on_other_device_msg_received(
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
+    pthread_mutex_lock(&mutex);
+    
     print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
     if (plaintext_store.plaintext != NULL){
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
@@ -185,6 +194,8 @@ static void on_other_device_msg_received(
     plaintext_store.plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
     memcpy(plaintext_store.plaintext, plaintext, plaintext_len);
     plaintext_store.plaintext_len = plaintext_len;
+    
+    pthread_mutex_unlock(&mutex);
 }
 
 static void on_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *session) {
@@ -345,6 +356,8 @@ static void test_encryption(
     Skissm__E2eeAddress *from_address, const char *to_user_id, const char *to_domain,
     uint8_t *plaintext, size_t plaintext_len
 ) {
+    pthread_mutex_lock(&mutex);
+    
     if (plaintext_store.plaintext != NULL){
         free_mem((void **)&(plaintext_store.plaintext), plaintext_store.plaintext_len);
         plaintext_store.plaintext = NULL;
@@ -357,6 +370,8 @@ static void test_encryption(
 
     // release
     skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+    
+    pthread_mutex_unlock(&mutex);
 }
 
 static void test_basic_session(){
