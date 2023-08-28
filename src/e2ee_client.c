@@ -332,7 +332,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         // done
         Skissm__SendOne2oneMsgResponse *response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
         skissm__send_one2one_msg_response__init(response);
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
         return response;
     }
 
