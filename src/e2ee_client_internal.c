@@ -168,14 +168,9 @@ Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
     Skissm__PublishSpkResponse *response = get_skissm_plugin()->proto_handler.publish_spk(account->address, account->auth, request);
     bool succ = consume_publish_spk_response(account, response);
     if (!succ) {
+        // skip store pending request
         // pack reuest to request_data
-        size_t request_data_len = skissm__publish_spk_request__get_packed_size(request);
-        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        skissm__publish_spk_request__pack(request, request_data);
-
-        store_pending_request_internal(account->address, SKISSM__PENDING_REQUEST_TYPE__PUBLISH_SPK_REQUEST, request_data, request_data_len, NULL, 0);
-        //release
-        free_mem((void *)&request_data, request_data_len);
+        ssm_notify_log(account->address, DEBUG_LOG, "publish_spk_internal() failed, do it on next start");
     }
 
     // release
@@ -228,8 +223,15 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
         skissm__send_one2one_msg_request__pack(request, request_data);
 
         store_pending_request_internal(outbound_session->session_owner, SKISSM__PENDING_REQUEST_TYPE__SEND_ONE2ONE_MSG_REQUEST, request_data, request_data_len, NULL, 0);
+
         //release
         free_mem((void *)&request_data, request_data_len);
+        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+        
+        // replace response code to enable another try
+        response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
+        skissm__send_one2one_msg_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
     }
 
     // release

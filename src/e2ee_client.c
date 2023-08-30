@@ -339,6 +339,10 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__SendOne2oneMsgResponse *response = NULL;
     size_t i;
     for (i = 0; i < outbound_sessions_num; i++) {
+        // only keep last response
+        if (response != NULL)
+            skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+
         Skissm__Session *outbound_session = outbound_sessions[i];
         if (outbound_session->responded == false) {
             ssm_notify_log(from, DEBUG_LOG, "send_one2one_msg(): outbound session[%s] not responded, outbound_sessions_num = %lu, store common_plaintext_data", outbound_session->session_id);
@@ -349,15 +353,16 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
                 common_plaintext_data,
                 common_plaintext_data_len
             );
+            // create response
+            response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
+            skissm__send_one2one_msg_response__init(response);
+            response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
             // release
             skissm__session__free_unpacked(outbound_session, NULL);
             continue;
         }
 
         // send message to server
-        // only keep last response
-        if (response != NULL)
-            skissm__send_one2one_msg_response__free_unpacked(response, NULL);
         response = send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
 
         // release
@@ -517,7 +522,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_outbound_group_session(sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
-        // outbound_group_session does not exist
+        ssm_notify_log(sender_address, DEBUG_LOG, "send_group_msg() outbound_group_session does not exist");
         return NULL;
     }
     Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, plaintext_data, plaintext_data_len);
@@ -532,6 +537,12 @@ Skissm__SendGroupMsgResponse *send_group_msg(
         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__SEND_GROUP_MSG_REQUEST, request_data, request_data_len, NULL, 0);
         //release
         free_mem((void *)&request_data, request_data_len);
+        skissm__send_group_msg_response__free_unpacked(response, NULL);
+
+        // replace response code to enable another try
+        response = (Skissm__SendGroupMsgResponse *)malloc(sizeof(Skissm__SendGroupMsgResponse));
+        skissm__send_group_msg_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
     }
 
     // release

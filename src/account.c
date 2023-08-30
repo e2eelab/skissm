@@ -44,7 +44,9 @@ void account_begin() {
         if (now > cur_account->signed_pre_key->ttl) {
             generate_signed_pre_key(cur_account);
             Skissm__PublishSpkResponse *response = publish_spk_internal(cur_account);
-            skissm__publish_spk_response__free_unpacked(response, NULL);
+            // release
+            if (response != NULL)
+                skissm__publish_spk_response__free_unpacked(response, NULL);
         }
 
         // check and remove signed pre-keys (keep last two)
