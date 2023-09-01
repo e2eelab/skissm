@@ -98,37 +98,10 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
         ssm_notify_log(from, BAD_ACCOUNT, "invite()");
         return NULL;
     }
+    // we should always call get_pre_key_bundle_internal() since there may have new devices for to_user_id@to_domain
+    // not just check outbound sessions in db currently.
 
-    Skissm__Session **outbound_sessions = NULL;
-    Skissm__InviteResponse *response = NULL;
-    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
-    if (outbound_sessions_num == 0) {
-        response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
-    } else {
-        // should we call get_pre_key_bundle_internal() again?
-        size_t i;
-        for (i = 0; i < outbound_sessions_num; i++) {
-            Skissm__Session *outbound_session = outbound_sessions[i];
-            response = reinvite(outbound_session);
-
-            // response will be null if outbound_session is already responded
-            if (response == NULL) {
-                ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to [%s@%s] skip sending invite request since outbound session is already responded", from->user->user_id, from->user->device_id, to_user_id, to_domain);
-            } else {
-                ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to [%s@%s]  reinvite got responsesince outbound session is already responded", from->user->user_id, from->user->device_id, to_user_id, to_domain, response->code);
-                // release previous response
-                skissm__invite_response__free_unpacked(response, NULL);
-                response = NULL;
-            }
-
-            // release
-            skissm__session__free_unpacked(outbound_session, NULL);
-
-            // return last response
-        }
-        // release
-        free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
-    }
+    Skissm__InviteResponse *response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
 
     // release
     free(auth);
@@ -383,7 +356,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         // done
         Skissm__SendOne2oneMsgResponse *response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
         skissm__send_one2one_msg_response__init(response);
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
         return response;
     } else {
         // rebuild an outbound session if the chain index is maximum
@@ -440,6 +413,10 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__SendOne2oneMsgResponse *response = NULL;
     size_t i;
     for (i = 0; i < outbound_sessions_num; i++) {
+        // only keep last response
+        if (response != NULL)
+            skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+
         Skissm__Session *outbound_session = outbound_sessions[i];
         if (outbound_session->responded == false) {
             ssm_notify_log(from, DEBUG_LOG, "send_one2one_msg(): outbound session[%s] not responded, outbound_sessions_num = %lu, store common_plaintext_data", outbound_session->session_id);
@@ -450,15 +427,16 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
                 common_plaintext_data,
                 common_plaintext_data_len
             );
+            // create response
+            response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
+            skissm__send_one2one_msg_response__init(response);
+            response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
             // release
             skissm__session__free_unpacked(outbound_session, NULL);
             continue;
         }
 
         // send message to server
-        // only keep last response
-        if (response != NULL)
-            skissm__send_one2one_msg_response__free_unpacked(response, NULL);
         response = send_one2one_msg_internal(outbound_session, common_plaintext_data, common_plaintext_data_len);
 
         // release
@@ -620,7 +598,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
-        // outbound_group_session does not exist
+        ssm_notify_log(sender_address, DEBUG_LOG, "send_group_msg() outbound_group_session does not exist");
         return NULL;
     }
     Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, plaintext_data, plaintext_data_len);
@@ -635,6 +613,12 @@ Skissm__SendGroupMsgResponse *send_group_msg(
         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__SEND_GROUP_MSG_REQUEST, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
+        skissm__send_group_msg_response__free_unpacked(response, NULL);
+
+        // replace response code to enable another try
+        response = (Skissm__SendGroupMsgResponse *)malloc(sizeof(Skissm__SendGroupMsgResponse));
+        skissm__send_group_msg_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
     }
 
     // release
