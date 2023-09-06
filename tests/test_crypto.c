@@ -404,14 +404,13 @@ static void test_verify_pre_key_bundle() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint64_t account_id = 1;
     const char *user_name = "Alice";
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
 
-    Skissm__Account *account = create_account(account_id, e2ee_pack_id);
+    Skissm__Account *account = create_account(e2ee_pack_id);
 
     // send account message to server
     Skissm__RegisterUserRequest *request = produce_register_request(account);

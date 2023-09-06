@@ -49,11 +49,10 @@ void account_end();
  * @brief Create a new account object
  * This will generate an identity key pair, a signed pre-key pair,
  * a signature, and 100 one-time pre-key pairs.
- * @param account_id a unique account id start form 1
  * @param e2ee_pack_id an id (0, 1) of e2ee package
  * @return Skissm__Account*
  */
-Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id);
+Skissm__Account *create_account(const char *e2ee_pack_id);
 
 /**
  * @brief Get the account with given address.

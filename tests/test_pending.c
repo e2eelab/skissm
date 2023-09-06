@@ -95,6 +95,7 @@ static void test_one_group_pre_key() {
 
     outbound_group_session->version = strdup(E2EE_PROTOCOL_VERSION);
     outbound_group_session->e2ee_pack_id = strdup(e2ee_pack_id);
+    copy_address_from_address(&(outbound_group_session->sender), user_address);
     copy_address_from_address(&(outbound_group_session->session_owner), user_address);
     outbound_group_session->session_id = generate_uuid_str();
 
@@ -113,13 +114,15 @@ static void test_one_group_pre_key() {
     outbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
     get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
 
-    test_cipher_suite->sign_key_gen(&(outbound_group_session->signature_public_key), &(outbound_group_session->signature_private_key));
+    outbound_group_session->group_seed.len = test_cipher_suite->get_crypto_param().hash_len;
+    outbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
+    get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->group_seed.data, outbound_group_session->group_seed.len);
 
     int ad_len = 2 * key_len;
     outbound_group_session->associated_data.len = ad_len;
     outbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
-    memcpy(outbound_group_session->associated_data.data, outbound_group_session->signature_public_key.data, key_len);
-    memcpy((outbound_group_session->associated_data.data) + key_len, outbound_group_session->signature_public_key.data, key_len);
+    memcpy(outbound_group_session->associated_data.data, outbound_group_session->chain_key.data, key_len);
+    memcpy((outbound_group_session->associated_data.data) + key_len, outbound_group_session->chain_key.data, key_len);
 
     get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
@@ -338,13 +341,13 @@ static void test_sending_before_accept() {
     const char *alice_authenticator = "alice@domain.com.tw";
     const char *alice_auth_code = "123456";
     Skissm__RegisterUserResponse *alice_response = register_user(
-        1, e2ee_pack_id, "Alice", alice_device_id, alice_authenticator, alice_auth_code
+        e2ee_pack_id, "Alice", alice_device_id, alice_authenticator, alice_auth_code
     );
     char *bob_device_id = generate_uuid_str();
     const char *bob_authenticator = "bob@domain.com.tw";
     const char *bob_auth_code = "654321";
     Skissm__RegisterUserResponse *bob_response = register_user(
-        2, e2ee_pack_id, "Bob", bob_device_id, bob_authenticator, bob_auth_code
+        e2ee_pack_id, "Bob", bob_device_id, bob_authenticator, bob_auth_code
     );
 
     Skissm__E2eeAddress *alice_address = alice_response->address, *bob_address = bob_response->address;
@@ -355,7 +358,11 @@ static void test_sending_before_accept() {
 
     int i;
     for (i = 0; i < 20; i++) {
-        send_one2one_msg(alice_address, bob_address->user->user_id, bob_address->domain, plaintext, plaintext_len);
+        send_one2one_msg(
+            alice_address,
+            bob_address->user->user_id, bob_address->domain,
+            NOTIFICATION_LEVEL_NORMAL,
+            plaintext, plaintext_len);
     }
 
     // invite

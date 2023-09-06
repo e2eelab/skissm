@@ -496,7 +496,7 @@ size_t decrypt_ratchet(
     Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload,
     uint8_t **plaintext_data
 ) {
-    ssm_notify_log(NULL, DEBUG_LOG, "decrypt_ratchet() seq: %d\n", payload->sequence);
+    // ssm_notify_log(NULL, DEBUG_LOG, "decrypt_ratchet() seq: %d\n", payload->sequence);
 
     int ratchet_key_len;
     if (cipher_suite->get_crypto_param().pqc_param == false) {

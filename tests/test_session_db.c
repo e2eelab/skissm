@@ -259,7 +259,7 @@ void test_load_inbound_session()
     tear_down();
 }
 
-void test_load_outbound_group_session()
+void test_load_group_session_by_address()
 {
     tear_up();
 
@@ -296,6 +296,7 @@ void test_load_outbound_group_session()
 
     group_session->version = strdup(E2EE_PROTOCOL_VERSION);
 
+    copy_address_from_address(&(group_session->sender), Alice);
     copy_address_from_address(&(group_session->session_owner), Alice);
     group_session->session_id = generate_uuid_str();
 
@@ -314,22 +315,24 @@ void test_load_outbound_group_session()
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(group_session->chain_key.data, "01234567890123456789012345678901", 32);
 
-    crypto_curve25519_generate_key_pair(&(group_session->signature_public_key), &(group_session->signature_private_key));
+    group_session->group_seed.len = 32;
+    group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(group_session->group_seed.data, "01234567890123456789012345678901", 32);
 
     group_session->associated_data.len = AD_LENGTH;
     group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
     memcpy(group_session->associated_data.data, group_session->chain_key.data, 32);
-    memcpy((group_session->associated_data.data) + 32, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    memcpy((group_session->associated_data.data) + 32, group_session->group_seed.data, CURVE25519_KEY_LENGTH);
 
     // insert to the db
     store_group_session(group_session);
 
     // load_outbound_group_session
     Skissm__GroupSession *group_session_copy;
-    load_outbound_group_session(Alice, group_address, &group_session_copy);
+    load_group_session_by_address(Alice, Alice, group_address, &group_session_copy);
 
     // assert session equals to session_copy
-    print_result("test_load_outbound_group_session", is_equal_group_session(group_session, group_session_copy));
+    print_result("test_load_group_session_by_address", is_equal_group_session(group_session, group_session_copy));
 
     // free
     skissm__e2ee_address__free_unpacked(Alice, NULL);
@@ -341,7 +344,7 @@ void test_load_outbound_group_session()
     tear_down();
 }
 
-void test_load_inbound_group_session()
+void test_load_group_session_by_id()
 {
     tear_up();
 
@@ -378,6 +381,7 @@ void test_load_inbound_group_session()
 
     group_session->version = strdup(E2EE_PROTOCOL_VERSION);
 
+    copy_address_from_address(&(group_session->sender), Bob);
     copy_address_from_address(&(group_session->session_owner), Alice);
     group_session->session_id = generate_uuid_str();
 
@@ -396,26 +400,20 @@ void test_load_inbound_group_session()
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(group_session->chain_key.data, "01234567890123456789012345678901", 32);
 
-    // inbound group session has no signature_private_key
-    crypto_curve25519_generate_key_pair(&(group_session->signature_public_key), &(group_session->signature_private_key));
-    free_mem((void **)&(group_session->signature_private_key.data), group_session->signature_private_key.len);
-    group_session->signature_private_key.data = NULL;
-    group_session->signature_private_key.len = 0;
-
     group_session->associated_data.len = AD_LENGTH;
     group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
-    memcpy(group_session->associated_data.data, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
-    memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->signature_public_key.data, CURVE25519_KEY_LENGTH);
+    memcpy(group_session->associated_data.data, group_session->chain_key.data, CURVE25519_KEY_LENGTH);
+    memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->chain_key.data, CURVE25519_KEY_LENGTH);
 
     // insert to the db
     store_group_session(group_session);
 
     // load_inbound_group_session for owner: Alice
     Skissm__GroupSession *group_session_copy = NULL;
-    load_inbound_group_session(Alice, group_session->session_id, &group_session_copy);
+    load_group_session_by_id(Bob, Alice, group_session->session_id, &group_session_copy);
 
     // assert session equals to session_copy
-    print_result("test_load_inbound_group_session", is_equal_group_session(group_session, group_session_copy));
+    print_result("test_load_group_session_by_id", is_equal_group_session(group_session, group_session_copy));
 
     // free
     skissm__e2ee_address__free_unpacked(Alice, NULL);
@@ -660,8 +658,8 @@ int main(){
     test_load_outbound_session();
     test_load_outbound_sessions();
     test_load_inbound_session();
-    test_load_outbound_group_session();
-    test_load_inbound_group_session();
+    test_load_group_session_by_address();
+    test_load_group_session_by_id();
     test_store_session();
     test_equal_ratchet_outbound();
     test_equal_ratchet_inbound();

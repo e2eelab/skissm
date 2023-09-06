@@ -110,12 +110,12 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
             size_t i;
             for (i = 0; i < response->n_group_info_list; i++) {
                 Skissm__GroupInfo *cur_group = (response->group_info_list)[i];
-                create_outbound_group_session(
-                    account->e2ee_pack_id, account->address,
-                    cur_group->group_name,
-                    cur_group->group_address, cur_group->group_members,
-                    cur_group->n_group_members, NULL
-                );
+                // create_outbound_group_session(
+                //     account->e2ee_pack_id, account->address,
+                //     cur_group->group_name,
+                //     cur_group->group_address, cur_group->group_members,
+                //     cur_group->n_group_members, NULL
+                // );
             }
         }
         return true;
@@ -144,7 +144,7 @@ bool consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkRe
         // save to db
         if (account->saved == true) {
             Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;
-            get_skissm_plugin()->db_handler.update_signed_pre_key(account->account_id, signed_pre_key);
+            get_skissm_plugin()->db_handler.update_signed_pre_key(account->address, signed_pre_key);
         }
         return true;
     } else {
@@ -183,7 +183,7 @@ bool consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, S
         // save to db
         size_t i;
         for (i = 0; i < opks_num; i++) {
-            get_skissm_plugin()->db_handler.add_one_time_pre_key(account->account_id, account->one_time_pre_keys[old_opks_num + i]);
+            get_skissm_plugin()->db_handler.add_one_time_pre_key(account->address, account->one_time_pre_keys[old_opks_num + i]);
         }
         return true;
     } else {

@@ -58,12 +58,14 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
  * @brief Create a send_one2one_msg_request to be sent to messaging server.
  *
  * @param outbound_session
+ * @param notif_level
  * @param plaintext_data
  * @param plaintext_data_len
  * @return Skissm__SendOne2oneMsgRequest*
  */
 Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(
     Skissm__Session *outbound_session,
+    uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 );
 

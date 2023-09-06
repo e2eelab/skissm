@@ -9,8 +9,6 @@ extern "C" {
 
 /**
  * @brief Register a new account.
- *
- * @param account_id The unique account id.
  * @param e2ee_pack_id The e2ee package id to be used.
  * @param user_name The user name that is creating the new account.
  * @param device_id The device id that will be binded to the new account.
@@ -19,7 +17,6 @@ extern "C" {
  * @return Skissm__RegisterUserResponse *
  */
 Skissm__RegisterUserResponse *register_user(
-    uint64_t account_id,
     const char *e2ee_pack_id,
     const char *user_name,
     const char *device_id,
@@ -50,6 +47,20 @@ Skissm__InviteResponse *invite(
 );
 
 /**
+ * @brief Send invite request to create a new outbound session
+ * and delete the old outbound session.
+ * @param from From address
+ * @param to_user_id The receiver's user_id
+ * @param to_domain The receiver's domain
+ * @return  Skissm__InviteResponse *
+ */
+Skissm__InviteResponse *new_invite(
+    Skissm__E2eeAddress *from,
+    const char *to_user_id,
+    const char *to_domain
+);
+
+/**
  * @brief Send a face-to-face invite request and create a new outbound session.
  * @param from From address
  * @param to To Address
@@ -68,22 +79,22 @@ size_t f2f_invite(
 
 /**
  * @brief Send one2one msg.
- *
  * @param from
  * @param to_user_id
  * @param to_domain
+ * @param notif_level,
  * @param plaintext_data
  * @param plaintext_data_len
  * @return Skissm__SendOne2oneMsgResponse *
  */
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
+    uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 );
 
 /**
  * @brief Create a group.
- *
  * @param sender_address
  * @param group_name
  * @param group_members
@@ -97,7 +108,6 @@ Skissm__CreateGroupResponse *create_group(
 
 /**
  * @brief Add group members.
- *
  * @param sender_address
  * @param group_address
  * @param adding_members
@@ -113,7 +123,6 @@ Skissm__AddGroupMembersResponse *add_group_members(
 
 /**
  * @brief Remove group members.
- *
  * @param sender_address
  * @param group_address
  * @param removing_members
@@ -129,21 +138,21 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
 
 /**
  * @brief Send group msg.
- *
  * @param sender_address
  * @param group_address
+ * @param notif_level,
  * @param plaintext_data
  * @param plaintext_data_len
  * @return Skissm__SendGroupMsgResponse *
  */
 Skissm__SendGroupMsgResponse *send_group_msg(
     Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address,
+    uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 );
 
 /**
  * @brief Send consume_proto_msg request to server.
- *
  * @param sender_address
  * @param proto_msg_id
  * @return Skissm__ConsumeProtoMsgResponse *
@@ -152,7 +161,6 @@ Skissm__ConsumeProtoMsgResponse *consume_proto_msg(Skissm__E2eeAddress *sender_a
 
 /**
  * @brief Process incoming protocol messages.
- *
  * @param proto_msg_data
  * @param proto_msg_data_len
  * @return Skissm__ConsumeProtoMsgResponse *

@@ -30,7 +30,6 @@ extern "C" {
 
 /**
  * @brief Create a CreateGroupRequest message to be sent to server.
- *
  * @param sender_address
  * @param group_name
  * @param group_members
@@ -46,7 +45,6 @@ Skissm__CreateGroupRequest *produce_create_group_request(
 
 /**
  * @brief Process an incoming CreateGroupResponse message.
- *
  * @param e2ee_pack_id
  * @param sender_address
  * @param group_name
@@ -66,7 +64,6 @@ bool consume_create_group_response(
 
 /**
  * @brief Create a CreateGroupMsg message to be sent to server.
- *
  * @param receiver_address
  * @param msg
  * @return true for success
@@ -78,7 +75,6 @@ bool consume_create_group_msg(
 
 /**
  * @brief Process an incoming GetGroupResponse message.
- *
  * @param response
  *
  */
@@ -86,7 +82,6 @@ bool consume_get_group_response(Skissm__GetGroupResponse *response);
 
 /**
  * @brief Create a AddGroupMembersRequest message to be sent to server.
- *
  * @param outbound_group_session
  * @param adding_member_addresses
  * @param adding_member_num
@@ -100,7 +95,6 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
 
 /**
  * @brief Process an incoming AddGroupMembersResponse message.
- *
  * @param outbound_group_session
  * @param response
  * @param adding_members
@@ -116,7 +110,6 @@ bool consume_add_group_members_response(
 
 /**
  * @brief Process an incoming AddGroupMembersMsg message.
- *
  * @param receiver_address
  * @param msg
  * @return true for success
@@ -128,7 +121,6 @@ bool consume_add_group_members_msg(
 
 /**
  * @brief Create a RemoveGroupMembersRequest message to be sent to server.
- *
  * @param outbound_group_session
  * @param removing_member_addresses
  * @param removing_member_num
@@ -142,7 +134,6 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
 
 /**
  * @brief Process an incoming RemoveGroupMembersResponse message.
- *
  * @param outbound_group_session
  * @param response
  * @param removing_members
@@ -158,7 +149,6 @@ bool consume_remove_group_members_response(
 
 /**
  * @brief Process an incoming RemoveGroupMembersMsg message.
- *
  * @param receiver_address
  * @param msg
  * @return true for success
@@ -170,20 +160,20 @@ bool consume_remove_group_members_msg(
 
 /**
  * @brief Create a SendGroupMsgRequest message to be sent to server.
- *
  * @param group_session
+ * @param notif_level
  * @param plaintext_data
  * @param plaintext_data_len
  * @return Skissm__SendGroupMsgRequest*
  */
 Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     Skissm__GroupSession *group_session,
+    uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 );
 
 /**
  * @brief Process an incoming SendGroupMsgResponse message.
- *
  * @param outbound_group_session
  * @param response
  * @return true for success
@@ -195,7 +185,6 @@ bool consume_send_group_msg_response(
 
 /**
  * @brief Process an incoming E2eeMsg message.
- *
  * @param receiver_address
  * @param e2ee_msg
  * @return true for success

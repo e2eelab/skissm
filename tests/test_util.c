@@ -470,12 +470,8 @@ bool is_equal_group_session(Skissm__GroupSession *group_session_1, Skissm__Group
         printf("chain_key not match");
         return false;
     }
-    if (!is_equal_data(&(group_session_1->signature_private_key), &(group_session_2->signature_private_key))) {
-        printf("signature_private_key not match");
-        return false;
-    }
-    if (!is_equal_data(&(group_session_1->signature_public_key), &(group_session_2->signature_public_key))) {
-        printf("signature_public_key not match");
+    if (!is_equal_data(&(group_session_1->group_seed), &(group_session_2->group_seed))) {
+        printf("group_seed not match");
         return false;
     }
     if (!is_equal_data(&(group_session_1->associated_data), &(group_session_2->associated_data))) {

@@ -19,9 +19,9 @@
 #ifndef MEM_UTIL_H_
 #define MEM_UTIL_H_
 
-#include <stdint.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,11 +30,7 @@ extern "C" {
 #include "skissm/skissm.h"
 
 /** Check if two buffers are equal in constant time. */
-bool is_equal(
-    const uint8_t *buffer_a,
-    const uint8_t *buffer_b,
-    size_t len
-);
+bool is_equal(const uint8_t *buffer_a, const uint8_t *buffer_b, size_t len);
 
 /**
  * @brief Generate a UUID string.
@@ -104,10 +100,7 @@ bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *addres
  * @return true
  * @return false
  */
-bool compare_group_member(
-    Skissm__GroupMember **group_members_1, size_t group_member_num_1,
-    Skissm__GroupMember **group_members_2, size_t group_member_num_2
-);
+bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_member_num_1, Skissm__GroupMember **group_members_2, size_t group_member_num_2);
 
 /**
  * @brief Copy ProtobufCBinaryData from src to dest.
@@ -148,10 +141,7 @@ void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAdd
  * @param dest
  * @param src
  */
-void copy_key_pair_from_key_pair(
-    Skissm__KeyPair **dest,
-    Skissm__KeyPair *src
-);
+void copy_key_pair_from_key_pair(Skissm__KeyPair **dest, Skissm__KeyPair *src);
 
 /**
  * @brief Copy Skissm__IdentityKey from src to dest.
@@ -159,10 +149,7 @@ void copy_key_pair_from_key_pair(
  * @param dest
  * @param src
  */
-void copy_ik_from_ik(
-    Skissm__IdentityKey **dest,
-    Skissm__IdentityKey *src
-);
+void copy_ik_from_ik(Skissm__IdentityKey **dest, Skissm__IdentityKey *src);
 
 /**
  * @brief Copy Skissm__SignedPreKey from src to dest.
@@ -170,10 +157,7 @@ void copy_ik_from_ik(
  * @param dest
  * @param src
  */
-void copy_spk_from_spk(
-    Skissm__SignedPreKey **dest,
-    Skissm__SignedPreKey *src
-);
+void copy_spk_from_spk(Skissm__SignedPreKey **dest, Skissm__SignedPreKey *src);
 
 /**
  * @brief Copy Skissm__OneTimePreKey from src to dest.
@@ -182,11 +166,7 @@ void copy_spk_from_spk(
  * @param src
  * @param opk_num
  */
-void copy_opks_from_opks(
-    Skissm__OneTimePreKey ***dest,
-    Skissm__OneTimePreKey **src,
-    size_t opk_num
-);
+void copy_opks_from_opks(Skissm__OneTimePreKey ***dest, Skissm__OneTimePreKey **src, size_t opk_num);
 
 /**
  * @brief Copy Skissm__Account from src to dest.
@@ -194,10 +174,7 @@ void copy_opks_from_opks(
  * @param dest
  * @param src
  */
-void copy_account_from_account(
-    Skissm__Account **dest,
-    Skissm__Account *src
-);
+void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src);
 
 /**
  * @brief Copy Skissm__ChainKey from src to dest.
@@ -205,10 +182,7 @@ void copy_account_from_account(
  * @param dest
  * @param src
  */
-void copy_chain_key_from_chain_key(
-    Skissm__ChainKey **dest,
-    Skissm__ChainKey *src
-);
+void copy_chain_key_from_chain_key(Skissm__ChainKey **dest, Skissm__ChainKey *src);
 
 /**
  * @brief Copy Skissm__MsgKey from src to dest.
@@ -216,10 +190,7 @@ void copy_chain_key_from_chain_key(
  * @param dest
  * @param src
  */
-void copy_msg_key_from_msg_key(
-    Skissm__MsgKey **dest,
-    Skissm__MsgKey *src
-);
+void copy_msg_key_from_msg_key(Skissm__MsgKey **dest, Skissm__MsgKey *src);
 
 /**
  * @brief Copy Skissm__SenderChainNode from src to dest.
@@ -227,10 +198,7 @@ void copy_msg_key_from_msg_key(
  * @param dest
  * @param src
  */
-void copy_sender_chain_from_sender_chain(
-    Skissm__SenderChainNode **dest,
-    Skissm__SenderChainNode *src
-);
+void copy_sender_chain_from_sender_chain(Skissm__SenderChainNode **dest, Skissm__SenderChainNode *src);
 
 /**
  * @brief Copy Skissm__ReceiverChainNode from src to dest.
@@ -239,11 +207,7 @@ void copy_sender_chain_from_sender_chain(
  * @param src
  * @param receiver_chains_num
  */
-void copy_receiver_chains_from_receiver_chains(
-    Skissm__ReceiverChainNode ***dest,
-    Skissm__ReceiverChainNode **src,
-    size_t receiver_chains_num
-);
+void copy_receiver_chains_from_receiver_chains(Skissm__ReceiverChainNode ***dest, Skissm__ReceiverChainNode **src, size_t receiver_chains_num);
 
 /**
  * @brief Copy Skissm__SkippedMsgKeyNode from src to dest.
@@ -252,11 +216,7 @@ void copy_receiver_chains_from_receiver_chains(
  * @param src
  * @param skipped_msg_keys_num
  */
-void copy_skipped_msg_keys_from_skipped_msg_keys(
-    Skissm__SkippedMsgKeyNode ***dest,
-    Skissm__SkippedMsgKeyNode **src,
-    size_t skipped_msg_keys_num
-);
+void copy_skipped_msg_keys_from_skipped_msg_keys(Skissm__SkippedMsgKeyNode ***dest, Skissm__SkippedMsgKeyNode **src, size_t skipped_msg_keys_num);
 
 /**
  * @brief Copy Skissm__Ratchet from src to dest.
@@ -264,10 +224,7 @@ void copy_skipped_msg_keys_from_skipped_msg_keys(
  * @param dest
  * @param src
  */
-void copy_ratchet_from_ratchet(
-    Skissm__Ratchet **dest,
-    Skissm__Ratchet *src
-);
+void copy_ratchet_from_ratchet(Skissm__Ratchet **dest, Skissm__Ratchet *src);
 
 /**
  * @brief Copy Skissm__Session from src to dest.
@@ -275,10 +232,7 @@ void copy_ratchet_from_ratchet(
  * @param dest
  * @param src
  */
-void copy_session_from_session(
-    Skissm__Session **dest,
-    Skissm__Session *src
-);
+void copy_session_from_session(Skissm__Session **dest, Skissm__Session *src);
 
 /**
  * @brief Copy Skissm__IdentityKeyPublic from src to dest.
@@ -286,10 +240,7 @@ void copy_session_from_session(
  * @param dest
  * @param src
  */
-void copy_ik_public_from_ik_public(
-    Skissm__IdentityKeyPublic **dest,
-    Skissm__IdentityKeyPublic *src
-);
+void copy_ik_public_from_ik_public(Skissm__IdentityKeyPublic **dest, Skissm__IdentityKeyPublic *src);
 
 /**
  * @brief Copy Skissm__SignedPreKeyPublic from src to dest.
@@ -297,10 +248,7 @@ void copy_ik_public_from_ik_public(
  * @param dest
  * @param src
  */
-void copy_spk_public_from_spk_public(
-    Skissm__SignedPreKeyPublic **dest,
-    Skissm__SignedPreKeyPublic *src
-);
+void copy_spk_public_from_spk_public(Skissm__SignedPreKeyPublic **dest, Skissm__SignedPreKeyPublic *src);
 
 /**
  * @brief Copy Skissm__OneTimePreKeyPublic from src to dest.
@@ -308,10 +256,24 @@ void copy_spk_public_from_spk_public(
  * @param dest
  * @param src
  */
-void copy_opk_public_from_opk_public(
-    Skissm__OneTimePreKeyPublic **dest,
-    Skissm__OneTimePreKeyPublic *src
-);
+void copy_opk_public_from_opk_public(Skissm__OneTimePreKeyPublic **dest, Skissm__OneTimePreKeyPublic *src);
+
+/**
+ * @brief Copy Skissm__GroupMemberInfo from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_group_member_id(Skissm__GroupMemberInfo **dest, Skissm__GroupMemberInfo *src);
+
+/**
+ * @brief Copy Skissm__GroupMemberInfo array from src to dest.
+ *
+ * @param dest
+ * @param src
+ * @param to_member_addresses_total_num
+ */
+void copy_group_member_ids(Skissm__GroupMemberInfo ***dest, Skissm__GroupMemberInfo **src, size_t to_member_addresses_total_num);
 
 /**
  * @brief Copy Skissm__GroupMember from src to dest.
@@ -339,6 +301,30 @@ void copy_group_members(Skissm__GroupMember ***dest, Skissm__GroupMember **src, 
 void copy_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *src);
 
 /**
+ * @brief Copy Skissm__CreateGroupMsg from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_create_group_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg *src);
+
+/**
+ * @brief Copy Skissm__AddGroupMembersMsg from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_add_group_members_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGroupMembersMsg *src);
+
+/**
+ * @brief Copy Skissm__RemoveGroupMembersMsg from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm__RemoveGroupMembersMsg *src);
+
+/**
  * @brief Add new Skissm__GroupMember array to dest.
  *
  * @param dest
@@ -346,11 +332,7 @@ void copy_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *src);
  * @param adding_members
  * @param adding_members_num
  */
-void add_group_members_to_group_info(
-    Skissm__GroupInfo **dest,
-    Skissm__GroupInfo *old_group_info,
-    Skissm__GroupMember **adding_members, size_t adding_members_num
-);
+void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **adding_members, size_t adding_members_num);
 
 /**
  * @brief Remove some Skissm__GroupMember from old_group_info.
@@ -360,11 +342,7 @@ void add_group_members_to_group_info(
  * @param removing_members
  * @param removing_members_num
  */
-void remove_group_members_from_group_info(
-    Skissm__GroupInfo **dest,
-    Skissm__GroupInfo *old_group_info,
-    Skissm__GroupMember **removing_members, size_t removing_members_num
-);
+void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **removing_members, size_t removing_members_num);
 
 /**
  * @brief Release memory of Skissm__GroupMember array.

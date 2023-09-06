@@ -50,7 +50,7 @@ void account_begin() {
         }
 
         // check and remove signed pre-keys (keep last two)
-        get_skissm_plugin()->db_handler.remove_expired_signed_pre_key(cur_account->account_id);
+        get_skissm_plugin()->db_handler.remove_expired_signed_pre_key(cur_account->address);
 
         // check if there are too many "used" one-time pre-keys
         free_one_time_pre_key(cur_account);
@@ -98,7 +98,7 @@ void account_end() {
     }
 }
 
-Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
+Skissm__Account *create_account(const char *e2ee_pack_id) {
     Skissm__Account *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
     skissm__account__init(account);
 
@@ -108,9 +108,6 @@ Skissm__Account *create_account(uint64_t account_id, const char *e2ee_pack_id) {
 
     // set some initial ids
     account->next_one_time_pre_key_id = 1;
-
-    // generate an account ID
-    account->account_id = account_id;
 
     // generate the identity key pair
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -314,7 +311,7 @@ void free_one_time_pre_key(Skissm__Account *account) {
                 copy_one_time_pre_keys(new_one_time_pre_keys, temp, new_num);
             }
             for (i = 0; i < account->n_one_time_pre_keys; i++) {
-                get_skissm_plugin()->db_handler.remove_one_time_pre_key(account->account_id, account->one_time_pre_keys[i]->opk_id);
+                get_skissm_plugin()->db_handler.remove_one_time_pre_key(account->address, account->one_time_pre_keys[i]->opk_id);
                 skissm__one_time_pre_key__free_unpacked(account->one_time_pre_keys[i], NULL);
                 account->one_time_pre_keys[i] = NULL;
             }

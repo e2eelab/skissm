@@ -57,15 +57,24 @@ static void gen_uuid(uint8_t uuid[UUID_LEN]) {
 // ===============================================================
 // skissm_event_handler_t
 // callback handlers
-static void on_one2one_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_one2one_msg_received(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-static void on_other_device_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_other_device_msg_received(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-static void on_group_msg_received(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_group_msg_received(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
 }
 
@@ -79,29 +88,27 @@ struct skissm_plugin_t ssm_plugin = {
     {
         // account
         store_account,
-        load_account,
         load_account_by_address,
         load_accounts,
-        update_identity_key,
         update_signed_pre_key,
         load_signed_pre_key,
         remove_expired_signed_pre_key,
-        update_address,
         add_one_time_pre_key,
         remove_one_time_pre_key,
         update_one_time_pre_key,
+        load_auth,
         // session
         load_inbound_session,
         load_outbound_session,
         load_outbound_sessions,
         store_session,
         unload_session,
-        load_outbound_group_session,
-        load_inbound_group_session,
-        load_inbound_group_sessions,
+        load_group_session_by_address,
+        load_group_session_by_id,
+        load_group_sessions,
         store_group_session,
-        unload_outbound_group_session,
-        unload_inbound_group_session,
+        unload_group_session_by_address,
+        unload_group_session_by_id,
         // pending data
         store_pending_plaintext_data,
         load_pending_plaintext_data,

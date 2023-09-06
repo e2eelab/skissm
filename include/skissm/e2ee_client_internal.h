@@ -27,7 +27,6 @@ extern "C" {
 
 /**
  * @brief Get the pre-key bundle internal object.
- *
  * @param from
  * @param auth
  * @param to_user_id
@@ -49,7 +48,6 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
 
 /**
  * @brief Send invite request to server.
- *
  * @param outbound_session
  * @param pre_shared_keys
  * @param pre_shared_keys_num
@@ -61,7 +59,6 @@ Skissm__InviteResponse *invite_internal(
 
 /**
  * @brief Send accept request to server.
- *
  * @param e2ee_pack_id
  * @param from
  * @param to
@@ -76,7 +73,6 @@ Skissm__AcceptResponse *accept_internal(
 
 /**
  * @brief Send face-to-face invite request to server.
- *
  * @param from
  * @param to
  * @param e2ee_pack_id
@@ -92,7 +88,6 @@ Skissm__F2fInviteResponse *f2f_invite_internal(
 
 /**
  * @brief Send face-to-face accept request to server.
- *
  * @param e2ee_pack_id
  * @param from
  * @param to
@@ -107,7 +102,6 @@ Skissm__F2fAcceptResponse *f2f_accept_internal(
 
 /**
  * @brief Send publish_spk request to server.
- *
  * @param account The account to be processed
  * @return Skissm__PublishSpkResponse *
  */
@@ -115,7 +109,6 @@ Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account);
 
 /**
  * @brief Send supply_opks request to server.
- *
  * @param account
  * @param opks_num
  * @return Skissm__SupplyOpksResponse *
@@ -124,20 +117,20 @@ Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint3
 
 /**
  * @brief Send one2one_msg request to server.
- *
  * @param outbound_session
+ * @param notif_level
  * @param plaintext_data
  * @param plaintext_data_len
  * @return Skissm__SendOne2oneMsgResponse *
  */
 Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
     Skissm__Session *outbound_session,
+    uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 );
 
 /**
  * @brief Store pending request to db.
- *
  * @param user_address
  * @param type
  * @param request_data
@@ -149,7 +142,6 @@ void store_pending_request_internal(Skissm__E2eeAddress *user_address, Skissm__P
 
 /**
  * @brief Resume connection with a given account.
- *
  * @param account
  */
 void resume_connection_internal(Skissm__Account *account);
