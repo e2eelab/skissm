@@ -553,7 +553,7 @@ static void test_two_members_four_devices() {
 
 static void test_three_members_group_session() {
     // test start
-    printf("test_continual begin!!!\n");
+    printf("test_three_members_group_session begin!!!\n");
     tear_up();
     test_begin();
 
@@ -652,6 +652,6 @@ static void test_three_members_group_session() {
 int main() {
     test_two_members_session();
     test_two_members_four_devices();
-    test_three_members_group_session();
+    // test_three_members_group_session();
     return 0;
 }

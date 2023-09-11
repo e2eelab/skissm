@@ -387,11 +387,13 @@ void initialise_as_alice(
     skissm__chain_key__init(ratchet->sender_chain->chain_key);
 
     if (our_ratchet_key == NULL) {
+        // PQC mode
         create_chain_key(
             cipher_suite, ratchet->root_key, NULL, their_ratchet_key,
             &(ratchet->root_key), ratchet->sender_chain->chain_key, &(ratchet->sender_chain->ratchet_key)
         );
     } else {
+        // ECC mode
         create_chain_key(
             cipher_suite, ratchet->root_key, &(our_ratchet_key->private_key), their_ratchet_key,
             &(ratchet->root_key), ratchet->sender_chain->chain_key, NULL
@@ -415,6 +417,7 @@ void encrypt_ratchet(
             ratchet->sender_chain = NULL;
         }
     }
+
     // prepare a new sender chain if no available
     if (ratchet->sender_chain == NULL) {
         ratchet->sender_chain = (Skissm__SenderChainNode *) malloc(sizeof(Skissm__SenderChainNode));
@@ -422,6 +425,7 @@ void encrypt_ratchet(
         ratchet->sender_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
         skissm__chain_key__init(ratchet->sender_chain->chain_key);
         if (cipher_suite->get_crypto_param().pqc_param == false) {
+            // ECC mode
             Skissm__KeyPair *ratchet_key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
             skissm__key_pair__init(ratchet_key_pair);
             cipher_suite->asym_key_gen(&(ratchet_key_pair->public_key), &(ratchet_key_pair->private_key));
@@ -435,6 +439,7 @@ void encrypt_ratchet(
                 NULL
             );
         } else {
+            // PQC mode
             create_chain_key(
                 cipher_suite,
                 ratchet->root_key,
@@ -473,7 +478,7 @@ void encrypt_ratchet(
         plaintext_data, plaintext_data_len,
         &((*payload)->ciphertext.data)
     );
-    
+
     // debug log
     //char *derived_key_str;
     //size_t derived_key_str_len = to_hex_str(msg_key->derived_key.data, msg_key->derived_key.len, &derived_key_str);

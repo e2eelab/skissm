@@ -375,16 +375,16 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg) {
     // ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg(): receiver_address [%s:%s], new user [%s:%s]", receiver_address->user->user_id, receiver_address->user->device_id, msg->user_address->user->user_id, msg->user_address->user->device_id);
 
-    Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(receiver_address, &account);
-    if (account == NULL) {
+    char *auth = NULL;
+    get_skissm_plugin()->db_handler.load_auth(receiver_address, &auth);
+    if (auth == NULL) {
         ssm_notify_log(receiver_address, BAD_ACCOUNT, "consume_new_user_device_msg()");
-        return false;
+        return NULL;
     }
 
     Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
         receiver_address,
-        account->auth,
+        auth,
         msg->user_address->user->user_id,
         msg->user_address->domain,
         msg->user_address->user->device_id,
@@ -392,32 +392,32 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
     );
     bool succ = false;
     if (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        if (msg->n_group_info_list > 0) {
-            size_t i;
-            for (i = 0; i < msg->n_group_info_list; i++) {
-                Skissm__GroupInfo *cur_group = (msg->group_info_list)[i];
-                // delete the old outbound group session
-                char *old_session_id = NULL;
-                Skissm__GroupSession *outbound_group_session = NULL;
-                get_skissm_plugin()->db_handler.load_group_session_by_address(receiver_address, receiver_address, cur_group->group_address, &outbound_group_session);
-                if (outbound_group_session != NULL) {
-                    get_skissm_plugin()->db_handler.unload_group_session_by_id(receiver_address, outbound_group_session->session_id);
-                    old_session_id = strdup(outbound_group_session->session_id);
-                    skissm__group_session__free_unpacked(outbound_group_session, NULL);
-                }
-                // create a new outbound group session
-                // create_outbound_group_session(
-                //     account->e2ee_pack_id, receiver_address,
-                //     cur_group->group_name,
-                //     cur_group->group_address, cur_group->group_members,
-                //     cur_group->n_group_members, old_session_id
-                // );
-                // release
-                if (old_session_id != NULL) {
-                    free_mem((void **)&old_session_id, strlen(old_session_id));
-                }
-            }
-        }
+        // if (msg->n_group_info_list > 0) {
+        //     size_t i;
+        //     for (i = 0; i < msg->n_group_info_list; i++) {
+        //         Skissm__GroupInfo *cur_group = (msg->group_info_list)[i];
+        //         // delete the old outbound group session
+        //         char *old_session_id = NULL;
+        //         Skissm__GroupSession *outbound_group_session = NULL;
+        //         get_skissm_plugin()->db_handler.load_group_session_by_address(receiver_address, receiver_address, cur_group->group_address, &outbound_group_session);
+        //         if (outbound_group_session != NULL) {
+        //             get_skissm_plugin()->db_handler.unload_group_session_by_id(receiver_address, outbound_group_session->session_id);
+        //             old_session_id = strdup(outbound_group_session->session_id);
+        //             skissm__group_session__free_unpacked(outbound_group_session, NULL);
+        //         }
+        //         // create a new outbound group session
+        //         // create_outbound_group_session(
+        //         //     account->e2ee_pack_id, receiver_address,
+        //         //     cur_group->group_name,
+        //         //     cur_group->group_address, cur_group->group_members,
+        //         //     cur_group->n_group_members, old_session_id
+        //         // );
+        //         // release
+        //         if (old_session_id != NULL) {
+        //             free_mem((void **)&old_session_id, strlen(old_session_id));
+        //         }
+        //     }
+        // }
 
         // release
         skissm__invite_response__free_unpacked(invite_response, NULL);
@@ -428,7 +428,7 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
     }
 
     // release
-    skissm__account__free_unpacked(account, NULL);
+    free(auth);
 
     // done
     return succ;

@@ -267,7 +267,11 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
 
     // create the root key and chain keys
     initialise_ratchet(&(outbound_session->ratchet));
-    initialise_as_alice(cipher_suite, outbound_session->ratchet, outbound_session->alice_ephemeral_key.data, outbound_session->alice_ephemeral_key.len, NULL, &(outbound_session->bob_signed_pre_key));
+    initialise_as_alice(
+        cipher_suite, outbound_session->ratchet,
+        outbound_session->alice_ephemeral_key.data, outbound_session->alice_ephemeral_key.len,
+        NULL, &(outbound_session->bob_signed_pre_key)
+    );
 
     // release
     // release outbound_session pre_shared_keys

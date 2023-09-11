@@ -93,7 +93,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
             for (i = 0; i < response->n_other_user_addresses; i++) {
                 Skissm__E2eeAddress *to_address = (response->other_user_addresses)[i];
                 // skip the same user device
-                if (safe_strcmp(account->address->user->device_id,  to_address->user->device_id)) {
+                if (safe_strcmp(account->address->user->device_id, to_address->user->device_id)) {
                     ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response(): skip invite the same user device: %s", to_address->user->device_id);
                     continue;
                 }
@@ -110,12 +110,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
             size_t i;
             for (i = 0; i < response->n_group_info_list; i++) {
                 Skissm__GroupInfo *cur_group = (response->group_info_list)[i];
-                // create_outbound_group_session(
-                //     account->e2ee_pack_id, account->address,
-                //     cur_group->group_name,
-                //     cur_group->group_address, cur_group->group_members,
-                //     cur_group->n_group_members, NULL
-                // );
+                // add_group_members(account->address, cur_group->group_address, , 1);
             }
         }
         return true;
