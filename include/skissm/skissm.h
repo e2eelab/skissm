@@ -186,11 +186,11 @@ typedef struct skissm_db_handler_t {
     );
     /**
      * @brief update signed pre-key of account to db
-     * @param address
+     * @param user_address
      * @param signed_pre_key
      */
     bool (*update_signed_pre_key)(
-        Skissm__E2eeAddress *address,
+        Skissm__E2eeAddress *user_address,
         Skissm__SignedPreKey *signed_pre_key
     );
     /**
@@ -240,14 +240,13 @@ typedef struct skissm_db_handler_t {
     );
     /**
      * @brief load auth from the account given by the address
-     * @param address
+     * @param user_address
      * @param auth
      */
     void (*load_auth)(
-        Skissm__E2eeAddress *address,
+        Skissm__E2eeAddress *user_address,
         char **auth
     );
-
     // session related handlers
     /**
      * @brief find inbound session
@@ -307,37 +306,37 @@ typedef struct skissm_db_handler_t {
     /**
      * @brief find a group session by address
      * @param sender_address
-     * @param owner_address
+     * @param session_owner_address
      * @param group_address
      * @param group_session
      */
     void (*load_group_session_by_address)(
         Skissm__E2eeAddress *sender_address,
-        Skissm__E2eeAddress *owner_address,
+        Skissm__E2eeAddress *session_owner_address,
         Skissm__E2eeAddress *group_address,
         Skissm__GroupSession **group_session
     );
     /**
      * @brief find a group session by id
      * @param sender_address
-     * @param owner_address
-     * @param session_id
+     * @param session_owner_address
+     * @param group_session_id
      * @param group_session
      */
     void (*load_group_session_by_id)(
         Skissm__E2eeAddress *sender_address,
-        Skissm__E2eeAddress *owner_address,
-        char *session_id,
+        Skissm__E2eeAddress *session_owner_address,
+        char *group_session_id,
         Skissm__GroupSession **group_session
     );
     /**
-     * @brief find group sessions
-     * @param owner_address
+     * @brief load group sessions
+     * @param session_owner_address
      * @param group_address
      * @param group_sessions
      */
     size_t (*load_group_sessions)(
-        Skissm__E2eeAddress *owner_address,
+        Skissm__E2eeAddress *session_owner_address,
         Skissm__E2eeAddress *group_address,
         Skissm__GroupSession ***group_sessions
     );
@@ -350,21 +349,21 @@ typedef struct skissm_db_handler_t {
     );
     /**
      * @brief delete group sessions by address
-     * @param session_owner
+     * @param session_owner_address
      * @param group_address
      */
     void (*unload_group_session_by_address)(
-        Skissm__E2eeAddress *session_owner,
+        Skissm__E2eeAddress *session_owner_address,
         Skissm__E2eeAddress *group_address
     );
     /**
      * @brief delete group sessions by session id
-     * @param session_owner
-     * @param session_id
+     * @param session_owner_address
+     * @param group_session_id
      */
     void (*unload_group_session_by_id)(
-        Skissm__E2eeAddress *session_owner,
-        char *session_id
+        Skissm__E2eeAddress *session_owner_address,
+        char *group_session_id
     );
 
     // pending plaintext related handlers
