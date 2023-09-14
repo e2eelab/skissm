@@ -444,17 +444,17 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
         proto_msg->new_user_device_msg = (Skissm__NewUserDeviceMsg *)malloc(sizeof(Skissm__NewUserDeviceMsg));
         skissm__new_user_device_msg__init(proto_msg->new_user_device_msg);
         copy_address_from_address(&(proto_msg->new_user_device_msg->user_address), cur_data->address);
-        proto_msg->new_user_device_msg->n_group_info_list = group_num;
-        proto_msg->new_user_device_msg->group_info_list = (Skissm__GroupInfo **)malloc(sizeof(Skissm__GroupInfo *) * group_num);
-        for (i = 0; i < group_num; i++) {
-            (proto_msg->new_user_device_msg->group_info_list)[i] = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
-            Skissm__GroupInfo *cur_group = (proto_msg->new_user_device_msg->group_info_list)[i];
-            skissm__group_info__init(cur_group);
-            cur_group->group_name = strdup(group_info_list[i]->group_name);
-            copy_address_from_address(&(cur_group->group_address), group_info_list[i]->group_address);
-            cur_group->n_group_members = group_info_list[i]->n_group_members;
-            copy_group_members(&(cur_group->group_members), group_info_list[i]->group_members, group_info_list[i]->n_group_members);
-        }
+        // proto_msg->new_user_device_msg->n_group_info_list = group_num;
+        // proto_msg->new_user_device_msg->group_info_list = (Skissm__GroupInfo **)malloc(sizeof(Skissm__GroupInfo *) * group_num);
+        // for (i = 0; i < group_num; i++) {
+        //     (proto_msg->new_user_device_msg->group_info_list)[i] = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
+        //     Skissm__GroupInfo *cur_group = (proto_msg->new_user_device_msg->group_info_list)[i];
+        //     skissm__group_info__init(cur_group);
+        //     cur_group->group_name = strdup(group_info_list[i]->group_name);
+        //     copy_address_from_address(&(cur_group->group_address), group_info_list[i]->group_address);
+        //     cur_group->n_group_members = group_info_list[i]->n_group_members;
+        //     copy_group_members(&(cur_group->group_members), group_info_list[i]->group_members, group_info_list[i]->n_group_members);
+        // }
 
         send_proto_msg(proto_msg);
 

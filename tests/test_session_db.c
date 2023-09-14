@@ -425,6 +425,117 @@ void test_load_group_session_by_id()
     tear_down();
 }
 
+void test_load_group_addresses() {
+    tear_up();
+
+    // create two addresses
+    Skissm__E2eeAddress *Alice, *Bob;
+    mock_address(&Alice, "alice", E2EELAB_DOMAIN, "alice's device");
+    mock_address(&Bob, "bob", E2EELAB_DOMAIN, "bob's device");
+
+    // create group_members
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **) malloc(sizeof(Skissm__GroupMember *) * 2);
+    group_members[0] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup("alice");
+    group_members[0]->domain = strdup("alice's domain");
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    group_members[1] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup("bob");
+    group_members[1]->domain = strdup("bob's domain");
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+
+    // mock two group addresses
+    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    skissm__e2ee_address__init(group_address);
+    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    skissm__peer_group__init(group_address->group);
+    group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
+    group_address->domain = mock_domain_str();
+    group_address->group->group_id = generate_uuid_str();
+
+    Skissm__E2eeAddress *group_address_2 = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    skissm__e2ee_address__init(group_address_2);
+    group_address_2->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    skissm__peer_group__init(group_address_2->group);
+    group_address_2->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
+    group_address_2->domain = mock_domain_str();
+    group_address_2->group->group_id = generate_uuid_str();
+
+    // create an outbound group session
+    Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    skissm__group_session__init(group_session);
+
+    group_session->version = strdup(E2EE_PROTOCOL_VERSION);
+
+    copy_address_from_address(&(group_session->sender), Alice);
+    copy_address_from_address(&(group_session->session_owner), Alice);
+    group_session->session_id = generate_uuid_str();
+
+    group_session->group_info =
+    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    Skissm__GroupInfo *group_info = group_session->group_info;
+    skissm__group_info__init(group_info);
+    group_info->group_name = strdup("test_group");
+    copy_address_from_address(&(group_info->group_address), group_address);
+    group_info->n_group_members = 2;
+    copy_group_members(&(group_info->group_members), group_members, 2);
+
+    // insert to the db
+    store_group_session(group_session);
+
+    // create a second outbound group session
+    Skissm__GroupSession *group_session_2 = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    skissm__group_session__init(group_session_2);
+
+    group_session_2->version = strdup(E2EE_PROTOCOL_VERSION);
+
+    copy_address_from_address(&(group_session_2->sender), Alice);
+    copy_address_from_address(&(group_session_2->session_owner), Alice);
+    group_session_2->session_id = generate_uuid_str();
+
+    group_session_2->group_info =
+    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    group_info = group_session_2->group_info;
+    skissm__group_info__init(group_info);
+    group_info->group_name = strdup("test_group");
+    copy_address_from_address(&(group_info->group_address), group_address_2);
+    group_info->n_group_members = 2;
+    copy_group_members(&(group_info->group_members), group_members, 2);
+
+    // insert to the db
+    store_group_session(group_session_2);
+
+    // load the group address
+    Skissm__E2eeAddress **group_addresses;
+    size_t n_group_addresses = load_group_addresses(Alice, Alice, &group_addresses);
+
+    // assert the group addresses
+    bool success = false;
+    if (compare_address(group_addresses[0], group_address)) {
+        if (compare_address(group_addresses[1], group_address_2)) {
+            success = true;
+        }
+    }
+    print_result("test_load_group_addresses", success);
+
+    // free
+    skissm__e2ee_address__free_unpacked(Alice, NULL);
+    skissm__e2ee_address__free_unpacked(Bob, NULL);
+    skissm__e2ee_address__free_unpacked(group_address, NULL);
+    skissm__e2ee_address__free_unpacked(group_address_2, NULL);
+    skissm__group_session__free_unpacked(group_session, NULL);
+    skissm__group_session__free_unpacked(group_session_2, NULL);
+    size_t i;
+    for (i = 0; i < n_group_addresses; i++) {
+        skissm__e2ee_address__free_unpacked(group_addresses[i], NULL);
+    }
+    free(group_addresses);
+
+    tear_down();
+}
+
 void test_store_session()
 {
     tear_up();
@@ -660,6 +771,7 @@ int main(){
     test_load_inbound_session();
     test_load_group_session_by_address();
     test_load_group_session_by_id();
+    test_load_group_addresses();
     test_store_session();
     test_equal_ratchet_outbound();
     test_equal_ratchet_inbound();

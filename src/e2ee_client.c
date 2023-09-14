@@ -538,6 +538,34 @@ Skissm__AddGroupMembersResponse *add_group_members(
     return response;
 }
 
+Skissm__AddGroupMembersResponse *add_group_member_device(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *group_address,
+    Skissm__E2eeAddress *new_device_address
+) {
+    char *auth = NULL;
+    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+
+    if (auth == NULL) {
+        ssm_notify_log(sender_address, BAD_ACCOUNT, "add_group_member_device()");
+        return NULL;
+    }
+
+    Skissm__GroupSession *outbound_group_session = NULL;
+    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
+    if (outbound_group_session == NULL) {
+        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_member_device()");
+        return NULL;
+    }
+
+    // release
+    free(auth);
+    // skissm__add_group_members_request__free_unpacked(request, NULL);
+    skissm__group_session__free_unpacked(outbound_group_session, NULL);
+
+    return NULL;
+}
+
 Skissm__RemoveGroupMembersResponse *remove_group_members(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,

@@ -30,6 +30,7 @@ size_t load_address_ids(sqlite_int64 **address_ids);
 char *load_version(uint64_t address_id);
 protobuf_c_boolean load_saved(uint64_t address_id);
 bool load_address(uint64_t address_id, Skissm__E2eeAddress **address);
+bool load_group_address(uint64_t address_id, Skissm__E2eeAddress **address);
 void load_password(uint64_t address_id, char *password);
 char *load_e2ee_pack_id(uint64_t address_id);
 void load_identity_key_pair(uint64_t address_id, Skissm__IdentityKey **identity_key_pair);
@@ -72,6 +73,8 @@ void load_group_session_by_address(Skissm__E2eeAddress *sender_address, Skissm__
 void load_group_session_by_id(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, char *session_id, Skissm__GroupSession **group_session);
 int load_n_group_sessions(Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress *group_address);
 size_t load_group_sessions(Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress *group_address, Skissm__GroupSession ***group_sessions);
+int load_n_group_addresses(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address);
+size_t load_group_addresses(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress ***group_addresses);
 void store_group_session(Skissm__GroupSession *group_session);
 void unload_group_session_by_address(Skissm__E2eeAddress *session_owner, Skissm__E2eeAddress *group_address);
 void unload_group_session_by_id(Skissm__E2eeAddress *session_owner, char *session_id);

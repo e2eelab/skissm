@@ -341,6 +341,17 @@ typedef struct skissm_db_handler_t {
         Skissm__GroupSession ***group_sessions
     );
     /**
+     * @brief load group addresses
+     * @param sender_address
+     * @param owner_address
+     * @param group_addresses
+     */
+    size_t (*load_group_addresses)(
+        Skissm__E2eeAddress *sender_address,
+        Skissm__E2eeAddress *owner_address,
+        Skissm__E2eeAddress ***group_addresses
+    );
+    /**
      * @brief store group session
      * @param group_session
      */

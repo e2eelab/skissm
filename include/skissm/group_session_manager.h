@@ -83,14 +83,14 @@ bool consume_get_group_response(Skissm__GetGroupResponse *response);
 /**
  * @brief Create a AddGroupMembersRequest message to be sent to server.
  * @param outbound_group_session
- * @param adding_member_addresses
- * @param adding_member_num
+ * @param adding_members
+ * @param adding_members_num
  * @return Skissm__AddGroupMembersRequest*
  */
 Skissm__AddGroupMembersRequest *produce_add_group_members_request(
     Skissm__GroupSession *outbound_group_session,
-    Skissm__GroupMember **adding_group_members,
-    size_t adding_group_members_num
+    Skissm__GroupMember **adding_members,
+    size_t adding_members_num
 );
 
 /**
@@ -122,8 +122,8 @@ bool consume_add_group_members_msg(
 /**
  * @brief Create a RemoveGroupMembersRequest message to be sent to server.
  * @param outbound_group_session
- * @param removing_member_addresses
- * @param removing_member_num
+ * @param removing_group_members
+ * @param removing_group_members_num
  * @return Skissm__RemoveGroupMembersRequest*
  */
 Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(

@@ -207,6 +207,22 @@ static const char *GROUP_SESSIONS_LOAD = "SELECT GROUP_DATA FROM GROUP_SESSION "
                                          "ON GROUP_SESSION.OWNER = a2.ID "
                                          "WHERE a1.GROUP_ID is (?) AND a2.USER_ID is (?) AND a2.DOMAIN is (?) AND a2.DEVICE_ID is (?);";
 
+static const char *N_GROUP_ADDRESS_LOAD = "SELECT COUNT(*) FROM GROUP_SESSION "
+                                          "INNER JOIN ADDRESS as a1 "
+                                          "ON GROUP_SESSION.SENDER = a1.ID "
+                                          "INNER JOIN ADDRESS as a2 "
+                                          "ON GROUP_SESSION.OWNER = a2.ID "
+                                          "WHERE a1.USER_ID is (?) AND a1.DOMAIN is (?) AND a1.DEVICE_ID is (?) "
+                                          "AND a2.USER_ID is (?) AND a2.DOMAIN is (?) AND a2.DEVICE_ID is (?);";
+
+static const char *GROUP_ADDRESSES_LOAD = "SELECT ADDRESS FROM GROUP_SESSION "
+                                          "INNER JOIN ADDRESS as a1 "
+                                          "ON GROUP_SESSION.SENDER = a1.ID "
+                                          "INNER JOIN ADDRESS as a2 "
+                                          "ON GROUP_SESSION.OWNER = a2.ID "
+                                          "WHERE a1.USER_ID is (?) AND a1.DOMAIN is (?) AND a1.DEVICE_ID is (?) "
+                                          "AND a2.USER_ID is (?) AND a2.DOMAIN is (?) AND a2.DEVICE_ID is (?);";
+
 static const char *GROUP_SESSION_DELETE_DATA_BY_ADDRESS = "DELETE FROM GROUP_SESSION "
                                                           "WHERE OWNER IN "
                                                           "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?)) "
@@ -398,6 +414,12 @@ static const char *LOAD_ADDRESS = "SELECT "
                                   "DEVICE_ID "
                                   "FROM ADDRESS "
                                   "WHERE ADDRESS.ID is (?);";
+
+static const char *LOAD_GROUP_ADDRESS = "SELECT "
+                                        "DOMAIN, "
+                                        "GROUP_ID "
+                                        "FROM ADDRESS "
+                                        "WHERE ADDRESS.ID is (?);";
 
 static const char *LOAD_PASSWORD_BY_ADDRESS_ID = "SELECT PASSWORD "
                                                  "FROM ACCOUNT "
@@ -749,6 +771,34 @@ bool load_address(uint64_t address_id, Skissm__E2eeAddress **address) {
         (*address)->domain = strdup((char *)sqlite3_column_text(stmt, 0));
         (*address)->user->user_id = strdup((char *)sqlite3_column_text(stmt, 1));
         (*address)->user->device_id = strdup((char *)sqlite3_column_text(stmt, 2));
+    }
+
+    // release
+    sqlite_finalize(stmt);
+
+    return succ;
+}
+
+bool load_group_address(uint64_t address_id, Skissm__E2eeAddress **address) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(LOAD_GROUP_ADDRESS, &stmt);
+    sqlite3_bind_int64(stmt, 1, address_id);
+
+    // step
+    bool succ = sqlite_step(stmt, SQLITE_ROW);
+
+    // load
+    if (succ) {
+        // allocate memory
+        *address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
+        skissm__e2ee_address__init(*address);
+
+        (*address)->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
+        skissm__peer_group__init((*address)->group);
+        (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
+        (*address)->domain = strdup((char *)sqlite3_column_text(stmt, 0));
+        (*address)->group->group_id = strdup((char *)sqlite3_column_text(stmt, 1));
     }
 
     // release
@@ -1886,6 +1936,60 @@ size_t load_group_sessions(Skissm__E2eeAddress *owner_address, Skissm__E2eeAddre
     sqlite_finalize(stmt);
 
     return n_group_sessions;
+}
+
+int load_n_group_addresses(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(N_GROUP_ADDRESS_LOAD, &stmt);
+    sqlite3_bind_text(stmt, 1, sender_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, sender_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, sender_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, owner_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 6, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    sqlite_step(stmt, SQLITE_ROW);
+
+    // load
+    int n_group_addresses = (int)sqlite3_column_int(stmt, 0);
+
+    // release
+    sqlite_finalize(stmt);
+
+    return n_group_addresses;
+}
+
+size_t load_group_addresses(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress ***group_addresses) {
+    // allocate memory
+    size_t n_group_addresses = load_n_group_addresses(sender_address, owner_address);
+    (*group_addresses) = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * n_group_addresses);
+
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(GROUP_ADDRESSES_LOAD, &stmt);
+    sqlite3_bind_text(stmt, 1, sender_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, sender_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, sender_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, owner_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, owner_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 6, owner_address->user->device_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    for (int i = 0; i < n_group_addresses; i++) {
+        sqlite3_step(stmt);
+
+        // load
+        sqlite_int64 address_id = sqlite3_column_int64(stmt, 0);
+
+        load_group_address(address_id, &((*group_addresses)[i]));
+    }
+
+    // release
+    sqlite_finalize(stmt);
+
+    return n_group_addresses;
 }
 
 void store_group_session(Skissm__GroupSession *group_session) {

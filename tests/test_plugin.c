@@ -106,6 +106,7 @@ struct skissm_plugin_t ssm_plugin = {
         load_group_session_by_address,
         load_group_session_by_id,
         load_group_sessions,
+        load_group_addresses,
         store_group_session,
         unload_group_session_by_address,
         unload_group_session_by_id,
