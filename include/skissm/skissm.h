@@ -168,12 +168,12 @@ typedef struct skissm_db_handler_t {
         Skissm__Account *account
     );
     /**
-     * @brief load account from db by giving address
-     * @param address
+     * @brief load account from db by giving user address
+     * @param user_address
      * @param account
      */
     void (*load_account_by_address)(
-        Skissm__E2eeAddress *address,
+        Skissm__E2eeAddress *user_address,
         Skissm__Account **account
     );
     /**
@@ -195,51 +195,51 @@ typedef struct skissm_db_handler_t {
     );
     /**
      * @brief load old signed pre-key by spk_id
-     * @param address
+     * @param user_address
      * @param spk_id
      * @param signed_pre_key
      */
     void (*load_signed_pre_key)(
-        Skissm__E2eeAddress *address,
+        Skissm__E2eeAddress *user_address,
         uint32_t spk_id,
         Skissm__SignedPreKey **signed_pre_key
     );
     /**
      * @brief remove expired signed pre-key (keep last two) of account from db
-     * @param address
+     * @param user_address
      */
     bool (*remove_expired_signed_pre_key)(
-        Skissm__E2eeAddress *address
+        Skissm__E2eeAddress *user_address
     );
     /**
      * @brief add an one time pre-key of account to db
-     * @param address
+     * @param user_address
      * @param one_time_pre_key
      */
     bool (*add_one_time_pre_key)(
-        Skissm__E2eeAddress *address,
+        Skissm__E2eeAddress *user_address,
         Skissm__OneTimePreKey *one_time_pre_key
     );
     /**
      * @brief remove an one time pre-key of account to db
-     * @param address
+     * @param user_address
      * @param one_time_pre_key_id
      */
     bool (*remove_one_time_pre_key)(
-        Skissm__E2eeAddress *address,
+        Skissm__E2eeAddress *user_address,
         uint32_t one_time_pre_key_id
     );
     /**
      * @brief update an one time pre-key of acount from db
-     * @param address
+     * @param user_address
      * @param one_time_pre_key_id
      */
     bool (*update_one_time_pre_key)(
-        Skissm__E2eeAddress *address,
+        Skissm__E2eeAddress *user_address,
         uint32_t one_time_pre_key_id
     );
     /**
-     * @brief load auth from the account given by the address
+     * @brief load auth from the account given by the user address
      * @param user_address
      * @param auth
      */
