@@ -317,6 +317,14 @@ void copy_create_group_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg
 void copy_add_group_members_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGroupMembersMsg *src);
 
 /**
+ * @brief Copy Skissm__AddGroupMemberDeviceMsg from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_add_group_member_device_msg(Skissm__AddGroupMemberDeviceMsg **dest, Skissm__AddGroupMemberDeviceMsg *src);
+
+/**
  * @brief Copy Skissm__RemoveGroupMembersMsg from src to dest.
  *
  * @param dest

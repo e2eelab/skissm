@@ -245,6 +245,13 @@ void renew_inbound_group_session_by_welcome_and_add(
     Skissm__GroupInfo *new_group_info
 );
 
+void renew_outbound_group_session_with_new_device(
+    Skissm__GroupSession *outbound_group_session,
+    ProtobufCBinaryData *sender_chain_key,
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *new_device_address
+);
+
 #ifdef __cplusplus
 }
 #endif

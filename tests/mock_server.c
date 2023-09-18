@@ -1158,6 +1158,35 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
     return response;
 }
 
+Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
+    Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMemberDeviceRequest *request
+) {
+    Skissm__AddGroupMemberDeviceMsg *add_group_member_device_msg = NULL;
+    copy_add_group_member_device_msg(&(add_group_member_device_msg), request->msg);
+
+    // find the group
+    uint8_t group_data_find = 0;
+    while (group_data_find < group_data_set_insert_pos) {
+        if ((group_data_set[group_data_find].group_address) && (add_group_member_device_msg->group_info->group_address) &&
+            compare_address(group_data_set[group_data_find].group_address, add_group_member_device_msg->group_info->group_address)) {
+            break;
+        }
+        group_data_find++;
+    }
+
+    // data not found
+    if (group_data_find == group_data_set_insert_pos) {
+        Skissm__AddGroupMemberDeviceResponse *response = (Skissm__AddGroupMemberDeviceResponse *)malloc(sizeof(Skissm__AddGroupMemberDeviceResponse));
+        skissm__add_group_member_device_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_INTERNAL_SERVER_ERROR;
+        return response;
+    }
+
+    group_data *cur_group_data = &(group_data_set[group_data_find]);
+
+    Skissm__GroupMemberInfo *adding_member_device_info = (Skissm__GroupMemberInfo *)malloc(sizeof(Skissm__GroupMemberInfo));
+}
+
 Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__RemoveGroupMembersRequest *request) {
     // remove_group_members_msg
     Skissm__RemoveGroupMembersMsg *remove_group_members_msg_to_remained = NULL;

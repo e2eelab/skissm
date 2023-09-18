@@ -119,6 +119,22 @@ bool consume_add_group_members_msg(
     Skissm__AddGroupMembersMsg *msg
 );
 
+Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
+    Skissm__GroupSession *outbound_group_session,
+    Skissm__E2eeAddress *new_device_address
+);
+
+bool consume_add_group_member_device_response(
+    Skissm__GroupSession *outbound_group_session,
+    Skissm__AddGroupMemberDeviceResponse *response,
+    Skissm__E2eeAddress *new_device_address
+);
+
+bool consume_add_group_member_device_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__AddGroupMemberDeviceMsg *msg
+);
+
 /**
  * @brief Create a RemoveGroupMembersRequest message to be sent to server.
  * @param outbound_group_session

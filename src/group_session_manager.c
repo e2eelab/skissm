@@ -284,6 +284,77 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
     return true;
 }
 
+Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
+    Skissm__GroupSession *outbound_group_session,
+    Skissm__E2eeAddress *new_device_address
+) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
+    if (account == NULL) {
+        ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_add_group_member_device_request()");
+        return NULL;
+    }
+
+    Skissm__AddGroupMemberDeviceRequest *request =
+        (Skissm__AddGroupMemberDeviceRequest *)malloc(sizeof(Skissm__AddGroupMemberDeviceRequest));
+    skissm__add_group_member_device_request__init(request);
+
+    Skissm__AddGroupMemberDeviceMsg *msg =
+        (Skissm__AddGroupMemberDeviceMsg *)malloc(sizeof(Skissm__AddGroupMemberDeviceMsg));
+    skissm__add_group_member_device_msg__init(msg);
+
+    msg->e2ee_pack_id = strdup(account->e2ee_pack_id);
+
+    copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
+
+    msg->sequence = outbound_group_session->sequence;
+
+    copy_group_info(&(msg->group_info), outbound_group_session->group_info);
+
+    copy_address_from_address(&(msg->adding_member_device->member_address), new_device_address);
+
+    // done
+    skissm__account__free_unpacked(account, NULL);
+    request->msg = msg;
+    return request;
+}
+
+bool consume_add_group_member_device_response(
+    Skissm__GroupSession *outbound_group_session,
+    Skissm__AddGroupMemberDeviceResponse *response,
+    Skissm__E2eeAddress *new_device_address
+) {
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        const char *group_name = outbound_group_session->group_info->group_name;
+        Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
+        Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
+
+        // renew the outbound group session
+        renew_outbound_group_session_with_new_device(
+            outbound_group_session, NULL, session_owner, new_device_address
+        );
+
+        // notify the new device added
+        // ssm_notify_group_members_added(
+        //     session_owner,
+        //     group_address,
+        //     group_name,
+        //     adding_members,
+        //     adding_members_num
+        // );
+
+        // done
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool consume_add_group_member_device_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__AddGroupMemberDeviceMsg *msg
+) {}
+
 Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
     Skissm__GroupSession *outbound_group_session,
     Skissm__GroupMember **removing_group_members,

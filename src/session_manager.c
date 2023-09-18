@@ -392,6 +392,11 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
     );
     bool succ = false;
     if (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        if (compare_address(receiver_address, msg->inviter_address)) {
+            // add the new device into the joined groups
+            Skissm__E2eeAddress **group_addresses = NULL;
+            size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
+        }
         // if (msg->n_group_info_list > 0) {
         //     size_t i;
         //     for (i = 0; i < msg->n_group_info_list; i++) {

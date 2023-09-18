@@ -141,6 +141,18 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
  * @param from 
  * @param auth 
  * @param request 
+ * @return Skissm__AddGroupMemberDeviceResponse* 
+ */
+Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
+    Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMemberDeviceRequest *request
+);
+
+/**
+ * @brief 
+ * 
+ * @param from 
+ * @param auth 
+ * @param request 
  * @return Skissm__RemoveGroupMembersResponse* 
  */
 Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__RemoveGroupMembersRequest *request);

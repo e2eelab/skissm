@@ -558,6 +558,10 @@ Skissm__AddGroupMembersResponse *add_group_member_device(
         return NULL;
     }
 
+    Skissm__AddGroupMemberDeviceRequest *request = produce_add_group_member_device_request(outbound_group_session, new_device_address);
+    Skissm__AddGroupMemberDeviceResponse *response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, request);
+    bool succ = consume_add_group_member_device_response(outbound_group_session, response, new_device_address);
+
     // release
     free(auth);
     // skissm__add_group_members_request__free_unpacked(request, NULL);

@@ -26,6 +26,9 @@
 #include "skissm/AcceptRequest.pb-c.h"
 #include "skissm/AcceptResponse.pb-c.h"
 #include "skissm/Account.pb-c.h"
+#include "skissm/AddGroupMemberDeviceMsg.pb-c.h"
+#include "skissm/AddGroupMemberDeviceRequest.pb-c.h"
+#include "skissm/AddGroupMemberDeviceResponse.pb-c.h"
 #include "skissm/AddGroupMembersMsg.pb-c.h"
 #include "skissm/AddGroupMembersRequest.pb-c.h"
 #include "skissm/AddGroupMembersResponse.pb-c.h"
@@ -590,6 +593,18 @@ typedef struct e2ee_proto_handler_t {
         Skissm__E2eeAddress *from,
         const char *auth,
         Skissm__AddGroupMembersRequest *request
+    );
+    /**
+     * @brief Add group member device
+     * @param from
+     * @param auth
+     * @param request
+     * @return response
+     */
+    Skissm__AddGroupMemberDeviceResponse *(*add_group_member_device)(
+        Skissm__E2eeAddress *from,
+        const char *auth,
+        Skissm__AddGroupMemberDeviceRequest *request
     );
     /**
      * @brief Remove group members

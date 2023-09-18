@@ -130,6 +130,7 @@ struct skissm_plugin_t ssm_plugin = {
         mock_send_one2one_msg,
         mock_create_group,
         mock_add_group_members,
+        mock_add_group_member_device,
         mock_remove_group_members,
         mock_send_group_msg,
         mock_consume_proto_msg

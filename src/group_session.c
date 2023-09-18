@@ -996,3 +996,108 @@ void renew_inbound_group_session_by_welcome_and_add(
     // store
     get_skissm_plugin()->db_handler.store_group_session(inbound_group_session);
 }
+
+void renew_outbound_group_session_with_new_device(
+    Skissm__GroupSession *outbound_group_session,
+    ProtobufCBinaryData *sender_chain_key,
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *new_device_address
+) {
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
+    if (account == NULL) {
+        ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_outbound_group_session_welcome_and_add()");
+        return;
+    }
+
+    ProtobufCBinaryData *identity_public_key = &(account->identity_key->sign_key_pair->public_key);
+
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
+
+    char *cur_user_id = new_device_address->user->user_id, *cur_user_domain = new_device_address->domain;
+    uint8_t *group_ratchet_state_plaintext_data = NULL;
+    size_t group_ratchet_state_plaintext_data_len;
+
+    group_ratchet_state_plaintext_data_len = pack_group_ratchet_state_plaintext(
+        outbound_group_session, &group_ratchet_state_plaintext_data,
+        sender_chain_key == NULL, identity_public_key,
+        0, NULL
+    );
+
+    Skissm__Session *outbound_session = NULL;
+    get_skissm_plugin()->db_handler.load_outbound_session(
+        outbound_group_session->session_owner, new_device_address, &outbound_session
+    );
+
+    if (outbound_session->responded) {
+        Skissm__SendOne2oneMsgResponse *response;
+        response = send_one2one_msg_internal(
+            outbound_session,
+            NOTIFICATION_LEVEL_NORMAL,
+            group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
+        );
+        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+    } else {
+        /** Since the other has not responded, we store the group pre-key first so that
+         *  we can send it right after receiving the other's accept message.
+         */
+        char *pending_plaintext_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+            outbound_session->from,
+            outbound_session->to,
+            pending_plaintext_id,
+            group_ratchet_state_plaintext_data,
+            group_ratchet_state_plaintext_data_len
+        );
+        free(pending_plaintext_id);
+    }
+    // release outbound_session
+    skissm__session__free_unpacked(outbound_session, NULL);
+
+    ProtobufCBinaryData *their_chain_keys = NULL;
+    // advance the chain key
+    if (sender_chain_key == NULL) {
+        // the sender
+        advance_group_chain_key_by_welcome(cipher_suite, &(outbound_group_session->chain_key), &their_chain_keys);
+        advance_group_chain_key_by_add(cipher_suite, their_chain_keys, &(outbound_group_session->chain_key));
+    } else {
+        // the receiver
+        advance_group_chain_key_by_welcome(cipher_suite, sender_chain_key, &their_chain_keys);
+        advance_group_chain_key_by_add(cipher_suite, their_chain_keys, sender_chain_key);
+        advance_group_chain_key_by_add(cipher_suite, &(outbound_group_session->chain_key), &(outbound_group_session->chain_key));
+    }
+
+    // reset the sequence
+    outbound_group_session->sequence = 0;
+
+    // store
+    get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
+
+    // renew the inbound group sessions
+    Skissm__GroupSession **inbound_group_sessions = NULL;
+    size_t inbound_group_sessions_num = get_skissm_plugin()->db_handler.load_group_sessions(
+        outbound_group_session->session_owner, outbound_group_session->group_info->group_address, &inbound_group_sessions
+    );
+    size_t i;
+    for (i = 0; i < inbound_group_sessions_num; i++) {
+        // there is one outbound group session in inbound_group_sessions, so we need to ignore it
+        if (!compare_address(outbound_group_session->session_owner, inbound_group_sessions[i]->sender)) {
+            if (compare_address(sender_address, inbound_group_sessions[i]->sender)) {
+                renew_inbound_group_session_by_welcome_and_add(
+                    sender_chain_key,
+                    inbound_group_sessions[i],
+                    outbound_group_session->group_info
+                );
+            } else {
+                renew_inbound_group_session_by_welcome_and_add(
+                    NULL,
+                    inbound_group_sessions[i],
+                    outbound_group_session->group_info
+                );
+            }
+        }
+    }
+
+    // create the inbound group sessions
+    // new_and_complete_inbound_group_session_with_chain_key(adding_member_info_list[i], outbound_group_session, their_chain_keys);
+}

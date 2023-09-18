@@ -423,6 +423,22 @@ void copy_add_group_members_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGr
     }
 }
 
+void copy_add_group_member_device_msg(Skissm__AddGroupMemberDeviceMsg **dest, Skissm__AddGroupMemberDeviceMsg *src) {
+    *dest = (Skissm__AddGroupMemberDeviceMsg *)malloc(sizeof(Skissm__AddGroupMemberDeviceMsg));
+    skissm__add_group_member_device_msg__init(*dest);
+    if (src != NULL) {
+        if (src->e2ee_pack_id != NULL)
+            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        if (src->sender_address != NULL)
+            copy_address_from_address(&((*dest)->sender_address), src->sender_address);
+        (*dest)->sequence = src->sequence;
+        if (src->group_info != NULL)
+            copy_group_info(&((*dest)->group_info), src->group_info);
+        if (src->adding_member_device != NULL)
+            copy_group_member_id(&((*dest)->adding_member_device), src->adding_member_device);
+    }
+}
+
 void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm__RemoveGroupMembersMsg *src) {
     *dest = (Skissm__RemoveGroupMembersMsg *)malloc(sizeof(Skissm__RemoveGroupMembersMsg));
     skissm__remove_group_members_msg__init(*dest);
