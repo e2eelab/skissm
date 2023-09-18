@@ -366,7 +366,8 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         bool rebuild = false;
         for (i = 0; i < outbound_sessions_num; i++) {
             Skissm__Session *outbound_session = outbound_sessions[i];
-            if (outbound_session->ratchet->sender_chain->chain_key->index >= 1000) {
+            // outbound_session may haven't been responded
+            if (outbound_session->ratchet->sender_chain && outbound_session->ratchet->sender_chain->chain_key->index >= 1000) {
                 rebuild = true;
                 break;
             }
