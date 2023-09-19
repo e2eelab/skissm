@@ -251,6 +251,38 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
     return response;
 }
 
+Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *group_address,
+    Skissm__E2eeAddress *new_device_address
+) {
+    char *auth = NULL;
+    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+
+    if (auth == NULL) {
+        ssm_notify_log(sender_address, BAD_ACCOUNT, "add_group_member_device_internal()");
+        return NULL;
+    }
+
+    Skissm__GroupSession *outbound_group_session = NULL;
+    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
+    if (outbound_group_session == NULL) {
+        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_member_device_internal()");
+        return NULL;
+    }
+
+    Skissm__AddGroupMemberDeviceRequest *request = produce_add_group_member_device_request(outbound_group_session, new_device_address);
+    Skissm__AddGroupMemberDeviceResponse *response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, request);
+    bool succ = consume_add_group_member_device_response(outbound_group_session, response, new_device_address);
+
+    // release
+    free(auth);
+    skissm__add_group_member_device_request__free_unpacked(request, NULL);
+    skissm__group_session__free_unpacked(outbound_group_session, NULL);
+
+    return NULL;
+}
+
 void store_pending_request_internal(Skissm__E2eeAddress *user_address, Skissm__PendingRequestType type, uint8_t *request_data, size_t request_data_len, uint8_t *args_data, size_t args_data_len) {
     Skissm__PendingRequest *pending_request = (Skissm__PendingRequest*)malloc(sizeof(Skissm__PendingRequest));
     skissm__pending_request__init(pending_request);

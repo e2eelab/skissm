@@ -311,6 +311,8 @@ Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
 
     copy_group_info(&(msg->group_info), outbound_group_session->group_info);
 
+    msg->adding_member_device = (Skissm__GroupMemberInfo *)malloc(sizeof(Skissm__GroupMemberInfo));
+    skissm__group_member_info__init(msg->adding_member_device);
     copy_address_from_address(&(msg->adding_member_device->member_address), new_device_address);
 
     // done
@@ -329,9 +331,10 @@ bool consume_add_group_member_device_response(
         Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
         Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
 
+        Skissm__GroupMemberInfo *adding_member_device_info = response->adding_member_device_info;
         // renew the outbound group session
-        renew_outbound_group_session_with_new_device(
-            outbound_group_session, NULL, session_owner, new_device_address
+        renew_group_sessions_with_new_device(
+            outbound_group_session, NULL, session_owner, new_device_address, adding_member_device_info
         );
 
         // notify the new device added
@@ -353,7 +356,56 @@ bool consume_add_group_member_device_response(
 bool consume_add_group_member_device_msg(
     Skissm__E2eeAddress *receiver_address,
     Skissm__AddGroupMemberDeviceMsg *msg
-) {}
+) {
+    Skissm__E2eeAddress *group_address = msg->group_info->group_address;
+    const char *group_name = msg->group_info->group_name;
+    Skissm__GroupMember **group_members = msg->group_info->group_members;
+    size_t group_members_num = msg->group_info->n_group_members;
+    const char *e2ee_pack_id = msg->e2ee_pack_id;
+
+    /** The old group members have their own outbound group sessions, so they need to renew them.
+     *  On the other hand, the new group members need to create the outbound group session.
+     */
+    Skissm__GroupSession *outbound_group_session = NULL;
+    get_skissm_plugin()->db_handler.load_group_session_by_address(
+        receiver_address, receiver_address, group_address, &outbound_group_session
+    );
+    // renew the outbound group session if it exists
+    if (outbound_group_session != NULL) {
+        // load the inbound group session to get the chain key
+        Skissm__GroupSession *inbound_group_session = NULL;
+        get_skissm_plugin()->db_handler.load_group_session_by_id(
+            msg->sender_address, receiver_address, outbound_group_session->session_id, &inbound_group_session
+        );
+        if (inbound_group_session == NULL) {
+            ssm_notify_log(receiver_address, BAD_MESSAGE_FORMAT, "consume_add_group_members_msg()");
+            // release
+            skissm__group_session__free_unpacked(outbound_group_session, NULL);
+            return false;
+        }
+        const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_group_session->e2ee_pack_id)->cipher_suite;
+        uint32_t their_sequence = msg->sequence;
+        while (inbound_group_session->sequence < their_sequence) {
+            advance_group_chain_key(cipher_suite, &(inbound_group_session->chain_key));
+            inbound_group_session->sequence += 1;
+        }
+
+        // renew the outbound group session
+        renew_group_sessions_with_new_device(
+            outbound_group_session, &(inbound_group_session->chain_key),
+            receiver_address, msg->sender_address, msg->adding_member_device
+        );
+
+        // release
+        skissm__group_session__free_unpacked(outbound_group_session, NULL);
+        skissm__group_session__free_unpacked(inbound_group_session, NULL);
+    } else {
+        // check
+    }
+
+    // done
+    return true;
+}
 
 Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
     Skissm__GroupSession *outbound_group_session,

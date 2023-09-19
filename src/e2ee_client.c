@@ -539,38 +539,6 @@ Skissm__AddGroupMembersResponse *add_group_members(
     return response;
 }
 
-Skissm__AddGroupMembersResponse *add_group_member_device(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *group_address,
-    Skissm__E2eeAddress *new_device_address
-) {
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
-
-    if (auth == NULL) {
-        ssm_notify_log(sender_address, BAD_ACCOUNT, "add_group_member_device()");
-        return NULL;
-    }
-
-    Skissm__GroupSession *outbound_group_session = NULL;
-    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
-    if (outbound_group_session == NULL) {
-        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_member_device()");
-        return NULL;
-    }
-
-    Skissm__AddGroupMemberDeviceRequest *request = produce_add_group_member_device_request(outbound_group_session, new_device_address);
-    Skissm__AddGroupMemberDeviceResponse *response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, request);
-    bool succ = consume_add_group_member_device_response(outbound_group_session, response, new_device_address);
-
-    // release
-    free(auth);
-    // skissm__add_group_members_request__free_unpacked(request, NULL);
-    skissm__group_session__free_unpacked(outbound_group_session, NULL);
-
-    return NULL;
-}
-
 Skissm__RemoveGroupMembersResponse *remove_group_members(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
@@ -725,6 +693,9 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBERS_MSG:
             consumed = consume_add_group_members_msg(receiver_address, proto_msg->add_group_members_msg);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBER_DEVICE_MSG:
+            consumed = consume_add_group_member_device_msg(receiver_address, proto_msg->add_group_member_device_msg);
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_GROUP_MEMBERS_MSG:
             consumed = consume_remove_group_members_msg(receiver_address, proto_msg->remove_group_members_msg);

@@ -747,19 +747,19 @@ void new_and_complete_inbound_group_session(
 }
 
 void new_and_complete_inbound_group_session_with_chain_key(
-    Skissm__GroupMemberInfo *group_member_id,
+    Skissm__GroupMemberInfo *group_member_info,
     Skissm__GroupSession *other_group_session,
     ProtobufCBinaryData *their_chain_key
 ) {
     Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(inbound_group_session);
 
-    insert_inbound_group_session_data(group_member_id, other_group_session, inbound_group_session);
+    insert_inbound_group_session_data(group_member_info, other_group_session, inbound_group_session);
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(other_group_session->e2ee_pack_id)->cipher_suite;
     int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
 
-    uint8_t *identity_public_key = group_member_id->sign_public_key.data;
+    uint8_t *identity_public_key = group_member_info->sign_public_key.data;
 
     copy_protobuf_from_protobuf(&(inbound_group_session->chain_key), their_chain_key);
     inbound_group_session->sequence = 0;
@@ -997,12 +997,14 @@ void renew_inbound_group_session_by_welcome_and_add(
     get_skissm_plugin()->db_handler.store_group_session(inbound_group_session);
 }
 
-void renew_outbound_group_session_with_new_device(
+void renew_group_sessions_with_new_device(
     Skissm__GroupSession *outbound_group_session,
     ProtobufCBinaryData *sender_chain_key,
     Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *new_device_address
+    Skissm__E2eeAddress *new_device_address,
+    Skissm__GroupMemberInfo *adding_member_device_info
 ) {
+    // renew outbound group session
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
     if (account == NULL) {
@@ -1096,8 +1098,14 @@ void renew_outbound_group_session_with_new_device(
                 );
             }
         }
+        // release
+        skissm__group_session__free_unpacked(inbound_group_sessions[i], NULL);
     }
 
-    // create the inbound group sessions
-    // new_and_complete_inbound_group_session_with_chain_key(adding_member_info_list[i], outbound_group_session, their_chain_keys);
+    // create the inbound group session for new device
+    new_and_complete_inbound_group_session_with_chain_key(adding_member_device_info, outbound_group_session, their_chain_keys);
+
+    // release
+    skissm__account__free_unpacked(account, NULL);
+    free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
 }
