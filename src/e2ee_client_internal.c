@@ -464,6 +464,8 @@ static void resend_pending_request(Skissm__Account *account) {
                 }
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                } else {
+                    ssm_notify_log(user_address, DEBUG_LOG, "handle pending add_group_members_request failed");
                 }
                 // release
                 skissm__add_group_members_request__free_unpacked(add_group_members_request, NULL);
@@ -486,6 +488,8 @@ static void resend_pending_request(Skissm__Account *account) {
                 }
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                } else {
+                    ssm_notify_log(user_address, DEBUG_LOG, "handle pending remove_group_members_request failed");
                 }
                 // release
                 skissm__remove_group_members_request__free_unpacked(remove_group_members_request, NULL);
@@ -509,6 +513,8 @@ static void resend_pending_request(Skissm__Account *account) {
                 }
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                } else {
+                    ssm_notify_log(user_address, DEBUG_LOG, "handle pending send_group_msg_request failed");
                 }
                 // release
                 skissm__send_group_msg_request__free_unpacked(send_group_msg_request, NULL);
