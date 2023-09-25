@@ -132,6 +132,14 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
         && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         Skissm__PreKeyBundle **their_pre_key_bundles = response->pre_key_bundles;
         size_t n_pre_key_bundles = response->n_pre_key_bundles;
+        if (their_pre_key_bundles == NULL || n_pre_key_bundles == 0) {
+            // release
+            skissm__account__free_unpacked(account, NULL);
+
+            // error
+            ssm_notify_log(from, BAD_PRE_KEY_BUNDLE, "consume_get_pre_key_bundle_response() empty pre_key_bundles error");
+            return NULL;
+        }
         size_t i;
         for (i = 0; i < n_pre_key_bundles; i++) {
             Skissm__PreKeyBundle *cur_pre_key_bundle = their_pre_key_bundles[i];
