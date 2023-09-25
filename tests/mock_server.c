@@ -1280,6 +1280,8 @@ Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
     }
     free_mem((void **)&index_address_list, sizeof(index_node *) * group_members_num);
 
+    skissm__group_member_info__free_unpacked(adding_member_device_info, NULL);
+
     return response;
 }
 

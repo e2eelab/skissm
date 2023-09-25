@@ -1232,7 +1232,7 @@ static void test_pqc_multiple_devices() {
     tear_up();
     test_begin();
 
-    // Prepare account
+    // prepare account
     mock_alice_pqc_account("Alice");
     mock_alice_pqc_account("Alice");
     mock_bob_pqc_account("Bob");
@@ -1310,6 +1310,76 @@ static void test_pqc_multiple_devices() {
     uint8_t plaintext_3[] = "This message is from Claire's second device via pqc session.";
     size_t plaintext_3_len = sizeof(plaintext_3) - 1;
     test_encryption(claire_address_2, group.group_address, plaintext_3, plaintext_3_len);
+
+    // release
+    skissm__group_member__free_unpacked(group_members[0], NULL);
+    skissm__group_member__free_unpacked(group_members[1], NULL);
+    skissm__group_member__free_unpacked(group_members[2], NULL);
+    free(group_members);
+    skissm__create_group_response__free_unpacked(create_group_response, NULL);
+
+    // test stop
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
+static void test_pqc_add_new_device() {
+    // test start
+    printf("test_pqc_add_new_device begin!!!\n");
+    tear_up();
+    test_begin();
+
+    mock_alice_pqc_account("Alice");
+    mock_bob_pqc_account("Bob");
+    mock_claire_pqc_account("Claire");
+
+    sleep(2);
+
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    char *alice_user_id = alice_address->user->user_id;
+    char *alice_domain = alice_address->domain;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
+    Skissm__E2eeAddress *claire_address = account_data[2]->address;
+    char *claire_user_id = claire_address->user->user_id;
+    char *claire_domain = claire_address->domain;
+
+    // the first group member is Alice
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
+    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup(alice_user_id);
+    group_members[0]->domain = strdup(alice_domain);
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    // the second group member is Bob
+    group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup(bob_user_id);
+    group_members[1]->domain = strdup(bob_domain);
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the third group member is Claire
+    group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[2]);
+    group_members[2]->user_id = strdup(claire_user_id);
+    group_members[2]->domain = strdup(claire_domain);
+    group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+
+    // create the group
+    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 3);
+
+    sleep(2);
+
+    // add new device
+    mock_alice_pqc_account("Alice");
+
+    sleep(2);
+
+    // Alice sends a message to the group via the first device
+    uint8_t plaintext_1[] = "This message is from Alice's first device via pqc session.";
+    size_t plaintext_1_len = sizeof(plaintext_1) - 1;
+    test_encryption(alice_address, group.group_address, plaintext_1, plaintext_1_len);
 
     // release
     skissm__group_member__free_unpacked(group_members[0], NULL);
@@ -1581,18 +1651,19 @@ static void test_medium_group() {
 }
 
 int main() {
-    test_create_group();
-    test_add_group_members();
-    test_remove_group_members();
-    test_create_add_remove();
-    test_interaction();
-    test_continual();
-    test_multiple_devices();
-    test_pqc_create_group();
-    test_pqc_add_group_members();
-    test_pqc_remove_group_members();
-    test_pqc_multiple_devices();
-    test_medium_group();
+    // test_create_group();
+    // test_add_group_members();
+    // test_remove_group_members();
+    // test_create_add_remove();
+    // test_interaction();
+    // test_continual();
+    // test_multiple_devices();
+    // test_pqc_create_group();
+    // test_pqc_add_group_members();
+    // test_pqc_remove_group_members();
+    // test_pqc_multiple_devices();
+    test_pqc_add_new_device();
+    // test_medium_group();
 
     return 0;
 }

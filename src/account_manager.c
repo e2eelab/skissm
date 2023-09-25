@@ -106,13 +106,6 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                 }
             }
         }
-        if (response->n_group_info_list > 0) {
-            size_t i;
-            for (i = 0; i < response->n_group_info_list; i++) {
-                Skissm__GroupInfo *cur_group = (response->group_info_list)[i];
-                // add_group_members(account->address, cur_group->group_address, , 1);
-            }
-        }
         return true;
     } else {
         return false;

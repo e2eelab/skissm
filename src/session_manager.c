@@ -396,33 +396,12 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
             // add the new device into the joined groups
             Skissm__E2eeAddress **group_addresses = NULL;
             size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
+
+            size_t i;
+            for (i = 0; i < group_address_num; i++) {
+                add_group_member_device_internal(receiver_address, group_addresses[i], msg->user_address);
+            }
         }
-        // if (msg->n_group_info_list > 0) {
-        //     size_t i;
-        //     for (i = 0; i < msg->n_group_info_list; i++) {
-        //         Skissm__GroupInfo *cur_group = (msg->group_info_list)[i];
-        //         // delete the old outbound group session
-        //         char *old_session_id = NULL;
-        //         Skissm__GroupSession *outbound_group_session = NULL;
-        //         get_skissm_plugin()->db_handler.load_group_session_by_address(receiver_address, receiver_address, cur_group->group_address, &outbound_group_session);
-        //         if (outbound_group_session != NULL) {
-        //             get_skissm_plugin()->db_handler.unload_group_session_by_id(receiver_address, outbound_group_session->session_id);
-        //             old_session_id = strdup(outbound_group_session->session_id);
-        //             skissm__group_session__free_unpacked(outbound_group_session, NULL);
-        //         }
-        //         // create a new outbound group session
-        //         // create_outbound_group_session(
-        //         //     account->e2ee_pack_id, receiver_address,
-        //         //     cur_group->group_name,
-        //         //     cur_group->group_address, cur_group->group_members,
-        //         //     cur_group->n_group_members, old_session_id
-        //         // );
-        //         // release
-        //         if (old_session_id != NULL) {
-        //             free_mem((void **)&old_session_id, strlen(old_session_id));
-        //         }
-        //     }
-        // }
 
         // release
         skissm__invite_response__free_unpacked(invite_response, NULL);

@@ -284,7 +284,7 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
 }
 
 void store_pending_request_internal(Skissm__E2eeAddress *user_address, Skissm__PendingRequestType type, uint8_t *request_data, size_t request_data_len, uint8_t *args_data, size_t args_data_len) {
-    Skissm__PendingRequest *pending_request = (Skissm__PendingRequest*)malloc(sizeof(Skissm__PendingRequest));
+    Skissm__PendingRequest *pending_request = (Skissm__PendingRequest *)malloc(sizeof(Skissm__PendingRequest));
     skissm__pending_request__init(pending_request);
     // pending request type
     pending_request->type = type;

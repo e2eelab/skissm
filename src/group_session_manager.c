@@ -337,15 +337,6 @@ bool consume_add_group_member_device_response(
             outbound_group_session, NULL, session_owner, new_device_address, adding_member_device_info
         );
 
-        // notify the new device added
-        // ssm_notify_group_members_added(
-        //     session_owner,
-        //     group_address,
-        //     group_name,
-        //     adding_members,
-        //     adding_members_num
-        // );
-
         // done
         return true;
     } else {
@@ -378,7 +369,7 @@ bool consume_add_group_member_device_msg(
             msg->sender_address, receiver_address, outbound_group_session->session_id, &inbound_group_session
         );
         if (inbound_group_session == NULL) {
-            ssm_notify_log(receiver_address, BAD_MESSAGE_FORMAT, "consume_add_group_members_msg()");
+            ssm_notify_log(receiver_address, BAD_MESSAGE_FORMAT, "consume_add_group_member_device_msg()");
             // release
             skissm__group_session__free_unpacked(outbound_group_session, NULL);
             return false;
