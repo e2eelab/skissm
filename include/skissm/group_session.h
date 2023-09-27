@@ -168,12 +168,10 @@ void complete_inbound_group_session_by_pre_key_bundle(
  *
  * @param inbound_group_session
  * @param group_member_id
- * @param group_info
  */
 void complete_inbound_group_session_by_member_id(
     Skissm__GroupSession *inbound_group_session,
-    Skissm__GroupMemberInfo *group_member_id,
-    Skissm__E2eeAddress *group_address
+    Skissm__GroupMemberInfo *group_member_id
 );
 
 /**
@@ -245,6 +243,15 @@ void renew_inbound_group_session_by_welcome_and_add(
     Skissm__GroupInfo *new_group_info
 );
 
+/**
+ * @brief Renew group sessions when someone add a new device.
+ *
+ * @param outbound_group_session
+ * @param sender_chain_key
+ * @param sender_address
+ * @param new_device_address
+ * @param adding_member_device_info
+ */
 void renew_group_sessions_with_new_device(
     Skissm__GroupSession *outbound_group_session,
     ProtobufCBinaryData *sender_chain_key,

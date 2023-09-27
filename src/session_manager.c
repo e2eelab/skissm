@@ -364,7 +364,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                         ssm_notify_log(receiver_address, DEBUG_LOG, "new_outbound_group_session_invited: %s, session_owner: %s@%s",  group_update_key_bundle->session_id, receiver_address->user->user_id, receiver_address->domain);
                     }
                     new_and_complete_inbound_group_session_with_ratchet_state(group_update_key_bundle, receiver_address);
-                    sm_notify_log(receiver_address, DEBUG_LOG, "new_and_complete_inbound_group_session_with_ratchet_state: %s, session_owner: %s@%s",  group_update_key_bundle->session_id, receiver_address->user->user_id, receiver_address->domain);
+                    ssm_notify_log(receiver_address, DEBUG_LOG, "new_and_complete_inbound_group_session_with_ratchet_state: %s, session_owner: %s@%s",  group_update_key_bundle->session_id, receiver_address->user->user_id, receiver_address->domain);
                 }
                 skissm__plaintext__free_unpacked(plaintext, NULL);
                 // success

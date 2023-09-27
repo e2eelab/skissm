@@ -652,17 +652,13 @@ void complete_inbound_group_session_by_pre_key_bundle(
 
 void complete_inbound_group_session_by_member_id(
     Skissm__GroupSession *inbound_group_session,
-    Skissm__GroupMemberInfo *group_member_id,
-    Skissm__E2eeAddress *group_address
+    Skissm__GroupMemberInfo *group_member_id
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_group_session->e2ee_pack_id)->cipher_suite;
     int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
 
     size_t secret_len = SEED_SECRET_LEN + sign_key_len;
     uint8_t *secret = (uint8_t *) malloc(sizeof(uint8_t) * secret_len);
-
-    // is it neccessary???
-    copy_address_from_address(&(inbound_group_session->group_info->group_address), group_address);
 
     int ad_len = 2 * sign_key_len;
     inbound_group_session->associated_data.len = ad_len;

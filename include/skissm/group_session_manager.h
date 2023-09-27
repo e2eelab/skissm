@@ -119,17 +119,36 @@ bool consume_add_group_members_msg(
     Skissm__AddGroupMembersMsg *msg
 );
 
+/**
+ * @brief Create a AddGroupMemberDeviceRequest message to be sent to server.
+ * @param outbound_group_session
+ * @param new_device_address
+ * @return Skissm__AddGroupMemberDeviceRequest*
+ */
 Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
     Skissm__GroupSession *outbound_group_session,
     Skissm__E2eeAddress *new_device_address
 );
 
+/**
+ * @brief Process an incoming AddGroupMemberDeviceResponse message.
+ * @param outbound_group_session
+ * @param response
+ * @param new_device_address
+ * @return true for success
+ */
 bool consume_add_group_member_device_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__AddGroupMemberDeviceResponse *response,
     Skissm__E2eeAddress *new_device_address
 );
 
+/**
+ * @brief Process an incoming AddGroupMemberDeviceMsg message.
+ * @param receiver_address
+ * @param msg
+ * @return true for success
+ */
 bool consume_add_group_member_device_msg(
     Skissm__E2eeAddress *receiver_address,
     Skissm__AddGroupMemberDeviceMsg *msg
