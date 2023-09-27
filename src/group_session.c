@@ -141,7 +141,7 @@ size_t pack_group_pre_key_plaintext(
     Skissm__GroupPreKeyBundle *group_pre_key_bundle = (Skissm__GroupPreKeyBundle *) malloc(sizeof(Skissm__GroupPreKeyBundle));
     skissm__group_pre_key_bundle__init(group_pre_key_bundle);
 
-    group_pre_key_bundle->version = strdup(E2EE_GROUP_PRE_KEY_VERSION);
+    group_pre_key_bundle->version = strdup(outbound_group_session->version);
 
     group_pre_key_bundle->e2ee_pack_id = strdup(outbound_group_session->e2ee_pack_id);
 
@@ -652,16 +652,13 @@ void complete_inbound_group_session_by_pre_key_bundle(
 
 void complete_inbound_group_session_by_member_id(
     Skissm__GroupSession *inbound_group_session,
-    Skissm__GroupMemberInfo *group_member_id,
-    Skissm__E2eeAddress *group_address
+    Skissm__GroupMemberInfo *group_member_id
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_group_session->e2ee_pack_id)->cipher_suite;
     int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
 
     size_t secret_len = SEED_SECRET_LEN + sign_key_len;
     uint8_t *secret = (uint8_t *) malloc(sizeof(uint8_t) * secret_len);
-
-    copy_address_from_address(&(inbound_group_session->group_info->group_address), group_address);
 
     int ad_len = 2 * sign_key_len;
     inbound_group_session->associated_data.len = ad_len;
@@ -1016,7 +1013,7 @@ void renew_group_sessions_with_new_device(
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
     if (account == NULL) {
-        ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_outbound_group_session_welcome_and_add()");
+        ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_group_sessions_with_new_device()");
         return;
     }
 
@@ -1025,13 +1022,14 @@ void renew_group_sessions_with_new_device(
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
 
     char *cur_user_id = new_device_address->user->user_id, *cur_user_domain = new_device_address->domain;
+    char *cur_user_device_id = new_device_address->user->device_id;
     uint8_t *group_ratchet_state_plaintext_data = NULL;
     size_t group_ratchet_state_plaintext_data_len;
 
     group_ratchet_state_plaintext_data_len = pack_group_ratchet_state_plaintext(
         outbound_group_session, &group_ratchet_state_plaintext_data,
         sender_chain_key == NULL, identity_public_key,
-        0, NULL
+        1, &adding_member_device_info
     );
 
     Skissm__Session *outbound_session = NULL;
@@ -1039,30 +1037,43 @@ void renew_group_sessions_with_new_device(
         outbound_group_session->session_owner, new_device_address, &outbound_session
     );
 
-    if (outbound_session->responded) {
-        Skissm__SendOne2oneMsgResponse *response;
-        response = send_one2one_msg_internal(
-            outbound_session,
-            NOTIFICATION_LEVEL_NORMAL,
+    if (outbound_session != NULL) {
+        if (outbound_session->responded) {
+            Skissm__SendOne2oneMsgResponse *response;
+            response = send_one2one_msg_internal(
+                outbound_session,
+                NOTIFICATION_LEVEL_NORMAL,
+                group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
+            );
+            skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+        } else {
+            /** Since the other has not responded, we store the group pre-key first so that
+             *  we can send it right after receiving the other's accept message.
+             */
+            char *pending_plaintext_id = generate_uuid_str();
+            get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                outbound_session->from,
+                outbound_session->to,
+                pending_plaintext_id,
+                group_ratchet_state_plaintext_data,
+                group_ratchet_state_plaintext_data_len
+            );
+            free(pending_plaintext_id);
+        }
+        // release outbound_session
+        skissm__session__free_unpacked(outbound_session, NULL);
+    } else {
+        /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
+        Skissm__InviteResponse *response = get_pre_key_bundle_internal(
+            outbound_group_session->session_owner,
+            account->auth,
+            cur_user_id, cur_user_domain,
+            cur_user_device_id,
             group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
         );
-        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
-    } else {
-        /** Since the other has not responded, we store the group pre-key first so that
-         *  we can send it right after receiving the other's accept message.
-         */
-        char *pending_plaintext_id = generate_uuid_str();
-        get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-            outbound_session->from,
-            outbound_session->to,
-            pending_plaintext_id,
-            group_ratchet_state_plaintext_data,
-            group_ratchet_state_plaintext_data_len
-        );
-        free(pending_plaintext_id);
+        // release
+        skissm__invite_response__free_unpacked(response, NULL);
     }
-    // release outbound_session
-    skissm__session__free_unpacked(outbound_session, NULL);
 
     ProtobufCBinaryData *their_chain_keys = NULL;
     // advance the chain key

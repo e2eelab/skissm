@@ -74,7 +74,6 @@ bool consume_create_group_response(
 ) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         Skissm__E2eeAddress *group_address = response->group_address;
-        // create_outbound_group_session(e2ee_pack_id, sender_address, group_name, group_address, group_members, group_members_num, NULL);
         new_outbound_group_session_by_sender(
             response->n_member_info_list, response->member_info_list,
             e2ee_pack_id, sender_address, group_name, group_address, group_members, group_members_num, NULL
@@ -123,7 +122,7 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
                     ssm_notify_log(receiver_address, DEBUG_LOG, "consume_create_group_msg() new_and_complete_inbound_group_session: skip member_address: [%s:%s]", cur_group_member_info->member_address->user->user_id, cur_group_member_info->member_address->user->device_id);
                 }
             } else {
-                complete_inbound_group_session_by_member_id(inbound_group_session, cur_group_member_info, group_address);
+                complete_inbound_group_session_by_member_id(inbound_group_session, cur_group_member_info);
                 ssm_notify_log(receiver_address, DEBUG_LOG, "consume_create_group_msg() complete_inbound_group_session_by_member_id: member_address: [%s:%s]", cur_group_member_info->member_address->user->user_id, cur_group_member_info->member_address->user->device_id);
             }
         }
@@ -394,7 +393,7 @@ bool consume_add_group_member_device_msg(
         // renew the outbound group session
         renew_group_sessions_with_new_device(
             outbound_group_session, &(inbound_group_session->chain_key),
-            receiver_address, msg->sender_address, msg->adding_member_device
+            msg->sender_address, msg->adding_member_device->member_address, msg->adding_member_device
         );
 
         // release
@@ -568,7 +567,7 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
                 if (!compare_address(cur_group_member_id->member_address, receiver_address))
                     new_and_complete_inbound_group_session(cur_group_member_id, inbound_group_session);
             } else {
-                complete_inbound_group_session_by_member_id(inbound_group_session, cur_group_member_id, group_address);
+                complete_inbound_group_session_by_member_id(inbound_group_session, cur_group_member_id);
             }
         }
 
