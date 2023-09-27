@@ -390,13 +390,6 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg) {
     ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg(): receiver address [%s:%s], inviter address: [%s:%s], new user address[%s:%s]", receiver_address->user->user_id, receiver_address->user->device_id, msg->inviter_address->user->user_id, msg->inviter_address->domain, msg->user_address->user->user_id, msg->user_address->user->device_id);
 
-    // if receiver is not the inviter, just consume it
-    if (!compare_address(receiver_address, msg->inviter_address)) {
-        ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg() receiver_address is not the inviter, skip");
-        return false;
-    }
-
-
     char *auth = NULL;
     get_skissm_plugin()->db_handler.load_auth(receiver_address, &auth);
     if (auth == NULL) {
@@ -413,23 +406,27 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         NULL, 0
     );
     bool succ = false;
-    if (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            // add the new device into the joined groups
-            Skissm__E2eeAddress **group_addresses = NULL;
-            size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
+    if (invite_response != NULL) {
+        if (invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            // if receiver is the inviter, then add the new device into the joined groups
+            if (compare_address(receiver_address, msg->inviter_address)) {
+                Skissm__E2eeAddress **group_addresses = NULL;
+                size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
 
-            size_t i;
-            for (i = 0; i < group_address_num; i++) {
-                add_group_member_device_internal(receiver_address, group_addresses[i], msg->user_address);
+                size_t i;
+                for (i = 0; i < group_address_num; i++) {
+                    // TODO: what if add_group_member_device_internal failed ?
+                    add_group_member_device_internal(receiver_address, group_addresses[i], msg->user_address);
+                }
             }
+            succ = true;
         }
-
         // release
         skissm__invite_response__free_unpacked(invite_response, NULL);
-
-        succ = true;
-    } else {
-        succ = false;
+    } 
+    
+    if (!succ) {
+        ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg() failed, new user device msg should be processed again");
     }
 
     // release
