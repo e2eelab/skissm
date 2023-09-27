@@ -325,7 +325,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     // unload the old outbound and inbound group sessions
                     if ((group_pre_key_bundle->old_session_id)[0] != '\0') {
                         get_skissm_plugin()->db_handler.unload_group_session_by_id(receiver_address, group_pre_key_bundle->old_session_id);
-                        ssm_notify_log(receiver_address, DEBUG_LOG, "unload the old outbound and inbound group sessions session_id: %s, session_owner: %s@%s",  group_pre_key_bundle->old_session_id, receiver_address->user->user_id, receiver_address->domain);
+                        ssm_notify_log(receiver_address, DEBUG_LOG, "unload the old outbound and inbound group sessions session_id: %s, session_owner: [%s:%s]",  group_pre_key_bundle->old_session_id, receiver_address->user->user_id, receiver_address->user->device_id);
                     }
 
                     // try to load the new group sessions
@@ -338,7 +338,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                         size_t i;
                         for (i = 0; i < inbound_group_sessions_num; i++) {
                             complete_inbound_group_session_by_pre_key_bundle(inbound_group_sessions[i], group_pre_key_bundle);
-                            ssm_notify_log(receiver_address, DEBUG_LOG, "complete_inbound_group_session_by_pre_key_bundle: %s, session_owner: %s@%s",  group_pre_key_bundle->session_id, receiver_address->user->user_id, receiver_address->domain);
+                            ssm_notify_log(receiver_address, DEBUG_LOG, "complete_inbound_group_session_by_pre_key_bundle: %s, session_owner: [%s:%s]",  group_pre_key_bundle->session_id, receiver_address->user->user_id, receiver_address->user->device_id);
                         }
                         new_outbound_group_session_by_receiver(
                             &(group_pre_key_bundle->group_seed),
@@ -350,10 +350,10 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                             cur_group_info->group_members,
                             cur_group_info->n_group_members
                         );
-                        ssm_notify_log(receiver_address, DEBUG_LOG, "new_outbound_group_session_by_receiver: %s, session_owner: %s@%s",  group_pre_key_bundle->session_id, receiver_address->user->user_id, receiver_address->domain);
+                        ssm_notify_log(receiver_address, DEBUG_LOG, "new_outbound_group_session_by_receiver: %s, session_owner: [%s:%s]",  group_pre_key_bundle->session_id, receiver_address->user->user_id, receiver_address->user->device_id);
                     } else {
                         new_inbound_group_session_by_pre_key_bundle(group_pre_key_bundle->e2ee_pack_id, receiver_address, group_pre_key_bundle);
-                        ssm_notify_log(receiver_address, DEBUG_LOG, "new_inbound_group_session_by_pre_key_bundle: %s, session_owner: %s@%s",  group_pre_key_bundle->session_id, receiver_address->user->user_id, receiver_address->domain);
+                        ssm_notify_log(receiver_address, DEBUG_LOG, "new_inbound_group_session_by_pre_key_bundle: %s, session_owner: [%s:%s]",  group_pre_key_bundle->session_id, receiver_address->user->user_id, receiver_address->user->device_id);
                     }
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_UPDATE_KEY_BUNDLE) {
                     Skissm__GroupUpdateKeyBundle *group_update_key_bundle = plaintext->group_update_key_bundle;
@@ -361,10 +361,10 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     if (group_update_key_bundle->adding == true) {
                         // create the outbound group session
                         new_outbound_group_session_invited(group_update_key_bundle, receiver_address);
-                        ssm_notify_log(receiver_address, DEBUG_LOG, "new_outbound_group_session_invited: %s, session_owner: %s@%s",  group_update_key_bundle->session_id, receiver_address->user->user_id, receiver_address->domain);
+                        ssm_notify_log(receiver_address, DEBUG_LOG, "new_outbound_group_session_invited: %s, session_owner: [%s:%s]",  group_update_key_bundle->session_id, receiver_address->user->user_id, receiver_address->user->device_id);
                     }
                     new_and_complete_inbound_group_session_with_ratchet_state(group_update_key_bundle, receiver_address);
-                    sm_notify_log(receiver_address, DEBUG_LOG, "new_and_complete_inbound_group_session_with_ratchet_state: %s, session_owner: %s@%s",  group_update_key_bundle->session_id, receiver_address->user->user_id, receiver_address->domain);
+                    ssm_notify_log(receiver_address, DEBUG_LOG, "new_and_complete_inbound_group_session_with_ratchet_state: %s, session_owner: [%s:%s]",  group_update_key_bundle->session_id, receiver_address->user->user_id, receiver_address->user->device_id);
                 }
                 skissm__plaintext__free_unpacked(plaintext, NULL);
                 // success
@@ -388,7 +388,14 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 }
 
 bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg) {
-    // ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg(): receiver_address [%s:%s], new user [%s:%s]", receiver_address->user->user_id, receiver_address->user->device_id, msg->user_address->user->user_id, msg->user_address->user->device_id);
+    ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg(): receiver address [%s:%s], inviter address: [%s:%s], new user address[%s:%s]", receiver_address->user->user_id, receiver_address->user->device_id, msg->inviter_address->user->user_id, msg->inviter_address->domain, msg->user_address->user->user_id, msg->user_address->user->device_id);
+
+    // if receiver is not the inviter, just consume it
+    if (!compare_address(receiver_address, msg->inviter_address)) {
+        ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg() receiver_address is not the inviter, skip");
+        return false;
+    }
+
 
     char *auth = NULL;
     get_skissm_plugin()->db_handler.load_auth(receiver_address, &auth);
@@ -407,15 +414,14 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
     );
     bool succ = false;
     if (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        if (compare_address(receiver_address, msg->inviter_address)) {
             // add the new device into the joined groups
-            // Skissm__E2eeAddress **group_addresses = NULL;
-            // size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
+            Skissm__E2eeAddress **group_addresses = NULL;
+            size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
 
-            // size_t i;
-            // for (i = 0; i < group_address_num; i++) {
-            //     add_group_member_device_internal(receiver_address, group_addresses[i], msg->user_address);
-            // }
+            size_t i;
+            for (i = 0; i < group_address_num; i++) {
+                add_group_member_device_internal(receiver_address, group_addresses[i], msg->user_address);
+            }
         }
 
         // release
