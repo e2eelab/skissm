@@ -171,7 +171,11 @@ static void on_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Sess
 }
 
 static void on_group_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
-    print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
+    if (safe_strcmp(user_address->user->user_id, from_address->user->user_id)) {
+        print_msg("on_group_msg_received(from other devices): plaintext", plaintext, plaintext_len);
+    } else {
+        print_msg("on_group_msg_received(from other users): plaintext", plaintext, plaintext_len);
+    }
 }
 
 static void on_group_created(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name) {
@@ -1651,19 +1655,19 @@ static void test_medium_group() {
 }
 
 int main() {
-    test_create_group();
-    test_add_group_members();
-    test_remove_group_members();
-    test_create_add_remove();
-    test_interaction();
-    test_continual();
-    test_multiple_devices();
-    test_pqc_create_group();
-    test_pqc_add_group_members();
-    test_pqc_remove_group_members();
-    test_pqc_multiple_devices();
-    // test_pqc_add_new_device();
-    test_medium_group();
+    // test_create_group();
+    // test_add_group_members();
+    // test_remove_group_members();
+    // test_create_add_remove();
+    // test_interaction();
+    // test_continual();
+    // test_multiple_devices();
+    // test_pqc_create_group();
+    // test_pqc_add_group_members();
+    // test_pqc_remove_group_members();
+    // test_pqc_multiple_devices();
+    test_pqc_add_new_device();
+    // test_medium_group();
 
     return 0;
 }

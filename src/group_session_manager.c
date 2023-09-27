@@ -74,7 +74,6 @@ bool consume_create_group_response(
 ) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         Skissm__E2eeAddress *group_address = response->group_address;
-        // create_outbound_group_session(e2ee_pack_id, sender_address, group_name, group_address, group_members, group_members_num, NULL);
         new_outbound_group_session_by_sender(
             response->n_member_info_list, response->member_info_list,
             e2ee_pack_id, sender_address, group_name, group_address, group_members, group_members_num, NULL
