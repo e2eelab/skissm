@@ -274,6 +274,16 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
     Skissm__AddGroupMemberDeviceRequest *request = produce_add_group_member_device_request(outbound_group_session, new_device_address);
     Skissm__AddGroupMemberDeviceResponse *response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, request);
     bool succ = consume_add_group_member_device_response(outbound_group_session, response, new_device_address);
+    if (!succ) {
+        // pack reuest to request_data
+        size_t request_data_len = skissm__add_group_member_device_request__get_packed_size(request);
+        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+        skissm__add_group_member_device_request__pack(request, request_data);
+
+        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBER_DEVICE_REQUEST, request_data, request_data_len, NULL, 0);
+        // release
+        free_mem((void *)&request_data, request_data_len);
+    }
 
     // release
     free(auth);
@@ -341,7 +351,8 @@ static void resend_pending_request(Skissm__Account *account) {
                         bool has_args = pending_request->n_request_args == 1;
                         size_t group_pre_key_plaintext_data_len = has_args ? pending_request->request_args[0].len : 0;
                         uint8_t *group_pre_key_plaintext_data = has_args ? pending_request->request_args[0].data : NULL;
-                        Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(user_address, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
+                        Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
+                            user_address, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
                         );
                         succ = (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
                         skissm__invite_response__free_unpacked(invite_response, NULL);
@@ -469,6 +480,37 @@ static void resend_pending_request(Skissm__Account *account) {
                 }
                 // release
                 skissm__add_group_members_request__free_unpacked(add_group_members_request, NULL);
+                break;
+            }
+            case SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBER_DEVICE_REQUEST: {
+                Skissm__AddGroupMemberDeviceRequest *add_group_member_device_request = skissm__add_group_member_device_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
+
+                Skissm__GroupSession *outbound_group_session_4 = NULL;
+                get_skissm_plugin()->db_handler.load_group_session_by_address(
+                    user_address, user_address, add_group_member_device_request->msg->group_info->group_address, &outbound_group_session_4
+                );
+
+                if (outbound_group_session_4 == NULL) {
+                    succ = false;
+                } else {
+                    Skissm__AddGroupMemberDeviceResponse *add_group_member_device_response = get_skissm_plugin()->proto_handler.add_group_member_device(user_address, auth, add_group_member_device_request);
+
+                    succ = consume_add_group_member_device_response(
+                        outbound_group_session_4, add_group_member_device_response,
+                        add_group_member_device_response->adding_member_device_info->member_address
+                    );
+
+                    // release
+                    skissm__add_group_member_device_response__free_unpacked(add_group_member_device_response, NULL);
+                    skissm__group_session__free_unpacked(outbound_group_session_4, NULL);
+                }
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                } else {
+                    ssm_notify_log(user_address, DEBUG_LOG, "handle pending add_group_member_device_request failed");
+                }
+                // release
+                skissm__add_group_member_device_request__free_unpacked(add_group_member_device_request, NULL);
                 break;
             }
             case SKISSM__PENDING_REQUEST_TYPE__REMOVE_GROUP_MEMBERS_REQUEST: {

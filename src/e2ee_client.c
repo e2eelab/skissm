@@ -524,7 +524,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
         size_t request_data_len = skissm__add_group_members_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__add_group_members_request__pack(request, request_data);
-        
+
         store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBERS_REQUEST, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);

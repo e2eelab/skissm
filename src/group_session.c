@@ -1001,13 +1001,15 @@ void renew_group_sessions_with_new_device(
     Skissm__E2eeAddress *new_device_address,
     Skissm__GroupMemberInfo *adding_member_device_info
 ) {
-    ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_group_sessions_with_new_device() owner address: [%s:%s] sender address: [%s:%s] member address: [%s:%s]",
-            outbound_group_session->session_owner->user->user_id,
-            outbound_group_session->session_owner->user->device_id,
-            sender_address->user->user_id,
-            sender_address->user->device_id,
-            adding_member_device_info->member_address->user->user_id,
-            adding_member_device_info->member_address->user->device_id);
+    ssm_notify_log(
+        outbound_group_session->session_owner, DEBUG_LOG, "renew_group_sessions_with_new_device() owner address: [%s:%s] sender address: [%s:%s] member address: [%s:%s]",
+        outbound_group_session->session_owner->user->user_id,
+        outbound_group_session->session_owner->user->device_id,
+        sender_address->user->user_id,
+        sender_address->user->device_id,
+        adding_member_device_info->member_address->user->user_id,
+        adding_member_device_info->member_address->user->device_id
+    );
 
     // renew outbound group session
     Skissm__Account *account = NULL;
