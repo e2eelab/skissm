@@ -412,6 +412,9 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
     Skissm__GroupMember **removing_group_members,
     size_t removing_group_members_num
 ) {
+    ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "produce_remove_group_members_request() session_owner address: [%s:%s]",
+                   outbound_group_session->session_owner->user->user_id, outbound_group_session->session_owner->user->device_id);
+
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
     if (account == NULL) {

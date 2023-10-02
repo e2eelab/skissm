@@ -388,7 +388,13 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 }
 
 bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg) {
-    ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg(): receiver address [%s:%s], inviter address: [%s:%s], new user address[%s:%s]", receiver_address->user->user_id, receiver_address->user->device_id, msg->inviter_address->user->user_id, msg->inviter_address->domain, msg->user_address->user->user_id, msg->user_address->user->device_id);
+    Skissm__E2eeAddress *inviter_address = msg->inviter_address;
+    Skissm__E2eeAddress *new_user_address = msg->user_address;
+    if (inviter_address != NULL) {
+        ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg(): receiver address [%s:%s], inviter address: [%s:%s], new user address[%s:%s]", receiver_address->user->user_id, receiver_address->user->device_id, inviter_address->user->user_id, inviter_address->user->device_id, new_user_address->user->user_id, new_user_address->user->device_id);
+    } else {
+        ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg(): receiver address [%s:%s], inviter address: null, new user address[%s:%s]", receiver_address->user->user_id, receiver_address->user->device_id, new_user_address->user->user_id, new_user_address->user->device_id);
+    }
 
     char *auth = NULL;
     get_skissm_plugin()->db_handler.load_auth(receiver_address, &auth);
@@ -400,9 +406,9 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
     Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
         receiver_address,
         auth,
-        msg->user_address->user->user_id,
-        msg->user_address->domain,
-        msg->user_address->user->device_id,
+        new_user_address->user->user_id,
+        new_user_address->domain,
+        new_user_address->user->device_id,
         NULL, 0
     );
     bool succ = false;
@@ -416,14 +422,14 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
                 size_t i;
                 for (i = 0; i < group_address_num; i++) {
                     // TODO: what if add_group_member_device_internal failed ?
-                    add_group_member_device_internal(receiver_address, group_addresses[i], msg->user_address);
+                    add_group_member_device_internal(receiver_address, group_addresses[i], new_user_address);
                 }
             }
             succ = true;
         }
         // release
         skissm__invite_response__free_unpacked(invite_response, NULL);
-    } 
+    }
     
     if (!succ) {
         ssm_notify_log(receiver_address, DEBUG_LOG, "consume_new_user_device_msg() failed, new user device msg should be processed again");
