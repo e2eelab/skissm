@@ -341,6 +341,7 @@ static void resend_pending_request(Skissm__Account *account) {
     size_t i;
     for (i = 0; i < pending_request_data_num; i++) {
         Skissm__PendingRequest *pending_request = skissm__pending_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+        ssm_notify_log(user_address, DEBUG_LOG, "resend_pending_request() request_type: %d", request_type_list[i]);
         switch (request_type_list[i]) {
             case SKISSM__PENDING_REQUEST_TYPE__GET_PRE_KEY_BUNDLE_REQUEST: {
                 Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = skissm__get_pre_key_bundle_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);

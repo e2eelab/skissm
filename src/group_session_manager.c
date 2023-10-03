@@ -541,20 +541,17 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
     Skissm__GroupSession *inbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, receiver_address, group_address, &inbound_group_session);
 
-    if (inbound_group_session != NULL
-        && !compare_group_member(
+    if (inbound_group_session != NULL) {
+        if (!compare_group_member(
             inbound_group_session->group_info->group_members, inbound_group_session->group_info->n_group_members,
-            new_group_members, new_group_members_num
-        )
-    ) {
-        new_group_session = false;
-        // unload the old group sessions
-        get_skissm_plugin()->db_handler.unload_group_session_by_id(receiver_address, inbound_group_session->session_id);
-    } else {
-        if (inbound_group_session == NULL) {
-            // there is no group session
+            new_group_members, new_group_members_num)) {
             new_group_session = false;
+            // unload the old group sessions
+            get_skissm_plugin()->db_handler.unload_group_session_by_id(receiver_address, inbound_group_session->session_id);
         }
+    } else {
+        // there is no inbound group session
+        new_group_session = false;
     }
 
     if (new_group_session == false) {
@@ -585,16 +582,16 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
             new_group_members,
             new_group_members_num
         );
-
-        // notify
-        ssm_notify_group_members_removed(
-            inbound_group_session->session_owner,
-            group_address,
-            group_name,
-            msg->removing_members,
-            msg->n_removing_members
-        );
     }
+
+    // notify
+    ssm_notify_group_members_removed(
+        receiver_address,
+        group_address,
+        group_name,
+        msg->removing_members,
+        msg->n_removing_members
+    );
 
     // release
     if (inbound_group_session != NULL) {
