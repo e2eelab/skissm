@@ -163,6 +163,16 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
  * @param from 
  * @param auth 
  * @param request 
+ * @return Skissm__LeaveGroupResponse* 
+ */
+Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, const char *auth, Skissm__LeaveGroupRequest *request);
+
+/**
+ * @brief 
+ * 
+ * @param from 
+ * @param auth 
+ * @param request 
  * @return Skissm__SendGroupMsgResponse* 
  */
 Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendGroupMsgRequest *request);

@@ -412,8 +412,10 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
     Skissm__GroupMember **removing_group_members,
     size_t removing_group_members_num
 ) {
-    ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "produce_remove_group_members_request() session_owner address: [%s:%s]",
-                   outbound_group_session->session_owner->user->user_id, outbound_group_session->session_owner->user->device_id);
+    ssm_notify_log(
+        outbound_group_session->session_owner, DEBUG_LOG, "produce_remove_group_members_request() session_owner address: [%s:%s]",
+        outbound_group_session->session_owner->user->user_id, outbound_group_session->session_owner->user->device_id
+    );
 
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
@@ -544,7 +546,8 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
     if (inbound_group_session != NULL) {
         if (!compare_group_member(
             inbound_group_session->group_info->group_members, inbound_group_session->group_info->n_group_members,
-            new_group_members, new_group_members_num)) {
+            new_group_members, new_group_members_num)
+        ) {
             new_group_session = false;
             // unload the old group sessions
             get_skissm_plugin()->db_handler.unload_group_session_by_id(receiver_address, inbound_group_session->session_id);
@@ -599,6 +602,67 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
     }
 
     return true;
+}
+
+Skissm__LeaveGroupRequest *produce_leave_group_request(
+    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *group_address
+) {
+    Skissm__LeaveGroupRequest *request =
+        (Skissm__LeaveGroupRequest *)malloc(sizeof(Skissm__LeaveGroupRequest));
+    skissm__leave_group_request__init(request);
+
+    Skissm__LeaveGroupMsg *msg =
+        (Skissm__LeaveGroupMsg *)malloc(sizeof(Skissm__LeaveGroupMsg));
+    skissm__leave_group_msg__init(msg);
+
+    copy_address_from_address(&(msg->user_address), user_address);
+    copy_address_from_address(&(msg->group_address), group_address);
+
+    // done
+    return request;
+}
+
+bool consume_leave_group_response(
+    Skissm__E2eeAddress *user_address,
+    Skissm__LeaveGroupResponse *response
+) {
+    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        // unload
+        get_skissm_plugin()->db_handler.unload_group_session_by_address(user_address, response->group_address);
+
+        // done
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool consume_leave_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__LeaveGroupMsg *msg) {
+    // prepare the removing group member
+    Skissm__GroupMember **removing_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *));
+    removing_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(removing_group_members[0]);
+    removing_group_members[0]->user_id = strdup(msg->user_address->user->user_id);
+    removing_group_members[0]->domain = strdup(msg->user_address->domain);
+    removing_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    size_t removing_group_member_num = 1;
+
+    Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(
+        receiver_address, msg->group_address, removing_group_members, removing_group_member_num
+    );
+
+    bool succ = false;
+    if (remove_group_members_response != NULL && remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK)
+        succ = true;
+
+    // release
+    skissm__group_member__free_unpacked(removing_group_members[0], NULL);
+    free_mem((void **)&removing_group_members, sizeof(Skissm__GroupMember *));
+    skissm__remove_group_members_response__free_unpacked(remove_group_members_response, NULL);
+
+    // done
+    return succ;
 }
 
 Skissm__SendGroupMsgRequest *produce_send_group_msg_request(

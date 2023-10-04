@@ -1494,6 +1494,129 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
     return response;
 }
 
+Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, const char *auth, Skissm__LeaveGroupRequest *request) {
+    Skissm__E2eeAddress *sender_address = request->msg->user_address;
+    char *user_id = request->msg->user_address->user->user_id;
+
+    // copy leave_group_msg
+    Skissm__LeaveGroupMsg *leave_group_msg = NULL;
+
+    copy_leave_group_msg(&(leave_group_msg), request->msg);
+
+    // find the group
+    uint8_t group_data_find = 0;
+    while (group_data_find < group_data_set_insert_pos) {
+        if ((group_data_set[group_data_find].group_address) && (request->msg->group_address) &&
+            compare_address(group_data_set[group_data_find].group_address, request->msg->group_address)) {
+            break;
+        }
+        group_data_find++;
+    }
+
+    // data not found
+    if (group_data_find == group_data_set_insert_pos) {
+        skissm__leave_group_msg__free_unpacked(leave_group_msg, NULL);
+
+        Skissm__LeaveGroupResponse *response = (Skissm__LeaveGroupResponse *)malloc(sizeof(Skissm__LeaveGroupResponse));
+        skissm__leave_group_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_INTERNAL_SERVER_ERROR;
+        return response;
+    }
+
+    group_data *cur_group_data = &(group_data_set[group_data_find]);
+
+    size_t original_group_members_num = cur_group_data->group_members_num;
+    size_t new_group_members_num = original_group_members_num - 1;
+
+    Skissm__GroupMember **temp_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
+    size_t i, j = 0;
+    for (i = 0; i < original_group_members_num; i++) {
+        if (!safe_strcmp(cur_group_data->group_members[i]->user_id, user_id)) {
+            if (j == original_group_members_num) {
+                // error and release
+                skissm__leave_group_msg__free_unpacked(leave_group_msg, NULL);
+
+                size_t k;
+                for (k = 0; k < new_group_members_num; k++) {
+                    skissm__group_member__free_unpacked(temp_group_members[k], NULL);
+                }
+                free_mem((void **)&temp_group_members, sizeof(Skissm__GroupMember *) * new_group_members_num);
+
+                // return
+                Skissm__LeaveGroupResponse *response = (Skissm__LeaveGroupResponse *)malloc(sizeof(Skissm__LeaveGroupResponse));
+                skissm__leave_group_response__init(response);
+                response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_INTERNAL_SERVER_ERROR;
+                return response;
+            }
+            copy_group_member(&(temp_group_members[j]), (cur_group_data->group_members)[i]);
+            j++;
+        }
+    }
+
+    // release the old data
+    for (i = 0; i < original_group_members_num; i++) {
+        skissm__group_member__free_unpacked((cur_group_data->group_members)[i], NULL);
+        (cur_group_data->group_members)[i] = NULL;
+    }
+    free(cur_group_data->group_members);
+
+    // update new member
+    cur_group_data->group_members_num = new_group_members_num;
+    cur_group_data->group_members = temp_group_members;
+
+    // find the group manager
+    Skissm__GroupMember *group_manager = NULL;
+    for (i = 0; i < new_group_members_num; i++) {
+        if (cur_group_data->group_members[i]->role == SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER) {
+            group_manager = cur_group_data->group_members[i];
+            break;
+        }
+    }
+
+    // find the group manager device
+    Skissm__E2eeAddress **group_manager_device_addresses = NULL;
+    size_t group_manager_device_num;
+    group_manager_device_num = find_device_addresses(group_manager->user_id, &group_manager_device_addresses);
+
+    // send to the group manager
+    size_t leave_group_msg_data_len = skissm__leave_group_msg__get_packed_size(leave_group_msg);
+    uint8_t leave_group_msg_data[leave_group_msg_data_len];
+    skissm__leave_group_msg__pack(leave_group_msg, leave_group_msg_data);
+
+    Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+    skissm__proto_msg__init(proto_msg);
+    copy_address_from_address(&(proto_msg->from), sender_address);
+    copy_address_from_address(&(proto_msg->to), group_manager_device_addresses[0]);
+    proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_LEAVE_GROUP_MSG;
+    proto_msg->leave_group_msg = skissm__leave_group_msg__unpack(NULL, leave_group_msg_data_len, leave_group_msg_data);
+
+    send_proto_msg(proto_msg);
+
+    // prepare response
+    Skissm__LeaveGroupResponse *response = (Skissm__LeaveGroupResponse *)malloc(sizeof(Skissm__LeaveGroupResponse));
+    skissm__leave_group_response__init(response);
+    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+    copy_address_from_address(&(response->leave_group_member_address), sender_address);
+    copy_address_from_address(&(response->group_address), leave_group_msg->group_address);
+
+    // release
+    skissm__leave_group_msg__free_unpacked(leave_group_msg, NULL);
+
+    for (i = 0; i < new_group_members_num; i++) {
+        skissm__group_member__free_unpacked(temp_group_members[i], NULL);
+    }
+    free_mem((void **)&temp_group_members, sizeof(Skissm__GroupMember *) * new_group_members_num);
+
+    for (i = 0; i < group_manager_device_num; i++) {
+        skissm__e2ee_address__free_unpacked(group_manager_device_addresses[i], NULL);
+    }
+    free_mem((void **)&group_manager_device_addresses, sizeof(Skissm__E2eeAddress *) * group_manager_device_num);
+
+    skissm__proto_msg__free_unpacked(proto_msg, NULL);
+
+    return response;
+}
+
 Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendGroupMsgRequest *request) {
     Skissm__E2eeMsg *e2ee_msg = request->msg;
     size_t e2ee_msg_data_len = skissm__e2ee_msg__get_packed_size(e2ee_msg);

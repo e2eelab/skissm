@@ -538,6 +538,22 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__remove_group_members_request__free_unpacked(remove_group_members_request, NULL);
                 break;
             }
+            case SKISSM__PENDING_REQUEST_TYPE__LEAVE_GROUP_REQUEST: {
+                Skissm__LeaveGroupRequest *leave_group_request = skissm__leave_group_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
+
+                Skissm__LeaveGroupResponse *leave_group_response = get_skissm_plugin()->proto_handler.leave_group(user_address, auth, leave_group_request);
+                succ = consume_leave_group_response(user_address, leave_group_response);
+                // release
+                skissm__leave_group_response__free_unpacked(leave_group_response, NULL);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                } else {
+                    ssm_notify_log(user_address, DEBUG_LOG, "handle pending leave_group_request failed");
+                }
+                // release
+                skissm__leave_group_request__free_unpacked(leave_group_request, NULL);
+                break;
+            }
             case SKISSM__PENDING_REQUEST_TYPE__SEND_GROUP_MSG_REQUEST: {
                 Skissm__SendGroupMsgRequest *send_group_msg_request = skissm__send_group_msg_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
 

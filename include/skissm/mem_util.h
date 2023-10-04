@@ -333,6 +333,14 @@ void copy_add_group_member_device_msg(Skissm__AddGroupMemberDeviceMsg **dest, Sk
 void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm__RemoveGroupMembersMsg *src);
 
 /**
+ * @brief Copy Skissm__LeaveGroupMsg from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_leave_group_msg(Skissm__LeaveGroupMsg **dest, Skissm__LeaveGroupMsg *src);
+
+/**
  * @brief Add new Skissm__GroupMember array to dest.
  *
  * @param dest

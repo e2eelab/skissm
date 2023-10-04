@@ -585,6 +585,41 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     return response;
 }
 
+Skissm__LeaveGroupResponse *leave_group(
+    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *group_address
+) {
+    char *auth = NULL;
+    get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
+
+    if (auth == NULL) {
+        ssm_notify_log(user_address, BAD_ACCOUNT, "leave_group()");
+        return NULL;
+    }
+
+    // send message to server
+    Skissm__LeaveGroupRequest *request = produce_leave_group_request(user_address, group_address);
+    Skissm__LeaveGroupResponse *response = get_skissm_plugin()->proto_handler.leave_group(user_address, auth, request);
+    bool succ = consume_leave_group_response(user_address, response);
+    if (!succ) {
+        // pack reuest to request_data
+        size_t request_data_len = skissm__leave_group_request__get_packed_size(request);
+        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+        skissm__leave_group_request__pack(request, request_data);
+
+        store_pending_request_internal(user_address, SKISSM__PENDING_REQUEST_TYPE__LEAVE_GROUP_REQUEST, request_data, request_data_len, NULL, 0);
+        // release
+        free_mem((void *)&request_data, request_data_len);
+    }
+
+    // release
+    free(auth);
+    skissm__leave_group_request__free_unpacked(request, NULL);
+
+    // done
+    return response;
+}
+
 Skissm__SendGroupMsgResponse *send_group_msg(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
@@ -699,6 +734,9 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_GROUP_MEMBERS_MSG:
             consumed = consume_remove_group_members_msg(receiver_address, proto_msg->remove_group_members_msg);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_LEAVE_GROUP_MSG:
+            consumed = consume_leave_group_msg(receiver_address, proto_msg->leave_group_msg);
             break;
         default:
             // consume the message that is arriving here
