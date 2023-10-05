@@ -619,6 +619,8 @@ Skissm__LeaveGroupRequest *produce_leave_group_request(
     copy_address_from_address(&(msg->user_address), user_address);
     copy_address_from_address(&(msg->group_address), group_address);
 
+    request->msg = msg;
+
     // done
     return request;
 }

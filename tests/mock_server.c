@@ -1553,22 +1553,13 @@ Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, const ch
         }
     }
 
-    // release the old data
-    for (i = 0; i < original_group_members_num; i++) {
-        skissm__group_member__free_unpacked((cur_group_data->group_members)[i], NULL);
-        (cur_group_data->group_members)[i] = NULL;
-    }
-    free(cur_group_data->group_members);
-
-    // update new member
-    cur_group_data->group_members_num = new_group_members_num;
-    cur_group_data->group_members = temp_group_members;
+    // we do not release the old data until the group manager sends the remove group member message here
 
     // find the group manager
     Skissm__GroupMember *group_manager = NULL;
     for (i = 0; i < new_group_members_num; i++) {
-        if (cur_group_data->group_members[i]->role == SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER) {
-            group_manager = cur_group_data->group_members[i];
+        if (temp_group_members[i]->role == SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER) {
+            group_manager = temp_group_members[i];
             break;
         }
     }
