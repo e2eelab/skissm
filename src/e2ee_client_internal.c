@@ -20,7 +20,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
     );
 
     if (invite_response == NULL || invite_response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request witll be stored.");
+        ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request will be stored.");
         // pack request to request_data which will be freed inside store_pending_request_internal
         size_t request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
@@ -341,7 +341,12 @@ static void resend_pending_request(Skissm__Account *account) {
     size_t i;
     for (i = 0; i < pending_request_data_num; i++) {
         Skissm__PendingRequest *pending_request = skissm__pending_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
-        ssm_notify_log(user_address, DEBUG_LOG, "resend_pending_request() request_type: %d", request_type_list[i]);
+        ssm_notify_log(
+            user_address,
+            DEBUG_LOG,
+            "resend_pending_request() request_type: %d",
+            request_type_list[i]
+        );
         switch (request_type_list[i]) {
             case SKISSM__PENDING_REQUEST_TYPE__GET_PRE_KEY_BUNDLE_REQUEST: {
                 Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = skissm__get_pre_key_bundle_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
@@ -358,7 +363,11 @@ static void resend_pending_request(Skissm__Account *account) {
                         succ = (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
                         skissm__invite_response__free_unpacked(invite_response, NULL);
                     } else if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
-                        ssm_notify_log(user_address, DEBUG_LOG, "consume_get_pre_key_bundle_response() got empty pre_key_bundles, remove pending request");
+                        ssm_notify_log(
+                            user_address,
+                            DEBUG_LOG,
+                            "consume_get_pre_key_bundle_response() got empty pre_key_bundles, remove pending request"
+                        );
                         succ = true;
                     }
                 }
@@ -590,7 +599,12 @@ static void resend_pending_request(Skissm__Account *account) {
                 break;
             }
             default:
-                ssm_notify_log(user_address, DEBUG_LOG, "resend_pending_request() unknown pending request type: %d, %s", request_type_list[i]);
+                ssm_notify_log(
+                    user_address,
+                    DEBUG_LOG,
+                    "resend_pending_request() unknown pending request type: %d, %s",
+                    request_type_list[i]
+                );
                 break;
         };
         // release
