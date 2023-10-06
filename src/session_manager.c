@@ -334,12 +334,18 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     size_t inbound_group_sessions_num = get_skissm_plugin()->db_handler.load_group_sessions(
                         receiver_address, group_pre_key_bundle->group_info->group_address, &inbound_group_sessions
                     );
-                    if (inbound_group_sessions_num > 0) {
+                    if (inbound_group_sessions_num > 0 && inbound_group_sessions != NULL) {
                         size_t i;
                         for (i = 0; i < inbound_group_sessions_num; i++) {
                             complete_inbound_group_session_by_pre_key_bundle(inbound_group_sessions[i], group_pre_key_bundle);
                             ssm_notify_log(receiver_address, DEBUG_LOG, "complete_inbound_group_session_by_pre_key_bundle: %s, session_owner: [%s:%s]",  group_pre_key_bundle->session_id, receiver_address->user->user_id, receiver_address->user->device_id);
+
+                            // release inbound_group_sessions[i]
+                            skissm__group_session__free_unpacked(inbound_group_sessions[i], NULL);
                         }
+                        // release inbound_group_sessions
+                        free_mem((void **)&inbound_group_sessions, sizeof(Skissm__Session *) * inbound_group_sessions_num);
+
                         new_outbound_group_session_by_receiver(
                             &(group_pre_key_bundle->group_seed),
                             group_pre_key_bundle->e2ee_pack_id,

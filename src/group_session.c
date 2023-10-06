@@ -764,6 +764,7 @@ void new_and_complete_inbound_group_session_with_chain_key(
     int ad_len = 2 * sign_key_len;
     inbound_group_session->associated_data.len = ad_len;
     inbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+
     memcpy(inbound_group_session->associated_data.data, identity_public_key, sign_key_len);
     memcpy((inbound_group_session->associated_data.data) + sign_key_len, identity_public_key, sign_key_len);
 
@@ -940,28 +941,43 @@ void renew_outbound_group_session_by_welcome_and_add(
     size_t inbound_group_sessions_num = get_skissm_plugin()->db_handler.load_group_sessions(
         outbound_group_session->session_owner, outbound_group_session->group_info->group_address, &inbound_group_sessions
     );
-    for (i = 0; i < inbound_group_sessions_num; i++) {
-        // there is one outbound group session in inbound_group_sessions, so we need to ignore it
-        if (!compare_address(outbound_group_session->session_owner, inbound_group_sessions[i]->sender)) {
-            if (compare_address(sender_address, inbound_group_sessions[i]->sender)) {
-                renew_inbound_group_session_by_welcome_and_add(
-                    sender_chain_key,
-                    inbound_group_sessions[i],
-                    outbound_group_session->group_info
-                );
-            } else {
-                renew_inbound_group_session_by_welcome_and_add(
-                    NULL,
-                    inbound_group_sessions[i],
-                    outbound_group_session->group_info
-                );
-            }
-        }
-    }
 
-    // create the inbound group sessions
-    for (i = 0; i < n_adding_member_info_list; i++) {
-        new_and_complete_inbound_group_session_with_chain_key(adding_member_info_list[i], outbound_group_session, their_chain_keys[i]);
+    if (inbound_group_sessions_num > 0 && inbound_group_sessions != NULL) {
+        for (i = 0; i < inbound_group_sessions_num; i++) {
+            // there is one outbound group session in inbound_group_sessions, so we need to ignore it
+            if (!compare_address(outbound_group_session->session_owner, inbound_group_sessions[i]->sender)) {
+                if (compare_address(sender_address, inbound_group_sessions[i]->sender)) {
+                    renew_inbound_group_session_by_welcome_and_add(
+                        sender_chain_key,
+                        inbound_group_sessions[i],
+                        outbound_group_session->group_info
+                    );
+                } else {
+                    renew_inbound_group_session_by_welcome_and_add(
+                        NULL,
+                        inbound_group_sessions[i],
+                        outbound_group_session->group_info
+                    );
+                }
+                ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_outbound_group_session_by_welcome_and_add() renew the inbound group sessions: sender_address:[%s:%s], inbound_group_sessions[%d]->sender:[%s:%s]", 
+                sender_address->user->user_id,
+                sender_address->user->device_id,
+                i,
+                inbound_group_sessions[i]->sender->user->user_id,
+                inbound_group_sessions[i]->sender->user->device_id);
+            }
+            // release inbound_group_sessions[i]
+            skissm__group_session__free_unpacked(inbound_group_sessions[i], NULL);
+        }
+        // release inbound_group_sessions
+        free_mem((void **)&inbound_group_sessions, sizeof(Skissm__Session *) * inbound_group_sessions_num);
+
+        // create the inbound group sessions
+        for (i = 0; i < n_adding_member_info_list; i++) {
+            new_and_complete_inbound_group_session_with_chain_key(adding_member_info_list[i], outbound_group_session, their_chain_keys[i]);
+        }
+    } else {
+        ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_outbound_group_session_by_welcome_and_add(), no inbound group sessions, renew the inbound group sessions skipped");
     }
 
     // release
@@ -974,7 +990,9 @@ void renew_inbound_group_session_by_welcome_and_add(
     ProtobufCBinaryData *sender_chain_key,
     Skissm__GroupSession *inbound_group_session,
     Skissm__GroupInfo *new_group_info
-) {
+) {        
+    ssm_notify_log(inbound_group_session->session_owner, DEBUG_LOG, "renew_inbound_group_session_by_welcome_and_add() sender_chain_key is Null: %s", sender_chain_key==NULL?"true":"false");
+
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_group_session->e2ee_pack_id)->cipher_suite;
 
     skissm__group_info__free_unpacked(inbound_group_session->group_info, NULL);
@@ -1041,6 +1059,7 @@ void renew_group_sessions_with_new_device(
 
     if (outbound_session != NULL) {
         if (outbound_session->responded) {
+            ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_group_sessions_with_new_device() outbound_session found and is responded");
             Skissm__SendOne2oneMsgResponse *response;
             response = send_one2one_msg_internal(
                 outbound_session,
@@ -1049,6 +1068,7 @@ void renew_group_sessions_with_new_device(
             );
             skissm__send_one2one_msg_response__free_unpacked(response, NULL);
         } else {
+            ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_group_sessions_with_new_device() outbound_session found and is not responded");
             /** Since the other has not responded, we store the group pre-key first so that
              *  we can send it right after receiving the other's accept message.
              */
@@ -1065,6 +1085,7 @@ void renew_group_sessions_with_new_device(
         // release outbound_session
         skissm__session__free_unpacked(outbound_session, NULL);
     } else {
+        ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_group_sessions_with_new_device() outbound_session not found");
         /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
         Skissm__InviteResponse *response = get_pre_key_bundle_internal(
             outbound_group_session->session_owner,
@@ -1083,11 +1104,13 @@ void renew_group_sessions_with_new_device(
         // the sender
         advance_group_chain_key_by_welcome(cipher_suite, &(outbound_group_session->chain_key), &their_chain_keys);
         advance_group_chain_key_by_add(cipher_suite, their_chain_keys, &(outbound_group_session->chain_key));
+        ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_group_sessions_with_new_device() sender_chain_key is the case of null, create their_chain_keys");
     } else {
         // the receiver
         advance_group_chain_key_by_welcome(cipher_suite, sender_chain_key, &their_chain_keys);
         advance_group_chain_key_by_add(cipher_suite, their_chain_keys, sender_chain_key);
         advance_group_chain_key_by_add(cipher_suite, &(outbound_group_session->chain_key), &(outbound_group_session->chain_key));
+        ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_group_sessions_with_new_device() sender_chain_key is the case of not null, create their_chain_keys");
     }
 
     // reset the sequence
@@ -1101,30 +1124,42 @@ void renew_group_sessions_with_new_device(
     size_t inbound_group_sessions_num = get_skissm_plugin()->db_handler.load_group_sessions(
         outbound_group_session->session_owner, outbound_group_session->group_info->group_address, &inbound_group_sessions
     );
-    size_t i;
-    for (i = 0; i < inbound_group_sessions_num; i++) {
-        // there is one outbound group session in inbound_group_sessions, so we need to ignore it
-        if (!compare_address(outbound_group_session->session_owner, inbound_group_sessions[i]->sender)) {
-            if (compare_address(sender_address, inbound_group_sessions[i]->sender)) {
-                renew_inbound_group_session_by_welcome_and_add(
-                    sender_chain_key,
-                    inbound_group_sessions[i],
-                    outbound_group_session->group_info
-                );
-            } else {
-                renew_inbound_group_session_by_welcome_and_add(
-                    NULL,
-                    inbound_group_sessions[i],
-                    outbound_group_session->group_info
-                );
+    if (inbound_group_sessions_num > 0 && inbound_group_sessions != NULL) {
+        size_t i;
+        for (i = 0; i < inbound_group_sessions_num; i++) {
+            // there is one outbound group session in inbound_group_sessions, so we need to ignore it
+            if (!compare_address(outbound_group_session->session_owner, inbound_group_sessions[i]->sender)) {
+                if (compare_address(sender_address, inbound_group_sessions[i]->sender)) {
+                    renew_inbound_group_session_by_welcome_and_add(
+                        sender_chain_key,
+                        inbound_group_sessions[i],
+                        outbound_group_session->group_info
+                    );
+                } else {
+                    renew_inbound_group_session_by_welcome_and_add(
+                        NULL,
+                        inbound_group_sessions[i],
+                        outbound_group_session->group_info
+                    );
+                }
+                ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_group_sessions_with_new_device() renew the inbound group sessions: sender_address:[%s:%s], inbound_group_sessions[%d of %d]->sender:[%s:%s]", 
+                sender_address->user->user_id,
+                sender_address->user->device_id,
+                i+1, inbound_group_sessions_num,
+                inbound_group_sessions[i]->sender->user->user_id,
+                inbound_group_sessions[i]->sender->user->device_id);
             }
+            // release inbound_group_sessions[i]
+            skissm__group_session__free_unpacked(inbound_group_sessions[i], NULL);
         }
-        // release
-        skissm__group_session__free_unpacked(inbound_group_sessions[i], NULL);
-    }
+        // release inbound_group_sessions
+        free_mem((void **)&inbound_group_sessions, sizeof(Skissm__Session *) * inbound_group_sessions_num);
 
-    // create the inbound group session for new device
-    new_and_complete_inbound_group_session_with_chain_key(adding_member_device_info, outbound_group_session, their_chain_keys);
+        // create the inbound group session for new device
+        new_and_complete_inbound_group_session_with_chain_key(adding_member_device_info, outbound_group_session, their_chain_keys);
+    } else {
+        ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "renew_group_sessions_with_new_device(), no inbound group sessions, renew the inbound group sessions skipped");
+    }
 
     // release
     skissm__account__free_unpacked(account, NULL);

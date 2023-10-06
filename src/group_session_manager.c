@@ -335,19 +335,27 @@ bool consume_add_group_member_device_response(
     Skissm__AddGroupMemberDeviceResponse *response,
     Skissm__E2eeAddress *new_device_address
 ) {
-    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        const char *group_name = outbound_group_session->group_info->group_name;
-        Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
-        Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
+    if (response != NULL) {
+        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            const char *group_name = outbound_group_session->group_info->group_name;
+            Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
+            Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
 
-        Skissm__GroupMemberInfo *adding_member_device_info = response->adding_member_device_info;
-        // renew the outbound group session
-        renew_group_sessions_with_new_device(
-            outbound_group_session, NULL, session_owner, new_device_address, adding_member_device_info
-        );
-
-        // done
-        return true;
+            Skissm__GroupMemberInfo *adding_member_device_info = response->adding_member_device_info;
+            // renew the outbound group session
+            renew_group_sessions_with_new_device(
+                outbound_group_session, NULL, session_owner, new_device_address, adding_member_device_info
+            );
+            // done
+            return true;
+        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+            ssm_notify_log(outbound_group_session->session_owner, DEBUG_LOG, "consume_add_group_member_device_response(), no content, give up");
+            // give up
+            return true;
+        } else {
+            // for retry
+            return false;
+        }
     } else {
         return false;
     }
