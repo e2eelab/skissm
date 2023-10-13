@@ -243,16 +243,17 @@ bool consume_add_group_members_response(
     size_t adding_members_num
 ) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        const char *group_name = outbound_group_session->group_info->group_name;
-        Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
-        Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
-
         // renew the outbound group session
+        Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
+
         renew_outbound_group_session_by_welcome_and_add(
             outbound_group_session, NULL, session_owner,
             response->n_adding_member_info_list, response->adding_member_info_list,
             adding_members_num, adding_members
         );
+        // use renewed group_info
+        const char *group_name = outbound_group_session->group_info->group_name;
+        Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
 
         // notify
         ssm_notify_group_members_added(

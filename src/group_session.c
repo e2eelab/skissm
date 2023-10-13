@@ -846,6 +846,8 @@ void renew_outbound_group_session_by_welcome_and_add(
     add_group_members_to_group_info(
         &(outbound_group_session->group_info), old_group_info, adding_group_members, adding_group_members_num
     );
+    // release old_group_info
+    skissm__group_info__free_unpacked(old_group_info, NULL);
 
     // send the current ratchet state to the new group members
     size_t i, j;
@@ -990,7 +992,6 @@ void renew_outbound_group_session_by_welcome_and_add(
 
     // release
     skissm__account__free_unpacked(account, NULL);
-    skissm__group_info__free_unpacked(old_group_info, NULL);
     free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
 }
 
