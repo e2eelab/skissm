@@ -402,7 +402,7 @@ void new_outbound_group_session_by_sender(
             free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
         } else {
             /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
-            Skissm__InviteResponse *response = get_pre_key_bundle_internal(
+            Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
                 outbound_group_session->session_owner,
                 account->auth,
                 cur_user_id, cur_user_domain,
@@ -410,7 +410,11 @@ void new_outbound_group_session_by_sender(
                 group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
             );
             // release
-            skissm__invite_response__free_unpacked(response, NULL);
+            if (invite_response != NULL) {
+                skissm__invite_response__free_unpacked(invite_response, NULL);
+            } else {
+                // TODO, what?
+            }
         }
     }
 
@@ -903,7 +907,7 @@ void renew_outbound_group_session_by_welcome_and_add(
             free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
         } else {
             /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
-            Skissm__InviteResponse *response = get_pre_key_bundle_internal(
+            Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
                 outbound_group_session->session_owner,
                 account->auth,
                 cur_user_id, cur_user_domain,
@@ -911,7 +915,11 @@ void renew_outbound_group_session_by_welcome_and_add(
                 group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
             );
             // release
-            skissm__invite_response__free_unpacked(response, NULL);
+            if (invite_response != NULL) {
+                skissm__invite_response__free_unpacked(invite_response, NULL);
+            } else {
+                // TODO, what?
+            }
         }
     }
 

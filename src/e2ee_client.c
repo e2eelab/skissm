@@ -113,13 +113,13 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
     // we should always call get_pre_key_bundle_internal() since there may have new devices for to_user_id@to_domain
     // not just check outbound sessions in db currently.
 
-    Skissm__InviteResponse *response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
+    Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
 
     // release
     free(auth);
 
     // done
-    return response;
+    return invite_response;
 }
 
 Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
@@ -131,15 +131,15 @@ Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_use
         return NULL;
     }
 
-    Skissm__InviteResponse *response = NULL;
-    response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
+    Skissm__InviteResponse *invite_response = NULL;
+    invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
 
     // release
     free(auth);
 
     // done
-    // response can be Null
-    return response;
+    // response can be NULL
+    return invite_response;
 }
 
 size_t f2f_invite(

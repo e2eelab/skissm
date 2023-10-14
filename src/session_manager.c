@@ -120,7 +120,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     Skissm__E2eeAddress *from,
     uint8_t *group_pre_key_plaintext_data,
     size_t group_pre_key_plaintext_data_len,
-    Skissm__GetPreKeyBundleResponse *response
+    Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response
 ) {
     // find an account
     Skissm__Account *account = NULL;
@@ -139,10 +139,10 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     );
 
     Skissm__InviteResponse *invite_response = NULL;
-    if (response != NULL 
-        && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        Skissm__PreKeyBundle **their_pre_key_bundles = response->pre_key_bundles;
-        size_t n_pre_key_bundles = response->n_pre_key_bundles;
+    if (get_pre_key_bundle_response != NULL 
+        && get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        Skissm__PreKeyBundle **their_pre_key_bundles = get_pre_key_bundle_response->pre_key_bundles;
+        size_t n_pre_key_bundles = get_pre_key_bundle_response->n_pre_key_bundles;
         if (their_pre_key_bundles == NULL || n_pre_key_bundles == 0) {
             // release
             skissm__account__free_unpacked(account, NULL);
@@ -514,6 +514,8 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         }
         // release
         skissm__invite_response__free_unpacked(invite_response, NULL);
+    } else {
+        // TODO: what ?
     }
     
     if (!succ) {
@@ -566,11 +568,16 @@ Skissm__InviteRequest *produce_invite_request(
     return request;
 }
 
-bool consume_invite_response(Skissm__InviteResponse *response) {
-    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK)
-        return true;
-    else
-        return false;
+bool consume_invite_response(Skissm__E2eeAddress *user_address, Skissm__InviteResponse *response) {
+    if (response != NULL) {
+        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
+            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+            ssm_notify_log(user_address, DEBUG_LOG, "consume_invite_response() response code: %d", response->code);
+        return NULL;
+            return true;
+        }
+    }
+    return false;
 }
 
 bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *msg) {
@@ -669,12 +676,15 @@ Skissm__AcceptRequest *produce_accept_request(
     return request;
 }
 
-bool consume_accept_response(Skissm__AcceptResponse *response) {
-    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        return true;
-    } else {
-        return false;
+bool consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response) {
+    if (response != NULL) {
+        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
+            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+            ssm_notify_log(user_address, DEBUG_LOG, "consume_accept_response() response code: %d", response->code);
+            return true;
+        }
     }
+    return false;
 }
 
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg) {
