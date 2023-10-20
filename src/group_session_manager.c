@@ -707,13 +707,21 @@ bool consume_leave_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Leav
     );
 
     bool succ = false;
-    if (remove_group_members_response != NULL && remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK)
-        succ = true;
-
+    if (remove_group_members_response != NULL) {
+        if (remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            ssm_notify_log(receiver_address, DEBUG_LOG, "consume_leave_group_msg() succes");
+            succ = true;
+        } else if(remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+            // member already removed, just consume it
+            ssm_notify_log(receiver_address, DEBUG_LOG, "consume_leave_group_msg(), no such member");
+            succ = true;
+        }
+        // release
+        skissm__remove_group_members_response__free_unpacked(remove_group_members_response, NULL);
+    }
     // release
     skissm__group_member__free_unpacked(removing_group_members[0], NULL);
     free_mem((void **)&removing_group_members, sizeof(Skissm__GroupMember *));
-    skissm__remove_group_members_response__free_unpacked(remove_group_members_response, NULL);
 
     // done
     return succ;
