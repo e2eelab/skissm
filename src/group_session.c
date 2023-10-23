@@ -946,7 +946,7 @@ void renew_outbound_group_session_by_welcome_and_add(
     // store
     get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
-    // renew the inbound group sessions
+    // renew existed inbound group sessions
     Skissm__GroupSession **inbound_group_sessions = NULL;
     size_t inbound_group_sessions_num = get_skissm_plugin()->db_handler.load_group_sessions(
         outbound_group_session->session_owner, outbound_group_session->group_info->group_address, &inbound_group_sessions
@@ -985,17 +985,17 @@ void renew_outbound_group_session_by_welcome_and_add(
         }
         // release inbound_group_sessions
         free_mem((void **)&inbound_group_sessions, sizeof(Skissm__Session *) * inbound_group_sessions_num);
-
-        // create the inbound group sessions
-        for (i = 0; i < n_adding_member_info_list; i++) {
-            new_and_complete_inbound_group_session_with_chain_key(adding_member_info_list[i], outbound_group_session, their_chain_keys[i]);
-        }
     } else {
         ssm_notify_log(
             outbound_group_session->session_owner,
             DEBUG_LOG,
-            "renew_outbound_group_session_by_welcome_and_add(), no inbound group sessions, renew the inbound group sessions skipped"
+            "renew_outbound_group_session_by_welcome_and_add(), no existed inbound group sessions, renew the inbound group sessions skipped"
         );
+    }
+
+    // create new inbound group sessions to the adding members
+    for (i = 0; i < n_adding_member_info_list; i++) {
+        new_and_complete_inbound_group_session_with_chain_key(adding_member_info_list[i], outbound_group_session, their_chain_keys[i]);
     }
 
     // release
