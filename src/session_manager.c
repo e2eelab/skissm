@@ -573,7 +573,6 @@ bool consume_invite_response(Skissm__E2eeAddress *user_address, Skissm__InviteRe
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
             || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
             ssm_notify_log(user_address, DEBUG_LOG, "consume_invite_response() response code: %d", response->code);
-        return NULL;
             return true;
         }
     }
