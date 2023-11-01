@@ -17,6 +17,7 @@
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <assert.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "skissm/cipher.h"
@@ -78,7 +79,7 @@ static void test_alice_to_bob(
     assert(
         memcmp(
             bob_spk.private_key.data,
-            bob_ratchet->sender_chain->ratchet_key.data,
+            bob_ratchet->sender_chain->ratchet_key[0].data,
             key_len
         ) == 0
     );
@@ -275,6 +276,77 @@ static void test_two_ratchets(
     skissm__ratchet__free_unpacked(bob_ratchet_2, NULL);
 }
 
+static void test_out_of_order_v2(
+    Skissm__KeyPair alice_ratchet_key,
+    Skissm__KeyPair bob_spk,
+    char *session_id,
+    ProtobufCBinaryData ad, uint8_t *shared_secret
+) {
+    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    initialise_ratchet(&alice_ratchet);
+    initialise_ratchet(&bob_ratchet);
+
+    initialise_as_alice(
+        test_cipher_suite,
+        alice_ratchet,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &alice_ratchet_key,
+        &(bob_spk.public_key)
+    );
+    initialise_as_bob(
+        test_cipher_suite,
+        bob_ratchet,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &bob_spk
+    );
+
+    size_t message_num = 8000;
+    int i;
+    Skissm__One2oneMsgPayload **message = (Skissm__One2oneMsgPayload **)malloc(sizeof(Skissm__One2oneMsgPayload *) * message_num);
+    for (i = 0; i < message_num; i++) {
+        uint8_t plaintext[64];
+        size_t plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message will be sent a lot of times.", i);
+        encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_len, &message[i]);
+    }
+
+    size_t test_num = 8;
+    Skissm__One2oneMsgPayload **test_message = (Skissm__One2oneMsgPayload **)malloc(sizeof(Skissm__One2oneMsgPayload *) * test_num);
+    test_message[0] = message[7500];
+    test_message[1] = message[1500];
+    test_message[2] = message[3500];
+    test_message[3] = message[500];
+    test_message[4] = message[6500];
+    test_message[5] = message[2500];
+    test_message[6] = message[4500];
+    test_message[7] = message[5500];
+
+    uint8_t **output = (uint8_t **) malloc(sizeof(uint8_t *) * test_num);
+    size_t *output_len = (size_t *) malloc(sizeof(size_t) * test_num);
+
+    for (i = 0; i < test_num; i++) {
+        output_len[i] = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, test_message[i], &output[i]);
+        print_msg("decrypt ratchet: ", output[i], output_len[i]);
+    }
+
+    // release
+    for (i = 0; i < message_num; i++) {
+        skissm__one2one_msg_payload__free_unpacked(message[i], NULL);
+    }
+    free_mem((void **)&message, sizeof(Skissm__One2oneMsgPayload *) * message_num);
+
+    for (i = 0; i < test_num; i++) {
+        free_mem((void **)&output[i], output_len[i]);
+    }
+    free_mem((void **)&test_message, sizeof(Skissm__One2oneMsgPayload *) * test_num);
+    free_mem((void **)&output, sizeof(uint8_t *) * test_num);
+    free_mem((void **)&output_len, sizeof(size_t) * test_num);
+
+    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
+    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+}
+
 int main() {
     // test start
     tear_up();
@@ -307,6 +379,7 @@ int main() {
     test_alice_to_bob(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
     test_out_of_order(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
     test_two_ratchets(alice_ratchet_key, bob_ratchet_key, bob_spk, alice_spk, session_id, ad, shared_secret);
+    test_out_of_order_v2(alice_ratchet_key, bob_spk, session_id, ad, shared_secret);
 
     // test stop.
     tear_down();

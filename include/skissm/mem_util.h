@@ -128,6 +128,17 @@ void copy_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src, siz
 void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src);
 
 /**
+ * @brief Copy ProtobufCBinaryData list from src to dest.
+ *
+ * @param dest
+ * @param src
+ * @param protobuf_num
+ */
+void copy_protobuf_list_from_protobuf_list(
+    ProtobufCBinaryData *dest, const ProtobufCBinaryData *src, size_t protobuf_num
+);
+
+/**
  * @brief Copy Skissm__E2eeAddress from src to dest.
  *
  * @param dest
@@ -366,6 +377,14 @@ void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num);
  * @param output
  */
 void free_protobuf(ProtobufCBinaryData *output);
+
+/**
+ * @brief Release memory of ProtobufCBinaryData list.
+ *
+ * @param output
+ * @param protobuf_num
+ */
+void free_protobuf_list(ProtobufCBinaryData **output, size_t protobuf_num);
 
 /**
  * @brief Release a memory block.

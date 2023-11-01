@@ -270,7 +270,7 @@ static bool process_f2f_session(Skissm__Session *f2f_session, Skissm__E2eeMsg *e
         copy_address_from_address(&(f2f_session->session_owner), e2ee_msg->to);
     } else {
         // error
-        ssm_notify_log(f2f_session->from, BAD_MESSAGE_FORMAT, "consume_one2one_msg()");
+        ssm_notify_log(f2f_session->from, BAD_MESSAGE_FORMAT, "process_f2f_session()");
         return false;
     }
     get_skissm_plugin()->db_handler.store_session(f2f_session);

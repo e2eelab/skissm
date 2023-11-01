@@ -138,6 +138,15 @@ void copy_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src, siz
 
 void overwrite_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src) { memcpy(dest->data, src, dest->len); }
 
+void copy_protobuf_list_from_protobuf_list(
+    ProtobufCBinaryData *dest, const ProtobufCBinaryData *src, size_t protobuf_num
+) {
+    size_t i;
+    for (i = 0; i < protobuf_num; i++) {
+        copy_protobuf_from_protobuf(&dest[i], &src[i]);
+    }
+}
+
 ///-----------------copy address-----------------///
 
 void copy_address_from_address(Skissm__E2eeAddress **dest, const Skissm__E2eeAddress *src) {
@@ -249,7 +258,12 @@ void copy_msg_key_from_msg_key(Skissm__MsgKey **dest, Skissm__MsgKey *src) {
 void copy_sender_chain_from_sender_chain(Skissm__SenderChainNode **dest, Skissm__SenderChainNode *src) {
     *dest = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
     skissm__sender_chain_node__init(*dest);
-    copy_protobuf_from_protobuf(&((*dest)->ratchet_key), &(src->ratchet_key));
+    (*dest)->n_ratchet_key = src->n_ratchet_key;
+    (*dest)->ratchet_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * src->n_ratchet_key);
+    size_t i;
+    for (i = 0; i < src->n_ratchet_key; i++) {
+        copy_protobuf_from_protobuf(&((*dest)->ratchet_key[i]), &(src->ratchet_key[i]));
+    }
     copy_chain_key_from_chain_key(&((*dest)->chain_key), src->chain_key);
 }
 
@@ -522,6 +536,15 @@ void free_protobuf(ProtobufCBinaryData *output) {
     }
     output->len = 0;
     output->data = NULL;
+}
+
+void free_protobuf_list(ProtobufCBinaryData **output, size_t protobuf_num) {
+    size_t i;
+    for (i = 0; i < protobuf_num; i++) {
+        free_protobuf(&(*output)[i]);
+    }
+    free(*output);
+    *output = NULL;
 }
 
 void free_mem(void **buffer, size_t buffer_len) {

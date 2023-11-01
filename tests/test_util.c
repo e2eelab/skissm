@@ -269,9 +269,16 @@ bool is_equal_chain(Skissm__ChainKey *chain_key_1, Skissm__ChainKey *chain_key_2
 }
 
 bool is_equal_sender_chain(Skissm__SenderChainNode *sender_chain_1, Skissm__SenderChainNode *sender_chain_2) {
-    if (!is_equal_data(&(sender_chain_1->ratchet_key), &(sender_chain_2->ratchet_key))) {
-        printf("ratchet_key not match");
+    if (sender_chain_1->n_ratchet_key != sender_chain_2->n_ratchet_key) {
+        printf("number of ratchet_key not match");
         return false;
+    }
+    size_t i;
+    for (i = 0; i < sender_chain_1->n_ratchet_key; i++) {
+        if (!is_equal_data(&(sender_chain_1->ratchet_key[i]), &(sender_chain_2->ratchet_key[i]))) {
+            printf("ratchet_key not match");
+            return false;
+        }
     }
     if (is_not_null(sender_chain_1->chain_key, sender_chain_2->chain_key)) {
         if (!is_equal_chain(sender_chain_1->chain_key, sender_chain_2->chain_key)) {
