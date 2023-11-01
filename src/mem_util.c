@@ -472,6 +472,17 @@ void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm_
     }
 }
 
+void copy_leave_group_msg(Skissm__LeaveGroupMsg **dest, Skissm__LeaveGroupMsg *src) {
+    *dest = (Skissm__LeaveGroupMsg *)malloc(sizeof(Skissm__LeaveGroupMsg));
+    skissm__leave_group_msg__init(*dest);
+    if (src != NULL) {
+        if (src->user_address != NULL)
+            copy_address_from_address(&((*dest)->user_address), src->user_address);
+        if (src->group_address != NULL)
+            copy_address_from_address(&((*dest)->group_address), src->group_address);
+    }
+}
+
 ///-----------------add or remove group members-----------------///
 
 void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **adding_members, size_t adding_members_num) {

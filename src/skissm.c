@@ -30,12 +30,22 @@ extern const struct cipher_suite_t E2EE_CIPHER_KYBER_SPHINCSPLUS_SHA256_256S_AES
 extern const struct session_suite_t E2EE_SESSION_ECDH_X25519_AES256_GCM_SHA256;
 extern const struct session_suite_t E2EE_SESSION_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256;
 
-const struct e2ee_pack_t E2EE_PACK_ECDH_X25519_AES256_GCM_SHA256 = {E2EE_PACK_ID_ECC_DEFAULT, &E2EE_CIPHER_ECDH_X25519_AES256_GCM_SHA256, &E2EE_SESSION_ECDH_X25519_AES256_GCM_SHA256};
+const struct e2ee_pack_t E2EE_PACK_ECDH_X25519_AES256_GCM_SHA256 = {
+    E2EE_PACK_ID_ECC_DEFAULT,
+    &E2EE_CIPHER_ECDH_X25519_AES256_GCM_SHA256,
+    &E2EE_SESSION_ECDH_X25519_AES256_GCM_SHA256
+};
 
-const struct e2ee_pack_t E2EE_PACK_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256 = {E2EE_PACK_ID_PQC_DEFAULT, &E2EE_CIPHER_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256,
-                                                                                      &E2EE_SESSION_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256};
+const struct e2ee_pack_t E2EE_PACK_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256 = {
+    E2EE_PACK_ID_PQC_DEFAULT,
+    &E2EE_CIPHER_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256,
+    &E2EE_SESSION_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256
+};
 
-const struct e2ee_pack_list_t E2EE_PACK_LIST = {&E2EE_PACK_ECDH_X25519_AES256_GCM_SHA256, &E2EE_PACK_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256};
+const struct e2ee_pack_list_t E2EE_PACK_LIST = {
+    &E2EE_PACK_ECDH_X25519_AES256_GCM_SHA256,
+    &E2EE_PACK_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256
+};
 
 static skissm_plugin_t *skissm_plugin;
 
@@ -82,12 +92,18 @@ void ssm_notify_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm
         skissm_plugin->event_handler.on_outbound_session_ready(user_address, outbound_session);
 }
 
-void ssm_notify_one2one_msg(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
+void ssm_notify_one2one_msg(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_one2one_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
 }
 
-void ssm_notify_other_device_msg(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
+void ssm_notify_other_device_msg(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_other_device_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
 }
@@ -97,7 +113,10 @@ void ssm_notify_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Ses
         skissm_plugin->event_handler.on_f2f_session_ready(user_address, f2f_session);
 }
 
-void ssm_notify_group_msg(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
+void ssm_notify_group_msg(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_group_msg_received(user_address, from_address, group_address, plaintext, plaintext_len);
 }
@@ -107,14 +126,18 @@ void ssm_notify_group_created(Skissm__E2eeAddress *user_address, Skissm__E2eeAdd
         skissm_plugin->event_handler.on_group_created(user_address, group_address, group_name);
 }
 
-void ssm_notify_group_members_added(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **adding_group_members,
-                                    size_t adding_group_members_num) {
+void ssm_notify_group_members_added(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **adding_group_members, size_t adding_group_members_num
+) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_group_members_added(user_address, group_address, group_name, adding_group_members, adding_group_members_num);
 }
 
-void ssm_notify_group_members_removed(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **removing_group_members,
-                                      size_t removing_group_members_num) {
+void ssm_notify_group_members_removed(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **removing_group_members, size_t removing_group_members_num
+) {
     if (skissm_plugin != NULL)
         skissm_plugin->event_handler.on_group_members_removed(user_address, group_address, group_name, removing_group_members, removing_group_members_num);
 }

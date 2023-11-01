@@ -144,7 +144,11 @@ void crypto_curve25519_signature_generate_key_pair(
         result = crypto_curve25519_verify(signature, pub_key->data, msg, 10);
         if (result != 0) {
             // verify failed, regenerate the key pair
-            ssm_notify_log(NULL, BAD_SIGN_KEY, "crypto_curve25519_signature_generate_key_pair() verify failed, regenerate the key pair.");
+            ssm_notify_log(
+                NULL,
+                BAD_SIGN_KEY,
+                "crypto_curve25519_signature_generate_key_pair() verify failed, regenerate the key pair."
+            );
         } else {
             // success
             break;

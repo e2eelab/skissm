@@ -13,29 +13,41 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
     uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len
 ) {
     // to_device_id can be null
-    Skissm__GetPreKeyBundleRequest *request = produce_get_pre_key_bundle_request(to_user_id, to_domain, to_device_id);
-    Skissm__GetPreKeyBundleResponse *response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(from, auth, request);
+    Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = produce_get_pre_key_bundle_request(to_user_id, to_domain, to_device_id);
+    Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(from, auth, get_pre_key_bundle_request);
+
+    // does not invite, if the get_pre_key_bundle_response code is no content
+    if (get_pre_key_bundle_response != NULL 
+        && get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+        ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() got no content response, skip.");
+        // release
+        skissm__get_pre_key_bundle_request__free_unpacked(get_pre_key_bundle_request, NULL);
+        // skip invite
+        return NULL;
+    }
+
     Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
-        from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, response
+        from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
     );
 
-    if (invite_response == NULL || invite_response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request witll be stored.");
-        // pack request to request_data which will be freed inside store_pending_request_internal
-        size_t request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(request);
-        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        skissm__get_pre_key_bundle_request__pack(request, request_data);
+    // does not keep pending request, if the invite_response code is no content
+    if (invite_response == NULL || invite_response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+        ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request will be stored.");
+        // pack request to get_pre_key_bundle_request_data which will be freed inside store_pending_request_internal
+        size_t get_pre_key_bundle_request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(get_pre_key_bundle_request);
+        uint8_t *get_pre_key_bundle_request_data = (uint8_t *)malloc(sizeof(uint8_t) * get_pre_key_bundle_request_data_len);
+        skissm__get_pre_key_bundle_request__pack(get_pre_key_bundle_request, get_pre_key_bundle_request_data);
 
-        store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__GET_PRE_KEY_BUNDLE_REQUEST, request_data, request_data_len, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
+        store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__GET_PRE_KEY_BUNDLE_REQUEST, get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
 
         // release
-        free_mem((void *)&request_data, request_data_len);
+        free_mem((void *)&get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len);
     }
 
     // release
-    skissm__get_pre_key_bundle_request__free_unpacked(request, NULL);
-    if (response != NULL)
-        skissm__get_pre_key_bundle_response__free_unpacked(response, NULL);
+    skissm__get_pre_key_bundle_request__free_unpacked(get_pre_key_bundle_request, NULL);
+    if (get_pre_key_bundle_response != NULL)
+        skissm__get_pre_key_bundle_response__free_unpacked(get_pre_key_bundle_response, NULL);
 
     // done
     return invite_response;
@@ -55,7 +67,7 @@ Skissm__InviteResponse *invite_internal(
 
     Skissm__InviteRequest *request = produce_invite_request(outbound_session);
     Skissm__InviteResponse *response = get_skissm_plugin()->proto_handler.invite(user_address, auth, request);
-    bool succ = consume_invite_response(response);
+    bool succ = consume_invite_response(user_address, response);
     if (!succ) {
         // pack reuest to request_data
         size_t request_data_len = skissm__invite_request__get_packed_size(request);
@@ -93,7 +105,7 @@ Skissm__AcceptResponse *accept_internal(
 
     Skissm__AcceptRequest *request = produce_accept_request(e2ee_pack_id, from, to, ciphertext_1);
     Skissm__AcceptResponse *response = get_skissm_plugin()->proto_handler.accept(from, auth, request);
-    bool succ = consume_accept_response(response);
+    bool succ = consume_accept_response(from, response);
     if (!succ) {
         // pack reuest to request_data
         size_t request_data_len = skissm__accept_request__get_packed_size(request);
@@ -341,6 +353,12 @@ static void resend_pending_request(Skissm__Account *account) {
     size_t i;
     for (i = 0; i < pending_request_data_num; i++) {
         Skissm__PendingRequest *pending_request = skissm__pending_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
+        ssm_notify_log(
+            user_address,
+            DEBUG_LOG,
+            "resend_pending_request() request_type: %d",
+            request_type_list[i]
+        );
         switch (request_type_list[i]) {
             case SKISSM__PENDING_REQUEST_TYPE__GET_PRE_KEY_BUNDLE_REQUEST: {
                 Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = skissm__get_pre_key_bundle_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
@@ -357,7 +375,11 @@ static void resend_pending_request(Skissm__Account *account) {
                         succ = (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
                         skissm__invite_response__free_unpacked(invite_response, NULL);
                     } else if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
-                        ssm_notify_log(user_address, DEBUG_LOG, "consume_get_pre_key_bundle_response() got empty pre_key_bundles, remove pending request");
+                        ssm_notify_log(
+                            user_address,
+                            DEBUG_LOG,
+                            "consume_get_pre_key_bundle_response() got empty pre_key_bundles, remove pending request"
+                        );
                         succ = true;
                     }
                 }
@@ -372,7 +394,7 @@ static void resend_pending_request(Skissm__Account *account) {
             } case SKISSM__PENDING_REQUEST_TYPE__INVITE_REQUEST: {
                 Skissm__InviteRequest *invite_request = skissm__invite_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__InviteResponse *invite_response = get_skissm_plugin()->proto_handler.invite(user_address, auth, invite_request);
-                succ = consume_invite_response(invite_response);
+                succ = consume_invite_response(user_address, invite_response);
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 } else {
@@ -385,7 +407,7 @@ static void resend_pending_request(Skissm__Account *account) {
             case SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST: {
                 Skissm__AcceptRequest *accept_request = skissm__accept_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__AcceptResponse *accept_response = get_skissm_plugin()->proto_handler.accept(user_address, auth,  accept_request);
-                succ = consume_accept_response(accept_response);
+                succ = consume_accept_response(user_address, accept_response);
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 } else {
@@ -537,6 +559,22 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__remove_group_members_request__free_unpacked(remove_group_members_request, NULL);
                 break;
             }
+            case SKISSM__PENDING_REQUEST_TYPE__LEAVE_GROUP_REQUEST: {
+                Skissm__LeaveGroupRequest *leave_group_request = skissm__leave_group_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
+
+                Skissm__LeaveGroupResponse *leave_group_response = get_skissm_plugin()->proto_handler.leave_group(user_address, auth, leave_group_request);
+                succ = consume_leave_group_response(user_address, leave_group_response);
+                // release
+                skissm__leave_group_response__free_unpacked(leave_group_response, NULL);
+                if (succ) {
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                } else {
+                    ssm_notify_log(user_address, DEBUG_LOG, "handle pending leave_group_request failed");
+                }
+                // release
+                skissm__leave_group_request__free_unpacked(leave_group_request, NULL);
+                break;
+            }
             case SKISSM__PENDING_REQUEST_TYPE__SEND_GROUP_MSG_REQUEST: {
                 Skissm__SendGroupMsgRequest *send_group_msg_request = skissm__send_group_msg_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
 
@@ -573,7 +611,12 @@ static void resend_pending_request(Skissm__Account *account) {
                 break;
             }
             default:
-                ssm_notify_log(user_address, DEBUG_LOG, "resend_pending_request() unknown pending request type: %d, %s", request_type_list[i]);
+                ssm_notify_log(
+                    user_address,
+                    DEBUG_LOG,
+                    "resend_pending_request() unknown pending request type: %d, %s",
+                    request_type_list[i]
+                );
                 break;
         };
         // release

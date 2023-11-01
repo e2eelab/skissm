@@ -1230,6 +1230,94 @@ static void test_pqc_remove_group_members() {
     printf("====================================\n");
 }
 
+static void test_pqc_leave_group() {
+    // test start
+    printf("test_pqc_leave_group begin!!!\n");
+    tear_up();
+    test_begin();
+
+    // prepare account
+    mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
+    mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
+    mock_user_pqc_account("Claire", "claire@domain.com.tw", "345678");
+    mock_user_pqc_account("David", "david@domain.com.tw", "456789");
+
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    char *alice_user_id = alice_address->user->user_id;
+    char *alice_domain = alice_address->domain;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
+    Skissm__E2eeAddress *claire_address = account_data[2]->address;
+    char *claire_user_id = claire_address->user->user_id;
+    char *claire_domain = claire_address->domain;
+    Skissm__E2eeAddress *david_address = account_data[3]->address;
+    char *david_user_id = david_address->user->user_id;
+    char *david_domain = david_address->domain;
+
+    sleep(2);
+    // the first group member is Alice
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 4);
+    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup(alice_user_id);
+    group_members[0]->domain = strdup(alice_domain);
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    // the second group member is Bob
+    group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[1]);
+    group_members[1]->user_id = strdup(bob_user_id);
+    group_members[1]->domain = strdup(bob_domain);
+    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the third group member is Claire
+    group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[2]);
+    group_members[2]->user_id = strdup(claire_user_id);
+    group_members[2]->domain = strdup(claire_domain);
+    group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // the fourth group member is David
+    group_members[3] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[3]);
+    group_members[3]->user_id = strdup(david_user_id);
+    group_members[3]->domain = strdup(david_domain);
+    group_members[3]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    // create the group
+    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 4);
+    Skissm__E2eeAddress *group_address = create_group_response->group_address;
+
+    sleep(5);
+    // Claire leaves the group
+    Skissm__LeaveGroupResponse *leave_group_response = leave_group(claire_address, group_address);
+
+    sleep(4);
+    // Everyone sends a message to the group
+    uint8_t plaintext_1[] = "Alice's message(Claire removed her self).";
+    size_t plaintext_1_len = sizeof(plaintext_1) - 1;
+    test_encryption(alice_address, group_address, plaintext_1, plaintext_1_len);
+
+    uint8_t plaintext_2[] = "Bob's message(Claire removed her self).";
+    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
+    test_encryption(bob_address, group_address, plaintext_2, plaintext_2_len);
+
+    uint8_t plaintext_4[] = "David's message(Claire removed her self).";
+    size_t plaintext_4_len = sizeof(plaintext_4) - 1;
+    test_encryption(david_address, group_address, plaintext_4, plaintext_4_len);
+
+    // release
+    skissm__group_member__free_unpacked(group_members[0], NULL);
+    skissm__group_member__free_unpacked(group_members[1], NULL);
+    skissm__group_member__free_unpacked(group_members[2], NULL);
+    skissm__group_member__free_unpacked(group_members[3], NULL);
+    free(group_members);
+    skissm__create_group_response__free_unpacked(create_group_response, NULL);
+    skissm__leave_group_response__free_unpacked(leave_group_response, NULL);
+
+    // test stop
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
 static void test_pqc_multiple_devices() {
     // test start
     printf("test_pqc_multiple_devices begin!!!\n");
@@ -1665,6 +1753,7 @@ int main() {
     test_pqc_create_group();
     test_pqc_add_group_members();
     test_pqc_remove_group_members();
+    test_pqc_leave_group();
     test_pqc_multiple_devices();
     test_pqc_add_new_device();
     test_medium_group();

@@ -194,6 +194,39 @@ bool consume_remove_group_members_msg(
 );
 
 /**
+ * @brief Create a Skissm__LeaveGroupRequest message to be sent to server.
+ * @param user_address
+ * @param group_address
+ * @return Skissm__LeaveGroupRequest*
+ */
+Skissm__LeaveGroupRequest *produce_leave_group_request(
+    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *group_address
+);
+
+/**
+ * @brief Process an incoming Skissm__LeaveGroupResponse message.
+ * @param user_address
+ * @param response
+ * @return true for success
+ */
+bool consume_leave_group_response(
+    Skissm__E2eeAddress *user_address,
+    Skissm__LeaveGroupResponse *response
+);
+
+/**
+ * @brief Process an incoming Skissm__LeaveGroupMsg message.
+ * @param receiver_address
+ * @param msg
+ * @return true for success
+ */
+bool consume_leave_group_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__LeaveGroupMsg *msg
+);
+
+/**
  * @brief Create a SendGroupMsgRequest message to be sent to server.
  * @param group_session
  * @param notif_level

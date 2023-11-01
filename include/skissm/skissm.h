@@ -64,6 +64,9 @@
 #include "skissm/InviteRequest.pb-c.h"
 #include "skissm/InviteResponse.pb-c.h"
 #include "skissm/KeyPair.pb-c.h"
+#include "skissm/LeaveGroupMsg.pb-c.h"
+#include "skissm/LeaveGroupRequest.pb-c.h"
+#include "skissm/LeaveGroupResponse.pb-c.h"
 #include "skissm/MsgKey.pb-c.h"
 #include "skissm/NewUserDeviceMsg.pb-c.h"
 #include "skissm/One2oneMsgPayload.pb-c.h"
@@ -617,6 +620,18 @@ typedef struct e2ee_proto_handler_t {
         Skissm__E2eeAddress *from,
         const char *auth,
         Skissm__RemoveGroupMembersRequest *request
+    );
+    /**
+     * @brief Leave group
+     * @param from
+     * @param auth
+     * @param request
+     * @return response
+     */
+    Skissm__LeaveGroupResponse *(*leave_group)(
+        Skissm__E2eeAddress *from,
+        const char *auth,
+        Skissm__LeaveGroupRequest *request
     );
     /**
      * @brief Send group message

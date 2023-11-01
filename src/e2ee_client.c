@@ -70,7 +70,11 @@ Skissm__InviteResponse *reinvite(Skissm__Session *outbount_session) {
         // check the time we invited last time
         int64_t now = get_skissm_plugin()->common_handler.gen_ts();
         if (now < outbount_session->t_invite + INVITE_WAITING_TIME_MS) {
-            ssm_notify_log(outbount_session->session_owner, DEBUG_LOG, "reinvite(): skipped for not exceed INVITE_WAITING_TIME_MS(60s)");
+            ssm_notify_log(
+                outbount_session->session_owner,
+                DEBUG_LOG,
+                "reinvite(): skipped for not exceed INVITE_WAITING_TIME_MS(60s)"
+            );
             return NULL;
         }
 
@@ -81,7 +85,15 @@ Skissm__InviteResponse *reinvite(Skissm__Session *outbount_session) {
 
         if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             // keep outbound session to enable retry
-            ssm_notify_log(outbount_session->session_owner, DEBUG_LOG, "reinvite(): from [%s:%s] to[%s:%s] failed need another try", outbount_session->from->user->user_id, outbount_session->from->user->device_id, outbount_session->to->user->user_id, outbount_session->to->user->device_id);
+            ssm_notify_log(
+                outbount_session->session_owner,
+                DEBUG_LOG,
+                "reinvite(): from [%s:%s] to[%s:%s] failed need another try",
+                outbount_session->from->user->user_id,
+                outbount_session->from->user->device_id,
+                outbount_session->to->user->user_id,
+                outbount_session->to->user->device_id
+            );
         }
     }
 
@@ -101,13 +113,13 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
     // we should always call get_pre_key_bundle_internal() since there may have new devices for to_user_id@to_domain
     // not just check outbound sessions in db currently.
 
-    Skissm__InviteResponse *response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
+    Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
 
     // release
     free(auth);
 
     // done
-    return response;
+    return invite_response;
 }
 
 Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
@@ -119,15 +131,15 @@ Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_use
         return NULL;
     }
 
-    Skissm__InviteResponse *response = NULL;
-    response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
+    Skissm__InviteResponse *invite_response = NULL;
+    invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
 
     // release
     free(auth);
 
     // done
-    // response can be Null
-    return response;
+    // response can be NULL
+    return invite_response;
 }
 
 size_t f2f_invite(
@@ -272,7 +284,12 @@ static void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_da
     size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, &self_outbound_sessions);
 
     if (self_outbound_sessions_num > 0) {
-        ssm_notify_log(from, DEBUG_LOG, "send_sync_msg(): self_outbound_sessions_num = %lu", self_outbound_sessions_num);
+        ssm_notify_log(
+            from,
+            DEBUG_LOG,
+            "send_sync_msg(): self_outbound_sessions_num = %lu",
+            self_outbound_sessions_num
+        );
         // pack syncing plaintext before sending it
         uint8_t *common_plaintext_data = NULL;
         size_t common_plaintext_data_len;
@@ -298,7 +315,14 @@ static void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_da
                     // release
                     skissm__send_one2one_msg_response__free_unpacked(sync_response, NULL);
                 } else {
-                    ssm_notify_log(from, DEBUG_LOG, "send_sync_msg(): outbound session[%s] (user_id:deviceid = %s, %s) not responded, store common_plaintext_data", self_outbound_session->session_id, self_outbound_session->to->user->user_id, self_outbound_session->to->user->device_id);
+                    ssm_notify_log(
+                        from,
+                        DEBUG_LOG,
+                        "send_sync_msg(): outbound session[%s] (user_id:deviceid = %s, %s) not responded, store common_plaintext_data",
+                        self_outbound_session->session_id,
+                        self_outbound_session->to->user->user_id,
+                        self_outbound_session->to->user->device_id
+                    );
                     // store pending common_plaintext_data
                     store_pending_common_plaintext_data(
                         self_outbound_session->from,
@@ -336,7 +360,12 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
     if (outbound_sessions_num == 0 || outbound_sessions == NULL) {
         // save common_plaintext_data and will be resent after the first outbound session established
-        ssm_notify_log(from, DEBUG_LOG, "send_one2one_msg(): outbound_sessions_num = %lu, store common_plaintext_data", outbound_sessions_num);
+        ssm_notify_log(
+            from,
+            DEBUG_LOG,
+            "send_one2one_msg(): outbound_sessions_num = %lu, store common_plaintext_data",
+            outbound_sessions_num
+        );
         Skissm__E2eeAddress *to = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
         skissm__e2ee_address__init(to);
         to->domain = strdup(to_domain);
@@ -423,7 +452,12 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
 
         Skissm__Session *outbound_session = outbound_sessions[i];
         if (outbound_session->responded == false) {
-            ssm_notify_log(from, DEBUG_LOG, "send_one2one_msg(): outbound session[%s] not responded, outbound_sessions_num = %lu, store common_plaintext_data", outbound_session->session_id);
+            ssm_notify_log(
+                from,
+                DEBUG_LOG,
+                "send_one2one_msg(): outbound session[%s] not responded, outbound_sessions_num = %lu, store common_plaintext_data",
+                outbound_session->session_id
+            );
             // store pending common_plaintext_data
             store_pending_common_plaintext_data(
                 outbound_session->from,
@@ -586,6 +620,41 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     return response;
 }
 
+Skissm__LeaveGroupResponse *leave_group(
+    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *group_address
+) {
+    char *auth = NULL;
+    get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
+
+    if (auth == NULL) {
+        ssm_notify_log(user_address, BAD_ACCOUNT, "leave_group()");
+        return NULL;
+    }
+
+    // send message to server
+    Skissm__LeaveGroupRequest *request = produce_leave_group_request(user_address, group_address);
+    Skissm__LeaveGroupResponse *response = get_skissm_plugin()->proto_handler.leave_group(user_address, auth, request);
+    bool succ = consume_leave_group_response(user_address, response);
+    if (!succ) {
+        // pack reuest to request_data
+        size_t request_data_len = skissm__leave_group_request__get_packed_size(request);
+        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+        skissm__leave_group_request__pack(request, request_data);
+
+        store_pending_request_internal(user_address, SKISSM__PENDING_REQUEST_TYPE__LEAVE_GROUP_REQUEST, request_data, request_data_len, NULL, 0);
+        // release
+        free_mem((void *)&request_data, request_data_len);
+    }
+
+    // release
+    free(auth);
+    skissm__leave_group_request__free_unpacked(request, NULL);
+
+    // done
+    return response;
+}
+
 Skissm__SendGroupMsgResponse *send_group_msg(
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
@@ -700,6 +769,9 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_GROUP_MEMBERS_MSG:
             consumed = consume_remove_group_members_msg(receiver_address, proto_msg->remove_group_members_msg);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_LEAVE_GROUP_MSG:
+            consumed = consume_leave_group_msg(receiver_address, proto_msg->leave_group_msg);
             break;
         default:
             // consume the message that is arriving here

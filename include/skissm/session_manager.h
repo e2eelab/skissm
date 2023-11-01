@@ -45,14 +45,14 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(
  * @param from
  * @param group_pre_key_plaintext_data
  * @param group_pre_key_plaintext_data_len
- * @param response
+ * @param get_pre_key_bundle_response
  * @return Skissm__InviteResponse *
  */
 Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     Skissm__E2eeAddress *from,
     uint8_t *group_pre_key_plaintext_data,
     size_t group_pre_key_plaintext_data_len,
-    Skissm__GetPreKeyBundleResponse *response
+    Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response
 );
 /**
  * @brief Create a send_one2one_msg_request to be sent to messaging server.
@@ -121,11 +121,12 @@ Skissm__InviteRequest *produce_invite_request(
 /**
  * @brief Process an incoming InviteResponse message.
  *
+ * @param user_address
  * @param response
  * @return true
  * @return false
  */
-bool consume_invite_response(Skissm__InviteResponse *response);
+bool consume_invite_response(Skissm__E2eeAddress *user_address, Skissm__InviteResponse *response);
 
 /**
  * @brief Process an incoming Skissm__InviteMsg message.
@@ -159,11 +160,12 @@ Skissm__AcceptRequest *produce_accept_request(
 /**
  * @brief Process an incoming AcceptResponse message.
  *
+ * @param user_address
  * @param response
  * @return true
  * @return false
  */
-bool consume_accept_response(Skissm__AcceptResponse *response);
+bool consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response);
 
 /**
  * @brief Process an incoming AcceptMsg message.

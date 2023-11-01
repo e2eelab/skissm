@@ -94,7 +94,12 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                 Skissm__E2eeAddress *to_address = (response->other_user_addresses)[i];
                 // skip the same user device
                 if (safe_strcmp(account->address->user->device_id, to_address->user->device_id)) {
-                    ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response(): skip invite the same user device: %s", to_address->user->device_id);
+                    ssm_notify_log(
+                        account->address,
+                        DEBUG_LOG,
+                        "consume_register_response(): skip invite the same user device: %s",
+                        to_address->user->device_id
+                    );
                     continue;
                 }
 
