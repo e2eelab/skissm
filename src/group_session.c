@@ -413,7 +413,7 @@ void new_outbound_group_session_by_sender(
             if (invite_response != NULL) {
                 skissm__invite_response__free_unpacked(invite_response, NULL);
             } else {
-                // TODO, what?
+                // nothing to do
             }
         }
     }

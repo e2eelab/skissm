@@ -555,6 +555,7 @@ bool consume_remove_group_members_response(
             return true;
         } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
             // member is not existed, just skip it
+            // should we remove the group member device ?
             return true;
         }
     }
@@ -841,7 +842,9 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     );
     if (succ < 0){
         ssm_notify_log(inbound_group_session->session_owner, BAD_SIGNATURE, "consume_group_msg()");
+        // release
         skissm__group_session__free_unpacked(inbound_group_session, NULL);
+        free_mem((void **)&identity_public_key, sign_key_len);
         return false;
     }
 
@@ -879,7 +882,6 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
 
     // release
     skissm__group_session__free_unpacked(inbound_group_session, NULL);
-    // group_msg_payload is within e2ee_msg
     free_mem((void **)&identity_public_key, sign_key_len);
     skissm__msg_key__free_unpacked(msg_key, NULL);
 
