@@ -75,7 +75,7 @@ add_subdirectory(${kyber_DIR} ${EXTERNAL_LIB_DIR}/kyber)
 add_subdirectory(${mbedcrypto_DIR} ${EXTERNAL_LIB_DIR}/mbedcrypto)
 add_subdirectory(${sphincsplus_DIR} ${EXTERNAL_LIB_DIR}/sphincsplus)
 if(SKISSM_BUILD_PROTOBUF)
-  add_subdirectory(${protobuf_DIR}/cmake)
+  add_subdirectory(${protobuf_DIR})
 endif()
 
 # Patch Protobuf-c bug https://github.com/protobuf-c/protobuf-c/pull/482
