@@ -397,7 +397,10 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
             Skissm__Session *outbound_session = outbound_sessions[i];
             Skissm__SenderChainNode *cur_sender_chain = outbound_session->ratchet->sender_chain;
             // outbound_session may haven't been responded
-            if (cur_sender_chain && cur_sender_chain->n_ratchet_key == 8 && cur_sender_chain->chain_key->index >= 1000) {
+            if (cur_sender_chain
+                && cur_sender_chain->n_ratchet_key == MAX_RECEIVER_CHAIN_NODES
+                && cur_sender_chain->chain_key->index >= MAX_CHAIN_INDEX
+            ) {
                 rebuild = true;
                 break;
             }

@@ -139,7 +139,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     );
 
     Skissm__InviteResponse *invite_response = NULL;
-    if ( get_pre_key_bundle_response == NULL ) {
+    if (get_pre_key_bundle_response == NULL) {
         ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() got error getPreKeyBundleResponse");
     } else {
         if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {

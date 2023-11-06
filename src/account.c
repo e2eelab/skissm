@@ -176,35 +176,52 @@ size_t generate_signed_pre_key(Skissm__Account *account) {
 
     // initialize
     account->signed_pre_key = (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
-    skissm__signed_pre_key__init(account->signed_pre_key);
+    Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;
+    skissm__signed_pre_key__init(signed_pre_key);
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(account->e2ee_pack_id)->cipher_suite;
 
     // generate a signed pre-key pair
-    account->signed_pre_key->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-    skissm__key_pair__init(account->signed_pre_key->key_pair);
-    cipher_suite->asym_key_gen(&(account->signed_pre_key->key_pair->public_key), &(account->signed_pre_key->key_pair->private_key));
-    account->signed_pre_key->spk_id = next_signed_pre_key_id;
+    signed_pre_key->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
+    Skissm__KeyPair *key_pair = signed_pre_key->key_pair;
+    skissm__key_pair__init(key_pair);
+    cipher_suite->asym_key_gen(&(key_pair->public_key), &(key_pair->private_key));
+    signed_pre_key->spk_id = next_signed_pre_key_id;
 
     // generate a signature
     int pub_key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
     int sig_len = cipher_suite->get_crypto_param().sig_len;
-    account->signed_pre_key->signature.data = (uint8_t *)malloc(sig_len);
-    account->signed_pre_key->signature.len = sig_len;
-    cipher_suite->sign(account->identity_key->sign_key_pair->private_key.data, account->signed_pre_key->key_pair->public_key.data, pub_key_len, account->signed_pre_key->signature.data);
+    signed_pre_key->signature.data = (uint8_t *)malloc(sig_len);
+    signed_pre_key->signature.len = sig_len;
+    cipher_suite->sign(
+        account->identity_key->sign_key_pair->private_key.data,
+        key_pair->public_key.data, pub_key_len,
+        signed_pre_key->signature.data
+    );
 
     int64_t now = get_skissm_plugin()->common_handler.gen_ts();
-    account->signed_pre_key->ttl = now + SIGNED_PRE_KEY_EXPIRATION_MS;
+    signed_pre_key->ttl = now + SIGNED_PRE_KEY_EXPIRATION_MS;
 
     return 0;
 }
 
 const Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__Account *account, uint32_t one_time_pre_key_id) {
     Skissm__OneTimePreKey **cur = account->one_time_pre_keys;
+    if (cur == NULL) {
+        // there is no one-tme pre-keys in the account
+        ssm_notify_log(account->address, BAD_ONE_TIME_PRE_KEY, "lookup_one_time_pre_key() opk not found");
+        return NULL;
+    }
+
     size_t i;
     for (i = 0; i < account->n_one_time_pre_keys; i++) {
-        if (cur[i]->opk_id == one_time_pre_key_id) {
-            return cur[i];
+        if (cur[i] != NULL) {
+            if (cur[i]->opk_id == one_time_pre_key_id) {
+                return cur[i];
+            }
+        } else {
+            ssm_notify_log(account->address, BAD_ONE_TIME_PRE_KEY, "lookup_one_time_pre_key() the number of opks does not match");
+            break;
         }
     }
     return NULL;
@@ -213,40 +230,73 @@ const Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__Account *account, u
 Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *account) {
     // generate a number of one-time pre-key pairs
 
-    Skissm__OneTimePreKey **inserted_one_time_pre_key_list_node;
+    Skissm__OneTimePreKey **inserted_one_time_pre_key_list_node = NULL;
+
+    bool succ = true;
 
     if (account->one_time_pre_keys == NULL) {
+        // there is no one-tme pre-keys in the account
         inserted_one_time_pre_key_list_node = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * number_of_keys);
         account->one_time_pre_keys = inserted_one_time_pre_key_list_node;
         account->n_one_time_pre_keys = number_of_keys;
     } else {
-        size_t n = account->n_one_time_pre_keys;
-        account->n_one_time_pre_keys = n + number_of_keys;
-        Skissm__OneTimePreKey **temp_one_time_pre_keys;
-        temp_one_time_pre_keys = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * account->n_one_time_pre_keys);
+        // there are several one-time pre-keys in the account
+        size_t old_opk_num = account->n_one_time_pre_keys;
+        size_t new_opk_num = old_opk_num + number_of_keys;
+        Skissm__OneTimePreKey **temp_one_time_pre_keys = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * new_opk_num);
+        Skissm__OneTimePreKey *cur_one_time_pre_key = NULL;
+        Skissm__KeyPair *temp_key_pair = NULL;
+
         size_t i;
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < old_opk_num; i++) {
             temp_one_time_pre_keys[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
             skissm__one_time_pre_key__init(temp_one_time_pre_keys[i]);
-            temp_one_time_pre_keys[i]->opk_id = account->one_time_pre_keys[i]->opk_id;
-            temp_one_time_pre_keys[i]->used = account->one_time_pre_keys[i]->used;
+
+            cur_one_time_pre_key = account->one_time_pre_keys[i];
+            if (cur_one_time_pre_key == NULL) {
+                ssm_notify_log(account->address, BAD_ONE_TIME_PRE_KEY, "generate_opks() the number of opks does not match");
+                succ = false;
+                break;
+            }
+            temp_one_time_pre_keys[i]->opk_id = cur_one_time_pre_key->opk_id;
+            temp_one_time_pre_keys[i]->used = cur_one_time_pre_key->used;
             temp_one_time_pre_keys[i]->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-            skissm__key_pair__init(temp_one_time_pre_keys[i]->key_pair);
-            copy_protobuf_from_protobuf(&(temp_one_time_pre_keys[i]->key_pair->private_key), &(account->one_time_pre_keys[i]->key_pair->private_key));
-            copy_protobuf_from_protobuf(&(temp_one_time_pre_keys[i]->key_pair->public_key), &(account->one_time_pre_keys[i]->key_pair->public_key));
-            skissm__one_time_pre_key__free_unpacked(account->one_time_pre_keys[i], NULL);
-            account->one_time_pre_keys[i] = NULL;
+            temp_key_pair = temp_one_time_pre_keys[i]->key_pair;
+            skissm__key_pair__init(temp_key_pair);
+            copy_protobuf_from_protobuf(&(temp_key_pair->private_key), &(cur_one_time_pre_key->key_pair->private_key));
+            copy_protobuf_from_protobuf(&(temp_key_pair->public_key), &(cur_one_time_pre_key->key_pair->public_key));
+
+            // release the old data
+            skissm__one_time_pre_key__free_unpacked(cur_one_time_pre_key, NULL);
+            cur_one_time_pre_key = NULL;
         }
-        free(account->one_time_pre_keys);
-        account->one_time_pre_keys = temp_one_time_pre_keys;
-        inserted_one_time_pre_key_list_node = &((account->one_time_pre_keys)[n]);
+
+        if (succ) {
+            // release the old memory
+            free_mem((void **)&(account->one_time_pre_keys), sizeof(Skissm__OneTimePreKey *) * old_opk_num);
+            // insert the new data
+            account->one_time_pre_keys = temp_one_time_pre_keys;
+            account->n_one_time_pre_keys = new_opk_num;
+            inserted_one_time_pre_key_list_node = &((account->one_time_pre_keys)[old_opk_num]);
+        } else {
+            // release
+            for (i = 0; i < new_opk_num; i++) {
+                skissm__one_time_pre_key__free_unpacked(temp_one_time_pre_keys[i], NULL);
+                temp_one_time_pre_keys[i] = NULL;
+            }
+            free_mem((void **)&temp_one_time_pre_keys, sizeof(Skissm__OneTimePreKey *) * new_opk_num);
+        }
+    }
+
+    if (succ == false) {
+        // there is some error in the account
+        return NULL;
     }
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(account->e2ee_pack_id)->cipher_suite;
     size_t i;
     for (i = 0; i < number_of_keys; i++) {
-        Skissm__OneTimePreKey *node;
-        node = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
+        Skissm__OneTimePreKey *node = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
         skissm__one_time_pre_key__init(node);
         node->opk_id = (account->next_one_time_pre_key_id)++;
         node->used = false;
@@ -261,11 +311,22 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *ac
 
 int mark_opk_as_used(Skissm__Account *account, uint32_t id) {
     Skissm__OneTimePreKey **cur = account->one_time_pre_keys;
+    if (cur == NULL) {
+        // there is no one-tme pre-keys in the account
+        ssm_notify_log(account->address, BAD_ONE_TIME_PRE_KEY, "mark_opk_as_used() opk not found");
+        return -1;
+    }
+
     size_t i;
     for (i = 0; i < account->n_one_time_pre_keys; i++) {
-        if (cur[i]->opk_id == id) {
-            cur[i]->used = true;
-            return cur[i]->opk_id;
+        if (cur[i] != NULL) {
+            if (cur[i]->opk_id == id) {
+                cur[i]->used = true;
+                return cur[i]->opk_id;
+            }
+        } else {
+            ssm_notify_log(account->address, BAD_ONE_TIME_PRE_KEY, "mark_opk_as_used() the number of opks does not match");
+            break;
         }
     }
 
@@ -298,10 +359,12 @@ void free_one_time_pre_key(Skissm__Account *account) {
                 if (account->one_time_pre_keys[i]->used == true) {
                     used_num++;
                 } else {
+                    // we use the one-time pre-keys from ahead
                     break;
                 }
             }
         }
+        // we release the "used" one-time pre-keys if there are many
         if (used_num >= 60) {
             new_num = account->n_one_time_pre_keys - used_num;
             Skissm__OneTimePreKey **new_one_time_pre_keys;

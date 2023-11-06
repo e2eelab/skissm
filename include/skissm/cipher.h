@@ -28,6 +28,9 @@ extern "C" {
 
 #include "skissm/skissm.h"
 
+#define MAX_RECEIVER_CHAIN_NODES 8
+#define MAX_CHAIN_INDEX 1024
+
 /**
  * The context strings that are used by the HKDF
  * for deriving next root key and chain key.

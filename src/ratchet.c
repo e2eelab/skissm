@@ -26,9 +26,7 @@
 
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
-static const size_t MAX_RECEIVER_CHAIN_NODES = 8;
 static const size_t MAX_SKIPPED_MESSAGE_KEY_NODES = 8192;
-static const size_t MAX_CHAIN_INDEX = 1024;
 
 static void copy_receiver_chain_node(
     Skissm__ReceiverChainNode **dest,
