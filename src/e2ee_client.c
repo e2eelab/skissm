@@ -34,6 +34,7 @@
 Skissm__RegisterUserResponse *register_user(
     const char *e2ee_pack_id,
     const char *user_name,
+    const char *user_id,
     const char *device_id,
     const char *authenticator,
     const char *auth_code
@@ -43,6 +44,7 @@ Skissm__RegisterUserResponse *register_user(
     // register account to server
     Skissm__RegisterUserRequest *request = produce_register_request(account);
     request->user_name = strdup(user_name);
+    request->user_id = strdup(user_id);
     request->device_id = strdup(device_id);
     request->authenticator = strdup(authenticator);
     request->auth_code = strdup(auth_code);

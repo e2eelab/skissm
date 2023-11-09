@@ -261,6 +261,7 @@ static void mock_alice_account(const char *user_name) {
         register_user(
             e2ee_pack_id,
             user_name,
+            user_name,
             device_id,
             authenticator,
             auth_code
@@ -281,6 +282,7 @@ static void mock_bob_account(const char *user_name) {
     Skissm__RegisterUserResponse *response =
         register_user(
             e2ee_pack_id,
+            user_name,
             user_name,
             device_id,
             authenticator,
@@ -303,6 +305,7 @@ static void mock_claire_account(const char *user_name) {
         register_user(
             e2ee_pack_id,
             user_name,
+            user_name,
             device_id,
             authenticator,
             auth_code
@@ -323,6 +326,7 @@ static void mock_alice_pqc_account(const char *user_name) {
     Skissm__RegisterUserResponse *response =
         register_user(
             e2ee_pack_id,
+            user_name,
             user_name,
             device_id,
             authenticator,
@@ -345,6 +349,7 @@ static void mock_bob_pqc_account(const char *user_name) {
         register_user(
             e2ee_pack_id,
             user_name,
+            user_name,
             device_id,
             authenticator,
             auth_code
@@ -365,6 +370,7 @@ static void mock_claire_pqc_account(const char *user_name) {
     Skissm__RegisterUserResponse *response =
         register_user(
             e2ee_pack_id,
+            user_name,
             user_name,
             device_id,
             authenticator,

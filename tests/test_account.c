@@ -155,6 +155,7 @@ static void create_accounts_test(uint64_t num) {
 void register_user_test() {
     const char *e2ee_pack_id = "0";
     const char *user_name = "alice";
+    const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
@@ -162,6 +163,7 @@ void register_user_test() {
         register_user(
             e2ee_pack_id,
             user_name,
+            user_id,
             device_id,
             authenticator,
             auth_code
@@ -173,6 +175,7 @@ void register_user_test() {
 void publish_spk_test() {
     const char *e2ee_pack_id = "0";
     const char *user_name = "alice";
+    const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
@@ -180,6 +183,7 @@ void publish_spk_test() {
         register_user(
             e2ee_pack_id,
             user_name,
+            user_id,
             device_id,
             authenticator,
             auth_code
@@ -220,6 +224,7 @@ Skissm__ProtoMsg *mock_supply_opks_msg(Skissm__E2eeAddress *user_address, uint32
 void supply_opks_test() {
     const char *e2ee_pack_id = "0";
     const char *user_name = "alice";
+    const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
@@ -227,6 +232,7 @@ void supply_opks_test() {
         register_user(
             e2ee_pack_id,
             user_name,
+            user_id,
             device_id,
             authenticator,
             auth_code
