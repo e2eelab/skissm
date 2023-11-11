@@ -388,7 +388,7 @@ static void mock_user_pqc_account(const char *user_name, const char *authenticat
     const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
     char *device_id = generate_uuid_str();
     Skissm__RegisterUserResponse *response = register_user(
-        e2ee_pack_id, user_name, device_id, authenticator, auth_code
+        e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
     );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
