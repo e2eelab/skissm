@@ -143,7 +143,7 @@ static void load_accounts_test(uint64_t num) {
     free_mem((void **)(&accounts_data), accounts_num * sizeof(uint8_t *));
 }
 
-static void create_accounts_test(uint64_t num) {
+static void test_create_accounts(uint64_t num) {
     uint64_t i;
     for (i = 1; i <= num; i++) {
         create_account_test();
@@ -152,7 +152,8 @@ static void create_accounts_test(uint64_t num) {
     load_accounts_test(num);
 }
 
-void register_user_test() {
+static void test_register_user() {
+    printf("====== test_register_user ======\n");
     const char *e2ee_pack_id = "0";
     const char *user_name = "alice";
     const char *user_id = "alice";
@@ -170,9 +171,13 @@ void register_user_test() {
         );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
+
+    // release
+    skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-void publish_spk_test() {
+static void test_publish_spk() {
+    printf("====== test_publish_spk ======\n");
     const char *e2ee_pack_id = "0";
     const char *user_name = "alice";
     const char *user_id = "alice";
@@ -221,7 +226,8 @@ Skissm__ProtoMsg *mock_supply_opks_msg(Skissm__E2eeAddress *user_address, uint32
     return proto_msg;
 }
 
-void supply_opks_test() {
+static void test_supply_opks() {
+    printf("====== test_supply_opks ======\n");
     const char *e2ee_pack_id = "0";
     const char *user_name = "alice";
     const char *user_id = "alice";
@@ -257,9 +263,48 @@ void supply_opks_test() {
     assert(account_new->n_one_time_pre_keys == (100 + supply_opks_num));
 
     // release
+    skissm__register_user_response__free_unpacked(response, NULL);
     skissm__account__free_unpacked(account, NULL);
     skissm__account__free_unpacked(account_new, NULL);
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
+}
+
+static void test_free_opks() {
+    printf("====== test_free_opks ======\n");
+    const char *e2ee_pack_id = "0";
+    const char *user_name = "alice";
+    const char *user_id = "alice";
+    const char *device_id = generate_uuid_str();
+    const char *authenticator = "email";
+    const char *auth_code = "123456";
+    Skissm__RegisterUserResponse *response =
+        register_user(
+            e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
+        );
+
+    // load account
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account);
+
+    size_t used_opks = 80;
+    size_t i;
+    for (i = 0; i < used_opks; i++) {
+        account->one_time_pre_keys[i]->used = true;
+    }
+    free_one_time_pre_key(account);
+    // store
+    get_skissm_plugin()->db_handler.store_account(account);
+
+    // load account
+    Skissm__Account *account_new = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account_new);
+    assert(account_new->n_one_time_pre_keys == (100 - used_opks));
+    assert(account_new->one_time_pre_keys[100 - used_opks] == NULL);
+
+    // release
+    skissm__register_user_response__free_unpacked(response, NULL);
+    skissm__account__free_unpacked(account, NULL);
+    skissm__account__free_unpacked(account_new, NULL);
 }
 
 int main(){
@@ -267,12 +312,13 @@ int main(){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    create_accounts_test(8);
-    register_user_test();
-    publish_spk_test();
-    supply_opks_test();
+    test_create_accounts(8);
+    test_register_user();
+    test_publish_spk();
+    test_supply_opks();
+    test_free_opks();
 
-    // test stop.
+    // test stop
     tear_down();
     return 0;
 }

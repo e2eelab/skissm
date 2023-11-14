@@ -67,11 +67,13 @@ static void free_receiver_chain(
     size_t num
 ) {
     size_t i;
-    for (i = 0; i < num; i++){
-        skissm__receiver_chain_node__free_unpacked((*src)[i], NULL);
-        (*src)[i] = NULL;
+    for (i = 0; i < num; i++) {
+        if ((*src)[i] != NULL) {
+            skissm__receiver_chain_node__free_unpacked((*src)[i], NULL);
+            (*src)[i] = NULL;
+        }
     }
-    free(*src);
+    free_mem((void **)src, sizeof(Skissm__ReceiverChainNode *) * num);
     *src = NULL;
 }
 
@@ -80,11 +82,13 @@ static void free_skipped_message_key(
     size_t num
 ) {
     size_t i;
-    for (i = 0; i < num; i++){
-        skissm__skipped_msg_key_node__free_unpacked((*src)[i], NULL);
-        (*src)[i] = NULL;
+    for (i = 0; i < num; i++) {
+        if ((*src)[i] != NULL) {
+            skissm__skipped_msg_key_node__free_unpacked((*src)[i], NULL);
+            (*src)[i] = NULL;
+        }
     }
-    free(*src);
+    free_mem((void **)src, sizeof(Skissm__SkippedMsgKeyNode *) * num);
     *src = NULL;
 }
 

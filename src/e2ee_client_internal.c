@@ -83,7 +83,7 @@ Skissm__InviteResponse *invite_internal(
         store_pending_request_internal(
             outbound_session->from, SKISSM__PENDING_REQUEST_TYPE__INVITE_REQUEST, request_data, request_data_len, NULL, 0
         );
-        //release
+        // release
         free_mem((void *)&request_data, request_data_len);
     }
 
@@ -121,9 +121,10 @@ Skissm__AcceptResponse *accept_internal(
         skissm__accept_request__pack(request, request_data);
         
         store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST, request_data, request_data_len, NULL, 0);
-        //release
+        // release
         free_mem((void *)&request_data, request_data_len);
     }
+
     // release
     free(auth);
     skissm__accept_request__free_unpacked(request, NULL);
@@ -149,7 +150,17 @@ Skissm__F2fInviteResponse *f2f_invite_internal(
 
     Skissm__F2fInviteRequest *request = produce_f2f_invite_request(from, to, e2ee_pack_id, secret, secret_len);
     Skissm__F2fInviteResponse *response = get_skissm_plugin()->proto_handler.f2f_invite(from, auth, request);
-    consume_f2f_invite_response(request, response);
+    bool succ = consume_f2f_invite_response(request, response);
+    // if (!succ) {
+    //     // pack reuest to request_data
+    //     size_t request_data_len = skissm__f2f_invite_request__get_packed_size(request);
+    //     uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+    //     skissm__f2f_invite_request__pack(request, request_data);
+        
+    //     store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST, request_data, request_data_len, NULL, 0);
+    //     // release
+    //     free_mem((void *)&request_data, request_data_len);
+    // }
 
     // release
     free(auth);
@@ -177,7 +188,17 @@ Skissm__F2fAcceptResponse *f2f_accept_internal(
 
     Skissm__F2fAcceptRequest *request = produce_f2f_accept_request(e2ee_pack_id, from, to, local_account);
     Skissm__F2fAcceptResponse *response = get_skissm_plugin()->proto_handler.f2f_accept(from, auth, request);
-    consume_f2f_accept_response(response);
+    bool succ = consume_f2f_accept_response(response);
+    // if (!succ) {
+    //     // pack reuest to request_data
+    //     size_t request_data_len = skissm__f2f_accept_request__get_packed_size(request);
+    //     uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+    //     skissm__f2f_accept_request__pack(request, request_data);
+        
+    //     store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST, request_data, request_data_len, NULL, 0);
+    //     // release
+    //     free_mem((void *)&request_data, request_data_len);
+    // }
 
     // release
     free(auth);
