@@ -367,7 +367,7 @@ void free_one_time_pre_key(Skissm__Account *account) {
         // we release the "used" one-time pre-keys if there are many
         if (used_num >= 60) {
             new_num = account->n_one_time_pre_keys - used_num;
-            Skissm__OneTimePreKey **new_one_time_pre_keys;
+            Skissm__OneTimePreKey **new_one_time_pre_keys = NULL;
             if (new_num > 0) {
                 new_one_time_pre_keys = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * new_num);
                 Skissm__OneTimePreKey **temp = &(account->one_time_pre_keys[used_num]);
@@ -382,6 +382,7 @@ void free_one_time_pre_key(Skissm__Account *account) {
             if (new_num > 0) {
                 account->one_time_pre_keys = new_one_time_pre_keys;
             }
+            account->n_one_time_pre_keys = new_num;
         }
     }
 }

@@ -389,14 +389,16 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
         copy_opk_public_from_opk_public(&(cur_data->one_time_pre_keys[i]), request->one_time_pre_keys[i]);
     }
 
-    // generate a random address
-    mock_random_user_address(&(cur_data->address));
-    free(cur_data->address->user->device_id);
-    cur_data->address->user->device_id = strdup(request->device_id);
-    if (client_data != NULL) {
-        free(cur_data->address->user->user_id);
-        cur_data->address->user->user_id = strdup(client_data->address->user->user_id);
-    }
+    // copy address
+    cur_data->address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
+    Skissm__E2eeAddress *cur_address = cur_data->address;
+    skissm__e2ee_address__init(cur_address);
+    cur_address->domain = mock_domain_str();
+    cur_address->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
+    skissm__peer_user__init(cur_address->user);
+    cur_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
+    cur_address->user->user_id = strdup(request->user_id);
+    cur_address->user->device_id = strdup(request->device_id);
 
     user_data_set_insert_pos++;
 

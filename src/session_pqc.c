@@ -34,21 +34,25 @@
 Skissm__InviteResponse *pqc_new_outbound_session(
     Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle
 ) {
+    Skissm__IdentityKeyPublic *their_ik = their_pre_key_bundle->identity_key_public;
+    Skissm__SignedPreKeyPublic *their_spk = their_pre_key_bundle->signed_pre_key_public;
+    Skissm__OneTimePreKeyPublic *their_opk = their_pre_key_bundle->one_time_pre_key_public;
+
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
     int key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
     // verify the signature
     int result;
-    if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len)
-        || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len)
-        || (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)
+    if ((their_ik->asym_public_key.len != key_len)
+        || (their_spk->public_key.len != key_len)
+        || (their_spk->signature.len != cipher_suite->get_crypto_param().sig_len)
     ) {
         ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
         return NULL;
     }
     result = cipher_suite->verify(
-        their_pre_key_bundle->signed_pre_key_public->signature.data,
-        their_pre_key_bundle->identity_key_public->sign_public_key.data,
-        their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len
+        their_spk->signature.data,
+        their_ik->sign_public_key.data,
+        their_spk->public_key.data, key_len
     );
     if (result < 0) {
         ssm_notify_log(outbound_session->session_owner, BAD_SIGNATURE, "pqc_new_outbound_session()");
@@ -66,13 +70,13 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     uint8_t x3dh_epoch = 2;
     outbound_session->responded = false;
     copy_protobuf_from_protobuf(&(outbound_session->alice_identity_key), &(my_identity_key_pair.public_key));
-    copy_protobuf_from_protobuf(&(outbound_session->bob_signed_pre_key), &(their_pre_key_bundle->signed_pre_key_public->public_key));
-    outbound_session->bob_signed_pre_key_id = their_pre_key_bundle->signed_pre_key_public->spk_id;
+    copy_protobuf_from_protobuf(&(outbound_session->bob_signed_pre_key), &(their_spk->public_key));
+    outbound_session->bob_signed_pre_key_id = their_spk->spk_id;
 
     // server may return empty one-time pre-key(public)
-    if (their_pre_key_bundle->one_time_pre_key_public) {
-        copy_protobuf_from_protobuf(&(outbound_session->bob_one_time_pre_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key));
-        outbound_session->bob_one_time_pre_key_id = their_pre_key_bundle->one_time_pre_key_public->opk_id;
+    if (their_opk) {
+        copy_protobuf_from_protobuf(&(outbound_session->bob_one_time_pre_key), &(their_opk->public_key));
+        outbound_session->bob_one_time_pre_key_id = their_opk->opk_id;
         x3dh_epoch = 3;
     }
 
@@ -80,7 +84,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     outbound_session->associated_data.len = ad_len;
     outbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
     memcpy(outbound_session->associated_data.data, my_identity_key_pair.public_key.data, key_len);
-    memcpy((outbound_session->associated_data.data) + key_len, their_pre_key_bundle->identity_key_public->asym_public_key.data, key_len);
+    memcpy((outbound_session->associated_data.data) + key_len, their_ik->asym_public_key.data, key_len);
 
     // calculate the shared secret S via encapsulation
     uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY_LEN];
@@ -93,14 +97,14 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     uint32_t ciphertext_len = cipher_suite->get_crypto_param().kem_ciphertext_len;
 
     ciphertext_2->len = ciphertext_len;
-    ciphertext_2->data = cipher_suite->ss_key_gen(NULL, &(their_pre_key_bundle->identity_key_public->asym_public_key), pos);
+    ciphertext_2->data = cipher_suite->ss_key_gen(NULL, &(their_ik->asym_public_key), pos);
     pos += CRYPTO_BYTES_KEY_LEN;
     ciphertext_3->len = ciphertext_len;
-    ciphertext_3->data = cipher_suite->ss_key_gen(NULL, &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
+    ciphertext_3->data = cipher_suite->ss_key_gen(NULL, &(their_spk->public_key), pos);
     if (x3dh_epoch == 3) {
         pos += CRYPTO_BYTES_KEY_LEN;
         ciphertext_4->len = ciphertext_len;
-        ciphertext_4->data = cipher_suite->ss_key_gen(NULL, &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
+        ciphertext_4->data = cipher_suite->ss_key_gen(NULL, &(their_opk->public_key), pos);
     } else{
         ciphertext_4->len = 0;
     }
@@ -150,12 +154,15 @@ Skissm__InviteResponse *pqc_new_outbound_session(
 }
 
 int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *local_account, Skissm__InviteMsg *msg) {
+    Skissm__IdentityKey *our_ik = local_account->identity_key;
+    Skissm__SignedPreKey *our_spk = local_account->signed_pre_key;
+
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
 
     // verify the signed pre-key
     bool old_spk = 0;
     Skissm__SignedPreKey *old_spk_data = NULL;
-    if (local_account->signed_pre_key->spk_id != msg->bob_signed_pre_key_id) {
+    if (our_spk->spk_id != msg->bob_signed_pre_key_id) {
         get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->address, msg->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
             ssm_notify_log(NULL, BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
@@ -169,7 +176,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
     copy_protobuf_from_protobuf(&(inbound_session->alice_identity_key), &(msg->alice_identity_key));
     inbound_session->bob_signed_pre_key_id = msg->bob_signed_pre_key_id;
     if (old_spk == 0) {
-        copy_protobuf_from_protobuf(&(inbound_session->bob_signed_pre_key), &(local_account->signed_pre_key->key_pair->public_key));
+        copy_protobuf_from_protobuf(&(inbound_session->bob_signed_pre_key), &(our_spk->key_pair->public_key));
     } else {
         copy_protobuf_from_protobuf(&(inbound_session->bob_signed_pre_key), &(old_spk_data->key_pair->public_key));
     }
@@ -182,7 +189,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
     inbound_session->associated_data.len = ad_len;
     inbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
     memcpy(inbound_session->associated_data.data, msg->alice_identity_key.data, key_len);
-    memcpy((inbound_session->associated_data.data) + key_len, local_account->identity_key->asym_key_pair->public_key.data, key_len);
+    memcpy((inbound_session->associated_data.data) + key_len, our_ik->asym_key_pair->public_key.data, key_len);
 
     // mark the one-time pre-key as used
     const Skissm__OneTimePreKey *our_one_time_pre_key;
@@ -202,10 +209,10 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
         our_one_time_pre_key = NULL;
     }
 
-    const Skissm__KeyPair *bob_identity_key = local_account->identity_key->asym_key_pair;
+    const Skissm__KeyPair *bob_identity_key = our_ik->asym_key_pair;
     const Skissm__KeyPair *bob_signed_pre_key;
     if (old_spk == 0) {
-        bob_signed_pre_key = local_account->signed_pre_key->key_pair;
+        bob_signed_pre_key = our_spk->key_pair;
     } else {
         bob_signed_pre_key = old_spk_data->key_pair;
     }
