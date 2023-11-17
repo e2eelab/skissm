@@ -5,7 +5,7 @@
 [submodule "lib/protobuf"]
 	path = lib/protobuf
 	url = https://github.com/protocolbuffers/protobuf.git
-    tag = v24.3
+    tag = v3.19.2
 [submodule "lib/kyber/src"]
 	path = lib/kyber/src
 	url = https://github.com/pq-crystals/kyber.git

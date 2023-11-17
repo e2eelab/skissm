@@ -27,8 +27,8 @@ cmake_policy(SET CMP0009 NEW)
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(CMAKE_POLICY_DEFAULT_CMP0079 NEW)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD 17)
 
 include(GNUInstallDirs)
 
@@ -75,7 +75,7 @@ add_subdirectory(${kyber_DIR} ${EXTERNAL_LIB_DIR}/kyber)
 add_subdirectory(${mbedcrypto_DIR} ${EXTERNAL_LIB_DIR}/mbedcrypto)
 add_subdirectory(${sphincsplus_DIR} ${EXTERNAL_LIB_DIR}/sphincsplus)
 if(SKISSM_BUILD_PROTOBUF)
-  add_subdirectory(${protobuf_DIR})
+  add_subdirectory(${protobuf_DIR}/cmake)
 endif()
 
 # Patch Protobuf-c bug https://github.com/protobuf-c/protobuf-c/pull/482
