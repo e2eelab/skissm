@@ -119,6 +119,7 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     // prepare the pre_shared_keys
     outbound_session->n_pre_shared_keys = 1;
     outbound_session->pre_shared_keys = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+    init_protobuf(outbound_session->pre_shared_keys);
     copy_protobuf_from_protobuf(outbound_session->pre_shared_keys, &(outbound_session->alice_ephemeral_key));
 
     // store sesson state before send invite

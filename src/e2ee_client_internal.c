@@ -32,8 +32,13 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
         from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
     );
 
-    // does not keep pending request, if the invite_response code is no content
-    if (invite_response == NULL || invite_response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+    if ((invite_response != NULL)
+        && ((invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK)
+            || (invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT)
+        )
+    ) {
+        // we do not store pending request if the invite_response code is no content
+    } else {
         ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request will be stored.");
         // pack request to get_pre_key_bundle_request_data which will be freed inside store_pending_request_internal
         size_t get_pre_key_bundle_request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(get_pre_key_bundle_request);
@@ -151,16 +156,10 @@ Skissm__F2fInviteResponse *f2f_invite_internal(
     Skissm__F2fInviteRequest *request = produce_f2f_invite_request(from, to, e2ee_pack_id, secret, secret_len);
     Skissm__F2fInviteResponse *response = get_skissm_plugin()->proto_handler.f2f_invite(from, auth, request);
     bool succ = consume_f2f_invite_response(request, response);
-    // if (!succ) {
-    //     // pack reuest to request_data
-    //     size_t request_data_len = skissm__f2f_invite_request__get_packed_size(request);
-    //     uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-    //     skissm__f2f_invite_request__pack(request, request_data);
-        
-    //     store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST, request_data, request_data_len, NULL, 0);
-    //     // release
-    //     free_mem((void *)&request_data, request_data_len);
-    // }
+    if (!succ) {
+        // we do not store pending request here
+        ssm_notify_log(from, DEBUG_LOG, "f2f_invite_internal() failed, do it on next start");
+    }
 
     // release
     free(auth);
@@ -189,16 +188,10 @@ Skissm__F2fAcceptResponse *f2f_accept_internal(
     Skissm__F2fAcceptRequest *request = produce_f2f_accept_request(e2ee_pack_id, from, to, local_account);
     Skissm__F2fAcceptResponse *response = get_skissm_plugin()->proto_handler.f2f_accept(from, auth, request);
     bool succ = consume_f2f_accept_response(response);
-    // if (!succ) {
-    //     // pack reuest to request_data
-    //     size_t request_data_len = skissm__f2f_accept_request__get_packed_size(request);
-    //     uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-    //     skissm__f2f_accept_request__pack(request, request_data);
-        
-    //     store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST, request_data, request_data_len, NULL, 0);
-    //     // release
-    //     free_mem((void *)&request_data, request_data_len);
-    // }
+    if (!succ) {
+        // we do not store pending request here
+        ssm_notify_log(from, DEBUG_LOG, "f2f_accept_internal() failed, do it on next start");
+    }
 
     // release
     free(auth);
@@ -215,8 +208,7 @@ Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
     Skissm__PublishSpkResponse *response = get_skissm_plugin()->proto_handler.publish_spk(account->address, account->auth, request);
     bool succ = consume_publish_spk_response(account, response);
     if (!succ) {
-        // skip store pending request
-        // pack reuest to request_data
+        // we do not store pending request here
         ssm_notify_log(account->address, DEBUG_LOG, "publish_spk_internal() failed, do it on next start");
     }
 
@@ -339,7 +331,7 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
     skissm__add_group_member_device_request__free_unpacked(request, NULL);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
-    return NULL;
+    return response;
 }
 
 void store_pending_request_internal(
@@ -357,6 +349,7 @@ void store_pending_request_internal(
     if (args_data && args_data_len > 0) {
         pending_request->n_request_args = 1;
         pending_request->request_args = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+        init_protobuf(pending_request->request_args);
         copy_protobuf_from_array(pending_request->request_args, args_data, args_data_len);
     } else {
         pending_request->n_request_args = 0;

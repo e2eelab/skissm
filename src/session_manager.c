@@ -512,8 +512,24 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
 
                 size_t i;
                 for (i = 0; i < group_address_num; i++) {
-                    // TODO: what if add_group_member_device_internal failed ?
-                    add_group_member_device_internal(receiver_address, group_addresses[i], new_user_address);
+                    Skissm__AddGroupMemberDeviceResponse *add_group_member_device_response = 
+                        add_group_member_device_internal(receiver_address, group_addresses[i], new_user_address);
+
+                    // release
+                    if (add_group_member_device_response != NULL) {
+                        skissm__add_group_member_device_response__free_unpacked(add_group_member_device_response, NULL);
+                        add_group_member_device_response = NULL;
+                    }
+                }
+
+                // release
+                for (i = 0; i < group_address_num; i++) {
+                    skissm__e2ee_address__free_unpacked(group_addresses[i], NULL);
+                    group_addresses[i] = NULL;
+                }
+                if (group_addresses != NULL) {
+                    free_mem((void **)&group_addresses, sizeof(Skissm__E2eeAddress *) * group_address_num);
+                    group_addresses = NULL;
                 }
             }
             succ = true;
@@ -521,7 +537,7 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         // release
         skissm__invite_response__free_unpacked(invite_response, NULL);
     } else {
-        // TODO: what ?
+        // nothing to do???
     }
     
     if (!succ) {
@@ -563,6 +579,7 @@ Skissm__InviteRequest *produce_invite_request(
         msg->pre_shared_keys = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * pre_shared_keys_num);
         size_t i = 0;
         for (i = 0; i < pre_shared_keys_num; i++) {
+            init_protobuf(&(msg->pre_shared_keys[i]));
             copy_protobuf_from_protobuf(&(msg->pre_shared_keys[i]), &(pre_shared_keys[i]));
         }
     }
@@ -673,6 +690,7 @@ Skissm__AcceptRequest *produce_accept_request(
     } else{
         msg->n_pre_shared_keys = 1;
         msg->pre_shared_keys = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * 1);
+        init_protobuf(msg->pre_shared_keys);
         copy_protobuf_from_protobuf(&(msg->pre_shared_keys[0]), ciphertext_1);
     }
 

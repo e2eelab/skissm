@@ -112,7 +112,7 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
         ssm_notify_log(from, BAD_ACCOUNT, "invite()");
         return NULL;
     }
-    // we should always call get_pre_key_bundle_internal() since there may have new devices for to_user_id@to_domain
+    // we should always call get_pre_key_bundle_internal() since there may be new devices for to_user_id@to_domain
     // not just check outbound sessions in db currently.
 
     Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);

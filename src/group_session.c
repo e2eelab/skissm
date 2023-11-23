@@ -918,7 +918,7 @@ void renew_outbound_group_session_by_welcome_and_add(
             if (invite_response != NULL) {
                 skissm__invite_response__free_unpacked(invite_response, NULL);
             } else {
-                // TODO, what?
+                // nothing to do
             }
         }
     }
@@ -1131,7 +1131,11 @@ void renew_group_sessions_with_new_device(
             group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
         );
         // release
-        skissm__invite_response__free_unpacked(response, NULL);
+        if (response != NULL) {
+            skissm__invite_response__free_unpacked(response, NULL);
+        } else {
+            // nothing to do
+        }
     }
 
     ProtobufCBinaryData *their_chain_keys = NULL;

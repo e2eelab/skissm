@@ -348,7 +348,6 @@ static void copy_one_time_pre_keys(Skissm__OneTimePreKey **dest, Skissm__OneTime
     }
 }
 
-/* TODO: Need to be checked */
 void free_one_time_pre_key(Skissm__Account *account) {
     size_t used_num = 0;
     size_t new_num;

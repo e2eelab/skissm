@@ -103,6 +103,13 @@ bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *addres
 bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_member_num_1, Skissm__GroupMember **group_members_2, size_t group_member_num_2);
 
 /**
+ * @brief Initialize the ProtobufCBinaryData.
+ *
+ * @param dest
+ */
+void init_protobuf(ProtobufCBinaryData *dest);
+
+/**
  * @brief Copy ProtobufCBinaryData from src to dest.
  *
  * @param dest

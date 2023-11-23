@@ -360,6 +360,7 @@ void initialise_as_bob(
 
     sender_chain->n_ratchet_key = 1;
     sender_chain->ratchet_key = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData));
+    init_protobuf(sender_chain->ratchet_key);
     copy_protobuf_from_protobuf(sender_chain->ratchet_key, &(our_ratchet_key->private_key));
 
     unset(derived_secrets, sizeof(derived_secrets));
@@ -411,6 +412,7 @@ void initialise_as_alice(
 
     // the ratchet_key will be reallocated in the future
     sender_chain->ratchet_key = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData));
+    init_protobuf(sender_chain->ratchet_key);
     sender_chain->n_ratchet_key = 1;
     if (our_ratchet_key == NULL) {
         // PQC mode
@@ -509,6 +511,7 @@ void encrypt_ratchet(
     ProtobufCBinaryData *ratchet_key_list = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * ratchet_key_num);
     size_t i;
     for (i = 0; i < ratchet_key_num; i++) {
+        init_protobuf(&(ratchet_key_list[i]));
         copy_protobuf_from_protobuf(&(ratchet_key_list[i]), &((sender_chain->ratchet_key)[i]));
     }
 

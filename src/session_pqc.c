@@ -122,8 +122,11 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     // prepare the pre_shared_keys
     outbound_session->n_pre_shared_keys = 3;
     outbound_session->pre_shared_keys = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * 3);
+    init_protobuf(&(outbound_session->pre_shared_keys[0]));
     copy_protobuf_from_protobuf(&(outbound_session->pre_shared_keys[0]), ciphertext_2);
+    init_protobuf(&(outbound_session->pre_shared_keys[1]));
     copy_protobuf_from_protobuf(&(outbound_session->pre_shared_keys[1]), ciphertext_3);
+    init_protobuf(&(outbound_session->pre_shared_keys[2]));
     copy_protobuf_from_protobuf(&(outbound_session->pre_shared_keys[2]), ciphertext_4);
 
     // store sesson state before send invite

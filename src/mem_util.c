@@ -122,6 +122,12 @@ bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_me
     return true;
 }
 
+///-----------------init protobuf-----------------///
+void init_protobuf(ProtobufCBinaryData *dest) {
+    dest->data = NULL;
+    dest->len = 0;
+}
+
 ///-----------------copy protobuf-----------------///
 
 void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src) {
@@ -262,6 +268,7 @@ void copy_sender_chain_from_sender_chain(Skissm__SenderChainNode **dest, Skissm_
     (*dest)->ratchet_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * src->n_ratchet_key);
     size_t i;
     for (i = 0; i < src->n_ratchet_key; i++) {
+        init_protobuf(&((*dest)->ratchet_key[i]));
         copy_protobuf_from_protobuf(&((*dest)->ratchet_key[i]), &(src->ratchet_key[i]));
     }
     copy_chain_key_from_chain_key(&((*dest)->chain_key), src->chain_key);
