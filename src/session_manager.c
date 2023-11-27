@@ -264,14 +264,29 @@ bool consume_send_one2one_msg_response(
     Skissm__Session *outbound_session,
     Skissm__SendOne2oneMsgResponse *response
 ) {
-    // store sesson state
-    get_skissm_plugin()->db_handler.store_session(outbound_session);
-
-    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        return true;
+    bool succ = false;
+    bool remove_session = false;
+    if (response != NULL) {
+        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            succ = true;
+        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+            // user device is removed, we remove outbound_sessions
+            remove_session = true;
+            succ = true;
+        } else {
+            succ = false;
+        }
     } else {
-        return false;
+        succ = false;
     }
+    // store sesson state
+    if (remove_session) {
+        get_skissm_plugin()->db_handler.unload_session(outbound_session->session_owner, outbound_session->from, outbound_session->to);
+    } else {
+        get_skissm_plugin()->db_handler.store_session(outbound_session);
+    }
+    // done
+    return succ;
 }
 
 static bool process_f2f_session(Skissm__Session *f2f_session, Skissm__E2eeMsg *e2ee_msg) {
@@ -701,9 +716,9 @@ Skissm__AcceptRequest *produce_accept_request(
 
 bool consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response) {
     if (response != NULL) {
+        ssm_notify_log(user_address, DEBUG_LOG, "consume_accept_response() response code: %d", response->code);
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
             || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
-            ssm_notify_log(user_address, DEBUG_LOG, "consume_accept_response() response code: %d", response->code);
             return true;
         }
     }
@@ -711,7 +726,11 @@ bool consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptRe
 }
 
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *msg) {
-    // ssm_notify_log(receiver_address, DEBUG_LOG, "consume_accept_msg(): from [%s:%s], to [%s:%s]", msg->to->user->user_id, msg->to->user->device_id, msg->from->user->user_id, msg->from->user->device_id);
+    ssm_notify_log(receiver_address, DEBUG_LOG, "consume_accept_msg(): from [%s:%s], to [%s:%s]", 
+        msg->from->user->user_id,
+        msg->from->user->device_id,
+        msg->to->user->user_id,
+        msg->to->user->device_id);
 
     if (!compare_address(receiver_address, msg->to)) {
         ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_accept_msg()");
@@ -726,10 +745,10 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
             receiver_address,
             BAD_MESSAGE_FORMAT,
             "consume_accept_msg() from [], to []: can't load outbount session and make it a complete and responded session.",
-            msg->to->user->user_id,
-            msg->to->user->device_id,
             msg->from->user->user_id,
-            msg->from->user->device_id);
+            msg->from->user->device_id,
+            msg->to->user->user_id,
+            msg->to->user->device_id);
         return false;
     }
     const session_suite_t *session_suite = get_e2ee_pack(msg->e2ee_pack_id)->session_suite;

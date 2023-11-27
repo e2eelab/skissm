@@ -68,11 +68,16 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
         // save to db
         get_skissm_plugin()->db_handler.store_account(account);
         ssm_notify_user_registered(account);
+
         // create outbound sessions to other devices
         if (response->n_other_device_addresses > 0) {
             size_t i;
             for (i = 0; i < response->n_other_device_addresses; i++) {
                 Skissm__E2eeAddress *other_device_address = (response->other_device_addresses)[i];
+                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_device_addresses %d of %d: address [%s:%s]",
+                    i+1, response->n_other_device_addresses,
+                    other_device_address->user->user_id,
+                    other_device_address->user->device_id);
                 Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(account->address,
                     account->auth,
                     other_device_address->user->user_id,
@@ -92,6 +97,10 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
             size_t i;
             for (i = 0; i < response->n_other_user_addresses; i++) {
                 Skissm__E2eeAddress *to_address = (response->other_user_addresses)[i];
+                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_user_addresses %d of %d: address [%s:%s]",
+                    i+1, response->n_other_user_addresses,
+                    to_address->user->user_id,
+                    to_address->user->device_id);
                 // skip the same user device
                 if (safe_strcmp(account->address->user->device_id, to_address->user->device_id)) {
                     ssm_notify_log(

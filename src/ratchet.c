@@ -586,7 +586,9 @@ size_t decrypt_ratchet(
 
     uint32_t our_root_sequence = ratchet->root_sequence;
     if (cur) {
+        ssm_notify_log(NULL, DEBUG_LOG, "decrypt_ratchet() coming_root_sequence: %d, our_root_sequence: %d", coming_root_sequence, our_root_sequence);
         if (coming_root_sequence <= our_root_sequence) {
+                    ssm_notify_log(NULL, DEBUG_LOG, "decrypt_ratchet() in_ratchet_key_len: %d, ratchet_key_len: %d", payload->ratchet_key[coming_root_sequence - 1].len, ratchet_key_len);
             if ((payload->ratchet_key[coming_root_sequence - 1].len == ratchet_key_len)
                 && (0 == memcmp(
                         cur[coming_root_sequence - 1]->ratchet_key_public.data,
