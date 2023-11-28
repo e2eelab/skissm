@@ -132,13 +132,13 @@ bool consume_invite_response(Skissm__E2eeAddress *user_address, Skissm__InviteRe
  * @brief Process an incoming Skissm__InviteMsg message.
  *
  * @param receiver_address
- * @param msg
+ * @param invite_msg
  * @return true
  * @return false
  */
 bool consume_invite_msg(
     Skissm__E2eeAddress *receiver_address,
-    Skissm__InviteMsg *msg
+    Skissm__InviteMsg *invite_msg
 );
 
 /**
@@ -171,13 +171,13 @@ bool consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptRe
  * @brief Process an incoming AcceptMsg message.
  *
  * @param receiver_address
- * @param msg
+ * @param accept_msg
  * @return true
  * @return false
  */
 bool consume_accept_msg(
     Skissm__E2eeAddress *receiver_address,
-    Skissm__AcceptMsg *msg
+    Skissm__AcceptMsg *accept_msg
 );
 
 /**
@@ -213,13 +213,13 @@ bool consume_f2f_invite_response(
  * @brief Process an incoming Skissm__F2fInviteMsg message.
  *
  * @param receiver_address
- * @param msg
+ * @param f2f_invite_msg
  * @return true
  * @return false
  */
 bool consume_f2f_invite_msg(
     Skissm__E2eeAddress *receiver_address,
-    Skissm__F2fInviteMsg *msg
+    Skissm__F2fInviteMsg *f2f_invite_msg
 );
 
 /**
@@ -251,13 +251,13 @@ bool consume_f2f_accept_response(Skissm__F2fAcceptResponse *response);
  * @brief Process an incoming Skissm__F2fAcceptMsg message.
  *
  * @param receiver_address
- * @param msg
+ * @param f2f_accept_msg
  * @return true
  * @return false
  */
 bool consume_f2f_accept_msg(
     Skissm__E2eeAddress *receiver_address,
-    Skissm__F2fAcceptMsg *msg
+    Skissm__F2fAcceptMsg *f2f_accept_msg
 );
 
 #ifdef __cplusplus
