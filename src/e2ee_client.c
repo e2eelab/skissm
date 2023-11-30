@@ -448,19 +448,17 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         }
     }
 
-    Skissm__SendOne2oneMsgResponse *response = NULL;
     size_t i;
+    bool succ = false;
     for (i = 0; i < outbound_sessions_num; i++) {
-        // only keep last response
-        if (response != NULL)
-            skissm__send_one2one_msg_response__free_unpacked(response, NULL);
-
         Skissm__Session *outbound_session = outbound_sessions[i];
         if (outbound_session->responded == false) {
             ssm_notify_log(
                 from,
                 DEBUG_LOG,
-                "send_one2one_msg(): outbound session[%s] not responded, outbound_sessions_num = %lu, store common_plaintext_data",
+                "send_one2one_msg(): outbound session %lu of %lu [%s] not responded, store common_plaintext_data",
+                i+1,
+                outbound_sessions_num,
                 outbound_session->session_id
             );
             // store pending common_plaintext_data
@@ -470,21 +468,29 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
                 common_plaintext_data,
                 common_plaintext_data_len
             );
-            // create response
-            response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
-            skissm__send_one2one_msg_response__init(response);
-            response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
             // release
             skissm__session__free_unpacked(outbound_session, NULL);
             continue;
         }
 
         // send message to server
-        response = send_one2one_msg_internal(outbound_session,
+        Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(outbound_session,
             notif_level,
             common_plaintext_data, common_plaintext_data_len);
-
+        ssm_notify_log(
+            from,
+            DEBUG_LOG,
+            "send_one2one_msg(): outbound session %lu of %lu [%s] response code: %d",
+            i+1,
+            outbound_sessions_num,
+            outbound_session->session_id,
+            response->code
+        );
+        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            succ = true;
+        }
         // release
+        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
         skissm__session__free_unpacked(outbound_session, NULL);
     }
 
@@ -496,6 +502,10 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     send_sync_msg(from, plaintext_data, plaintext_data_len);
 
     // done
+    // return ok response if there is at least one session sent successfully
+    Skissm__SendOne2oneMsgResponse *response = (Skissm__SendOne2oneMsgResponse *)malloc(sizeof(Skissm__SendOne2oneMsgResponse));
+    skissm__send_one2one_msg_response__init(response);
+    response->code = (succ ? SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK : SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT);
     return response;
 }
 
