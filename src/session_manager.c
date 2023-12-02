@@ -331,7 +331,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
     Skissm__Session *inbound_session = NULL;
     get_skissm_plugin()->db_handler.load_inbound_session(e2ee_msg->session_id, receiver_address, &inbound_session);
     if (inbound_session == NULL) {
-        ssm_notify_log(receiver_address, BAD_SESSION, "consume_one2one_msg(), no inbound session");
+        ssm_notify_log(receiver_address, BAD_SESSION, "consume_one2one_msg() inbound session not found, just consume it");
         // no inbound session, just consume it
         return true;
     }
@@ -517,57 +517,48 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         new_user_address->user->device_id,
         NULL, 0
     );
-    bool succ = false;
+
     if (invite_response != NULL) {
         if (invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            // if receiver is the inviter, then add the new device into the joined groups
-            if (compare_address(receiver_address, msg->inviter_address)) {
-                Skissm__E2eeAddress **group_addresses = NULL;
-                size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
-
-                size_t i;
-                for (i = 0; i < group_address_num; i++) {
-                    Skissm__AddGroupMemberDeviceResponse *add_group_member_device_response = 
-                        add_group_member_device_internal(receiver_address, group_addresses[i], new_user_address);
-
-                    // release
-                    if (add_group_member_device_response != NULL) {
-                        skissm__add_group_member_device_response__free_unpacked(add_group_member_device_response, NULL);
-                        add_group_member_device_response = NULL;
-                    }
-                }
-
-                // release
-                for (i = 0; i < group_address_num; i++) {
-                    skissm__e2ee_address__free_unpacked(group_addresses[i], NULL);
-                    group_addresses[i] = NULL;
-                }
-                if (group_addresses != NULL) {
-                    free_mem((void **)&group_addresses, sizeof(Skissm__E2eeAddress *) * group_address_num);
-                    group_addresses = NULL;
-                }
-            }
-            succ = true;
         }
         // release
         skissm__invite_response__free_unpacked(invite_response, NULL);
-    } else {
-        // nothing to do???
-    }
-    
-    if (!succ) {
-        ssm_notify_log(
-            receiver_address,
-            DEBUG_LOG,
-            "consume_new_user_device_msg() failed, new user device msg should be processed again"
-        );
     }
 
+    // if receiver is the inviter, then add the new device into the joined groups
+    if (compare_address(receiver_address, msg->inviter_address)) {
+        // load all outbound group addresses
+        Skissm__E2eeAddress **group_addresses = NULL;
+        size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
+
+        size_t i;
+        for (i = 0; i < group_address_num; i++) {
+            Skissm__AddGroupMemberDeviceResponse *add_group_member_device_response = 
+                add_group_member_device_internal(receiver_address, group_addresses[i], new_user_address);
+
+            // release
+            if (add_group_member_device_response != NULL) {
+                skissm__add_group_member_device_response__free_unpacked(add_group_member_device_response, NULL);
+                add_group_member_device_response = NULL;
+            }
+        }
+
+        // release
+        for (i = 0; i < group_address_num; i++) {
+            skissm__e2ee_address__free_unpacked(group_addresses[i], NULL);
+            group_addresses[i] = NULL;
+        }
+        if (group_addresses != NULL) {
+            free_mem((void **)&group_addresses, sizeof(Skissm__E2eeAddress *) * group_address_num);
+            group_addresses = NULL;
+        }
+    }
+    
     // release
     free(auth);
 
     // done
-    return succ;
+    return true;
 }
 
 Skissm__InviteRequest *produce_invite_request(

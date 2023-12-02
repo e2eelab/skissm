@@ -798,9 +798,23 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
     Skissm__ConsumeProtoMsgResponse *response = NULL;
     if (consumed) {
         if (proto_msg->tag != NULL) {
-            response = consume_proto_msg(proto_msg->to, proto_msg->tag->proto_msg_id);
-            if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-                // pack reuest to request_data
+            response = consume_proto_msg(receiver_address, proto_msg->tag->proto_msg_id);
+            bool save_pending_request = false;
+            if (response != NULL) {
+                if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK ||
+                    response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+                    // server consumed
+                } else {
+                    save_pending_request = true;
+                }
+            } else {
+                save_pending_request = true;
+                response = (Skissm__ConsumeProtoMsgResponse *)malloc(sizeof(Skissm__ConsumeProtoMsgResponse));
+                skissm__consume_proto_msg_response__init(response);
+                response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_SERVICE_UNAVAILABLE;
+            }
+            if (save_pending_request) {
+                // pack and save as pending reuest
                 size_t request_data_len = skissm__proto_msg__get_packed_size(proto_msg);
                 uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
                 skissm__proto_msg__pack(proto_msg, request_data);
@@ -815,6 +829,9 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
         }
     } else {
+        ssm_notify_log(receiver_address, DEBUG_LOG, "process_proto_msg() proto_msg is not consumed payload_case: %d, proto_msg_id: %s",
+            proto_msg->payload_case,
+            proto_msg->tag == NULL ? "" : proto_msg->tag->proto_msg_id);
         response = (Skissm__ConsumeProtoMsgResponse *)malloc(sizeof(Skissm__ConsumeProtoMsgResponse));
         skissm__consume_proto_msg_response__init(response);
         response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT;

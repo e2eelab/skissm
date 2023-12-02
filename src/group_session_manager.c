@@ -372,16 +372,25 @@ bool consume_add_group_member_device_response(
     Skissm__AddGroupMemberDeviceResponse *response,
     Skissm__E2eeAddress *new_device_address
 ) {
+    const char *group_name = outbound_group_session->group_info->group_name;
+    Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
+    Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
+
     if (response != NULL) {
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            const char *group_name = outbound_group_session->group_info->group_name;
-            Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
-            Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
-
             Skissm__GroupMemberInfo *adding_member_device_info = response->adding_member_device_info;
             // renew the outbound group session
             renew_group_sessions_with_new_device(
                 outbound_group_session, NULL, session_owner, new_device_address, adding_member_device_info
+            );
+            ssm_notify_log(
+                outbound_group_session->session_owner,
+                DEBUG_LOG,
+                "consume_add_group_member_device_response() success, new_device_address: [%s:%s], group_address:[%s@%s]",
+                new_device_address->user->user_id,
+                new_device_address->user->device_id,
+                group_address->group->group_id,
+                group_address->domain
             );
             // done
             return true;
@@ -389,15 +398,38 @@ bool consume_add_group_member_device_response(
             ssm_notify_log(
                 outbound_group_session->session_owner,
                 DEBUG_LOG,
-                "consume_add_group_member_device_response(), no content, give up"
+                "consume_add_group_member_device_response() no content, give up: [%s:%s], group_address:[%s@%s]",
+                new_device_address->user->user_id,
+                new_device_address->user->device_id,
+                group_address->group->group_id,
+                group_address->domain
             );
             // give up
             return true;
         } else {
+            ssm_notify_log(
+                outbound_group_session->session_owner,
+                DEBUG_LOG,
+                "consume_add_group_member_device_response() response error, new_device_address: [%s:%s], group_address:[%s@%s]",
+                new_device_address->user->user_id,
+                new_device_address->user->device_id,
+                group_address->group->group_id,
+                group_address->domain
+            );
             // for retry
             return false;
         }
     } else {
+        ssm_notify_log(
+            outbound_group_session->session_owner,
+            DEBUG_LOG,
+            "consume_add_group_member_device_response() no response error, new_device_address: [%s:%s], group_address:[%s@%s]",
+            new_device_address->user->user_id,
+            new_device_address->user->device_id,
+            group_address->group->group_id,
+            group_address->domain
+        );
+        // for retry
         return false;
     }
 }
@@ -821,8 +853,8 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     get_skissm_plugin()->db_handler.load_group_session_by_id(e2ee_msg->from, receiver_address, e2ee_msg->session_id, &inbound_group_session);
 
     if (inbound_group_session == NULL){
-        ssm_notify_log(receiver_address, BAD_MESSAGE_FORMAT, "consume_group_msg()");
-        return false;
+        ssm_notify_log(receiver_address, BAD_GROUP_SESSION, "consume_group_msg() inbound group session not found, just consume it");
+        return true;
     }
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_group_session->e2ee_pack_id)->cipher_suite;
