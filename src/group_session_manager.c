@@ -860,6 +860,11 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_group_session->e2ee_pack_id)->cipher_suite;
     int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
 
+    if (inbound_group_session->associated_data.data == NULL || inbound_group_session->associated_data.len < sign_key_len){
+        ssm_notify_log(receiver_address, BAD_GROUP_SESSION, "consume_group_msg() inbound group session associated_data is null, just consume it");
+        return true;
+    }
+
     // unpack the e2ee message
     Skissm__GroupMsgPayload *group_msg_payload = e2ee_msg->group_msg;
 

@@ -607,19 +607,19 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_devices(
                 Skissm__E2eeAddress *self_device_address = self_outbound_session->to;
                 Skissm__AddGroupMemberDeviceResponse *response = add_group_member_device_internal(
                     sender_address, group_address, self_device_address);
-                ssm_notify_log(
-                    sender_address,
-                    DEBUG_LOG,
-                    "add_group_member_devices() %lu of %lu, send to [%s:%s] responded=%s, add member device response code = %d",
-                    i+1,
-                    self_outbound_sessions_num,
-                    self_device_address->user->user_id,
-                    self_device_address->user->device_id,
-                    self_outbound_session->responded ? "true" : "false",
-                    response->code
-                );
                 // release
                 if (response != NULL) {
+                    ssm_notify_log(
+                        sender_address,
+                        DEBUG_LOG,
+                        "add_group_member_devices() %lu of %lu, send to [%s:%s] responded=%s, add member device response code = %d",
+                        i+1,
+                        self_outbound_sessions_num,
+                        self_device_address->user->user_id,
+                        self_device_address->user->device_id,
+                        self_outbound_session->responded ? "true" : "false",
+                        response->code
+                    );
                     if (response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK &&
                         response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
                         succ = false;
@@ -627,6 +627,16 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_devices(
                     skissm__add_group_member_device_response__free_unpacked(response, NULL);
                     response = NULL;
                 } else {
+                    ssm_notify_log(
+                        sender_address,
+                        DEBUG_LOG,
+                        "add_group_member_devices() %lu of %lu, send to [%s:%s] responded=%s, add member device response is null",
+                        i+1,
+                        self_outbound_sessions_num,
+                        self_device_address->user->user_id,
+                        self_device_address->user->device_id,
+                        self_outbound_session->responded ? "true" : "false"
+                    );
                     succ = false;
                 }
             }
