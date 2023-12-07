@@ -289,7 +289,7 @@ static void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_da
         ssm_notify_log(
             from,
             DEBUG_LOG,
-            "send_sync_msg(): self_outbound_sessions_num = %lu",
+            "send_sync_msg(): self_outbound_sessions_num = %zu",
             self_outbound_sessions_num
         );
         // pack syncing plaintext before sending it
@@ -365,7 +365,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         ssm_notify_log(
             from,
             DEBUG_LOG,
-            "send_one2one_msg(): outbound_sessions_num = %lu, store common_plaintext_data",
+            "send_one2one_msg(): outbound_sessions_num = %zu, store common_plaintext_data",
             outbound_sessions_num
         );
         Skissm__E2eeAddress *to = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
@@ -456,7 +456,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
             ssm_notify_log(
                 from,
                 DEBUG_LOG,
-                "send_one2one_msg(): outbound session %lu of %lu [%s] not responded, store common_plaintext_data",
+                "send_one2one_msg(): outbound session %zu of %zu [%s] not responded, store common_plaintext_data",
                 i+1,
                 outbound_sessions_num,
                 outbound_session->session_id
@@ -480,7 +480,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         ssm_notify_log(
             from,
             DEBUG_LOG,
-            "send_one2one_msg(): outbound session %lu of %lu [%s] response code: %d",
+            "send_one2one_msg(): outbound session %zu of %zu [%s] response code: %d",
             i+1,
             outbound_sessions_num,
             outbound_session->session_id,
@@ -586,77 +586,6 @@ Skissm__AddGroupMembersResponse *add_group_members(
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
 
     // done
-    return response;
-}
-
-Skissm__AddGroupMemberDeviceResponse *add_group_member_devices(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *group_address
-) {
-    // load all other device address
-    Skissm__Session **self_outbound_sessions = NULL;
-    size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(sender_address, sender_address->user->user_id, &self_outbound_sessions);
-
-    bool succ = true; 
-    if (self_outbound_sessions_num > 0) {
-        size_t i;
-        for (i = 0; i < self_outbound_sessions_num; i++) {
-            Skissm__Session *self_outbound_session = self_outbound_sessions[i];
-            // if the device is different from the sender's
-            if (strcmp(self_outbound_session->to->user->device_id, sender_address->user->device_id) != 0) {
-                Skissm__E2eeAddress *self_device_address = self_outbound_session->to;
-                Skissm__AddGroupMemberDeviceResponse *response = add_group_member_device_internal(
-                    sender_address, group_address, self_device_address);
-                // release
-                if (response != NULL) {
-                    ssm_notify_log(
-                        sender_address,
-                        DEBUG_LOG,
-                        "add_group_member_devices() %lu of %lu, send to [%s:%s] responded=%s, add member device response code = %d",
-                        i+1,
-                        self_outbound_sessions_num,
-                        self_device_address->user->user_id,
-                        self_device_address->user->device_id,
-                        self_outbound_session->responded ? "true" : "false",
-                        response->code
-                    );
-                    if (response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK &&
-                        response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
-                        succ = false;
-                    }
-                    skissm__add_group_member_device_response__free_unpacked(response, NULL);
-                    response = NULL;
-                } else {
-                    ssm_notify_log(
-                        sender_address,
-                        DEBUG_LOG,
-                        "add_group_member_devices() %lu of %lu, send to [%s:%s] responded=%s, add member device response is null",
-                        i+1,
-                        self_outbound_sessions_num,
-                        self_device_address->user->user_id,
-                        self_device_address->user->device_id,
-                        self_outbound_session->responded ? "true" : "false"
-                    );
-                    succ = false;
-                }
-            }
-            // release
-            skissm__session__free_unpacked(self_outbound_session, NULL);
-        }
-
-        // release
-        free_mem((void **)&self_outbound_sessions, sizeof(Skissm__Session *) * self_outbound_sessions_num);
-    } else {
-        ssm_notify_log(
-            sender_address,
-            DEBUG_LOG,
-            "add_group_member_devices() no other devices to add.");
-    }
-    // done
-    // return ok response if there is no failed request
-    Skissm__AddGroupMemberDeviceResponse *response = (Skissm__AddGroupMemberDeviceResponse *)malloc(sizeof(Skissm__AddGroupMemberDeviceResponse));
-    skissm__add_group_member_device_response__init(response);
-    response->code = (succ ? SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK : SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT);
     return response;
 }
 

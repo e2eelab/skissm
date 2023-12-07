@@ -972,10 +972,10 @@ void renew_outbound_group_session_by_welcome_and_add(
                 ssm_notify_log(
                     outbound_group_session->session_owner,
                     DEBUG_LOG,
-                    "renew_outbound_group_session_by_welcome_and_add() renew the inbound group sessions: sender_address:[%s:%s], inbound_group_sessions[%d]->sender:[%s:%s]", 
+                    "renew_outbound_group_session_by_welcome_and_add() renew the inbound group sessions: sender_address:[%s:%s], inbound_group_sessions[%zu of %zu]->sender:[%s:%s]", 
                     sender_address->user->user_id,
                     sender_address->user->device_id,
-                    i,
+                    i+1, inbound_group_sessions_num,
                     inbound_group_sessions[i]->sender->user->user_id,
                     inbound_group_sessions[i]->sender->user->device_id
                 );
@@ -1193,10 +1193,10 @@ void renew_group_sessions_with_new_device(
                 ssm_notify_log(
                     outbound_group_session->session_owner,
                     DEBUG_LOG,
-                    "renew_group_sessions_with_new_device() renew the inbound group sessions: sender_address:[%s:%s], inbound_group_sessions[%d of %d]->sender:[%s:%s]", 
+                    "renew_group_sessions_with_new_device() renew the inbound group sessions: sender_address:[%s:%s], inbound_group_sessions[%zu of %zu]->sender:[%s:%s]", 
                     sender_address->user->user_id,
                     sender_address->user->device_id,
-                    i + 1,
+                    i + 1, inbound_group_sessions_num,
                     inbound_group_sessions_num,
                     inbound_group_sessions[i]->sender->user->user_id,
                     inbound_group_sessions[i]->sender->user->device_id

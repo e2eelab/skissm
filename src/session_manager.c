@@ -381,6 +381,13 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     size_t inbound_group_sessions_num = get_skissm_plugin()->db_handler.load_group_sessions(
                         receiver_address, group_pre_key_bundle->group_info->group_address, &inbound_group_sessions
                     );
+                    ssm_notify_log(
+                        receiver_address,
+                        DEBUG_LOG,
+                        "consume_one2one_msg() SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY_BUNDLE : inbound_group_sessions_num: %d, inbound_group_sessions: %p",
+                        inbound_group_sessions_num,
+                        inbound_group_sessions
+                    );
                     if (inbound_group_sessions_num > 0 && inbound_group_sessions != NULL) {
                         size_t i;
                         for (i = 0; i < inbound_group_sessions_num; i++) {

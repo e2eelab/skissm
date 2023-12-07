@@ -124,17 +124,6 @@ Skissm__AddGroupMembersResponse *add_group_members(
 );
 
 /**
- * @brief Add group member devices.
- * @param sender_address
- * @param group_address
- * @return Skissm__AddGroupMemberDeviceResponse *
- */
-Skissm__AddGroupMemberDeviceResponse *add_group_member_devices(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *group_address
-);
-
-/**
  * @brief Remove group members.
  * @param sender_address
  * @param group_address

@@ -74,7 +74,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
             size_t i;
             for (i = 0; i < response->n_other_device_addresses; i++) {
                 Skissm__E2eeAddress *other_device_address = (response->other_device_addresses)[i];
-                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_device_addresses %d of %d: address [%s:%s]",
+                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_device_addresses %zu of %zu: address [%s:%s]",
                     i+1, response->n_other_device_addresses,
                     other_device_address->user->user_id,
                     other_device_address->user->device_id);
@@ -97,7 +97,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
             size_t i;
             for (i = 0; i < response->n_other_user_addresses; i++) {
                 Skissm__E2eeAddress *to_address = (response->other_user_addresses)[i];
-                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_user_addresses %d of %d: address [%s:%s]",
+                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_user_addresses %zu of %zu: address [%s:%s]",
                     i+1, response->n_other_user_addresses,
                     to_address->user->user_id,
                     to_address->user->device_id);
