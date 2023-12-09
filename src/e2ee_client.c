@@ -109,7 +109,11 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
     get_skissm_plugin()->db_handler.load_auth(from, &auth);
 
     if (auth == NULL) {
-        ssm_notify_log(from, BAD_ACCOUNT, "invite()");
+        ssm_notify_log(from, BAD_ACCOUNT, "invite() from [%s:%s] to [%s@%s]",
+            from->user->user_id,
+            from->user->device_id,
+            to_user_id,
+            to_domain);
         return NULL;
     }
     // we should always call get_pre_key_bundle_internal() since there may be new devices for to_user_id@to_domain
@@ -129,7 +133,11 @@ Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_use
     get_skissm_plugin()->db_handler.load_auth(from, &auth);
 
     if (auth == NULL) {
-        ssm_notify_log(from, BAD_ACCOUNT, "invite()");
+        ssm_notify_log(from, BAD_ACCOUNT, "invite() from [%s:%s] to [%s@%s]",
+            from->user->user_id,
+            from->user->device_id,
+            to_user_id,
+            to_domain);
         return NULL;
     }
 
@@ -281,7 +289,7 @@ static void store_pending_common_plaintext_data(
     free(pending_plaintext_id);
 }
 
-static void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, size_t plaintext_data_len) {
+void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, size_t plaintext_data_len) {
     Skissm__Session **self_outbound_sessions = NULL;
     size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, &self_outbound_sessions);
 
