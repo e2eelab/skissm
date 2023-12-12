@@ -53,7 +53,7 @@ Skissm__RegisterUserResponse *register_user(
     Skissm__RegisterUserResponse *response = get_skissm_plugin()->proto_handler.register_user(request);
     bool consumed = consume_register_response(account, response);
     if (consumed) {
-        set_account(account);
+        set_address(account->address);
     } else {
         skissm__account__free_unpacked(account, NULL);
     }

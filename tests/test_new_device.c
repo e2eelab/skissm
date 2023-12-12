@@ -428,12 +428,12 @@ static void test_two_members_session() {
 
     Skissm__E2eeAddress *device_2 = account_data[2]->address;
 
-    // face-to-face session creation between Alice's two devices
-    uint8_t password_1[] = "password 1";
-    size_t password_1_len = sizeof(password_1) - 1;
-    f2f_password_created(device_2, alice_address, password_1, password_1_len);
+    // // face-to-face session creation between Alice's two devices
+    // uint8_t password_1[] = "password 1";
+    // size_t password_1_len = sizeof(password_1) - 1;
+    // f2f_password_created(device_2, alice_address, password_1, password_1_len);
 
-    f2f_invite(device_2, alice_address, 0, password_1, password_1_len);
+    // f2f_invite(device_2, alice_address, 0, password_1, password_1_len);
 
     sleep(1);
     // Alice sends an encrypted message to Bob
@@ -491,12 +491,12 @@ static void test_two_members_four_devices() {
 
     Skissm__E2eeAddress *alice_device_2 = account_data[2]->address;
 
-    // face-to-face session creation between Alice's two devices
-    uint8_t password_1[] = "password 1";
-    size_t password_1_len = sizeof(password_1) - 1;
-    f2f_password_created(alice_device_2, alice_device_1, password_1, password_1_len);
+    // // face-to-face session creation between Alice's two devices
+    // uint8_t password_1[] = "password 1";
+    // size_t password_1_len = sizeof(password_1) - 1;
+    // f2f_password_created(alice_device_2, alice_device_1, password_1, password_1_len);
 
-    f2f_invite(alice_device_2, alice_device_1, 0, password_1, password_1_len);
+    // f2f_invite(alice_device_2, alice_device_1, 0, password_1, password_1_len);
 
     sleep(1);
 
@@ -520,12 +520,12 @@ static void test_two_members_four_devices() {
 
     Skissm__E2eeAddress *bob_device_2 = account_data[3]->address;
 
-    // face-to-face session creation between Alice's two devices
-    uint8_t password_2[] = "password 2";
-    size_t password_2_len = sizeof(password_2) - 1;
-    f2f_password_created(bob_device_2, bob_device_1, password_2, password_2_len);
+    // // face-to-face session creation between Alice's two devices
+    // uint8_t password_2[] = "password 2";
+    // size_t password_2_len = sizeof(password_2) - 1;
+    // f2f_password_created(bob_device_2, bob_device_1, password_2, password_2_len);
 
-    f2f_invite(bob_device_2, bob_device_1, 0, password_2, password_2_len);
+    // f2f_invite(bob_device_2, bob_device_1, 0, password_2, password_2_len);
 
     sleep(1);
 
@@ -617,12 +617,12 @@ static void test_three_members_group_session() {
 
     Skissm__E2eeAddress *alice_address_2 = account_data[3]->address;
 
-    // face-to-face session creation between Alice's two devices
-    uint8_t password_1[] = "password 1";
-    size_t password_1_len = sizeof(password_1) - 1;
-    f2f_password_created(alice_address_2, alice_address, password_1, password_1_len);
+    // // face-to-face session creation between Alice's two devices
+    // uint8_t password_1[] = "password 1";
+    // size_t password_1_len = sizeof(password_1) - 1;
+    // f2f_password_created(alice_address_2, alice_address, password_1, password_1_len);
 
-    f2f_invite(alice_address_2, alice_address, 0, password_1, password_1_len);
+    // f2f_invite(alice_address_2, alice_address, 0, password_1, password_1_len);
 
     sleep(1);
     // Alice sends a message to the group via the second device

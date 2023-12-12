@@ -201,6 +201,10 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
 
         if (!our_one_time_pre_key) {
             ssm_notify_log(NULL, BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
+
+            // release
+            skissm__signed_pre_key__free_unpacked(old_spk_data, NULL);
+
             return -1;
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
@@ -285,7 +289,6 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     cipher_suite->ss_key_gen(&(account->identity_key->asym_key_pair->private_key), &(msg->pre_shared_keys[0]), outbound_session->alice_ephemeral_key.data);
 
     // create the root key and chain keys
-    initialise_ratchet(&(outbound_session->ratchet));
     initialise_as_alice(
         cipher_suite, outbound_session->ratchet,
         outbound_session->alice_ephemeral_key.data, outbound_session->alice_ephemeral_key.len,

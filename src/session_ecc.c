@@ -105,7 +105,6 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     }
 
     // create the root key and chain keys
-    initialise_ratchet(&(outbound_session->ratchet));
     initialise_as_alice(
         cipher_suite, outbound_session->ratchet,
         secret, sizeof(secret),

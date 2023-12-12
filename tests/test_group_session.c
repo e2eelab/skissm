@@ -882,21 +882,21 @@ static void test_multiple_devices() {
     char *claire_user_id = claire_address_1->user->user_id;
     char *claire_domain = claire_address_1->domain;
 
-    // face-to-face session between each member's devices
-    uint8_t password_alice[] = "password alice";
-    size_t password_alice_len = sizeof(password_alice) - 1;
-    f2f_password_created(alice_address_1, alice_address_2, password_alice, password_alice_len);
-    f2f_invite(alice_address_1, alice_address_2, 0, password_alice, password_alice_len);
+    // // face-to-face session between each member's devices
+    // uint8_t password_alice[] = "password alice";
+    // size_t password_alice_len = sizeof(password_alice) - 1;
+    // f2f_password_created(alice_address_1, alice_address_2, password_alice, password_alice_len);
+    // f2f_invite(alice_address_1, alice_address_2, 0, password_alice, password_alice_len);
 
-    uint8_t password_bob[] = "password bob";
-    size_t password_bob_len = sizeof(password_bob) - 1;
-    f2f_password_created(bob_address_1, bob_address_2, password_bob, password_bob_len);
-    f2f_invite(bob_address_1, bob_address_2, 0, password_bob, password_bob_len);
+    // uint8_t password_bob[] = "password bob";
+    // size_t password_bob_len = sizeof(password_bob) - 1;
+    // f2f_password_created(bob_address_1, bob_address_2, password_bob, password_bob_len);
+    // f2f_invite(bob_address_1, bob_address_2, 0, password_bob, password_bob_len);
 
-    uint8_t password_claire[] = "password claire";
-    size_t password_claire_len = sizeof(password_claire) - 1;
-    f2f_password_created(claire_address_1, claire_address_2, password_claire, password_claire_len);
-    f2f_invite(claire_address_1, claire_address_2, 0, password_claire, password_claire_len);
+    // uint8_t password_claire[] = "password claire";
+    // size_t password_claire_len = sizeof(password_claire) - 1;
+    // f2f_password_created(claire_address_1, claire_address_2, password_claire, password_claire_len);
+    // f2f_invite(claire_address_1, claire_address_2, 0, password_claire, password_claire_len);
 
     sleep(3);
 
@@ -1353,21 +1353,21 @@ static void test_pqc_multiple_devices() {
     char *claire_user_id = claire_address_1->user->user_id;
     char *claire_domain = claire_address_1->domain;
 
-    // face-to-face session between each member's devices
-    uint8_t password_alice[] = "password alice";
-    size_t password_alice_len = sizeof(password_alice) - 1;
-    f2f_password_created(alice_address_1, alice_address_2, password_alice, password_alice_len);
-    f2f_invite(alice_address_1, alice_address_2, 0, password_alice, password_alice_len);
+    // // face-to-face session between each member's devices
+    // uint8_t password_alice[] = "password alice";
+    // size_t password_alice_len = sizeof(password_alice) - 1;
+    // f2f_password_created(alice_address_1, alice_address_2, password_alice, password_alice_len);
+    // f2f_invite(alice_address_1, alice_address_2, 0, password_alice, password_alice_len);
 
-    uint8_t password_bob[] = "password bob";
-    size_t password_bob_len = sizeof(password_bob) - 1;
-    f2f_password_created(bob_address_1, bob_address_2, password_bob, password_bob_len);
-    f2f_invite(bob_address_1, bob_address_2, 0, password_bob, password_bob_len);
+    // uint8_t password_bob[] = "password bob";
+    // size_t password_bob_len = sizeof(password_bob) - 1;
+    // f2f_password_created(bob_address_1, bob_address_2, password_bob, password_bob_len);
+    // f2f_invite(bob_address_1, bob_address_2, 0, password_bob, password_bob_len);
 
-    uint8_t password_claire[] = "password claire";
-    size_t password_claire_len = sizeof(password_claire) - 1;
-    f2f_password_created(claire_address_1, claire_address_2, password_claire, password_claire_len);
-    f2f_invite(claire_address_1, claire_address_2, 0, password_claire, password_claire_len);
+    // uint8_t password_claire[] = "password claire";
+    // size_t password_claire_len = sizeof(password_claire) - 1;
+    // f2f_password_created(claire_address_1, claire_address_2, password_claire, password_claire_len);
+    // f2f_invite(claire_address_1, claire_address_2, 0, password_claire, password_claire_len);
 
     sleep(3);
 

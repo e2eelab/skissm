@@ -36,7 +36,7 @@ typedef struct f2f_session_mid{
 } f2f_session_mid;
 
 typedef struct account_context{
-    Skissm__Account *local_account;
+    Skissm__E2eeAddress *local_address;
     f2f_session_mid *f2f_session_mid_list;
     struct account_context *next;
 } account_context;
@@ -62,10 +62,10 @@ Skissm__Account *create_account(const char *e2ee_pack_id);
 account_context *get_account_context(Skissm__E2eeAddress *address);
 
 /**
- * @brief Set current account.
- * @param account
+ * @brief Set current address.
+ * @param address
  */
-void set_account(Skissm__Account *account);
+void set_address(Skissm__E2eeAddress *address);
 
 /**
  * @brief Lookup an one-time pre-key with a given public key

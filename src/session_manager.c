@@ -391,6 +391,10 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     if (inbound_group_sessions_num > 0 && inbound_group_sessions != NULL) {
                         size_t i;
                         for (i = 0; i < inbound_group_sessions_num; i++) {
+                            if (compare_address(receiver_address, inbound_group_sessions[i]->sender)) {
+                                // skip
+                                continue;
+                            }
                             complete_inbound_group_session_by_pre_key_bundle(inbound_group_sessions[i], group_pre_key_bundle);
                             ssm_notify_log(
                                 receiver_address,

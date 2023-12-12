@@ -37,7 +37,7 @@ void account_begin() {
     size_t i;
     for (i = 0; i < account_num; i++) {
         cur_account = accounts[i];
-        set_account(cur_account);
+        set_address(cur_account->address);
 
         // check if the signed pre-key expired
         now = get_skissm_plugin()->common_handler.gen_ts();
@@ -72,9 +72,9 @@ void account_end() {
     while (account_context_list != NULL) {
         temp_account_context = account_context_list;
         account_context_list = account_context_list->next;
-        if (temp_account_context->local_account != NULL) {
-            skissm__account__free_unpacked(temp_account_context->local_account, NULL);
-            temp_account_context->local_account = NULL;
+        if (temp_account_context->local_address != NULL) {
+            skissm__e2ee_address__free_unpacked(temp_account_context->local_address, NULL);
+            temp_account_context->local_address = NULL;
         }
         f2f_session_mid *temp_f2f_session_mid = NULL;
         while (temp_account_context->f2f_session_mid_list != NULL) {
@@ -136,7 +136,7 @@ account_context *get_account_context(Skissm__E2eeAddress *address) {
     if (account_context_list != NULL) {
         account_context *cur_account_context = account_context_list;
         while (cur_account_context != NULL) {
-            if (compare_address(cur_account_context->local_account->address, address)) {
+            if (compare_address(cur_account_context->local_address, address)) {
                 return cur_account_context;
             }
             cur_account_context = cur_account_context->next;
@@ -145,8 +145,8 @@ account_context *get_account_context(Skissm__E2eeAddress *address) {
     return NULL;
 }
 
-void set_account(Skissm__Account *account) {
-    if (account == NULL)
+void set_address(Skissm__E2eeAddress *address) {
+    if (address == NULL)
         return;
     if (account_context_list != NULL) {
         account_context *cur_account_context = account_context_list;
@@ -154,12 +154,12 @@ void set_account(Skissm__Account *account) {
             cur_account_context = cur_account_context->next;
         }
         cur_account_context->next = (account_context *)malloc(sizeof(account_context));
-        copy_account_from_account(&(cur_account_context->next->local_account), account);
+        copy_address_from_address(&(cur_account_context->local_address), address);
         cur_account_context->next->f2f_session_mid_list = NULL;
         cur_account_context->next->next = NULL;
     } else {
         account_context_list = (account_context *)malloc(sizeof(account_context));
-        copy_account_from_account(&(account_context_list->local_account), account);
+        copy_address_from_address(&(account_context_list->local_address), address);
         account_context_list->f2f_session_mid_list = NULL;
         account_context_list->next = NULL;
     }
