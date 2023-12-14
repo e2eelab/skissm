@@ -718,15 +718,20 @@ bool consume_leave_group_response(
     Skissm__E2eeAddress *user_address,
     Skissm__LeaveGroupResponse *response
 ) {
-    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        // unload
-        get_skissm_plugin()->db_handler.unload_group_session_by_address(user_address, response->group_address);
-
-        // done
-        return true;
-    } else {
-        return false;
+    if (response != NULL) {
+        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            ssm_notify_log(user_address, DEBUG_LOG, "consume_leave_group_response() success, unload group session");
+            // unload
+            get_skissm_plugin()->db_handler.unload_group_session_by_address(user_address,response->group_address);
+            return true;
+        }  if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+            ssm_notify_log(user_address, DEBUG_LOG, "consume_leave_group_response() no content, skipped");
+            return true;
+        }
     }
+    ssm_notify_log(user_address, DEBUG_LOG, "consume_leave_group_response() failed, redo later");
+    // done
+    return false;
 }
 
 bool consume_leave_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__LeaveGroupMsg *msg) {
