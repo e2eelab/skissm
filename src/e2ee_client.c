@@ -540,7 +540,7 @@ Skissm__CreateGroupResponse *create_group(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__create_group_request__pack(request, request_data);
         
-        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__CREATE_GROUP_REQUEST, request_data, request_data_len, NULL, 0);
+        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_CREATE_GROUP, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
     }
@@ -583,7 +583,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__add_group_members_request__pack(request, request_data);
 
-        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBERS_REQUEST, request_data, request_data_len, NULL, 0);
+        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
     }
@@ -629,7 +629,7 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__remove_group_members_request__pack(request, request_data);
 
-        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__REMOVE_GROUP_MEMBERS_REQUEST, request_data, request_data_len, NULL, 0);
+        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_REMOVE_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
     }
@@ -665,7 +665,7 @@ Skissm__LeaveGroupResponse *leave_group(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__leave_group_request__pack(request, request_data);
 
-        store_pending_request_internal(user_address, SKISSM__PENDING_REQUEST_TYPE__LEAVE_GROUP_REQUEST, request_data, request_data_len, NULL, 0);
+        store_pending_request_internal(user_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_LEAVE_GROUP, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
     }
@@ -709,7 +709,7 @@ Skissm__SendGroupMsgResponse *send_group_msg(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__send_group_msg_request__pack(request, request_data);
 
-        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__SEND_GROUP_MSG_REQUEST, request_data, request_data_len, NULL, 0);
+        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SEND_GROUP_MSG, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
         skissm__send_group_msg_response__free_unpacked(response, NULL);
@@ -827,7 +827,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
                 uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
                 skissm__proto_msg__pack(proto_msg, request_data);
                 
-                store_pending_request_internal(proto_msg->to, SKISSM__PENDING_REQUEST_TYPE__PROTO_MSG, request_data, request_data_len, NULL, 0);
+                store_pending_request_internal(proto_msg->to, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_PROTO_MSG, request_data, request_data_len, NULL, 0);
                 // release
                 free_mem((void *)&request_data, request_data_len);
             }

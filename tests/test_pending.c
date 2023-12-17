@@ -295,7 +295,7 @@ static void test_pending_request_data() {
     uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
     skissm__accept_request__pack(accept_request, request_data);
 
-    store_pending_request_internal(alice_address, SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST, request_data, request_data_len, NULL, 0);
+    store_pending_request_internal(alice_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ACCEPT, request_data, request_data_len, NULL, 0);
 
     // load
     char **pending_request_id_list;
@@ -311,7 +311,7 @@ static void test_pending_request_data() {
 
     // assert
     assert(pending_request_data_num == 1);
-    assert(request_type_list[0] == SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST);
+    assert(request_type_list[0] == SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ACCEPT);
     assert(pending_request->request_data.len == request_data_len);
     assert(memcmp((void *)(pending_request->request_data.data), (void *)(request_data), request_data_len) == 0);
 

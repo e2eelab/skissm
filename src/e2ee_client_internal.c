@@ -46,7 +46,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
         skissm__get_pre_key_bundle_request__pack(get_pre_key_bundle_request, get_pre_key_bundle_request_data);
 
         store_pending_request_internal(
-            from, SKISSM__PENDING_REQUEST_TYPE__GET_PRE_KEY_BUNDLE_REQUEST,
+            from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_GET_PRE_KEY_BUNDLE,
             get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len,
             group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
         );
@@ -86,7 +86,7 @@ Skissm__InviteResponse *invite_internal(
         skissm__invite_request__pack(request, request_data);
 
         store_pending_request_internal(
-            outbound_session->from, SKISSM__PENDING_REQUEST_TYPE__INVITE_REQUEST, request_data, request_data_len, NULL, 0
+            outbound_session->from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_INVITE, request_data, request_data_len, NULL, 0
         );
         // release
         free_mem((void *)&request_data, request_data_len);
@@ -125,7 +125,7 @@ Skissm__AcceptResponse *accept_internal(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__accept_request__pack(request, request_data);
         
-        store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST, request_data, request_data_len, NULL, 0);
+        store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ACCEPT, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
     }
@@ -230,7 +230,7 @@ Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint3
         skissm__supply_opks_request__pack(request, request_data);
         
         store_pending_request_internal(
-            account->address, SKISSM__PENDING_REQUEST_TYPE__SUPPLY_OPKS_REQUEST, request_data, request_data_len, NULL, 0
+            account->address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SUPPLY_OPKS, request_data, request_data_len, NULL, 0
         );
         //release
         free_mem((void *)&request_data, request_data_len);
@@ -267,7 +267,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
         skissm__send_one2one_msg_request__pack(request, request_data);
 
         store_pending_request_internal(
-            outbound_session->session_owner, SKISSM__PENDING_REQUEST_TYPE__SEND_ONE2ONE_MSG_REQUEST,
+            outbound_session->session_owner, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SEND_ONE2ONE_MSG,
             request_data, request_data_len, NULL, 0
         );
 
@@ -319,7 +319,7 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
         skissm__add_group_member_device_request__pack(request, request_data);
 
         store_pending_request_internal(
-            sender_address, SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBER_DEVICE_REQUEST,
+            sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBER_DEVICE,
             request_data, request_data_len, NULL, 0
         );
         // release
@@ -394,7 +394,7 @@ static void resend_pending_request(Skissm__Account *account) {
             request_type_list[i]
         );
         switch (request_type_list[i]) {
-            case SKISSM__PENDING_REQUEST_TYPE__GET_PRE_KEY_BUNDLE_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_GET_PRE_KEY_BUNDLE: {
                 Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = skissm__get_pre_key_bundle_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(user_address, auth, get_pre_key_bundle_request);
                 // check if pre_key_bundles is empty
@@ -425,7 +425,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__get_pre_key_bundle_request__free_unpacked(get_pre_key_bundle_request, NULL);
                 skissm__get_pre_key_bundle_response__free_unpacked(get_pre_key_bundle_response, NULL);
                 break;
-            } case SKISSM__PENDING_REQUEST_TYPE__INVITE_REQUEST: {
+            } case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_INVITE: {
                 Skissm__InviteRequest *invite_request = skissm__invite_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__InviteResponse *invite_response = get_skissm_plugin()->proto_handler.invite(user_address, auth, invite_request);
                 succ = consume_invite_response(user_address, invite_response);
@@ -438,7 +438,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__invite_response__free_unpacked(invite_response, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__ACCEPT_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ACCEPT: {
                 Skissm__AcceptRequest *accept_request = skissm__accept_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__AcceptResponse *accept_response = get_skissm_plugin()->proto_handler.accept(user_address, auth,  accept_request);
                 succ = consume_accept_response(user_address, accept_response);
@@ -451,7 +451,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__accept_response__free_unpacked(accept_response, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__PUBLISH_SPK_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_PUBLISH_SPK: {
                 Skissm__PublishSpkRequest *publish_spk_request = skissm__publish_spk_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__PublishSpkResponse *publish_spk_response = get_skissm_plugin()->proto_handler.publish_spk(user_address, auth, publish_spk_request);
                 succ = consume_publish_spk_response(account, publish_spk_response);
@@ -464,7 +464,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__publish_spk_response__free_unpacked(publish_spk_response, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__SUPPLY_OPKS_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SUPPLY_OPKS: {
                 Skissm__SupplyOpksRequest *supply_opks_request = skissm__supply_opks_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__SupplyOpksResponse *supply_opks_response = get_skissm_plugin()->proto_handler.supply_opks(user_address, auth,  supply_opks_request);
                 succ = consume_supply_opks_response(account, (uint32_t)supply_opks_request->n_one_time_pre_key_public, supply_opks_response);
@@ -477,7 +477,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__supply_opks_response__free_unpacked(supply_opks_response, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__SEND_ONE2ONE_MSG_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SEND_ONE2ONE_MSG: {
                 Skissm__SendOne2oneMsgRequest *send_one2one_msg_request = skissm__send_one2one_msg_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__SendOne2oneMsgResponse *send_one2one_msg_response = get_skissm_plugin()->proto_handler.send_one2one_msg(user_address, auth, send_one2one_msg_request);
                 if (send_one2one_msg_response != NULL && send_one2one_msg_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
@@ -492,7 +492,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__send_one2one_msg_response__free_unpacked(send_one2one_msg_response, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__CREATE_GROUP_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_CREATE_GROUP: {
                 Skissm__CreateGroupRequest *create_group_request = skissm__create_group_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__CreateGroupResponse *create_group_response = get_skissm_plugin()->proto_handler.create_group(user_address, auth, create_group_request);
                 succ = consume_create_group_response(
@@ -512,7 +512,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__create_group_response__free_unpacked(create_group_response, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBERS_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBERS: {
                 Skissm__AddGroupMembersRequest *add_group_members_request = skissm__add_group_members_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
 
                 Skissm__AddGroupMembersMsg *add_group_members_msg = add_group_members_request->msg;
@@ -544,7 +544,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__add_group_members_request__free_unpacked(add_group_members_request, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__ADD_GROUP_MEMBER_DEVICE_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBER_DEVICE: {
                 Skissm__AddGroupMemberDeviceRequest *add_group_member_device_request = skissm__add_group_member_device_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
 
                 Skissm__GroupSession *outbound_group_session_4 = NULL;
@@ -575,7 +575,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__add_group_member_device_request__free_unpacked(add_group_member_device_request, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__REMOVE_GROUP_MEMBERS_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_REMOVE_GROUP_MEMBERS: {
                 Skissm__RemoveGroupMembersRequest *remove_group_members_request = skissm__remove_group_members_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
 
                 Skissm__RemoveGroupMembersMsg *remove_group_members_msg = remove_group_members_request->msg;
@@ -606,7 +606,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__remove_group_members_request__free_unpacked(remove_group_members_request, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__LEAVE_GROUP_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_LEAVE_GROUP: {
                 Skissm__LeaveGroupRequest *leave_group_request = skissm__leave_group_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
 
                 Skissm__LeaveGroupResponse *leave_group_response = get_skissm_plugin()->proto_handler.leave_group(user_address, auth, leave_group_request);
@@ -622,7 +622,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__leave_group_request__free_unpacked(leave_group_request, NULL);
                 break;
             }
-            case SKISSM__PENDING_REQUEST_TYPE__SEND_GROUP_MSG_REQUEST: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SEND_GROUP_MSG: {
                 Skissm__SendGroupMsgRequest *send_group_msg_request = skissm__send_group_msg_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
 
                 Skissm__GroupSession *outbound_group_session_3 = NULL;
@@ -647,7 +647,7 @@ static void resend_pending_request(Skissm__Account *account) {
                 skissm__send_group_msg_request__free_unpacked(send_group_msg_request, NULL);
                 break;
             } 
-            case SKISSM__PENDING_REQUEST_TYPE__PROTO_MSG: {
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_PROTO_MSG: {
                 Skissm__ProtoMsg *proto_msg = skissm__proto_msg__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = consume_proto_msg(proto_msg->to, proto_msg->tag->proto_msg_id);
                 if (consume_proto_msg_response != NULL || consume_proto_msg_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
