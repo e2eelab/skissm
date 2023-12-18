@@ -772,7 +772,11 @@ bool consume_leave_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Leav
 Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     Skissm__GroupSession *outbound_group_session,
     uint32_t notif_level,
-    const uint8_t *plaintext_data, size_t plaintext_data_len
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    Skissm__E2eeAddress **allow_list,
+    size_t allow_list_len,
+    Skissm__E2eeAddress **deny_list,
+    size_t deny_list_len
 ) {
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->sender, &account);
@@ -817,7 +821,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     );
 
     // signature
-    int sig_len = cipher_suite->get_crypto_param().sig_len;
+    uint32_t sig_len = cipher_suite->get_crypto_param().sig_len;
     group_msg_payload->signature.len = sig_len;
     group_msg_payload->signature.data = (uint8_t *) malloc(sizeof(uint8_t) * sig_len);
     cipher_suite->sign(
@@ -827,6 +831,23 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
         group_msg_payload->signature.data
     );
 
+    // optional allow_list and denny_list
+    size_t i;
+    if (allow_list_len > 0 && allow_list) {
+        request->n_allow_list = allow_list_len;
+        request->allow_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * allow_list_len);
+        for(i = 0; i <allow_list_len; i++) {
+            copy_address_from_address(&((request->allow_list)[i]), allow_list[i]);
+        }
+    }
+    if (deny_list_len > 0 && deny_list) {
+        request->n_deny_list = deny_list_len;
+        request->deny_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * deny_list_len);
+        for(i = 0; i <deny_list_len; i++) {
+            copy_address_from_address(&((request->deny_list)[i]), deny_list[i]);
+        }
+    }
+    
     // release
     skissm__account__free_unpacked(account, NULL);
     skissm__msg_key__free_unpacked(msg_key, NULL);

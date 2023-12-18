@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "skissm/mem_util.h"
 #include "skissm/account.h"
@@ -683,7 +684,8 @@ Skissm__SendGroupMsgResponse *send_group_msg(
     Skissm__E2eeAddress *group_address,
     uint32_t notif_level,
     const uint8_t *plaintext_data,
-    size_t plaintext_data_len
+    size_t plaintext_data_len,
+    ...
 ) {
     char *auth = NULL;
     get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
@@ -700,7 +702,24 @@ Skissm__SendGroupMsgResponse *send_group_msg(
         ssm_notify_log(sender_address, DEBUG_LOG, "send_group_msg() outbound_group_session does not exist");
         return NULL;
     }
-    Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, notif_level, plaintext_data, plaintext_data_len);
+
+    Skissm__E2eeAddress **allow_list;
+    size_t allow_list_len = 0;
+    Skissm__E2eeAddress **deny_list;
+    size_t deny_list_len = 0;
+    va_list args;
+    va_start(args, plaintext_data_len);
+    allow_list = va_arg(args, Skissm__E2eeAddress **);
+    if (allow_list) {
+        allow_list_len = va_arg(args, size_t);
+    }
+    deny_list = va_arg(args, Skissm__E2eeAddress **);
+    if (deny_list) {
+        deny_list_len = va_arg(args, size_t);
+    }
+    va_end(args);
+
+    Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, notif_level, plaintext_data, plaintext_data_len, allow_list, allow_list_len, deny_list, deny_list_len);
     Skissm__SendGroupMsgResponse *response = get_skissm_plugin()->proto_handler.send_group_msg(sender_address, auth,  request);
     bool succ = consume_send_group_msg_response(outbound_group_session, response);
     if (!succ) {

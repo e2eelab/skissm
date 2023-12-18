@@ -232,12 +232,20 @@ bool consume_leave_group_msg(
  * @param notif_level
  * @param plaintext_data
  * @param plaintext_data_len
+ * @param allow_list
+ * @param allow_list_len
+ * @param denny_list
+ * @param denny_list_len
  * @return Skissm__SendGroupMsgRequest*
  */
 Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     Skissm__GroupSession *group_session,
     uint32_t notif_level,
-    const uint8_t *plaintext_data, size_t plaintext_data_len
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    Skissm__E2eeAddress **allow_list,
+    size_t allow_list_len,
+    Skissm__E2eeAddress **denny_list,
+    size_t denny_list_len
 );
 
 /**
