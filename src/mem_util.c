@@ -537,6 +537,16 @@ void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__Grou
 
 ///-----------------release-----------------///
 
+void free_e2ee_addresses(Skissm__E2eeAddress ***dest, size_t e2ee_addresses_num) {
+    size_t i;
+    for (i = 0; i < e2ee_addresses_num; i++) {
+        skissm__e2ee_address__free_unpacked((*dest)[i], NULL);
+        (*dest)[i] = NULL;
+    }
+    free(*dest);
+    *dest = NULL;
+}
+
 void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num) {
     size_t i;
     for (i = 0; i < group_members_num; i++) {

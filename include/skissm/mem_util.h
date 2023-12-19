@@ -379,6 +379,14 @@ void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo
 void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **removing_members, size_t removing_members_num);
 
 /**
+ * @brief Release memory of Skissm__E2eeAddress array.
+ *
+ * @param dest
+ * @param e2ee_addresses_num
+ */
+void free_e2ee_addresses(Skissm__E2eeAddress ***dest, size_t e2ee_addresses_num);
+
+/**
  * @brief Release memory of Skissm__GroupMember array.
  *
  * @param dest
