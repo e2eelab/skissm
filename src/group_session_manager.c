@@ -834,6 +834,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     // optional allow_list and denny_list
     size_t i;
     if (allow_list_len > 0 && allow_list) {
+        ssm_notify_log(outbound_group_session->sender, DEBUG_LOG, "produce_send_group_msg_request() with allow_list_len: %d", allow_list_len);
         request->n_allow_list = allow_list_len;
         request->allow_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * allow_list_len);
         for(i = 0; i <allow_list_len; i++) {
@@ -841,6 +842,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
         }
     }
     if (deny_list_len > 0 && deny_list) {
+        ssm_notify_log(outbound_group_session->sender, DEBUG_LOG, "produce_send_group_msg_request() with deny_list_len: %d", deny_list_len);
         request->n_deny_list = deny_list_len;
         request->deny_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * deny_list_len);
         for(i = 0; i <deny_list_len; i++) {

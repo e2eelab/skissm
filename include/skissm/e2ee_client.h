@@ -165,17 +165,35 @@ Skissm__LeaveGroupResponse *leave_group(
  * @param notif_level,
  * @param plaintext_data
  * @param plaintext_data_len
+ * @return Skissm__SendGroupMsgResponse *
+ */
+Skissm__SendGroupMsgResponse *send_group_msg(
+    Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address,
+    uint32_t notif_level,
+    const uint8_t *plaintext_data, size_t plaintext_data_len
+);
+
+/**
+ * @brief Send group msg with filter.
+ * @param sender_address
+ * @param group_address
+ * @param notif_level,
+ * @param plaintext_data
+ * @param plaintext_data_len
  * @param allow_list optional allow list with type Skissm__E2eeAddress **.
  * @param allow_list_len optional allow list len with type size_t.
  * @param deny_list optional deny list with type Skissm__E2eeAddress **.
  * @param deny_list_len optional deny list len with type size_t.
  * @return Skissm__SendGroupMsgResponse *
  */
-Skissm__SendGroupMsgResponse *send_group_msg(
+Skissm__SendGroupMsgResponse *send_group_msg_with_filter(
     Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address,
     uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len,
-    ...
+    Skissm__E2eeAddress **allow_list,
+    size_t allow_list_len,
+    Skissm__E2eeAddress **deny_list,
+    size_t deny_list_len
 );
 
 /**
