@@ -42,7 +42,7 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
         || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len)
         || (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)
     ) {
-        ssm_notify_log(outbound_session->session_owner, BAD_PRE_KEY_BUNDLE, "crypto_curve25519_new_outbound_session()");
+        ssm_notify_log(outbound_session->our_address, BAD_PRE_KEY_BUNDLE, "crypto_curve25519_new_outbound_session()");
         return NULL;
     }
     result = cipher_suite->verify(
@@ -51,7 +51,7 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
         their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len
     );
     if (result < 0) {
-       ssm_notify_log(outbound_session->session_owner, BAD_SIGNATURE, "crypto_curve25519_new_outbound_session()");
+       ssm_notify_log(outbound_session->our_address, BAD_SIGNATURE, "crypto_curve25519_new_outbound_session()");
        return NULL;
     }
 
@@ -76,6 +76,8 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     copy_protobuf_from_protobuf(&(outbound_session->alice_ephemeral_key), &(my_ephemeral_key.public_key));
     copy_protobuf_from_protobuf(&(outbound_session->bob_signed_pre_key), &(their_pre_key_bundle->signed_pre_key_public->public_key));
     outbound_session->bob_signed_pre_key_id = their_pre_key_bundle->signed_pre_key_public->spk_id;
+
+    copy_key_pair_from_key_pair(&(outbound_session->alice_base_key), &my_ratchet_key);
 
     // server may return empty one-time pre-key(public)
     if (their_pre_key_bundle->one_time_pre_key_public) {
@@ -108,18 +110,12 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     initialise_as_alice(
         cipher_suite, outbound_session->ratchet,
         secret, sizeof(secret),
-        &my_ratchet_key, &(their_pre_key_bundle->signed_pre_key_public->public_key)
+        &my_ratchet_key, &(their_pre_key_bundle->signed_pre_key_public->public_key), NULL
     );
     outbound_session->session_id = generate_uuid_str();
 
     // this is not a face-to-face session
     outbound_session->f2f = false;
-
-    // prepare the pre_shared_keys
-    outbound_session->n_pre_shared_keys = 1;
-    outbound_session->pre_shared_keys = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-    init_protobuf(outbound_session->pre_shared_keys);
-    copy_protobuf_from_protobuf(outbound_session->pre_shared_keys, &(outbound_session->alice_ephemeral_key));
 
     // store sesson state before send invite
     outbound_session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
@@ -130,7 +126,7 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
 
     if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // unload outbound_session to enable retry
-        get_skissm_plugin()->db_handler.unload_session(outbound_session->session_owner, outbound_session->from, outbound_session->to);
+        get_skissm_plugin()->db_handler.unload_session(outbound_session->our_address, outbound_session->their_address);
     }
 
     // release
@@ -155,7 +151,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
     if (local_account->signed_pre_key->spk_id != msg->bob_signed_pre_key_id) {
         get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->address, msg->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
-            ssm_notify_log(inbound_session->session_owner, BAD_SIGNED_PRE_KEY, "crypto_curve25519_new_inbound_session()");
+            ssm_notify_log(inbound_session->our_address, BAD_SIGNED_PRE_KEY, "crypto_curve25519_new_inbound_session()");
             return -1;
         } else {
             old_spk = 1;
@@ -164,7 +160,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
 
     uint8_t x3dh_epoch = 3;
     copy_protobuf_from_protobuf(&(inbound_session->alice_identity_key), &(msg->alice_identity_key));
-    copy_protobuf_from_protobuf(&(inbound_session->alice_ephemeral_key), &(msg->pre_shared_keys[0]));
+    copy_protobuf_from_protobuf(&(inbound_session->alice_ephemeral_key), &(msg->alice_ephemeral_key));
     inbound_session->bob_signed_pre_key_id = msg->bob_signed_pre_key_id;
     if (old_spk == 0) {
         copy_protobuf_from_protobuf(&(inbound_session->bob_signed_pre_key), &(local_account->signed_pre_key->key_pair->public_key));
@@ -188,7 +184,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
         our_one_time_pre_key = lookup_one_time_pre_key(local_account, msg->bob_one_time_pre_key_id);
 
         if (!our_one_time_pre_key) {
-            ssm_notify_log(inbound_session->session_owner, BAD_ONE_TIME_PRE_KEY, "crypto_curve25519_new_inbound_session()");
+            ssm_notify_log(inbound_session->our_address, BAD_ONE_TIME_PRE_KEY, "crypto_curve25519_new_inbound_session()");
             return -1;
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
@@ -201,7 +197,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
     }
 
     const Skissm__KeyPair *bob_identity_key = local_account->identity_key->asym_key_pair;
-    const Skissm__KeyPair *bob_signed_pre_key;
+    Skissm__KeyPair *bob_signed_pre_key = NULL;
     if (old_spk == 0) {
         bob_signed_pre_key = local_account->signed_pre_key->key_pair;
     } else {
@@ -227,7 +223,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
         cipher_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), &inbound_session->alice_ephemeral_key, pos);
     }
 
-    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key);
+    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key, &(msg->alice_base_key));
 
     // this is not a face-to-face session
     inbound_session->f2f = false;
@@ -237,7 +233,13 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
 
     /** The one who sends the accept message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    Skissm__AcceptResponse *response = accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, inbound_session->from, NULL);
+    Skissm__AcceptResponse *response = accept_internal(
+        inbound_session->e2ee_pack_id,
+        inbound_session->our_address,
+        inbound_session->their_address,
+        NULL,
+        &(bob_signed_pre_key->public_key)
+    );
 
     // release
     skissm__signed_pre_key__free_unpacked(old_spk_data, NULL);
@@ -268,8 +270,8 @@ int crypto_curve25519_new_f2f_outbound_session(
     outbound_session->session_id = strdup(f2f_pre_key_invite_msg->session_id);
 
     // set the address
-    copy_address_from_address(&(outbound_session->from), f2f_pre_key_invite_msg->from);
-    copy_address_from_address(&(outbound_session->to), f2f_pre_key_invite_msg->to);
+    copy_address_from_address(&(outbound_session->our_address), f2f_pre_key_invite_msg->from);
+    copy_address_from_address(&(outbound_session->their_address), f2f_pre_key_invite_msg->to);
 
     // store the secret bytes(store in the associated_data)
     copy_protobuf_from_protobuf(&(outbound_session->associated_data), &(f2f_pre_key_invite_msg->secret));
@@ -290,7 +292,7 @@ int crypto_curve25519_new_f2f_inbound_session(
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
 
-    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, 4 * CURVE25519_SHARED_SECRET_LENGTH, local_account->signed_pre_key->key_pair);
+    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, 4 * CURVE25519_SHARED_SECRET_LENGTH, local_account->signed_pre_key->key_pair, NULL);
 
     // this is a face-to-face session
     inbound_session->f2f = true;
@@ -305,11 +307,11 @@ int crypto_curve25519_new_f2f_inbound_session(
     memcpy((inbound_session->associated_data.data) + key_len, key_data, key_len);
 
     Skissm__E2eeAddress *sender_address = NULL;
-    copy_address_from_address(&(sender_address), inbound_session->from);
-    if (strcmp(inbound_session->from->user->user_id, inbound_session->to->user->user_id) != 0) {
+    copy_address_from_address(&(sender_address), inbound_session->their_address);
+    if (strcmp(inbound_session->their_address->user->user_id, inbound_session->our_address->user->user_id) != 0) {
         // no need to record the device id of the sender's address in the face-to-face inbound session
-        free(inbound_session->from->user->device_id);
-        inbound_session->from->user->device_id = strdup("");
+        free(inbound_session->their_address->user->device_id);
+        inbound_session->their_address->user->device_id = strdup("");
     }
 
     // store sesson state
@@ -317,7 +319,9 @@ int crypto_curve25519_new_f2f_inbound_session(
 
     /** The one who sends the accept message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    Skissm__F2fAcceptResponse *response = f2f_accept_internal(inbound_session->e2ee_pack_id, inbound_session->to, sender_address, local_account);
+    Skissm__F2fAcceptResponse *response = f2f_accept_internal(
+        inbound_session->e2ee_pack_id, inbound_session->our_address, sender_address, local_account
+    );
 
     // release
     skissm__e2ee_address__free_unpacked(sender_address, NULL);
@@ -345,7 +349,7 @@ int crypto_curve25519_complete_f2f_outbound_session(Skissm__Session *outbound_se
     initialise_as_alice(
         cipher_suite, outbound_session->ratchet,
         outbound_session->associated_data.data, outbound_session->associated_data.len,
-        &my_ratchet_key, &(outbound_session->bob_signed_pre_key)
+        &my_ratchet_key, &(outbound_session->bob_signed_pre_key), NULL
     );
 
     // replace the associated data
@@ -358,10 +362,10 @@ int crypto_curve25519_complete_f2f_outbound_session(Skissm__Session *outbound_se
     memcpy(outbound_session->associated_data.data, key_data, key_len);
     memcpy((outbound_session->associated_data.data) + key_len, key_data, key_len);
 
-    if (strcmp(outbound_session->from->user->user_id, outbound_session->to->user->user_id) != 0) {
+    if (strcmp(outbound_session->our_address->user->user_id, outbound_session->their_address->user->user_id) != 0) {
         // no need to record the device id of the receiver's address in the face-to-face outbound session
-        free(outbound_session->to->user->device_id);
-        outbound_session->to->user->device_id = strdup("");
+        free(outbound_session->their_address->user->device_id);
+        outbound_session->their_address->user->device_id = strdup("");
     }
 
     outbound_session->responded = true;

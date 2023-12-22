@@ -264,25 +264,17 @@ void copy_msg_key_from_msg_key(Skissm__MsgKey **dest, Skissm__MsgKey *src) {
 void copy_sender_chain_from_sender_chain(Skissm__SenderChainNode **dest, Skissm__SenderChainNode *src) {
     *dest = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
     skissm__sender_chain_node__init(*dest);
-    (*dest)->n_ratchet_key = src->n_ratchet_key;
-    (*dest)->ratchet_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * src->n_ratchet_key);
-    size_t i;
-    for (i = 0; i < src->n_ratchet_key; i++) {
-        init_protobuf(&((*dest)->ratchet_key[i]));
-        copy_protobuf_from_protobuf(&((*dest)->ratchet_key[i]), &(src->ratchet_key[i]));
-    }
+    copy_protobuf_from_protobuf(&((*dest)->our_ratchet_public_key), &(src->our_ratchet_public_key));
+    copy_protobuf_from_protobuf(&((*dest)->their_ratchet_public_key), &(src->their_ratchet_public_key));
     copy_chain_key_from_chain_key(&((*dest)->chain_key), src->chain_key);
 }
 
-void copy_receiver_chains_from_receiver_chains(Skissm__ReceiverChainNode ***dest, Skissm__ReceiverChainNode **src, size_t receiver_chains_num) {
-    *dest = (Skissm__ReceiverChainNode **)malloc(sizeof(Skissm__ReceiverChainNode *) * receiver_chains_num);
-    size_t i;
-    for (i = 0; i < receiver_chains_num; i++) {
-        (*dest)[i] = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
-        skissm__receiver_chain_node__init((*dest)[i]);
-        copy_protobuf_from_protobuf(&((*dest)[i]->ratchet_key_public), &(src[i]->ratchet_key_public));
-        copy_chain_key_from_chain_key(&((*dest)[i]->chain_key), src[i]->chain_key);
-    }
+void copy_receiver_chain_from_receiver_chain(Skissm__ReceiverChainNode **dest, Skissm__ReceiverChainNode *src) {
+    *dest = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
+    skissm__receiver_chain_node__init(*dest);
+    copy_protobuf_from_protobuf(&((*dest)->their_ratchet_public_key), &(src->their_ratchet_public_key));
+    copy_protobuf_from_protobuf(&((*dest)->our_ratchet_private_key), &(src->our_ratchet_private_key));
+    copy_chain_key_from_chain_key(&((*dest)->chain_key), src->chain_key);
 }
 
 void copy_skipped_msg_keys_from_skipped_msg_keys(Skissm__SkippedMsgKeyNode ***dest, Skissm__SkippedMsgKeyNode **src, size_t skipped_msg_keys_num) {
@@ -300,9 +292,10 @@ void copy_ratchet_from_ratchet(Skissm__Ratchet **dest, Skissm__Ratchet *src) {
     *dest = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
     skissm__ratchet__init(*dest);
     copy_protobuf_from_protobuf(&((*dest)->root_key), &(src->root_key));
+    (*dest)->root_sequence = src->root_sequence;
+    // message_sequence???????
     copy_sender_chain_from_sender_chain(&((*dest)->sender_chain), src->sender_chain);
-    (*dest)->n_receiver_chains = src->n_receiver_chains;
-    copy_receiver_chains_from_receiver_chains(&((*dest)->receiver_chains), src->receiver_chains, src->n_receiver_chains);
+    copy_receiver_chain_from_receiver_chain(&((*dest)->receiver_chain), src->receiver_chain);
     (*dest)->n_skipped_msg_keys = src->n_skipped_msg_keys;
     copy_skipped_msg_keys_from_skipped_msg_keys(&((*dest)->skipped_msg_keys), src->skipped_msg_keys, src->n_skipped_msg_keys);
 }
@@ -313,19 +306,24 @@ void copy_session_from_session(Skissm__Session **dest, Skissm__Session *src) {
     (*dest)->version = strdup(src->version);
     (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
     (*dest)->session_id = strdup(src->session_id);
-    copy_address_from_address(&((*dest)->session_owner), src->session_owner);
-    copy_address_from_address(&((*dest)->from), src->from);
-    copy_address_from_address(&((*dest)->to), src->to);
+    copy_address_from_address(&((*dest)->our_address), src->our_address);
+    copy_address_from_address(&((*dest)->their_address), src->their_address);
     copy_ratchet_from_ratchet(&((*dest)->ratchet), src->ratchet);
+    copy_protobuf_from_protobuf(&((*dest)->associated_data), &(src->associated_data));
+    copy_protobuf_from_protobuf(&((*dest)->temp_shared_secret), &(src->temp_shared_secret));
     copy_protobuf_from_protobuf(&((*dest)->alice_identity_key), &(src->alice_identity_key));
     copy_protobuf_from_protobuf(&((*dest)->alice_ephemeral_key), &(src->alice_ephemeral_key));
+    copy_key_pair_from_key_pair(&((*dest)->alice_base_key), src->alice_base_key);
     copy_protobuf_from_protobuf(&((*dest)->bob_signed_pre_key), &(src->bob_signed_pre_key));
     (*dest)->bob_signed_pre_key_id = src->bob_signed_pre_key_id;
     copy_protobuf_from_protobuf(&((*dest)->bob_one_time_pre_key), &(src->bob_one_time_pre_key));
     (*dest)->bob_one_time_pre_key_id = src->bob_one_time_pre_key_id;
+    (*dest)->n_encaps_ciphertext_list = src->n_encaps_ciphertext_list;
+    (*dest)->encaps_ciphertext_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * src->n_encaps_ciphertext_list);
+    copy_protobuf_list_from_protobuf_list((*dest)->encaps_ciphertext_list, src->encaps_ciphertext_list, src->n_encaps_ciphertext_list);
     (*dest)->f2f = src->f2f;
     (*dest)->responded = src->responded;
-    copy_protobuf_from_protobuf(&((*dest)->associated_data), &(src->associated_data));
+    (*dest)->t_invite = src->t_invite;
 }
 
 ///-----------------copy public key-----------------///

@@ -96,43 +96,42 @@ static void sqlite_finalize(sqlite3_stmt *stmt) {
 static const char *SESSION_DROP_TABLE = "DROP TABLE IF EXISTS SESSION;";
 static const char *SESSION_CREATE_TABLE = "CREATE TABLE SESSION( "
                                           "ID TEXT NOT NULL, "
-                                          "OWNER INTEGER NOT NULL, "
-                                          "FROM_ADDRESS INTEGER NOT NULL, "
-                                          "TO_ADDRESS INTEGER NOT NULL, "
+                                          "OUR_ADDRESS INTEGER NOT NULL, "
+                                          "THEIR_ADDRESS INTEGER NOT NULL, "
                                           "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
                                           "DATA BLOB NOT NULL, "
-                                          "FOREIGN KEY(FROM_ADDRESS) REFERENCES ADDRESS(ID), "
-                                          "FOREIGN KEY(TO_ADDRESS) REFERENCES ADDRESS(ID), "
-                                          "PRIMARY KEY (ID, OWNER, FROM_ADDRESS, TO_ADDRESS));";
+                                          "FOREIGN KEY(OUR_ADDRESS) REFERENCES ADDRESS(ID), "
+                                          "FOREIGN KEY(THEIR_ADDRESS) REFERENCES ADDRESS(ID), "
+                                          "PRIMARY KEY (ID, OUR_ADDRESS, THEIR_ADDRESS));";
 
-static const char *SESSION_LOAD_DATA_BY_OWNER_AND_TO = "SELECT DATA FROM SESSION "
-                                                       "INNER JOIN ADDRESS AS a1 "
-                                                       "ON SESSION.OWNER = a1.ID "
-                                                       "INNER JOIN ADDRESS AS a2 "
-                                                       "ON SESSION.TO_ADDRESS = a2.ID "
-                                                       "WHERE a1.USER_ID is (?) AND a2.USER_ID is (?) "
-                                                       "AND a1.DEVICE_ID is (?) AND a2.DEVICE_ID is (?) "
-                                                       "ORDER BY TIMESTAMP DESC "
-                                                       "LIMIT 1;";
+static const char *SESSION_LOAD_DATA_BY_ADDRESSES = "SELECT DATA FROM SESSION "
+                                                    "INNER JOIN ADDRESS AS a1 "
+                                                    "ON SESSION.OUR_ADDRESS = a1.ID "
+                                                    "INNER JOIN ADDRESS AS a2 "
+                                                    "ON SESSION.THEIR_ADDRESS = a2.ID "
+                                                    "WHERE a1.USER_ID is (?) AND a2.USER_ID is (?) "
+                                                    "AND a1.DEVICE_ID is (?) AND a2.DEVICE_ID is (?) "
+                                                    "ORDER BY TIMESTAMP DESC "
+                                                    "LIMIT 1;";
 
 static const char *SESSION_INSERT_OR_REPLACE = "INSERT OR REPLACE INTO SESSION "
-                                               "(ID, OWNER, FROM_ADDRESS, TO_ADDRESS, DATA) "
-                                               "VALUES (?, ?, ?, ?, ?);";
+                                               "(ID, OUR_ADDRESS, THEIR_ADDRESS, DATA) "
+                                               "VALUES (?, ?, ?, ?);";
 
-static const char *SESSION_LOAD_DATA_BY_ID_AND_OWNER = "SELECT DATA FROM SESSION "
-                                                       "INNER JOIN ADDRESS "
-                                                       "ON SESSION.OWNER = ADDRESS.ID "
-                                                       "WHERE SESSION.ID is (?) "
-                                                       "AND ADDRESS.DOMAIN is (?) "
-                                                       "AND ADDRESS.USER_ID is (?) "
-                                                       "AND ADDRESS.DEVICE_ID is (?);";
+static const char *SESSION_LOAD_DATA_BY_ADDRESS_AND_ID = "SELECT DATA FROM SESSION "
+                                                         "INNER JOIN ADDRESS "
+                                                         "ON SESSION.OUR_ADDRESS = ADDRESS.ID "
+                                                         "WHERE SESSION.ID is (?) "
+                                                         "AND ADDRESS.DOMAIN is (?) "
+                                                         "AND ADDRESS.USER_ID is (?) "
+                                                         "AND ADDRESS.DEVICE_ID is (?);";
 
 static const char *SESSION_LOAD_N_OUTBOUND_SESSION = "SELECT COUNT(*) "
                                                      "FROM SESSION "
                                                      "INNER JOIN ADDRESS AS a1 "
-                                                     "ON SESSION.OWNER = a1.ID "
+                                                     "ON SESSION.OUR_ADDRESS = a1.ID "
                                                      "INNER JOIN ADDRESS AS a2 "
-                                                     "ON SESSION.TO_ADDRESS = a2.ID "
+                                                     "ON SESSION.THEIR_ADDRESS = a2.ID "
                                                      "WHERE a1.DOMAIN is (?) "
                                                      "AND a1.USER_ID is (?) "
                                                      "AND a1.DEVICE_ID is (?) "
@@ -141,21 +140,19 @@ static const char *SESSION_LOAD_N_OUTBOUND_SESSION = "SELECT COUNT(*) "
 static const char *SESSION_LOAD_OUTBOUND_SESSIONS = "SELECT DATA "
                                                     "FROM SESSION "
                                                     "INNER JOIN ADDRESS AS a1 "
-                                                    "ON SESSION.OWNER = a1.ID "
+                                                    "ON SESSION.OUR_ADDRESS = a1.ID "
                                                     "INNER JOIN ADDRESS AS a2 "
-                                                    "ON SESSION.TO_ADDRESS = a2.ID "
+                                                    "ON SESSION.THEIR_ADDRESS = a2.ID "
                                                     "WHERE a1.DOMAIN is (?) "
                                                     "AND a1.USER_ID is (?) "
                                                     "AND a1.DEVICE_ID is (?) "
                                                     "AND a2.USER_ID is (?);";
 
-static const char *SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO = "DELETE FROM SESSION "
-                                                              "WHERE OWNER IN "
-                                                              "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?)) "
-                                                              "AND FROM_ADDRESS IN "
-                                                              "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?)) "
-                                                              "AND TO_ADDRESS IN "
-                                                              "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?));";
+static const char *SESSION_DELETE_DATA_BY_ADDRESSES = "DELETE FROM SESSION "
+                                                      "WHERE OUR_ADDRESS IN "
+                                                      "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?)) "
+                                                      "AND THEIR_ADDRESS IN "
+                                                      "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?));";
 
 static const char *GROUP_SESSION_DROP_TABLE = "DROP TABLE IF EXISTS GROUP_SESSION;";
 static const char *GROUP_SESSION_CREATE_TABLE = "CREATE TABLE GROUP_SESSION( "
@@ -1613,19 +1610,19 @@ size_t load_accounts(Skissm__Account ***accounts) {
 }
 
 // session related handlers
-void load_inbound_session(char *session_id, Skissm__E2eeAddress *owner, Skissm__Session **session) {
+void load_inbound_session(char *session_id, Skissm__E2eeAddress *our_address, Skissm__Session **session) {
     // prepare
     sqlite3_stmt *stmt;
-    if (!sqlite_prepare(SESSION_LOAD_DATA_BY_ID_AND_OWNER, &stmt)) {
+    if (!sqlite_prepare(SESSION_LOAD_DATA_BY_ADDRESS_AND_ID, &stmt)) {
         *session = NULL;
         return;
     }
 
     // bind
     sqlite3_bind_text(stmt, 1, session_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, owner->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, owner->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, owner->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, our_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, our_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, our_address->user->device_id, -1, SQLITE_TRANSIENT);
 
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
@@ -1655,19 +1652,19 @@ void load_inbound_session(char *session_id, Skissm__E2eeAddress *owner, Skissm__
 }
 
 // return the lastest updated session
-void load_outbound_session(Skissm__E2eeAddress *owner, Skissm__E2eeAddress *to, Skissm__Session **session) {
+void load_outbound_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address, Skissm__Session **session) {
     // prepare
     sqlite3_stmt *stmt;
-    if (!sqlite_prepare(SESSION_LOAD_DATA_BY_OWNER_AND_TO, &stmt)) {
+    if (!sqlite_prepare(SESSION_LOAD_DATA_BY_ADDRESSES, &stmt)) {
         *session = NULL;
         return;
     }
 
     // bind
-    sqlite3_bind_text(stmt, 1, owner->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, to->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, owner->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, to->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, our_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, their_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, our_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, their_address->user->device_id, -1, SQLITE_TRANSIENT);
 
     // step
     if (!sqlite_step(stmt, SQLITE_ROW)) {
@@ -1696,14 +1693,14 @@ void load_outbound_session(Skissm__E2eeAddress *owner, Skissm__E2eeAddress *to, 
     return;
 }
 
-int load_n_outbound_sessions(Skissm__E2eeAddress *owner, const char *to_user_id) {
+int load_n_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their_user_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SESSION_LOAD_N_OUTBOUND_SESSION, &stmt);
-    sqlite3_bind_text(stmt, 1, owner->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, owner->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, owner->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, to_user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, our_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, our_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, our_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, their_user_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_ROW);
@@ -1717,18 +1714,18 @@ int load_n_outbound_sessions(Skissm__E2eeAddress *owner, const char *to_user_id)
     return n_outbound_sessions;
 }
 
-size_t load_outbound_sessions(Skissm__E2eeAddress *owner, const char *to_user_id, Skissm__Session ***outbound_sessions) {
+size_t load_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their_user_id, Skissm__Session ***outbound_sessions) {
     // allocate memory
-    size_t n_outbound_sessions = load_n_outbound_sessions(owner, to_user_id);
+    size_t n_outbound_sessions = load_n_outbound_sessions(our_address, their_user_id);
     (*outbound_sessions) = (Skissm__Session **)malloc(n_outbound_sessions * sizeof(Skissm__Session *));
 
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SESSION_LOAD_OUTBOUND_SESSIONS, &stmt);
-    sqlite3_bind_text(stmt, 1, owner->domain, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, owner->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, owner->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, to_user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, our_address->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, our_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, our_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, their_user_id, -1, SQLITE_TRANSIENT);
 
     // step
     for (int i = 0; i < n_outbound_sessions; i++) {
@@ -1755,9 +1752,8 @@ void store_session(Skissm__Session *session) {
     uint8_t *session_data = (uint8_t *)malloc(session_data_len);
     skissm__session__pack(session, session_data);
 
-    sqlite_int64 owner_id = insert_address(session->session_owner);
-    sqlite_int64 from_id = insert_address(session->from);
-    sqlite_int64 to_id = insert_address(session->to);
+    sqlite_int64 our_id = insert_address(session->our_address);
+    sqlite_int64 their_id = insert_address(session->their_address);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -1765,9 +1761,8 @@ void store_session(Skissm__Session *session) {
 
     // bind
     sqlite3_bind_text(stmt, 1, session_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_int(stmt, 2, owner_id);
-    sqlite3_bind_int(stmt, 3, from_id);
-    sqlite3_bind_int(stmt, 4, to_id);
+    sqlite3_bind_int(stmt, 3, our_id);
+    sqlite3_bind_int(stmt, 4, their_id);
     sqlite3_bind_blob(stmt, 5, session_data, session_data_len, SQLITE_STATIC);
 
     // step
@@ -1778,18 +1773,16 @@ void store_session(Skissm__Session *session) {
     free_mem((void **)&session_data, session_data_len);
 }
 
-void unload_session(Skissm__E2eeAddress *owner, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to) {
+void unload_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(SESSION_DELETE_DATA_BY_OWNER_FROM_AND_TO, &stmt);
+    sqlite_prepare(SESSION_DELETE_DATA_BY_ADDRESSES, &stmt);
 
     // bind
-    sqlite3_bind_text(stmt, 1, owner->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, owner->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 3, from->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, from->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 5, to->user->user_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 6, to->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, our_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, our_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, their_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, their_address->user->device_id, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

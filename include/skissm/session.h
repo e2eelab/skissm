@@ -111,8 +111,8 @@ typedef struct session_suite_t {
 void initialise_session(
     Skissm__Session *session,
     const char *e2ee_pack_id,
-    Skissm__E2eeAddress *from,
-    Skissm__E2eeAddress *to
+    Skissm__E2eeAddress *our_address,
+    Skissm__E2eeAddress *their_address
 );
 
 /**

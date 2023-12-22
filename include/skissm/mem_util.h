@@ -223,9 +223,8 @@ void copy_sender_chain_from_sender_chain(Skissm__SenderChainNode **dest, Skissm_
  *
  * @param dest
  * @param src
- * @param receiver_chains_num
  */
-void copy_receiver_chains_from_receiver_chains(Skissm__ReceiverChainNode ***dest, Skissm__ReceiverChainNode **src, size_t receiver_chains_num);
+void copy_receiver_chain_from_receiver_chain(Skissm__ReceiverChainNode **dest, Skissm__ReceiverChainNode *src);
 
 /**
  * @brief Copy Skissm__SkippedMsgKeyNode from src to dest.

@@ -155,18 +155,14 @@ static void on_other_device_msg_received(Skissm__E2eeAddress *user_address, Skis
 }
 
 static void on_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *session) {
-    if (session->from->user->device_id != NULL) {
+    if (session->our_address->user->device_id != NULL) {
         printf("New outbound face-to-face session created.\n");
-        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
-        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
-        printf("From: %s\n", session->from->user->user_id);
-        printf("to: %s\n", session->to->user->user_id);
+        printf("Our address: %s\n", session->our_address->user->user_id);
+        printf("Their address: %s\n", session->their_address->user->user_id);
     } else {
         printf("New inbound face-to-face session created.\n");
-        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
-        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
-        printf("From: %s\n", session->from->user->user_id);
-        printf("to: %s\n", session->to->user->user_id);
+        printf("Our address: %s\n", session->our_address->user->user_id);
+        printf("Their address: %s\n", session->their_address->user->user_id);
     }
 }
 

@@ -63,12 +63,12 @@ void load_account_by_address_id(uint64_t address_id, Skissm__Account **account);
 void load_auth(Skissm__E2eeAddress *address, char **auth); // new added
 void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **account);
 size_t load_accounts(Skissm__Account ***accounts);
-void load_inbound_session(char *session_id, Skissm__E2eeAddress *owner, Skissm__Session **inbound_session);
-void load_outbound_session(Skissm__E2eeAddress *owner, Skissm__E2eeAddress *to, Skissm__Session **outbound_session);
-int load_n_outbound_sessions(Skissm__E2eeAddress *owner, const char *to_user_id);
-size_t load_outbound_sessions(Skissm__E2eeAddress *owner, const char *to_user_id, Skissm__Session ***outbound_sessions);
+void load_inbound_session(char *session_id, Skissm__E2eeAddress *our_address, Skissm__Session **session);
+void load_outbound_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address, Skissm__Session **session);
+int load_n_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their_user_id);
+size_t load_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their_user_id, Skissm__Session ***outbound_sessions);
 void store_session(Skissm__Session *session);
-void unload_session(Skissm__E2eeAddress *owner, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to);
+void unload_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address);
 void load_group_session_by_address(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress *group_address, Skissm__GroupSession **group_session);
 void load_group_session_by_id(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, char *session_id, Skissm__GroupSession **group_session);
 int load_n_group_sessions(Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress *group_address);

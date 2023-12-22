@@ -269,16 +269,13 @@ bool is_equal_chain(Skissm__ChainKey *chain_key_1, Skissm__ChainKey *chain_key_2
 }
 
 bool is_equal_sender_chain(Skissm__SenderChainNode *sender_chain_1, Skissm__SenderChainNode *sender_chain_2) {
-    if (sender_chain_1->n_ratchet_key != sender_chain_2->n_ratchet_key) {
-        printf("number of ratchet_key not match");
+    if (!is_equal_data(&(sender_chain_1->our_ratchet_public_key), &(sender_chain_2->our_ratchet_public_key))) {
+        printf("our_ratchet_public_key not match");
         return false;
     }
-    size_t i;
-    for (i = 0; i < sender_chain_1->n_ratchet_key; i++) {
-        if (!is_equal_data(&(sender_chain_1->ratchet_key[i]), &(sender_chain_2->ratchet_key[i]))) {
-            printf("ratchet_key not match");
-            return false;
-        }
+    if (!is_equal_data(&(sender_chain_1->their_ratchet_public_key), &(sender_chain_2->their_ratchet_public_key))) {
+        printf("their_ratchet_public_key not match");
+        return false;
     }
     if (is_not_null(sender_chain_1->chain_key, sender_chain_2->chain_key)) {
         if (!is_equal_chain(sender_chain_1->chain_key, sender_chain_2->chain_key)) {
@@ -296,8 +293,12 @@ bool is_equal_sender_chain(Skissm__SenderChainNode *sender_chain_1, Skissm__Send
 }
 
 bool is_equal_receiver_chain(Skissm__ReceiverChainNode *receiver_chain_node_1, Skissm__ReceiverChainNode *receiver_chain_node_2) {
-    if (!is_equal_data(&(receiver_chain_node_1->ratchet_key_public), &(receiver_chain_node_2->ratchet_key_public))) {
-        printf("ratchet_key_public not match");
+    if (!is_equal_data(&(receiver_chain_node_1->their_ratchet_public_key), &(receiver_chain_node_2->their_ratchet_public_key))) {
+        printf("their_ratchet_public_key not match");
+        return false;
+    }
+    if (!is_equal_data(&(receiver_chain_node_1->our_ratchet_private_key), &(receiver_chain_node_2->our_ratchet_private_key))) {
+        printf("our_ratchet_private_key not match");
         return false;
     }
     if (is_not_null(receiver_chain_node_1->chain_key, receiver_chain_node_2->chain_key)) {
@@ -340,6 +341,10 @@ bool is_equal_ratchet(Skissm__Ratchet *ratchet_1, Skissm__Ratchet *ratchet_2) {
         printf("root_key not match");
         return false;
     }
+    if (ratchet_1->root_sequence != ratchet_2->root_sequence) {
+        printf("root_sequence not match");
+        return false;
+    }
     if (is_not_null(ratchet_1->sender_chain, ratchet_2->sender_chain)) {
         if (!is_equal_sender_chain(ratchet_1->sender_chain, ratchet_2->sender_chain)) {
             printf("sender_chain not match");
@@ -351,21 +356,15 @@ bool is_equal_ratchet(Skissm__Ratchet *ratchet_1, Skissm__Ratchet *ratchet_2) {
             return false;
         }
     }
-    if (ratchet_1->n_receiver_chains != ratchet_2->n_receiver_chains) {
-        printf("n_receiver_chains not match");
+    if (!is_equal_receiver_chain(ratchet_1->receiver_chain, ratchet_2->receiver_chain)) {
+        printf("receiver_chain not match");
         return false;
-    }
-    int i;
-    for (i = 0; i < ratchet_1->n_receiver_chains; i++) {
-        if (!is_equal_receiver_chain(ratchet_1->receiver_chains[i], ratchet_2->receiver_chains[i])) {
-            printf("receiver_chains not match");
-            return false;
-        }
     }
     if (ratchet_1->n_skipped_msg_keys != ratchet_2->n_skipped_msg_keys) {
         printf("n_skipped_msg_keys not match");
         return false;
     }
+    size_t i;
     for (i = 0; i < ratchet_1->n_skipped_msg_keys; i++) {
         if (!is_equal_skipped_message_key(ratchet_1->skipped_msg_keys[i], ratchet_2->skipped_msg_keys[i])) {
             printf("skipped_msg_keys not match");
@@ -385,25 +384,25 @@ bool is_equal_session(Skissm__Session *session_1, Skissm__Session *session_2) {
         printf("session_id not match");
         return false;
     }
-    if (is_not_null(session_1->from, session_2->from)) {
-        if (!compare_address(session_1->from, session_2->from)) {
-            printf("from not match");
+    if (is_not_null(session_1->our_address, session_2->our_address)) {
+        if (!compare_address(session_1->our_address, session_2->our_address)) {
+            printf("our_address not match");
             return false;
         }
     } else {
-        if (!is_null(session_1->from, session_2->from)) {
-            printf("from not match");
+        if (!is_null(session_1->our_address, session_2->our_address)) {
+            printf("our_address not match");
             return false;
         }
     }
-    if (is_not_null(session_1->to, session_2->to)) {
-        if (!compare_address(session_1->to, session_2->to)) {
-            printf("to not match");
+    if (is_not_null(session_1->their_address, session_2->their_address)) {
+        if (!compare_address(session_1->their_address, session_2->their_address)) {
+            printf("their_address not match");
             return false;
         }
     } else {
-        if (!is_null(session_1->to, session_2->to)) {
-            printf("to not match");
+        if (!is_null(session_1->their_address, session_2->their_address)) {
+            printf("their_address not match");
             return false;
         }
     }

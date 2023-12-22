@@ -166,18 +166,14 @@ static void on_other_device_msg_received(
 }
 
 static void on_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *session) {
-    if (session->from->user->device_id != NULL) {
+    if (session->our_address->user->device_id != NULL) {
         printf("New outbound face-to-face session created.\n");
-        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
-        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
-        printf("From: %s\n", session->from->user->user_id);
-        printf("to: %s\n", session->to->user->user_id);
+        printf("Our address: %s\n", session->our_address->user->user_id);
+        printf("Their address: %s\n", session->their_address->user->user_id);
     } else {
         printf("New inbound face-to-face session created.\n");
-        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
-        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
-        printf("From: %s\n", session->from->user->user_id);
-        printf("to: %s\n", session->to->user->user_id);
+        printf("Our address: %s\n", session->our_address->user->user_id);
+        printf("Their address: %s\n", session->their_address->user->user_id);
     }
 }
 
@@ -369,8 +365,7 @@ static void test_basic_session(){
 
     // load the inbound session
     Skissm__Session *inbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_inbound_session(outbound_session->session_id, outbound_session->to, &inbound_session);
-    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chains[0]->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
+    get_skissm_plugin()->db_handler.load_inbound_session(outbound_session->session_id, outbound_session->their_address, &inbound_session);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "Hello, World";
@@ -532,21 +527,21 @@ static void test_one_to_many(){
 
     // load the inbound sessions
     Skissm__Session **inbound_sessions = (Skissm__Session **)malloc(sizeof(Skissm__Session *) * 3);
-    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[0]->session_id, outbound_sessions[0]->to, &(inbound_sessions[0]));
-    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[1]->session_id, outbound_sessions[1]->to, &(inbound_sessions[1]));
-    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[2]->session_id, outbound_sessions[2]->to, &(inbound_sessions[2]));
+    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[0]->session_id, outbound_sessions[0]->their_address, &(inbound_sessions[0]));
+    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[1]->session_id, outbound_sessions[1]->their_address, &(inbound_sessions[1]));
+    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[2]->session_id, outbound_sessions[2]->their_address, &(inbound_sessions[2]));
 
     // check if the outbound sessions and inbound sessions match
     Skissm__Session *outbound_session, *inbound_session;
     outbound_session = outbound_sessions[0];
     inbound_session = inbound_sessions[0];
-    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chains[0]->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
+    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chain->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
     outbound_session = outbound_sessions[1];
     inbound_session = inbound_sessions[1];
-    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chains[0]->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
+    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chain->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
     outbound_session = outbound_sessions[2];
     inbound_session = inbound_sessions[2];
-    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chains[0]->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
+    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chain->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     uint8_t plaintext[] = "This message will be sent to Bob's three devices.";

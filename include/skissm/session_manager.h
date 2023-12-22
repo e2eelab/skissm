@@ -154,7 +154,8 @@ Skissm__AcceptRequest *produce_accept_request(
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
-    ProtobufCBinaryData *ciphertext_1
+    ProtobufCBinaryData *ciphertext_1,
+    ProtobufCBinaryData *our_ratchet_key
 );
 
 /**

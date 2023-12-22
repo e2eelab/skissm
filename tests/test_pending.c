@@ -288,7 +288,12 @@ static void test_pending_request_data() {
     mock_address(&alice_address, "alice", "alice's domain", "alice's device");
     mock_address(&bob_address, "bob", "bob's domain", "bob's device");
 
-    Skissm__AcceptRequest *accept_request = produce_accept_request(e2ee_pack_id, alice_address, bob_address, NULL);
+    ProtobufCBinaryData *our_ratchet_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+    our_ratchet_key->len = 32;
+    our_ratchet_key->data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
+    memcpy(our_ratchet_key->data, "abcdefghijklmnopqrstuvwxyz012345", 32);
+
+    Skissm__AcceptRequest *accept_request = produce_accept_request(e2ee_pack_id, alice_address, bob_address, NULL, our_ratchet_key);
 
     // pack reuest to request_data
     size_t request_data_len = skissm__accept_request__get_packed_size(accept_request);
@@ -318,9 +323,11 @@ static void test_pending_request_data() {
     // release
     skissm__e2ee_address__free_unpacked(alice_address, NULL);
     skissm__e2ee_address__free_unpacked(bob_address, NULL);
+    free_protobuf(our_ratchet_key);
+    free_mem((void **)&our_ratchet_key, sizeof(ProtobufCBinaryData));
     skissm__accept_request__free_unpacked(accept_request, NULL);
     skissm__pending_request__free_unpacked(pending_request, NULL);
-    free_mem((void *)&request_data, request_data_len);
+    free_mem((void **)&request_data, request_data_len);
     free_mem((void **)&pending_request_id_list, sizeof(char *) * pending_request_data_num);
     free_mem((void **)&request_type_list, sizeof(uint8_t) * pending_request_data_num);
     free_mem((void **)&(request_data_list[0]), request_data_len_list[0]);

@@ -371,7 +371,7 @@ void new_outbound_group_session_by_sender(
         if (outbound_sessions_num > 0 && outbound_sessions != NULL) {
             for (j = 0; j < outbound_sessions_num; j++) {
                 Skissm__Session *outbound_session = outbound_sessions[j];
-                if (compare_address(outbound_session->to, outbound_group_session->session_owner))
+                if (compare_address(outbound_session->their_address, outbound_group_session->session_owner))
                     continue;
                 if (outbound_session->responded) {
                     Skissm__SendOne2oneMsgResponse *response;
@@ -387,8 +387,8 @@ void new_outbound_group_session_by_sender(
                      */
                     char *pending_plaintext_id = generate_uuid_str();
                     get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-                        outbound_session->from,
-                        outbound_session->to,
+                        outbound_session->our_address,
+                        outbound_session->their_address,
                         pending_plaintext_id,
                         group_pre_key_plaintext_data,
                         group_pre_key_plaintext_data_len
@@ -876,7 +876,7 @@ void renew_outbound_group_session_by_welcome_and_add(
         if (outbound_sessions_num > 0 && outbound_sessions != NULL) {
             for (j = 0; j < outbound_sessions_num; j++) {
                 Skissm__Session *outbound_session = outbound_sessions[j];
-                if (compare_address(outbound_session->to, outbound_group_session->session_owner))
+                if (compare_address(outbound_session->their_address, outbound_group_session->session_owner))
                     continue;
                 if (outbound_session->responded) {
                     Skissm__SendOne2oneMsgResponse *response;
@@ -892,8 +892,8 @@ void renew_outbound_group_session_by_welcome_and_add(
                      */
                     char *pending_plaintext_id = generate_uuid_str();
                     get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-                        outbound_session->from,
-                        outbound_session->to,
+                        outbound_session->our_address,
+                        outbound_session->their_address,
                         pending_plaintext_id,
                         group_ratchet_state_plaintext_data,
                         group_ratchet_state_plaintext_data_len
@@ -1106,8 +1106,8 @@ void renew_group_sessions_with_new_device(
              */
             char *pending_plaintext_id = generate_uuid_str();
             get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-                outbound_session->from,
-                outbound_session->to,
+                outbound_session->our_address,
+                outbound_session->their_address,
                 pending_plaintext_id,
                 group_ratchet_state_plaintext_data,
                 group_ratchet_state_plaintext_data_len

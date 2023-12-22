@@ -19,15 +19,15 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     size_t *pending_plaintext_data_len_list;
     pending_plaintext_data_list_num =
         get_skissm_plugin()->db_handler.load_pending_plaintext_data(
-            outbound_session->from,
-            outbound_session->to,
+            outbound_session->our_address,
+            outbound_session->their_address,
             &pending_plaintext_id_list,
             &pending_plaintext_data_list,
             &pending_plaintext_data_len_list
         );
     if (pending_plaintext_data_list_num > 0) {
         ssm_notify_log(
-            outbound_session->session_owner,
+            outbound_session->our_address,
             DEBUG_LOG,
             "send_pending_plaintext_data(): list num = %d",
             pending_plaintext_data_list_num
@@ -42,7 +42,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
             );
             // always unload
             get_skissm_plugin()->db_handler.unload_pending_plaintext_data(
-                outbound_session->from, outbound_session->to, pending_plaintext_id_list[i]
+                outbound_session->our_address, outbound_session->their_address, pending_plaintext_id_list[i]
             );
             // release
             if (response != NULL) {
@@ -71,7 +71,7 @@ static void send_f2f_session_msg(
     size_t i;
     for (i = 0; i < self_outbound_sessions_num; i++) {
         // check if the device is different from the sender's
-        if (strcmp(self_outbound_sessions[i]->to->user->device_id, to->user->device_id) == 0)
+        if (strcmp(self_outbound_sessions[i]->their_address->user->device_id, to->user->device_id) == 0)
             continue;
 
         Skissm__Session *self_outbound_session = self_outbound_sessions[i];
@@ -191,12 +191,12 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 // create or renew an outbound session
                 // (how about keep existed outbound session ?)
                 // unload session first to prevent multiple outbound sessions
-                get_skissm_plugin()->db_handler.unload_session(from, from, to_address);
+                get_skissm_plugin()->db_handler.unload_session(from, to_address);
 
                 const char *e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
                 Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
                 initialise_session(outbound_session, e2ee_pack_id, from, to_address);
-                copy_address_from_address(&(outbound_session->session_owner), from);
+                copy_address_from_address(&(outbound_session->our_address), from);
 
                 const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
                 invite_response =
@@ -250,8 +250,8 @@ Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(
     e2ee_msg->session_id = strdup(outbound_session->session_id);
     e2ee_msg->msg_id = generate_uuid_str();
     e2ee_msg->notif_level = notif_level;
-    copy_address_from_address(&(e2ee_msg->from), outbound_session->from);
-    copy_address_from_address(&(e2ee_msg->to), outbound_session->to);
+    copy_address_from_address(&(e2ee_msg->from), outbound_session->our_address);
+    copy_address_from_address(&(e2ee_msg->to), outbound_session->their_address);
     e2ee_msg->payload_case = SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG;
     encrypt_ratchet(cipher_suite, outbound_session->ratchet, outbound_session->associated_data, plaintext_data, plaintext_data_len, &(e2ee_msg->one2one_msg));
 
@@ -281,7 +281,7 @@ bool consume_send_one2one_msg_response(
     }
     // store sesson state
     if (remove_session) {
-        get_skissm_plugin()->db_handler.unload_session(outbound_session->session_owner, outbound_session->from, outbound_session->to);
+        get_skissm_plugin()->db_handler.unload_session(outbound_session->our_address, outbound_session->their_address);
     } else {
         get_skissm_plugin()->db_handler.store_session(outbound_session);
     }
@@ -293,29 +293,29 @@ static bool process_f2f_session(Skissm__Session *f2f_session, Skissm__E2eeMsg *e
     if (f2f_session == NULL)
         return false;
 
-    // check if the session is outbound or inbound
-    if (compare_user_id(f2f_session->from, e2ee_msg->from->user->user_id, e2ee_msg->from->domain)) {
-        /** Since the session is outbound, the reciever's device id has been inserted "'\0'".
-         *  But the sender's device id should be replaced with that of this device. */
-        skissm__e2ee_address__free_unpacked(f2f_session->from, NULL);
-        copy_address_from_address(&(f2f_session->from), e2ee_msg->to);
-        skissm__e2ee_address__free_unpacked(f2f_session->session_owner, NULL);
-        copy_address_from_address(&(f2f_session->session_owner), e2ee_msg->to);
-    } else if (compare_user_id(f2f_session->to, e2ee_msg->from->user->user_id, e2ee_msg->from->domain)) {
-        /** Since the session is inbound, the sender's device id has been inserted "'\0'".
-         *  But the receiver's device id should be replaced with that of this device. */
-        skissm__e2ee_address__free_unpacked(f2f_session->to, NULL);
-        copy_address_from_address(&(f2f_session->to), e2ee_msg->to);
-        skissm__e2ee_address__free_unpacked(f2f_session->session_owner, NULL);
-        copy_address_from_address(&(f2f_session->session_owner), e2ee_msg->to);
-    } else {
-        // error
-        ssm_notify_log(f2f_session->from, BAD_MESSAGE_FORMAT, "process_f2f_session()");
-        return false;
-    }
-    get_skissm_plugin()->db_handler.store_session(f2f_session);
-    // notify
-    ssm_notify_f2f_session_ready(f2f_session->from, f2f_session);
+    // // check if the session is outbound or inbound
+    // if (compare_user_id(f2f_session->from, e2ee_msg->from->user->user_id, e2ee_msg->from->domain)) {
+    //     /** Since the session is outbound, the reciever's device id has been inserted "'\0'".
+    //      *  But the sender's device id should be replaced with that of this device. */
+    //     skissm__e2ee_address__free_unpacked(f2f_session->from, NULL);
+    //     copy_address_from_address(&(f2f_session->from), e2ee_msg->to);
+    //     skissm__e2ee_address__free_unpacked(f2f_session->session_owner, NULL);
+    //     copy_address_from_address(&(f2f_session->session_owner), e2ee_msg->to);
+    // } else if (compare_user_id(f2f_session->to, e2ee_msg->from->user->user_id, e2ee_msg->from->domain)) {
+    //     /** Since the session is inbound, the sender's device id has been inserted "'\0'".
+    //      *  But the receiver's device id should be replaced with that of this device. */
+    //     skissm__e2ee_address__free_unpacked(f2f_session->to, NULL);
+    //     copy_address_from_address(&(f2f_session->to), e2ee_msg->to);
+    //     skissm__e2ee_address__free_unpacked(f2f_session->session_owner, NULL);
+    //     copy_address_from_address(&(f2f_session->session_owner), e2ee_msg->to);
+    // } else {
+    //     // error
+    //     ssm_notify_log(f2f_session->from, BAD_MESSAGE_FORMAT, "process_f2f_session()");
+    //     return false;
+    // }
+    // get_skissm_plugin()->db_handler.store_session(f2f_session);
+    // // notify
+    // ssm_notify_f2f_session_ready(f2f_session->from, f2f_session);
     return true;
 }
 
@@ -575,6 +575,8 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
 Skissm__InviteRequest *produce_invite_request(
     Skissm__Session *outbound_session
 ) {
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+
     Skissm__InviteRequest *request = (Skissm__InviteRequest *) malloc(sizeof(Skissm__InviteRequest));
     skissm__invite_request__init(request);
 
@@ -584,22 +586,29 @@ Skissm__InviteRequest *produce_invite_request(
     msg->version = strdup(outbound_session->version);
     msg->e2ee_pack_id = strdup(outbound_session->e2ee_pack_id);
     msg->session_id = strdup(outbound_session->session_id);
-    copy_address_from_address(&(msg->from), outbound_session->from);
-    copy_address_from_address(&(msg->to), outbound_session->to);
+    copy_address_from_address(&(msg->from), outbound_session->our_address);
+    copy_address_from_address(&(msg->to), outbound_session->their_address);
 
     copy_protobuf_from_protobuf(&(msg->alice_identity_key), &(outbound_session->alice_identity_key));
 
-    size_t pre_shared_keys_num = outbound_session->n_pre_shared_keys;
-    ProtobufCBinaryData *pre_shared_keys = outbound_session->pre_shared_keys;
-    msg->n_pre_shared_keys = pre_shared_keys_num;
-    if (pre_shared_keys_num > 0 && pre_shared_keys != NULL) {
-        msg->pre_shared_keys = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * pre_shared_keys_num);
+    if (cipher_suite->get_crypto_param().pqc_param == false) {
+        // ECC mode
+        copy_protobuf_from_protobuf(&(msg->alice_ephemeral_key), &(outbound_session->alice_ephemeral_key));
+    } else {
+        // PQC mode
+        size_t encaps_ciphertext_num = outbound_session->n_encaps_ciphertext_list;
+        ProtobufCBinaryData *encaps_ciphertext_list = outbound_session->encaps_ciphertext_list;
+        msg->n_encaps_ciphertext_list = encaps_ciphertext_num;
+        msg->encaps_ciphertext_list = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * encaps_ciphertext_num);
         size_t i = 0;
-        for (i = 0; i < pre_shared_keys_num; i++) {
-            init_protobuf(&(msg->pre_shared_keys[i]));
-            copy_protobuf_from_protobuf(&(msg->pre_shared_keys[i]), &(pre_shared_keys[i]));
+        for (i = 0; i < encaps_ciphertext_num; i++) {
+            init_protobuf(&(msg->encaps_ciphertext_list[i]));
+            copy_protobuf_from_protobuf(&(msg->encaps_ciphertext_list[i]), &(encaps_ciphertext_list[i]));
         }
     }
+
+    copy_protobuf_from_protobuf(&(msg->alice_base_key), &(outbound_session->alice_base_key->public_key));
+
     msg->bob_signed_pre_key_id = outbound_session->bob_signed_pre_key_id;
     msg->bob_one_time_pre_key_id = outbound_session->bob_one_time_pre_key_id;
 
@@ -645,7 +654,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
             DEBUG_LOG,
             "consume_invite_msg() corresponding inbound session has already existed, remove it"
         );
-        get_skissm_plugin()->db_handler.unload_session(inbound_session->session_owner, inbound_session->from, inbound_session->to);
+        get_skissm_plugin()->db_handler.unload_session(inbound_session->our_address, inbound_session->their_address);
 
         // release
         skissm__session__free_unpacked(inbound_session, NULL);
@@ -664,8 +673,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     }
     // create a new inbound session
     inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
-    initialise_session(inbound_session, e2ee_pack_id, from, to);
-    copy_address_from_address(&(inbound_session->session_owner), to);
+    initialise_session(inbound_session, e2ee_pack_id, to, from);
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
     // set the version and session id
     inbound_session->version = strdup(invite_msg->version);
@@ -693,7 +701,8 @@ Skissm__AcceptRequest *produce_accept_request(
     const char *e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
-    ProtobufCBinaryData *ciphertext_1
+    ProtobufCBinaryData *ciphertext_1,
+    ProtobufCBinaryData *our_ratchet_key
 ) {
     Skissm__AcceptRequest *request = (Skissm__AcceptRequest *) malloc(sizeof(Skissm__AcceptRequest));
     skissm__accept_request__init(request);
@@ -705,15 +714,11 @@ Skissm__AcceptRequest *produce_accept_request(
     copy_address_from_address(&(msg->from), from);
     copy_address_from_address(&(msg->to), to);
 
-    if (ciphertext_1 == NULL) {
-        msg->n_pre_shared_keys = 0;
-        msg->pre_shared_keys = NULL;
-    } else{
-        msg->n_pre_shared_keys = 1;
-        msg->pre_shared_keys = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * 1);
-        init_protobuf(msg->pre_shared_keys);
-        copy_protobuf_from_protobuf(&(msg->pre_shared_keys[0]), ciphertext_1);
+    if (ciphertext_1 != NULL) {
+        copy_protobuf_from_protobuf(&(msg->encaps_ciphertext), ciphertext_1);
     }
+
+    copy_protobuf_from_protobuf(&(msg->ratchet_key), our_ratchet_key);
 
     // done
     request->msg = msg;
@@ -867,8 +872,7 @@ bool consume_f2f_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fIn
 
     // automatic create inbound session and send accept request
     Skissm__Session *inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
-    initialise_session(inbound_session, e2ee_pack_id, from, to);
-    copy_address_from_address(&(inbound_session->session_owner), to);
+    initialise_session(inbound_session, e2ee_pack_id, to, from);
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
     // set the version and session id
     inbound_session->version = strdup(f2f_pre_key_invite_msg->version);
@@ -989,7 +993,7 @@ bool consume_f2f_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__F2fAc
 
     get_skissm_plugin()->db_handler.load_outbound_session(f2f_accept_msg->to, f2f_accept_msg->from, &outbound_session);
     if (outbound_session != NULL) {
-        get_skissm_plugin()->db_handler.unload_session(outbound_session->session_owner, outbound_session->from, outbound_session->to);
+        get_skissm_plugin()->db_handler.unload_session(outbound_session->our_address, outbound_session->their_address);
     }
 
     // store the face-to-face session

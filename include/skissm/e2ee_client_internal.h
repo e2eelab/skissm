@@ -67,8 +67,10 @@ Skissm__InviteResponse *invite_internal(
  */
 Skissm__AcceptResponse *accept_internal(
     const char *e2ee_pack_id,
-    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
-    ProtobufCBinaryData *ciphertext_1
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    ProtobufCBinaryData *ciphertext_1,
+    ProtobufCBinaryData *our_ratchet_key
 );
 
 /**

@@ -47,7 +47,7 @@ void test_load_outbound_session()
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
     initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
-    copy_address_from_address(&(session->session_owner), from);
+    copy_address_from_address(&(session->our_address), from);
 
     // create mock public keys
     session->alice_identity_key.len = 32;
@@ -107,11 +107,11 @@ void test_load_outbound_sessions()
 
     // initialise sessions
     initialise_session(session_1, TEST_E2EE_PACK_ID_ECC, from, to_1);
-    copy_address_from_address(&(session_1->session_owner), from);
+    copy_address_from_address(&(session_1->our_address), from);
     initialise_session(session_2, TEST_E2EE_PACK_ID_ECC, from, to_2);
-    copy_address_from_address(&(session_2->session_owner), from);
+    copy_address_from_address(&(session_2->our_address), from);
     initialise_session(session_3, TEST_E2EE_PACK_ID_ECC, from, to_3);
-    copy_address_from_address(&(session_3->session_owner), from);
+    copy_address_from_address(&(session_3->our_address), from);
 
     // create mock public keys for session_1
     session_1->alice_identity_key.len = 32;
@@ -218,7 +218,7 @@ void test_load_inbound_session()
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
     initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
-    copy_address_from_address(&(session->session_owner), to);
+    copy_address_from_address(&(session->our_address), to);
 
     // create mock public keys
     session->alice_identity_key.len = 32;
@@ -546,7 +546,7 @@ void test_store_session()
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
     initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
-    copy_address_from_address(&(session->session_owner), from);
+    copy_address_from_address(&(session->our_address), from);
 
     // create mock public keys
     session->alice_identity_key.len = 32;
@@ -584,7 +584,7 @@ void test_store_session()
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
+    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key, NULL);
 
     // insert to the db
     store_session(session);
@@ -620,7 +620,7 @@ void test_equal_ratchet_outbound()
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
     initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
-    copy_address_from_address(&(session->session_owner), from);
+    copy_address_from_address(&(session->our_address), from);
 
     // create mock public keys
     session->alice_identity_key.len = 32;
@@ -658,7 +658,7 @@ void test_equal_ratchet_outbound()
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
+    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key, NULL);
 
     // insert to the db
     store_session(session);
@@ -689,7 +689,7 @@ void test_equal_ratchet_inbound()
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
     initialise_session(session, TEST_E2EE_PACK_ID_ECC, from, to);
-    copy_address_from_address(&(session->session_owner), to);
+    copy_address_from_address(&(session->our_address), to);
 
     // create mock public keys
     session->alice_identity_key.len = 32;
@@ -723,13 +723,12 @@ void test_equal_ratchet_inbound()
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_bob(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key);
+    initialise_as_bob(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, NULL);
 
     // insert to the db
     store_session(session);
 
     // create mock receiver chain
-    session->ratchet->receiver_chains = (Skissm__ReceiverChainNode **) malloc(sizeof(Skissm__ReceiverChainNode *));
     Skissm__ReceiverChainNode *chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
     skissm__receiver_chain_node__init(chain);
     chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
@@ -738,11 +737,13 @@ void test_equal_ratchet_inbound()
     chain->chain_key->shared_key.len = 32;
     chain->chain_key->shared_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(chain->chain_key->shared_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
-    chain->ratchet_key_public.len = 32;
-    chain->ratchet_key_public.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(chain->ratchet_key_public.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
-    session->ratchet->receiver_chains[0] = chain;
-    session->ratchet->n_receiver_chains = 1;
+    chain->their_ratchet_public_key.len = 32;
+    chain->their_ratchet_public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(chain->their_ratchet_public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
+    chain->our_ratchet_private_key.len = 32;
+    chain->our_ratchet_private_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(chain->our_ratchet_private_key.data, "abcdefghijkl012345mnopqrstuvwxyz", 32);
+    session->ratchet->receiver_chain = chain;
 
     // store session again
     store_session(session);

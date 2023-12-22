@@ -257,35 +257,35 @@ typedef struct skissm_db_handler_t {
     /**
      * @brief find inbound session
      * @param session_id
-     * @param session_owner_address
+     * @param our_address
      * @param inbound_session
      */
     void (*load_inbound_session)(
         char *session_id,
-        Skissm__E2eeAddress *session_owner_address,
+        Skissm__E2eeAddress *our_address,
         Skissm__Session **inbound_session
     );
     /**
      * @brief find the lastest outbound session
-     * @param session_owner_address
-     * @param to
+     * @param our_address
+     * @param their_address
      * @param outbound_session
      */
     void (*load_outbound_session)(
-        Skissm__E2eeAddress *session_owner_address,
-        Skissm__E2eeAddress *to,
+        Skissm__E2eeAddress *our_address,
+        Skissm__E2eeAddress *their_address,
         Skissm__Session **outbound_session
     );
 
     /**
-     * @brief find the list of outbound sessions that are related to to_user_id
-     * @param session_owner_address
-     * @param to_user_id
+     * @brief find the list of outbound sessions that are related to their_user_id
+     * @param our_address
+     * @param their_user_id
      * @param outbound_sessions
      */
     size_t (*load_outbound_sessions)(
-        Skissm__E2eeAddress *session_owner_address,
-        const char *to_user_id,
+        Skissm__E2eeAddress *our_address,
+        const char *their_user_id,
         Skissm__Session ***outbound_sessions
     );
 
@@ -298,14 +298,12 @@ typedef struct skissm_db_handler_t {
     );
     /**
      * @brief delete old inbound session
-     * @param owner
-     * @param from
-     * @param to
+     * @param our_address
+     * @param their_address
      */
     void (*unload_session)(
-        Skissm__E2eeAddress *owner,
-        Skissm__E2eeAddress *from,
-        Skissm__E2eeAddress *to
+        Skissm__E2eeAddress *our_address,
+        Skissm__E2eeAddress *their_address
     );
 
     // group session related handlers
