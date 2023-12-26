@@ -225,6 +225,8 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
 
     initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key, &(msg->alice_base_key));
 
+    inbound_session->responded = true;
+
     // this is not a face-to-face session
     inbound_session->f2f = false;
 

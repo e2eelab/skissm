@@ -355,6 +355,40 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
             if (plaintext != NULL) {
                 if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG) {
                     ssm_notify_one2one_msg(receiver_address, e2ee_msg->from, e2ee_msg->to, plaintext->common_msg.data, plaintext->common_msg.len);
+                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_THEIR_DEVICE_ID_LIST) {
+                    Skissm__UserDevicesID *their_device_id_list = plaintext->their_device_id_list;
+
+                    char *to_user_id = their_device_id_list->user_id;
+                    char *to_domain = their_device_id_list->domain;
+                    size_t their_devices_num = their_device_id_list->n_device_id;
+
+                    char *auth = NULL;
+                    get_skissm_plugin()->db_handler.load_auth(receiver_address, &auth);
+
+                    if (auth == NULL) {
+                        ssm_notify_log(receiver_address, BAD_ACCOUNT, "invite() from [%s:%s] to [%s@%s]",
+                            receiver_address->user->user_id,
+                            receiver_address->user->device_id,
+                            to_user_id,
+                            to_domain);
+                        return NULL;
+                    }
+
+                    Skissm__InviteResponse *invite_response = NULL;
+                    char *cur_device_id = NULL;
+                    size_t i;
+                    for (i = 0; i < their_devices_num; i++) {
+                        cur_device_id = their_device_id_list->device_id[i];
+                        invite_response = get_pre_key_bundle_internal(receiver_address, auth, to_user_id, to_domain, cur_device_id, NULL, 0);
+
+                        if (invite_response != NULL) {
+                            skissm__invite_response__free_unpacked(invite_response, NULL);
+                            invite_response = NULL;
+                        }
+                    }
+
+                    // release
+                    free(auth);
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG) {
                     ssm_notify_other_device_msg(receiver_address, e2ee_msg->from, e2ee_msg->to, plaintext->common_sync_msg.data, plaintext->common_sync_msg.len);
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_F2F_SESSION_DATA) {
@@ -513,31 +547,8 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         );
     }
 
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(receiver_address, &auth);
-    if (auth == NULL) {
-        ssm_notify_log(receiver_address, BAD_ACCOUNT, "consume_new_user_device_msg()");
-        return NULL;
-    }
-
-    Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
-        receiver_address,
-        auth,
-        new_user_address->user->user_id,
-        new_user_address->domain,
-        new_user_address->user->device_id,
-        NULL, 0
-    );
-
-    if (invite_response != NULL) {
-        if (invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        }
-        // release
-        skissm__invite_response__free_unpacked(invite_response, NULL);
-    }
-
     // if receiver is the inviter, then add the new device into the joined groups
-    if (compare_address(receiver_address, msg->inviter_address)) {
+    if (compare_address(receiver_address, inviter_address)) {
         // load all outbound group addresses
         Skissm__E2eeAddress **group_addresses = NULL;
         size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
@@ -564,9 +575,6 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
             group_addresses = NULL;
         }
     }
-    
-    // release
-    free(auth);
 
     // done
     return true;
@@ -755,7 +763,7 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
         ssm_notify_log(
             receiver_address,
             BAD_MESSAGE_FORMAT,
-            "consume_accept_msg() from [], to []: can't load outbount session and make it a complete and responded session.",
+            "consume_accept_msg() from [], to []: can't load outbound session and make it a complete and responded session.",
             accept_msg->from->user->user_id,
             accept_msg->from->user->device_id,
             accept_msg->to->user->user_id,

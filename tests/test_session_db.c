@@ -713,6 +713,10 @@ void test_equal_ratchet_inbound()
 
     // initialise ratchet
     initialise_ratchet(&(session->ratchet));
+    ProtobufCBinaryData their_ratchet_key;
+    their_ratchet_key.len = 32;
+    their_ratchet_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(their_ratchet_key.data, "11111111111111111111111111111111", 32);
     uint8_t secret[128] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx";
     Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(our_ratchet_key);
@@ -723,7 +727,7 @@ void test_equal_ratchet_inbound()
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_bob(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, NULL);
+    initialise_as_bob(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
 
     // insert to the db
     store_session(session);

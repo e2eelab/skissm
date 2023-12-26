@@ -99,6 +99,7 @@
 #include "skissm/SupplyOpksMsg.pb-c.h"
 #include "skissm/SupplyOpksRequest.pb-c.h"
 #include "skissm/SupplyOpksResponse.pb-c.h"
+#include "skissm/UserDevicesID.pb-c.h"
 
 #ifdef __cplusplus
 extern "C" {

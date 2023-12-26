@@ -1761,9 +1761,9 @@ void store_session(Skissm__Session *session) {
 
     // bind
     sqlite3_bind_text(stmt, 1, session_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_int(stmt, 3, our_id);
-    sqlite3_bind_int(stmt, 4, their_id);
-    sqlite3_bind_blob(stmt, 5, session_data, session_data_len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 2, our_id);
+    sqlite3_bind_int(stmt, 3, their_id);
+    sqlite3_bind_blob(stmt, 4, session_data, session_data_len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

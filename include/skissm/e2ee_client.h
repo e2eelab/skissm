@@ -104,6 +104,19 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
 void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, size_t plaintext_data_len);
 
 /**
+ * @brief Send sync invite msg to other devices.
+ * @param from
+ * @param to_user_id 
+ * @param to_domain
+ * @param to_device_id_list
+ * @param to_device_num
+ */
+void send_sync_invite_msg(
+    Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
+    const char **to_device_id_list, size_t to_device_num
+);
+
+/**
  * @brief Create a group.
  * @param sender_address
  * @param group_name

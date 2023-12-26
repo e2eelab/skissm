@@ -55,6 +55,20 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
         free_mem((void *)&get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len);
     }
 
+    if (to_device_id == NULL) {
+        // this device has invited, but other devices has not
+        size_t their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
+        char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
+        Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
+        size_t i;
+        for (i = 0; i < their_device_num; i++) {
+            cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[i];
+            their_device_id[i] = strdup(cur_pre_key_bundle->user_address->user->device_id);
+        }
+        // send to other devices in order to create sessions
+        send_sync_invite_msg(from, to_user_id, to_domain, their_device_id, their_device_num);
+    }
+
     // release
     skissm__get_pre_key_bundle_request__free_unpacked(get_pre_key_bundle_request, NULL);
     if (get_pre_key_bundle_response != NULL)

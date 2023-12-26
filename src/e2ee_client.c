@@ -352,6 +352,81 @@ void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, siz
     }
 }
 
+void send_sync_invite_msg(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain, const char **to_device_id_list, size_t to_device_num) {
+    Skissm__Session **self_outbound_sessions = NULL;
+    size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, &self_outbound_sessions);
+
+    if (self_outbound_sessions_num > 0) {
+        ssm_notify_log(
+            from,
+            DEBUG_LOG,
+            "send_sync_msg(): self_outbound_sessions_num = %zu",
+            self_outbound_sessions_num
+        );
+        // pack syncing plaintext before sending it
+        Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
+        skissm__plaintext__init(plaintext);
+        plaintext->version = strdup(E2EE_PLAINTEXT_VERSION);
+        plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_THEIR_DEVICE_ID_LIST;
+        plaintext->their_device_id_list = (Skissm__UserDevicesID *)malloc(sizeof(Skissm__UserDevicesID));
+        skissm__user_devices_id__init(plaintext->their_device_id_list);
+        plaintext->their_device_id_list->domain = strdup(to_domain);
+        plaintext->their_device_id_list->user_id = strdup(to_user_id);
+        plaintext->their_device_id_list->n_device_id = to_device_num;
+        plaintext->their_device_id_list->device_id = (char **)malloc(sizeof(char *) * to_device_num);
+        size_t k;
+        for (k = 0; k < to_device_num; k++) {
+            (plaintext->their_device_id_list->device_id)[k] = strdup(to_device_id_list[k]);
+        }
+
+        size_t invite_msg_data_len = skissm__plaintext__get_packed_size(plaintext);
+        uint8_t *invite_msg_data = (uint8_t *)malloc(sizeof(uint8_t) * invite_msg_data_len);
+        skissm__plaintext__pack(plaintext, invite_msg_data);
+
+        size_t i;
+        for (i = 0; i < self_outbound_sessions_num; i++) {
+            Skissm__Session *self_outbound_session = self_outbound_sessions[i];
+            // if the device is different from the sender's
+            if (strcmp(self_outbound_session->their_address->user->device_id, from->user->device_id) != 0) {
+                if (self_outbound_session->responded == true) {
+                    // send syncing plaintext to server
+                    Skissm__SendOne2oneMsgResponse *sync_response = send_one2one_msg_internal(
+                        self_outbound_session,
+                        NOTIFICATION_LEVEL_NORMAL,
+                        invite_msg_data,
+                        invite_msg_data_len
+                    );
+                    // release
+                    skissm__send_one2one_msg_response__free_unpacked(sync_response, NULL);
+                } else {
+                    ssm_notify_log(
+                        from,
+                        DEBUG_LOG,
+                        "send_sync_msg(): outbound session[%s] (user_id:deviceid = %s, %s) not responded, store common_plaintext_data",
+                        self_outbound_session->session_id,
+                        self_outbound_session->their_address->user->user_id,
+                        self_outbound_session->their_address->user->device_id
+                    );
+                    // store pending common_plaintext_data
+                    store_pending_common_plaintext_data(
+                        self_outbound_session->our_address,
+                        self_outbound_session->their_address,
+                        invite_msg_data,
+                        invite_msg_data_len
+                    );
+                }
+            }
+            // release
+            skissm__session__free_unpacked(self_outbound_session, NULL);
+        }
+
+        // release
+        skissm__plaintext__free_unpacked(plaintext, NULL);
+        free_mem((void **)&invite_msg_data, invite_msg_data_len);
+        free_mem((void **)&self_outbound_sessions, sizeof(Skissm__Session *) * self_outbound_sessions_num);
+    }
+}
+
 Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
     uint32_t notif_level,
@@ -399,60 +474,6 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         skissm__send_one2one_msg_response__init(response);
         response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
         return response;
-    } else {
-        // rebuild an outbound session if the chain index is maximum
-        size_t i;
-        bool rebuild = false;
-        for (i = 0; i < outbound_sessions_num; i++) {
-            Skissm__Session *outbound_session = outbound_sessions[i];
-            Skissm__SenderChainNode *cur_sender_chain = outbound_session->ratchet->sender_chain;
-            // outbound_session may haven't been responded
-            if (cur_sender_chain
-                && cur_sender_chain->chain_key->index >= MAX_CHAIN_INDEX
-            ) {
-                rebuild = true;
-                break;
-            }
-        }
-        if (rebuild) {
-            for (i = 0; i < outbound_sessions_num; i++) {
-                Skissm__Session *outbound_session = outbound_sessions[i];
-                get_skissm_plugin()->db_handler.unload_session(
-                    outbound_session->our_address, outbound_session->their_address
-                );
-                // release
-                skissm__session__free_unpacked(outbound_session, NULL);
-            }
-            free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
-
-            // invite again
-            Skissm__InviteResponse *new_invite_response = new_invite(from, to_user_id, to_domain);
-
-            Skissm__E2eeAddress *to = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-            skissm__e2ee_address__init(to);
-            to->domain = strdup(to_domain);
-            Skissm__PeerUser *peer_user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
-            skissm__peer_user__init(peer_user);
-            peer_user->user_id = strdup(to_user_id);
-            // no specific deviceId currently
-            to->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
-            to->user = peer_user;
-            // store pending common_plaintext_data
-            store_pending_common_plaintext_data(
-                from,
-                to,
-                common_plaintext_data,
-                common_plaintext_data_len
-            );
-
-            // release
-            if (new_invite_response != NULL)
-                skissm__invite_response__free_unpacked(new_invite_response, NULL);
-            skissm__e2ee_address__free_unpacked(to, NULL);
-            free_mem((void **)&common_plaintext_data, common_plaintext_data_len);
-
-            return NULL;
-        }
     }
 
     size_t i;

@@ -700,11 +700,7 @@ static void test_interaction() {
     Skissm__InviteResponse *response_1 = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
     Skissm__InviteResponse *response_2 = invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Bob invites Alice and Claire to join the group
-    Skissm__InviteResponse *response_3 = invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
     Skissm__InviteResponse *response_4 = invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
-    // Claire invites Alice and Bob to join the group
-    Skissm__InviteResponse *response_5 = invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
-    Skissm__InviteResponse *response_6 = invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     sleep(3);
     // the first group member is Alice
@@ -748,10 +744,7 @@ static void test_interaction() {
     // release
     skissm__invite_response__free_unpacked(response_1, NULL);
     skissm__invite_response__free_unpacked(response_2, NULL);
-    skissm__invite_response__free_unpacked(response_3, NULL);
     skissm__invite_response__free_unpacked(response_4, NULL);
-    skissm__invite_response__free_unpacked(response_5, NULL);
-    skissm__invite_response__free_unpacked(response_6, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     skissm__group_member__free_unpacked(group_members[2], NULL);
@@ -779,11 +772,7 @@ static void test_continual() {
     Skissm__InviteResponse *response_1 = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
     Skissm__InviteResponse *response_2 = invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Bob invites Alice and Claire to join the group
-    Skissm__InviteResponse *response_3 = invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
     Skissm__InviteResponse *response_4 = invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
-    // Claire invites Alice and Bob to join the group
-    Skissm__InviteResponse *response_5 = invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
-    Skissm__InviteResponse *response_6 = invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     sleep(3);
     // the first group member is Alice
@@ -835,10 +824,7 @@ static void test_continual() {
     // release
     skissm__invite_response__free_unpacked(response_1, NULL);
     skissm__invite_response__free_unpacked(response_2, NULL);
-    skissm__invite_response__free_unpacked(response_3, NULL);
     skissm__invite_response__free_unpacked(response_4, NULL);
-    skissm__invite_response__free_unpacked(response_5, NULL);
-    skissm__invite_response__free_unpacked(response_6, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     skissm__group_member__free_unpacked(group_members[2], NULL);

@@ -258,6 +258,8 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
 
     initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key, &(msg->alice_base_key));
 
+    inbound_session->responded = true;
+
     // store sesson state
     get_skissm_plugin()->db_handler.store_session(inbound_session);
 

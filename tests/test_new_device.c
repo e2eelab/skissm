@@ -414,10 +414,8 @@ static void test_two_members_session() {
 
     // Alice invites Bob to create a session
     Skissm__InviteResponse *response_1 = invite(alice_address, bob_user_id, bob_domain);
-    // Bob invites Alice to create a session
-    Skissm__InviteResponse *response_2 = invite(bob_address, alice_user_id, alice_domain);
 
-    sleep(3);
+    sleep(1);
 
     // Alice add a new device
     mock_alice_account("alice");
@@ -439,7 +437,6 @@ static void test_two_members_session() {
 
     // release
     skissm__invite_response__free_unpacked(response_1, NULL);
-    skissm__invite_response__free_unpacked(response_2, NULL);
 
     // test stop
     test_end();
@@ -465,8 +462,6 @@ static void test_two_members_four_devices() {
 
     // Alice invites Bob to create a session
     Skissm__InviteResponse *response_1 = invite(alice_device_1, bob_user_id, bob_domain);
-    // Bob invites Alice to create a session
-    Skissm__InviteResponse *response_2 = invite(bob_device_1, alice_user_id, alice_domain);
 
     sleep(3);
 
@@ -544,7 +539,6 @@ static void test_two_members_four_devices() {
 
     // release
     skissm__invite_response__free_unpacked(response_1, NULL);
-    skissm__invite_response__free_unpacked(response_2, NULL);
 
     // test stop
     test_end();
