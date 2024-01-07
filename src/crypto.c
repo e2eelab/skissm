@@ -18,6 +18,7 @@
  */
 #include "skissm/crypto.h"
 
+#include <errno.h>
 #include <string.h>
 
 #include "additions/curve_sigs.h"
@@ -465,7 +466,24 @@ int encrypt_aes_file(
 ) {
     FILE *infile, *outfile;
     infile = fopen(in_file_path, "r");
+    if (infile == NULL) {
+        ssm_notify_log(
+            NULL,
+            BAD_FILE_ENCRYPTION,
+            "encrypt_aes_file() in_file_path: %s, with errorno: %d.", in_file_path, errno);
+        return -1;
+    }
+
     outfile = fopen(out_file_path, "w");
+    if (outfile == NULL) {
+        ssm_notify_log(
+            NULL,
+            BAD_FILE_ENCRYPTION,
+            "encrypt_aes_file() out_file_path: %s, with errorno: %d.", out_file_path, errno);
+        // release
+        fclose(infile);
+        return -1;
+    }
 
     fseek(infile, 0, SEEK_END);
     long size = ftell(infile);
@@ -530,7 +548,24 @@ int decrypt_aes_file(
 ) {
     FILE *infile, *outfile;
     infile = fopen(in_file_path, "r+");
+    if (infile == NULL) {
+        ssm_notify_log(
+            NULL,
+            BAD_FILE_DECRYPTION,
+            "decrypt_aes_file() in_file_path: %s, with errorno: %d.", in_file_path, errno);
+        return -1;
+    }
+
     outfile = fopen(out_file_path, "w");
+    if (outfile == NULL) {
+        ssm_notify_log(
+            NULL,
+            BAD_FILE_DECRYPTION,
+            "decrypt_aes_file() out_file_path: %s, with errorno: %d.", out_file_path, errno);
+        // release
+        fclose(infile);
+        return -1;
+    }
 
     int key_len = AES256_KEY_LENGTH * 8;
     uint8_t AD[AES256_FILE_AD_LEN] = AES256_FILE_AD;
