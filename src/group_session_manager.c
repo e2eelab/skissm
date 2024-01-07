@@ -88,28 +88,25 @@ bool consume_create_group_response(
     }
 }
 
-bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg) {
-    const char *e2ee_pack_id = msg->e2ee_pack_id;
-    Skissm__GroupInfo *group_info = msg->group_info;
+static void create_group_by_member_infos(Skissm__E2eeAddress *receiver_address, const char *e2ee_pack_id, Skissm__E2eeAddress *sender_address, Skissm__GroupInfo *group_info, Skissm__GroupMemberInfo **member_info_list, size_t member_info_list_num) {
     const char *group_name = group_info->group_name;
-    Skissm__E2eeAddress *sender_address = msg->sender_address;
     Skissm__E2eeAddress *group_address = group_info->group_address;
     size_t group_members_num = group_info->n_group_members;
     Skissm__GroupMember **group_members = group_info->group_members;
-
+    
     // try to load inbound group session
     size_t i;
     Skissm__GroupSession *inbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, receiver_address, group_address, &inbound_group_session);
     if (inbound_group_session == NULL) {
-        for (i = 0; i < msg->n_member_info_list; i++) {
-            Skissm__GroupMemberInfo *cur_group_member_info = (msg->member_info_list)[i];
+        for (i = 0; i < member_info_list_num; i++) {
+            Skissm__GroupMemberInfo *cur_group_member_info = member_info_list[i];
             if (!compare_address(cur_group_member_info->member_address, receiver_address)) {
                 new_inbound_group_session_by_member_id(e2ee_pack_id, receiver_address, cur_group_member_info, group_info);
                 ssm_notify_log(
                     receiver_address,
                     DEBUG_LOG,
-                    "consume_create_group_msg() new_inbound_group_session_by_member_id: member_address: [%s:%s]",
+                    "create_group_by_member_infos() new_inbound_group_session_by_member_id: member_address: [%s:%s]",
                     cur_group_member_info->member_address->user->user_id,
                     cur_group_member_info->member_address->user->device_id
                 );
@@ -117,22 +114,22 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
                 ssm_notify_log(
                     receiver_address,
                     DEBUG_LOG,
-                    "consume_create_group_msg() new_inbound_group_session_by_member_id: skip member_address: [%s:%s]",
+                    "create_group_by_member_infos() new_inbound_group_session_by_member_id: skip member_address: [%s:%s]",
                     cur_group_member_info->member_address->user->user_id,
                     cur_group_member_info->member_address->user->device_id
                 );
             }
         }
     } else {
-        for (i = 0; i < msg->n_member_info_list; i++) {
-            Skissm__GroupMemberInfo *cur_group_member_info = (msg->member_info_list)[i];
+        for (i = 0; i < member_info_list_num; i++) {
+            Skissm__GroupMemberInfo *cur_group_member_info = member_info_list[i];
             if (!compare_address(cur_group_member_info->member_address, sender_address)) {
                 if (!compare_address(cur_group_member_info->member_address, receiver_address)) {
                     new_and_complete_inbound_group_session(cur_group_member_info, inbound_group_session);
                     ssm_notify_log(
                         receiver_address,
                         DEBUG_LOG,
-                        "consume_create_group_msg() new_and_complete_inbound_group_session: member_address: [%s:%s]",
+                        "create_group_by_member_infos() new_and_complete_inbound_group_session: member_address: [%s:%s]",
                         cur_group_member_info->member_address->user->user_id,
                         cur_group_member_info->member_address->user->device_id
                     );
@@ -140,7 +137,7 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
                     ssm_notify_log(
                         receiver_address,
                         DEBUG_LOG,
-                        "consume_create_group_msg() new_and_complete_inbound_group_session: skip member_address: [%s:%s]",
+                        "create_group_by_member_infos() new_and_complete_inbound_group_session: skip member_address: [%s:%s]",
                         cur_group_member_info->member_address->user->user_id,
                         cur_group_member_info->member_address->user->device_id
                     );
@@ -150,7 +147,7 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
                 ssm_notify_log(
                     receiver_address,
                     DEBUG_LOG,
-                    "consume_create_group_msg() complete_inbound_group_session_by_member_id: member_address: [%s:%s]",
+                    "create_group_by_member_infos() complete_inbound_group_session_by_member_id: member_address: [%s:%s]",
                     cur_group_member_info->member_address->user->user_id,
                     cur_group_member_info->member_address->user->device_id
                 );
@@ -171,7 +168,7 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
         ssm_notify_log(
             receiver_address,
             DEBUG_LOG,
-            "consume_create_group_msg() new_outbound_group_session_by_receiver: session_owner and sender_address: [%s:%s]",
+            "create_group() new_outbound_group_session_by_receiver: session_owner and sender_address: [%s:%s]",
             receiver_address->user->user_id,
             receiver_address->user->device_id
         );
@@ -179,9 +176,13 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
         // release
         skissm__group_session__free_unpacked(inbound_group_session, NULL);
     }
+}
+
+bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg) {
+    create_group_by_member_infos(receiver_address, msg->e2ee_pack_id, msg->sender_address, msg->group_info, msg->member_info_list, msg->n_member_info_list);
 
     // notify
-    ssm_notify_group_created(receiver_address, group_address, group_name);
+    ssm_notify_group_created(receiver_address, msg->group_info->group_address, msg->group_info->group_name);
 
     // done
     return true;
@@ -313,18 +314,29 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
         // release
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
         skissm__group_session__free_unpacked(inbound_group_session, NULL);
+        
+        // notify
+        ssm_notify_group_members_added(
+            receiver_address,
+            group_address,
+            group_name,
+            msg->adding_members,
+            msg->n_adding_members
+        );
     } else {
-        // check
+        // receiver_address is a newly added member
+        // msg->adding_member_info_list should consist of all members
+        create_group_by_member_infos(receiver_address, msg->e2ee_pack_id, msg->sender_address, msg->group_info, msg->adding_member_info_list, msg->n_adding_member_info_list);
+        
+        // notify with all group members that are new to receiver_address
+        ssm_notify_group_members_added(
+            receiver_address,
+            group_address,
+            group_name,
+            msg->group_info->group_members,
+            msg->group_info->n_group_members
+        );
     }
-
-    // notify
-    ssm_notify_group_members_added(
-        receiver_address,
-        group_address,
-        group_name,
-        msg->adding_members,
-        msg->n_adding_members
-    );
 
     // done
     return true;
