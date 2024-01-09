@@ -153,69 +153,6 @@ Skissm__AcceptResponse *accept_internal(
     return response;
 }
 
-Skissm__F2fInviteResponse *f2f_invite_internal(
-    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
-    char *e2ee_pack_id,
-    uint8_t *secret, size_t secret_len
-) {
-    // ssm_notify_log(from, DEBUG_LOG, "f2f_invite_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
-
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(from, &auth);
-
-    if (auth == NULL) {
-        ssm_notify_log(from, BAD_ACCOUNT, "f2f_invite_internal()");
-        return NULL;
-    }
-
-    Skissm__F2fInviteRequest *request = produce_f2f_invite_request(from, to, e2ee_pack_id, secret, secret_len);
-    Skissm__F2fInviteResponse *response = get_skissm_plugin()->proto_handler.f2f_invite(from, auth, request);
-    bool succ = consume_f2f_invite_response(request, response);
-    if (!succ) {
-        // we do not store pending request here
-        ssm_notify_log(from, DEBUG_LOG, "f2f_invite_internal() failed, do it on next start");
-    }
-
-    // release
-    free(auth);
-    skissm__f2f_invite_request__free_unpacked(request, NULL);
-
-    // done
-    return response;
-}
-
-Skissm__F2fAcceptResponse *f2f_accept_internal(
-    const char *e2ee_pack_id,
-    Skissm__E2eeAddress *from,
-    Skissm__E2eeAddress *to,
-    Skissm__Account *local_account
-) {
-    // ssm_notify_log(from, DEBUG_LOG, "f2f_accept_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
-    
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(from, &auth);
-
-    if (auth == NULL) {
-        ssm_notify_log(from, BAD_ACCOUNT, "f2f_accept_internal()");
-        return NULL;
-    }
-
-    Skissm__F2fAcceptRequest *request = produce_f2f_accept_request(e2ee_pack_id, from, to, local_account);
-    Skissm__F2fAcceptResponse *response = get_skissm_plugin()->proto_handler.f2f_accept(from, auth, request);
-    bool succ = consume_f2f_accept_response(response);
-    if (!succ) {
-        // we do not store pending request here
-        ssm_notify_log(from, DEBUG_LOG, "f2f_accept_internal() failed, do it on next start");
-    }
-
-    // release
-    free(auth);
-    skissm__f2f_accept_request__free_unpacked(request, NULL);
-
-    // done
-    return response;
-}
-
 Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
     // ssm_notify_log(account->address, DEBUG_LOG, "publish_spk_internal(): user_address [%s:%s]", account->address->user->user_id, account->address->user->device_id);
     

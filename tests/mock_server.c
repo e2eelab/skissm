@@ -155,7 +155,7 @@ static uint8_t find_address(Skissm__E2eeAddress *user_address) {
             }
         }
     }
-    return -1;
+    return user_data_max;
 }
 
 static void insert_index_node(index_node **head, index_node **tail, size_t index, Skissm__E2eeAddress *device_address) {
@@ -539,28 +539,36 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *fr
 }
 
 Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__InviteRequest *request) {
-    Skissm__InviteMsg *invite_msg = request->msg;
-    size_t invite_msg_data_len = skissm__invite_msg__get_packed_size(invite_msg);
-    uint8_t invite_msg_data[invite_msg_data_len];
-    skissm__invite_msg__pack(invite_msg, invite_msg_data);
-
-    // forward a copy of InviteMsg
-    Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
-    skissm__proto_msg__init(proto_msg);
-    copy_address_from_address(&(proto_msg->from), invite_msg->from);
-    copy_address_from_address(&(proto_msg->to), invite_msg->to);
-    proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG;
-    proto_msg->invite_msg = skissm__invite_msg__unpack(NULL, invite_msg_data_len, invite_msg_data);
-
-    send_proto_msg(proto_msg);
-
     // prepare response
     Skissm__InviteResponse *response = (Skissm__InviteResponse *)malloc(sizeof(Skissm__InviteResponse));
     skissm__invite_response__init(response);
-    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
-    // release
-    skissm__proto_msg__free_unpacked(proto_msg, NULL);
+    Skissm__InviteMsg *invite_msg = request->msg;
+    uint8_t inviter = find_address(invite_msg->from);
+    if (inviter != user_data_max) {
+        copy_protobuf_from_protobuf(&(invite_msg->alice_identity_key), &(user_data_set[inviter].identity_key_public->asym_public_key));
+
+        size_t invite_msg_data_len = skissm__invite_msg__get_packed_size(invite_msg);
+        uint8_t invite_msg_data[invite_msg_data_len];
+        skissm__invite_msg__pack(invite_msg, invite_msg_data);
+
+        // forward a copy of InviteMsg
+        Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+        skissm__proto_msg__init(proto_msg);
+        copy_address_from_address(&(proto_msg->from), invite_msg->from);
+        copy_address_from_address(&(proto_msg->to), invite_msg->to);
+        proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG;
+        proto_msg->invite_msg = skissm__invite_msg__unpack(NULL, invite_msg_data_len, invite_msg_data);
+
+        send_proto_msg(proto_msg);
+
+        // release
+        skissm__proto_msg__free_unpacked(proto_msg, NULL);
+
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+    } else {
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+    }
 
     // done
     return response;
@@ -590,83 +598,6 @@ Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth,
     // prepare response
     Skissm__AcceptResponse *response = (Skissm__AcceptResponse *)malloc(sizeof(Skissm__AcceptResponse));
     skissm__accept_response__init(response);
-    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
-
-    // release
-    skissm__proto_msg__free_unpacked(proto_msg, NULL);
-
-    // done
-    return response;
-}
-
-Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fInviteRequest *request) {
-    Skissm__F2fInviteMsg *f2f_invite_msg = request->msg;
-
-    uint8_t user_data_find = 0;
-    while (user_data_find < user_data_set_insert_pos) {
-        if ((user_data_set[user_data_find].address) && (f2f_invite_msg->to) && compare_address(user_data_set[user_data_find].address, f2f_invite_msg->to)) {
-            break;
-        }
-        user_data_find++;
-    }
-
-    // data not found
-    if (user_data_find == user_data_set_insert_pos) {
-        Skissm__F2fInviteResponse *response = (Skissm__F2fInviteResponse *)malloc(sizeof(Skissm__F2fInviteResponse));
-        skissm__f2f_invite_response__init(response);
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_INTERNAL_SERVER_ERROR;
-        return response;
-    }
-
-    user_data *cur_data = &(user_data_set[user_data_find]);
-
-    // pack
-    size_t f2f_invite_msg_data_len = skissm__f2f_invite_msg__get_packed_size(f2f_invite_msg);
-    uint8_t f2f_invite_msg_data[f2f_invite_msg_data_len];
-    skissm__f2f_invite_msg__pack(f2f_invite_msg, f2f_invite_msg_data);
-
-    // forward a copy of InviteMsg
-    Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
-    skissm__proto_msg__init(proto_msg);
-    copy_address_from_address(&(proto_msg->from), f2f_invite_msg->from);
-    copy_address_from_address(&(proto_msg->to), f2f_invite_msg->to);
-    proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_F2F_INVITE_MSG;
-    proto_msg->f2f_invite_msg = skissm__f2f_invite_msg__unpack(NULL, f2f_invite_msg_data_len, f2f_invite_msg_data);
-
-    send_proto_msg(proto_msg);
-
-    // prepare response
-    Skissm__F2fInviteResponse *response = (Skissm__F2fInviteResponse *)malloc(sizeof(Skissm__F2fInviteResponse));
-    skissm__f2f_invite_response__init(response);
-    copy_spk_public_from_spk_public(&(response->spk_public), cur_data->signed_pre_key_public);
-    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
-
-    // release
-    skissm__proto_msg__free_unpacked(proto_msg, NULL);
-
-    // done
-    return response;
-}
-
-Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fAcceptRequest *request) {
-    Skissm__F2fAcceptMsg *f2f_accept_msg = request->msg;
-    size_t f2f_accept_msg_data_len = skissm__f2f_accept_msg__get_packed_size(f2f_accept_msg);
-    uint8_t f2f_accept_msg_data[f2f_accept_msg_data_len];
-    skissm__f2f_accept_msg__pack(f2f_accept_msg, f2f_accept_msg_data);
-
-    // forward a copy of AcceptMsg
-    Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
-    skissm__proto_msg__init(proto_msg);
-    copy_address_from_address(&(proto_msg->from), f2f_accept_msg->from);
-    copy_address_from_address(&(proto_msg->to), f2f_accept_msg->to);
-    proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_F2F_ACCEPT_MSG;
-    proto_msg->f2f_accept_msg = skissm__f2f_accept_msg__unpack(NULL, f2f_accept_msg_data_len, f2f_accept_msg_data);
-
-    send_proto_msg(proto_msg);
-
-    // prepare response
-    Skissm__F2fAcceptResponse *response = (Skissm__F2fAcceptResponse *)malloc(sizeof(Skissm__F2fAcceptResponse));
-    skissm__f2f_accept_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
 
     // release

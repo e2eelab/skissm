@@ -406,20 +406,8 @@ bool is_equal_session(Skissm__Session *session_1, Skissm__Session *session_2) {
             return false;
         }
     }
-    if (!is_equal_data(&(session_1->alice_identity_key), &(session_2->alice_identity_key))) {
-        printf("alice_identity_key not match");
-        return false;
-    }
     if (!is_equal_data(&(session_1->alice_ephemeral_key), &(session_2->alice_ephemeral_key))) {
         printf("alice_ephemeral_key not match");
-        return false;
-    }
-    if (!is_equal_data(&(session_1->bob_signed_pre_key), &(session_2->bob_signed_pre_key))) {
-        printf("bob_signed_pre_key not match");
-        return false;
-    }
-    if (!is_equal_data(&(session_1->bob_one_time_pre_key), &(session_2->bob_one_time_pre_key))) {
-        printf("bob_one_time_pre_key not match");
         return false;
     }
     if (!is_equal_data(&(session_1->associated_data), &(session_2->associated_data))) {

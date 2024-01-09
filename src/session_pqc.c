@@ -31,6 +31,8 @@
 /** length of the shared secret created by a PQC operation */
 #define CRYPTO_BYTES_KEY_LEN 32
 
+static const char FINGERPRINT_SEED[] = "Fingerprint";
+
 Skissm__InviteResponse *pqc_new_outbound_session(
     Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle
 ) {
@@ -69,13 +71,13 @@ Skissm__InviteResponse *pqc_new_outbound_session(
 
     uint8_t x3dh_epoch = 2;
     outbound_session->responded = false;
-    copy_protobuf_from_protobuf(&(outbound_session->alice_identity_key), &(my_identity_key_pair->public_key));
-    copy_protobuf_from_protobuf(&(outbound_session->bob_signed_pre_key), &(their_spk->public_key));
     outbound_session->bob_signed_pre_key_id = their_spk->spk_id;
+    outbound_session->ratchet->sender_chain = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
+    skissm__sender_chain_node__init(outbound_session->ratchet->sender_chain);
+    copy_protobuf_from_protobuf(&(outbound_session->ratchet->sender_chain->their_ratchet_public_key), &(their_spk->public_key));
 
     // server may return empty one-time pre-key(public)
     if (their_opk) {
-        copy_protobuf_from_protobuf(&(outbound_session->bob_one_time_pre_key), &(their_opk->public_key));
         outbound_session->bob_one_time_pre_key_id = their_opk->opk_id;
         x3dh_epoch = 3;
     }
@@ -85,6 +87,29 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     outbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
     memcpy(outbound_session->associated_data.data, my_identity_key_pair->public_key.data, key_len);
     memcpy((outbound_session->associated_data.data) + key_len, their_ik->asym_public_key.data, key_len);
+
+    // hash the public keys
+    int hash_input_len = key_len * (x3dh_epoch + 1);
+    uint8_t *hash_input = (uint8_t *)malloc(sizeof(uint8_t) * hash_input_len);
+    memcpy(hash_input, my_identity_key_pair->public_key.data, key_len);
+    memcpy(hash_input + key_len, their_ik->asym_public_key.data, key_len);
+    memcpy(hash_input + key_len + key_len, their_spk->public_key.data, key_len);
+    if (x3dh_epoch == 3)
+        memcpy(hash_input + key_len + key_len + key_len, their_opk->public_key.data, key_len);
+
+    int shared_key_len = cipher_suite->get_crypto_param().hash_len;
+    uint8_t derived_secrets[2 * shared_key_len];
+    int hash_len = cipher_suite->get_crypto_param().hash_len;
+    uint8_t salt[hash_len];
+    memset(salt, 0, hash_len);
+    cipher_suite->hkdf(
+        hash_input, hash_input_len,
+        salt, sizeof(salt),
+        (uint8_t *)FINGERPRINT_SEED, sizeof(FINGERPRINT_SEED) - 1,
+        derived_secrets, sizeof(derived_secrets)
+    );
+
+    copy_protobuf_from_array(&(outbound_session->fingerprint), derived_secrets, sizeof(derived_secrets));
 
     // calculate the shared secret S via encapsulation
     uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY_LEN];
@@ -121,15 +146,16 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     outbound_session->session_id = generate_uuid_str();
 
     // prepare the encaps_ciphertext_list
-    outbound_session->n_encaps_ciphertext_list = x3dh_epoch;
-    outbound_session->encaps_ciphertext_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * x3dh_epoch);
-    init_protobuf(&(outbound_session->encaps_ciphertext_list[0]));
-    copy_protobuf_from_protobuf(&(outbound_session->encaps_ciphertext_list[0]), ciphertext_2);
-    init_protobuf(&(outbound_session->encaps_ciphertext_list[1]));
-    copy_protobuf_from_protobuf(&(outbound_session->encaps_ciphertext_list[1]), ciphertext_3);
+    outbound_session->ciphertext_list = (Skissm__EncapsCiphertexts *)malloc(sizeof(Skissm__EncapsCiphertexts));
+    skissm__encaps_ciphertexts__init(outbound_session->ciphertext_list);
+    outbound_session->ciphertext_list->ciphertext_num = x3dh_epoch;
+    init_protobuf(&(outbound_session->ciphertext_list->ciphertext_2));
+    copy_protobuf_from_protobuf(&(outbound_session->ciphertext_list->ciphertext_2), ciphertext_2);
+    init_protobuf(&(outbound_session->ciphertext_list->ciphertext_3));
+    copy_protobuf_from_protobuf(&(outbound_session->ciphertext_list->ciphertext_3), ciphertext_3);
     if (x3dh_epoch == 3) {
-        init_protobuf(&(outbound_session->encaps_ciphertext_list[2]));
-        copy_protobuf_from_protobuf(&(outbound_session->encaps_ciphertext_list[2]), ciphertext_4);
+        init_protobuf(&(outbound_session->ciphertext_list->ciphertext_4));
+        copy_protobuf_from_protobuf(&(outbound_session->ciphertext_list->ciphertext_4), ciphertext_4);
     }
 
     // generate the base key
@@ -148,7 +174,7 @@ Skissm__InviteResponse *pqc_new_outbound_session(
         outbound_session->their_address->user->user_id,
         outbound_session->their_address->user->device_id
     );
-    outbound_session->t_invite = get_skissm_plugin()->common_handler.gen_ts();
+    outbound_session->invite_t = get_skissm_plugin()->common_handler.gen_ts();
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
     // send the invite request to the peer
@@ -184,13 +210,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
     }
 
     uint8_t x3dh_epoch = 3;
-    copy_protobuf_from_protobuf(&(inbound_session->alice_identity_key), &(msg->alice_identity_key));
     inbound_session->bob_signed_pre_key_id = msg->bob_signed_pre_key_id;
-    if (old_spk == 0) {
-        copy_protobuf_from_protobuf(&(inbound_session->bob_signed_pre_key), &(our_spk->key_pair->public_key));
-    } else {
-        copy_protobuf_from_protobuf(&(inbound_session->bob_signed_pre_key), &(old_spk_data->key_pair->public_key));
-    }
     if (msg->bob_one_time_pre_key_id != 0) {
         x3dh_epoch = 4;
     }
@@ -217,7 +237,6 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
         } else {
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
             get_skissm_plugin()->db_handler.update_one_time_pre_key(local_account->address, our_one_time_pre_key->opk_id);
-            copy_protobuf_from_protobuf(&(inbound_session->bob_one_time_pre_key), &(our_one_time_pre_key->key_pair->public_key));
             inbound_session->bob_one_time_pre_key_id = our_one_time_pre_key->opk_id;
         }
     } else {
@@ -238,6 +257,29 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
         bob_one_time_pre_key = NULL;
     }
 
+    // hash the public keys
+    int hash_input_len = key_len * x3dh_epoch;
+    uint8_t *hash_input = (uint8_t *)malloc(sizeof(uint8_t) * hash_input_len);
+    memcpy(hash_input, msg->alice_identity_key.data, key_len);
+    memcpy(hash_input + key_len, our_ik->asym_key_pair->public_key.data, key_len);
+    memcpy(hash_input + key_len + key_len, our_spk->key_pair->public_key.data, key_len);
+    if (x3dh_epoch == 4)
+        memcpy(hash_input + key_len + key_len + key_len, bob_one_time_pre_key->public_key.data, key_len);
+
+    int shared_key_len = cipher_suite->get_crypto_param().hash_len;
+    uint8_t derived_secrets[2 * shared_key_len];
+    int hash_len = cipher_suite->get_crypto_param().hash_len;
+    uint8_t salt[hash_len];
+    memset(salt, 0, hash_len);
+    cipher_suite->hkdf(
+        hash_input, hash_input_len,
+        salt, sizeof(salt),
+        (uint8_t *)FINGERPRINT_SEED, sizeof(FINGERPRINT_SEED) - 1,
+        derived_secrets, sizeof(derived_secrets)
+    );
+
+    copy_protobuf_from_array(&(inbound_session->fingerprint), derived_secrets, sizeof(derived_secrets));
+
     // calculate the shared secret S via KEM
     uint8_t secret[x3dh_epoch * CRYPTO_BYTES_KEY_LEN];
     uint8_t *pos = secret;
@@ -246,7 +288,7 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
     uint32_t ciphertext_len = cipher_suite->get_crypto_param().kem_ciphertext_len;
 
     ciphertext_1->len = ciphertext_len;
-    ciphertext_1->data = cipher_suite->ss_key_gen(NULL, &(inbound_session->alice_identity_key), pos);
+    ciphertext_1->data = cipher_suite->ss_key_gen(NULL, &(msg->alice_identity_key), pos);
     pos += CRYPTO_BYTES_KEY_LEN;
     cipher_suite->ss_key_gen(&(bob_identity_key->private_key), &(msg->encaps_ciphertext_list[0]), pos);
     pos += CRYPTO_BYTES_KEY_LEN;
@@ -287,12 +329,33 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     ssm_notify_log(NULL, DEBUG_LOG, "pqc_complete_outbound_session()");
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
 
+    ProtobufCBinaryData *their_ratchet_key = NULL;
+    if (outbound_session->ratchet->sender_chain != NULL) {
+        if (outbound_session->ratchet->sender_chain->their_ratchet_public_key.data != NULL) {
+            their_ratchet_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+            copy_protobuf_from_protobuf(their_ratchet_key, &(outbound_session->ratchet->sender_chain->their_ratchet_public_key));
+
+            skissm__sender_chain_node__free_unpacked(outbound_session->ratchet->sender_chain, NULL);
+            outbound_session->ratchet->sender_chain = NULL;
+        } else {
+            ssm_notify_log(NULL, BAD_SESSION, "pqc_complete_outbound_session()");
+            return -1;
+        }
+    } else {
+        ssm_notify_log(NULL, BAD_SESSION, "pqc_complete_outbound_session()");
+        return -1;
+    }
+
     outbound_session->responded = true;
 
     // load account to get the private identity key
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->our_address, &account);
     if (account == NULL) {
+        // release
+        free_protobuf(their_ratchet_key);
+        free_mem((void **)&their_ratchet_key, sizeof(ProtobufCBinaryData));
+
         ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");
         return -1;
     }
@@ -304,127 +367,13 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     initialise_as_alice(
         cipher_suite, outbound_session->ratchet,
         outbound_session->temp_shared_secret.data, outbound_session->temp_shared_secret.len,
-        outbound_session->alice_base_key, &(outbound_session->bob_signed_pre_key), &(msg->ratchet_key)
+        outbound_session->alice_base_key, their_ratchet_key, &(msg->ratchet_key)
     );
 
-    // release account
+    // release
+    free_protobuf(their_ratchet_key);
+    free_mem((void **)&their_ratchet_key, sizeof(ProtobufCBinaryData));
     skissm__account__free_unpacked(account, NULL);
-
-    // done
-    return 0;
-}
-
-int pqc_new_f2f_outbound_session(
-    Skissm__Session *outbound_session,
-    Skissm__F2fPreKeyInviteMsg *f2f_pre_key_invite_msg
-) {
-    // set the version
-    outbound_session->version = strdup(f2f_pre_key_invite_msg->version);
-    // set the cipher suite id
-    outbound_session->e2ee_pack_id = strdup(f2f_pre_key_invite_msg->e2ee_pack_id);
-
-    // set the session id
-    outbound_session->session_id = strdup(f2f_pre_key_invite_msg->session_id);
-
-    // set the address
-    copy_address_from_address(&(outbound_session->our_address), f2f_pre_key_invite_msg->from);
-    copy_address_from_address(&(outbound_session->their_address), f2f_pre_key_invite_msg->to);
-
-    // store the secret bytes(store in the associated_data)
-    copy_protobuf_from_protobuf(&(outbound_session->associated_data), &(f2f_pre_key_invite_msg->secret));
-
-    outbound_session->responded = false;
-
-    // this is a face-to-face session
-    outbound_session->f2f = true;
-
-    // done
-    return 0;
-}
-
-int pqc_new_f2f_inbound_session(
-    Skissm__Session *inbound_session,
-    Skissm__Account *local_account,
-    uint8_t *secret
-) {
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
-
-    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, 4 * CRYPTO_BYTES_KEY_LEN, local_account->signed_pre_key->key_pair, NULL);
-
-    // this is a face-to-face session
-    inbound_session->f2f = true;
-
-    // insert the associated data
-    int key_len = local_account->identity_key->asym_key_pair->public_key.len;
-    int ad_len = 2 * key_len;
-    inbound_session->associated_data.len = ad_len;
-    inbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
-    uint8_t *key_data = local_account->identity_key->asym_key_pair->public_key.data;
-    memcpy(inbound_session->associated_data.data, key_data, key_len);
-    memcpy((inbound_session->associated_data.data) + key_len, key_data, key_len);
-
-    Skissm__E2eeAddress *sender_address = NULL;
-    copy_address_from_address(&(sender_address), inbound_session->their_address);
-    if (strcmp(inbound_session->their_address->user->user_id, inbound_session->our_address->user->user_id) != 0) {
-        // no need to record the device id of the sender's address in the face-to-face inbound session
-        free(inbound_session->their_address->user->device_id);
-        inbound_session->their_address->user->device_id = strdup("");
-    }
-
-    // store sesson state
-    get_skissm_plugin()->db_handler.store_session(inbound_session);
-
-    /** The one who sends the accept message will be the one who received the invitation message.
-     *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    Skissm__F2fAcceptResponse *response = f2f_accept_internal(
-        inbound_session->e2ee_pack_id, inbound_session->our_address, sender_address, local_account
-    );
-
-    // release
-    skissm__e2ee_address__free_unpacked(sender_address, NULL);
-    skissm__f2f_accept_response__free_unpacked(response, NULL);
-
-    // done
-    return 0;
-}
-
-int pqc_complete_f2f_outbound_session(Skissm__Session *outbound_session, Skissm__F2fAcceptMsg *msg) {
-    // get the cipher suite
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
-
-    // unpack
-    Skissm__F2fPreKeyAcceptMsg *f2f_pre_key_accept_msg = skissm__f2f_pre_key_accept_msg__unpack(NULL, msg->pre_key_msg.len, msg->pre_key_msg.data);
-
-    // set the other's signed pre-key
-    copy_protobuf_from_protobuf(&(outbound_session->bob_signed_pre_key), &(f2f_pre_key_accept_msg->bob_signed_pre_key));
-
-    // create the root key and chain keys
-    initialise_as_alice(
-        cipher_suite, outbound_session->ratchet,
-        outbound_session->associated_data.data, outbound_session->associated_data.len,
-        NULL, &(outbound_session->bob_signed_pre_key), NULL
-    );
-
-    // replace the associated data
-    free_mem((void **)&(outbound_session->associated_data.data), outbound_session->associated_data.len);
-    int key_len = f2f_pre_key_accept_msg->bob_identity_public_key.len;
-    int ad_len = 2 * key_len;
-    outbound_session->associated_data.len = ad_len;
-    outbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
-    uint8_t *key_data = f2f_pre_key_accept_msg->bob_identity_public_key.data;
-    memcpy(outbound_session->associated_data.data, key_data, key_len);
-    memcpy((outbound_session->associated_data.data) + key_len, key_data, key_len);
-
-    if (strcmp(outbound_session->our_address->user->user_id, outbound_session->their_address->user->user_id) != 0) {
-        // no need to record the device id of the receiver's address in the face-to-face outbound session
-        free(outbound_session->their_address->user->device_id);
-        outbound_session->their_address->user->device_id = strdup("");
-    }
-
-    outbound_session->responded = true;
-
-    // release
-    skissm__f2f_pre_key_accept_msg__free_unpacked(f2f_pre_key_accept_msg, NULL);
 
     // done
     return 0;
@@ -433,8 +382,5 @@ int pqc_complete_f2f_outbound_session(Skissm__Session *outbound_session, Skissm_
 const session_suite_t E2EE_SESSION_KYBER_SPHINCSPLUS_SHA256_256S_AES256_GCM_SHA256 = {
     pqc_new_outbound_session,
     pqc_new_inbound_session,
-    pqc_complete_outbound_session,
-    pqc_new_f2f_outbound_session,
-    pqc_new_f2f_inbound_session,
-    pqc_complete_f2f_outbound_session
+    pqc_complete_outbound_session
 };

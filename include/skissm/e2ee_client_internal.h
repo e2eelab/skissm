@@ -74,35 +74,6 @@ Skissm__AcceptResponse *accept_internal(
 );
 
 /**
- * @brief Send face-to-face invite request to server.
- * @param from
- * @param to
- * @param e2ee_pack_id
- * @param secret
- * @param secret_len
- * @return Skissm__F2fInviteResponse *
- */
-Skissm__F2fInviteResponse *f2f_invite_internal(
-    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
-    char *e2ee_pack_id,
-    uint8_t *secret, size_t secret_len
-);
-
-/**
- * @brief Send face-to-face accept request to server.
- * @param e2ee_pack_id
- * @param from
- * @param to
- * @param local_account
- * @return Skissm__F2fAcceptResponse *
- */
-Skissm__F2fAcceptResponse *f2f_accept_internal(
-    const char *e2ee_pack_id,
-    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
-    Skissm__Account *local_account
-);
-
-/**
  * @brief Send publish_spk request to server.
  * @param account The account to be processed
  * @return Skissm__PublishSpkResponse *

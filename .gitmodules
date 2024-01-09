@@ -18,3 +18,6 @@
 	path = protos/src/skissm
 	url = https://github.com/ziv-e2eelab-org/skissm-protos
 	branch = master
+[submodule "lib/dilithium/src"]
+	path = lib/dilithium/src
+	url = https://github.com/pq-crystals/dilithium.git

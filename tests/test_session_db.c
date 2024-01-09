@@ -50,18 +50,9 @@ void test_load_outbound_session()
     copy_address_from_address(&(session->our_address), from);
 
     // create mock public keys
-    session->alice_identity_key.len = 32;
-    session->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->alice_identity_key.data, "11111111111111111111111111111111", 32);
     session->alice_ephemeral_key.len = 32;
     session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(session->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
-    session->bob_signed_pre_key.len = 32;
-    session->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
-    session->bob_one_time_pre_key.len = 32;
-    session->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
     session->associated_data.len = 64;
     session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
@@ -114,18 +105,9 @@ void test_load_outbound_sessions()
     copy_address_from_address(&(session_3->our_address), from);
 
     // create mock public keys for session_1
-    session_1->alice_identity_key.len = 32;
-    session_1->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session_1->alice_identity_key.data, "11111111111111111111111111111111", 32);
     session_1->alice_ephemeral_key.len = 32;
     session_1->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(session_1->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
-    session_1->bob_signed_pre_key.len = 32;
-    session_1->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session_1->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
-    session_1->bob_one_time_pre_key.len = 32;
-    session_1->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session_1->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
     session_1->associated_data.len = 64;
     session_1->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
@@ -137,18 +119,9 @@ void test_load_outbound_sessions()
     store_session(session_1);
 
     // create mock public keys for session_2
-    session_2->alice_identity_key.len = 32;
-    session_2->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session_2->alice_identity_key.data, "11111111111111111111111111111111", 32);
     session_2->alice_ephemeral_key.len = 32;
     session_2->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(session_2->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
-    session_2->bob_signed_pre_key.len = 32;
-    session_2->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session_2->bob_signed_pre_key.data, "33333333333333333333333333333333", 32);
-    session_2->bob_one_time_pre_key.len = 32;
-    session_2->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session_2->bob_one_time_pre_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
     session_2->associated_data.len = 64;
     session_2->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
@@ -160,18 +133,9 @@ void test_load_outbound_sessions()
     store_session(session_2);
 
     // create mock public keys for session_3
-    session_3->alice_identity_key.len = 32;
-    session_3->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session_3->alice_identity_key.data, "11111111111111111111111111111111", 32);
     session_3->alice_ephemeral_key.len = 32;
     session_3->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(session_3->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
-    session_3->bob_signed_pre_key.len = 32;
-    session_3->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session_3->bob_signed_pre_key.data, "44444444444444444444444444444444", 32);
-    session_3->bob_one_time_pre_key.len = 32;
-    session_3->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session_3->bob_one_time_pre_key.data, "mnopqrstuvwxyz012345abcdefghijkl", 32);
 
     session_3->associated_data.len = 64;
     session_3->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
@@ -221,18 +185,9 @@ void test_load_inbound_session()
     copy_address_from_address(&(session->our_address), to);
 
     // create mock public keys
-    session->alice_identity_key.len = 32;
-    session->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->alice_identity_key.data, "11111111111111111111111111111111", 32);
     session->alice_ephemeral_key.len = 32;
     session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(session->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
-    session->bob_signed_pre_key.len = 32;
-    session->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
-    session->bob_one_time_pre_key.len = 32;
-    session->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
     session->associated_data.len = 64;
     session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
@@ -549,18 +504,9 @@ void test_store_session()
     copy_address_from_address(&(session->our_address), from);
 
     // create mock public keys
-    session->alice_identity_key.len = 32;
-    session->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->alice_identity_key.data, "11111111111111111111111111111111", 32);
     session->alice_ephemeral_key.len = 32;
     session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(session->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
-    session->bob_signed_pre_key.len = 32;
-    session->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
-    session->bob_one_time_pre_key.len = 32;
-    session->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
     session->associated_data.len = 64;
     session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
@@ -623,18 +569,9 @@ void test_equal_ratchet_outbound()
     copy_address_from_address(&(session->our_address), from);
 
     // create mock public keys
-    session->alice_identity_key.len = 32;
-    session->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->alice_identity_key.data, "11111111111111111111111111111111", 32);
     session->alice_ephemeral_key.len = 32;
     session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(session->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
-    session->bob_signed_pre_key.len = 32;
-    session->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
-    session->bob_one_time_pre_key.len = 32;
-    session->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
     session->associated_data.len = 64;
     session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
@@ -692,18 +629,9 @@ void test_equal_ratchet_inbound()
     copy_address_from_address(&(session->our_address), to);
 
     // create mock public keys
-    session->alice_identity_key.len = 32;
-    session->alice_identity_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->alice_identity_key.data, "11111111111111111111111111111111", 32);
     session->alice_ephemeral_key.len = 32;
     session->alice_ephemeral_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(session->alice_ephemeral_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
-    session->bob_signed_pre_key.len = 32;
-    session->bob_signed_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_signed_pre_key.data, "22222222222222222222222222222222", 32);
-    session->bob_one_time_pre_key.len = 32;
-    session->bob_one_time_pre_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
-    memcpy(session->bob_one_time_pre_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
     session->associated_data.len = 64;
     session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);

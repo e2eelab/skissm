@@ -131,6 +131,8 @@ void init_protobuf(ProtobufCBinaryData *dest) {
 ///-----------------copy protobuf-----------------///
 
 void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src) {
+    if (src->len == 0)
+        return;
     dest->len = src->len;
     dest->data = (uint8_t *)malloc(sizeof(uint8_t) * src->len);
     memcpy(dest->data, src->data, src->len);
@@ -311,19 +313,23 @@ void copy_session_from_session(Skissm__Session **dest, Skissm__Session *src) {
     copy_ratchet_from_ratchet(&((*dest)->ratchet), src->ratchet);
     copy_protobuf_from_protobuf(&((*dest)->associated_data), &(src->associated_data));
     copy_protobuf_from_protobuf(&((*dest)->temp_shared_secret), &(src->temp_shared_secret));
-    copy_protobuf_from_protobuf(&((*dest)->alice_identity_key), &(src->alice_identity_key));
-    copy_protobuf_from_protobuf(&((*dest)->alice_ephemeral_key), &(src->alice_ephemeral_key));
     copy_key_pair_from_key_pair(&((*dest)->alice_base_key), src->alice_base_key);
-    copy_protobuf_from_protobuf(&((*dest)->bob_signed_pre_key), &(src->bob_signed_pre_key));
     (*dest)->bob_signed_pre_key_id = src->bob_signed_pre_key_id;
-    copy_protobuf_from_protobuf(&((*dest)->bob_one_time_pre_key), &(src->bob_one_time_pre_key));
     (*dest)->bob_one_time_pre_key_id = src->bob_one_time_pre_key_id;
-    (*dest)->n_encaps_ciphertext_list = src->n_encaps_ciphertext_list;
-    (*dest)->encaps_ciphertext_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * src->n_encaps_ciphertext_list);
-    copy_protobuf_list_from_protobuf_list((*dest)->encaps_ciphertext_list, src->encaps_ciphertext_list, src->n_encaps_ciphertext_list);
+    (*dest)->pre_shared_input_case = src->pre_shared_input_case;
+    if (src->pre_shared_input_case == SKISSM__SESSION__PRE_SHARED_INPUT_ALICE_EPHEMERAL_KEY) {
+        copy_protobuf_from_protobuf(&((*dest)->alice_ephemeral_key), &(src->alice_ephemeral_key));
+    } else if (src->pre_shared_input_case == SKISSM__SESSION__PRE_SHARED_INPUT_CIPHERTEXT_LIST) {
+        (*dest)->ciphertext_list = (Skissm__EncapsCiphertexts *)malloc(sizeof(Skissm__EncapsCiphertexts));
+        skissm__encaps_ciphertexts__init((*dest)->ciphertext_list);
+        (*dest)->ciphertext_list->ciphertext_num = src->ciphertext_list->ciphertext_num;
+        copy_protobuf_from_protobuf(&((*dest)->ciphertext_list->ciphertext_2), &(src->ciphertext_list->ciphertext_2));
+        copy_protobuf_from_protobuf(&((*dest)->ciphertext_list->ciphertext_3), &(src->ciphertext_list->ciphertext_3));
+        copy_protobuf_from_protobuf(&((*dest)->ciphertext_list->ciphertext_4), &(src->ciphertext_list->ciphertext_4));
+    }
     (*dest)->f2f = src->f2f;
     (*dest)->responded = src->responded;
-    (*dest)->t_invite = src->t_invite;
+    (*dest)->invite_t = src->invite_t;
 }
 
 ///-----------------copy public key-----------------///

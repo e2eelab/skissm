@@ -29,18 +29,6 @@ extern "C" {
 
 #include "skissm/skissm.h"
 
-typedef struct f2f_session_mid{
-    Skissm__E2eeAddress *peer_address;
-    Skissm__Session *f2f_session;
-    struct f2f_session_mid *next;
-} f2f_session_mid;
-
-typedef struct account_context{
-    Skissm__E2eeAddress *local_address;
-    f2f_session_mid *f2f_session_mid_list;
-    struct account_context *next;
-} account_context;
-
 void account_begin();
 
 void account_end();
@@ -53,19 +41,6 @@ void account_end();
  * @return Skissm__Account*
  */
 Skissm__Account *create_account(const char *e2ee_pack_id);
-
-/**
- * @brief Get the account with given address.
- *
- * @return account_context*
- */
-account_context *get_account_context(Skissm__E2eeAddress *address);
-
-/**
- * @brief Set current address.
- * @param address
- */
-void set_address(Skissm__E2eeAddress *address);
 
 /**
  * @brief Lookup an one-time pre-key with a given public key

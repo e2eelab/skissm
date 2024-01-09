@@ -71,26 +71,6 @@ Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth,
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__F2fInviteResponse* 
- */
-Skissm__F2fInviteResponse *mock_f2f_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fInviteRequest *request);
-
-/**
- * @brief 
- * 
- * @param from 
- * @param auth 
- * @param request 
- * @return Skissm__F2fAcceptResponse* 
- */
-Skissm__F2fAcceptResponse *mock_f2f_accept(Skissm__E2eeAddress *from, const char *auth, Skissm__F2fAcceptRequest *request);
-
-/**
- * @brief 
- * 
- * @param from 
- * @param auth 
- * @param request 
  * @return Skissm__PublishSpkResponse* 
  */
 Skissm__PublishSpkResponse *mock_publish_spk(Skissm__E2eeAddress *from, const char *auth, Skissm__PublishSpkRequest *request);

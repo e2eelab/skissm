@@ -25,8 +25,6 @@
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/mem_util.h"
 
-account_context *account_context_list = NULL;
-
 void account_begin() {
     // load accounts that may be null
     Skissm__Account **accounts = NULL;
@@ -37,7 +35,6 @@ void account_begin() {
     size_t i;
     for (i = 0; i < account_num; i++) {
         cur_account = accounts[i];
-        set_address(cur_account->address);
 
         // check if the signed pre-key expired
         now = get_skissm_plugin()->common_handler.gen_ts();
@@ -68,34 +65,6 @@ void account_begin() {
 }
 
 void account_end() {
-    account_context *temp_account_context = NULL;
-    while (account_context_list != NULL) {
-        temp_account_context = account_context_list;
-        account_context_list = account_context_list->next;
-        if (temp_account_context->local_address != NULL) {
-            skissm__e2ee_address__free_unpacked(temp_account_context->local_address, NULL);
-            temp_account_context->local_address = NULL;
-        }
-        f2f_session_mid *temp_f2f_session_mid = NULL;
-        while (temp_account_context->f2f_session_mid_list != NULL) {
-            temp_f2f_session_mid = temp_account_context->f2f_session_mid_list;
-            temp_account_context->f2f_session_mid_list = temp_account_context->f2f_session_mid_list->next;
-            if (temp_f2f_session_mid->peer_address != NULL) {
-                skissm__e2ee_address__free_unpacked(temp_f2f_session_mid->peer_address, NULL);
-                temp_f2f_session_mid->peer_address = NULL;
-            }
-            if (temp_f2f_session_mid->f2f_session != NULL) {
-                skissm__session__free_unpacked(temp_f2f_session_mid->f2f_session, NULL);
-                temp_f2f_session_mid->f2f_session = NULL;
-            }
-            temp_f2f_session_mid->next = NULL;
-            free_mem((void **)&temp_f2f_session_mid, sizeof(f2f_session_mid));
-        }
-        temp_account_context->next = NULL;
-
-        // release
-        free_mem((void **)&temp_account_context, sizeof(account_context));
-    }
 }
 
 Skissm__Account *create_account(const char *e2ee_pack_id) {
@@ -130,39 +99,6 @@ Skissm__Account *create_account(const char *e2ee_pack_id) {
     generate_opks(100, account);
 
     return account;
-}
-
-account_context *get_account_context(Skissm__E2eeAddress *address) {
-    if (account_context_list != NULL) {
-        account_context *cur_account_context = account_context_list;
-        while (cur_account_context != NULL) {
-            if (compare_address(cur_account_context->local_address, address)) {
-                return cur_account_context;
-            }
-            cur_account_context = cur_account_context->next;
-        }
-    }
-    return NULL;
-}
-
-void set_address(Skissm__E2eeAddress *address) {
-    if (address == NULL)
-        return;
-    if (account_context_list != NULL) {
-        account_context *cur_account_context = account_context_list;
-        while (cur_account_context->next != NULL) {
-            cur_account_context = cur_account_context->next;
-        }
-        cur_account_context->next = (account_context *)malloc(sizeof(account_context));
-        copy_address_from_address(&(cur_account_context->local_address), address);
-        cur_account_context->next->f2f_session_mid_list = NULL;
-        cur_account_context->next->next = NULL;
-    } else {
-        account_context_list = (account_context *)malloc(sizeof(account_context));
-        copy_address_from_address(&(account_context_list->local_address), address);
-        account_context_list->f2f_session_mid_list = NULL;
-        account_context_list->next = NULL;
-    }
 }
 
 size_t generate_signed_pre_key(Skissm__Account *account) {

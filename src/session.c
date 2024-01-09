@@ -75,22 +75,3 @@ void pack_common_plaintext(
     // release
     skissm__plaintext__free_unpacked(plaintext, NULL);
 }
-
-void pack_f2f_session_plaintext(
-    Skissm__Session *session, int plaintext_type,
-    uint8_t **common_plaintext_data, size_t *common_plaintext_data_len
-) {
-    Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
-    skissm__plaintext__init(plaintext);
-    plaintext->version = strdup(E2EE_PLAINTEXT_VERSION);
-    plaintext->payload_case = plaintext_type;
-    copy_session_from_session(&(plaintext->f2f_session_data), session);
-
-    size_t len = skissm__plaintext__get_packed_size(plaintext);
-    *common_plaintext_data_len = len;
-    *common_plaintext_data = (uint8_t *)malloc(sizeof(uint8_t) * len);
-    skissm__plaintext__pack(plaintext, *common_plaintext_data);
-
-    // release
-    skissm__plaintext__free_unpacked(plaintext, NULL);
-}

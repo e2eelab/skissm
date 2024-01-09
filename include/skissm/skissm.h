@@ -40,14 +40,6 @@
 #include "skissm/CreateGroupResponse.pb-c.h"
 #include "skissm/E2eeAddress.pb-c.h"
 #include "skissm/E2eeMsg.pb-c.h"
-#include "skissm/F2fAcceptMsg.pb-c.h"
-#include "skissm/F2fAcceptRequest.pb-c.h"
-#include "skissm/F2fAcceptResponse.pb-c.h"
-#include "skissm/F2fInviteMsg.pb-c.h"
-#include "skissm/F2fInviteRequest.pb-c.h"
-#include "skissm/F2fInviteResponse.pb-c.h"
-#include "skissm/F2fPreKeyAcceptMsg.pb-c.h"
-#include "skissm/F2fPreKeyInviteMsg.pb-c.h"
 #include "skissm/GetGroupRequest.pb-c.h"
 #include "skissm/GetGroupResponse.pb-c.h"
 #include "skissm/GetPreKeyBundleRequest.pb-c.h"
@@ -511,30 +503,6 @@ typedef struct e2ee_proto_handler_t {
         Skissm__E2eeAddress *from,
         const char *auth,
         Skissm__AcceptRequest *request
-    );
-    /**
-     * @brief Face-to-face invite
-     * @param from
-     * @param auth
-     * @param request
-     * @return response
-     */
-    Skissm__F2fInviteResponse *(*f2f_invite)(
-        Skissm__E2eeAddress *from,
-        const char *auth,
-        Skissm__F2fInviteRequest *request
-    );
-    /**
-     * @brief Face-to-face accept
-     * @param from
-     * @param auth
-     * @param request
-     * @return response
-     */
-    Skissm__F2fAcceptResponse *(*f2f_accept)(
-        Skissm__E2eeAddress *from,
-        const char *auth,
-        Skissm__F2fAcceptRequest *request
     );
     /**
      * @brief Publish signed pre-key
