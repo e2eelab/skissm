@@ -151,7 +151,7 @@ bool consume_invite_msg(
  * @return Skissm__AcceptRequest*
  */
 Skissm__AcceptRequest *produce_accept_request(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     ProtobufCBinaryData *ciphertext_1,

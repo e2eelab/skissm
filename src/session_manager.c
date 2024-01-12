@@ -151,7 +151,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 // unload session first to prevent multiple outbound sessions
                 get_skissm_plugin()->db_handler.unload_session(from, to_address);
 
-                const char *e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
+                uint32_t e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
                 Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
                 initialise_session(outbound_session, e2ee_pack_id, from, to_address);
                 copy_address_from_address(&(outbound_session->our_address), from);
@@ -518,12 +518,12 @@ Skissm__InviteRequest *produce_invite_request(
     skissm__invite_msg__init(msg);
 
     msg->version = strdup(outbound_session->version);
-    msg->e2ee_pack_id = strdup(outbound_session->e2ee_pack_id);
+    msg->e2ee_pack_id = outbound_session->e2ee_pack_id;
     msg->session_id = strdup(outbound_session->session_id);
     copy_address_from_address(&(msg->from), outbound_session->our_address);
     copy_address_from_address(&(msg->to), outbound_session->their_address);
 
-    if (cipher_suite->get_crypto_param().pqc_param == false) {
+    if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
         // ECC mode
         copy_protobuf_from_protobuf(&(msg->alice_ephemeral_key), &(outbound_session->alice_ephemeral_key));
     } else {
@@ -568,7 +568,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         invite_msg->to->user->user_id,
         invite_msg->to->user->device_id);
 
-    const char *e2ee_pack_id = invite_msg->e2ee_pack_id;
+    uint32_t e2ee_pack_id = invite_msg->e2ee_pack_id;
     Skissm__E2eeAddress *from = invite_msg->from;
     Skissm__E2eeAddress *to = invite_msg->to;
 
@@ -631,7 +631,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
 }
 
 Skissm__AcceptRequest *produce_accept_request(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     ProtobufCBinaryData *ciphertext_1,
@@ -643,7 +643,7 @@ Skissm__AcceptRequest *produce_accept_request(
     Skissm__AcceptMsg *msg = (Skissm__AcceptMsg *) malloc(sizeof(Skissm__AcceptMsg));
     skissm__accept_msg__init(msg);
 
-    msg->e2ee_pack_id = strdup(e2ee_pack_id);
+    msg->e2ee_pack_id = e2ee_pack_id;
     copy_address_from_address(&(msg->from), from);
     copy_address_from_address(&(msg->to), to);
 

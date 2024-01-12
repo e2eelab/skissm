@@ -55,27 +55,235 @@ extern "C" {
 /** length of an aes256 initialisation vector for file encryption */
 #define AES256_DATA_IV_LENGTH 12
 
-crypto_param_t get_ecdh_x25519_aes256_gcm_sha256_param();
+crypto_digital_signature_param_t get_curve25519_sign_param();
 
-crypto_param_t get_kyber1024_sphincsplus_aes256_gcm_sha256_param();
+crypto_digital_signature_param_t get_dilithium2_param();
 
-void crypto_curve25519_generate_key_pair(
+crypto_digital_signature_param_t get_dilithium3_param();
+
+crypto_digital_signature_param_t get_dilithium5_param();
+
+crypto_digital_signature_param_t get_falcon512_param();
+
+crypto_digital_signature_param_t get_falcon1024_param();
+
+crypto_digital_signature_param_t get_sphincs_sha2_128f_param();
+
+crypto_digital_signature_param_t get_sphincs_sha2_128s_param();
+
+crypto_digital_signature_param_t get_sphincs_sha2_192f_param();
+
+crypto_digital_signature_param_t get_sphincs_sha2_192s_param();
+
+crypto_digital_signature_param_t get_sphincs_sha2_256f_param();
+
+crypto_digital_signature_param_t get_sphincs_sha2_256s_param();
+
+crypto_digital_signature_param_t get_sphincs_shake_128f_param();
+
+crypto_digital_signature_param_t get_sphincs_shake_128s_param();
+
+crypto_digital_signature_param_t get_sphincs_shake_192f_param();
+
+crypto_digital_signature_param_t get_sphincs_shake_192s_param();
+
+crypto_digital_signature_param_t get_sphincs_shake_256f_param();
+
+crypto_digital_signature_param_t get_sphincs_shake_256s_param();
+
+int crypto_dilithium2_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-void crypto_curve25519_signature_generate_key_pair(
+int crypto_dilithium3_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-void crypto_kyber1024_generate_key_pair(
+int crypto_dilithium5_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-void crypto_sphincsplus_shake256_generate_key_pair(
+int crypto_falcon512_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-uint8_t *crypto_curve25519_dh(
+int crypto_falcon1024_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_sha2_128f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_sha2_128s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_sha2_192f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_sha2_192s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_sha2_256f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_sha2_256s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_shake_128f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_shake_128s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_shake_192f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_shake_192s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_shake_256f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_sphincs_shake_256s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+crypto_kem_param_t get_curve25519_ECDH_param();
+
+crypto_kem_param_t get_hqc128_param();
+
+crypto_kem_param_t get_hqc192_param();
+
+crypto_kem_param_t get_hqc256_param();
+
+crypto_kem_param_t get_kyber512_param();
+
+crypto_kem_param_t get_kyber768_param();
+
+crypto_kem_param_t get_kyber1024_param();
+
+crypto_kem_param_t get_mceliece348864_param();
+
+crypto_kem_param_t get_mceliece348864f_param();
+
+crypto_kem_param_t get_mceliece460896_param();
+
+crypto_kem_param_t get_mceliece460896f_param();
+
+crypto_kem_param_t get_mceliece6688128_param();
+
+crypto_kem_param_t get_mceliece6688128f_param();
+
+crypto_kem_param_t get_mceliece6960119_param();
+
+crypto_kem_param_t get_mceliece6960119f_param();
+
+crypto_kem_param_t get_mceliece8192128_param();
+
+crypto_kem_param_t get_mceliece8192128f_param();
+
+crypto_symmetric_encryption_param_t get_aes256_sha256_param();
+
+int crypto_hqc128_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_hqc192_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_hqc256_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_kyber512_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_kyber768_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_kyber1024_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece348864_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece348864f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece460896_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece460896f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece6688128_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece6688128f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece6960119_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece6960119f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece8192128_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+int crypto_mceliece8192128f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+);
+
+uint8_t *crypto_hqc128_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_hqc192_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_hqc256_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_kyber512_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_kyber768_shared_secret(
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *their_key,
     uint8_t *shared_secret
@@ -87,22 +295,93 @@ uint8_t *crypto_kyber1024_shared_secret(
     uint8_t *shared_secret
 );
 
+uint8_t *crypto_mceliece348864_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_mceliece348864f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_mceliece460896_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_mceliece460896f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_mceliece6688128_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_mceliece6688128f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_mceliece6960119_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_mceliece6960119f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_mceliece8192128_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+uint8_t *crypto_mceliece8192128f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
+int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key);
+
+int CURVE25519_crypto_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key);
+
+int CURVE25519_crypto_sign_signature(
+    uint8_t *signature_out, size_t *signature_out_len,
+    const uint8_t *msg, size_t msg_len,
+    const uint8_t *private_key
+);
+
+int CURVE25519_crypto_sign_verify(
+    const uint8_t *signature_in, size_t signature_in_len,
+    const uint8_t *msg, size_t msg_len,
+    const uint8_t *public_key
+);
+
+uint8_t *crypto_curve25519_dh(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+);
+
 void crypto_curve25519_sign(uint8_t *private_key,
     uint8_t *msg, size_t msg_len, uint8_t *signature_out
 );
 
-void crypto_sphincsplus_shake256_sign(
-    uint8_t *private_key,
-    uint8_t *msg, size_t msg_len,
-    uint8_t *signature_out
-);
-
 int crypto_curve25519_verify(
-    uint8_t *signature_in, uint8_t *public_key,
-    uint8_t *msg, size_t msg_len
-);
-
-int crypto_sphincsplus_shake256_verify(
     uint8_t *signature_in, uint8_t *public_key,
     uint8_t *msg, size_t msg_len
 );

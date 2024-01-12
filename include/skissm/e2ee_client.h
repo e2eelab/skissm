@@ -18,7 +18,7 @@ extern "C" {
  * @return Skissm__RegisterUserResponse *
  */
 Skissm__RegisterUserResponse *register_user(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     const char *user_name,
     const char *user_id,
     const char *device_id,

@@ -44,8 +44,6 @@ static skissm_event_handler_t test_event_handler = {
     NULL,
     NULL,
     NULL,
-    NULL,
-    NULL,
     NULL
 };
 
@@ -58,11 +56,11 @@ static void free_opks(Skissm__OneTimePreKey ***opks, uint32_t opk_num){
     free(*opks);
 }
 
-void test_update_one_time_pre_key(){
+void test_update_one_time_pre_key(uint32_t e2ee_pack_id){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(e2ee_pack_id);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
@@ -100,11 +98,11 @@ void test_update_one_time_pre_key(){
     tear_down();
 }
 
-void test_remove_one_time_pre_key(){
+void test_remove_one_time_pre_key(uint32_t e2ee_pack_id){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(e2ee_pack_id);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
@@ -145,7 +143,14 @@ void test_remove_one_time_pre_key(){
 }
 
 int main(){
-    test_update_one_time_pre_key();
-    test_remove_one_time_pre_key();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+
+    test_update_one_time_pre_key(e2ee_pack_id);
+    test_remove_one_time_pre_key(e2ee_pack_id);
     return 0;
 }

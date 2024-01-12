@@ -45,8 +45,6 @@ static skissm_event_handler_t test_event_handler = {
     NULL,
     NULL,
     NULL,
-    NULL,
-    NULL,
     NULL
 };
 
@@ -57,7 +55,12 @@ static void test_one_group_pre_key() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     // mock address
@@ -65,7 +68,7 @@ static void test_one_group_pre_key() {
     mock_address(&user_address, "alice", "alice's domain", "alice's device");
     mock_address(&member_address, "bob", "bob's domain", "bob's device");
 
-    int key_len = test_cipher_suite->get_crypto_param().sign_pub_key_len;
+    int key_len = test_cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
 
     size_t group_members_num = 2;
     // the first group member is Alice
@@ -94,7 +97,7 @@ static void test_one_group_pre_key() {
     skissm__group_session__init(outbound_group_session);
 
     outbound_group_session->version = strdup(E2EE_PROTOCOL_VERSION);
-    outbound_group_session->e2ee_pack_id = strdup(e2ee_pack_id);
+    outbound_group_session->e2ee_pack_id = e2ee_pack_id;
     copy_address_from_address(&(outbound_group_session->sender), user_address);
     copy_address_from_address(&(outbound_group_session->session_owner), user_address);
     outbound_group_session->session_id = generate_uuid_str();
@@ -110,11 +113,11 @@ static void test_one_group_pre_key() {
 
     outbound_group_session->sequence = 0;
 
-    outbound_group_session->chain_key.len = test_cipher_suite->get_crypto_param().hash_len;
+    outbound_group_session->chain_key.len = test_cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
     outbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
     get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
 
-    outbound_group_session->group_seed.len = test_cipher_suite->get_crypto_param().hash_len;
+    outbound_group_session->group_seed.len = test_cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
     outbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
     get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->group_seed.data, outbound_group_session->group_seed.len);
 
@@ -281,7 +284,12 @@ static void test_pending_request_data() {
     // test start
     tear_up();
 
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
 
     // mock address
     Skissm__E2eeAddress *alice_address, *bob_address;
@@ -343,7 +351,12 @@ static void test_sending_before_accept() {
     tear_up();
 
     // register
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *alice_device_id = generate_uuid_str();
     const char *alice_authenticator = "alice@domain.com.tw";
     const char *alice_auth_code = "123456";

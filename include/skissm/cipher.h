@@ -28,9 +28,6 @@ extern "C" {
 
 #include "skissm/skissm.h"
 
-#define MAX_RECEIVER_CHAIN_NODES 8
-#define MAX_CHAIN_INDEX 1024
-
 /**
  * The context strings that are used by the HKDF
  * for deriving next root key and chain key.
@@ -38,27 +35,12 @@ extern "C" {
 #define KDF_INFO_ROOT "ROOT"
 #define KDF_INFO_RATCHET "RATCHET"
 
-#define F2F_PSK_SEED "F2FPSK"
-
-struct cipher;
-
-typedef struct cipher_suite_t {
+typedef struct digital_signature_suite_t {
     /**
-     * @brief Get the parameters of this cipher suite.
-     * @return crypto_param_t
+     * @brief Get the parameters of this digital signature suite.
+     * @return crypto_digital_signature_param_t
      */
-    struct crypto_param_t (*get_crypto_param)(void);
-
-    /**
-     * @brief Generate a random key pair that will be used to calculate shared secret keys.
-     *
-     * @param pub_key
-     * @param priv_key
-     */
-    void (*asym_key_gen)(
-        ProtobufCBinaryData *,
-        ProtobufCBinaryData *
-    );
+    struct crypto_digital_signature_param_t (*get_crypto_param)(void);
 
     /**
      * @brief Generate a random key pair that will be used to generate or verify a signature.
@@ -66,7 +48,57 @@ typedef struct cipher_suite_t {
      * @param pub_key
      * @param priv_key
      */
-    void (*sign_key_gen)(
+    int (*sign_key_gen)(
+        ProtobufCBinaryData *,
+        ProtobufCBinaryData *
+    );
+
+    /**
+     * @brief Sign a message.
+     *
+     * @param signature_out
+     * @param signature_out_len
+     * @param msg
+     * @param msg_len
+     * @param private_key
+     */
+    int (*sign)(
+        uint8_t *, size_t *,
+        const uint8_t *, size_t,
+        const uint8_t *
+    );
+
+    /**
+     * @brief Verify a signature with a given message.
+     *
+     * @param signature_in
+     * @param signature_in_len
+     * @param msg
+     * @param msg_len
+     * @param public_key
+     * @return value < 0 for error
+     */
+    int (*verify)(
+        const uint8_t *, size_t,
+        const uint8_t *, size_t,
+        const uint8_t *
+    );
+} digital_signature_suite_t;
+
+typedef struct kem_suite_t {
+    /**
+     * @brief Get the parameters of this kem suite.
+     * @return crypto_kem_param_t
+     */
+    struct crypto_kem_param_t (*get_crypto_param)(void);
+
+    /**
+     * @brief Generate a random key pair that will be used to calculate shared secret keys.
+     *
+     * @param pub_key
+     * @param priv_key
+     */
+    int (*asym_key_gen)(
         ProtobufCBinaryData *,
         ProtobufCBinaryData *
     );
@@ -84,6 +116,14 @@ typedef struct cipher_suite_t {
         const ProtobufCBinaryData *,
         uint8_t *
     );
+} kem_suite_t;
+
+typedef struct symmetric_encryption_suite_t {
+    /**
+     * @brief Get the parameters of this kem suite.
+     * @return crypto_symmetric_encryption_param_t
+     */
+    struct crypto_symmetric_encryption_param_t (*get_crypto_param)(void);
 
     /**
      * @brief Encrypt a given plaintext.
@@ -117,35 +157,6 @@ typedef struct cipher_suite_t {
         const uint8_t *,
         const uint8_t *, size_t,
         uint8_t **
-    );
-
-    /**
-     * @brief Sign a message.
-     *
-     * @param private_key
-     * @param msg
-     * @param msg_len
-     * @param signature_out
-     */
-    void (*sign)(
-        uint8_t *,
-        uint8_t *, size_t,
-        uint8_t *
-    );
-
-    /**
-     * @brief Verify a signature with a given message.
-     *
-     * @param signature_in
-     * @param public_key
-     * @param msg
-     * @param msg_len
-     * @return value < 0 for error
-     */
-    int (*verify)(
-        uint8_t *,
-        uint8_t *,
-        uint8_t *, size_t
     );
 
     /**
@@ -194,6 +205,12 @@ typedef struct cipher_suite_t {
         size_t,
         uint8_t *
     );
+} symmetric_encryption_suite_t;
+
+typedef struct cipher_suite_t {
+    digital_signature_suite_t *digital_signature_suite;
+    kem_suite_t *kem_suite;
+    symmetric_encryption_suite_t *symmetric_encryption_suite;
 } cipher_suite_t;
 
 /**

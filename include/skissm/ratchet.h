@@ -29,8 +29,6 @@ extern "C" {
 #include "skissm/skissm.h"
 #include "skissm/cipher.h"
 
-typedef struct cipher cipher;
-
 void initialise_ratchet(Skissm__Ratchet **ratchet);
 
 /** Initialise the session using a shared secret and the public part of the

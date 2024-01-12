@@ -66,7 +66,7 @@ Skissm__InviteResponse *invite_internal(
  * @return Skissm__AcceptResponse *
  */
 Skissm__AcceptResponse *accept_internal(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     ProtobufCBinaryData *ciphertext_1,

@@ -54,6 +54,28 @@ size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char **hex_str) {
     return hex_str_len;
 }
 
+uint32_t e2ee_pack_number_to_uint32(e2ee_pack_number *e2ee_pack_number_id) {
+    return (((e2ee_pack_number_id->head) << (CIPHER_SUITE_PART_LEN_IN_BITS * 3))
+            + ((e2ee_pack_number_id->digital_signature) << (CIPHER_SUITE_PART_LEN_IN_BITS * 2))
+            + ((e2ee_pack_number_id->kem) << CIPHER_SUITE_PART_LEN_IN_BITS)
+            + e2ee_pack_number_id->symmetric_encryption);
+}
+
+e2ee_pack_number *uint32_to_e2ee_pack_number(uint32_t e2ee_pack_id) {
+    e2ee_pack_number *e2ee_pack_number_id = (e2ee_pack_number *)malloc(sizeof(e2ee_pack_number));
+    e2ee_pack_number_id->head = (e2ee_pack_id >> (CIPHER_SUITE_PART_LEN_IN_BITS * 3));
+
+    uint32_t temp_1 = e2ee_pack_id - (e2ee_pack_number_id->head << (CIPHER_SUITE_PART_LEN_IN_BITS * 3));
+    e2ee_pack_number_id->digital_signature = (temp_1 >> (CIPHER_SUITE_PART_LEN_IN_BITS * 2));
+
+    uint32_t temp_2 = temp_1 - (e2ee_pack_number_id->digital_signature << (CIPHER_SUITE_PART_LEN_IN_BITS * 2));
+    e2ee_pack_number_id->kem = temp_2 >> CIPHER_SUITE_PART_LEN_IN_BITS;
+
+    e2ee_pack_number_id->symmetric_encryption = temp_2 - (e2ee_pack_number_id->kem << CIPHER_SUITE_PART_LEN_IN_BITS);
+
+    return e2ee_pack_number_id;
+}
+
 ///-----------------compare-----------------///
 
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
@@ -126,6 +148,11 @@ bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_me
 void init_protobuf(ProtobufCBinaryData *dest) {
     dest->data = NULL;
     dest->len = 0;
+}
+
+void malloc_protobuf(ProtobufCBinaryData *dest, size_t len) {
+    dest->len = len;
+    dest->data = (uint8_t *)malloc(sizeof(uint8_t) * len);
 }
 
 ///-----------------copy protobuf-----------------///
@@ -233,7 +260,7 @@ void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src) {
         copy_address_from_address(&((*dest)->address), src->address);
     }
     (*dest)->password = strdup(src->password);
-    (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+    (*dest)->e2ee_pack_id = src->e2ee_pack_id;
     if (src->identity_key) {
         copy_ik_from_ik(&((*dest)->identity_key), src->identity_key);
     }
@@ -306,7 +333,7 @@ void copy_session_from_session(Skissm__Session **dest, Skissm__Session *src) {
     *dest = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     skissm__session__init(*dest);
     (*dest)->version = strdup(src->version);
-    (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+    (*dest)->e2ee_pack_id = src->e2ee_pack_id;
     (*dest)->session_id = strdup(src->session_id);
     copy_address_from_address(&((*dest)->our_address), src->our_address);
     copy_address_from_address(&((*dest)->their_address), src->their_address);
@@ -416,8 +443,7 @@ void copy_create_group_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg
     *dest = (Skissm__CreateGroupMsg *)malloc(sizeof(Skissm__CreateGroupMsg));
     skissm__create_group_msg__init(*dest);
     if (src != NULL) {
-        if (src->e2ee_pack_id != NULL)
-            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        (*dest)->e2ee_pack_id = src->e2ee_pack_id;
         if (src->sender_address != NULL)
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         if (src->group_info != NULL)
@@ -432,8 +458,7 @@ void copy_add_group_members_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGr
     *dest = (Skissm__AddGroupMembersMsg *)malloc(sizeof(Skissm__AddGroupMembersMsg));
     skissm__add_group_members_msg__init(*dest);
     if (src != NULL) {
-        if (src->e2ee_pack_id != NULL)
-            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        (*dest)->e2ee_pack_id = src->e2ee_pack_id;
         if (src->sender_address != NULL)
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         (*dest)->sequence = src->sequence;
@@ -452,8 +477,7 @@ void copy_add_group_member_device_msg(Skissm__AddGroupMemberDeviceMsg **dest, Sk
     *dest = (Skissm__AddGroupMemberDeviceMsg *)malloc(sizeof(Skissm__AddGroupMemberDeviceMsg));
     skissm__add_group_member_device_msg__init(*dest);
     if (src != NULL) {
-        if (src->e2ee_pack_id != NULL)
-            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        (*dest)->e2ee_pack_id = src->e2ee_pack_id;
         if (src->sender_address != NULL)
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         (*dest)->sequence = src->sequence;
@@ -468,8 +492,7 @@ void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm_
     *dest = (Skissm__RemoveGroupMembersMsg *)malloc(sizeof(Skissm__RemoveGroupMembersMsg));
     skissm__remove_group_members_msg__init(*dest);
     if (src != NULL) {
-        if (src->e2ee_pack_id != NULL)
-            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        (*dest)->e2ee_pack_id = src->e2ee_pack_id;
         if (src->sender_address != NULL)
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         if (src->group_info != NULL)

@@ -54,7 +54,7 @@ Skissm__CreateGroupRequest *produce_create_group_request(
  * @return true for success
  */
 bool consume_create_group_response(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *sender_address,
     const char *group_name,
     Skissm__GroupMember **group_members,

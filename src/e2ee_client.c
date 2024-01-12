@@ -32,7 +32,7 @@
 #include "skissm/session_manager.h"
 
 Skissm__RegisterUserResponse *register_user(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     const char *user_name,
     const char *user_id,
     const char *device_id,
@@ -48,7 +48,7 @@ Skissm__RegisterUserResponse *register_user(
     request->device_id = strdup(device_id);
     request->authenticator = strdup(authenticator);
     request->auth_code = strdup(auth_code);
-    request->e2ee_pack_id = strdup(e2ee_pack_id);
+    request->e2ee_pack_id = e2ee_pack_id;
 
     Skissm__RegisterUserResponse *response = get_skissm_plugin()->proto_handler.register_user(request);
     bool consumed = consume_register_response(account, response);

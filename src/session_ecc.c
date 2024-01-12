@@ -28,27 +28,25 @@
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
 
-/** length of the shared secret created by a Curve25519 ECDH operation */
-#define CURVE25519_SHARED_SECRET_LENGTH 32
-
 Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     Skissm__Session *outbound_session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle
 ) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
-    int key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
+    int key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     // verify the signature
     int result;
     if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len)
         || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len)
-        || (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->get_crypto_param().sig_len)
+        || (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->digital_signature_suite->get_crypto_param().sig_len)
     ) {
         ssm_notify_log(outbound_session->our_address, BAD_PRE_KEY_BUNDLE, "crypto_curve25519_new_outbound_session()");
         return NULL;
     }
-    result = cipher_suite->verify(
+    result = cipher_suite->digital_signature_suite->verify(
         their_pre_key_bundle->signed_pre_key_public->signature.data,
-        their_pre_key_bundle->identity_key_public->sign_public_key.data,
-        their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len
+        their_pre_key_bundle->signed_pre_key_public->signature.len,
+        their_pre_key_bundle->signed_pre_key_public->public_key.data, key_len,
+        their_pre_key_bundle->identity_key_public->sign_public_key.data
     );
     if (result < 0) {
        ssm_notify_log(outbound_session->our_address, BAD_SIGNATURE, "crypto_curve25519_new_outbound_session()");
@@ -58,15 +56,15 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     // set the version
     outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
     // set the cipher suite id
-    outbound_session->e2ee_pack_id = strdup(E2EE_PACK_ID_ECC_DEFAULT);
+    outbound_session->e2ee_pack_id = local_account->e2ee_pack_id;
 
     // generate a new random ephemeral key pair
     Skissm__KeyPair my_ephemeral_key;
-    cipher_suite->asym_key_gen(&(my_ephemeral_key.public_key), &(my_ephemeral_key.private_key));
+    cipher_suite->kem_suite->asym_key_gen(&my_ephemeral_key.public_key, &my_ephemeral_key.private_key);
 
     // generate a new random ratchet key pair
     Skissm__KeyPair my_ratchet_key;
-    cipher_suite->asym_key_gen(&(my_ratchet_key.public_key), &(my_ratchet_key.private_key));
+    cipher_suite->kem_suite->asym_key_gen(&my_ratchet_key.public_key, &my_ratchet_key.private_key);
 
     const Skissm__KeyPair my_identity_key_pair = *(local_account->identity_key->asym_key_pair);
 
@@ -89,18 +87,19 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     memcpy(outbound_session->associated_data.data, my_identity_key_pair.public_key.data, key_len);
     memcpy((outbound_session->associated_data.data) + key_len, their_pre_key_bundle->identity_key_public->asym_public_key.data, key_len);
 
+    int shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
     // calculate the shared secret S via quadruple ECDH
-    uint8_t secret[x3dh_epoch * CURVE25519_SHARED_SECRET_LENGTH];
+    uint8_t secret[x3dh_epoch * shared_secret_len];
     uint8_t *pos = secret;
 
-    cipher_suite->ss_key_gen(&(my_identity_key_pair.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
-    pos += CURVE25519_SHARED_SECRET_LENGTH;
-    cipher_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->identity_key_public->asym_public_key), pos);
-    pos += CURVE25519_SHARED_SECRET_LENGTH;
-    cipher_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
+    cipher_suite->kem_suite->ss_key_gen(&(my_identity_key_pair.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
+    pos += shared_secret_len;
+    cipher_suite->kem_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->identity_key_public->asym_public_key), pos);
+    pos += shared_secret_len;
+    cipher_suite->kem_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
     if (x3dh_epoch == 4) {
-        pos += CURVE25519_SHARED_SECRET_LENGTH;
-        cipher_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
+        pos += shared_secret_len;
+        cipher_suite->kem_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
     }
 
     // create the root key and chain keys
@@ -162,7 +161,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
         x3dh_epoch = 4;
     }
 
-    int key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
+    int key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     int ad_len = 2 * key_len;
     inbound_session->associated_data.len = ad_len;
     inbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
@@ -200,17 +199,18 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
         bob_one_time_pre_key = NULL;
     }
 
+    int shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
     // calculate the shared secret S via quadruple DH
-    uint8_t secret[x3dh_epoch * CURVE25519_SHARED_SECRET_LENGTH];
+    uint8_t secret[x3dh_epoch * shared_secret_len];
     uint8_t *pos = secret;
-    cipher_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &msg->alice_identity_key, pos);
-    pos += CURVE25519_SHARED_SECRET_LENGTH;
-    cipher_suite->ss_key_gen(&(bob_identity_key->private_key), &inbound_session->alice_ephemeral_key, pos);
-    pos += CURVE25519_SHARED_SECRET_LENGTH;
-    cipher_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &inbound_session->alice_ephemeral_key, pos);
+    cipher_suite->kem_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &msg->alice_identity_key, pos);
+    pos += shared_secret_len;
+    cipher_suite->kem_suite->ss_key_gen(&(bob_identity_key->private_key), &inbound_session->alice_ephemeral_key, pos);
+    pos += shared_secret_len;
+    cipher_suite->kem_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &inbound_session->alice_ephemeral_key, pos);
     if (x3dh_epoch == 4) {
-        pos += CURVE25519_SHARED_SECRET_LENGTH;
-        cipher_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), &inbound_session->alice_ephemeral_key, pos);
+        pos += shared_secret_len;
+        cipher_suite->kem_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), &inbound_session->alice_ephemeral_key, pos);
     }
 
     initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key, &(msg->alice_base_key));
@@ -249,7 +249,7 @@ int crypto_curve25519_complete_outbound_session(Skissm__Session *outbound_sessio
     return 0;
 }
 
-const session_suite_t E2EE_SESSION_ECDH_X25519_AES256_GCM_SHA256 = {
+session_suite_t E2EE_SESSION_ECC = {
     crypto_curve25519_new_outbound_session,
     crypto_curve25519_new_inbound_session,
     crypto_curve25519_complete_outbound_session

@@ -32,7 +32,7 @@ protobuf_c_boolean load_saved(uint64_t address_id);
 bool load_address(uint64_t address_id, Skissm__E2eeAddress **address);
 bool load_group_address(uint64_t address_id, Skissm__E2eeAddress **address);
 void load_password(uint64_t address_id, char *password);
-char *load_e2ee_pack_id(uint64_t address_id);
+uint32_t load_e2ee_pack_id(uint64_t address_id);
 void load_identity_key_pair(uint64_t address_id, Skissm__IdentityKey **identity_key_pair);
 void load_signed_pre_key_pair(uint64_t address_id, Skissm__SignedPreKey **signed_pre_key);
 int load_n_one_time_pre_keys(uint64_t address_id);
@@ -46,7 +46,7 @@ sqlite_int64 insert_signed_pre_key(Skissm__SignedPreKey *signed_pre_key);
 sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key);
 sqlite_int64 insert_account(
     const char *version, protobuf_c_boolean saved, const char *auth, sqlite_int64 address_id,
-    const char *password, const char *e2ee_pack_id, sqlite_int64 identity_key_pair_id,
+    const char *password, uint32_t e2ee_pack_id, sqlite_int64 identity_key_pair_id,
     sqlite_int64 signed_pre_key_id, sqlite_int64 next_one_time_pre_key_id
 );
 void insert_account_identity_key_id(uint64_t address_id, sqlite_int64 identity_key_id);

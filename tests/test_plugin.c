@@ -140,10 +140,8 @@ struct skissm_plugin_t ssm_plugin = {
         NULL,
         NULL,
         NULL,
-        NULL,
         on_one2one_msg_received,
         on_other_device_msg_received,
-        NULL,
         on_group_msg_received,
         NULL,
         NULL,
@@ -164,4 +162,16 @@ void tear_down() {
     mock_server_end();
     stop_mock_server_sending();
     skissm_end();
+}
+
+uint32_t gen_e2ee_pack_id(
+    unsigned head, unsigned digital_signature, unsigned kem, unsigned symmetric_encryption
+) {
+    e2ee_pack_number *e2ee_pack_number_id = (e2ee_pack_number *)malloc(sizeof(e2ee_pack_number));
+    e2ee_pack_number_id->head = head;
+    e2ee_pack_number_id->digital_signature = digital_signature;
+    e2ee_pack_number_id->kem = kem;
+    e2ee_pack_number_id->symmetric_encryption = symmetric_encryption;
+
+    return e2ee_pack_number_to_uint32(e2ee_pack_number_id);
 }

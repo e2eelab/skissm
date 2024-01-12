@@ -61,3 +61,15 @@ size_t aes256_gcm_decrypt(
     }
     return decrypted_data_len;
 }
+
+
+// symmetric encryption
+
+const struct symmetric_encryption_suite_t E2EE_AES256_SHA256 = {
+    get_aes256_sha256_param,
+    aes256_gcm_encrypt,
+    aes256_gcm_decrypt,
+    crypto_hkdf_sha256,
+    crypto_hmac_sha256,
+    crypto_sha256
+};

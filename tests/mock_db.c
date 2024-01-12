@@ -359,7 +359,7 @@ static const char *ACCOUNT_CREATE_TABLE = "CREATE TABLE ACCOUNT( "
                                           "SAVED INTEGER NOT NULL, "
                                           "AUTH TEXT NOT NULL, " // newly added
                                           "PASSWORD TEXT NOT NULL, "
-                                          "E2EE_PACK_ID TEXT NOT NULL, "
+                                          "E2EE_PACK_ID INTEGER NOT NULL, "
                                           "IDENTITY_KEY INTEGER NOT NULL, "
                                           "SIGNED_PRE_KEY INTEGER NOT NULL, "
                                           "NEXT_ONETIME_PRE_KEY_ID INTEGER NOT NULL, "
@@ -820,17 +820,17 @@ void load_password(uint64_t address_id, char *password) {
     sqlite_finalize(stmt);
 }
 
-char *load_e2ee_pack_id(uint64_t address_id) {
+uint32_t load_e2ee_pack_id(uint64_t address_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_E2EE_PACK_ID_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
-    bool succ = sqlite_step(stmt, SQLITE_ROW);
+    sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    char *e2ee_pack_id = succ ? strdup((char *)sqlite3_column_text(stmt, 0)) : NULL;
+    uint32_t e2ee_pack_id = (uint32_t)sqlite3_column_int(stmt, 0);
 
     // release
     sqlite_finalize(stmt);
@@ -1169,7 +1169,7 @@ sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key) {
 
 sqlite_int64 insert_account(
     const char *version, protobuf_c_boolean saved, const char *auth, sqlite_int64 address_id,
-    const char *password, const char *e2ee_pack_id, sqlite_int64 identity_key_pair_id,
+    const char *password, uint32_t e2ee_pack_id, sqlite_int64 identity_key_pair_id,
     sqlite_int64 signed_pre_key_id, sqlite_int64 next_one_time_pre_key_id
 ) {
     // prepare
@@ -1182,7 +1182,7 @@ sqlite_int64 insert_account(
     sqlite3_bind_text(stmt, 3, auth, strlen(auth), NULL);
     sqlite3_bind_int(stmt, 4, address_id);
     sqlite3_bind_text(stmt, 5, password, strlen(password), NULL);
-    sqlite3_bind_text(stmt, 6, e2ee_pack_id, strlen(e2ee_pack_id), NULL);
+    sqlite3_bind_int(stmt, 6, e2ee_pack_id);
     sqlite3_bind_int(stmt, 7, identity_key_pair_id);
     sqlite3_bind_int(stmt, 8, signed_pre_key_id);
     sqlite3_bind_int(stmt, 9, next_one_time_pre_key_id);

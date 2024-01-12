@@ -67,13 +67,13 @@ void account_begin() {
 void account_end() {
 }
 
-Skissm__Account *create_account(const char *e2ee_pack_id) {
+Skissm__Account *create_account(uint32_t e2ee_pack_id) {
     Skissm__Account *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
     skissm__account__init(account);
 
     // set the version, e2ee_pack_id
     account->version = strdup(E2EE_PROTOCOL_VERSION);
-    account->e2ee_pack_id = strdup(e2ee_pack_id);
+    account->e2ee_pack_id = e2ee_pack_id;
 
     // set some initial ids
     account->next_one_time_pre_key_id = 1;
@@ -86,11 +86,11 @@ Skissm__Account *create_account(const char *e2ee_pack_id) {
 
     account->identity_key->asym_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->identity_key->asym_key_pair);
-    cipher_suite->asym_key_gen(&(account->identity_key->asym_key_pair->public_key), &(account->identity_key->asym_key_pair->private_key));
+    cipher_suite->kem_suite->asym_key_gen(&account->identity_key->asym_key_pair->public_key, &account->identity_key->asym_key_pair->private_key);
 
     account->identity_key->sign_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(account->identity_key->sign_key_pair);
-    cipher_suite->sign_key_gen(&(account->identity_key->sign_key_pair->public_key), &(account->identity_key->sign_key_pair->private_key));
+    cipher_suite->digital_signature_suite->sign_key_gen(&account->identity_key->sign_key_pair->public_key, &account->identity_key->sign_key_pair->private_key);
 
     // generate a signed pre-key pair
     generate_signed_pre_key(account);
@@ -121,18 +121,18 @@ size_t generate_signed_pre_key(Skissm__Account *account) {
     signed_pre_key->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     Skissm__KeyPair *key_pair = signed_pre_key->key_pair;
     skissm__key_pair__init(key_pair);
-    cipher_suite->asym_key_gen(&(key_pair->public_key), &(key_pair->private_key));
+    cipher_suite->kem_suite->asym_key_gen(&key_pair->public_key, &key_pair->private_key);
     signed_pre_key->spk_id = next_signed_pre_key_id;
 
     // generate a signature
-    int pub_key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
-    int sig_len = cipher_suite->get_crypto_param().sig_len;
-    signed_pre_key->signature.data = (uint8_t *)malloc(sig_len);
-    signed_pre_key->signature.len = sig_len;
-    cipher_suite->sign(
-        account->identity_key->sign_key_pair->private_key.data,
+    int pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
+    int sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
+    size_t signature_out_len;
+    malloc_protobuf(&(signed_pre_key->signature), sig_len);
+    cipher_suite->digital_signature_suite->sign(
+        signed_pre_key->signature.data, &signature_out_len,
         key_pair->public_key.data, pub_key_len,
-        signed_pre_key->signature.data
+        account->identity_key->sign_key_pair->private_key.data
     );
 
     int64_t now = get_skissm_plugin()->common_handler.gen_ts();
@@ -238,7 +238,7 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *ac
         node->used = false;
         node->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(node->key_pair);
-        cipher_suite->asym_key_gen(&(node->key_pair->public_key), &(node->key_pair->private_key));
+        cipher_suite->kem_suite->asym_key_gen(&node->key_pair->public_key, &node->key_pair->private_key);
         inserted_one_time_pre_key_list_node[i] = node;
     }
 

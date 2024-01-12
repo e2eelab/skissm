@@ -49,7 +49,7 @@ Skissm__CreateGroupRequest *produce_create_group_request(
 
     copy_address_from_address(&(msg->sender_address), sender_address);
 
-    msg->e2ee_pack_id = strdup(account->e2ee_pack_id);
+    msg->e2ee_pack_id = account->e2ee_pack_id;
 
     msg->group_info = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     Skissm__GroupInfo *group_info = msg->group_info;
@@ -65,7 +65,7 @@ Skissm__CreateGroupRequest *produce_create_group_request(
 }
 
 bool consume_create_group_response(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *sender_address,
     const char *group_name,
     Skissm__GroupMember **group_members,
@@ -89,7 +89,7 @@ bool consume_create_group_response(
 }
 
 bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg) {
-    const char *e2ee_pack_id = msg->e2ee_pack_id;
+    uint32_t e2ee_pack_id = msg->e2ee_pack_id;
     Skissm__GroupInfo *group_info = msg->group_info;
     const char *group_name = group_info->group_name;
     Skissm__E2eeAddress *sender_address = msg->sender_address;
@@ -220,7 +220,7 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
         (Skissm__AddGroupMembersMsg *)malloc(sizeof(Skissm__AddGroupMembersMsg));
     skissm__add_group_members_msg__init(msg);
 
-    msg->e2ee_pack_id = strdup(account->e2ee_pack_id);
+    msg->e2ee_pack_id = account->e2ee_pack_id;
 
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
 
@@ -276,7 +276,7 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
     const char *group_name = msg->group_info->group_name;
     Skissm__GroupMember **group_members = msg->group_info->group_members;
     size_t group_members_num = msg->group_info->n_group_members;
-    const char *e2ee_pack_id = msg->e2ee_pack_id;
+    uint32_t e2ee_pack_id = msg->e2ee_pack_id;
 
     /** The old group members have their own outbound group sessions, so they need to renew them.
      *  On the other hand, the new group members need to create the outbound group session.
@@ -349,7 +349,7 @@ Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
         (Skissm__AddGroupMemberDeviceMsg *)malloc(sizeof(Skissm__AddGroupMemberDeviceMsg));
     skissm__add_group_member_device_msg__init(msg);
 
-    msg->e2ee_pack_id = strdup(account->e2ee_pack_id);
+    msg->e2ee_pack_id = account->e2ee_pack_id;
 
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
 
@@ -442,7 +442,7 @@ bool consume_add_group_member_device_msg(
     const char *group_name = msg->group_info->group_name;
     Skissm__GroupMember **group_members = msg->group_info->group_members;
     size_t group_members_num = msg->group_info->n_group_members;
-    const char *e2ee_pack_id = msg->e2ee_pack_id;
+    uint32_t e2ee_pack_id = msg->e2ee_pack_id;
 
     /** The old group members have their own outbound group sessions, so they need to renew them.
      *  On the other hand, the new group members need to create the outbound group session.
@@ -516,7 +516,7 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
         (Skissm__RemoveGroupMembersMsg *)malloc(sizeof(Skissm__RemoveGroupMembersMsg));
     skissm__remove_group_members_msg__init(msg);
 
-    msg->e2ee_pack_id = strdup(account->e2ee_pack_id);
+    msg->e2ee_pack_id = account->e2ee_pack_id;
 
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
 
@@ -553,7 +553,7 @@ bool consume_remove_group_members_response(
 ) {
     if (response != NULL) {
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            const char *e2ee_pack_id = outbound_group_session->e2ee_pack_id;
+            uint32_t e2ee_pack_id = outbound_group_session->e2ee_pack_id;
             Skissm__E2eeAddress *sender_address = outbound_group_session->session_owner;
             Skissm__E2eeAddress *group_address = outbound_group_session->group_info->group_address;
             Skissm__GroupMember **group_members = response->group_members;
@@ -596,7 +596,7 @@ bool consume_remove_group_members_response(
 }
 
 bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveGroupMembersMsg *msg) {
-    const char *e2ee_pack_id = msg->e2ee_pack_id;
+    uint32_t e2ee_pack_id = msg->e2ee_pack_id;
     Skissm__GroupInfo *group_info = msg->group_info;
     const char *group_name = group_info->group_name;
     Skissm__E2eeAddress *sender_address = msg->sender_address;
@@ -803,7 +803,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     group_msg_payload->sequence = outbound_group_session->sequence;
 
     // encryption
-    group_msg_payload->ciphertext.len = cipher_suite->encrypt(
+    group_msg_payload->ciphertext.len = cipher_suite->symmetric_encryption_suite->encrypt(
         &(outbound_group_session->associated_data),
         msg_key->derived_key.data,
         plaintext_data,
@@ -812,14 +812,15 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     );
 
     // signature
-    int sig_len = cipher_suite->get_crypto_param().sig_len;
+    int sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
     group_msg_payload->signature.len = sig_len;
     group_msg_payload->signature.data = (uint8_t *) malloc(sizeof(uint8_t) * sig_len);
-    cipher_suite->sign(
-        account->identity_key->sign_key_pair->private_key.data,
+    size_t signature_out_len;
+    cipher_suite->digital_signature_suite->sign(
+        group_msg_payload->signature.data, &signature_out_len,
         group_msg_payload->ciphertext.data,
         group_msg_payload->ciphertext.len,
-        group_msg_payload->signature.data
+        account->identity_key->sign_key_pair->private_key.data
     );
 
     // release
@@ -858,7 +859,7 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     }
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_group_session->e2ee_pack_id)->cipher_suite;
-    int sign_key_len = cipher_suite->get_crypto_param().sign_pub_key_len;
+    int sign_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
 
     if (inbound_group_session->associated_data.data == NULL || inbound_group_session->associated_data.len < sign_key_len){
         ssm_notify_log(receiver_address, BAD_GROUP_SESSION, "consume_group_msg() inbound group session associated_data is null, just consume it");
@@ -872,10 +873,10 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     memcpy(identity_public_key, inbound_group_session->associated_data.data, sign_key_len);
 
     // verify the signature
-    int succ = cipher_suite->verify(
-        group_msg_payload->signature.data,
-        identity_public_key,
-        group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len
+    int succ = cipher_suite->digital_signature_suite->verify(
+        group_msg_payload->signature.data, group_msg_payload->signature.len,
+        group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len,
+        identity_public_key
     );
     if (succ < 0){
         ssm_notify_log(inbound_group_session->session_owner, BAD_SIGNATURE, "consume_group_msg()");
@@ -898,7 +899,7 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
 
     // decryption
     uint8_t *plaintext_data;
-    size_t plaintext_data_len = cipher_suite->decrypt(
+    size_t plaintext_data_len = cipher_suite->symmetric_encryption_suite->decrypt(
         &(inbound_group_session->associated_data),
         msg_key->derived_key.data,
         group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len,

@@ -40,7 +40,7 @@ void account_end();
  * @param e2ee_pack_id an id (0, 1) of e2ee package
  * @return Skissm__Account*
  */
-Skissm__Account *create_account(const char *e2ee_pack_id);
+Skissm__Account *create_account(uint32_t e2ee_pack_id);
 
 /**
  * @brief Lookup an one-time pre-key with a given public key

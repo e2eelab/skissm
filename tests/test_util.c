@@ -160,7 +160,7 @@ bool is_equal_account(Skissm__Account *account1, Skissm__Account *account2) {
         printf("version not match");
         return false;
     }
-    if (!safe_strcmp(account1->e2ee_pack_id, account2->e2ee_pack_id)) {
+    if (account1->e2ee_pack_id != account2->e2ee_pack_id) {
         printf("e2ee_pack_id not match");
         return false;
     }

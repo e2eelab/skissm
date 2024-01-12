@@ -81,7 +81,7 @@ size_t pack_group_pre_key_plaintext(
 void new_outbound_group_session_by_sender(
     size_t n_member_info_list,
     Skissm__GroupMemberInfo **member_info_list,
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     const char *group_name,
     Skissm__E2eeAddress *group_address,
@@ -104,7 +104,7 @@ void new_outbound_group_session_by_sender(
  */
 void new_outbound_group_session_by_receiver(
     const ProtobufCBinaryData *group_seed,
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     const char *group_name,
     Skissm__E2eeAddress *group_address,
@@ -132,7 +132,7 @@ void new_outbound_group_session_invited(
  * @param group_pre_key_bundle
  */
 void new_inbound_group_session_by_pre_key_bundle(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     Skissm__GroupPreKeyBundle *group_pre_key_bundle
 );
@@ -146,7 +146,7 @@ void new_inbound_group_session_by_pre_key_bundle(
  * @param group_info
  */
 void new_inbound_group_session_by_member_id(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     Skissm__GroupMemberInfo *group_member_id,
     Skissm__GroupInfo *group_info

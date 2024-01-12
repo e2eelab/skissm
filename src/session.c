@@ -32,11 +32,11 @@
 #define CURVE25519_SHARED_SECRET_LENGTH 32
 
 void initialise_session(
-    Skissm__Session *session, const char *e2ee_pack_id,
+    Skissm__Session *session, uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address
 ) {
     skissm__session__init(session);
-    session->e2ee_pack_id = strdup(e2ee_pack_id);
+    session->e2ee_pack_id = e2ee_pack_id;
     copy_address_from_address(&(session->our_address), our_address);
     copy_address_from_address(&(session->their_address), their_address);
     initialise_ratchet(&(session->ratchet));

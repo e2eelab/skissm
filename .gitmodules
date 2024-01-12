@@ -21,3 +21,6 @@
 [submodule "lib/dilithium/src"]
 	path = lib/dilithium/src
 	url = https://github.com/pq-crystals/dilithium.git
+[submodule "lib/PQClean/src"]
+	path = lib/PQClean/src
+	url = https://github.com/PQClean/PQClean

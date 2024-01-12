@@ -44,8 +44,6 @@ static skissm_event_handler_t test_event_handler = {
     NULL,
     NULL,
     NULL,
-    NULL,
-    NULL,
     NULL
 };
 
@@ -55,22 +53,29 @@ static void test_ecc_alice_to_bob() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -99,7 +104,7 @@ static void test_ecc_alice_to_bob() {
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     uint8_t plaintext[] = "Message";
     size_t plaintext_length = sizeof(plaintext) - 1;
@@ -139,22 +144,29 @@ static void test_ecc_bob_to_alice() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -183,7 +195,7 @@ static void test_ecc_bob_to_alice() {
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     uint8_t plaintext[] = "Message";
     size_t plaintext_length = sizeof(plaintext) - 1;
@@ -223,22 +235,29 @@ static void test_ecc_interaction_alice_first() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -267,7 +286,7 @@ static void test_ecc_interaction_alice_first() {
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     bool result;
 
@@ -329,22 +348,29 @@ static void test_ecc_interaction_bob_first() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -373,7 +399,7 @@ static void test_ecc_interaction_bob_first() {
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     bool result;
 
@@ -435,22 +461,29 @@ static void test_ecc_out_of_order() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -479,7 +512,7 @@ static void test_ecc_out_of_order() {
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     bool result;
 
@@ -541,22 +574,29 @@ static void test_ecc_continual_message() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_ECC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -585,7 +625,7 @@ static void test_ecc_continual_message() {
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     // Alice sends Bob messages many times
     int message_num = 1000;
@@ -635,22 +675,29 @@ static void test_pqc_alice_to_bob() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_PQC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -679,7 +726,7 @@ static void test_pqc_alice_to_bob() {
         &(bob_spk.public_key),
         &(bob_ratchet->sender_chain->our_ratchet_public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     uint8_t plaintext[] = "Message";
     size_t plaintext_length = sizeof(plaintext) - 1;
@@ -719,22 +766,29 @@ static void test_pqc_bob_to_alice() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_PQC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -763,7 +817,7 @@ static void test_pqc_bob_to_alice() {
         &(bob_spk.public_key),
         &(bob_ratchet->sender_chain->our_ratchet_public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     uint8_t plaintext[] = "Message";
     size_t plaintext_length = sizeof(plaintext) - 1;
@@ -803,22 +857,29 @@ static void test_pqc_interaction_alice_first() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_PQC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -847,7 +908,7 @@ static void test_pqc_interaction_alice_first() {
         &(bob_spk.public_key),
         &(bob_ratchet->sender_chain->our_ratchet_public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     bool result;
 
@@ -909,22 +970,29 @@ static void test_pqc_interaction_bob_first() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_PQC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -953,7 +1021,7 @@ static void test_pqc_interaction_bob_first() {
         &(bob_spk.public_key),
         &(bob_ratchet->sender_chain->our_ratchet_public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     bool result;
 
@@ -1015,22 +1083,29 @@ static void test_pqc_out_of_order() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_PQC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -1059,7 +1134,7 @@ static void test_pqc_out_of_order() {
         &(bob_spk.public_key),
         &(bob_ratchet->sender_chain->our_ratchet_public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     bool result;
 
@@ -1121,22 +1196,29 @@ static void test_pqc_continual_message() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_PQC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -1165,7 +1247,7 @@ static void test_pqc_continual_message() {
         &(bob_spk.public_key),
         &(bob_ratchet->sender_chain->our_ratchet_public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     // Alice sends Bob messages many times
     int message_num = 1000;
@@ -1215,22 +1297,29 @@ static void test_pqc_interaction_v2() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_PQC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -1259,7 +1348,7 @@ static void test_pqc_interaction_v2() {
         &(bob_spk.public_key),
         &(bob_ratchet->sender_chain->our_ratchet_public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     int round = 10;
 
@@ -1339,22 +1428,29 @@ static void test_pqc_out_of_order_v2() {
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
-    test_cipher_suite = get_e2ee_pack(TEST_E2EE_PACK_ID_PQC)->cipher_suite;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
 
-    int ad_len = 64;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
     ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
     int i;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
     }
 
@@ -1383,7 +1479,7 @@ static void test_pqc_out_of_order_v2() {
         &(bob_spk.public_key),
         &(bob_ratchet->sender_chain->our_ratchet_public_key)
     );
-    int key_len = test_cipher_suite->get_crypto_param().asym_priv_key_len;
+    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     int msg_num = 10;
     uint8_t **plaintext = (uint8_t **) malloc(sizeof(uint8_t *) * msg_num);

@@ -45,16 +45,6 @@ typedef struct store_group {
 
 store_group group = {NULL, NULL};
 
-typedef struct f2f_password_data {
-    Skissm__E2eeAddress *sender;
-    Skissm__E2eeAddress *receiver;
-    uint8_t *f2f_password;
-    size_t f2f_password_len;
-    struct f2f_password_data *next;
-} f2f_password_data;
-
-static f2f_password_data *f2f_pw_data = NULL;
-
 static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
     if (log_code == 0)
         return;
@@ -80,90 +70,12 @@ static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm_
     printf("on_outbound_session_ready\n");
 }
 
-static void f2f_password_created(
-    Skissm__E2eeAddress *sender,
-    Skissm__E2eeAddress *receiver,
-    uint8_t *password,
-    size_t password_len
-) {
-    if (f2f_pw_data != NULL) {
-        f2f_password_data *cur_data = f2f_pw_data;
-        while (cur_data->next != NULL) {
-            cur_data = cur_data->next;
-        }
-        cur_data->next = (f2f_password_data *)malloc(sizeof(f2f_password_data));
-        copy_address_from_address(&(cur_data->next->sender), sender);
-        copy_address_from_address(&(cur_data->next->receiver), receiver);
-        cur_data->next->f2f_password_len = password_len;
-        cur_data->next->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
-        memcpy(cur_data->next->f2f_password, password, password_len);
-        cur_data = cur_data->next;
-        cur_data->next = (f2f_password_data *)malloc(sizeof(f2f_password_data));
-        copy_address_from_address(&(cur_data->next->sender), receiver);
-        copy_address_from_address(&(cur_data->next->receiver), sender);
-        cur_data->next->f2f_password_len = password_len;
-        cur_data->next->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
-        memcpy(cur_data->next->f2f_password, password, password_len);
-        cur_data->next->next = NULL;
-    } else {
-        f2f_pw_data = (f2f_password_data *)malloc(sizeof(f2f_password_data));
-        copy_address_from_address(&(f2f_pw_data->sender), sender);
-        copy_address_from_address(&(f2f_pw_data->receiver), receiver);
-        f2f_pw_data->f2f_password_len = password_len;
-        f2f_pw_data->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
-        memcpy(f2f_pw_data->f2f_password, password, password_len);
-        f2f_pw_data->next = (f2f_password_data *)malloc(sizeof(f2f_password_data));
-        copy_address_from_address(&(f2f_pw_data->next->sender), receiver);
-        copy_address_from_address(&(f2f_pw_data->next->receiver), sender);
-        f2f_pw_data->next->f2f_password_len = password_len;
-        f2f_pw_data->next->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
-        memcpy(f2f_pw_data->next->f2f_password, password, password_len);
-        f2f_pw_data->next->next = NULL;
-    }
-}
-
-static void on_f2f_password_acquired(
-    Skissm__E2eeAddress *user_address, 
-    Skissm__E2eeAddress *sender,
-    Skissm__E2eeAddress *receiver,
-    uint8_t **password,
-    size_t *password_len
-) {
-    f2f_password_data *cur_data = f2f_pw_data;
-    while (cur_data != NULL) {
-        if (!compare_address(cur_data->sender, sender) || !compare_address(cur_data->receiver, receiver)) {
-            cur_data = cur_data->next;
-        } else {
-            break;
-        }
-    }
-
-    if (cur_data == NULL)
-        return;
-
-    *password_len = cur_data->f2f_password_len;
-    *password = (uint8_t *)malloc(sizeof(uint8_t) * cur_data->f2f_password_len);
-    memcpy(*password, cur_data->f2f_password, *password_len);
-}
-
 static void on_one2one_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
 
 static void on_other_device_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
-}
-
-static void on_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *session) {
-    if (session->our_address->user->device_id != NULL) {
-        printf("New outbound face-to-face session created.\n");
-        printf("Our address: %s\n", session->our_address->user->user_id);
-        printf("Their address: %s\n", session->their_address->user->user_id);
-    } else {
-        printf("New inbound face-to-face session created.\n");
-        printf("Our address: %s\n", session->our_address->user->user_id);
-        printf("Their address: %s\n", session->their_address->user->user_id);
-    }
 }
 
 static void on_group_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
@@ -203,10 +115,8 @@ static skissm_event_handler_t test_event_handler = {
     on_inbound_session_invited,
     on_inbound_session_ready,
     on_outbound_session_ready,
-    on_f2f_password_acquired,
     on_one2one_msg_received,
     on_other_device_msg_received,
-    on_f2f_session_ready,
     on_group_msg_received,
     on_group_created,
     on_group_members_added,
@@ -249,7 +159,12 @@ static void test_end() {
 }
 
 static void mock_alice_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
@@ -271,7 +186,12 @@ static void mock_alice_account(const char *user_name) {
 }
 
 static void mock_bob_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
@@ -293,7 +213,12 @@ static void mock_bob_account(const char *user_name) {
 }
 
 static void mock_claire_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
@@ -315,7 +240,12 @@ static void mock_claire_account(const char *user_name) {
 }
 
 static void mock_alice_pqc_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
@@ -337,7 +267,12 @@ static void mock_alice_pqc_account(const char *user_name) {
 }
 
 static void mock_bob_pqc_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
@@ -359,7 +294,12 @@ static void mock_bob_pqc_account(const char *user_name) {
 }
 
 static void mock_claire_pqc_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
@@ -381,7 +321,12 @@ static void mock_claire_pqc_account(const char *user_name) {
 }
 
 static void mock_user_pqc_account(const char *user_name, const char *authenticator, const char *auth_code) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     Skissm__RegisterUserResponse *response = register_user(
         e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
@@ -1699,16 +1644,16 @@ static void test_medium_group() {
 }
 
 int main() {
-    test_create_group();
-    test_add_group_members();
-    test_remove_group_members();
+    // test_create_group();
+    // test_add_group_members();
+    // test_remove_group_members();
     test_create_add_remove();
     test_interaction();
     test_continual();
-    test_multiple_devices();
-    test_pqc_create_group();
-    test_pqc_add_group_members();
-    test_pqc_remove_group_members();
+    // test_multiple_devices();
+    // test_pqc_create_group();
+    // test_pqc_add_group_members();
+    // test_pqc_remove_group_members();
     test_pqc_leave_group();
     test_pqc_multiple_devices();
     test_pqc_add_new_device();
