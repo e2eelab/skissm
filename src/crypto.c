@@ -31,18 +31,39 @@
 #include "sha256.h"
 #include "base64.h"
 
-#include "kyber/src/ref/api.h"
-#include "kyber/src/ref/kem.h"
-#include "kyber/src/ref/params.h"
-#include "kyber/src/ref/indcpa.h"
-#include "kyber/src/ref/symmetric.h"
-
-#include "sphincsplus/src/ref/params/params-sphincs-shake-256f.h"
-#include "sphincsplus/src/ref/address.h"
-#include "sphincsplus/src/ref/api.h"
-#include "sphincsplus/src/ref/hash.h"
-#include "sphincsplus/src/ref/fors.h"
-#include "sphincsplus/src/ref/merkle.h"
+#include "PQClean/src/crypto_kem/hqc-128/clean/api.h"
+#include "PQClean/src/crypto_kem/hqc-192/clean/api.h"
+#include "PQClean/src/crypto_kem/hqc-256/clean/api.h"
+#include "PQClean/src/crypto_kem/kyber512/clean/api.h"
+#include "PQClean/src/crypto_kem/kyber768/clean/api.h"
+#include "PQClean/src/crypto_kem/kyber1024/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece348864/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece348864f/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece460896/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece460896f/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece6688128/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece6688128f/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece6960119/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece6960119f/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece8192128/clean/api.h"
+#include "PQClean/src/crypto_kem/mceliece8192128f/clean/api.h"
+#include "PQClean/src/crypto_sign/dilithium2/clean/api.h"
+#include "PQClean/src/crypto_sign/dilithium3/clean/api.h"
+#include "PQClean/src/crypto_sign/dilithium5/clean/api.h"
+#include "PQClean/src/crypto_sign/falcon-512/clean/api.h"
+#include "PQClean/src/crypto_sign/falcon-1024/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-sha2-128f-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-sha2-128s-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-sha2-192f-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-sha2-192s-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-sha2-256f-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-sha2-256s-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-shake-128f-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-shake-128s-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-shake-192f-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-shake-192s-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-shake-256f-simple/clean/api.h"
+#include "PQClean/src/crypto_sign/sphincs-shake-256s-simple/clean/api.h"
 
 #include "skissm/account.h"
 #include "skissm/mem_util.h"
@@ -62,6 +83,1102 @@
 
 static const uint8_t CURVE25519_BASEPOINT[32] = {9};
 
+
+// digital signature
+
+static crypto_digital_signature_param_t curve25519_sign_param = {
+    false,
+    CURVE25519_KEY_LENGTH,
+    CURVE25519_KEY_LENGTH,
+    CURVE_SIGNATURE_LENGTH
+};
+
+static crypto_digital_signature_param_t dilithium2_param = {
+    true,
+    PQCLEAN_DILITHIUM2_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_DILITHIUM2_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_DILITHIUM2_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t dilithium3_param = {
+    true,
+    PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t dilithium5_param = {
+    true,
+    PQCLEAN_DILITHIUM5_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_DILITHIUM5_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_DILITHIUM5_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t falcon512_param = {
+    true,
+    PQCLEAN_FALCON512_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_FALCON512_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_FALCON512_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t falcon1024_param = {
+    true,
+    PQCLEAN_FALCON1024_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_FALCON1024_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_FALCON1024_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_sha2_128f_param = {
+    true,
+    PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_sha2_128s_param = {
+    true,
+    PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_sha2_192f_param = {
+    true,
+    PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_sha2_192s_param = {
+    true,
+    PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_sha2_256f_param = {
+    true,
+    PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_sha2_256s_param = {
+    true,
+    PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_shake_128f_param = {
+    true,
+    PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_shake_128s_param = {
+    true,
+    PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_shake_192f_param = {
+    true,
+    PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_shake_192s_param = {
+    true,
+    PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_shake_256f_param = {
+    true,
+    PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_digital_signature_param_t sphincs_shake_256s_param = {
+    true,
+    PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_BYTES
+};
+
+
+// kem
+
+static crypto_kem_param_t curve25519_ECDH_param = {
+    false,
+    CURVE25519_KEY_LENGTH,
+    CURVE25519_KEY_LENGTH,
+    0,
+    CURVE25519_KEY_LENGTH
+};
+
+static crypto_kem_param_t hqc128_param = {
+    true,
+    PQCLEAN_HQC128_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_HQC128_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_HQC128_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_HQC128_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t hqc192_param = {
+    true,
+    PQCLEAN_HQC192_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_HQC192_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_HQC192_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_HQC192_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t hqc256_param = {
+    true,
+    PQCLEAN_HQC256_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_HQC256_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_HQC256_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_HQC256_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t kyber512_param = {
+    true,
+    PQCLEAN_KYBER512_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_KYBER512_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_KYBER512_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_KYBER512_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t kyber768_param = {
+    true,
+    PQCLEAN_KYBER768_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_KYBER768_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_KYBER768_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_KYBER768_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t kyber1024_param = {
+    true,
+    PQCLEAN_KYBER1024_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_KYBER1024_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_KYBER1024_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_KYBER1024_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece348864_param = {
+    true,
+    PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece348864f_param = {
+    true,
+    PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece460896_param = {
+    true,
+    PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece460896f_param = {
+    true,
+    PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece6688128_param = {
+    true,
+    PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece6688128f_param = {
+    true,
+    PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece6960119_param = {
+    true,
+    PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece6960119f_param = {
+    true,
+    PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece8192128_param = {
+    true,
+    PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_BYTES
+};
+
+static crypto_kem_param_t mceliece8192128f_param = {
+    true,
+    PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_PUBLICKEYBYTES,
+    PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_SECRETKEYBYTES,
+    PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_CIPHERTEXTBYTES,
+    PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_BYTES
+};
+
+
+// symmetric encryption
+
+static crypto_symmetric_encryption_param_t aes256_sha256_param = {
+    SHA256_OUTPUT_LENGTH,
+    AES256_KEY_LENGTH,
+    AES256_IV_LENGTH,
+    AES256_GCM_TAG_LENGTH
+};
+
+
+// ditigal signature
+
+crypto_digital_signature_param_t get_curve25519_sign_param() {
+    return curve25519_sign_param;
+}
+
+crypto_digital_signature_param_t get_dilithium2_param() {
+    return dilithium2_param;
+}
+
+crypto_digital_signature_param_t get_dilithium3_param() {
+    return dilithium3_param;
+}
+
+crypto_digital_signature_param_t get_dilithium5_param() {
+    return dilithium5_param;
+}
+
+crypto_digital_signature_param_t get_falcon512_param() {
+    return falcon512_param;
+}
+
+crypto_digital_signature_param_t get_falcon1024_param() {
+    return falcon1024_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_sha2_128f_param() {
+    return sphincs_sha2_128f_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_sha2_128s_param() {
+    return sphincs_sha2_128s_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_sha2_192f_param() {
+    return sphincs_sha2_192f_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_sha2_192s_param() {
+    return sphincs_sha2_192s_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_sha2_256f_param() {
+    return sphincs_sha2_256f_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_sha2_256s_param() {
+    return sphincs_sha2_256s_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_shake_128f_param() {
+    return sphincs_shake_128f_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_shake_128s_param() {
+    return sphincs_shake_128s_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_shake_192f_param() {
+    return sphincs_shake_192f_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_shake_192s_param() {
+    return sphincs_shake_192s_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_shake_256f_param() {
+    return sphincs_shake_256f_param;
+}
+
+crypto_digital_signature_param_t get_sphincs_shake_256s_param() {
+    return sphincs_shake_256s_param;
+}
+
+int crypto_dilithium2_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_DILITHIUM2_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_DILITHIUM2_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_DILITHIUM2_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_DILITHIUM2_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_DILITHIUM2_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_dilithium3_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_DILITHIUM3_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_dilithium5_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_DILITHIUM5_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_DILITHIUM5_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_DILITHIUM5_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_DILITHIUM5_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_DILITHIUM5_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_falcon512_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_FALCON512_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_FALCON512_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_FALCON512_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_FALCON512_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_FALCON512_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_falcon1024_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_FALCON1024_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_FALCON1024_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_FALCON1024_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_FALCON1024_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_FALCON1024_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_sha2_128f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_sha2_128s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_sha2_192f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_sha2_192s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_sha2_256f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_sha2_256s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_shake_128f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_shake_128s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_shake_192f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_shake_192s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_shake_256f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_sphincs_shake_256s_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
+}
+
+
+// kem
+
+crypto_kem_param_t get_curve25519_ECDH_param() {
+    return curve25519_ECDH_param;
+}
+
+crypto_kem_param_t get_hqc128_param() {
+    return hqc128_param;
+}
+
+crypto_kem_param_t get_hqc192_param() {
+    return hqc192_param;
+}
+
+crypto_kem_param_t get_hqc256_param() {
+    return hqc256_param;
+}
+
+crypto_kem_param_t get_kyber512_param() {
+    return kyber512_param;
+}
+
+crypto_kem_param_t get_kyber768_param() {
+    return kyber768_param;
+}
+
+crypto_kem_param_t get_kyber1024_param() {
+    return kyber1024_param;
+}
+
+crypto_kem_param_t get_mceliece348864_param() {
+    return mceliece348864_param;
+}
+
+crypto_kem_param_t get_mceliece348864f_param() {
+    return mceliece348864f_param;
+}
+
+crypto_kem_param_t get_mceliece460896_param() {
+    return mceliece460896_param;
+}
+
+crypto_kem_param_t get_mceliece460896f_param() {
+    return mceliece460896f_param;
+}
+
+crypto_kem_param_t get_mceliece6688128_param() {
+    return mceliece6688128_param;
+}
+
+crypto_kem_param_t get_mceliece6688128f_param() {
+    return mceliece6688128f_param;
+}
+
+crypto_kem_param_t get_mceliece6960119_param() {
+    return mceliece6960119_param;
+}
+
+crypto_kem_param_t get_mceliece6960119f_param() {
+    return mceliece6960119f_param;
+}
+
+crypto_kem_param_t get_mceliece8192128_param() {
+    return mceliece8192128_param;
+}
+
+crypto_kem_param_t get_mceliece8192128f_param() {
+    return mceliece8192128f_param;
+}
+
+crypto_symmetric_encryption_param_t get_aes256_sha256_param() {
+    return aes256_sha256_param;
+}
+
+int crypto_hqc128_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC128_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_HQC128_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC128_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_HQC128_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_HQC128_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_hqc192_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC192_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_HQC192_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC192_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_HQC192_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_HQC192_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_hqc256_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC256_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_HQC256_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC256_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_HQC256_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_HQC256_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_kyber512_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER512_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_KYBER512_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER512_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_KYBER512_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_KYBER512_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_kyber768_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER768_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_KYBER768_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER768_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_KYBER768_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_KYBER768_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_kyber1024_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER1024_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_KYBER1024_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER1024_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_KYBER1024_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_KYBER1024_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece348864_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece348864f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece460896_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece460896f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece6688128_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece6688128f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece6960119_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece6960119f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece8192128_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+int crypto_mceliece8192128f_generate_key_pair(
+    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_SECRETKEYBYTES);
+    priv_key->len = PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_SECRETKEYBYTES;
+
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_PUBLICKEYBYTES);
+    pub_key->len = PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_PUBLICKEYBYTES;
+
+    return PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
+}
+
+uint8_t *crypto_hqc128_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC128_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_HQC128_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_HQC128_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_hqc192_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC192_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_HQC192_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_HQC192_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_hqc256_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC256_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_HQC256_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_HQC256_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_kyber512_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER512_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_KYBER512_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_KYBER512_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_kyber768_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER768_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_KYBER768_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_KYBER768_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_kyber1024_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER1024_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_KYBER1024_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_KYBER1024_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece348864_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece348864f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece460896_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece460896f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece6688128_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece6688128f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece6960119_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece6960119f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece8192128_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
+uint8_t *crypto_mceliece8192128f_shared_secret(
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *their_key,
+    uint8_t *shared_secret
+) {
+    if (our_key == NULL) {
+        // Encapsulation
+        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+        PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
+        return ct;
+    } else {
+        // Decapsulation
+        PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
+        return NULL;
+    }
+}
+
 static crypto_param_t ecdh_x25519_aes256_gcm_sha256_param = {
     false,
     CURVE25519_KEY_LENGTH,
@@ -70,20 +1187,6 @@ static crypto_param_t ecdh_x25519_aes256_gcm_sha256_param = {
     CURVE25519_KEY_LENGTH,
     CURVE25519_KEY_LENGTH,
     CURVE_SIGNATURE_LENGTH,
-    SHA256_OUTPUT_LENGTH,
-    AES256_KEY_LENGTH,
-    AES256_IV_LENGTH,
-    AES256_GCM_TAG_LENGTH
-};
-
-static crypto_param_t kyber1024_sphincsplus_aes256_gcm_sha256_param = {
-    true,
-    pqcrystals_kyber1024_PUBLICKEYBYTES,
-    pqcrystals_kyber1024_SECRETKEYBYTES,
-    pqcrystals_kyber1024_CIPHERTEXTBYTES,
-    SPX_PK_BYTES,
-    SPX_SK_BYTES,
-    SPX_BYTES,  // 49856
     SHA256_OUTPUT_LENGTH,
     AES256_KEY_LENGTH,
     AES256_IV_LENGTH,
@@ -101,31 +1204,7 @@ static void crypto_curve25519_generate_private_key(uint8_t *private_key) {
     memcpy(private_key, random, CURVE25519_KEY_LENGTH);
 }
 
-crypto_param_t get_ecdh_x25519_aes256_gcm_sha256_param() {
-    return ecdh_x25519_aes256_gcm_sha256_param;
-}
-
-crypto_param_t get_kyber1024_sphincsplus_aes256_gcm_sha256_param() {
-    return kyber1024_sphincsplus_aes256_gcm_sha256_param;
-}
-
-void crypto_curve25519_generate_key_pair(
-    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
-) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
-    priv_key->len = CURVE25519_KEY_LENGTH;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
-    pub_key->len = CURVE25519_KEY_LENGTH;
-
-    crypto_curve25519_generate_private_key(priv_key->data);
-
-    curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
-}
-
-void crypto_curve25519_signature_generate_key_pair(
-    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
-) {
+int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key) {
     int result;
 
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
@@ -148,7 +1227,7 @@ void crypto_curve25519_signature_generate_key_pair(
             ssm_notify_log(
                 NULL,
                 BAD_SIGN_KEY,
-                "crypto_curve25519_signature_generate_key_pair() verify failed, regenerate the key pair."
+                "CURVE25519_crypto_sign_keypair() verify failed, regenerate the key pair."
             );
         } else {
             // success
@@ -156,40 +1235,39 @@ void crypto_curve25519_signature_generate_key_pair(
         }
         // TODO in case of long running
     }
+
+    return result;
 }
 
-void crypto_kyber1024_generate_key_pair(
-    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
-) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * pqcrystals_kyber1024_SECRETKEYBYTES);
-    priv_key->len = pqcrystals_kyber1024_SECRETKEYBYTES;
+int CURVE25519_crypto_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key) {
+    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
+    priv_key->len = CURVE25519_KEY_LENGTH;
 
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * pqcrystals_kyber1024_PUBLICKEYBYTES);
-    pub_key->len = pqcrystals_kyber1024_PUBLICKEYBYTES;
+    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
+    pub_key->len = CURVE25519_KEY_LENGTH;
 
-    size_t i;
-    indcpa_keypair(pub_key->data, priv_key->data);
-    for (i = 0; i < KYBER_INDCPA_PUBLICKEYBYTES; i++)
-        (priv_key->data)[i + KYBER_INDCPA_SECRETKEYBYTES] = (pub_key->data)[i];
-    hash_h(priv_key->data + KYBER_SECRETKEYBYTES - 2 * KYBER_SYMBYTES, pub_key->data, KYBER_PUBLICKEYBYTES);
+    crypto_curve25519_generate_private_key(priv_key->data);
 
-    get_skissm_plugin()->common_handler.gen_rand(
-        priv_key->data + KYBER_SECRETKEYBYTES - KYBER_SYMBYTES, KYBER_SYMBYTES
-    );
+    return curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
 }
 
-void crypto_sphincsplus_shake256_generate_key_pair(
-    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
+int CURVE25519_crypto_sign_signature(
+    uint8_t *signature_out, size_t *signature_out_len,
+    const uint8_t *msg, size_t msg_len,
+    const uint8_t *private_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * SPX_SK_BYTES);
-    priv_key->len = SPX_SK_BYTES;
+    *signature_out_len = CURVE_SIGNATURE_LENGTH;
+    uint8_t nonce[*signature_out_len];
+    get_skissm_plugin()->common_handler.gen_rand(nonce, sizeof(nonce));
+    return curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
+}
 
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * SPX_PK_BYTES);
-    pub_key->len = SPX_PK_BYTES;
-
-    unsigned char seed[CRYPTO_SEEDBYTES];
-    get_skissm_plugin()->common_handler.gen_rand(seed, CRYPTO_SEEDBYTES);
-    crypto_sign_seed_keypair(pub_key->data, priv_key->data, seed);
+int CURVE25519_crypto_sign_verify(
+    const uint8_t *signature_in, size_t signature_in_len,
+    const uint8_t *msg, size_t msg_len,
+    const uint8_t *public_key
+) {
+    return curve25519_verify(signature_in, public_key, msg, msg_len);
 }
 
 uint8_t *crypto_curve25519_dh(
@@ -199,31 +1277,6 @@ uint8_t *crypto_curve25519_dh(
 ) {
     curve25519_donna(shared_secret, our_key->data, their_key->data);
     return NULL;
-}
-
-uint8_t *crypto_kyber1024_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
-) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * pqcrystals_kyber1024_CIPHERTEXTBYTES);
-        uint8_t buf[2*KYBER_SYMBYTES];
-        uint8_t kr[2*KYBER_SYMBYTES];
-        get_skissm_plugin()->common_handler.gen_rand(buf, KYBER_SYMBYTES);
-        hash_h(buf, buf, KYBER_SYMBYTES);
-        hash_h(buf+KYBER_SYMBYTES, their_key->data, KYBER_PUBLICKEYBYTES);
-        hash_g(kr, buf, 2*KYBER_SYMBYTES);
-        indcpa_enc(ct, buf, their_key->data, kr+KYBER_SYMBYTES);
-        hash_h(kr+KYBER_SYMBYTES, ct, KYBER_CIPHERTEXTBYTES);
-        kdf(shared_secret, kr, 2*KYBER_SYMBYTES);
-        return ct;
-    } else {
-        // Decapsulation
-        crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
 }
 
 void crypto_curve25519_sign(
@@ -236,83 +1289,11 @@ void crypto_curve25519_sign(
     curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
 }
 
-void crypto_sphincsplus_shake256_sign(
-    uint8_t *private_key,
-    uint8_t *msg, size_t msg_len,
-    uint8_t *signature_out
-) {
-    spx_ctx ctx;
-
-    const unsigned char *sk_prf = private_key + SPX_N;
-    const unsigned char *pk = private_key + 2*SPX_N;
-
-    unsigned char optrand[SPX_N];
-    unsigned char mhash[SPX_FORS_MSG_BYTES];
-    unsigned char root[SPX_N];
-    uint32_t i;
-    uint64_t tree;
-    uint32_t idx_leaf;
-    uint32_t wots_addr[8] = {0};
-    uint32_t tree_addr[8] = {0};
-
-    memcpy(ctx.sk_seed, private_key, SPX_N);
-    memcpy(ctx.pub_seed, pk, SPX_N);
-
-    /* This hook allows the hash function instantiation to do whatever
-       preparation or computation it needs, based on the public seed. */
-    initialize_hash_function(&ctx);
-
-    set_type(wots_addr, SPX_ADDR_TYPE_WOTS);
-    set_type(tree_addr, SPX_ADDR_TYPE_HASHTREE);
-
-    /* Optionally, signing can be made non-deterministic using optrand.
-       This can help counter side-channel attacks that would benefit from
-       getting a large number of traces when the signer uses the same nodes. */
-    get_skissm_plugin()->common_handler.gen_rand(optrand, SPX_N);
-    /* Compute the digest randomization value. */
-    gen_message_random(signature_out, sk_prf, optrand, msg, msg_len, &ctx);
-
-    /* Derive the message digest and leaf index from R, PK and M. */
-    hash_message(mhash, &tree, &idx_leaf, signature_out, pk, msg, msg_len, &ctx);
-    signature_out += SPX_N;
-
-    set_tree_addr(wots_addr, tree);
-    set_keypair_addr(wots_addr, idx_leaf);
-
-    /* Sign the message hash using FORS. */
-    fors_sign(signature_out, root, mhash, &ctx, wots_addr);
-    signature_out += SPX_FORS_BYTES;
-
-    for (i = 0; i < SPX_D; i++) {
-        set_layer_addr(tree_addr, i);
-        set_tree_addr(tree_addr, tree);
-
-        copy_subtree_addr(wots_addr, tree_addr);
-        set_keypair_addr(wots_addr, idx_leaf);
-
-        merkle_sign(signature_out, root, &ctx, wots_addr, tree_addr, idx_leaf);
-        signature_out += SPX_WOTS_BYTES + SPX_TREE_HEIGHT * SPX_N;
-
-        /* Update the indices for the next layer. */
-        idx_leaf = (tree & ((1 << SPX_TREE_HEIGHT)-1));
-        tree = tree >> SPX_TREE_HEIGHT;
-    }
-}
-
 int crypto_curve25519_verify(
     uint8_t *signature_in, uint8_t *public_key,
     uint8_t *msg, size_t msg_len
 ) {
     return curve25519_verify(signature_in, public_key, msg, msg_len);
-}
-
-int crypto_sphincsplus_shake256_verify(
-    uint8_t *signature_in, uint8_t *public_key,
-    uint8_t *msg, size_t msg_len
-) {
-    int result;
-    result = crypto_sign_verify(signature_in, SPX_BYTES, msg, msg_len, public_key);
-    return result;
 }
 
 void crypto_aes_encrypt_gcm(

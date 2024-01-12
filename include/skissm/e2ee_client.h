@@ -19,7 +19,7 @@ extern "C" {
  * @return Skissm__RegisterUserResponse *
  */
 Skissm__RegisterUserResponse *register_user(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     const char *user_name,
     const char *user_id,
     const char *device_id,
@@ -64,23 +64,6 @@ Skissm__InviteResponse *new_invite(
 );
 
 /**
- * @brief Send a face-to-face invite request and create a new outbound session.
- * @param from From address
- * @param to To Address
- * @param responded responded or not
- * @param password Password (6-8)
- * @param password_len Password length
- * @return  Length of encrypted_f2f_pre_shared_key
- */
-size_t f2f_invite(
-    Skissm__E2eeAddress *from,
-    Skissm__E2eeAddress *to,
-    bool responded,
-    uint8_t *password,
-    size_t password_len
-);
-
-/**
  * @brief Send one2one msg.
  * @param from
  * @param to_user_id
@@ -103,6 +86,19 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
  * @param plaintext_data_len 
  */
 void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, size_t plaintext_data_len);
+
+/**
+ * @brief Send sync invite msg to other devices.
+ * @param from
+ * @param to_user_id 
+ * @param to_domain
+ * @param to_device_id_list
+ * @param to_device_num
+ */
+void send_sync_invite_msg(
+    Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain,
+    char **to_device_id_list, size_t to_device_num
+);
 
 /**
  * @brief Create a group.

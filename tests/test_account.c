@@ -69,8 +69,15 @@ static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_on
 }
 
 static void create_account_test() {
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+
     // Register test
-    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(e2ee_pack_id);
 
     assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
@@ -154,7 +161,12 @@ static void test_create_accounts(uint64_t num) {
 
 static void test_register_user() {
     printf("====== test_register_user ======\n");
-    const char *e2ee_pack_id = "0";
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
@@ -178,7 +190,12 @@ static void test_register_user() {
 
 static void test_publish_spk() {
     printf("====== test_publish_spk ======\n");
-    const char *e2ee_pack_id = "0";
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
@@ -228,7 +245,12 @@ Skissm__ProtoMsg *mock_supply_opks_msg(Skissm__E2eeAddress *user_address, uint32
 
 static void test_supply_opks() {
     printf("====== test_supply_opks ======\n");
-    const char *e2ee_pack_id = "0";
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
@@ -271,7 +293,12 @@ static void test_supply_opks() {
 
 static void test_free_opks() {
     printf("====== test_free_opks ======\n");
-    const char *e2ee_pack_id = "0";
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();

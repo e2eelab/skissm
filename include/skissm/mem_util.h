@@ -49,6 +49,10 @@ char *generate_uuid_str();
  */
 size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char **hex_str);
 
+uint32_t e2ee_pack_number_to_uint32(e2ee_pack_number *e2ee_pack_number_id);
+
+e2ee_pack_number *uint32_to_e2ee_pack_number(uint32_t e2ee_pack_id);
+
 /**
  * @brief Compare two ProtobufCBinaryData objects.
  *
@@ -108,6 +112,14 @@ bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_me
  * @param dest
  */
 void init_protobuf(ProtobufCBinaryData *dest);
+
+/**
+ * @brief Malloc the ProtobufCBinaryData with given len.
+ *
+ * @param dest
+ * @param len
+ */
+void malloc_protobuf(ProtobufCBinaryData *dest, size_t len);
 
 /**
  * @brief Copy ProtobufCBinaryData from src to dest.
@@ -223,9 +235,8 @@ void copy_sender_chain_from_sender_chain(Skissm__SenderChainNode **dest, Skissm_
  *
  * @param dest
  * @param src
- * @param receiver_chains_num
  */
-void copy_receiver_chains_from_receiver_chains(Skissm__ReceiverChainNode ***dest, Skissm__ReceiverChainNode **src, size_t receiver_chains_num);
+void copy_receiver_chain_from_receiver_chain(Skissm__ReceiverChainNode **dest, Skissm__ReceiverChainNode *src);
 
 /**
  * @brief Copy Skissm__SkippedMsgKeyNode from src to dest.

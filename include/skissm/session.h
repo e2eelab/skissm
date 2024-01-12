@@ -67,52 +67,14 @@ typedef struct session_suite_t {
         Skissm__Session *,
         Skissm__AcceptMsg *
     );
-
-    /**
-     * @brief Create a face-to-face outbound session.
-     *
-     * @param outbound_session The outbound session
-     * @param f2f_pre_key_invite_msg The face-to-face message to create a session
-     * @return value < 0 for error
-     */
-    int (*new_f2f_outbound_session)(
-        Skissm__Session *,
-        Skissm__F2fPreKeyInviteMsg *
-    );
-
-    /**
-     * @brief Create a face-to-face inbound session.
-     *
-     * @param inbound_session The inbound session
-     * @param local_account Our account
-     * @param secret The shared secret bytes
-     * @return value < 0 for error
-     */
-    int (*new_f2f_inbound_session)(
-        Skissm__Session *,
-        Skissm__Account *,
-        uint8_t *
-    );
-
-    /**
-     * @brief Complete a face-to-face outbound session.
-     *
-     * @param outbound_session The outbound session
-     * @param msg The face-to-face accept message
-     * @return value < 0 for error
-     */
-    int (*complete_f2f_outbound_session)(
-        Skissm__Session *,
-        Skissm__F2fAcceptMsg *
-    );
 } session_suite_t;
 
 /* common */
 void initialise_session(
     Skissm__Session *session,
-    const char *e2ee_pack_id,
-    Skissm__E2eeAddress *from,
-    Skissm__E2eeAddress *to
+    uint32_t e2ee_pack_id,
+    Skissm__E2eeAddress *our_address,
+    Skissm__E2eeAddress *their_address
 );
 
 /**
@@ -127,19 +89,6 @@ void initialise_session(
 void pack_common_plaintext(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     int plaintext_type,
-    uint8_t **common_plaintext_data, size_t *common_plaintext_data_len
-);
-
-/**
- * @brief Packaging a face-to-face session data to common_plaintext_data.
- *
- * @param session
- * @param plaintext_type
- * @param common_plaintext_data
- * @param common_plaintext_data_len
- */
-void pack_f2f_session_plaintext(
-    Skissm__Session *session, int plaintext_type,
     uint8_t **common_plaintext_data, size_t *common_plaintext_data_len
 );
 

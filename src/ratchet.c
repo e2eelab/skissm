@@ -28,23 +28,6 @@ static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
 static const size_t MAX_SKIPPED_MESSAGE_KEY_NODES = 8192;
 
-static void copy_receiver_chain_node(
-    Skissm__ReceiverChainNode **dest,
-    Skissm__ReceiverChainNode **src,
-    size_t num
-) {
-    size_t i;
-    for (i = 0; i < num; i++){
-        dest[i] = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
-        skissm__receiver_chain_node__init(dest[i]);
-        copy_protobuf_from_protobuf(&(dest[i]->ratchet_key_public), &(src[i]->ratchet_key_public));
-        dest[i]->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
-        skissm__chain_key__init(dest[i]->chain_key);
-        dest[i]->chain_key->index = src[i]->chain_key->index;
-        copy_protobuf_from_protobuf(&(dest[i]->chain_key->shared_key), &(src[i]->chain_key->shared_key));
-    }
-}
-
 static void copy_skipped_msg_key_node(
     Skissm__SkippedMsgKeyNode **dest,
     Skissm__SkippedMsgKeyNode **src,
@@ -101,13 +84,14 @@ static void create_chain_key(
     Skissm__ChainKey *new_chain_key,
     ProtobufCBinaryData *ratchet_public_key
 ) {
-    int shared_key_len = cipher_suite->get_crypto_param().hash_len;
+    int shared_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    int shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
 
-    uint8_t secret[shared_key_len];
-    memset(secret, 0, shared_key_len);
-    uint8_t *ciphertext = cipher_suite->ss_key_gen(our_private_key, their_key, secret);
+    uint8_t secret[shared_secret_len];
+    memset(secret, 0, shared_secret_len);
+    uint8_t *ciphertext = cipher_suite->kem_suite->ss_key_gen(our_private_key, their_key, secret);
     uint8_t derived_secrets[2 * shared_key_len];
-    cipher_suite->hkdf(
+    cipher_suite->symmetric_encryption_suite->hkdf(
         secret, sizeof(secret),
         root_key.data, root_key.len,
         (uint8_t *)KDF_INFO_RATCHET, sizeof(KDF_INFO_RATCHET) - 1,
@@ -117,7 +101,7 @@ static void create_chain_key(
     if (new_root_key->data){
         overwrite_protobuf_from_array(new_root_key, derived_secrets);
     } else{
-        copy_protobuf_from_array(new_root_key, derived_secrets, sizeof(derived_secrets));
+        copy_protobuf_from_array(new_root_key, derived_secrets, shared_key_len);
     }
 
     if (ciphertext != NULL) {
@@ -125,7 +109,7 @@ static void create_chain_key(
             free_mem((void **)&(ratchet_public_key->data), ratchet_public_key->len);
             ratchet_public_key->len = 0;
         }
-        uint32_t ciphertext_len = cipher_suite->get_crypto_param().kem_ciphertext_len;
+        uint32_t ciphertext_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
         ratchet_public_key->data = (uint8_t *)malloc(sizeof(uint8_t) * ciphertext_len);
         memcpy(ratchet_public_key->data, ciphertext, ciphertext_len);
         ratchet_public_key->len = ciphertext_len;
@@ -147,10 +131,10 @@ static void advance_chain_key(
     const cipher_suite_t *cipher_suite,
     Skissm__ChainKey *chain_key
 ) {
-    int shared_key_len = cipher_suite->get_crypto_param().hash_len;
+    int shared_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
     uint8_t shared_key[shared_key_len];
     memset(shared_key, 0, shared_key_len);
-    cipher_suite->hmac(
+    cipher_suite->symmetric_encryption_suite->hmac(
         chain_key->shared_key.data, chain_key->shared_key.len,
         CHAIN_KEY_SEED, sizeof(CHAIN_KEY_SEED),
         shared_key
@@ -166,14 +150,15 @@ static void create_msg_keys(
     Skissm__MsgKey *msg_key
 ) {
     free_protobuf(&(msg_key->derived_key));
-    int msg_key_len = cipher_suite->get_crypto_param().aead_key_len + cipher_suite->get_crypto_param().aead_iv_len;
+    int msg_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_key_len
+                    + cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_iv_len;
     msg_key->derived_key.data = (uint8_t *) malloc(sizeof(uint8_t) * msg_key_len);
     msg_key->derived_key.len = msg_key_len;
 
-    int hash_len = cipher_suite->get_crypto_param().hash_len;
+    int hash_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
-    cipher_suite->hkdf(
+    cipher_suite->symmetric_encryption_suite->hkdf(
         chain_key->shared_key.data, chain_key->shared_key.len,
         salt, sizeof(salt),
         (uint8_t *)MESSAGE_KEY_SEED, sizeof(MESSAGE_KEY_SEED) - 1,
@@ -189,7 +174,7 @@ static size_t verify_and_decrypt(
     const Skissm__One2oneMsgPayload *payload,
     uint8_t **plaintext_data
 ) {    
-    size_t result = cipher_suite->decrypt(
+    size_t result = cipher_suite->symmetric_encryption_suite->decrypt(
         &ad,
         message_key->derived_key.data,
         payload->ciphertext.data, payload->ciphertext.len,
@@ -210,12 +195,6 @@ static size_t verify_and_decrypt_for_existing_chain(
     uint8_t **plaintext_data
 ) {
     if (payload->sequence < chain->index) {
-        ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
-        return 0;
-    }
-
-    // limit the number of hashes we're prepared to compute
-    if (payload->sequence - chain->index > MAX_CHAIN_INDEX) {
         ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
         return 0;
     }
@@ -261,24 +240,18 @@ static size_t verify_and_decrypt_for_new_chain(
         return 0;
     }
 
-    // limit the number of hashes we're prepared to compute
-    if (payload->sequence > MAX_CHAIN_INDEX) {
-        ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
-        return 0;
-    }
-
     uint32_t coming_root_sequence = payload->root_sequence;
     uint32_t our_root_sequence = ratchet->root_sequence;
 
-    // comint_root_sequence should be positive
+    // coming_root_sequence should be positive
     if (coming_root_sequence == 0) {
         ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "verify_and_decrypt_for_new_chain()");
         return 0;
     }
-    if (cipher_suite->get_crypto_param().pqc_param == false) {
-        assert(payload->ratchet_key[coming_root_sequence - 1].len == cipher_suite->get_crypto_param().asym_pub_key_len);
+    if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
+        assert(payload->ratchet_key.len == cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len);
     } else {
-        assert(payload->ratchet_key[coming_root_sequence - 1].len == cipher_suite->get_crypto_param().kem_ciphertext_len);
+        assert(payload->ratchet_key.len == cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len);
     }
 
     skissm__receiver_chain_node__init(&new_chain);
@@ -288,12 +261,12 @@ static size_t verify_and_decrypt_for_new_chain(
 
     uint32_t i;
     copy_protobuf_from_protobuf(&new_root_key, &(ratchet->root_key));
-    ProtobufCBinaryData *our_private_key = &(ratchet->sender_chain->ratchet_key[0]);
+    ProtobufCBinaryData *our_private_key = &(ratchet->receiver_chain->our_ratchet_private_key);
     for (i = our_root_sequence; i < coming_root_sequence; i++) {
         create_chain_key(
             cipher_suite,
             new_root_key, our_private_key,
-            &(payload->ratchet_key[i]), &new_root_key,
+            &(payload->ratchet_key), &new_root_key,
             new_chain.chain_key, NULL
         );
     }
@@ -320,20 +293,25 @@ void initialise_ratchet(Skissm__Ratchet **ratchet){
 void initialise_as_bob(
     const cipher_suite_t *cipher_suite,
     Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
-    const Skissm__KeyPair *our_ratchet_key
+    const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 ){
-    int shared_key_len = cipher_suite->get_crypto_param().hash_len;
+    int shared_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
     // the ssk will be 64 bytes
     uint8_t derived_secrets[2 * shared_key_len];
-    int hash_len = cipher_suite->get_crypto_param().hash_len;
+    int hash_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
-    cipher_suite->hkdf(
+    cipher_suite->symmetric_encryption_suite->hkdf(
         shared_secret, shared_secret_length,
         salt, sizeof(salt),
         (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
         derived_secrets, sizeof(derived_secrets)
     );
+
+    ratchet->receiver_chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
+    Skissm__ReceiverChainNode *receiver_chain = ratchet->receiver_chain;
+    skissm__receiver_chain_node__init(receiver_chain);
+    copy_protobuf_from_protobuf(&(receiver_chain->our_ratchet_private_key), &(our_ratchet_key->private_key));
 
     ratchet->sender_chain = (Skissm__SenderChainNode *) malloc(sizeof(Skissm__SenderChainNode));
     Skissm__SenderChainNode *sender_chain = ratchet->sender_chain;
@@ -342,16 +320,27 @@ void initialise_as_bob(
     skissm__chain_key__init(sender_chain->chain_key);
     sender_chain->chain_key->index = 0;
 
-    /** The first half of the ssk will be the root key,
-     *  and the second half will be the sending chain key */
+    /** The first half of the derived_secrets will be the root key,
+     *  and the second half will be the sender chain key */
     copy_protobuf_from_array(&(ratchet->root_key), derived_secrets, shared_key_len);
 
     copy_protobuf_from_array(&(sender_chain->chain_key->shared_key), derived_secrets + shared_key_len, shared_key_len);
 
-    sender_chain->n_ratchet_key = 1;
-    sender_chain->ratchet_key = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData));
-    init_protobuf(sender_chain->ratchet_key);
-    copy_protobuf_from_protobuf(sender_chain->ratchet_key, &(our_ratchet_key->private_key));
+    copy_protobuf_from_protobuf(&(sender_chain->their_ratchet_public_key), their_ratchet_key);
+
+    if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
+        // ECC mode
+        copy_protobuf_from_protobuf(&(sender_chain->our_ratchet_public_key), &(our_ratchet_key->public_key));
+    } else {
+        // PQC mode
+        uint32_t ciphertext_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
+        sender_chain->our_ratchet_public_key.len = ciphertext_len;
+        int temp_shared_key_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
+        uint8_t temp_secret[temp_shared_key_len];
+        sender_chain->our_ratchet_public_key.data = cipher_suite->kem_suite->ss_key_gen(NULL, their_ratchet_key, temp_secret);
+
+        unset(temp_secret, sizeof(temp_secret));
+    }
 
     unset(derived_secrets, sizeof(derived_secrets));
 }
@@ -359,40 +348,46 @@ void initialise_as_bob(
 void initialise_as_alice(
     const cipher_suite_t *cipher_suite,
     Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
-    const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
+    const Skissm__KeyPair *our_ratchet_key,
+    ProtobufCBinaryData *their_ratchet_key, ProtobufCBinaryData *their_encaps_ciphertext
 ){
-    int shared_key_len = cipher_suite->get_crypto_param().hash_len;
+    int shared_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
     // the length of derived_secrets will be 64 bytes
     uint8_t derived_secrets[2 * shared_key_len];
     memset(derived_secrets, 0, 2 * shared_key_len);
-    int hash_len = cipher_suite->get_crypto_param().hash_len;
+    int hash_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
 
     // shared_secret_length may be 128 or 96
-    cipher_suite->hkdf(
+    cipher_suite->symmetric_encryption_suite->hkdf(
         shared_secret, shared_secret_length,
         salt, sizeof(salt),
         (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
         derived_secrets, sizeof(derived_secrets)
     );
-    ratchet->receiver_chains = (Skissm__ReceiverChainNode **) malloc(sizeof(Skissm__ReceiverChainNode *));
-    ratchet->receiver_chains[0] = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
-    skissm__receiver_chain_node__init(ratchet->receiver_chains[0]);
-    ratchet->receiver_chains[0]->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
-    skissm__chain_key__init(ratchet->receiver_chains[0]->chain_key);
+    ratchet->receiver_chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
+    Skissm__ReceiverChainNode *receiver_chain = ratchet->receiver_chain;
+    skissm__receiver_chain_node__init(receiver_chain);
+    receiver_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
+    skissm__chain_key__init(receiver_chain->chain_key);
 
-    /** The first half of the ssk will be the root key,
-     *  and the second half will be the receiving chain key */
+    /** The first half of the derived_secrets will be the root key,
+     *  and the second half will be the receiver chain key */
     copy_protobuf_from_array(&(ratchet->root_key), derived_secrets, shared_key_len);
 
-    copy_protobuf_from_array(&(ratchet->receiver_chains[0]->chain_key->shared_key), derived_secrets + shared_key_len, shared_key_len);
+    copy_protobuf_from_array(&(receiver_chain->chain_key->shared_key), derived_secrets + shared_key_len, shared_key_len);
 
-    copy_protobuf_from_protobuf(&(ratchet->receiver_chains[0]->ratchet_key_public), their_ratchet_key);
+    copy_protobuf_from_protobuf(&(receiver_chain->our_ratchet_private_key), &(our_ratchet_key->private_key));
+    if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
+        // ECC mode
+        copy_protobuf_from_protobuf(&(receiver_chain->their_ratchet_public_key), their_ratchet_key);
+    } else {
+        // PQC mode
+        copy_protobuf_from_protobuf(&(receiver_chain->their_ratchet_public_key), their_encaps_ciphertext);
+    }
 
-    (ratchet->n_receiver_chains)++;
-
-    // generate a new root key and a sending chain key
+    // generate a new root key and a sender chain key
     ratchet->sender_chain = (Skissm__SenderChainNode *) malloc(sizeof(Skissm__SenderChainNode));
     Skissm__SenderChainNode *sender_chain = ratchet->sender_chain;
     skissm__sender_chain_node__init(sender_chain);
@@ -400,24 +395,23 @@ void initialise_as_alice(
     sender_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
     skissm__chain_key__init(sender_chain->chain_key);
 
-    // the ratchet_key will be reallocated in the future
-    sender_chain->ratchet_key = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData));
-    init_protobuf(sender_chain->ratchet_key);
-    sender_chain->n_ratchet_key = 1;
-    if (our_ratchet_key == NULL) {
-        // PQC mode
-        create_chain_key(
-            cipher_suite, ratchet->root_key, NULL, their_ratchet_key,
-            &(ratchet->root_key), sender_chain->chain_key, &((sender_chain->ratchet_key)[0])
-        );
-    } else {
+    if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
         // ECC mode
         create_chain_key(
             cipher_suite, ratchet->root_key, &(our_ratchet_key->private_key), their_ratchet_key,
             &(ratchet->root_key), sender_chain->chain_key, NULL
         );
-        copy_protobuf_from_protobuf(&((sender_chain->ratchet_key)[0]), &(our_ratchet_key->public_key));
+        copy_protobuf_from_protobuf(&(sender_chain->our_ratchet_public_key), &(our_ratchet_key->public_key));
+        copy_protobuf_from_protobuf(&(sender_chain->their_ratchet_public_key), their_ratchet_key);
+    } else {
+        // PQC mode
+        create_chain_key(
+            cipher_suite, ratchet->root_key, NULL, their_ratchet_key,
+            &(ratchet->root_key), sender_chain->chain_key, &(sender_chain->our_ratchet_public_key)
+        );
+        copy_protobuf_from_protobuf(&(sender_chain->their_ratchet_public_key), their_ratchet_key);
     }
+
     (ratchet->root_sequence)++;
 
     unset(derived_secrets, sizeof(derived_secrets));
@@ -431,92 +425,29 @@ void encrypt_ratchet(
     Skissm__One2oneMsgPayload **payload
 ) {
     Skissm__SenderChainNode *sender_chain = ratchet->sender_chain;
-    if (sender_chain->chain_key->index > MAX_CHAIN_INDEX) {
-        // drop this chain if the chain is too long
-        skissm__chain_key__free_unpacked(sender_chain->chain_key, NULL);
-        sender_chain->chain_key = NULL;
 
-        if (sender_chain->n_ratchet_key == MAX_RECEIVER_CHAIN_NODES) {
-            ssm_notify_log(
-                NULL,
-                BAD_MESSAGE_ENCRYPTION,
-                "encrypt_ratchet() the root tree is too long\n"
-            );
-            return;
-        }
-
-        size_t old_ratchet_key_num = sender_chain->n_ratchet_key;
-
-        sender_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
-        skissm__chain_key__init(sender_chain->chain_key);
-
-        // reallocate
-        ProtobufCBinaryData *temp_ratchet_key;
-        temp_ratchet_key = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * (old_ratchet_key_num + 1));
-        copy_protobuf_list_from_protobuf_list(temp_ratchet_key, sender_chain->ratchet_key, old_ratchet_key_num);
-        free_protobuf_list(&(sender_chain->ratchet_key), old_ratchet_key_num);
-        sender_chain->ratchet_key = temp_ratchet_key;
-
-        if (cipher_suite->get_crypto_param().pqc_param == false) {
-            // ECC mode
-            Skissm__KeyPair *ratchet_key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
-            skissm__key_pair__init(ratchet_key_pair);
-            cipher_suite->asym_key_gen(&(ratchet_key_pair->public_key), &(ratchet_key_pair->private_key));
-            copy_protobuf_from_protobuf(
-                &((sender_chain->ratchet_key)[old_ratchet_key_num]),
-                &(ratchet_key_pair->public_key)
-            );
-            create_chain_key(
-                cipher_suite,
-                ratchet->root_key,
-                &(ratchet_key_pair->private_key),
-                &(ratchet->receiver_chains[ratchet->n_receiver_chains - 1]->ratchet_key_public),
-                &(ratchet->root_key), sender_chain->chain_key,
-                NULL
-            );
-        } else {
-            // PQC mode
-            create_chain_key(
-                cipher_suite,
-                ratchet->root_key,
-                NULL,
-                &(ratchet->receiver_chains[ratchet->n_receiver_chains - 1]->ratchet_key_public),
-                &(ratchet->root_key), sender_chain->chain_key,
-                &((sender_chain->ratchet_key)[old_ratchet_key_num])
-            );
-        }
-        (sender_chain->n_ratchet_key)++;
-        (ratchet->root_sequence)++;
-    }
-
-    Skissm__MsgKey *msg_key;
-    msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+    Skissm__MsgKey *msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
     skissm__msg_key__init(msg_key);
     create_msg_keys(cipher_suite, sender_chain->chain_key, msg_key);
     advance_chain_key(cipher_suite, sender_chain->chain_key);
 
-    uint32_t sequence = msg_key->index;
+    (ratchet->sending_message_sequence)++;
 
-    size_t ratchet_key_num = sender_chain->n_ratchet_key;
-    ProtobufCBinaryData *ratchet_key_list = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * ratchet_key_num);
-    size_t i;
-    for (i = 0; i < ratchet_key_num; i++) {
-        init_protobuf(&(ratchet_key_list[i]));
-        copy_protobuf_from_protobuf(&(ratchet_key_list[i]), &((sender_chain->ratchet_key)[i]));
-    }
+    uint32_t sequence = msg_key->index;
 
     *payload = (Skissm__One2oneMsgPayload *) malloc(sizeof(Skissm__One2oneMsgPayload));
     skissm__one2one_msg_payload__init(*payload);
     (*payload)->sequence = sequence;
-    (*payload)->n_ratchet_key = ratchet_key_num;
-    (*payload)->ratchet_key = ratchet_key_list;
+    copy_protobuf_from_protobuf(&((*payload)->ratchet_key), &(ratchet->sender_chain->our_ratchet_public_key));
     (*payload)->root_sequence = ratchet->root_sequence;
-    (*payload)->ciphertext.len = cipher_suite->encrypt(
+    (*payload)->sending_message_sequence = ratchet->sending_message_sequence;
+    (*payload)->ciphertext.len = cipher_suite->symmetric_encryption_suite->encrypt(
         &ad,
         msg_key->derived_key.data,
         plaintext_data, plaintext_data_len,
         &((*payload)->ciphertext.data)
     );
+
     // release
     skissm__msg_key__free_unpacked(msg_key, NULL);
 
@@ -529,80 +460,54 @@ size_t decrypt_ratchet(
     Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload,
     uint8_t **plaintext_data
 ) {
-    if (payload->n_ratchet_key > MAX_RECEIVER_CHAIN_NODES) {
-        ssm_notify_log(
-            NULL,
-            BAD_MESSAGE_SEQUENCE,
-            "decrypt_ratchet() the root tree is too long\n"
-        );
-        return 0;
-    }
-
     int ratchet_key_len;
-    if (cipher_suite->get_crypto_param().pqc_param == false) {
-        ratchet_key_len = cipher_suite->get_crypto_param().asym_pub_key_len;
+    if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
+        ratchet_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     } else {
-        ratchet_key_len = cipher_suite->get_crypto_param().kem_ciphertext_len;
+        ratchet_key_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
     }
 
-    if (!payload->ratchet_key || !payload->ciphertext.data) {
+    if (!payload->ratchet_key.data || !payload->ciphertext.data) {
         ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
         return 0;
     }
 
     Skissm__ReceiverChainNode *receiver_chain = NULL;
-
-    // find the corresponding receiving chain
-    Skissm__ReceiverChainNode **cur = ratchet->receiver_chains;
+    bool skipped_message = false;
 
     uint32_t coming_root_sequence = payload->root_sequence;
-    // comint_root_sequence should be positive
-    if (coming_root_sequence == 0) {
-        ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
-        return 0;
-    }
-
     uint32_t our_root_sequence = ratchet->root_sequence;
-    if (cur) {
-        ssm_notify_log(NULL, DEBUG_LOG, "decrypt_ratchet() coming_root_sequence: %d, our_root_sequence: %d", coming_root_sequence, our_root_sequence);
-        if (coming_root_sequence <= our_root_sequence) {
-                    ssm_notify_log(NULL, DEBUG_LOG, "decrypt_ratchet() in_ratchet_key_len: %zu, ratchet_key_len: %d", payload->ratchet_key[coming_root_sequence - 1].len, ratchet_key_len);
-            if ((payload->ratchet_key[coming_root_sequence - 1].len == ratchet_key_len)
-                && (0 == memcmp(
-                        cur[coming_root_sequence - 1]->ratchet_key_public.data,
-                        payload->ratchet_key[coming_root_sequence - 1].data,
-                        ratchet_key_len
-                    )
-                )
-            ) {
-                // found out the corresponding receiving chain
-                receiver_chain = cur[coming_root_sequence - 1];
+    if (coming_root_sequence != our_root_sequence) {
+        if (coming_root_sequence < our_root_sequence) {
+            if (coming_root_sequence == our_root_sequence - 1) {
+                if (!compare_protobuf(&(ratchet->receiver_chain->their_ratchet_public_key), &(payload->ratchet_key))) {
+                    ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
+                    return 0;
+                }
+                // the current chain
+                receiver_chain = ratchet->receiver_chain;
+                if (receiver_chain->chain_key->index > payload->sequence) {
+                    skipped_message = true;
+                }
             } else {
-                ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
+                // the chain before the current one
+                skipped_message = true;
+            }
+        } else {
+            if (coming_root_sequence == our_root_sequence + 1) {
+                // a new ratchet key is generated
+            } else {
+                ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet()");
                 return 0;
             }
         }
+    } else {
+        ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet()");
+        return 0;
     }
 
     size_t result = 0;
-    if (!receiver_chain) {
-        if (ratchet->n_receiver_chains == MAX_RECEIVER_CHAIN_NODES) {
-            ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet()");
-            return 0;
-        }
-        /* They have started using a new ephemeral ratchet key.
-         * We will check if we can decrypt the message correctly.
-         * We will not store our new chain key now.
-         * We will store our new chain key later when decrypting the message correctly. */
-        result = verify_and_decrypt_for_new_chain(
-            cipher_suite,
-            ratchet, ad, payload, plaintext_data
-        );
-        if (result == 0) {
-            ssm_notify_log(NULL, BAD_MESSAGE_MAC, "verify_and_decrypt_for_new_chain() in decrypt_ratchet()");
-            return 0;
-        }
-    } else if (receiver_chain->chain_key->index > payload->sequence) {
+    if (skipped_message == true) {
         /* receiver_chain already advanced beyond the key for this message
          * Check if the message keys are in the skipped key list. */
         size_t i, j;
@@ -610,7 +515,7 @@ size_t decrypt_ratchet(
             if (payload->sequence == ratchet->skipped_msg_keys[i]->msg_key->index
                 && 0 == memcmp(
                     ratchet->skipped_msg_keys[i]->ratchet_key_public.data,
-                    payload->ratchet_key[coming_root_sequence - 1].data,
+                    payload->ratchet_key.data,
                     ratchet_key_len
                 )
             ){
@@ -652,61 +557,137 @@ size_t decrypt_ratchet(
             ssm_notify_log(NULL, BAD_MESSAGE_KEY, "decrypt_ratchet()");
         }
     } else {
-        /* They use the same ratchet key. The sequence of the payload(incoming message) 
-         * may be bigger than or equal to the index of our receiver chain. */
-        result = verify_and_decrypt_for_existing_chain(
-            cipher_suite,
-            ad, receiver_chain->chain_key,
-            payload, plaintext_data
-        );
-        if (result == 0) {
-            ssm_notify_log(NULL, BAD_MESSAGE_MAC, "verify_and_decrypt_for_existing_chain() in decrypt_ratchet()");
-            return 0;
+        if (receiver_chain == NULL) {
+            /* They have started using a new ephemeral ratchet key.
+            * We will check if we can decrypt the message correctly.
+            * We will not store our new chain key now.
+            * We will store our new chain key later when decrypting the message correctly. */
+            result = verify_and_decrypt_for_new_chain(
+                cipher_suite,
+                ratchet, ad, payload, plaintext_data
+            );
+            if (result == 0) {
+                ssm_notify_log(NULL, BAD_MESSAGE_MAC, "verify_and_decrypt_for_new_chain() in decrypt_ratchet()");
+                return 0;
+            }
+        } else {
+            /* They use the same ratchet key. The sequence of the payload(incoming message) 
+             * may be bigger than or equal to the index of our receiver chain. */
+            result = verify_and_decrypt_for_existing_chain(
+                cipher_suite,
+                ad, receiver_chain->chain_key,
+                payload, plaintext_data
+            );
+            if (result == 0) {
+                ssm_notify_log(NULL, BAD_MESSAGE_MAC, "verify_and_decrypt_for_existing_chain() in decrypt_ratchet()");
+                return 0;
+            }
         }
     }
 
     // ready to advance chain key of receiver_chain
-    if (!receiver_chain) {
+    if (receiver_chain == NULL && skipped_message == false) {
         /* They have started using a new ephemeral ratchet key.
          * We need to derive a new set of chain keys.
          * We can discard our previous empheral ratchet key.
          * We will generate a new key when we send the next message. */
 
-        size_t i, cur_receiver_chain_num;
-        Skissm__ReceiverChainNode *cur_receiver_chain = NULL;
-        for (i = our_root_sequence; i < coming_root_sequence; i++) {
-            cur_receiver_chain_num = ratchet->n_receiver_chains;
-
-            cur_receiver_chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
-            skissm__receiver_chain_node__init(cur_receiver_chain);
-
-            // copy their ratchet key
-            copy_protobuf_from_protobuf(&(cur_receiver_chain->ratchet_key_public), &(payload->ratchet_key[i]));
-
-            // create a new chain key
-            cur_receiver_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
-            skissm__chain_key__init(cur_receiver_chain->chain_key);
-            create_chain_key(
-                cipher_suite,
-                ratchet->root_key, &(ratchet->sender_chain->ratchet_key[0]), &(cur_receiver_chain->ratchet_key_public),
-                &(ratchet->root_key), cur_receiver_chain->chain_key, NULL
-            );
-            if (ratchet->receiver_chains == NULL){
-                ratchet->receiver_chains = (Skissm__ReceiverChainNode **) malloc(sizeof(Skissm__ReceiverChainNode *));
+        if (payload->sending_message_sequence - ratchet->received_message_sequence > payload->sequence + 1) {
+            // we skipped some messages in the previous ratchet
+            size_t skipped_num = payload->sending_message_sequence - ratchet->received_message_sequence - (payload->sequence + 1);
+            if (ratchet->skipped_msg_keys == NULL){
+                ratchet->skipped_msg_keys = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *) * skipped_num);
             } else{
-                Skissm__ReceiverChainNode **temp_receiver_chains;
-                temp_receiver_chains = (Skissm__ReceiverChainNode **) malloc(sizeof(Skissm__ReceiverChainNode *) * (cur_receiver_chain_num + 1));
-                copy_receiver_chain_node(temp_receiver_chains, ratchet->receiver_chains, cur_receiver_chain_num);
-                free_receiver_chain(&(ratchet->receiver_chains), cur_receiver_chain_num);
-                ratchet->receiver_chains = temp_receiver_chains;
+                Skissm__SkippedMsgKeyNode **temp_skipped_message_keys;
+                temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_keys + skipped_num));
+                copy_skipped_msg_key_node(temp_skipped_message_keys, ratchet->skipped_msg_keys, ratchet->n_skipped_msg_keys);
+                free_skipped_message_key(&(ratchet->skipped_msg_keys), ratchet->n_skipped_msg_keys);
+                ratchet->skipped_msg_keys = temp_skipped_message_keys;
             }
-            ratchet->receiver_chains[cur_receiver_chain_num] = cur_receiver_chain;
-            (ratchet->n_receiver_chains)++;
+            size_t cur_seq;
+            for (cur_seq = 0; cur_seq < skipped_num; cur_seq++){
+                // insert data
+                Skissm__SkippedMsgKeyNode *key = (Skissm__SkippedMsgKeyNode *) malloc(sizeof(Skissm__SkippedMsgKeyNode));
+                skissm__skipped_msg_key_node__init(key);
+                key->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+                skissm__msg_key__init(key->msg_key);
+                create_msg_keys(cipher_suite, ratchet->receiver_chain->chain_key, key->msg_key);
+                copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(ratchet->receiver_chain->their_ratchet_public_key));
 
-            (ratchet->root_sequence)++;
+                ratchet->skipped_msg_keys[ratchet->n_skipped_msg_keys] = key;
+                (ratchet->n_skipped_msg_keys)++;
+                advance_chain_key(cipher_suite, ratchet->receiver_chain->chain_key);
+            }
         }
 
-        receiver_chain = cur_receiver_chain;
+        Skissm__KeyPair *new_ratchet_key_pair = NULL;
+
+        Skissm__ReceiverChainNode *new_receiver_chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
+        skissm__receiver_chain_node__init(new_receiver_chain);
+
+        // copy their ratchet key
+        copy_protobuf_from_protobuf(&(new_receiver_chain->their_ratchet_public_key), &(payload->ratchet_key));
+
+        // create a new receiver chain key
+        new_receiver_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
+        skissm__chain_key__init(new_receiver_chain->chain_key);
+        create_chain_key(
+            cipher_suite,
+            ratchet->root_key,
+            &(ratchet->receiver_chain->our_ratchet_private_key),
+            &(new_receiver_chain->their_ratchet_public_key),
+            &(ratchet->root_key),
+            new_receiver_chain->chain_key,
+            NULL
+        );
+
+        receiver_chain = new_receiver_chain;
+
+        // create a new sender chain
+        Skissm__SenderChainNode *new_sender_chain = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
+        skissm__sender_chain_node__init(new_sender_chain);
+
+        new_sender_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
+        skissm__chain_key__init(new_sender_chain->chain_key);
+        if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
+            // ECC mode
+            new_ratchet_key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+            skissm__key_pair__init(new_ratchet_key_pair);
+            cipher_suite->kem_suite->asym_key_gen(&new_ratchet_key_pair->public_key, &new_ratchet_key_pair->private_key);
+
+            copy_protobuf_from_protobuf(&(new_receiver_chain->our_ratchet_private_key), &(new_ratchet_key_pair->private_key));
+
+            copy_protobuf_from_protobuf(&(new_sender_chain->our_ratchet_public_key), &(new_ratchet_key_pair->public_key));
+            copy_protobuf_from_protobuf(&(new_sender_chain->their_ratchet_public_key), &(new_receiver_chain->their_ratchet_public_key));
+            create_chain_key(
+                cipher_suite,
+                ratchet->root_key, &(new_ratchet_key_pair->private_key), &(new_sender_chain->their_ratchet_public_key),
+                &(ratchet->root_key), new_sender_chain->chain_key, NULL
+            );
+        } else {
+            // PQC mode
+            copy_protobuf_from_protobuf(&(new_receiver_chain->our_ratchet_private_key), &(ratchet->receiver_chain->our_ratchet_private_key));
+
+            copy_protobuf_from_protobuf(&(new_sender_chain->their_ratchet_public_key), &(ratchet->sender_chain->their_ratchet_public_key));
+            create_chain_key(
+                cipher_suite,
+                ratchet->root_key, NULL, &(new_sender_chain->their_ratchet_public_key),
+                &(ratchet->root_key), new_sender_chain->chain_key, &(new_sender_chain->our_ratchet_public_key)
+            );
+        }
+
+        skissm__receiver_chain_node__free_unpacked(ratchet->receiver_chain, NULL);
+        ratchet->receiver_chain = new_receiver_chain;
+        (ratchet->root_sequence)++;
+
+        skissm__sender_chain_node__free_unpacked(ratchet->sender_chain, NULL);
+        ratchet->sender_chain = new_sender_chain;
+        (ratchet->root_sequence)++;
+    }
+
+    if (receiver_chain == NULL) {
+        // that means we decrypt the message with the previous ratchet
+        return result;
     }
 
     if (receiver_chain->chain_key->index < payload->sequence){
@@ -730,12 +711,14 @@ size_t decrypt_ratchet(
             key->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
             skissm__msg_key__init(key->msg_key);
             create_msg_keys(cipher_suite, receiver_chain->chain_key, key->msg_key);
-            copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(receiver_chain->ratchet_key_public));
+            copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(receiver_chain->their_ratchet_public_key));
 
             ratchet->skipped_msg_keys[ratchet->n_skipped_msg_keys] = key;
             (ratchet->n_skipped_msg_keys)++;
             advance_chain_key(cipher_suite, receiver_chain->chain_key);
         }
+
+        ratchet->received_message_sequence = payload->sending_message_sequence;
     }
 
     if (receiver_chain->chain_key->index == payload->sequence) {

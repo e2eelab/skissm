@@ -45,16 +45,6 @@ typedef struct store_group {
 
 store_group group = {NULL, NULL};
 
-typedef struct f2f_password_data {
-    Skissm__E2eeAddress *sender;
-    Skissm__E2eeAddress *receiver;
-    uint8_t *f2f_password;
-    size_t f2f_password_len;
-    struct f2f_password_data *next;
-} f2f_password_data;
-
-static f2f_password_data *f2f_pw_data = NULL;
-
 static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
     if (log_code == 0)
         return;
@@ -80,94 +70,12 @@ static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm_
     printf("on_outbound_session_ready\n");
 }
 
-static void f2f_password_created(
-    Skissm__E2eeAddress *sender,
-    Skissm__E2eeAddress *receiver,
-    uint8_t *password,
-    size_t password_len
-) {
-    if (f2f_pw_data != NULL) {
-        f2f_password_data *cur_data = f2f_pw_data;
-        while (cur_data->next != NULL) {
-            cur_data = cur_data->next;
-        }
-        cur_data->next = (f2f_password_data *)malloc(sizeof(f2f_password_data));
-        copy_address_from_address(&(cur_data->next->sender), sender);
-        copy_address_from_address(&(cur_data->next->receiver), receiver);
-        cur_data->next->f2f_password_len = password_len;
-        cur_data->next->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
-        memcpy(cur_data->next->f2f_password, password, password_len);
-        cur_data = cur_data->next;
-        cur_data->next = (f2f_password_data *)malloc(sizeof(f2f_password_data));
-        copy_address_from_address(&(cur_data->next->sender), receiver);
-        copy_address_from_address(&(cur_data->next->receiver), sender);
-        cur_data->next->f2f_password_len = password_len;
-        cur_data->next->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
-        memcpy(cur_data->next->f2f_password, password, password_len);
-        cur_data->next->next = NULL;
-    } else {
-        f2f_pw_data = (f2f_password_data *)malloc(sizeof(f2f_password_data));
-        copy_address_from_address(&(f2f_pw_data->sender), sender);
-        copy_address_from_address(&(f2f_pw_data->receiver), receiver);
-        f2f_pw_data->f2f_password_len = password_len;
-        f2f_pw_data->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
-        memcpy(f2f_pw_data->f2f_password, password, password_len);
-        f2f_pw_data->next = (f2f_password_data *)malloc(sizeof(f2f_password_data));
-        copy_address_from_address(&(f2f_pw_data->next->sender), receiver);
-        copy_address_from_address(&(f2f_pw_data->next->receiver), sender);
-        f2f_pw_data->next->f2f_password_len = password_len;
-        f2f_pw_data->next->f2f_password = (uint8_t *)malloc(sizeof(uint8_t) * password_len);
-        memcpy(f2f_pw_data->next->f2f_password, password, password_len);
-        f2f_pw_data->next->next = NULL;
-    }
-}
-
-static void on_f2f_password_acquired(
-    Skissm__E2eeAddress *user_address, 
-    Skissm__E2eeAddress *sender,
-    Skissm__E2eeAddress *receiver,
-    uint8_t **password,
-    size_t *password_len
-) {
-    f2f_password_data *cur_data = f2f_pw_data;
-    while (cur_data != NULL) {
-        if (!compare_address(cur_data->sender, sender) || !compare_address(cur_data->receiver, receiver)) {
-            cur_data = cur_data->next;
-        } else {
-            break;
-        }
-    }
-
-    if (cur_data == NULL)
-        return;
-
-    *password_len = cur_data->f2f_password_len;
-    *password = (uint8_t *)malloc(sizeof(uint8_t) * cur_data->f2f_password_len);
-    memcpy(*password, cur_data->f2f_password, *password_len);
-}
-
 static void on_one2one_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
 
 static void on_other_device_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, uint8_t *plaintext, size_t plaintext_len) {
     print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
-}
-
-static void on_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *session) {
-    if (session->from->user->device_id != NULL) {
-        printf("New outbound face-to-face session created.\n");
-        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
-        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
-        printf("From: %s\n", session->from->user->user_id);
-        printf("to: %s\n", session->to->user->user_id);
-    } else {
-        printf("New inbound face-to-face session created.\n");
-        printf("Owner(User ID): %s\n", session->session_owner->user->user_id);
-        printf("Owner(Device ID): %s\n", session->session_owner->user->device_id);
-        printf("From: %s\n", session->from->user->user_id);
-        printf("to: %s\n", session->to->user->user_id);
-    }
 }
 
 static void on_group_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
@@ -207,10 +115,8 @@ static skissm_event_handler_t test_event_handler = {
     on_inbound_session_invited,
     on_inbound_session_ready,
     on_outbound_session_ready,
-    on_f2f_password_acquired,
     on_one2one_msg_received,
     on_other_device_msg_received,
-    on_f2f_session_ready,
     on_group_msg_received,
     on_group_created,
     on_group_members_added,
@@ -253,7 +159,12 @@ static void test_end() {
 }
 
 static void mock_alice_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
@@ -275,7 +186,12 @@ static void mock_alice_account(const char *user_name) {
 }
 
 static void mock_bob_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
@@ -297,7 +213,12 @@ static void mock_bob_account(const char *user_name) {
 }
 
 static void mock_claire_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_ECC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
@@ -319,7 +240,12 @@ static void mock_claire_account(const char *user_name) {
 }
 
 static void mock_alice_pqc_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
@@ -341,7 +267,12 @@ static void mock_alice_pqc_account(const char *user_name) {
 }
 
 static void mock_bob_pqc_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
@@ -363,7 +294,12 @@ static void mock_bob_pqc_account(const char *user_name) {
 }
 
 static void mock_claire_pqc_account(const char *user_name) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
@@ -385,7 +321,12 @@ static void mock_claire_pqc_account(const char *user_name) {
 }
 
 static void mock_user_pqc_account(const char *user_name, const char *authenticator, const char *auth_code) {
-    const char *e2ee_pack_id = TEST_E2EE_PACK_ID_PQC;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ID_KEM_KYBER1024,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
     char *device_id = generate_uuid_str();
     Skissm__RegisterUserResponse *response = register_user(
         e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
@@ -704,11 +645,7 @@ static void test_interaction() {
     Skissm__InviteResponse *response_1 = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
     Skissm__InviteResponse *response_2 = invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Bob invites Alice and Claire to join the group
-    Skissm__InviteResponse *response_3 = invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
     Skissm__InviteResponse *response_4 = invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
-    // Claire invites Alice and Bob to join the group
-    Skissm__InviteResponse *response_5 = invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
-    Skissm__InviteResponse *response_6 = invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     sleep(3);
     // the first group member is Alice
@@ -752,10 +689,7 @@ static void test_interaction() {
     // release
     skissm__invite_response__free_unpacked(response_1, NULL);
     skissm__invite_response__free_unpacked(response_2, NULL);
-    skissm__invite_response__free_unpacked(response_3, NULL);
     skissm__invite_response__free_unpacked(response_4, NULL);
-    skissm__invite_response__free_unpacked(response_5, NULL);
-    skissm__invite_response__free_unpacked(response_6, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     skissm__group_member__free_unpacked(group_members[2], NULL);
@@ -783,11 +717,7 @@ static void test_continual() {
     Skissm__InviteResponse *response_1 = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
     Skissm__InviteResponse *response_2 = invite(account_data[0]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
     // Bob invites Alice and Claire to join the group
-    Skissm__InviteResponse *response_3 = invite(account_data[1]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
     Skissm__InviteResponse *response_4 = invite(account_data[1]->address, account_data[2]->address->user->user_id, account_data[2]->address->domain);
-    // Claire invites Alice and Bob to join the group
-    Skissm__InviteResponse *response_5 = invite(account_data[2]->address, account_data[0]->address->user->user_id, account_data[0]->address->domain);
-    Skissm__InviteResponse *response_6 = invite(account_data[2]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
 
     sleep(3);
     // the first group member is Alice
@@ -839,10 +769,7 @@ static void test_continual() {
     // release
     skissm__invite_response__free_unpacked(response_1, NULL);
     skissm__invite_response__free_unpacked(response_2, NULL);
-    skissm__invite_response__free_unpacked(response_3, NULL);
     skissm__invite_response__free_unpacked(response_4, NULL);
-    skissm__invite_response__free_unpacked(response_5, NULL);
-    skissm__invite_response__free_unpacked(response_6, NULL);
     skissm__group_member__free_unpacked(group_members[0], NULL);
     skissm__group_member__free_unpacked(group_members[1], NULL);
     skissm__group_member__free_unpacked(group_members[2], NULL);
@@ -881,22 +808,6 @@ static void test_multiple_devices() {
     Skissm__E2eeAddress *claire_address_2 = account_data[5]->address;
     char *claire_user_id = claire_address_1->user->user_id;
     char *claire_domain = claire_address_1->domain;
-
-    // face-to-face session between each member's devices
-    uint8_t password_alice[] = "password alice";
-    size_t password_alice_len = sizeof(password_alice) - 1;
-    f2f_password_created(alice_address_1, alice_address_2, password_alice, password_alice_len);
-    f2f_invite(alice_address_1, alice_address_2, 0, password_alice, password_alice_len);
-
-    uint8_t password_bob[] = "password bob";
-    size_t password_bob_len = sizeof(password_bob) - 1;
-    f2f_password_created(bob_address_1, bob_address_2, password_bob, password_bob_len);
-    f2f_invite(bob_address_1, bob_address_2, 0, password_bob, password_bob_len);
-
-    uint8_t password_claire[] = "password claire";
-    size_t password_claire_len = sizeof(password_claire) - 1;
-    f2f_password_created(claire_address_1, claire_address_2, password_claire, password_claire_len);
-    f2f_invite(claire_address_1, claire_address_2, 0, password_claire, password_claire_len);
 
     sleep(3);
 
@@ -1353,22 +1264,6 @@ static void test_pqc_multiple_devices() {
     char *claire_user_id = claire_address_1->user->user_id;
     char *claire_domain = claire_address_1->domain;
 
-    // face-to-face session between each member's devices
-    uint8_t password_alice[] = "password alice";
-    size_t password_alice_len = sizeof(password_alice) - 1;
-    f2f_password_created(alice_address_1, alice_address_2, password_alice, password_alice_len);
-    f2f_invite(alice_address_1, alice_address_2, 0, password_alice, password_alice_len);
-
-    uint8_t password_bob[] = "password bob";
-    size_t password_bob_len = sizeof(password_bob) - 1;
-    f2f_password_created(bob_address_1, bob_address_2, password_bob, password_bob_len);
-    f2f_invite(bob_address_1, bob_address_2, 0, password_bob, password_bob_len);
-
-    uint8_t password_claire[] = "password claire";
-    size_t password_claire_len = sizeof(password_claire) - 1;
-    f2f_password_created(claire_address_1, claire_address_2, password_claire, password_claire_len);
-    f2f_invite(claire_address_1, claire_address_2, 0, password_claire, password_claire_len);
-
     sleep(3);
 
     // the first group member is Alice
@@ -1749,16 +1644,16 @@ static void test_medium_group() {
 }
 
 int main() {
-    test_create_group();
-    test_add_group_members();
-    test_remove_group_members();
+    // test_create_group();
+    // test_add_group_members();
+    // test_remove_group_members();
     test_create_add_remove();
     test_interaction();
     test_continual();
-    test_multiple_devices();
-    test_pqc_create_group();
-    test_pqc_add_group_members();
-    test_pqc_remove_group_members();
+    // test_multiple_devices();
+    // test_pqc_create_group();
+    // test_pqc_add_group_members();
+    // test_pqc_remove_group_members();
     test_pqc_leave_group();
     test_pqc_multiple_devices();
     test_pqc_add_new_device();

@@ -47,8 +47,6 @@ static skissm_event_handler_t test_event_handler = {
     NULL,
     NULL,
     NULL,
-    NULL,
-    NULL,
     NULL
 };
 
@@ -150,14 +148,14 @@ void test_insert_one_time_pre_key()
     tear_down();
 }
 
-void test_init_account()
+void test_init_account(uint32_t e2ee_pack_id)
 {
     fprintf(stderr, "test_init_account\n");
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(e2ee_pack_id);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
@@ -169,14 +167,14 @@ void test_init_account()
     tear_down();
 }
 
-void test_update_signed_pre_key()
+void test_update_signed_pre_key(uint32_t e2ee_pack_id)
 {
     fprintf(stderr, "test_update_signed_pre_key\n");
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(e2ee_pack_id);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
@@ -196,14 +194,14 @@ void test_update_signed_pre_key()
     tear_down();
 }
 
-void test_add_one_time_pre_key()
+void test_add_one_time_pre_key(uint32_t e2ee_pack_id)
 {
     fprintf(stderr, "test_add_one_time_pre_key\n");
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(e2ee_pack_id);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
@@ -223,14 +221,14 @@ void test_add_one_time_pre_key()
     tear_down();
 }
 
-void test_load_account()
+void test_load_account(uint32_t e2ee_pack_id)
 {
     fprintf(stderr, "test_load_account\n");
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account = create_account(e2ee_pack_id);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
     account->auth = strdup("auth");
 
@@ -251,21 +249,21 @@ void test_load_account()
     tear_down();
 }
 
-void test_two_accounts()
+void test_two_accounts(uint32_t e2ee_pack_id)
 {
     fprintf(stderr, "test_two_accounts\n");
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create the first account
-    Skissm__Account *account_1 = create_account(TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account_1 = create_account(e2ee_pack_id);
     mock_address(&(account_1->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
     store_account(account_1);
 
     // create the first account
-    Skissm__Account *account_2 = create_account(TEST_E2EE_PACK_ID_ECC);
+    Skissm__Account *account_2 = create_account(e2ee_pack_id);
     mock_address(&(account_2->address), "bob", "bob's domain", "bob's device");
 
     // insert to the db
@@ -293,15 +291,22 @@ void test_two_accounts()
 
 int main()
 {
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+        0,
+        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ID_KEM_CURVE25519,
+        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+    );
+
     test_setup();
     test_setup_call_twice();
     test_insert_address();
     test_insert_key_pair();
     test_insert_signed_pre_key();
     test_insert_one_time_pre_key();
-    test_init_account();
-    test_update_signed_pre_key();
-    test_add_one_time_pre_key();
-    test_load_account();
-    test_two_accounts();
+    test_init_account(e2ee_pack_id);
+    test_update_signed_pre_key(e2ee_pack_id);
+    test_add_one_time_pre_key(e2ee_pack_id);
+    test_load_account(e2ee_pack_id);
+    test_two_accounts(e2ee_pack_id);
 }

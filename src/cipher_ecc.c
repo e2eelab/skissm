@@ -23,16 +23,19 @@
 
 #include "skissm/crypto.h"
 
-const struct cipher_suite_t E2EE_CIPHER_ECDH_X25519_AES256_GCM_SHA256 = {
-    get_ecdh_x25519_aes256_gcm_sha256_param,
-    crypto_curve25519_generate_key_pair,
-    crypto_curve25519_signature_generate_key_pair,
-    crypto_curve25519_dh,
-    aes256_gcm_encrypt,
-    aes256_gcm_decrypt,
-    crypto_curve25519_sign,
-    crypto_curve25519_verify,
-    crypto_hkdf_sha256,
-    crypto_hmac_sha256,
-    crypto_sha256
+// digital signature
+
+struct digital_signature_suite_t E2EE_CURVE25519_SIGN = {
+    get_curve25519_sign_param,
+    CURVE25519_crypto_sign_keypair,
+    CURVE25519_crypto_sign_signature,
+    CURVE25519_crypto_sign_verify
+};
+
+// kem
+
+struct kem_suite_t E2EE_CURVE25519_ECDH = {
+    get_curve25519_ECDH_param,
+    CURVE25519_crypto_keypair,
+    crypto_curve25519_dh
 };

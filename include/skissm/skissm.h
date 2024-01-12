@@ -40,14 +40,6 @@
 #include "skissm/CreateGroupResponse.pb-c.h"
 #include "skissm/E2eeAddress.pb-c.h"
 #include "skissm/E2eeMsg.pb-c.h"
-#include "skissm/F2fAcceptMsg.pb-c.h"
-#include "skissm/F2fAcceptRequest.pb-c.h"
-#include "skissm/F2fAcceptResponse.pb-c.h"
-#include "skissm/F2fInviteMsg.pb-c.h"
-#include "skissm/F2fInviteRequest.pb-c.h"
-#include "skissm/F2fInviteResponse.pb-c.h"
-#include "skissm/F2fPreKeyAcceptMsg.pb-c.h"
-#include "skissm/F2fPreKeyInviteMsg.pb-c.h"
 #include "skissm/GetGroupRequest.pb-c.h"
 #include "skissm/GetGroupResponse.pb-c.h"
 #include "skissm/GetPreKeyBundleRequest.pb-c.h"
@@ -99,6 +91,7 @@
 #include "skissm/SupplyOpksMsg.pb-c.h"
 #include "skissm/SupplyOpksRequest.pb-c.h"
 #include "skissm/SupplyOpksResponse.pb-c.h"
+#include "skissm/UserDevicesID.pb-c.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -116,24 +109,6 @@ extern "C" {
 #define INVITE_WAITING_TIME_MS          60000           // 1 minute
 #define NOTIFICATION_LEVEL_NORMAL       0               // normal (non emergency) notication level
 
-/**
- * @brief Type definition of end-to-end encryption pack.
- *        A e2e_pack consists of cipher suite and session suite.
- */
-typedef struct e2ee_pack_t {
-    const char *e2ee_pack_id;
-    const struct cipher_suite_t *cipher_suite;
-    const struct session_suite_t *session_suite;
-} e2ee_pack_t;
-
-#define E2EE_PACK_ID_ECC_DEFAULT "0"
-#define E2EE_PACK_ID_PQC_DEFAULT "1"
-
-struct e2ee_pack_list_t {
-    const struct e2ee_pack_t *e2ee_pack_0;
-    const struct e2ee_pack_t *e2ee_pack_1;
-};
-
 typedef struct crypto_param_t {
     bool pqc_param;
     uint32_t asym_pub_key_len;
@@ -147,6 +122,85 @@ typedef struct crypto_param_t {
     uint32_t aead_iv_len;
     uint32_t aead_tag_len;
 } crypto_param_t;
+
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519           0
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_DILITHIUM2           1
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_DILITHIUM3           9
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_DILITHIUM5           17
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_FALCON512            33
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_FALCON1024           41
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_128F    65
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_128S    69
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_192F    73
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_192S    77
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F    81
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256S    85
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_128F   89
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_128S   93
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_192F   97
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_192S   101
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_256F   105
+#define E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_256S   109
+
+#define E2EE_PACK_ID_KEM_CURVE25519                         0
+#define E2EE_PACK_ID_KEM_HQC128                             1
+#define E2EE_PACK_ID_KEM_HQC192                             9
+#define E2EE_PACK_ID_KEM_HQC256                             17
+#define E2EE_PACK_ID_KEM_KYBER512                           33
+#define E2EE_PACK_ID_KEM_KYBER768                           41
+#define E2EE_PACK_ID_KEM_KYBER1024                          49
+#define E2EE_PACK_ID_KEM_MCELIECE348864                     65
+#define E2EE_PACK_ID_KEM_MCELIECE348864F                    69
+#define E2EE_PACK_ID_KEM_MCELIECE460896                     73
+#define E2EE_PACK_ID_KEM_MCELIECE460896F                    77
+#define E2EE_PACK_ID_KEM_MCELIECE6688128                    81
+#define E2EE_PACK_ID_KEM_MCELIECE6688128F                   85
+#define E2EE_PACK_ID_KEM_MCELIECE6960119                    89
+#define E2EE_PACK_ID_KEM_MCELIECE6960119F                   93
+#define E2EE_PACK_ID_KEM_MCELIECE8192128                    97
+#define E2EE_PACK_ID_KEM_MCELIECE8192128F                   101
+
+#define E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256     1
+
+#define CIPHER_SUITE_PART_LEN_IN_BITS 8
+
+typedef struct e2ee_pack_number {
+    unsigned head:CIPHER_SUITE_PART_LEN_IN_BITS;
+    unsigned digital_signature:CIPHER_SUITE_PART_LEN_IN_BITS;
+    unsigned kem:CIPHER_SUITE_PART_LEN_IN_BITS;
+    unsigned symmetric_encryption:CIPHER_SUITE_PART_LEN_IN_BITS;
+} e2ee_pack_number;
+
+/**
+ * @brief Type definition of end-to-end encryption pack.
+ *        A e2ee_pack consists of cipher suite and session suite.
+ */
+typedef struct e2ee_pack_t {
+    struct cipher_suite_t *cipher_suite;
+    struct session_suite_t *session_suite;
+} e2ee_pack_t;
+
+typedef struct crypto_digital_signature_param_t {
+    bool pqc_param;
+    uint32_t sign_pub_key_len;
+    uint32_t sign_priv_key_len;
+    uint32_t sig_len;
+} crypto_digital_signature_param_t;
+
+typedef struct crypto_kem_param_t {
+    bool pqc_param;
+    uint32_t asym_pub_key_len;
+    uint32_t asym_priv_key_len;
+    uint32_t kem_ciphertext_len;
+    uint32_t shared_secret_len;
+} crypto_kem_param_t;
+
+typedef struct crypto_symmetric_encryption_param_t {
+    uint32_t hash_len;
+    uint32_t aead_key_len;
+    uint32_t aead_iv_len;
+    uint32_t aead_tag_len;
+} crypto_symmetric_encryption_param_t;
 
 typedef struct skissm_common_handler_t {
     /**
@@ -257,35 +311,35 @@ typedef struct skissm_db_handler_t {
     /**
      * @brief find inbound session
      * @param session_id
-     * @param session_owner_address
+     * @param our_address
      * @param inbound_session
      */
     void (*load_inbound_session)(
         char *session_id,
-        Skissm__E2eeAddress *session_owner_address,
+        Skissm__E2eeAddress *our_address,
         Skissm__Session **inbound_session
     );
     /**
      * @brief find the lastest outbound session
-     * @param session_owner_address
-     * @param to
+     * @param our_address
+     * @param their_address
      * @param outbound_session
      */
     void (*load_outbound_session)(
-        Skissm__E2eeAddress *session_owner_address,
-        Skissm__E2eeAddress *to,
+        Skissm__E2eeAddress *our_address,
+        Skissm__E2eeAddress *their_address,
         Skissm__Session **outbound_session
     );
 
     /**
-     * @brief find the list of outbound sessions that are related to to_user_id
-     * @param session_owner_address
-     * @param to_user_id
+     * @brief find the list of outbound sessions that are related to their_user_id
+     * @param our_address
+     * @param their_user_id
      * @param outbound_sessions
      */
     size_t (*load_outbound_sessions)(
-        Skissm__E2eeAddress *session_owner_address,
-        const char *to_user_id,
+        Skissm__E2eeAddress *our_address,
+        const char *their_user_id,
         Skissm__Session ***outbound_sessions
     );
 
@@ -298,14 +352,12 @@ typedef struct skissm_db_handler_t {
     );
     /**
      * @brief delete old inbound session
-     * @param owner
-     * @param from
-     * @param to
+     * @param our_address
+     * @param their_address
      */
     void (*unload_session)(
-        Skissm__E2eeAddress *owner,
-        Skissm__E2eeAddress *from,
-        Skissm__E2eeAddress *to
+        Skissm__E2eeAddress *our_address,
+        Skissm__E2eeAddress *their_address
     );
 
     // group session related handlers
@@ -514,30 +566,6 @@ typedef struct e2ee_proto_handler_t {
         Skissm__AcceptRequest *request
     );
     /**
-     * @brief Face-to-face invite
-     * @param from
-     * @param auth
-     * @param request
-     * @return response
-     */
-    Skissm__F2fInviteResponse *(*f2f_invite)(
-        Skissm__E2eeAddress *from,
-        const char *auth,
-        Skissm__F2fInviteRequest *request
-    );
-    /**
-     * @brief Face-to-face accept
-     * @param from
-     * @param auth
-     * @param request
-     * @return response
-     */
-    Skissm__F2fAcceptResponse *(*f2f_accept)(
-        Skissm__E2eeAddress *from,
-        const char *auth,
-        Skissm__F2fAcceptRequest *request
-    );
-    /**
      * @brief Publish signed pre-key
      * @param from
      * @param auth
@@ -706,21 +734,6 @@ typedef struct skissm_event_handler_t {
         Skissm__Session *outbound_session
     );
     /**
-     * @brief get the face-to-face password
-     * @param user_address
-     * @param sender_address
-     * @param receiver_address
-     * @param password
-     * @param password_len
-     */
-    void (*on_f2f_password_acquired)(
-        Skissm__E2eeAddress *user_address,
-        Skissm__E2eeAddress *sender_address,
-        Skissm__E2eeAddress *receiver_address,
-        uint8_t **password,
-        size_t *password_len
-    );
-    /**
      * @brief notify one2one msg received event
      * @param user_address
      * @param from_address
@@ -750,16 +763,6 @@ typedef struct skissm_event_handler_t {
         Skissm__E2eeAddress *to_address,
         uint8_t *plaintext,
         size_t plaintext_len
-    );
-
-    /**
-     * @brief notify new face-to-face session messages from other devices received event
-     * @param user_address
-     * @param f2f_session
-     */
-    void (*on_f2f_session_ready)(
-        Skissm__E2eeAddress *user_address,
-        Skissm__Session *f2f_session
     );
 
     /**
@@ -834,10 +837,10 @@ typedef struct skissm_plugin_t {
 } skissm_plugin_t;
 
 /**
- * @brief Get the e2e_pack by given e2ee_pack_id.
+ * @brief Get the e2ee_pack by given e2ee_pack_id.
  * @param e2ee_pack_id
  */
-const e2ee_pack_t *get_e2ee_pack(const char *e2ee_pack_id);
+e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id);
 
 /**
  * @brief The begining function for starting SKISSM.

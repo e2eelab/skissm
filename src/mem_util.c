@@ -54,6 +54,28 @@ size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char **hex_str) {
     return hex_str_len;
 }
 
+uint32_t e2ee_pack_number_to_uint32(e2ee_pack_number *e2ee_pack_number_id) {
+    return (((e2ee_pack_number_id->head) << (CIPHER_SUITE_PART_LEN_IN_BITS * 3))
+            + ((e2ee_pack_number_id->digital_signature) << (CIPHER_SUITE_PART_LEN_IN_BITS * 2))
+            + ((e2ee_pack_number_id->kem) << CIPHER_SUITE_PART_LEN_IN_BITS)
+            + e2ee_pack_number_id->symmetric_encryption);
+}
+
+e2ee_pack_number *uint32_to_e2ee_pack_number(uint32_t e2ee_pack_id) {
+    e2ee_pack_number *e2ee_pack_number_id = (e2ee_pack_number *)malloc(sizeof(e2ee_pack_number));
+    e2ee_pack_number_id->head = (e2ee_pack_id >> (CIPHER_SUITE_PART_LEN_IN_BITS * 3));
+
+    uint32_t temp_1 = e2ee_pack_id - (e2ee_pack_number_id->head << (CIPHER_SUITE_PART_LEN_IN_BITS * 3));
+    e2ee_pack_number_id->digital_signature = (temp_1 >> (CIPHER_SUITE_PART_LEN_IN_BITS * 2));
+
+    uint32_t temp_2 = temp_1 - (e2ee_pack_number_id->digital_signature << (CIPHER_SUITE_PART_LEN_IN_BITS * 2));
+    e2ee_pack_number_id->kem = temp_2 >> CIPHER_SUITE_PART_LEN_IN_BITS;
+
+    e2ee_pack_number_id->symmetric_encryption = temp_2 - (e2ee_pack_number_id->kem << CIPHER_SUITE_PART_LEN_IN_BITS);
+
+    return e2ee_pack_number_id;
+}
+
 ///-----------------compare-----------------///
 
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {
@@ -128,9 +150,16 @@ void init_protobuf(ProtobufCBinaryData *dest) {
     dest->len = 0;
 }
 
+void malloc_protobuf(ProtobufCBinaryData *dest, size_t len) {
+    dest->len = len;
+    dest->data = (uint8_t *)malloc(sizeof(uint8_t) * len);
+}
+
 ///-----------------copy protobuf-----------------///
 
 void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src) {
+    if (src->len == 0)
+        return;
     dest->len = src->len;
     dest->data = (uint8_t *)malloc(sizeof(uint8_t) * src->len);
     memcpy(dest->data, src->data, src->len);
@@ -231,7 +260,7 @@ void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src) {
         copy_address_from_address(&((*dest)->address), src->address);
     }
     (*dest)->password = strdup(src->password);
-    (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+    (*dest)->e2ee_pack_id = src->e2ee_pack_id;
     if (src->identity_key) {
         copy_ik_from_ik(&((*dest)->identity_key), src->identity_key);
     }
@@ -264,25 +293,17 @@ void copy_msg_key_from_msg_key(Skissm__MsgKey **dest, Skissm__MsgKey *src) {
 void copy_sender_chain_from_sender_chain(Skissm__SenderChainNode **dest, Skissm__SenderChainNode *src) {
     *dest = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
     skissm__sender_chain_node__init(*dest);
-    (*dest)->n_ratchet_key = src->n_ratchet_key;
-    (*dest)->ratchet_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * src->n_ratchet_key);
-    size_t i;
-    for (i = 0; i < src->n_ratchet_key; i++) {
-        init_protobuf(&((*dest)->ratchet_key[i]));
-        copy_protobuf_from_protobuf(&((*dest)->ratchet_key[i]), &(src->ratchet_key[i]));
-    }
+    copy_protobuf_from_protobuf(&((*dest)->our_ratchet_public_key), &(src->our_ratchet_public_key));
+    copy_protobuf_from_protobuf(&((*dest)->their_ratchet_public_key), &(src->their_ratchet_public_key));
     copy_chain_key_from_chain_key(&((*dest)->chain_key), src->chain_key);
 }
 
-void copy_receiver_chains_from_receiver_chains(Skissm__ReceiverChainNode ***dest, Skissm__ReceiverChainNode **src, size_t receiver_chains_num) {
-    *dest = (Skissm__ReceiverChainNode **)malloc(sizeof(Skissm__ReceiverChainNode *) * receiver_chains_num);
-    size_t i;
-    for (i = 0; i < receiver_chains_num; i++) {
-        (*dest)[i] = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
-        skissm__receiver_chain_node__init((*dest)[i]);
-        copy_protobuf_from_protobuf(&((*dest)[i]->ratchet_key_public), &(src[i]->ratchet_key_public));
-        copy_chain_key_from_chain_key(&((*dest)[i]->chain_key), src[i]->chain_key);
-    }
+void copy_receiver_chain_from_receiver_chain(Skissm__ReceiverChainNode **dest, Skissm__ReceiverChainNode *src) {
+    *dest = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
+    skissm__receiver_chain_node__init(*dest);
+    copy_protobuf_from_protobuf(&((*dest)->their_ratchet_public_key), &(src->their_ratchet_public_key));
+    copy_protobuf_from_protobuf(&((*dest)->our_ratchet_private_key), &(src->our_ratchet_private_key));
+    copy_chain_key_from_chain_key(&((*dest)->chain_key), src->chain_key);
 }
 
 void copy_skipped_msg_keys_from_skipped_msg_keys(Skissm__SkippedMsgKeyNode ***dest, Skissm__SkippedMsgKeyNode **src, size_t skipped_msg_keys_num) {
@@ -300,9 +321,10 @@ void copy_ratchet_from_ratchet(Skissm__Ratchet **dest, Skissm__Ratchet *src) {
     *dest = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
     skissm__ratchet__init(*dest);
     copy_protobuf_from_protobuf(&((*dest)->root_key), &(src->root_key));
+    (*dest)->root_sequence = src->root_sequence;
+    // message_sequence???????
     copy_sender_chain_from_sender_chain(&((*dest)->sender_chain), src->sender_chain);
-    (*dest)->n_receiver_chains = src->n_receiver_chains;
-    copy_receiver_chains_from_receiver_chains(&((*dest)->receiver_chains), src->receiver_chains, src->n_receiver_chains);
+    copy_receiver_chain_from_receiver_chain(&((*dest)->receiver_chain), src->receiver_chain);
     (*dest)->n_skipped_msg_keys = src->n_skipped_msg_keys;
     copy_skipped_msg_keys_from_skipped_msg_keys(&((*dest)->skipped_msg_keys), src->skipped_msg_keys, src->n_skipped_msg_keys);
 }
@@ -311,21 +333,30 @@ void copy_session_from_session(Skissm__Session **dest, Skissm__Session *src) {
     *dest = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     skissm__session__init(*dest);
     (*dest)->version = strdup(src->version);
-    (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+    (*dest)->e2ee_pack_id = src->e2ee_pack_id;
     (*dest)->session_id = strdup(src->session_id);
-    copy_address_from_address(&((*dest)->session_owner), src->session_owner);
-    copy_address_from_address(&((*dest)->from), src->from);
-    copy_address_from_address(&((*dest)->to), src->to);
+    copy_address_from_address(&((*dest)->our_address), src->our_address);
+    copy_address_from_address(&((*dest)->their_address), src->their_address);
     copy_ratchet_from_ratchet(&((*dest)->ratchet), src->ratchet);
-    copy_protobuf_from_protobuf(&((*dest)->alice_identity_key), &(src->alice_identity_key));
-    copy_protobuf_from_protobuf(&((*dest)->alice_ephemeral_key), &(src->alice_ephemeral_key));
-    copy_protobuf_from_protobuf(&((*dest)->bob_signed_pre_key), &(src->bob_signed_pre_key));
+    copy_protobuf_from_protobuf(&((*dest)->associated_data), &(src->associated_data));
+    copy_protobuf_from_protobuf(&((*dest)->temp_shared_secret), &(src->temp_shared_secret));
+    copy_key_pair_from_key_pair(&((*dest)->alice_base_key), src->alice_base_key);
     (*dest)->bob_signed_pre_key_id = src->bob_signed_pre_key_id;
-    copy_protobuf_from_protobuf(&((*dest)->bob_one_time_pre_key), &(src->bob_one_time_pre_key));
     (*dest)->bob_one_time_pre_key_id = src->bob_one_time_pre_key_id;
+    (*dest)->pre_shared_input_case = src->pre_shared_input_case;
+    if (src->pre_shared_input_case == SKISSM__SESSION__PRE_SHARED_INPUT_ALICE_EPHEMERAL_KEY) {
+        copy_protobuf_from_protobuf(&((*dest)->alice_ephemeral_key), &(src->alice_ephemeral_key));
+    } else if (src->pre_shared_input_case == SKISSM__SESSION__PRE_SHARED_INPUT_CIPHERTEXT_LIST) {
+        (*dest)->ciphertext_list = (Skissm__EncapsCiphertexts *)malloc(sizeof(Skissm__EncapsCiphertexts));
+        skissm__encaps_ciphertexts__init((*dest)->ciphertext_list);
+        (*dest)->ciphertext_list->ciphertext_num = src->ciphertext_list->ciphertext_num;
+        copy_protobuf_from_protobuf(&((*dest)->ciphertext_list->ciphertext_2), &(src->ciphertext_list->ciphertext_2));
+        copy_protobuf_from_protobuf(&((*dest)->ciphertext_list->ciphertext_3), &(src->ciphertext_list->ciphertext_3));
+        copy_protobuf_from_protobuf(&((*dest)->ciphertext_list->ciphertext_4), &(src->ciphertext_list->ciphertext_4));
+    }
     (*dest)->f2f = src->f2f;
     (*dest)->responded = src->responded;
-    copy_protobuf_from_protobuf(&((*dest)->associated_data), &(src->associated_data));
+    (*dest)->invite_t = src->invite_t;
 }
 
 ///-----------------copy public key-----------------///
@@ -412,8 +443,7 @@ void copy_create_group_msg(Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg
     *dest = (Skissm__CreateGroupMsg *)malloc(sizeof(Skissm__CreateGroupMsg));
     skissm__create_group_msg__init(*dest);
     if (src != NULL) {
-        if (src->e2ee_pack_id != NULL)
-            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        (*dest)->e2ee_pack_id = src->e2ee_pack_id;
         if (src->sender_address != NULL)
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         if (src->group_info != NULL)
@@ -428,8 +458,7 @@ void copy_add_group_members_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGr
     *dest = (Skissm__AddGroupMembersMsg *)malloc(sizeof(Skissm__AddGroupMembersMsg));
     skissm__add_group_members_msg__init(*dest);
     if (src != NULL) {
-        if (src->e2ee_pack_id != NULL)
-            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        (*dest)->e2ee_pack_id = src->e2ee_pack_id;
         if (src->sender_address != NULL)
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         (*dest)->sequence = src->sequence;
@@ -448,8 +477,7 @@ void copy_add_group_member_device_msg(Skissm__AddGroupMemberDeviceMsg **dest, Sk
     *dest = (Skissm__AddGroupMemberDeviceMsg *)malloc(sizeof(Skissm__AddGroupMemberDeviceMsg));
     skissm__add_group_member_device_msg__init(*dest);
     if (src != NULL) {
-        if (src->e2ee_pack_id != NULL)
-            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        (*dest)->e2ee_pack_id = src->e2ee_pack_id;
         if (src->sender_address != NULL)
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         (*dest)->sequence = src->sequence;
@@ -464,8 +492,7 @@ void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm_
     *dest = (Skissm__RemoveGroupMembersMsg *)malloc(sizeof(Skissm__RemoveGroupMembersMsg));
     skissm__remove_group_members_msg__init(*dest);
     if (src != NULL) {
-        if (src->e2ee_pack_id != NULL)
-            (*dest)->e2ee_pack_id = strdup(src->e2ee_pack_id);
+        (*dest)->e2ee_pack_id = src->e2ee_pack_id;
         if (src->sender_address != NULL)
             copy_address_from_address(&((*dest)->sender_address), src->sender_address);
         if (src->group_info != NULL)

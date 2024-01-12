@@ -151,10 +151,11 @@ bool consume_invite_msg(
  * @return Skissm__AcceptRequest*
  */
 Skissm__AcceptRequest *produce_accept_request(
-    const char *e2ee_pack_id,
+    uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
-    ProtobufCBinaryData *ciphertext_1
+    ProtobufCBinaryData *ciphertext_1,
+    ProtobufCBinaryData *our_ratchet_key
 );
 
 /**
@@ -178,86 +179,6 @@ bool consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptRe
 bool consume_accept_msg(
     Skissm__E2eeAddress *receiver_address,
     Skissm__AcceptMsg *accept_msg
-);
-
-/**
- * @brief Create a Skissm__F2fInviteRequest message to be sent to server.
- *
- * @param from
- * @param to
- * @param e2ee_pack_id
- * @param secret
- * @param secret_len
- * @return Skissm__F2fInviteRequest*
- */
-Skissm__F2fInviteRequest *produce_f2f_invite_request(
-    Skissm__E2eeAddress *from, Skissm__E2eeAddress *to,
-    char *e2ee_pack_id,
-    uint8_t *secret, size_t secret_len
-);
-
-/**
- * @brief Process an incoming Skissm__F2fInviteResponse message.
- *
- * @param request
- * @param response
- * @return true
- * @return false
- */
-bool consume_f2f_invite_response(
-    Skissm__F2fInviteRequest *request,
-    Skissm__F2fInviteResponse *response
-);
-
-/**
- * @brief Process an incoming Skissm__F2fInviteMsg message.
- *
- * @param receiver_address
- * @param f2f_invite_msg
- * @return true
- * @return false
- */
-bool consume_f2f_invite_msg(
-    Skissm__E2eeAddress *receiver_address,
-    Skissm__F2fInviteMsg *f2f_invite_msg
-);
-
-/**
- * @brief Create a Skissm__F2fAcceptRequest message to be sent to server.
- *
- * @param e2ee_pack_id
- * @param from
- * @param to
- * @param local_account
- * @return Skissm__F2fAcceptRequest*
- */
-Skissm__F2fAcceptRequest *produce_f2f_accept_request(
-    const char *e2ee_pack_id,
-    Skissm__E2eeAddress *from,
-    Skissm__E2eeAddress *to,
-    Skissm__Account *local_account
-);
-
-/**
- * @brief Process an incoming Skissm__F2fAcceptResponse message.
- *
- * @param response
- * @return true
- * @return false
- */
-bool consume_f2f_accept_response(Skissm__F2fAcceptResponse *response);
-
-/**
- * @brief Process an incoming Skissm__F2fAcceptMsg message.
- *
- * @param receiver_address
- * @param f2f_accept_msg
- * @return true
- * @return false
- */
-bool consume_f2f_accept_msg(
-    Skissm__E2eeAddress *receiver_address,
-    Skissm__F2fAcceptMsg *f2f_accept_msg
 );
 
 #ifdef __cplusplus
