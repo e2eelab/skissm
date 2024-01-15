@@ -476,6 +476,7 @@ Skissm__AddGroupMembersResponse *add_group_members(
 
     Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
     Skissm__AddGroupMembersResponse *response = get_skissm_plugin()->proto_handler.add_group_members(sender_address, auth, request);
+    // TODO: replace adding_members, adding_members_num by using response->added_group_member_list
     bool succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
     if (!succ) {
         // pack reuest to request_data

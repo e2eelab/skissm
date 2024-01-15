@@ -29,7 +29,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
     }
 
     Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
-        from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
+        from, to_device_id, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
     );
 
     if ((invite_response != NULL)
@@ -53,20 +53,6 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
 
         // release
         free_mem((void *)&get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len);
-    }
-
-    if (to_device_id == NULL) {
-        // this device has invited, but other devices has not
-        size_t their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
-        char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
-        Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
-        size_t i;
-        for (i = 0; i < their_device_num; i++) {
-            cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[i];
-            their_device_id[i] = strdup(cur_pre_key_bundle->user_address->user->device_id);
-        }
-        // send to other devices in order to create sessions
-        send_sync_invite_msg(from, to_user_id, to_domain, their_device_id, their_device_num);
     }
 
     // release
@@ -356,7 +342,7 @@ static void resend_pending_request(Skissm__Account *account) {
                         size_t group_pre_key_plaintext_data_len = has_args ? pending_request->request_args[0].len : 0;
                         uint8_t *group_pre_key_plaintext_data = has_args ? pending_request->request_args[0].data : NULL;
                         Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
-                            user_address, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
+                            user_address, get_pre_key_bundle_request->device_id, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
                         );
                         succ = (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
                         skissm__invite_response__free_unpacked(invite_response, NULL);

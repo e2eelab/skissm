@@ -79,7 +79,7 @@ bool consume_create_group_response(
             e2ee_pack_id, sender_address, group_name, group_address, group_members, group_members_num, NULL
         );
         // notify
-        ssm_notify_group_created(sender_address, group_address, group_name);
+        ssm_notify_group_created(sender_address, group_address, group_name, group_members, group_members_num);
 
         // done
         return true;
@@ -181,7 +181,7 @@ bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Cre
     }
 
     // notify
-    ssm_notify_group_created(receiver_address, group_address, group_name);
+    ssm_notify_group_created(receiver_address, group_address, group_name, group_members, group_members_num);
 
     // done
     return true;
@@ -239,10 +239,13 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
 bool consume_add_group_members_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__AddGroupMembersResponse *response,
-    Skissm__GroupMember **adding_members,
-    size_t adding_members_num
+    Skissm__GroupMember **added_members,
+    size_t added_members_num
 ) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+        Skissm__GroupMember **new_group_members = response->group_members;
+        size_t new_group_members_num = response->n_group_members;
+
         // renew the outbound group session
         Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
 
@@ -260,8 +263,10 @@ bool consume_add_group_members_response(
             session_owner,
             group_address,
             group_name,
-            adding_members,
-            adding_members_num
+            new_group_members,
+            new_group_members_num,
+            added_members,
+            added_members_num
         );
 
         // done
@@ -274,8 +279,8 @@ bool consume_add_group_members_response(
 bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddGroupMembersMsg *msg) {
     Skissm__E2eeAddress *group_address = msg->group_info->group_address;
     const char *group_name = msg->group_info->group_name;
-    Skissm__GroupMember **group_members = msg->group_info->group_members;
-    size_t group_members_num = msg->group_info->n_group_members;
+    Skissm__GroupMember **new_group_members = msg->group_info->group_members;
+    size_t new_group_members_num = msg->group_info->n_group_members;
     uint32_t e2ee_pack_id = msg->e2ee_pack_id;
 
     /** The old group members have their own outbound group sessions, so they need to renew them.
@@ -322,6 +327,8 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
         receiver_address,
         group_address,
         group_name,
+        new_group_members,
+        new_group_members_num,
         msg->adding_members,
         msg->n_adding_members
     );
@@ -548,8 +555,8 @@ static bool user_in_group(Skissm__E2eeAddress *user_address, Skissm__GroupMember
 bool consume_remove_group_members_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__RemoveGroupMembersResponse *response,
-    Skissm__GroupMember **removing_members,
-    size_t removing_members_num
+    Skissm__GroupMember **removed_members,
+    size_t removed_members_num
 ) {
     if (response != NULL) {
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
@@ -580,8 +587,10 @@ bool consume_remove_group_members_response(
                 sender_address,
                 group_address,
                 group_name,
-                removing_members,
-                removing_members_num
+                group_members,
+                group_members_num,
+                removed_members,
+                removed_members_num
             );
             // done
             return true;
@@ -616,6 +625,8 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
                 receiver_address,
                 group_address,
                 group_name,
+                new_group_members,
+                new_group_members_num,
                 msg->removing_members,
                 msg->n_removing_members
             );
@@ -681,6 +692,8 @@ bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Ski
         receiver_address,
         group_address,
         group_name,
+        new_group_members,
+        new_group_members_num,
         msg->removing_members,
         msg->n_removing_members
     );

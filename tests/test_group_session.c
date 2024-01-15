@@ -86,14 +86,21 @@ static void on_group_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2e
     }
 }
 
-static void on_group_created(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name) {
+static void on_group_created(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num
+) {
     print_msg("on_group_created: group_name", (uint8_t *)group_name, strlen(group_name));
 
     copy_address_from_address(&(group.group_address), group_address);
     group.group_name = strdup(group_name);
 }
 
-static void on_group_members_added(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **added_group_members, size_t added_group_members_num) {
+static void on_group_members_added(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num,
+    Skissm__GroupMember **added_group_members, size_t added_group_members_num
+) {
     print_msg("on_group_members_added: group_name", (uint8_t *)group_name, strlen(group_name));
     size_t i;
     for (i = 0; i < added_group_members_num; i++) {
@@ -101,7 +108,11 @@ static void on_group_members_added(Skissm__E2eeAddress *user_address, Skissm__E2
     }
 }
 
-static void on_group_members_removed(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name, Skissm__GroupMember **removed_group_members, size_t removed_group_members_num) {
+static void on_group_members_removed(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num,
+    Skissm__GroupMember **removed_group_members, size_t removed_group_members_num
+) {
     print_msg("on_group_members_removed: group_name", (uint8_t *)group_name, strlen(group_name));
     size_t i;
     for (i = 0; i < removed_group_members_num; i++) {

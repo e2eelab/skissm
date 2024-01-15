@@ -101,9 +101,8 @@ extern "C" {
 #include "skissm/log_code.h"
 #include "skissm/session.h"
 
-#define E2EE_PROTOCOL_VERSION "E2EE_PROTOCOL_v1.0"
-#define E2EE_GROUP_PRE_KEY_VERSION "E2EE_GROUP_PRE_KEY_v1.0"
-#define E2EE_PLAINTEXT_VERSION "E2EE_PLAINTEXT_v1.0"
+#define E2EE_PROTOCOL_VERSION           "E2EE_PROTOCOL_v1.0"
+#define E2EE_PLAINTEXT_VERSION          "E2EE_PLAINTEXT_v1.0"
 #define UUID_LEN 16
 #define SIGNED_PRE_KEY_EXPIRATION_MS    604800000       // 7 days
 #define INVITE_WAITING_TIME_MS          60000           // 1 minute
@@ -786,11 +785,15 @@ typedef struct skissm_event_handler_t {
      * @param user_address
      * @param group_address
      * @param group_name
+     * @param group_members
+     * @param group_members_num
      */
     void (*on_group_created)(
         Skissm__E2eeAddress *user_address,
         Skissm__E2eeAddress *group_address,
-        const char *group_name
+        const char *group_name,
+        Skissm__GroupMember **group_members,
+        size_t group_members_num
     );
 
     /**
@@ -798,15 +801,19 @@ typedef struct skissm_event_handler_t {
      * @param user_address
      * @param group_address
      * @param group_name
-     * @param adding_group_members
-     * @param adding_group_members_num
+     * @param group_members
+     * @param group_members_num
+     * @param added_group_members
+     * @param added_group_members_num
      */
     void (*on_group_members_added)(
         Skissm__E2eeAddress *user_address,
         Skissm__E2eeAddress *group_address,
         const char *group_name,
-        Skissm__GroupMember **adding_group_members,
-        size_t adding_group_members_num
+        Skissm__GroupMember **group_members,
+        size_t group_members_num,
+        Skissm__GroupMember **added_group_members,
+        size_t added_group_members_num
     );
 
     /**
@@ -814,15 +821,19 @@ typedef struct skissm_event_handler_t {
      * @param user_address
      * @param group_address
      * @param group_name
-     * @param removing_group_members
-     * @param removing_group_members_num
+     * @param group_members
+     * @param group_members_num
+     * @param removed_group_members
+     * @param removed_group_members_num
      */
     void (*on_group_members_removed)(
         Skissm__E2eeAddress *user_address,
         Skissm__E2eeAddress *group_address,
         const char *group_name,
-        Skissm__GroupMember **removing_group_members,
-        size_t removing_group_members_num
+        Skissm__GroupMember **group_members,
+        size_t group_members_num,
+        Skissm__GroupMember **removed_group_members,
+        size_t removed_group_members_num
     );
 } skissm_event_handler_t;
 
@@ -920,13 +931,6 @@ void ssm_notify_other_device_msg(
 );
 
 /**
- * @brief Event for notifying that a face-to-face session is ready.
- * @param user_address
- * @param f2f_session
- */
-void ssm_notify_f2f_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *f2f_session);
-
-/**
  * @brief Event for notifying that a group is received.
  * @param user_address
  * @param from_address
@@ -944,20 +948,28 @@ void ssm_notify_group_msg(
  * @param user_address
  * @param group_address
  * @param group_name
+ * @param group_members
+ * @param group_members_num
  */
-void ssm_notify_group_created(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name);
+void ssm_notify_group_created(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num
+);
 
 /**
  * @brief Event for notifying that some group members are added.
  * @param user_address
  * @param group_address
  * @param group_name
- * @param adding_group_members
- * @param adding_group_members_num
+ * @param group_members
+ * @param group_members_num
+ * @param added_group_members
+ * @param added_group_members_num
  */
 void ssm_notify_group_members_added(
     Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **adding_group_members, size_t adding_group_members_num
+    Skissm__GroupMember **group_members, size_t group_members_num,
+    Skissm__GroupMember **added_group_members, size_t added_group_members_num
 );
 
 /**
@@ -965,12 +977,15 @@ void ssm_notify_group_members_added(
  * @param user_address
  * @param group_address
  * @param group_name
- * @param removing_group_members
- * @param removing_group_members_num
+ * @param group_members
+ * @param group_members_num
+ * @param removed_group_members
+ * @param removed_group_members_num
  */
 void ssm_notify_group_members_removed(
     Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **removing_group_members, size_t removing_group_members_num
+    Skissm__GroupMember **group_members, size_t group_members_num,
+    Skissm__GroupMember **removed_group_members, size_t removed_group_members_num
 );
 
 #ifdef __cplusplus

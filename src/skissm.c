@@ -129,33 +129,51 @@ void ssm_notify_other_device_msg(
         skissm_plugin->event_handler.on_other_device_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
 }
 
+void ssm_notify_group_created(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_created(
+            user_address, group_address, group_name,
+            group_members, group_members_num
+        );
+}
+
+void ssm_notify_group_members_added(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num,
+    Skissm__GroupMember **added_group_members, size_t added_group_members_num
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_members_added(
+            user_address, group_address, group_name,
+            group_members, group_members_num,
+            added_group_members, added_group_members_num
+        );
+}
+
+void ssm_notify_group_members_removed(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num,
+    Skissm__GroupMember **removed_group_members, size_t removed_group_members_num
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_members_removed(
+            user_address, group_address, group_name,
+            group_members, group_members_num,
+            removed_group_members, removed_group_members_num
+        );
+}
+
 void ssm_notify_group_msg(
     Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_msg_received(user_address, from_address, group_address, plaintext, plaintext_len);
-}
-
-void ssm_notify_group_created(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_created(user_address, group_address, group_name);
-}
-
-void ssm_notify_group_members_added(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **adding_group_members, size_t adding_group_members_num
-) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_members_added(user_address, group_address, group_name, adding_group_members, adding_group_members_num);
-}
-
-void ssm_notify_group_members_removed(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **removing_group_members, size_t removing_group_members_num
-) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_members_removed(user_address, group_address, group_name, removing_group_members, removing_group_members_num);
+        skissm_plugin->event_handler.on_group_msg_received(
+            user_address, from_address, group_address, plaintext, plaintext_len
+        );
 }
 
 digital_signature_suite_t *get_digital_signature_suite(unsigned id) {
