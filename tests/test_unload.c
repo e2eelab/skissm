@@ -42,18 +42,18 @@ void test_unload_group_session_by_id(){
     mock_address(&Bob, "bob", E2EELAB_DOMAIN, "bob's device");
 
     // the first group member is Alice
-    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
-    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members[0]);
-    group_members[0]->user_id = strdup(Alice->user->user_id);
-    group_members[0]->domain = strdup(Alice->domain);
-    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    Skissm__GroupMember **group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
+    group_member_list[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_member_list[0]);
+    group_member_list[0]->user_id = strdup(Alice->user->user_id);
+    group_member_list[0]->domain = strdup(Alice->domain);
+    group_member_list[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
-    group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members[1]);
-    group_members[1]->user_id = strdup(Bob->user->user_id);
-    group_members[1]->domain = strdup(Bob->domain);
-    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    group_member_list[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_member_list[1]);
+    group_member_list[1]->user_id = strdup(Bob->user->user_id);
+    group_member_list[1]->domain = strdup(Bob->domain);
+    group_member_list[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
     Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
@@ -80,8 +80,8 @@ void test_unload_group_session_by_id(){
     skissm__group_info__init(group_info);
     group_info->group_name = strdup("test_group");
     copy_address_from_address(&(group_info->group_address), group_address);
-    group_info->n_group_members = 2;
-    copy_group_members(&(group_info->group_members), group_members, group_info->n_group_members);
+    group_info->n_group_member_list = 2;
+    copy_group_members(&(group_info->group_member_list), group_member_list, group_info->n_group_member_list);
 
     group_session->sequence = 0;
 
@@ -110,9 +110,9 @@ void test_unload_group_session_by_id(){
     // free
     skissm__e2ee_address__free_unpacked(Alice, NULL);
     skissm__e2ee_address__free_unpacked(Bob, NULL);
-    skissm__group_member__free_unpacked(group_members[0], NULL);
-    skissm__group_member__free_unpacked(group_members[1], NULL);
-    free(group_members);
+    skissm__group_member__free_unpacked(group_member_list[0], NULL);
+    skissm__group_member__free_unpacked(group_member_list[1], NULL);
+    free(group_member_list);
     skissm__e2ee_address__free_unpacked(group_address, NULL);
     skissm__group_session__free_unpacked(group_session, NULL);
     skissm__group_session__free_unpacked(group_session_copy, NULL);

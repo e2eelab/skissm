@@ -145,16 +145,15 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     outbound_session->session_id = generate_uuid_str();
 
     // prepare the encaps_ciphertext_list
-    outbound_session->ciphertext_list = (Skissm__EncapsCiphertexts *)malloc(sizeof(Skissm__EncapsCiphertexts));
-    skissm__encaps_ciphertexts__init(outbound_session->ciphertext_list);
-    outbound_session->ciphertext_list->ciphertext_num = x3dh_epoch;
-    init_protobuf(&(outbound_session->ciphertext_list->ciphertext_2));
-    copy_protobuf_from_protobuf(&(outbound_session->ciphertext_list->ciphertext_2), ciphertext_2);
-    init_protobuf(&(outbound_session->ciphertext_list->ciphertext_3));
-    copy_protobuf_from_protobuf(&(outbound_session->ciphertext_list->ciphertext_3), ciphertext_3);
+    outbound_session->n_pre_shared_input_list = x3dh_epoch;
+    outbound_session->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * x3dh_epoch);
+    init_protobuf(&(outbound_session->pre_shared_input_list[0]));
+    copy_protobuf_from_protobuf(&(outbound_session->pre_shared_input_list[0]), ciphertext_2);
+    init_protobuf(&(outbound_session->pre_shared_input_list[1]));
+    copy_protobuf_from_protobuf(&(outbound_session->pre_shared_input_list[1]), ciphertext_3);
     if (x3dh_epoch == 3) {
-        init_protobuf(&(outbound_session->ciphertext_list->ciphertext_4));
-        copy_protobuf_from_protobuf(&(outbound_session->ciphertext_list->ciphertext_4), ciphertext_4);
+        init_protobuf(&(outbound_session->pre_shared_input_list[2]));
+        copy_protobuf_from_protobuf(&(outbound_session->pre_shared_input_list[2]), ciphertext_4);
     }
 
     // generate the base key
@@ -290,12 +289,12 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
     ciphertext_1->len = ciphertext_len;
     ciphertext_1->data = cipher_suite->kem_suite->ss_key_gen(NULL, &(msg->alice_identity_key), pos);
     pos += shared_secret_len;
-    cipher_suite->kem_suite->ss_key_gen(&(bob_identity_key->private_key), &(msg->encaps_ciphertext_list[0]), pos);
+    cipher_suite->kem_suite->ss_key_gen(&(bob_identity_key->private_key), &(msg->pre_shared_input_list[0]), pos);
     pos += shared_secret_len;
-    cipher_suite->kem_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &(msg->encaps_ciphertext_list[1]), pos);
+    cipher_suite->kem_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &(msg->pre_shared_input_list[1]), pos);
     if (x3dh_epoch == 4) {
         pos += shared_secret_len;
-        cipher_suite->kem_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), &(msg->encaps_ciphertext_list[2]), pos);
+        cipher_suite->kem_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), &(msg->pre_shared_input_list[2]), pos);
     }
 
     initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key, &(msg->alice_base_key));

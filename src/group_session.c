@@ -245,7 +245,7 @@ static void insert_outbound_group_session_data(
     const char *group_name,
     Skissm__E2eeAddress *group_address,
     const char *session_id,
-    Skissm__GroupMember **group_members,
+    Skissm__GroupMember **group_member_list,
     size_t group_members_num,
     const uint8_t *identity_public_key
 ) {
@@ -267,8 +267,8 @@ static void insert_outbound_group_session_data(
     skissm__group_info__init(group_info);
     group_info->group_name = strdup(group_name);
     copy_address_from_address(&(group_info->group_address), group_address);
-    group_info->n_group_members = group_members_num;
-    copy_group_members(&(group_info->group_members), group_members, group_members_num);
+    group_info->n_group_member_list = group_members_num;
+    copy_group_members(&(group_info->group_member_list), group_member_list, group_members_num);
 
     outbound_group_session->sequence = 0;
 
@@ -324,7 +324,7 @@ void new_outbound_group_session_by_sender(
     Skissm__E2eeAddress *user_address,
     const char *group_name,
     Skissm__E2eeAddress *group_address,
-    Skissm__GroupMember **group_members,
+    Skissm__GroupMember **group_member_list,
     size_t group_members_num,
     char *old_session_id
 ) {
@@ -348,7 +348,7 @@ void new_outbound_group_session_by_sender(
     insert_outbound_group_session_data(
         outbound_group_session, e2ee_pack_id,
         user_address, group_name, group_address, NULL,
-        group_members, group_members_num, identity_public_key
+        group_member_list, group_members_num, identity_public_key
     );
 
     // only the group creator needs to send the group pre-key bundle to others
@@ -360,9 +360,9 @@ void new_outbound_group_session_by_sender(
     // send the group pre-key message to the members in the group
     size_t i, j;
     char *cur_user_id, *cur_user_domain;
-    for (i = 0; i < outbound_group_session->group_info->n_group_members; i++) {
-        cur_user_id = outbound_group_session->group_info->group_members[i]->user_id;
-        cur_user_domain = outbound_group_session->group_info->group_members[i]->domain;
+    for (i = 0; i < outbound_group_session->group_info->n_group_member_list; i++) {
+        cur_user_id = outbound_group_session->group_info->group_member_list[i]->user_id;
+        cur_user_domain = outbound_group_session->group_info->group_member_list[i]->domain;
         Skissm__Session **outbound_sessions = NULL;
         size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(
             outbound_group_session->session_owner, cur_user_id, &outbound_sessions
@@ -406,7 +406,7 @@ void new_outbound_group_session_by_sender(
                 outbound_group_session->session_owner,
                 account->auth,
                 cur_user_id, cur_user_domain,
-                NULL,
+                NULL, true,
                 group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
             );
             // release
@@ -444,7 +444,7 @@ void new_outbound_group_session_by_receiver(
     const char *group_name,
     Skissm__E2eeAddress *group_address,
     const char *session_id,
-    Skissm__GroupMember **group_members,
+    Skissm__GroupMember **group_member_list,
     size_t group_members_num
 ) {
     Skissm__Account *account = NULL;
@@ -467,7 +467,7 @@ void new_outbound_group_session_by_receiver(
     insert_outbound_group_session_data(
         outbound_group_session, e2ee_pack_id,
         user_address, group_name, group_address, session_id,
-        group_members, group_members_num, identity_public_key
+        group_member_list, group_members_num, identity_public_key
     );
 
     // we do not store the seed secret in the session
@@ -911,7 +911,7 @@ void renew_outbound_group_session_by_welcome_and_add(
                 outbound_group_session->session_owner,
                 account->auth,
                 cur_user_id, cur_user_domain,
-                NULL,
+                NULL, true,
                 group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
             );
             // release
@@ -1127,7 +1127,7 @@ void renew_group_sessions_with_new_device(
             outbound_group_session->session_owner,
             account->auth,
             cur_user_id, cur_user_domain,
-            cur_user_device_id,
+            cur_user_device_id, false,
             group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
         );
         // release

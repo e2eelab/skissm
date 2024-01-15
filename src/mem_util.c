@@ -267,10 +267,10 @@ void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src) {
     if (src->signed_pre_key) {
         copy_spk_from_spk(&((*dest)->signed_pre_key), src->signed_pre_key);
     }
-    if (src->one_time_pre_keys) {
-        copy_opks_from_opks(&((*dest)->one_time_pre_keys), src->one_time_pre_keys, src->n_one_time_pre_keys);
+    if (src->one_time_pre_key_list) {
+        copy_opks_from_opks(&((*dest)->one_time_pre_key_list), src->one_time_pre_key_list, src->n_one_time_pre_key_list);
     }
-    (*dest)->n_one_time_pre_keys = src->n_one_time_pre_keys;
+    (*dest)->n_one_time_pre_key_list = src->n_one_time_pre_key_list;
     (*dest)->next_one_time_pre_key_id = src->next_one_time_pre_key_id;
 }
 
@@ -325,8 +325,8 @@ void copy_ratchet_from_ratchet(Skissm__Ratchet **dest, Skissm__Ratchet *src) {
     // message_sequence???????
     copy_sender_chain_from_sender_chain(&((*dest)->sender_chain), src->sender_chain);
     copy_receiver_chain_from_receiver_chain(&((*dest)->receiver_chain), src->receiver_chain);
-    (*dest)->n_skipped_msg_keys = src->n_skipped_msg_keys;
-    copy_skipped_msg_keys_from_skipped_msg_keys(&((*dest)->skipped_msg_keys), src->skipped_msg_keys, src->n_skipped_msg_keys);
+    (*dest)->n_skipped_msg_key_list = src->n_skipped_msg_key_list;
+    copy_skipped_msg_keys_from_skipped_msg_keys(&((*dest)->skipped_msg_key_list), src->skipped_msg_key_list, src->n_skipped_msg_key_list);
 }
 
 void copy_session_from_session(Skissm__Session **dest, Skissm__Session *src) {
@@ -343,16 +343,11 @@ void copy_session_from_session(Skissm__Session **dest, Skissm__Session *src) {
     copy_key_pair_from_key_pair(&((*dest)->alice_base_key), src->alice_base_key);
     (*dest)->bob_signed_pre_key_id = src->bob_signed_pre_key_id;
     (*dest)->bob_one_time_pre_key_id = src->bob_one_time_pre_key_id;
-    (*dest)->pre_shared_input_case = src->pre_shared_input_case;
-    if (src->pre_shared_input_case == SKISSM__SESSION__PRE_SHARED_INPUT_ALICE_EPHEMERAL_KEY) {
-        copy_protobuf_from_protobuf(&((*dest)->alice_ephemeral_key), &(src->alice_ephemeral_key));
-    } else if (src->pre_shared_input_case == SKISSM__SESSION__PRE_SHARED_INPUT_CIPHERTEXT_LIST) {
-        (*dest)->ciphertext_list = (Skissm__EncapsCiphertexts *)malloc(sizeof(Skissm__EncapsCiphertexts));
-        skissm__encaps_ciphertexts__init((*dest)->ciphertext_list);
-        (*dest)->ciphertext_list->ciphertext_num = src->ciphertext_list->ciphertext_num;
-        copy_protobuf_from_protobuf(&((*dest)->ciphertext_list->ciphertext_2), &(src->ciphertext_list->ciphertext_2));
-        copy_protobuf_from_protobuf(&((*dest)->ciphertext_list->ciphertext_3), &(src->ciphertext_list->ciphertext_3));
-        copy_protobuf_from_protobuf(&((*dest)->ciphertext_list->ciphertext_4), &(src->ciphertext_list->ciphertext_4));
+    (*dest)->n_pre_shared_input_list = src->n_pre_shared_input_list;
+    (*dest)->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * src->n_pre_shared_input_list);
+    size_t i;
+    for (i = 0; i < src->n_pre_shared_input_list; i++) {
+        copy_protobuf_from_protobuf(&((*dest)->pre_shared_input_list[i]), &(src->pre_shared_input_list[i]));
     }
     (*dest)->f2f = src->f2f;
     (*dest)->responded = src->responded;
@@ -431,9 +426,9 @@ void copy_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *src) {
             (*dest)->group_name = strdup(src->group_name);
         if (src->group_address != NULL)
             copy_address_from_address(&((*dest)->group_address), src->group_address);
-        (*dest)->n_group_members = src->n_group_members;
-        if (src->group_members != NULL)
-            copy_group_members(&((*dest)->group_members), src->group_members, src->n_group_members);
+        (*dest)->n_group_member_list = src->n_group_member_list;
+        if (src->group_member_list != NULL)
+            copy_group_members(&((*dest)->group_member_list), src->group_member_list, src->n_group_member_list);
     }
 }
 
@@ -467,9 +462,9 @@ void copy_add_group_members_msg(Skissm__AddGroupMembersMsg **dest, Skissm__AddGr
         (*dest)->n_adding_member_info_list = src->n_adding_member_info_list;
         if (src->adding_member_info_list != NULL)
             copy_group_member_ids(&((*dest)->adding_member_info_list), src->adding_member_info_list, src->n_adding_member_info_list);
-        (*dest)->n_adding_members = src->n_adding_members;
-        if (src->adding_members != NULL)
-            copy_group_members(&((*dest)->adding_members), src->adding_members, src->n_adding_members);
+        (*dest)->n_adding_member_list = src->n_adding_member_list;
+        if (src->adding_member_list != NULL)
+            copy_group_members(&((*dest)->adding_member_list), src->adding_member_list, src->n_adding_member_list);
     }
 }
 
@@ -500,9 +495,9 @@ void copy_remove_group_members_msg(Skissm__RemoveGroupMembersMsg **dest, Skissm_
         (*dest)->n_member_info_list = src->n_member_info_list;
         if (src->member_info_list != NULL)
             copy_group_member_ids(&((*dest)->member_info_list), src->member_info_list, src->n_member_info_list);
-        (*dest)->n_removing_members = src->n_removing_members;
-        if (src->removing_members != NULL)
-            copy_group_members(&((*dest)->removing_members), src->removing_members, src->n_removing_members);
+        (*dest)->n_removing_member_list = src->n_removing_member_list;
+        if (src->removing_member_list != NULL)
+            copy_group_members(&((*dest)->removing_member_list), src->removing_member_list, src->n_removing_member_list);
     }
 }
 
@@ -519,8 +514,8 @@ void copy_leave_group_msg(Skissm__LeaveGroupMsg **dest, Skissm__LeaveGroupMsg *s
 
 ///-----------------add or remove group members-----------------///
 
-void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **adding_members, size_t adding_members_num) {
-    size_t old_group_members_num = old_group_info->n_group_members;
+void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **adding_member_list, size_t adding_members_num) {
+    size_t old_group_members_num = old_group_info->n_group_member_list;
     size_t new_group_members_num = old_group_members_num + adding_members_num;
     *dest = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     skissm__group_info__init(*dest);
@@ -528,19 +523,19 @@ void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo
         (*dest)->group_name = strdup(old_group_info->group_name);
     if (old_group_info->group_address != NULL)
         copy_address_from_address(&((*dest)->group_address), old_group_info->group_address);
-    (*dest)->n_group_members = new_group_members_num;
-    (*dest)->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
+    (*dest)->n_group_member_list = new_group_members_num;
+    (*dest)->group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     size_t i;
     for (i = 0; i < old_group_members_num; i++) {
-        copy_group_member(&(((*dest)->group_members)[i]), (old_group_info->group_members)[i]);
+        copy_group_member(&(((*dest)->group_member_list)[i]), (old_group_info->group_member_list)[i]);
     }
     for (i = old_group_members_num; i < new_group_members_num; i++) {
-        copy_group_member(&(((*dest)->group_members)[i]), adding_members[i - old_group_members_num]);
+        copy_group_member(&(((*dest)->group_member_list)[i]), adding_member_list[i - old_group_members_num]);
     }
 }
 
-void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **removing_members, size_t removing_members_num) {
-    size_t old_group_members_num = old_group_info->n_group_members;
+void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **removing_member_list, size_t removing_members_num) {
+    size_t old_group_members_num = old_group_info->n_group_member_list;
     size_t new_group_members_num = old_group_members_num - removing_members_num;
     *dest = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     skissm__group_info__init(*dest);
@@ -548,14 +543,14 @@ void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__Grou
         (*dest)->group_name = strdup(old_group_info->group_name);
     if (old_group_info->group_address != NULL)
         copy_address_from_address(&((*dest)->group_address), old_group_info->group_address);
-    (*dest)->n_group_members = new_group_members_num;
-    (*dest)->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
+    (*dest)->n_group_member_list = new_group_members_num;
+    (*dest)->group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     size_t i, cur_pos = 0;
     for (i = 0; i < old_group_members_num; i++) {
-        if ((cur_pos == removing_members_num) || ((old_group_info->group_members)[i]->role != removing_members[cur_pos]->role) ||
-            !safe_strcmp((old_group_info->group_members)[i]->user_id, removing_members[cur_pos]->user_id) ||
-            !safe_strcmp((old_group_info->group_members)[i]->domain, removing_members[cur_pos]->domain)) {
-            copy_group_member(&(((*dest)->group_members)[i - cur_pos]), (old_group_info->group_members)[i]);
+        if ((cur_pos == removing_members_num) || ((old_group_info->group_member_list)[i]->role != removing_member_list[cur_pos]->role) ||
+            !safe_strcmp((old_group_info->group_member_list)[i]->user_id, removing_member_list[cur_pos]->user_id) ||
+            !safe_strcmp((old_group_info->group_member_list)[i]->domain, removing_member_list[cur_pos]->domain)) {
+            copy_group_member(&(((*dest)->group_member_list)[i - cur_pos]), (old_group_info->group_member_list)[i]);
         } else {
             cur_pos++;
         }

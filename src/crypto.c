@@ -1179,20 +1179,6 @@ uint8_t *crypto_mceliece8192128f_shared_secret(
     }
 }
 
-static crypto_param_t ecdh_x25519_aes256_gcm_sha256_param = {
-    false,
-    CURVE25519_KEY_LENGTH,
-    CURVE25519_KEY_LENGTH,
-    0,
-    CURVE25519_KEY_LENGTH,
-    CURVE25519_KEY_LENGTH,
-    CURVE_SIGNATURE_LENGTH,
-    SHA256_OUTPUT_LENGTH,
-    AES256_KEY_LENGTH,
-    AES256_IV_LENGTH,
-    AES256_GCM_TAG_LENGTH
-};
-
 static void crypto_curve25519_generate_private_key(uint8_t *private_key) {
     uint8_t random[CURVE25519_RANDOM_LENGTH];
     get_skissm_plugin()->common_handler.gen_rand(random, sizeof(random));

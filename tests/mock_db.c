@@ -942,18 +942,18 @@ int load_n_one_time_pre_keys(uint64_t address_id) {
     sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    int n_one_time_pre_keys = (int)sqlite3_column_int(stmt, 0);
+    int n_one_time_pre_key_list = (int)sqlite3_column_int(stmt, 0);
 
     // release
     sqlite_finalize(stmt);
 
-    return n_one_time_pre_keys;
+    return n_one_time_pre_key_list;
 }
 
-uint32_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_time_pre_keys) {
+uint32_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_time_pre_key_list) {
     // allocate memory
-    size_t n_one_time_pre_keys = load_n_one_time_pre_keys(address_id);
-    (*one_time_pre_keys) = (Skissm__OneTimePreKey **)malloc(n_one_time_pre_keys * sizeof(Skissm__OneTimePreKey *));
+    size_t n_one_time_pre_key_list = load_n_one_time_pre_keys(address_id);
+    (*one_time_pre_key_list) = (Skissm__OneTimePreKey **)malloc(n_one_time_pre_key_list * sizeof(Skissm__OneTimePreKey *));
 
     // prepare
     sqlite3_stmt *stmt;
@@ -961,28 +961,28 @@ uint32_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***on
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
-    for (int i = 0; i < n_one_time_pre_keys; i++) {
+    for (int i = 0; i < n_one_time_pre_key_list; i++) {
         sqlite3_step(stmt);
 
         // allocate
-        (*one_time_pre_keys)[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
-        skissm__one_time_pre_key__init((*one_time_pre_keys)[i]);
+        (*one_time_pre_key_list)[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
+        skissm__one_time_pre_key__init((*one_time_pre_key_list)[i]);
 
         Skissm__KeyPair *key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(key_pair);
-        (*one_time_pre_keys)[i]->key_pair = key_pair;
+        (*one_time_pre_key_list)[i]->key_pair = key_pair;
 
         // load
-        (*one_time_pre_keys)[i]->opk_id = (uint32_t)sqlite3_column_int(stmt, 0);
-        (*one_time_pre_keys)[i]->used = sqlite3_column_int(stmt, 1);
-        copy_protobuf_from_array(&((*one_time_pre_keys)[i]->key_pair->public_key), (uint8_t *)sqlite3_column_blob(stmt, 2), sqlite3_column_bytes(stmt, 2));
-        copy_protobuf_from_array(&((*one_time_pre_keys)[i]->key_pair->private_key), (uint8_t *)sqlite3_column_blob(stmt, 3), sqlite3_column_bytes(stmt, 3));
+        (*one_time_pre_key_list)[i]->opk_id = (uint32_t)sqlite3_column_int(stmt, 0);
+        (*one_time_pre_key_list)[i]->used = sqlite3_column_int(stmt, 1);
+        copy_protobuf_from_array(&((*one_time_pre_key_list)[i]->key_pair->public_key), (uint8_t *)sqlite3_column_blob(stmt, 2), sqlite3_column_bytes(stmt, 2));
+        copy_protobuf_from_array(&((*one_time_pre_key_list)[i]->key_pair->private_key), (uint8_t *)sqlite3_column_blob(stmt, 3), sqlite3_column_bytes(stmt, 3));
     }
 
     // release
     sqlite_finalize(stmt);
 
-    return n_one_time_pre_keys;
+    return n_one_time_pre_key_list;
 }
 
 uint32_t load_next_one_time_pre_key_id(uint64_t address_id) {
@@ -1498,10 +1498,10 @@ void store_account(Skissm__Account *account) {
     // insert signed_pre_key
     sqlite_int64 signed_pre_key_id = insert_signed_pre_key(account->signed_pre_key);
 
-    // insert one_time_pre_keys
-    sqlite_int64 one_time_pre_key_ids[account->n_one_time_pre_keys];
-    for (int i = 0; i < account->n_one_time_pre_keys; i++) {
-        one_time_pre_key_ids[i] = insert_one_time_pre_key(account->one_time_pre_keys[i]);
+    // insert one_time_pre_key_list
+    sqlite_int64 one_time_pre_key_ids[account->n_one_time_pre_key_list];
+    for (int i = 0; i < account->n_one_time_pre_key_list; i++) {
+        one_time_pre_key_ids[i] = insert_one_time_pre_key(account->one_time_pre_key_list[i]);
     }
 
     // insert account
@@ -1515,7 +1515,7 @@ void store_account(Skissm__Account *account) {
     insert_account_signed_pre_key_id(address_id, signed_pre_key_id);
 
     // insert ACCOUNT_ONE_TIME_PRE_KEY_PAIR
-    for (int i = 0; i < account->n_one_time_pre_keys; i++) {
+    for (int i = 0; i < account->n_one_time_pre_key_list; i++) {
         insert_account_one_time_pre_key_id(address_id, one_time_pre_key_ids[i]);
     }
 }
@@ -1535,7 +1535,7 @@ void load_account_by_address_id(uint64_t address_id, Skissm__Account **account) 
 
         load_signed_pre_key_pair(address_id, &((*account)->signed_pre_key));
         load_identity_key_pair(address_id, &((*account)->identity_key));
-        (*account)->n_one_time_pre_keys = load_one_time_pre_keys(address_id, &((*account)->one_time_pre_keys));
+        (*account)->n_one_time_pre_key_list = load_one_time_pre_keys(address_id, &((*account)->one_time_pre_key_list));
         (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(address_id);
     } else {
         *account = NULL;
@@ -1580,7 +1580,7 @@ void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **acc
 
         load_signed_pre_key_pair(address_id, &((*account)->signed_pre_key));
         load_identity_key_pair(address_id, &((*account)->identity_key));
-        (*account)->n_one_time_pre_keys = load_one_time_pre_keys(address_id, &((*account)->one_time_pre_keys));
+        (*account)->n_one_time_pre_key_list = load_one_time_pre_keys(address_id, &((*account)->one_time_pre_key_list));
         (*account)->next_one_time_pre_key_id = load_next_one_time_pre_key_id(address_id);
     } else {
         *account = NULL;

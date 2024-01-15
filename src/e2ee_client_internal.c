@@ -9,7 +9,7 @@
 #include "skissm/e2ee_client.h"
 
 Skissm__InviteResponse *get_pre_key_bundle_internal(
-    Skissm__E2eeAddress *from, const char *auth, const char *to_user_id, const char *to_domain, const char *to_device_id,
+    Skissm__E2eeAddress *from, const char *auth, const char *to_user_id, const char *to_domain, const char *to_device_id, bool active,
     uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len
 ) {
     // to_device_id can be null
@@ -29,7 +29,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
     }
 
     Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
-        from, to_device_id, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
+        from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
     );
 
     if ((invite_response != NULL)
@@ -53,6 +53,24 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
 
         // release
         free_mem((void *)&get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len);
+    }
+
+    if (active == true) {
+        // this device has invited, but other devices has not
+        if (get_pre_key_bundle_response != NULL) {
+            size_t their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
+            char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
+            Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
+            size_t i;
+            for (i = 0; i < their_device_num; i++) {
+                cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[i];
+                their_device_id[i] = strdup(cur_pre_key_bundle->user_address->user->device_id);
+            }
+            // send to other devices in order to create sessions
+            send_sync_invite_msg(from, to_user_id, to_domain, their_device_id, their_device_num);
+        } else {
+            send_sync_invite_msg(from, to_user_id, to_domain, NULL, 0);
+        }
     }
 
     // release
@@ -285,12 +303,12 @@ void store_pending_request_internal(
     copy_protobuf_from_array(&(pending_request->request_data), request_data, request_data_len);
     // args
     if (args_data && args_data_len > 0) {
-        pending_request->n_request_args = 1;
-        pending_request->request_args = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-        init_protobuf(pending_request->request_args);
-        copy_protobuf_from_array(pending_request->request_args, args_data, args_data_len);
+        pending_request->n_request_arg_list = 1;
+        pending_request->request_arg_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+        init_protobuf(pending_request->request_arg_list);
+        copy_protobuf_from_array(pending_request->request_arg_list, args_data, args_data_len);
     } else {
-        pending_request->n_request_args = 0;
+        pending_request->n_request_arg_list = 0;
     }
 
     // pack pending_request
@@ -338,11 +356,11 @@ static void resend_pending_request(Skissm__Account *account) {
                 // check if pre_key_bundles is empty
                 if (get_pre_key_bundle_response != NULL) {
                     if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-                        bool has_args = pending_request->n_request_args == 1;
-                        size_t group_pre_key_plaintext_data_len = has_args ? pending_request->request_args[0].len : 0;
-                        uint8_t *group_pre_key_plaintext_data = has_args ? pending_request->request_args[0].data : NULL;
+                        bool has_args = pending_request->n_request_arg_list == 1;
+                        size_t group_pre_key_plaintext_data_len = has_args ? pending_request->request_arg_list[0].len : 0;
+                        uint8_t *group_pre_key_plaintext_data = has_args ? pending_request->request_arg_list[0].data : NULL;
                         Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
-                            user_address, get_pre_key_bundle_request->device_id, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
+                            user_address, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
                         );
                         succ = (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
                         skissm__invite_response__free_unpacked(invite_response, NULL);
@@ -405,7 +423,7 @@ static void resend_pending_request(Skissm__Account *account) {
             case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SUPPLY_OPKS: {
                 Skissm__SupplyOpksRequest *supply_opks_request = skissm__supply_opks_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__SupplyOpksResponse *supply_opks_response = get_skissm_plugin()->proto_handler.supply_opks(user_address, auth,  supply_opks_request);
-                succ = consume_supply_opks_response(account, (uint32_t)supply_opks_request->n_one_time_pre_key_public, supply_opks_response);
+                succ = consume_supply_opks_response(account, (uint32_t)supply_opks_request->n_one_time_pre_key_public_list, supply_opks_response);
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 } else {
@@ -437,8 +455,8 @@ static void resend_pending_request(Skissm__Account *account) {
                     account->e2ee_pack_id,
                     user_address,
                     create_group_request->msg->group_info->group_name,
-                    create_group_request->msg->group_info->group_members,
-                    create_group_request->msg->group_info->n_group_members,
+                    create_group_request->msg->group_info->group_member_list,
+                    create_group_request->msg->group_info->n_group_member_list,
                     create_group_response
                 );
                 if (succ) {
@@ -466,7 +484,7 @@ static void resend_pending_request(Skissm__Account *account) {
 
                     succ = consume_add_group_members_response(
                         outbound_group_session_1, add_group_members_response,
-                        add_group_members_msg->adding_members, add_group_members_msg->n_adding_members
+                        add_group_members_msg->adding_member_list, add_group_members_msg->n_adding_member_list
                     );
 
                     // release
@@ -529,7 +547,7 @@ static void resend_pending_request(Skissm__Account *account) {
                     Skissm__RemoveGroupMembersResponse *remove_group_members_response = get_skissm_plugin()->proto_handler.remove_group_members(user_address, auth, remove_group_members_request);
                     succ = consume_remove_group_members_response(
                         outbound_group_session_2, remove_group_members_response,
-                        remove_group_members_msg->removing_members, remove_group_members_msg->n_removing_members
+                        remove_group_members_msg->removing_member_list, remove_group_members_msg->n_removing_member_list
                     );
                     // release
                     skissm__remove_group_members_response__free_unpacked(remove_group_members_response, NULL);

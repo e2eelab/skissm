@@ -76,7 +76,7 @@ void test_update_one_time_pre_key(uint32_t e2ee_pack_id){
     get_skissm_plugin()->db_handler.store_account(account);
 
     int used_opk = 10;
-    uint32_t opk_id = account->one_time_pre_keys[used_opk]->opk_id;
+    uint32_t opk_id = account->one_time_pre_key_list[used_opk]->opk_id;
 
     mark_opk_as_used(account, opk_id);
     update_one_time_pre_key(account->address, opk_id);
@@ -117,12 +117,12 @@ void test_remove_one_time_pre_key(uint32_t e2ee_pack_id){
     account->saved = true;
     get_skissm_plugin()->db_handler.store_account(account);
 
-    int origin_opk_num = account->n_one_time_pre_keys;
+    int origin_opk_num = account->n_one_time_pre_key_list;
 
     int used_opk_num = 80;
     int i;
     for (i = 0; i < used_opk_num; i++){
-        remove_one_time_pre_key(account->address, account->one_time_pre_keys[i]->opk_id);
+        remove_one_time_pre_key(account->address, account->one_time_pre_key_list[i]->opk_id);
     }
 
     sqlite_int64 address_id;

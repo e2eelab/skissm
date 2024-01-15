@@ -44,14 +44,14 @@ Skissm__RegisterUserRequest *produce_register_request(Skissm__Account *account) 
     copy_protobuf_from_protobuf(&(request->signed_pre_key_public->signature), &(account->signed_pre_key->signature));
 
     // copy one-time pre-key
-    request->n_one_time_pre_keys = account->n_one_time_pre_keys;
-    request->one_time_pre_keys = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * request->n_one_time_pre_keys);
+    request->n_one_time_pre_key_list = account->n_one_time_pre_key_list;
+    request->one_time_pre_key_list = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * request->n_one_time_pre_key_list);
     size_t i;
-    for (i = 0; i < request->n_one_time_pre_keys; i++) {
-        request->one_time_pre_keys[i] = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
-        skissm__one_time_pre_key_public__init(request->one_time_pre_keys[i]);
-        request->one_time_pre_keys[i]->opk_id = account->one_time_pre_keys[i]->opk_id;
-        copy_protobuf_from_protobuf(&(request->one_time_pre_keys[i]->public_key), &(account->one_time_pre_keys[i]->key_pair->public_key));
+    for (i = 0; i < request->n_one_time_pre_key_list; i++) {
+        request->one_time_pre_key_list[i] = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
+        skissm__one_time_pre_key_public__init(request->one_time_pre_key_list[i]);
+        request->one_time_pre_key_list[i]->opk_id = account->one_time_pre_key_list[i]->opk_id;
+        copy_protobuf_from_protobuf(&(request->one_time_pre_key_list[i]->public_key), &(account->one_time_pre_key_list[i]->key_pair->public_key));
     }
 
     return request;
@@ -70,12 +70,12 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
         ssm_notify_user_registered(account);
 
         // create outbound sessions to other devices
-        if (response->n_other_device_addresses > 0) {
+        if (response->n_other_device_address_list > 0) {
             size_t i;
-            for (i = 0; i < response->n_other_device_addresses; i++) {
-                Skissm__E2eeAddress *other_device_address = (response->other_device_addresses)[i];
-                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_device_addresses %zu of %zu: address [%s:%s]",
-                    i+1, response->n_other_device_addresses,
+            for (i = 0; i < response->n_other_device_address_list; i++) {
+                Skissm__E2eeAddress *other_device_address = (response->other_device_address_list)[i];
+                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_device_address_list %zu of %zu: address [%s:%s]",
+                    i+1, response->n_other_device_address_list,
                     other_device_address->user->user_id,
                     other_device_address->user->device_id);
                 Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(account->address,
@@ -83,6 +83,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                     other_device_address->user->user_id,
                     other_device_address->domain,
                     other_device_address->user->device_id,
+                    false,
                     NULL, 0
                 );
                 if (invite_response != NULL) {
@@ -93,12 +94,12 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
         }
 
         // send to other friends if necessary
-        if (response->n_other_user_addresses > 0) {
+        if (response->n_other_user_address_list > 0) {
             size_t i;
-            for (i = 0; i < response->n_other_user_addresses; i++) {
-                Skissm__E2eeAddress *to_address = (response->other_user_addresses)[i];
-                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_user_addresses %zu of %zu: address [%s:%s]",
-                    i+1, response->n_other_user_addresses,
+            for (i = 0; i < response->n_other_user_address_list; i++) {
+                Skissm__E2eeAddress *to_address = (response->other_user_address_list)[i];
+                ssm_notify_log(account->address, DEBUG_LOG, "consume_register_response() other_user_address_list %zu of %zu: address [%s:%s]",
+                    i+1, response->n_other_user_address_list,
                     to_address->user->user_id,
                     to_address->user->device_id);
                 // skip the same user device
@@ -113,7 +114,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                 }
 
                 Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
-                    account->address, account->auth, to_address->user->user_id, to_address->domain, to_address->user->device_id, NULL, 0
+                    account->address, account->auth, to_address->user->user_id, to_address->domain, to_address->user->device_id, false, NULL, 0
                 );
                 if (invite_response != NULL) {
                     skissm__invite_response__free_unpacked(invite_response, NULL);
@@ -162,18 +163,18 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
     Skissm__OneTimePreKey **inserted_one_time_pre_key_pair_list = generate_opks((size_t)opks_num, account);
 
     request->e2ee_pack_id = account->e2ee_pack_id;
-    request->n_one_time_pre_key_public = (size_t)opks_num;
-    request->one_time_pre_key_public = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * opks_num);
+    request->n_one_time_pre_key_public_list = (size_t)opks_num;
+    request->one_time_pre_key_public_list = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * opks_num);
 
     copy_address_from_address(&(request->user_address), account->address);
 
     // copy the new one-time pre-keys to the message which will be sent to the server
     uint32_t i;
     for (i = 0; i < opks_num; i++) {
-        request->one_time_pre_key_public[i] = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
-        skissm__one_time_pre_key_public__init(request->one_time_pre_key_public[i]);
-        request->one_time_pre_key_public[i]->opk_id = inserted_one_time_pre_key_pair_list[i]->opk_id;
-        copy_protobuf_from_protobuf(&(request->one_time_pre_key_public[i]->public_key), &(inserted_one_time_pre_key_pair_list[i]->key_pair->public_key));
+        request->one_time_pre_key_public_list[i] = (Skissm__OneTimePreKeyPublic *)malloc(sizeof(Skissm__OneTimePreKeyPublic));
+        skissm__one_time_pre_key_public__init(request->one_time_pre_key_public_list[i]);
+        request->one_time_pre_key_public_list[i]->opk_id = inserted_one_time_pre_key_pair_list[i]->opk_id;
+        copy_protobuf_from_protobuf(&(request->one_time_pre_key_public_list[i]->public_key), &(inserted_one_time_pre_key_pair_list[i]->key_pair->public_key));
     }
 
     return request;
@@ -181,11 +182,11 @@ Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account,
 
 bool consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response) {
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        size_t old_opks_num = account->n_one_time_pre_keys - opks_num;
+        size_t old_opks_num = account->n_one_time_pre_key_list - opks_num;
         // save to db
         size_t i;
         for (i = 0; i < opks_num; i++) {
-            get_skissm_plugin()->db_handler.add_one_time_pre_key(account->address, account->one_time_pre_keys[old_opks_num + i]);
+            get_skissm_plugin()->db_handler.add_one_time_pre_key(account->address, account->one_time_pre_key_list[old_opks_num + i]);
         }
         return true;
     } else {

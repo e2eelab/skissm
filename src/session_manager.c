@@ -76,7 +76,6 @@ Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(
 
 Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     Skissm__E2eeAddress *from,
-    const char *to_device_id,
     uint8_t *group_pre_key_plaintext_data,
     size_t group_pre_key_plaintext_data_len,
     Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response
@@ -102,20 +101,6 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
         ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() got error getPreKeyBundleResponse");
     } else {
         if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            if (to_device_id == NULL) {
-                // this device has invited, but other devices has not
-                size_t their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
-                char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
-                Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
-                size_t i;
-                for (i = 0; i < their_device_num; i++) {
-                    cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[i];
-                    their_device_id[i] = strdup(cur_pre_key_bundle->user_address->user->device_id);
-                }
-                // send to other devices in order to create sessions
-                send_sync_invite_msg(from, to_user_id, to_domain, their_device_id, their_device_num);
-            }
-
             // handle received pre-key bundles
             Skissm__PreKeyBundle **their_pre_key_bundles = get_pre_key_bundle_response->pre_key_bundles;
             size_t n_pre_key_bundles = get_pre_key_bundle_response->n_pre_key_bundles;
@@ -304,7 +289,6 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 
                     char *to_user_id = their_device_id_list->user_id;
                     char *to_domain = their_device_id_list->domain;
-                    size_t their_devices_num = their_device_id_list->n_device_id;
 
                     char *auth = NULL;
                     get_skissm_plugin()->db_handler.load_auth(receiver_address, &auth);
@@ -319,15 +303,25 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     }
 
                     Skissm__InviteResponse *invite_response = NULL;
-                    char *cur_device_id = NULL;
-                    size_t i;
-                    for (i = 0; i < their_devices_num; i++) {
-                        cur_device_id = their_device_id_list->device_id[i];
-                        invite_response = get_pre_key_bundle_internal(receiver_address, auth, to_user_id, to_domain, cur_device_id, NULL, 0);
+                    size_t their_devices_num = their_device_id_list->n_device_id_list;
+                    if (their_devices_num == 0) {
+                        invite_response = get_pre_key_bundle_internal(receiver_address, auth, to_user_id, to_domain, NULL, false, NULL, 0);
 
                         if (invite_response != NULL) {
                             skissm__invite_response__free_unpacked(invite_response, NULL);
                             invite_response = NULL;
+                        }
+                    } else {
+                        char *cur_device_id = NULL;
+                        size_t i;
+                        for (i = 0; i < their_devices_num; i++) {
+                            cur_device_id = their_device_id_list->device_id_list[i];
+                            invite_response = get_pre_key_bundle_internal(receiver_address, auth, to_user_id, to_domain, cur_device_id, false, NULL, 0);
+
+                            if (invite_response != NULL) {
+                                skissm__invite_response__free_unpacked(invite_response, NULL);
+                                invite_response = NULL;
+                            }
                         }
                     }
 
@@ -394,8 +388,8 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                             cur_group_info->group_name,
                             cur_group_info->group_address,
                             group_pre_key_bundle->session_id,
-                            cur_group_info->group_members,
-                            cur_group_info->n_group_members
+                            cur_group_info->group_member_list,
+                            cur_group_info->n_group_member_list
                         );
                         ssm_notify_log(
                             receiver_address,
@@ -539,21 +533,12 @@ Skissm__InviteRequest *produce_invite_request(
     copy_address_from_address(&(msg->from), outbound_session->our_address);
     copy_address_from_address(&(msg->to), outbound_session->their_address);
 
-    if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
-        // ECC mode
-        copy_protobuf_from_protobuf(&(msg->alice_ephemeral_key), &(outbound_session->alice_ephemeral_key));
-    } else {
-        // PQC mode
-        size_t encaps_ciphertext_num = outbound_session->ciphertext_list->ciphertext_num;
-        Skissm__EncapsCiphertexts *encaps_ciphertexts = outbound_session->ciphertext_list;
-        msg->n_encaps_ciphertext_list = encaps_ciphertext_num;
-        msg->encaps_ciphertext_list = (ProtobufCBinaryData *) malloc(sizeof(ProtobufCBinaryData) * encaps_ciphertext_num);
-        init_protobuf(&(msg->encaps_ciphertext_list[0]));
-        copy_protobuf_from_protobuf(&(msg->encaps_ciphertext_list[0]), &(encaps_ciphertexts->ciphertext_2));
-        init_protobuf(&(msg->encaps_ciphertext_list[1]));
-        copy_protobuf_from_protobuf(&(msg->encaps_ciphertext_list[1]), &(encaps_ciphertexts->ciphertext_3));
-        init_protobuf(&(msg->encaps_ciphertext_list[2]));
-        copy_protobuf_from_protobuf(&(msg->encaps_ciphertext_list[2]), &(encaps_ciphertexts->ciphertext_4));
+    msg->n_pre_shared_input_list = outbound_session->n_pre_shared_input_list;
+    msg->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * msg->n_pre_shared_input_list);
+    size_t i;
+    for (i = 0; i < msg->n_pre_shared_input_list; i++) {
+        init_protobuf(&(msg->pre_shared_input_list[i]));
+        copy_protobuf_from_protobuf(&(msg->pre_shared_input_list[i]), &(outbound_session->pre_shared_input_list[i]));
     }
 
     copy_protobuf_from_protobuf(&(msg->alice_base_key), &(outbound_session->alice_base_key->public_key));

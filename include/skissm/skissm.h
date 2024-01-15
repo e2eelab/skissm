@@ -108,20 +108,6 @@ extern "C" {
 #define INVITE_WAITING_TIME_MS          60000           // 1 minute
 #define NOTIFICATION_LEVEL_NORMAL       0               // normal (non emergency) notication level
 
-typedef struct crypto_param_t {
-    bool pqc_param;
-    uint32_t asym_pub_key_len;
-    uint32_t asym_priv_key_len;
-    uint32_t kem_ciphertext_len;
-    uint32_t sign_pub_key_len;
-    uint32_t sign_priv_key_len;
-    uint32_t sig_len;
-    uint32_t hash_len;
-    uint32_t aead_key_len;
-    uint32_t aead_iv_len;
-    uint32_t aead_tag_len;
-} crypto_param_t;
-
 #define E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519           0
 #define E2EE_PACK_ID_DIGITAL_SIGNATURE_DILITHIUM2           1
 #define E2EE_PACK_ID_DIGITAL_SIGNATURE_DILITHIUM3           9

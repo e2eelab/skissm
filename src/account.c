@@ -142,7 +142,7 @@ size_t generate_signed_pre_key(Skissm__Account *account) {
 }
 
 const Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__Account *account, uint32_t one_time_pre_key_id) {
-    Skissm__OneTimePreKey **cur = account->one_time_pre_keys;
+    Skissm__OneTimePreKey **cur = account->one_time_pre_key_list;
     if (cur == NULL) {
         // there is no one-tme pre-keys in the account
         ssm_notify_log(account->address, BAD_ONE_TIME_PRE_KEY, "lookup_one_time_pre_key() opk not found");
@@ -150,7 +150,7 @@ const Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__Account *account, u
     }
 
     size_t i;
-    for (i = 0; i < account->n_one_time_pre_keys; i++) {
+    for (i = 0; i < account->n_one_time_pre_key_list; i++) {
         if (cur[i] != NULL) {
             if (cur[i]->opk_id == one_time_pre_key_id) {
                 return cur[i];
@@ -170,34 +170,34 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *ac
 
     bool succ = true;
 
-    if (account->one_time_pre_keys == NULL) {
+    if (account->one_time_pre_key_list == NULL) {
         // there is no one-tme pre-keys in the account
         inserted_one_time_pre_key_list_node = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * number_of_keys);
-        account->one_time_pre_keys = inserted_one_time_pre_key_list_node;
-        account->n_one_time_pre_keys = number_of_keys;
+        account->one_time_pre_key_list = inserted_one_time_pre_key_list_node;
+        account->n_one_time_pre_key_list = number_of_keys;
     } else {
         // there are several one-time pre-keys in the account
-        size_t old_opk_num = account->n_one_time_pre_keys;
+        size_t old_opk_num = account->n_one_time_pre_key_list;
         size_t new_opk_num = old_opk_num + number_of_keys;
-        Skissm__OneTimePreKey **temp_one_time_pre_keys = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * new_opk_num);
+        Skissm__OneTimePreKey **temp_one_time_pre_key_list = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * new_opk_num);
         Skissm__OneTimePreKey *cur_one_time_pre_key = NULL;
         Skissm__KeyPair *temp_key_pair = NULL;
 
         size_t i;
         for (i = 0; i < old_opk_num; i++) {
-            temp_one_time_pre_keys[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
-            skissm__one_time_pre_key__init(temp_one_time_pre_keys[i]);
+            temp_one_time_pre_key_list[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
+            skissm__one_time_pre_key__init(temp_one_time_pre_key_list[i]);
 
-            cur_one_time_pre_key = account->one_time_pre_keys[i];
+            cur_one_time_pre_key = account->one_time_pre_key_list[i];
             if (cur_one_time_pre_key == NULL) {
                 ssm_notify_log(account->address, BAD_ONE_TIME_PRE_KEY, "generate_opks() the number of opks does not match");
                 succ = false;
                 break;
             }
-            temp_one_time_pre_keys[i]->opk_id = cur_one_time_pre_key->opk_id;
-            temp_one_time_pre_keys[i]->used = cur_one_time_pre_key->used;
-            temp_one_time_pre_keys[i]->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-            temp_key_pair = temp_one_time_pre_keys[i]->key_pair;
+            temp_one_time_pre_key_list[i]->opk_id = cur_one_time_pre_key->opk_id;
+            temp_one_time_pre_key_list[i]->used = cur_one_time_pre_key->used;
+            temp_one_time_pre_key_list[i]->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
+            temp_key_pair = temp_one_time_pre_key_list[i]->key_pair;
             skissm__key_pair__init(temp_key_pair);
             copy_protobuf_from_protobuf(&(temp_key_pair->private_key), &(cur_one_time_pre_key->key_pair->private_key));
             copy_protobuf_from_protobuf(&(temp_key_pair->public_key), &(cur_one_time_pre_key->key_pair->public_key));
@@ -209,18 +209,18 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *ac
 
         if (succ) {
             // release the old memory
-            free_mem((void **)&(account->one_time_pre_keys), sizeof(Skissm__OneTimePreKey *) * old_opk_num);
+            free_mem((void **)&(account->one_time_pre_key_list), sizeof(Skissm__OneTimePreKey *) * old_opk_num);
             // insert the new data
-            account->one_time_pre_keys = temp_one_time_pre_keys;
-            account->n_one_time_pre_keys = new_opk_num;
-            inserted_one_time_pre_key_list_node = &((account->one_time_pre_keys)[old_opk_num]);
+            account->one_time_pre_key_list = temp_one_time_pre_key_list;
+            account->n_one_time_pre_key_list = new_opk_num;
+            inserted_one_time_pre_key_list_node = &((account->one_time_pre_key_list)[old_opk_num]);
         } else {
             // release
             for (i = 0; i < new_opk_num; i++) {
-                skissm__one_time_pre_key__free_unpacked(temp_one_time_pre_keys[i], NULL);
-                temp_one_time_pre_keys[i] = NULL;
+                skissm__one_time_pre_key__free_unpacked(temp_one_time_pre_key_list[i], NULL);
+                temp_one_time_pre_key_list[i] = NULL;
             }
-            free_mem((void **)&temp_one_time_pre_keys, sizeof(Skissm__OneTimePreKey *) * new_opk_num);
+            free_mem((void **)&temp_one_time_pre_key_list, sizeof(Skissm__OneTimePreKey *) * new_opk_num);
         }
     }
 
@@ -246,7 +246,7 @@ Skissm__OneTimePreKey **generate_opks(size_t number_of_keys, Skissm__Account *ac
 }
 
 int mark_opk_as_used(Skissm__Account *account, uint32_t id) {
-    Skissm__OneTimePreKey **cur = account->one_time_pre_keys;
+    Skissm__OneTimePreKey **cur = account->one_time_pre_key_list;
     if (cur == NULL) {
         // there is no one-tme pre-keys in the account
         ssm_notify_log(account->address, BAD_ONE_TIME_PRE_KEY, "mark_opk_as_used() opk not found");
@@ -254,7 +254,7 @@ int mark_opk_as_used(Skissm__Account *account, uint32_t id) {
     }
 
     size_t i;
-    for (i = 0; i < account->n_one_time_pre_keys; i++) {
+    for (i = 0; i < account->n_one_time_pre_key_list; i++) {
         if (cur[i] != NULL) {
             if (cur[i]->opk_id == id) {
                 cur[i]->used = true;
@@ -270,7 +270,7 @@ int mark_opk_as_used(Skissm__Account *account, uint32_t id) {
     return -1;
 }
 
-static void copy_one_time_pre_keys(Skissm__OneTimePreKey **dest, Skissm__OneTimePreKey **src, size_t num) {
+static void copy_one_time_pre_key_list(Skissm__OneTimePreKey **dest, Skissm__OneTimePreKey **src, size_t num) {
     size_t i;
     for (i = 0; i < num; i++) {
         dest[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
@@ -288,10 +288,10 @@ void free_one_time_pre_key(Skissm__Account *account) {
     size_t used_num = 0;
     size_t new_num;
     size_t i;
-    if (account->one_time_pre_keys) {
-        for (i = 0; i < account->n_one_time_pre_keys; i++) {
-            if (account->one_time_pre_keys[i]) {
-                if (account->one_time_pre_keys[i]->used == true) {
+    if (account->one_time_pre_key_list) {
+        for (i = 0; i < account->n_one_time_pre_key_list; i++) {
+            if (account->one_time_pre_key_list[i]) {
+                if (account->one_time_pre_key_list[i]->used == true) {
                     used_num++;
                 } else {
                     // we use the one-time pre-keys from ahead
@@ -301,23 +301,23 @@ void free_one_time_pre_key(Skissm__Account *account) {
         }
         // we release the "used" one-time pre-keys if there are many
         if (used_num >= 60) {
-            new_num = account->n_one_time_pre_keys - used_num;
-            Skissm__OneTimePreKey **new_one_time_pre_keys = NULL;
+            new_num = account->n_one_time_pre_key_list - used_num;
+            Skissm__OneTimePreKey **new_one_time_pre_key_list = NULL;
             if (new_num > 0) {
-                new_one_time_pre_keys = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * new_num);
-                Skissm__OneTimePreKey **temp = &(account->one_time_pre_keys[used_num]);
-                copy_one_time_pre_keys(new_one_time_pre_keys, temp, new_num);
+                new_one_time_pre_key_list = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * new_num);
+                Skissm__OneTimePreKey **temp = &(account->one_time_pre_key_list[used_num]);
+                copy_one_time_pre_key_list(new_one_time_pre_key_list, temp, new_num);
             }
-            for (i = 0; i < account->n_one_time_pre_keys; i++) {
-                get_skissm_plugin()->db_handler.remove_one_time_pre_key(account->address, account->one_time_pre_keys[i]->opk_id);
-                skissm__one_time_pre_key__free_unpacked(account->one_time_pre_keys[i], NULL);
-                account->one_time_pre_keys[i] = NULL;
+            for (i = 0; i < account->n_one_time_pre_key_list; i++) {
+                get_skissm_plugin()->db_handler.remove_one_time_pre_key(account->address, account->one_time_pre_key_list[i]->opk_id);
+                skissm__one_time_pre_key__free_unpacked(account->one_time_pre_key_list[i], NULL);
+                account->one_time_pre_key_list[i] = NULL;
             }
-            free_mem((void **)&(account->one_time_pre_keys), sizeof(Skissm__OneTimePreKey *) * account->n_one_time_pre_keys);
+            free_mem((void **)&(account->one_time_pre_key_list), sizeof(Skissm__OneTimePreKey *) * account->n_one_time_pre_key_list);
             if (new_num > 0) {
-                account->one_time_pre_keys = new_one_time_pre_keys;
+                account->one_time_pre_key_list = new_one_time_pre_key_list;
             }
-            account->n_one_time_pre_keys = new_num;
+            account->n_one_time_pre_key_list = new_num;
         }
     }
 }

@@ -108,8 +108,8 @@ static void test_one_group_pre_key() {
     skissm__group_info__init(group_info);
     group_info->group_name = strdup("test_group");
     copy_address_from_address(&(group_info->group_address), group_address);
-    group_info->n_group_members = group_members_num;
-    copy_group_members(&(group_info->group_members), group_members, group_members_num);
+    group_info->n_group_member_list = group_members_num;
+    copy_group_members(&(group_info->group_member_list), group_members, group_members_num);
 
     outbound_group_session->sequence = 0;
 

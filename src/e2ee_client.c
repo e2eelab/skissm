@@ -117,7 +117,7 @@ Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id
     // we should always call get_pre_key_bundle_internal() since there may be new devices for to_user_id@to_domain
     // not just check outbound sessions in db currently.
 
-    Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
+    Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, true, NULL, 0);
 
     // release
     free(auth);
@@ -140,7 +140,7 @@ Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_use
     }
 
     Skissm__InviteResponse *invite_response = NULL;
-    invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, NULL, 0);
+    invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, true, NULL, 0);
 
     // release
     free(auth);
@@ -252,11 +252,11 @@ void send_sync_invite_msg(Skissm__E2eeAddress *from, const char *to_user_id, con
         skissm__user_devices_id__init(plaintext->their_device_id_list);
         plaintext->their_device_id_list->domain = strdup(to_domain);
         plaintext->their_device_id_list->user_id = strdup(to_user_id);
-        plaintext->their_device_id_list->n_device_id = to_device_num;
-        plaintext->their_device_id_list->device_id = (char **)malloc(sizeof(char *) * to_device_num);
+        plaintext->their_device_id_list->n_device_id_list = to_device_num;
+        plaintext->their_device_id_list->device_id_list = (char **)malloc(sizeof(char *) * to_device_num);
         size_t k;
         for (k = 0; k < to_device_num; k++) {
-            (plaintext->their_device_id_list->device_id)[k] = strdup(to_device_id_list[k]);
+            (plaintext->their_device_id_list->device_id_list)[k] = strdup(to_device_id_list[k]);
         }
 
         size_t invite_msg_data_len = skissm__plaintext__get_packed_size(plaintext);

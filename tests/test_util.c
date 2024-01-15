@@ -219,17 +219,17 @@ bool is_equal_account(Skissm__Account *account1, Skissm__Account *account2) {
             return false;
         }
     }
-    if (account1->n_one_time_pre_keys != account2->n_one_time_pre_keys) {
-        printf("1: %zu\n", account1->n_one_time_pre_keys);
-        printf("2: %zu\n", account2->n_one_time_pre_keys);
-        printf("n_one_time_pre_keys not match");
+    if (account1->n_one_time_pre_key_list != account2->n_one_time_pre_key_list) {
+        printf("1: %zu\n", account1->n_one_time_pre_key_list);
+        printf("2: %zu\n", account2->n_one_time_pre_key_list);
+        printf("n_one_time_pre_key_list not match");
         return false;
     }
     size_t i;
-    for (i = 0; i < account1->n_one_time_pre_keys; i++) {
-        if (!is_equal_opk(account1->one_time_pre_keys[i], account2->one_time_pre_keys[i])) {
-            printf("1: %u\n", account1->one_time_pre_keys[i]->opk_id);
-            printf("2: %u\n", account2->one_time_pre_keys[i]->opk_id);
+    for (i = 0; i < account1->n_one_time_pre_key_list; i++) {
+        if (!is_equal_opk(account1->one_time_pre_key_list[i], account2->one_time_pre_key_list[i])) {
+            printf("1: %u\n", account1->one_time_pre_key_list[i]->opk_id);
+            printf("2: %u\n", account2->one_time_pre_key_list[i]->opk_id);
             printf("%zu opk not match\n", i);
             return false;
         }
@@ -360,14 +360,14 @@ bool is_equal_ratchet(Skissm__Ratchet *ratchet_1, Skissm__Ratchet *ratchet_2) {
         printf("receiver_chain not match");
         return false;
     }
-    if (ratchet_1->n_skipped_msg_keys != ratchet_2->n_skipped_msg_keys) {
-        printf("n_skipped_msg_keys not match");
+    if (ratchet_1->n_skipped_msg_key_list != ratchet_2->n_skipped_msg_key_list) {
+        printf("n_skipped_msg_key_list not match");
         return false;
     }
     size_t i;
-    for (i = 0; i < ratchet_1->n_skipped_msg_keys; i++) {
-        if (!is_equal_skipped_message_key(ratchet_1->skipped_msg_keys[i], ratchet_2->skipped_msg_keys[i])) {
-            printf("skipped_msg_keys not match");
+    for (i = 0; i < ratchet_1->n_skipped_msg_key_list; i++) {
+        if (!is_equal_skipped_message_key(ratchet_1->skipped_msg_key_list[i], ratchet_2->skipped_msg_key_list[i])) {
+            printf("skipped_msg_key_list not match");
             return false;
         }
     }
@@ -406,9 +406,16 @@ bool is_equal_session(Skissm__Session *session_1, Skissm__Session *session_2) {
             return false;
         }
     }
-    if (!is_equal_data(&(session_1->alice_ephemeral_key), &(session_2->alice_ephemeral_key))) {
-        printf("alice_ephemeral_key not match");
+    if (session_1->n_pre_shared_input_list != session_2->n_pre_shared_input_list) {
+        printf("n_pre_shared_input_list not match");
         return false;
+    }
+    size_t i;
+    for (i = 0; i < session_1->n_pre_shared_input_list; i++) {
+        if (!is_equal_data(&(session_1->pre_shared_input_list[i]), &(session_2->pre_shared_input_list[i]))) {
+            printf("pre_shared_input_list not match");
+            return false;
+        }
     }
     if (!is_equal_data(&(session_1->associated_data), &(session_2->associated_data))) {
         printf("associated_data not match");

@@ -35,15 +35,15 @@ typedef struct user_data {
     uint32_t e2ee_pack_id;
     Skissm__IdentityKeyPublic *identity_key_public;
     Skissm__SignedPreKeyPublic *signed_pre_key_public;
-    Skissm__OneTimePreKeyPublic **one_time_pre_keys;
-    size_t n_one_time_pre_keys;
+    Skissm__OneTimePreKeyPublic **one_time_pre_key_list;
+    size_t n_one_time_pre_key_list;
 } user_data;
 
 typedef struct group_data {
     Skissm__E2eeAddress *group_address;
     char *group_name;
     size_t group_members_num;
-    Skissm__GroupMember **group_members;
+    Skissm__GroupMember **group_member_list;
 } group_data;
 
 /* TODO : LINKED LIST */
@@ -274,8 +274,8 @@ static size_t find_group_data(uint8_t user_index, Skissm__GroupInfo ***group_inf
             group_data *cur_group_data = &(group_data_set[i]);
             (*group_info_list)[j]->group_name = strdup(cur_group_data->group_name);
             copy_address_from_address(&((*group_info_list)[j]->group_address), cur_group_data->group_address);
-            (*group_info_list)[j]->n_group_members = cur_group_data->group_members_num;
-            copy_group_members(&((*group_info_list)[j]->group_members), cur_group_data->group_members, cur_group_data->group_members_num);
+            (*group_info_list)[j]->n_group_member_list = cur_group_data->group_members_num;
+            copy_group_members(&((*group_info_list)[j]->group_member_list), cur_group_data->group_member_list, cur_group_data->group_members_num);
             // done
             j++;
         }
@@ -318,18 +318,18 @@ void mock_server_end() {
 
         skissm__identity_key_public__free_unpacked(user_data_set[i].identity_key_public, NULL);
         skissm__signed_pre_key_public__free_unpacked(user_data_set[i].signed_pre_key_public, NULL);
-        for (j = 0; j < user_data_set[i].n_one_time_pre_keys; j++) {
-            Skissm__OneTimePreKeyPublic *cur_opk = user_data_set[i].one_time_pre_keys[j];
+        for (j = 0; j < user_data_set[i].n_one_time_pre_key_list; j++) {
+            Skissm__OneTimePreKeyPublic *cur_opk = user_data_set[i].one_time_pre_key_list[j];
             if (cur_opk != NULL) {
                 skissm__one_time_pre_key_public__free_unpacked(cur_opk, NULL);
                 cur_opk = NULL;
             }
         }
-        free_mem((void **)&(user_data_set[i].one_time_pre_keys), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_keys);
+        free_mem((void **)&(user_data_set[i].one_time_pre_key_list), sizeof(Skissm__OneTimePreKeyPublic *) * user_data_set[i].n_one_time_pre_key_list);
         user_data_set[i].identity_key_public = NULL;
         user_data_set[i].signed_pre_key_public = NULL;
-        user_data_set[i].one_time_pre_keys = NULL;
-        user_data_set[i].n_one_time_pre_keys = 0;
+        user_data_set[i].one_time_pre_key_list = NULL;
+        user_data_set[i].n_one_time_pre_key_list = 0;
     }
     user_data_set_insert_pos = 0;
     for (i = 0; i < group_data_set_insert_pos; i++) {
@@ -338,13 +338,13 @@ void mock_server_end() {
         free(group_data_set[i].group_name);
         group_data_set[i].group_name = NULL;
         for (j = 0; j < group_data_set[i].group_members_num; j++) {
-            Skissm__GroupMember *cur_group_member = group_data_set[i].group_members[j];
+            Skissm__GroupMember *cur_group_member = group_data_set[i].group_member_list[j];
             if (cur_group_member != NULL) {
                 skissm__group_member__free_unpacked(cur_group_member, NULL);
                 cur_group_member = NULL;
             }
         }
-        free_mem((void **)&(group_data_set[i].group_members), sizeof(Skissm__GroupMember *) * group_data_set[i].group_members_num);
+        free_mem((void **)&(group_data_set[i].group_member_list), sizeof(Skissm__GroupMember *) * group_data_set[i].group_members_num);
         group_data_set[i].group_members_num = 0;
     }
     group_data_set_insert_pos = 0;
@@ -359,11 +359,11 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     // check if there is the user's data stored in the server's database
     uint8_t user_data_find;
     user_data *client_data = find_user(request->authenticator, &user_data_find);
-    Skissm__E2eeAddress **other_device_addresses, **friend_addresses, **receiver_addresses;
+    Skissm__E2eeAddress **other_device_address_list, **friend_addresses, **receiver_addresses;
     Skissm__GroupInfo **group_info_list;
     size_t other_device_num = 0, friends_num = 0, receiver_num = 0, group_num = 0;
     if (client_data != NULL) {
-        other_device_num = find_device_addresses(client_data->address->user->user_id, &other_device_addresses);
+        other_device_num = find_device_addresses(client_data->address->user->user_id, &other_device_address_list);
         friends_num = find_friend_addresses(user_data_find, &friend_addresses);
 
         receiver_num = other_device_num + friends_num;
@@ -379,11 +379,11 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
 
     copy_ik_public_from_ik_public(&(cur_data->identity_key_public), request->identity_key_public);
     copy_spk_public_from_spk_public(&(cur_data->signed_pre_key_public), request->signed_pre_key_public);
-    cur_data->n_one_time_pre_keys = request->n_one_time_pre_keys;
-    cur_data->one_time_pre_keys = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * cur_data->n_one_time_pre_keys);
+    cur_data->n_one_time_pre_key_list = request->n_one_time_pre_key_list;
+    cur_data->one_time_pre_key_list = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * cur_data->n_one_time_pre_key_list);
     size_t i, j;
-    for (i = 0; i < cur_data->n_one_time_pre_keys; i++) {
-        copy_opk_public_from_opk_public(&(cur_data->one_time_pre_keys[i]), request->one_time_pre_keys[i]);
+    for (i = 0; i < cur_data->n_one_time_pre_key_list; i++) {
+        copy_opk_public_from_opk_public(&(cur_data->one_time_pre_key_list[i]), request->one_time_pre_key_list[i]);
     }
 
     // copy address
@@ -406,17 +406,17 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     if (client_data != NULL) {
         receiver_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * receiver_num);
         // other devices
-        response->n_other_device_addresses = other_device_num;
-        response->other_device_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * other_device_num);
+        response->n_other_device_address_list = other_device_num;
+        response->other_device_address_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * other_device_num);
         for (i = 0; i < other_device_num; i++) {
-            copy_address_from_address(&((response->other_device_addresses)[i]), other_device_addresses[i]);
-            copy_address_from_address(&(receiver_addresses[i]), other_device_addresses[i]);
+            copy_address_from_address(&((response->other_device_address_list)[i]), other_device_address_list[i]);
+            copy_address_from_address(&(receiver_addresses[i]), other_device_address_list[i]);
         }
         // other users
-        response->n_other_user_addresses = friends_num;
-        response->other_user_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * friends_num);
+        response->n_other_user_address_list = friends_num;
+        response->other_user_address_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * friends_num);
         for (i = 0; i < friends_num; i++) {
-            copy_address_from_address(&((response->other_user_addresses)[i]), friend_addresses[i]);
+            copy_address_from_address(&((response->other_user_address_list)[i]), friend_addresses[i]);
             copy_address_from_address(&(receiver_addresses[other_device_num + i]), friend_addresses[i]);
         }
         // group
@@ -428,8 +428,8 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
             skissm__group_info__init(cur_group);
             cur_group->group_name = strdup(group_info_list[i]->group_name);
             copy_address_from_address(&(cur_group->group_address), group_info_list[i]->group_address);
-            cur_group->n_group_members = group_info_list[i]->n_group_members;
-            copy_group_members(&(cur_group->group_members), group_info_list[i]->group_members, group_info_list[i]->n_group_members);
+            cur_group->n_group_member_list = group_info_list[i]->n_group_member_list;
+            copy_group_members(&(cur_group->group_member_list), group_info_list[i]->group_member_list, group_info_list[i]->n_group_member_list);
         }
     }
 
@@ -444,7 +444,7 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
         skissm__new_user_device_msg__init(proto_msg->new_user_device_msg);
         copy_address_from_address(&(proto_msg->new_user_device_msg->user_address), cur_data->address);
         if (other_device_num > 0) {
-            copy_address_from_address(&(proto_msg->new_user_device_msg->inviter_address), other_device_addresses[0]);
+            copy_address_from_address(&(proto_msg->new_user_device_msg->inviter_address), other_device_address_list[0]);
         }
 
         send_proto_msg(proto_msg);
@@ -456,9 +456,9 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     // release
     if (client_data != NULL) {
         for (i = 0; i < other_device_num; i++) {
-            skissm__e2ee_address__free_unpacked(other_device_addresses[i], NULL);
+            skissm__e2ee_address__free_unpacked(other_device_address_list[i], NULL);
         }
-        free_mem((void **)&other_device_addresses, sizeof(Skissm__E2eeAddress *) * other_device_num);
+        free_mem((void **)&other_device_address_list, sizeof(Skissm__E2eeAddress *) * other_device_num);
     }
 
     return response;
@@ -519,15 +519,15 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *fr
         copy_spk_public_from_spk_public(&(response->pre_key_bundles[j]->signed_pre_key_public), cur_data->signed_pre_key_public);
 
         size_t k;
-        for (k = 0; k < cur_data->n_one_time_pre_keys; k++) {
-            if (cur_data->one_time_pre_keys[k]) {
-                copy_opk_public_from_opk_public(&(response->pre_key_bundles[j]->one_time_pre_key_public), cur_data->one_time_pre_keys[k]);
+        for (k = 0; k < cur_data->n_one_time_pre_key_list; k++) {
+            if (cur_data->one_time_pre_key_list[k]) {
+                copy_opk_public_from_opk_public(&(response->pre_key_bundles[j]->one_time_pre_key_public), cur_data->one_time_pre_key_list[k]);
                 break;
             }
         }
         // release the one-time pre-key
-        skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_keys[k], NULL);
-        cur_data->one_time_pre_keys[k] = NULL;
+        skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_key_list[k], NULL);
+        cur_data->one_time_pre_key_list[k] = NULL;
     }
 
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
@@ -650,23 +650,23 @@ Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__E2eeAddress *from, const ch
 
     user_data *cur_data = &(user_data_set[user_data_find]);
 
-    size_t old_num = cur_data->n_one_time_pre_keys;
+    size_t old_num = cur_data->n_one_time_pre_key_list;
 
-    cur_data->n_one_time_pre_keys += request->n_one_time_pre_key_public;
+    cur_data->n_one_time_pre_key_list += request->n_one_time_pre_key_public_list;
     Skissm__OneTimePreKeyPublic **temp;
-    temp = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * cur_data->n_one_time_pre_keys);
+    temp = (Skissm__OneTimePreKeyPublic **)malloc(sizeof(Skissm__OneTimePreKeyPublic *) * cur_data->n_one_time_pre_key_list);
     size_t i;
     for (i = 0; i < old_num; i++) {
-        copy_opk_public_from_opk_public(&(temp[i]), cur_data->one_time_pre_keys[i]);
-        skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_keys[i], NULL);
-        cur_data->one_time_pre_keys[i] = NULL;
+        copy_opk_public_from_opk_public(&(temp[i]), cur_data->one_time_pre_key_list[i]);
+        skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_key_list[i], NULL);
+        cur_data->one_time_pre_key_list[i] = NULL;
     }
-    free(cur_data->one_time_pre_keys);
-    cur_data->one_time_pre_keys = temp;
+    free(cur_data->one_time_pre_key_list);
+    cur_data->one_time_pre_key_list = temp;
 
     // copy new one-time pre-keys
-    for (i = old_num; i < cur_data->n_one_time_pre_keys; i++) {
-        copy_opk_public_from_opk_public(&(cur_data->one_time_pre_keys[i]), request->one_time_pre_key_public[i - old_num]);
+    for (i = old_num; i < cur_data->n_one_time_pre_key_list; i++) {
+        copy_opk_public_from_opk_public(&(cur_data->one_time_pre_key_list[i]), request->one_time_pre_key_public_list[i - old_num]);
     }
 
     // prepare response
@@ -745,8 +745,8 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const 
     // prepare to store
     Skissm__GroupInfo *group_info = request->msg->group_info;
     cur_group_data->group_name = strdup(group_info->group_name);
-    cur_group_data->group_members_num = group_info->n_group_members;
-    copy_group_members(&(cur_group_data->group_members), group_info->group_members, group_info->n_group_members);
+    cur_group_data->group_members_num = group_info->n_group_member_list;
+    copy_group_members(&(cur_group_data->group_member_list), group_info->group_member_list, group_info->n_group_member_list);
 
     Skissm__E2eeAddress *group_address = cur_group_data->group_address;
     size_t group_members_num = cur_group_data->group_members_num;
@@ -770,7 +770,7 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const 
     for (i = 0; i < group_members_num; i++) {
         index_address_list[i] = NULL;
 
-        to_member_addresses_num_list[i] = find_device_index_and_addresses(cur_group_data->group_members[i]->user_id, &(index_address_list[i]));
+        to_member_addresses_num_list[i] = find_device_index_and_addresses(cur_group_data->group_member_list[i]->user_id, &(index_address_list[i]));
 
         to_member_addresses_total_num += to_member_addresses_num_list[i];
     }
@@ -911,27 +911,27 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
 
     // update the data
     size_t old_group_members_num = cur_group_data->group_members_num;
-    size_t new_group_members_num = cur_group_data->group_members_num + add_group_members_msg->n_adding_members;
+    size_t new_group_members_num = cur_group_data->group_members_num + add_group_members_msg->n_adding_member_list;
     cur_group_data->group_members_num = new_group_members_num;
 
     Skissm__GroupMember **temp_group_members = NULL;
     temp_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     size_t i, j;
     for (i = 0; i < old_group_members_num; i++) {
-        Skissm__GroupMember *cur_group_member = (cur_group_data->group_members)[i];
+        Skissm__GroupMember *cur_group_member = (cur_group_data->group_member_list)[i];
         copy_group_member(&(temp_group_members[i]), cur_group_member);
         skissm__group_member__free_unpacked(cur_group_member, NULL);
         cur_group_member = NULL;
     }
-    free_mem((void **)&(cur_group_data->group_members), sizeof(Skissm__GroupMember *) * old_group_members_num);
+    free_mem((void **)&(cur_group_data->group_member_list), sizeof(Skissm__GroupMember *) * old_group_members_num);
     // update the group members
-    cur_group_data->group_members = temp_group_members;
+    cur_group_data->group_member_list = temp_group_members;
 
     for (i = old_group_members_num; i < new_group_members_num; i++) {
-        copy_group_member(&(cur_group_data->group_members[i]), (add_group_members_msg->adding_members)[i - old_group_members_num]);
+        copy_group_member(&(cur_group_data->group_member_list[i]), (add_group_members_msg->adding_member_list)[i - old_group_members_num]);
     }
 
-    size_t adding_members_num = add_group_members_msg->n_adding_members;
+    size_t adding_members_num = add_group_members_msg->n_adding_member_list;
 
     size_t *adding_member_device_num_list = (size_t *)malloc(sizeof(size_t) * adding_members_num);
     size_t *to_member_addresses_num_list = (size_t *)malloc(sizeof(size_t) * new_group_members_num);
@@ -944,14 +944,14 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
     // only for new members
     for (i = 0; i < adding_members_num; i++) {
         adding_member_index_address_list[i] = NULL;
-        adding_member_device_num_list[i] = find_device_index_and_addresses(add_group_members_msg->adding_members[i]->user_id, &(adding_member_index_address_list[i]));
+        adding_member_device_num_list[i] = find_device_index_and_addresses(add_group_members_msg->adding_member_list[i]->user_id, &(adding_member_index_address_list[i]));
 
         adding_member_addresses_total_num += adding_member_device_num_list[i];
     }
     // for all members, including new members
     for (i = 0; i < new_group_members_num; i++) {
         index_address_list[i] = NULL;
-        to_member_addresses_num_list[i] = find_device_index_and_addresses(cur_group_data->group_members[i]->user_id, &(index_address_list[i]));
+        to_member_addresses_num_list[i] = find_device_index_and_addresses(cur_group_data->group_member_list[i]->user_id, &(index_address_list[i]));
 
         to_member_addresses_total_num += to_member_addresses_num_list[i];
     }
@@ -1034,12 +1034,12 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
     Skissm__AddGroupMembersResponse *response = (Skissm__AddGroupMembersResponse *)malloc(sizeof(Skissm__AddGroupMembersResponse));
     skissm__add_group_members_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
-    response->n_group_members = new_group_members_num;
-    response->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
+    response->n_group_member_list = new_group_members_num;
+    response->group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     for (i = 0; i < new_group_members_num; i++) {
-        (response->group_members)[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-        skissm__group_member__init((response->group_members)[i]);
-        copy_group_member(&((response->group_members)[i]), (cur_group_data->group_members)[i]);
+        (response->group_member_list)[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+        skissm__group_member__init((response->group_member_list)[i]);
+        copy_group_member(&((response->group_member_list)[i]), (cur_group_data->group_member_list)[i]);
     }
 
     copy_group_member_ids(&(response->adding_member_info_list), adding_member_info_list, adding_member_addresses_total_num);
@@ -1114,7 +1114,7 @@ Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
     size_t i, j;
     for (i = 0; i < group_members_num; i++) {
         index_address_list[i] = NULL;
-        to_member_addresses_num_list[i] = find_device_index_and_addresses(cur_group_data->group_members[i]->user_id, &(index_address_list[i]));
+        to_member_addresses_num_list[i] = find_device_index_and_addresses(cur_group_data->group_member_list[i]->user_id, &(index_address_list[i]));
 
         to_member_addresses_total_num += to_member_addresses_num_list[i];
     }
@@ -1178,12 +1178,12 @@ Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
     Skissm__AddGroupMemberDeviceResponse *response = (Skissm__AddGroupMemberDeviceResponse *)malloc(sizeof(Skissm__AddGroupMemberDeviceResponse));
     skissm__add_group_member_device_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
-    response->n_group_members = group_members_num;
-    response->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * group_members_num);
+    response->n_group_member_list = group_members_num;
+    response->group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * group_members_num);
     for (i = 0; i < group_members_num; i++) {
-        (response->group_members)[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-        skissm__group_member__init((response->group_members)[i]);
-        copy_group_member(&((response->group_members)[i]), (cur_group_data->group_members)[i]);
+        (response->group_member_list)[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+        skissm__group_member__init((response->group_member_list)[i]);
+        copy_group_member(&((response->group_member_list)[i]), (cur_group_data->group_member_list)[i]);
     }
 
     copy_group_member_id(&(response->adding_member_device_info), adding_member_device_info);
@@ -1238,23 +1238,23 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
     group_data *cur_group_data = &(group_data_set[group_data_find]);
 
     size_t original_group_members_num = cur_group_data->group_members_num;
-    size_t new_group_members_num = original_group_members_num - request->msg->n_removing_members;
+    size_t new_group_members_num = original_group_members_num - request->msg->n_removing_member_list;
 
     Skissm__GroupMember **temp_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     size_t i = 0, j = 0;
     size_t cur_removing_member_num;
     while (i < new_group_members_num && j < original_group_members_num) {
         cur_removing_member_num = j - i;
-        if (cur_removing_member_num < request->msg->n_removing_members) {
-            if (!safe_strcmp((cur_group_data->group_members)[j]->user_id, request->msg->removing_members[cur_removing_member_num]->user_id)) {
-                copy_group_member(&(temp_group_members[i]), (cur_group_data->group_members)[j]);
+        if (cur_removing_member_num < request->msg->n_removing_member_list) {
+            if (!safe_strcmp((cur_group_data->group_member_list)[j]->user_id, request->msg->removing_member_list[cur_removing_member_num]->user_id)) {
+                copy_group_member(&(temp_group_members[i]), (cur_group_data->group_member_list)[j]);
                 i++;
                 j++;
             } else {
                 j++;
             }
         } else {
-            copy_group_member(&(temp_group_members[i]), (cur_group_data->group_members)[j]);
+            copy_group_member(&(temp_group_members[i]), (cur_group_data->group_member_list)[j]);
             i++;
             j++;
         }
@@ -1274,7 +1274,7 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
     for (i = 0; i < new_group_members_num; i++) {
         index_address_list[i] = NULL;
 
-        to_member_addresses_num_list[i] = find_device_index_and_addresses(remove_group_members_msg_to_remained->group_info->group_members[i]->user_id, &(index_address_list[i]));
+        to_member_addresses_num_list[i] = find_device_index_and_addresses(remove_group_members_msg_to_remained->group_info->group_member_list[i]->user_id, &(index_address_list[i]));
 
         to_member_addresses_total_num += to_member_addresses_num_list[i];
     }
@@ -1320,8 +1320,8 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
     skissm__remove_group_members_msg__pack(remove_group_members_msg_to_remained, remove_group_members_msg_data_to_remained);
 
     // send to removed members
-    for (i = 0; i < remove_group_members_msg_to_removed->n_removing_members; i++) {
-        const char *member_user_id = remove_group_members_msg_to_removed->removing_members[i]->user_id;
+    for (i = 0; i < remove_group_members_msg_to_removed->n_removing_member_list; i++) {
+        const char *member_user_id = remove_group_members_msg_to_removed->removing_member_list[i]->user_id;
 
         Skissm__E2eeAddress **to_member_addresses = NULL;
         size_t to_member_addresses_num = find_device_addresses(member_user_id, &to_member_addresses);
@@ -1383,23 +1383,23 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
 
     // release the old data
     for (i = 0; i < original_group_members_num; i++) {
-        skissm__group_member__free_unpacked((cur_group_data->group_members)[i], NULL);
-        (cur_group_data->group_members)[i] = NULL;
+        skissm__group_member__free_unpacked((cur_group_data->group_member_list)[i], NULL);
+        (cur_group_data->group_member_list)[i] = NULL;
     }
-    free(cur_group_data->group_members);
+    free(cur_group_data->group_member_list);
 
     // update new member
     cur_group_data->group_members_num = new_group_members_num;
-    cur_group_data->group_members = temp_group_members;
+    cur_group_data->group_member_list = temp_group_members;
 
     // prepare response
     Skissm__RemoveGroupMembersResponse *response = (Skissm__RemoveGroupMembersResponse *)malloc(sizeof(Skissm__RemoveGroupMembersResponse));
     skissm__remove_group_members_response__init(response);
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
-    response->n_group_members = new_group_members_num;
-    response->group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
+    response->n_group_member_list = new_group_members_num;
+    response->group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     for (i = 0; i < new_group_members_num; i++) {
-        copy_group_member(&((response->group_members)[i]), (cur_group_data->group_members)[i]);
+        copy_group_member(&((response->group_member_list)[i]), (cur_group_data->group_member_list)[i]);
     }
     response->n_member_info_list = to_member_addresses_total_num;
     copy_group_member_ids(&(response->member_info_list), remove_group_members_msg_to_remained->member_info_list, to_member_addresses_total_num);
@@ -1461,7 +1461,7 @@ Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, const ch
     Skissm__GroupMember **temp_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * new_group_members_num);
     size_t i, j = 0;
     for (i = 0; i < original_group_members_num; i++) {
-        if (!safe_strcmp(cur_group_data->group_members[i]->user_id, user_id)) {
+        if (!safe_strcmp(cur_group_data->group_member_list[i]->user_id, user_id)) {
             if (j == original_group_members_num) {
                 // error and release
                 skissm__leave_group_msg__free_unpacked(leave_group_msg, NULL);
@@ -1478,7 +1478,7 @@ Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, const ch
                 response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_INTERNAL_SERVER_ERROR;
                 return response;
             }
-            copy_group_member(&(temp_group_members[j]), (cur_group_data->group_members)[i]);
+            copy_group_member(&(temp_group_members[j]), (cur_group_data->group_member_list)[i]);
             j++;
         }
     }
@@ -1571,7 +1571,7 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, con
     size_t i, j;
     for (i = 0; i < group_data_set[group_data_find].group_members_num; i++) {
         // send to other group members
-        const char *member_user_id = cur_group_data->group_members[i]->user_id;
+        const char *member_user_id = cur_group_data->group_member_list[i]->user_id;
         // forward a copy of E2eeMsg
         Skissm__E2eeAddress **to_member_addresses = NULL;
         size_t to_member_addresses_num = find_device_addresses(member_user_id, &to_member_addresses);

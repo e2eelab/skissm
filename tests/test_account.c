@@ -54,17 +54,17 @@ static skissm_event_handler_t test_event_handler = {
     NULL
 };
 
-static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_one_time_pre_keys) {
+static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_one_time_pre_key_list) {
     unsigned int i;
 
-    assert(account->n_one_time_pre_keys == n_one_time_pre_keys);
+    assert(account->n_one_time_pre_key_list == n_one_time_pre_key_list);
 
-    for (i = 0; i < account->n_one_time_pre_keys; i++){
-        assert(account->one_time_pre_keys[i]->opk_id == (i + 1));
-        assert(account->one_time_pre_keys[i]->key_pair->private_key.data != NULL);
-        assert(account->one_time_pre_keys[i]->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
-        assert(account->one_time_pre_keys[i]->key_pair->public_key.data != NULL);
-        assert(account->one_time_pre_keys[i]->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
+    for (i = 0; i < account->n_one_time_pre_key_list; i++){
+        assert(account->one_time_pre_key_list[i]->opk_id == (i + 1));
+        assert(account->one_time_pre_key_list[i]->key_pair->private_key.data != NULL);
+        assert(account->one_time_pre_key_list[i]->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
+        assert(account->one_time_pre_key_list[i]->key_pair->public_key.data != NULL);
+        assert(account->one_time_pre_key_list[i]->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
     }
 }
 
@@ -282,7 +282,7 @@ static void test_supply_opks() {
     // assert
     Skissm__Account *account_new = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account_new);
-    assert(account_new->n_one_time_pre_keys == (100 + supply_opks_num));
+    assert(account_new->n_one_time_pre_key_list == (100 + supply_opks_num));
 
     // release
     skissm__register_user_response__free_unpacked(response, NULL);
@@ -316,7 +316,7 @@ static void test_free_opks() {
     size_t used_opks = 80;
     size_t i;
     for (i = 0; i < used_opks; i++) {
-        account->one_time_pre_keys[i]->used = true;
+        account->one_time_pre_key_list[i]->used = true;
     }
     free_one_time_pre_key(account);
     // store
@@ -325,8 +325,8 @@ static void test_free_opks() {
     // load account
     Skissm__Account *account_new = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account_new);
-    assert(account_new->n_one_time_pre_keys == (100 - used_opks));
-    assert(account_new->one_time_pre_keys[100 - used_opks] == NULL);
+    assert(account_new->n_one_time_pre_key_list == (100 - used_opks));
+    assert(account_new->one_time_pre_key_list[100 - used_opks] == NULL);
 
     // release
     skissm__register_user_response__free_unpacked(response, NULL);
