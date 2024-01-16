@@ -284,8 +284,8 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
             if (plaintext != NULL) {
                 if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG) {
                     ssm_notify_one2one_msg(receiver_address, e2ee_msg->from, e2ee_msg->to, plaintext->common_msg.data, plaintext->common_msg.len);
-                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_THEIR_DEVICE_ID_LIST) {
-                    Skissm__UserDevicesID *their_device_id_list = plaintext->their_device_id_list;
+                } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_USER_DEVICES_BUNDLE) {
+                    Skissm__UserDevicesBundle *their_device_id_list = plaintext->user_devices_bundle;
 
                     char *to_user_id = their_device_id_list->user_id;
                     char *to_domain = their_device_id_list->domain;

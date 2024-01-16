@@ -247,16 +247,16 @@ void send_sync_invite_msg(Skissm__E2eeAddress *from, const char *to_user_id, con
         Skissm__Plaintext *plaintext = (Skissm__Plaintext *)malloc(sizeof(Skissm__Plaintext));
         skissm__plaintext__init(plaintext);
         plaintext->version = strdup(E2EE_PLAINTEXT_VERSION);
-        plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_THEIR_DEVICE_ID_LIST;
-        plaintext->their_device_id_list = (Skissm__UserDevicesID *)malloc(sizeof(Skissm__UserDevicesID));
-        skissm__user_devices_id__init(plaintext->their_device_id_list);
-        plaintext->their_device_id_list->domain = strdup(to_domain);
-        plaintext->their_device_id_list->user_id = strdup(to_user_id);
-        plaintext->their_device_id_list->n_device_id_list = to_device_num;
-        plaintext->their_device_id_list->device_id_list = (char **)malloc(sizeof(char *) * to_device_num);
+        plaintext->payload_case = SKISSM__PLAINTEXT__PAYLOAD_USER_DEVICES_BUNDLE;
+        plaintext->user_devices_bundle = (Skissm__UserDevicesBundle *)malloc(sizeof(Skissm__UserDevicesBundle));
+        skissm__user_devices_bundle__init(plaintext->user_devices_bundle);
+        plaintext->user_devices_bundle->domain = strdup(to_domain);
+        plaintext->user_devices_bundle->user_id = strdup(to_user_id);
+        plaintext->user_devices_bundle->n_device_id_list = to_device_num;
+        plaintext->user_devices_bundle->device_id_list = (char **)malloc(sizeof(char *) * to_device_num);
         size_t k;
         for (k = 0; k < to_device_num; k++) {
-            (plaintext->their_device_id_list->device_id_list)[k] = strdup(to_device_id_list[k]);
+            (plaintext->user_devices_bundle->device_id_list)[k] = strdup(to_device_id_list[k]);
         }
 
         size_t invite_msg_data_len = skissm__plaintext__get_packed_size(plaintext);
