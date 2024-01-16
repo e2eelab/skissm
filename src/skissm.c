@@ -83,114 +83,45 @@ void skissm_end() {
 skissm_plugin_t *get_skissm_plugin() { return skissm_plugin; }
 
 uint32_t e2ee_pack_id_to_raw(e2ee_pack_id_t e2ee_pack_id) {
-    return (0xf000 & (e2ee_pack_id.ver << (CIPHER_SUITE_PART_LEN_IN_BITS * 3)))
-         | (0x0f00 & (e2ee_pack_id.digital_signature << (CIPHER_SUITE_PART_LEN_IN_BITS * 2)))
-         | (0x00f0 & (e2ee_pack_id.kem << CIPHER_SUITE_PART_LEN_IN_BITS))
-         | (0x000f & (e2ee_pack_id.symmetric_encryption));
+    return (0xff000000 & (e2ee_pack_id.ver << (CIPHER_SUITE_PART_LEN_IN_BITS * 3)))
+         | (0x00ff0000 & (e2ee_pack_id.digital_signature << (CIPHER_SUITE_PART_LEN_IN_BITS * 2)))
+         | (0x0000ff00 & (e2ee_pack_id.kem << CIPHER_SUITE_PART_LEN_IN_BITS))
+         | (0x000000ff & (e2ee_pack_id.symmetric_encryption));
 }
 
 e2ee_pack_id_t raw_to_e2ee_pack_id(uint32_t e2ee_pack_id_raw) {
     e2ee_pack_id_t e2ee_pack_id;
-    e2ee_pack_id.ver = (0xf000 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS*3);
-    e2ee_pack_id.digital_signature = (0x0f00 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS*2);
-    e2ee_pack_id.kem = (0x00f0 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS);
-    e2ee_pack_id.symmetric_encryption = 0x000f & e2ee_pack_id_raw;
+    e2ee_pack_id.ver = (0xff000000 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS*3);
+    e2ee_pack_id.digital_signature = (0x00ff0000 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS*2);
+    e2ee_pack_id.kem = (0x0000ff00 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS);
+    e2ee_pack_id.symmetric_encryption = 0x000000ff & e2ee_pack_id_raw;
 
     return e2ee_pack_id;
 }
 
-void ssm_notify_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *msg_fmt, ...) {
-    if (skissm_plugin != NULL) {
-        char msg[256] = {0};
-        va_list arg;
-        va_start(arg, msg_fmt);
-        vsnprintf(msg, 256, msg_fmt, arg);
-        va_end(arg);
-        skissm_plugin->event_handler.on_log(user_address, log_code, msg);
+uint32_t gen_e2ee_pack_id_raw(
+    unsigned ver, unsigned digital_signature, unsigned kem, unsigned symmetric_encryption
+) {
+    e2ee_pack_id_t e2ee_pack_id;
+    e2ee_pack_id.ver = ver;
+    e2ee_pack_id.digital_signature = digital_signature;
+    e2ee_pack_id.kem = kem;
+    e2ee_pack_id.symmetric_encryption = symmetric_encryption;
+
+    return e2ee_pack_id_to_raw(e2ee_pack_id);
+}
+
+e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id_raw) {
+    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
+
+    E2EE_PACK.cipher_suite = get_cipher_suite(e2ee_pack_id);
+    if (e2ee_pack_id.kem != E2EE_PACK_ID_KEM_CURVE25519) {
+        E2EE_PACK.session_suite = &E2EE_SESSION_PQC;
+    } else {
+        E2EE_PACK.session_suite = &E2EE_SESSION_ECC;
     }
-}
 
-void ssm_notify_user_registered(Skissm__Account *account) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_user_registered(account);
-}
-
-void ssm_notify_inbound_session_invited(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_inbound_session_invited(user_address, from);
-}
-
-void ssm_notify_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *inbound_session) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_inbound_session_ready(user_address, inbound_session);
-}
-
-void ssm_notify_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *outbound_session) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_outbound_session_ready(user_address, outbound_session);
-}
-
-void ssm_notify_one2one_msg(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
-    uint8_t *plaintext, size_t plaintext_len
-) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_one2one_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
-}
-
-void ssm_notify_other_device_msg(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
-    uint8_t *plaintext, size_t plaintext_len
-) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_other_device_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
-}
-
-void ssm_notify_group_created(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **group_members, size_t group_members_num
-) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_created(
-            user_address, group_address, group_name,
-            group_members, group_members_num
-        );
-}
-
-void ssm_notify_group_members_added(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **group_members, size_t group_members_num,
-    Skissm__GroupMember **added_group_members, size_t added_group_members_num
-) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_members_added(
-            user_address, group_address, group_name,
-            group_members, group_members_num,
-            added_group_members, added_group_members_num
-        );
-}
-
-void ssm_notify_group_members_removed(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **group_members, size_t group_members_num,
-    Skissm__GroupMember **removed_group_members, size_t removed_group_members_num
-) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_members_removed(
-            user_address, group_address, group_name,
-            group_members, group_members_num,
-            removed_group_members, removed_group_members_num
-        );
-}
-
-void ssm_notify_group_msg(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address,
-    uint8_t *plaintext, size_t plaintext_len
-) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_msg_received(
-            user_address, from_address, group_address, plaintext, plaintext_len
-        );
+    return &E2EE_PACK;
 }
 
 digital_signature_suite_t *get_digital_signature_suite(unsigned id) {
@@ -291,27 +222,97 @@ cipher_suite_t *get_cipher_suite(e2ee_pack_id_t e2ee_pack_id) {
     return &E2EE_CIPHER_SUITE;
 }
 
-uint32_t gen_e2ee_pack_id_raw(
-    unsigned ver, unsigned digital_signature, unsigned kem, unsigned symmetric_encryption
-) {
-    e2ee_pack_id_t e2ee_pack_id;
-    e2ee_pack_id.ver = ver;
-    e2ee_pack_id.digital_signature = digital_signature;
-    e2ee_pack_id.kem = kem;
-    e2ee_pack_id.symmetric_encryption = symmetric_encryption;
-
-    return e2ee_pack_id_to_raw(e2ee_pack_id);
-}
-
-e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id_raw) {
-    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
-
-    E2EE_PACK.cipher_suite = get_cipher_suite(e2ee_pack_id);
-    if (e2ee_pack_id.kem != E2EE_PACK_ID_KEM_CURVE25519) {
-        E2EE_PACK.session_suite = &E2EE_SESSION_PQC;
-    } else {
-        E2EE_PACK.session_suite = &E2EE_SESSION_ECC;
+void ssm_notify_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *msg_fmt, ...) {
+    if (skissm_plugin != NULL) {
+        char msg[256] = {0};
+        va_list arg;
+        va_start(arg, msg_fmt);
+        vsnprintf(msg, 256, msg_fmt, arg);
+        va_end(arg);
+        skissm_plugin->event_handler.on_log(user_address, log_code, msg);
     }
-
-    return &E2EE_PACK;
 }
+
+void ssm_notify_user_registered(Skissm__Account *account) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_user_registered(account);
+}
+
+void ssm_notify_inbound_session_invited(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_inbound_session_invited(user_address, from);
+}
+
+void ssm_notify_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *inbound_session) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_inbound_session_ready(user_address, inbound_session);
+}
+
+void ssm_notify_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *outbound_session) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_outbound_session_ready(user_address, outbound_session);
+}
+
+void ssm_notify_one2one_msg(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_one2one_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
+}
+
+void ssm_notify_other_device_msg(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_other_device_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
+}
+
+void ssm_notify_group_created(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_created(
+            user_address, group_address, group_name,
+            group_members, group_members_num
+        );
+}
+
+void ssm_notify_group_members_added(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num,
+    Skissm__GroupMember **added_group_members, size_t added_group_members_num
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_members_added(
+            user_address, group_address, group_name,
+            group_members, group_members_num,
+            added_group_members, added_group_members_num
+        );
+}
+
+void ssm_notify_group_members_removed(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
+    Skissm__GroupMember **group_members, size_t group_members_num,
+    Skissm__GroupMember **removed_group_members, size_t removed_group_members_num
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_members_removed(
+            user_address, group_address, group_name,
+            group_members, group_members_num,
+            removed_group_members, removed_group_members_num
+        );
+}
+
+void ssm_notify_group_msg(
+    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address,
+    uint8_t *plaintext, size_t plaintext_len
+) {
+    if (skissm_plugin != NULL)
+        skissm_plugin->event_handler.on_group_msg_received(
+            user_address, from_address, group_address, plaintext, plaintext_len
+        );
+}
+
