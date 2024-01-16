@@ -54,28 +54,6 @@ size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char **hex_str) {
     return hex_str_len;
 }
 
-uint32_t e2ee_pack_number_to_uint32(e2ee_pack_number *e2ee_pack_number_id) {
-    return (((e2ee_pack_number_id->head) << (CIPHER_SUITE_PART_LEN_IN_BITS * 3))
-            + ((e2ee_pack_number_id->digital_signature) << (CIPHER_SUITE_PART_LEN_IN_BITS * 2))
-            + ((e2ee_pack_number_id->kem) << CIPHER_SUITE_PART_LEN_IN_BITS)
-            + e2ee_pack_number_id->symmetric_encryption);
-}
-
-e2ee_pack_number *uint32_to_e2ee_pack_number(uint32_t e2ee_pack_id) {
-    e2ee_pack_number *e2ee_pack_number_id = (e2ee_pack_number *)malloc(sizeof(e2ee_pack_number));
-    e2ee_pack_number_id->head = (e2ee_pack_id >> (CIPHER_SUITE_PART_LEN_IN_BITS * 3));
-
-    uint32_t temp_1 = e2ee_pack_id - (e2ee_pack_number_id->head << (CIPHER_SUITE_PART_LEN_IN_BITS * 3));
-    e2ee_pack_number_id->digital_signature = (temp_1 >> (CIPHER_SUITE_PART_LEN_IN_BITS * 2));
-
-    uint32_t temp_2 = temp_1 - (e2ee_pack_number_id->digital_signature << (CIPHER_SUITE_PART_LEN_IN_BITS * 2));
-    e2ee_pack_number_id->kem = temp_2 >> CIPHER_SUITE_PART_LEN_IN_BITS;
-
-    e2ee_pack_number_id->symmetric_encryption = temp_2 - (e2ee_pack_number_id->kem << CIPHER_SUITE_PART_LEN_IN_BITS);
-
-    return e2ee_pack_number_id;
-}
-
 ///-----------------compare-----------------///
 
 bool compare_protobuf(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2) {

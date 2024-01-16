@@ -61,9 +61,9 @@ extern struct kem_suite_t E2EE_MCELIECE8192128;
 extern struct kem_suite_t E2EE_MCELIECE8192128F;
 extern struct symmetric_encryption_suite_t E2EE_AES256_SHA256;
 
-cipher_suite_t E2EE_CIPHER_SUITE = {NULL, NULL, NULL};
+cipher_suite_t E2EE_CIPHER_SUITE = { NULL, NULL, NULL };
 
-e2ee_pack_t E2EE_PACK = {NULL, NULL};
+e2ee_pack_t E2EE_PACK = { NULL, NULL };
 
 extern struct session_suite_t E2EE_SESSION_ECC;
 extern struct session_suite_t E2EE_SESSION_PQC;
@@ -81,6 +81,23 @@ void skissm_end() {
 }
 
 skissm_plugin_t *get_skissm_plugin() { return skissm_plugin; }
+
+uint32_t e2ee_pack_id_to_raw(e2ee_pack_id_t e2ee_pack_id) {
+    return (0xf000 & (e2ee_pack_id.ver << (CIPHER_SUITE_PART_LEN_IN_BITS * 3)))
+         | (0x0f00 & (e2ee_pack_id.digital_signature << (CIPHER_SUITE_PART_LEN_IN_BITS * 2)))
+         | (0x00f0 & (e2ee_pack_id.kem << CIPHER_SUITE_PART_LEN_IN_BITS))
+         | (0x000f & (e2ee_pack_id.symmetric_encryption));
+}
+
+e2ee_pack_id_t raw_to_e2ee_pack_id(uint32_t e2ee_pack_id_raw) {
+    e2ee_pack_id_t e2ee_pack_id;
+    e2ee_pack_id.ver = (0xf000 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS*3);
+    e2ee_pack_id.digital_signature = (0x0f00 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS*2);
+    e2ee_pack_id.kem = (0x00f0 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS);
+    e2ee_pack_id.symmetric_encryption = 0x000f & e2ee_pack_id_raw;
+
+    return e2ee_pack_id;
+}
 
 void ssm_notify_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *msg_fmt, ...) {
     if (skissm_plugin != NULL) {
@@ -266,26 +283,35 @@ symmetric_encryption_suite_t *get_symmetric_encryption_suite(unsigned id) {
     }
 }
 
-cipher_suite_t *get_cipher_suite(e2ee_pack_number *e2ee_pack_number_id) {
-    E2EE_CIPHER_SUITE.digital_signature_suite = get_digital_signature_suite(e2ee_pack_number_id->digital_signature);
-    E2EE_CIPHER_SUITE.kem_suite = get_kem_suite(e2ee_pack_number_id->kem);
-    E2EE_CIPHER_SUITE.symmetric_encryption_suite = get_symmetric_encryption_suite(e2ee_pack_number_id->symmetric_encryption);
+cipher_suite_t *get_cipher_suite(e2ee_pack_id_t e2ee_pack_id) {
+    E2EE_CIPHER_SUITE.digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
+    E2EE_CIPHER_SUITE.kem_suite = get_kem_suite(e2ee_pack_id.kem);
+    E2EE_CIPHER_SUITE.symmetric_encryption_suite = get_symmetric_encryption_suite(e2ee_pack_id.symmetric_encryption);
 
     return &E2EE_CIPHER_SUITE;
 }
 
-e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id) {
-    e2ee_pack_number *e2ee_pack_number_id = uint32_to_e2ee_pack_number(e2ee_pack_id);
+uint32_t gen_e2ee_pack_id_raw(
+    unsigned ver, unsigned digital_signature, unsigned kem, unsigned symmetric_encryption
+) {
+    e2ee_pack_id_t e2ee_pack_id;
+    e2ee_pack_id.ver = ver;
+    e2ee_pack_id.digital_signature = digital_signature;
+    e2ee_pack_id.kem = kem;
+    e2ee_pack_id.symmetric_encryption = symmetric_encryption;
 
-    E2EE_PACK.cipher_suite = get_cipher_suite(e2ee_pack_number_id);
-    if (e2ee_pack_number_id->kem != E2EE_PACK_ID_KEM_CURVE25519) {
+    return e2ee_pack_id_to_raw(e2ee_pack_id);
+}
+
+e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id_raw) {
+    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
+
+    E2EE_PACK.cipher_suite = get_cipher_suite(e2ee_pack_id);
+    if (e2ee_pack_id.kem != E2EE_PACK_ID_KEM_CURVE25519) {
         E2EE_PACK.session_suite = &E2EE_SESSION_PQC;
     } else {
         E2EE_PACK.session_suite = &E2EE_SESSION_ECC;
     }
-
-    // release
-    free_mem((void **)&e2ee_pack_number_id, sizeof(e2ee_pack_number));
 
     return &E2EE_PACK;
 }

@@ -170,7 +170,7 @@ static void test_end(){
 }
 
 static uint32_t mock_e2ee_pack_id(unsigned digital_signature_choice, unsigned kem_choice) {
-    return gen_e2ee_pack_id(0, digital_signature_choice, kem_choice, E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256);
+    return gen_e2ee_pack_id_raw(0, digital_signature_choice, kem_choice, E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256);
 }
 
 static void mock_alice_account(const char *user_name, uint32_t e2ee_pack_id) {

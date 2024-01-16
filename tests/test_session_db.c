@@ -705,7 +705,7 @@ void test_equal_ratchet_inbound(uint32_t e2ee_pack_id)
 }
 
 int main(){
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,

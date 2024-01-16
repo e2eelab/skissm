@@ -54,7 +54,7 @@ static void test_ecc_alice_to_bob() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -145,7 +145,7 @@ static void test_ecc_bob_to_alice() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -236,7 +236,7 @@ static void test_ecc_interaction_alice_first() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -349,7 +349,7 @@ static void test_ecc_interaction_bob_first() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -462,7 +462,7 @@ static void test_ecc_out_of_order() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -575,7 +575,7 @@ static void test_ecc_continual_message() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -676,7 +676,7 @@ static void test_pqc_alice_to_bob() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ID_KEM_KYBER1024,
@@ -767,7 +767,7 @@ static void test_pqc_bob_to_alice() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ID_KEM_KYBER1024,
@@ -858,7 +858,7 @@ static void test_pqc_interaction_alice_first() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ID_KEM_KYBER1024,
@@ -971,7 +971,7 @@ static void test_pqc_interaction_bob_first() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ID_KEM_KYBER1024,
@@ -1084,7 +1084,7 @@ static void test_pqc_out_of_order() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ID_KEM_KYBER1024,
@@ -1197,7 +1197,7 @@ static void test_pqc_continual_message() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ID_KEM_KYBER1024,
@@ -1298,7 +1298,7 @@ static void test_pqc_interaction_v2() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ID_KEM_KYBER1024,
@@ -1429,7 +1429,7 @@ static void test_pqc_out_of_order_v2() {
 
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ID_KEM_KYBER1024,

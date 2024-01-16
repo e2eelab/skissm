@@ -55,7 +55,7 @@ static void test_one_group_pre_key() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -284,7 +284,7 @@ static void test_pending_request_data() {
     // test start
     tear_up();
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -351,7 +351,7 @@ static void test_sending_before_accept() {
     tear_up();
 
     // register
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ID_KEM_KYBER1024,

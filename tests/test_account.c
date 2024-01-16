@@ -69,7 +69,7 @@ static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_on
 }
 
 static void create_account_test() {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -161,7 +161,7 @@ static void test_create_accounts(uint64_t num) {
 
 static void test_register_user() {
     printf("====== test_register_user ======\n");
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -190,7 +190,7 @@ static void test_register_user() {
 
 static void test_publish_spk() {
     printf("====== test_publish_spk ======\n");
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -245,7 +245,7 @@ Skissm__ProtoMsg *mock_supply_opks_msg(Skissm__E2eeAddress *user_address, uint32
 
 static void test_supply_opks() {
     printf("====== test_supply_opks ======\n");
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,
@@ -293,7 +293,7 @@ static void test_supply_opks() {
 
 static void test_free_opks() {
     printf("====== test_free_opks ======\n");
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id(
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ID_KEM_CURVE25519,

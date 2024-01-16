@@ -49,10 +49,6 @@ char *generate_uuid_str();
  */
 size_t to_hex_str(const uint8_t *buffer, size_t buffer_len, char **hex_str);
 
-uint32_t e2ee_pack_number_to_uint32(e2ee_pack_number *e2ee_pack_number_id);
-
-e2ee_pack_number *uint32_to_e2ee_pack_number(uint32_t e2ee_pack_id);
-
 /**
  * @brief Compare two ProtobufCBinaryData objects.
  *

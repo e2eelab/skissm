@@ -149,12 +149,12 @@ extern "C" {
 
 #define CIPHER_SUITE_PART_LEN_IN_BITS 8
 
-typedef struct e2ee_pack_number {
-    unsigned head:CIPHER_SUITE_PART_LEN_IN_BITS;
+typedef struct e2ee_pack_id_t {
+    unsigned ver:CIPHER_SUITE_PART_LEN_IN_BITS;
     unsigned digital_signature:CIPHER_SUITE_PART_LEN_IN_BITS;
     unsigned kem:CIPHER_SUITE_PART_LEN_IN_BITS;
     unsigned symmetric_encryption:CIPHER_SUITE_PART_LEN_IN_BITS;
-} e2ee_pack_number;
+} e2ee_pack_id_t;
 
 /**
  * @brief Type definition of end-to-end encryption pack.
@@ -833,11 +833,22 @@ typedef struct skissm_plugin_t {
     skissm_event_handler_t event_handler;
 } skissm_plugin_t;
 
+
 /**
- * @brief Get the e2ee_pack by given e2ee_pack_id.
- * @param e2ee_pack_id
+ * @brief Generate the e2ee pack id raw number.
+ * @param ver
+ * @param digital_signature
+ * @param kem
+ * @param symmetric_encryption
  */
-e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id);
+uint32_t gen_e2ee_pack_id_raw(
+    unsigned ver, unsigned digital_signature, unsigned kem, unsigned symmetric_encryption);
+
+/**
+ * @brief Get the e2ee_pack by given e2ee_pack_id raw number.
+ * @param e2ee_pack_id_raw
+ */
+e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id_raw);
 
 /**
  * @brief The begining function for starting SKISSM.
@@ -854,6 +865,16 @@ void skissm_end();
  * @brief Get the current plugin of SKISSM.
  */
 skissm_plugin_t *get_skissm_plugin();
+
+/**
+ * @brief Convert e2ee_pack_id_t to raw number.
+ */
+uint32_t e2ee_pack_id_to_raw(e2ee_pack_id_t e2ee_pack_id);
+
+/**
+ * @brief Convert raw number to e2ee_pack_id_t.
+ */
+e2ee_pack_id_t raw_to_e2ee_pack_id(uint32_t e2ee_pack_id_raw);
 
 /**
  * @brief Log function with additional arguments.
