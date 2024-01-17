@@ -1000,6 +1000,7 @@ void renew_outbound_group_session_by_welcome_and_add(
 
     // release
     skissm__account__free_unpacked(account, NULL);
+    free_mem((void **)&group_ratchet_state_plaintext_data, sizeof(uint8_t) * group_ratchet_state_plaintext_data_len);
     free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
 }
 
@@ -1122,20 +1123,18 @@ void renew_group_sessions_with_new_device(
             DEBUG_LOG,
             "renew_group_sessions_with_new_device() outbound_session not found"
         );
-        /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
-        Skissm__InviteResponse *response = get_pre_key_bundle_internal(
+        /** Since the new device will call consume_register_response function to get our pre-key bundle,
+         *  we do not need to get pre-key bundle from this new device.
+        */
+        char *pending_plaintext_id = generate_uuid_str();
+        get_skissm_plugin()->db_handler.store_pending_plaintext_data(
             outbound_group_session->session_owner,
-            account->auth,
-            cur_user_id, cur_user_domain,
-            cur_user_device_id, false,
-            group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
+            new_device_address,
+            pending_plaintext_id,
+            group_ratchet_state_plaintext_data,
+            group_ratchet_state_plaintext_data_len
         );
-        // release
-        if (response != NULL) {
-            skissm__invite_response__free_unpacked(response, NULL);
-        } else {
-            // nothing to do
-        }
+        free(pending_plaintext_id);
     }
 
     ProtobufCBinaryData *their_chain_keys = NULL;

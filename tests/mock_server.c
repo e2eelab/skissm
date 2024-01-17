@@ -591,6 +591,7 @@ Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth,
     uint8_t inviter = find_address(accept_msg->to);
     uint8_t invitee = find_address(accept_msg->from);
     session_record[inviter][invitee] = true;
+    session_record[invitee][inviter] = true;
 
     // prepare response
     Skissm__AcceptResponse *response = (Skissm__AcceptResponse *)malloc(sizeof(Skissm__AcceptResponse));
@@ -1307,6 +1308,17 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
         }
     }
 
+    size_t removed_group_members_num = request->msg->n_removing_member_list;
+    // store the number of addresses of each group member remaining
+    size_t *removed_member_addresses_num_list = (size_t *)malloc(sizeof(size_t) * removed_group_members_num);
+    index_node **removed_index_address_list = (index_node **)malloc(sizeof(index_node *) * removed_group_members_num);
+
+    for (i = 0; i < removed_group_members_num; i++) {
+        removed_index_address_list[i] = NULL;
+
+        removed_member_addresses_num_list[i] = find_device_index_and_addresses(remove_group_members_msg_to_removed->removing_member_list[i]->user_id, &(removed_index_address_list[i]));
+    }
+
     /* ------------------------------------ */
     // start packing
     // send to removed members
@@ -1320,14 +1332,15 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
     skissm__remove_group_members_msg__pack(remove_group_members_msg_to_remained, remove_group_members_msg_data_to_remained);
 
     // send to removed members
-    for (i = 0; i < remove_group_members_msg_to_removed->n_removing_member_list; i++) {
-        const char *member_user_id = remove_group_members_msg_to_removed->removing_member_list[i]->user_id;
+    for (i = 0; i < removed_group_members_num; i++) {
+        ptr = removed_index_address_list[i];
 
-        Skissm__E2eeAddress **to_member_addresses = NULL;
-        size_t to_member_addresses_num = find_device_addresses(member_user_id, &to_member_addresses);
+        for (j = 0; j < removed_member_addresses_num_list[i]; j++) {
+            to_member_address = ptr->device_address;
+            member_pos = ptr->index;
 
-        for (j = 0; j < to_member_addresses_num; j++) {
-            Skissm__E2eeAddress *to_member_address = to_member_addresses[j];
+            group_record[member_pos][group_data_find] = false;
+
             if (safe_strcmp(sender_user_id, to_member_address->user->user_id)) {
                 if (compare_address(sender_address, to_member_address))
                     continue;
@@ -1341,13 +1354,10 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
 
             send_proto_msg(proto_msg);
 
+            ptr = ptr->next;
+
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
-            skissm__e2ee_address__free_unpacked(to_member_address, NULL);
-        }
-        // release
-        if (to_member_addresses != NULL) {
-            free_mem((void **)&to_member_addresses, sizeof(Skissm__E2eeAddress *) * to_member_addresses_num);
         }
     }
 

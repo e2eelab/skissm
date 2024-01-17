@@ -189,8 +189,8 @@ uint32_t e2ee_pack_id_to_raw(e2ee_pack_id_t e2ee_pack_id) {
 
 e2ee_pack_id_t raw_to_e2ee_pack_id(uint32_t e2ee_pack_id_raw) {
     e2ee_pack_id_t e2ee_pack_id;
-    e2ee_pack_id.ver = (0xff000000 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS*3);
-    e2ee_pack_id.digital_signature = (0x00ff0000 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS*2);
+    e2ee_pack_id.ver = (0xff000000 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS * 3);
+    e2ee_pack_id.digital_signature = (0x00ff0000 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS * 2);
     e2ee_pack_id.kem = (0x0000ff00 & e2ee_pack_id_raw) >> (CIPHER_SUITE_PART_LEN_IN_BITS);
     e2ee_pack_id.symmetric_encryption = 0x000000ff & e2ee_pack_id_raw;
 
