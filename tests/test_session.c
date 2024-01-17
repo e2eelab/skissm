@@ -418,7 +418,7 @@ static void test_one_to_many(){
     sleep(3);
     // load the outbound sessions
     Skissm__Session **outbound_sessions = NULL;
-    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(alice_address, bob_user_id, &outbound_sessions);
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(alice_address, bob_user_id, bob_domain, &outbound_sessions);
     assert(outbound_sessions_num == 3);
 
     // load the inbound sessions

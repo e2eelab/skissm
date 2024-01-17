@@ -317,14 +317,16 @@ typedef struct skissm_db_handler_t {
     );
 
     /**
-     * @brief find the list of outbound sessions that are related to their_user_id
+     * @brief find the list of outbound sessions that are related to their_user_id and their_domain
      * @param our_address
      * @param their_user_id
+     * @param their_domain
      * @param outbound_sessions
      */
     size_t (*load_outbound_sessions)(
         Skissm__E2eeAddress *our_address,
         const char *their_user_id,
+        const char *their_domain,
         Skissm__Session ***outbound_sessions
     );
 

@@ -171,7 +171,7 @@ static void store_pending_common_plaintext_data(
 
 void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, size_t plaintext_data_len) {
     Skissm__Session **self_outbound_sessions = NULL;
-    size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, &self_outbound_sessions);
+    size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, from->domain, &self_outbound_sessions);
 
     if (self_outbound_sessions_num > 0) {
         ssm_notify_log(
@@ -234,7 +234,7 @@ void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, siz
 
 void send_sync_invite_msg(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain, char **to_device_id_list, size_t to_device_num) {
     Skissm__Session **self_outbound_sessions = NULL;
-    size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, &self_outbound_sessions);
+    size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, from->domain, &self_outbound_sessions);
 
     if (self_outbound_sessions_num > 0) {
         ssm_notify_log(
@@ -322,7 +322,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     );
 
     Skissm__Session **outbound_sessions = NULL;
-    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, &outbound_sessions);
+    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, to_user_id, to_domain, &outbound_sessions);
     if (outbound_sessions_num == 0 || outbound_sessions == NULL) {
         // save common_plaintext_data and will be resent after the first outbound session established
         ssm_notify_log(

@@ -1714,7 +1714,7 @@ int load_n_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their
     return n_outbound_sessions;
 }
 
-size_t load_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their_user_id, Skissm__Session ***outbound_sessions) {
+size_t load_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their_user_id, const char *their_domain, Skissm__Session ***outbound_sessions) {
     // allocate memory
     size_t n_outbound_sessions = load_n_outbound_sessions(our_address, their_user_id);
     (*outbound_sessions) = (Skissm__Session **)malloc(n_outbound_sessions * sizeof(Skissm__Session *));

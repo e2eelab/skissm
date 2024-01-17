@@ -365,7 +365,7 @@ void new_outbound_group_session_by_sender(
         cur_user_domain = outbound_group_session->group_info->group_member_list[i]->domain;
         Skissm__Session **outbound_sessions = NULL;
         size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(
-            outbound_group_session->session_owner, cur_user_id, &outbound_sessions
+            outbound_group_session->session_owner, cur_user_id, cur_user_domain, &outbound_sessions
         );
 
         if (outbound_sessions_num > 0 && outbound_sessions != NULL) {
@@ -870,7 +870,7 @@ void renew_outbound_group_session_by_welcome_and_add(
         cur_user_domain = adding_group_members[i]->domain;
         Skissm__Session **outbound_sessions = NULL;
         size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(
-            outbound_group_session->session_owner, cur_user_id, &outbound_sessions
+            outbound_group_session->session_owner, cur_user_id, cur_user_domain, &outbound_sessions
         );
 
         if (outbound_sessions_num > 0 && outbound_sessions != NULL) {

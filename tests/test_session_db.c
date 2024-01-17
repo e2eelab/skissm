@@ -157,7 +157,7 @@ void test_load_outbound_sessions(uint32_t e2ee_pack_id)
 
     // load_outbound_session
     Skissm__Session **sessions_copy;
-    load_outbound_sessions(from, to_1->user->user_id, &sessions_copy);
+    load_outbound_sessions(from, to_1->user->user_id, to_1->domain, &sessions_copy);
 
     // assert session equals to session_copy
     print_result("test_load_outbound_sessions", is_equal_sessions(sessions, sessions_copy, 3));
