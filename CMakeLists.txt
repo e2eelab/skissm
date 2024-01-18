@@ -59,10 +59,15 @@ if(NOT PROTOC_EXECUTABLE)
   message(FATAL_ERROR "protoc excutable not found! Please install protoc")
 endif()
 
+# add_compile_options
 if(CMAKE_SYSTEM_NAME MATCHES iOS)
   add_compile_options(-Wno-shorten-64-to-32)
 else()
   add_compile_options(-fPIC)
+endif()
+
+if (CMAKE_CURRENT_BINARY_DIR MATCHES "debug")
+  add_compile_options("-DANDROID_DEBUG=ON")
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
