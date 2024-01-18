@@ -401,7 +401,7 @@ bool consume_add_group_member_device_response(
             );
             // done
             return true;
-        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
             ssm_notify_log(
                 outbound_group_session->session_owner,
                 DEBUG_LOG,
@@ -594,7 +594,7 @@ bool consume_remove_group_members_response(
             );
             // done
             return true;
-        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
             // member is not existed, just skip it
             // should we remove the group member device ?
             return true;
@@ -737,7 +737,7 @@ bool consume_leave_group_response(
             // unload
             get_skissm_plugin()->db_handler.unload_group_session_by_address(user_address,response->group_address);
             return true;
-        }  if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+        }  if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
             ssm_notify_log(user_address, DEBUG_LOG, "consume_leave_group_response() no content, skipped");
             return true;
         }
@@ -766,7 +766,7 @@ bool consume_leave_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Leav
         if (remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             ssm_notify_log(receiver_address, DEBUG_LOG, "consume_leave_group_msg() succes");
             succ = true;
-        } else if(remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+        } else if(remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
             // member already removed, just consume it
             ssm_notify_log(receiver_address, DEBUG_LOG, "consume_leave_group_msg(), no such member");
             succ = true;

@@ -176,11 +176,11 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                     break;
                 }
             }
-        } else if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+        } else if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
             ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() got no content response, pending reqest should be skipped");
             invite_response = (Skissm__InviteResponse *)malloc(sizeof(Skissm__InviteResponse));
             skissm__invite_response__init(invite_response);
-            invite_response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT;
+            invite_response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
         }
     }
 
@@ -228,7 +228,7 @@ bool consume_send_one2one_msg_response(
     if (response != NULL) {
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             succ = true;
-        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
             // user device is removed, we remove outbound_sessions
             remove_session = true;
             succ = true;
@@ -580,7 +580,7 @@ bool consume_invite_response(
 ) {
     if (response != NULL) {
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
-            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT
+            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND
         ) {
             ssm_notify_log(user_address, DEBUG_LOG, "consume_invite_response() response code: %d", response->code);
             return true;
@@ -687,7 +687,7 @@ bool consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptRe
     if (response != NULL) {
         ssm_notify_log(user_address, DEBUG_LOG, "consume_accept_response() response code: %d", response->code);
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
-            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
             return true;
         }
     }

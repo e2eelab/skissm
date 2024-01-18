@@ -18,7 +18,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
 
     // does not invite, if the get_pre_key_bundle_response code is no content
     if (get_pre_key_bundle_response != NULL 
-        && get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT
+        && get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND
     ) {
         ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() got no content response, skip.");
         // release
@@ -34,7 +34,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
 
     if ((invite_response != NULL)
         && ((invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK)
-            || (invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT)
+            || (invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND)
         )
     ) {
         // we do not store pending request if the invite_response code is no content
@@ -364,7 +364,7 @@ static void resend_pending_request(Skissm__Account *account) {
                         );
                         succ = (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
                         skissm__invite_response__free_unpacked(invite_response, NULL);
-                    } else if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+                    } else if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
                         ssm_notify_log(
                             user_address,
                             DEBUG_LOG,

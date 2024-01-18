@@ -718,7 +718,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             bool save_pending_request = false;
             if (response != NULL) {
                 if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK ||
-                    response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+                    response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
                     // server consumed
                 } else {
                     save_pending_request = true;
@@ -750,7 +750,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             proto_msg->tag == NULL ? "" : proto_msg->tag->proto_msg_id);
         response = (Skissm__ConsumeProtoMsgResponse *)malloc(sizeof(Skissm__ConsumeProtoMsgResponse));
         skissm__consume_proto_msg_response__init(response);
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT;
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
     }
 
     // release
