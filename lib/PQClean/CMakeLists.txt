@@ -536,7 +536,7 @@ set(SPHINCS_SHAKE_256S_SRCS
 )
 
 add_library(
-    pqclean
+    pqclean STATIC
     ${HQC_128_SRCS}
     ${HQC_192_SRCS}
     ${HQC_256_SRCS}
