@@ -224,6 +224,8 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
     // this is not a face-to-face session
     inbound_session->f2f = false;
 
+    inbound_session->invite_t = msg->invite_t;
+
     // store sesson state
     get_skissm_plugin()->db_handler.store_session(inbound_session);
 

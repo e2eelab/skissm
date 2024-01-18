@@ -122,14 +122,12 @@ Skissm__InviteRequest *produce_invite_request(
  * @brief Process an incoming InviteResponse message.
  *
  * @param user_address
- * @param their_address
  * @param response
  * @return true
  * @return false
  */
 bool consume_invite_response(
     Skissm__E2eeAddress *user_address,
-    Skissm__E2eeAddress *their_address,
     Skissm__InviteResponse *response
 );
 

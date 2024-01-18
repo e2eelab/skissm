@@ -567,6 +567,8 @@ Skissm__InviteRequest *produce_invite_request(
     msg->bob_signed_pre_key_id = outbound_session->bob_signed_pre_key_id;
     msg->bob_one_time_pre_key_id = outbound_session->bob_one_time_pre_key_id;
 
+    msg->invite_t = outbound_session->invite_t;
+
     // done
     request->msg = msg;
     return request;
@@ -574,7 +576,6 @@ Skissm__InviteRequest *produce_invite_request(
 
 bool consume_invite_response(
     Skissm__E2eeAddress *user_address,
-    Skissm__E2eeAddress *their_address,
     Skissm__InviteResponse *response
 ) {
     if (response != NULL) {
@@ -582,11 +583,6 @@ bool consume_invite_response(
             || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT
         ) {
             ssm_notify_log(user_address, DEBUG_LOG, "consume_invite_response() response code: %d", response->code);
-            return true;
-        }
-        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_INVITED) {
-            // since the other has invited us, we need to unload our outbound session
-            get_skissm_plugin()->db_handler.unload_session(user_address, their_address);
             return true;
         }
     }
@@ -609,8 +605,18 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         return false;
     }
 
-    // unload the old session if necessary
-    get_skissm_plugin()->db_handler.unload_session(receiver_address, from);
+    Skissm__Session *our_session = NULL;
+    get_skissm_plugin()->db_handler.load_outbound_session(receiver_address, from, &our_session);
+    if (our_session != NULL) {
+        if (our_session->invite_t > invite_msg->invite_t) {
+            skissm__session__free_unpacked(our_session, NULL);
+            // just consume
+            return true;
+        } else {
+            // unload the old session if necessary
+            get_skissm_plugin()->db_handler.unload_session(receiver_address, from);
+        }
+    }
 
     // notify
     ssm_notify_inbound_session_invited(receiver_address, from);
