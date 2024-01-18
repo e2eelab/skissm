@@ -96,7 +96,7 @@ Skissm__InviteResponse *invite_internal(
 
     Skissm__InviteRequest *request = produce_invite_request(outbound_session);
     Skissm__InviteResponse *response = get_skissm_plugin()->proto_handler.invite(user_address, auth, request);
-    bool succ = consume_invite_response(user_address, response);
+    bool succ = consume_invite_response(user_address, outbound_session->their_address, response);
     if (!succ) {
         // pack reuest to request_data
         size_t request_data_len = skissm__invite_request__get_packed_size(request);
@@ -384,7 +384,7 @@ static void resend_pending_request(Skissm__Account *account) {
             } case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_INVITE: {
                 Skissm__InviteRequest *invite_request = skissm__invite_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__InviteResponse *invite_response = get_skissm_plugin()->proto_handler.invite(user_address, auth, invite_request);
-                succ = consume_invite_response(user_address, invite_response);
+                succ = consume_invite_response(user_address, invite_request->msg->to, invite_response);
                 if (succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 } else {

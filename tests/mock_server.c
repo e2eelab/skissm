@@ -85,6 +85,28 @@ static group_data group_data_set[group_data_max] = {
     {NULL, NULL, 0, NULL},
     {NULL, NULL, 0, NULL}};
 
+static bool invite_record[user_data_max][user_data_max] = {
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+
 static bool session_record[user_data_max][user_data_max] = {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -286,6 +308,9 @@ static size_t find_group_data(uint8_t user_index, Skissm__GroupInfo ***group_inf
 void mock_server_begin() {
     uint8_t i, j;
     for (i = 0; i < user_data_max; i++) {
+        for (j = 0; j < user_data_max; j++) {
+            invite_record[i][j] = 0;
+        }
         for (j = 0; j < user_data_max; j++) {
             session_record[i][j] = 0;
         }
@@ -542,27 +567,36 @@ Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth,
 
     Skissm__InviteMsg *invite_msg = request->msg;
     uint8_t inviter = find_address(invite_msg->from);
+    uint8_t invitee = find_address(invite_msg->to);
     if (inviter != user_data_max) {
-        copy_protobuf_from_protobuf(&(invite_msg->alice_identity_key), &(user_data_set[inviter].identity_key_public->asym_public_key));
+        if (invite_record[invitee][inviter]) {
+            // the invitee has invited the inviter, so just return response to the inviter
+            response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_INVITED;
+        } else {
+            copy_protobuf_from_protobuf(&(invite_msg->alice_identity_key), &(user_data_set[inviter].identity_key_public->asym_public_key));
 
-        size_t invite_msg_data_len = skissm__invite_msg__get_packed_size(invite_msg);
-        uint8_t invite_msg_data[invite_msg_data_len];
-        skissm__invite_msg__pack(invite_msg, invite_msg_data);
+            size_t invite_msg_data_len = skissm__invite_msg__get_packed_size(invite_msg);
+            uint8_t invite_msg_data[invite_msg_data_len];
+            skissm__invite_msg__pack(invite_msg, invite_msg_data);
 
-        // forward a copy of InviteMsg
-        Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
-        skissm__proto_msg__init(proto_msg);
-        copy_address_from_address(&(proto_msg->from), invite_msg->from);
-        copy_address_from_address(&(proto_msg->to), invite_msg->to);
-        proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG;
-        proto_msg->invite_msg = skissm__invite_msg__unpack(NULL, invite_msg_data_len, invite_msg_data);
+            // forward a copy of InviteMsg
+            Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
+            skissm__proto_msg__init(proto_msg);
+            copy_address_from_address(&(proto_msg->from), invite_msg->from);
+            copy_address_from_address(&(proto_msg->to), invite_msg->to);
+            proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG;
+            proto_msg->invite_msg = skissm__invite_msg__unpack(NULL, invite_msg_data_len, invite_msg_data);
 
-        send_proto_msg(proto_msg);
+            send_proto_msg(proto_msg);
 
-        // release
-        skissm__proto_msg__free_unpacked(proto_msg, NULL);
+            // set the invite record
+            invite_record[inviter][invitee] = true;
 
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+            // release
+            skissm__proto_msg__free_unpacked(proto_msg, NULL);
+
+            response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
+        }
     } else {
         response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
     }

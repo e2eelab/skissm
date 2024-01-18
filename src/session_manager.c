@@ -483,6 +483,27 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         );
     }
 
+    Skissm__Account *account = NULL;
+    get_skissm_plugin()->db_handler.load_account_by_address(receiver_address, &account);
+    if (account == NULL) {
+        ssm_notify_log(receiver_address, BAD_ACCOUNT, "consume_new_user_device_msg()");
+        return false;
+    }
+    // get the pre-key bundle from this new device
+    Skissm__InviteResponse *response = get_pre_key_bundle_internal(
+        receiver_address,
+        account->auth,
+        new_user_address->user->user_id, new_user_address->domain,
+        new_user_address->user->device_id, false,
+        NULL, 0
+    );
+    // release
+    if (response != NULL) {
+        skissm__invite_response__free_unpacked(response, NULL);
+    } else {
+        // nothing to do
+    }
+
     // if receiver is the inviter, then add the new device into the joined groups
     if (compare_address(receiver_address, inviter_address)) {
         // load all outbound group addresses
@@ -551,11 +572,21 @@ Skissm__InviteRequest *produce_invite_request(
     return request;
 }
 
-bool consume_invite_response(Skissm__E2eeAddress *user_address, Skissm__InviteResponse *response) {
+bool consume_invite_response(
+    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *their_address,
+    Skissm__InviteResponse *response
+) {
     if (response != NULL) {
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
-            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT
+        ) {
             ssm_notify_log(user_address, DEBUG_LOG, "consume_invite_response() response code: %d", response->code);
+            return true;
+        }
+        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_INVITED) {
+            // since the other has invited us, we need to unload our outbound session
+            get_skissm_plugin()->db_handler.unload_session(user_address, their_address);
             return true;
         }
     }
@@ -578,22 +609,8 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         return false;
     }
 
-    // try to load the corresponding inbound session if it exists
-    Skissm__Session *inbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_inbound_session(invite_msg->session_id, receiver_address, &inbound_session);
-    if (inbound_session != NULL) {
-        // unload this inbound_session and create a new inbound session for sending accept request
-        ssm_notify_log(
-            receiver_address,
-            DEBUG_LOG,
-            "consume_invite_msg() corresponding inbound session has already existed, remove it"
-        );
-        get_skissm_plugin()->db_handler.unload_session(inbound_session->our_address, inbound_session->their_address);
-
-        // release
-        skissm__session__free_unpacked(inbound_session, NULL);
-        inbound_session = NULL;
-    }
+    // unload the old session if necessary
+    get_skissm_plugin()->db_handler.unload_session(receiver_address, from);
 
     // notify
     ssm_notify_inbound_session_invited(receiver_address, from);
@@ -606,6 +623,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         return false;
     }
     // create a new inbound session
+    Skissm__Session *inbound_session = NULL;
     inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     initialise_session(inbound_session, e2ee_pack_id, to, from);
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
