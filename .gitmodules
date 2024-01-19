@@ -6,21 +6,10 @@
 	path = lib/protobuf
 	url = https://github.com/protocolbuffers/protobuf.git
     tag = v3.19.2
-[submodule "lib/kyber/src"]
-	path = lib/kyber/src
-	url = https://github.com/pq-crystals/kyber.git
-	branch = master
-[submodule "lib/sphincsplus/src"]
-	path = lib/sphincsplus/src
-	url = https://github.com/sphincs/sphincsplus.git
-	branch = master
 [submodule "protos/src/skissm"]
 	path = protos/src/skissm
 	url = https://github.com/ziv-e2eelab-org/skissm-protos
 	branch = master
-[submodule "lib/dilithium/src"]
-	path = lib/dilithium/src
-	url = https://github.com/pq-crystals/dilithium.git
 [submodule "lib/PQClean/src"]
 	path = lib/PQClean/src
 	url = https://github.com/PQClean/PQClean

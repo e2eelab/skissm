@@ -83,41 +83,41 @@ void skissm_end() {
 skissm_plugin_t *get_skissm_plugin() { return skissm_plugin; }
 
 digital_signature_suite_t *get_digital_signature_suite(unsigned id) {
-    if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519) {
+    if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519) {
         return &E2EE_CURVE25519_SIGN;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_DILITHIUM2) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM2) {
         return &E2EE_DILITHIUM2;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_DILITHIUM3) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM3) {
         return &E2EE_DILITHIUM3;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_DILITHIUM5) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5) {
         return &E2EE_DILITHIUM5;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_FALCON512) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_FALCON512) {
         return &E2EE_FALCON512;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_FALCON1024) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_FALCON1024) {
         return &E2EE_FALCON1024;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_128F) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_128F) {
         return &E2EE_SPHINCS_SHA2_128F;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_128S) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_128S) {
         return &E2EE_SPHINCS_SHA2_128S;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_192F) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_192F) {
         return &E2EE_SPHINCS_SHA2_192F;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_192S) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_192S) {
         return &E2EE_SPHINCS_SHA2_192S;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F) {
         return &E2EE_SPHINCS_SHA2_256F;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256S) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256S) {
         return &E2EE_SPHINCS_SHA2_256S;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_128F) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHAKE_128F) {
         return &E2EE_SPHINCS_SHAKE_128F;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_128S) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHAKE_128S) {
         return &E2EE_SPHINCS_SHAKE_128S;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_192F) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHAKE_192F) {
         return &E2EE_SPHINCS_SHAKE_192F;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_192S) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHAKE_192S) {
         return &E2EE_SPHINCS_SHAKE_192S;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_256F) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHAKE_256F) {
         return &E2EE_SPHINCS_SHAKE_256F;
-    } else if (id == E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHAKE_256S) {
+    } else if (id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHAKE_256S) {
         return &E2EE_SPHINCS_SHAKE_256S;
     } else {
         return NULL;
@@ -125,39 +125,39 @@ digital_signature_suite_t *get_digital_signature_suite(unsigned id) {
 }
 
 kem_suite_t *get_kem_suite(unsigned id) {
-    if (id == E2EE_PACK_ID_KEM_CURVE25519) {
+    if (id == E2EE_PACK_ALG_KEM_CURVE25519) {
         return &E2EE_CURVE25519_ECDH;
-    } else if (id == E2EE_PACK_ID_KEM_HQC128) {
+    } else if (id == E2EE_PACK_ALG_KEM_HQC128) {
         return &E2EE_HQC128;
-    } else if (id == E2EE_PACK_ID_KEM_HQC192) {
+    } else if (id == E2EE_PACK_ALG_KEM_HQC192) {
         return &E2EE_HQC192;
-    } else if (id == E2EE_PACK_ID_KEM_HQC256) {
+    } else if (id == E2EE_PACK_ALG_KEM_HQC256) {
         return &E2EE_HQC256;
-    } else if (id == E2EE_PACK_ID_KEM_KYBER512) {
+    } else if (id == E2EE_PACK_ALG_KEM_KYBER512) {
         return &E2EE_KYBER512;
-    } else if (id == E2EE_PACK_ID_KEM_KYBER768) {
+    } else if (id == E2EE_PACK_ALG_KEM_KYBER768) {
         return &E2EE_KYBER768;
-    } else if (id == E2EE_PACK_ID_KEM_KYBER1024) {
+    } else if (id == E2EE_PACK_ALG_KEM_KYBER1024) {
         return &E2EE_KYBER1024;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE348864) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE348864) {
         return &E2EE_MCELIECE348864;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE348864F) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE348864F) {
         return &E2EE_MCELIECE348864F;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE460896) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE460896) {
         return &E2EE_MCELIECE460896;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE460896) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE460896) {
         return &E2EE_MCELIECE460896F;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE6688128) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE6688128) {
         return &E2EE_MCELIECE6688128;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE6688128F) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE6688128F) {
         return &E2EE_MCELIECE6688128F;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE6960119) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE6960119) {
         return &E2EE_MCELIECE6960119;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE6960119F) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE6960119F) {
         return &E2EE_MCELIECE6960119F;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE8192128) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE8192128) {
         return &E2EE_MCELIECE8192128;
-    } else if (id == E2EE_PACK_ID_KEM_MCELIECE8192128F) {
+    } else if (id == E2EE_PACK_ALG_KEM_MCELIECE8192128F) {
         return &E2EE_MCELIECE8192128F;
     } else {
         return NULL;
@@ -165,7 +165,7 @@ kem_suite_t *get_kem_suite(unsigned id) {
 }
 
 symmetric_encryption_suite_t *get_symmetric_encryption_suite(unsigned id) {
-    if (id == E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256) {
+    if (id == E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256) {
         return &E2EE_AES256_SHA256;
     } else {
         return NULL;
@@ -213,7 +213,7 @@ e2ee_pack_t *get_e2ee_pack(uint32_t e2ee_pack_id_raw) {
     e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
 
     E2EE_PACK.cipher_suite = get_cipher_suite(e2ee_pack_id);
-    if (e2ee_pack_id.kem != E2EE_PACK_ID_KEM_CURVE25519) {
+    if (e2ee_pack_id.kem != E2EE_PACK_ALG_KEM_CURVE25519) {
         E2EE_PACK.session_suite = &E2EE_SESSION_PQC;
     } else {
         E2EE_PACK.session_suite = &E2EE_SESSION_ECC;

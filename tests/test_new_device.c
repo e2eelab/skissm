@@ -194,9 +194,9 @@ static void test_end(){
 static void mock_alice_account(const char *user_name) {
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ID_KEM_CURVE25519,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ALG_KEM_CURVE25519,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     const char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
@@ -217,9 +217,9 @@ static void mock_alice_account(const char *user_name) {
 static void mock_bob_account(const char *user_name) {
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ID_KEM_CURVE25519,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ALG_KEM_CURVE25519,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     const char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
@@ -240,9 +240,9 @@ static void mock_bob_account(const char *user_name) {
 static void mock_claire_account(const char *user_name) {
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ID_KEM_CURVE25519,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ALG_KEM_CURVE25519,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     const char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
@@ -263,9 +263,9 @@ static void mock_claire_account(const char *user_name) {
 static void mock_alice_pqc_account(const char *user_name) {
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
-        E2EE_PACK_ID_KEM_KYBER1024,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ALG_KEM_KYBER1024,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
@@ -290,9 +290,9 @@ static void mock_alice_pqc_account(const char *user_name) {
 static void mock_bob_pqc_account(const char *user_name) {
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
-        E2EE_PACK_ID_KEM_KYBER1024,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ALG_KEM_KYBER1024,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
@@ -317,9 +317,9 @@ static void mock_bob_pqc_account(const char *user_name) {
 static void mock_user_pqc_account(const char *user_name, const char *authenticator, const char *auth_code) {
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
-        E2EE_PACK_ID_KEM_KYBER1024,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
+        E2EE_PACK_ALG_KEM_KYBER1024,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     char *device_id = generate_uuid_str();
     Skissm__RegisterUserResponse *response = register_user(

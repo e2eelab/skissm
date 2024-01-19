@@ -36,10 +36,14 @@
 #include "mock_db.h"
 #include "test_util.h"
 
+static int64_t invite_time = 0;
+
 // ===============================================================
 static int64_t gen_ts() {
-    time_t now = time(0);
-    return now;
+    // time_t now = time(0);
+    // return now;
+    invite_time++;
+    return invite_time;
 }
 
 static void gen_rand(uint8_t *rand_out, size_t rand_out_len) {
@@ -158,6 +162,7 @@ void tear_up() {
 }
 
 void tear_down() {
+    invite_time = 0;
     mock_db_end();
     mock_server_end();
     stop_mock_server_sending();

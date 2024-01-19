@@ -71,9 +71,9 @@ static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_on
 static void create_account_test() {
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ID_KEM_CURVE25519,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ALG_KEM_CURVE25519,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
 
     // Register test
@@ -163,9 +163,9 @@ static void test_register_user() {
     printf("====== test_register_user ======\n");
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ID_KEM_CURVE25519,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ALG_KEM_CURVE25519,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     const char *user_name = "alice";
     const char *user_id = "alice";
@@ -192,9 +192,9 @@ static void test_publish_spk() {
     printf("====== test_publish_spk ======\n");
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ID_KEM_CURVE25519,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ALG_KEM_CURVE25519,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     const char *user_name = "alice";
     const char *user_id = "alice";
@@ -247,9 +247,9 @@ static void test_supply_opks() {
     printf("====== test_supply_opks ======\n");
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ID_KEM_CURVE25519,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ALG_KEM_CURVE25519,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     const char *user_name = "alice";
     const char *user_id = "alice";
@@ -295,9 +295,9 @@ static void test_free_opks() {
     printf("====== test_free_opks ======\n");
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ID_KEM_CURVE25519,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ALG_KEM_CURVE25519,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     const char *user_name = "alice";
     const char *user_id = "alice";

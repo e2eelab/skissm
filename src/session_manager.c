@@ -148,7 +148,6 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                 }
 
                 // create or renew an outbound session
-                // (how about keep existed outbound session ?)
                 // unload session first to prevent multiple outbound sessions
                 get_skissm_plugin()->db_handler.unload_session(from, to_address);
 

@@ -133,8 +133,6 @@ static uint8_t user_data_set_insert_pos = 0;
 
 static uint8_t group_data_set_insert_pos = 0;
 
-static int64_t invite_time = 0;
-
 static user_data *find_user(char *authenticator, uint8_t *position) {
     uint8_t i;
     for (i = 0; i < user_data_max; i++) {
@@ -350,8 +348,6 @@ void mock_server_end() {
         group_data_set[i].group_members_num = 0;
     }
     group_data_set_insert_pos = 0;
-
-    invite_time = 0;
 }
 
 Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request) {
@@ -548,8 +544,6 @@ Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth,
     uint8_t inviter = find_address(invite_msg->from);
     if (inviter != user_data_max) {
         copy_protobuf_from_protobuf(&(invite_msg->alice_identity_key), &(user_data_set[inviter].identity_key_public->asym_public_key));
-
-        invite_msg->invite_t = invite_time++;
 
         size_t invite_msg_data_len = skissm__invite_msg__get_packed_size(invite_msg);
         uint8_t invite_msg_data[invite_msg_data_len];

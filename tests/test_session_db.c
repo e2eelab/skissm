@@ -707,9 +707,9 @@ void test_equal_ratchet_inbound(uint32_t e2ee_pack_id)
 int main(){
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ID_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ID_KEM_CURVE25519,
-        E2EE_PACK_ID_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
+        E2EE_PACK_ALG_KEM_CURVE25519,
+        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
