@@ -412,7 +412,8 @@ void initialise_as_alice(
         copy_protobuf_from_protobuf(&(sender_chain->their_ratchet_public_key), their_ratchet_key);
     }
 
-    (ratchet->root_sequence)++;
+    // inviter's initial root sequence
+    ratchet->root_sequence = 1;
 
     unset(derived_secrets, sizeof(derived_secrets));
 }
@@ -497,12 +498,14 @@ size_t decrypt_ratchet(
             if (coming_root_sequence == our_root_sequence + 1) {
                 // a new ratchet key is generated
             } else {
-                ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet()");
+                ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet() coming_root_sequence: %d, our_root_sequence: %d",
+                    coming_root_sequence, our_root_sequence);
                 return 0;
             }
         }
     } else {
-        ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet()");
+        ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet() coming_root_sequence: %d, our_root_sequence: %d",
+            coming_root_sequence, our_root_sequence);
         return 0;
     }
 
