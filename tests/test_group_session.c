@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "skissm/account.h"
 #include "skissm/account_manager.h"
@@ -32,7 +33,84 @@
 #include "test_util.h"
 #include "test_plugin.h"
 
-#define account_data_max 20
+#define account_data_max 205
+
+static char *mock_user_name[200] = {
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ",
+    "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BK", "BL", "BM", "BN", "BO", "BP", "BQ", "BR", "BS", "BT", "BU", "BV", "BW", "BX", "BY", "BZ",
+    "CA", "CB", "CC", "CD", "CE", "CF", "CG", "CH", "CI", "CJ", "CK", "CL", "CM", "CN", "CO", "CP", "CQ", "CR", "CS", "CT", "CU", "CV", "CW", "CX", "CY", "CZ",
+    "DA", "DB", "DC", "DD", "DE", "DF", "DG", "DH", "DI", "DJ", "DK", "DL", "DM", "DN", "DO", "DP", "DQ", "DR", "DS", "DT", "DU", "DV", "DW", "DX", "DY", "DZ",
+    "EA", "EB", "EC", "ED", "EE", "EF", "EG", "EH", "EI", "EJ", "EK", "EL", "EM", "EN", "EO", "EP", "EQ", "ER", "ES", "ET", "EU", "EV", "EW", "EX", "EY", "EZ",
+    "FA", "FB", "FC", "FD", "FE", "FF", "FG", "FH", "FI", "FJ", "FK", "FL", "FM", "FN", "FO", "FP", "FQ", "FR", "FS", "FT", "FU", "FV", "FW", "FX", "FY", "FZ",
+    "GA", "GB", "GC", "GD", "GE", "GF", "GG", "GH", "GI", "GJ", "GK", "GL", "GM", "GN", "GO", "GP", "GQ", "GR"
+};
+
+static char *mock_authenticator[200] = {
+    "a@domain.com.tw", "b@domain.com.tw", "c@domain.com.tw", "d@domain.com.tw", "e@domain.com.tw",
+    "f@domain.com.tw", "g@domain.com.tw", "h@domain.com.tw", "i@domain.com.tw", "j@domain.com.tw",
+    "k@domain.com.tw", "l@domain.com.tw", "m@domain.com.tw", "n@domain.com.tw", "o@domain.com.tw",
+    "p@domain.com.tw", "q@domain.com.tw", "r@domain.com.tw", "s@domain.com.tw", "t@domain.com.tw",
+    "u@domain.com.tw", "v@domain.com.tw", "w@domain.com.tw", "x@domain.com.tw", "y@domain.com.tw",
+    "z@domain.com.tw", "aa@domain.com.tw", "ab@domain.com.tw", "ac@domain.com.tw", "ad@domain.com.tw",
+    "ae@domain.com.tw", "af@domain.com.tw", "ag@domain.com.tw", "ah@domain.com.tw", "ai@domain.com.tw",
+    "aj@domain.com.tw", "ak@domain.com.tw", "al@domain.com.tw", "am@domain.com.tw", "an@domain.com.tw",
+    "ao@domain.com.tw", "ap@domain.com.tw", "aq@domain.com.tw", "ar@domain.com.tw", "as@domain.com.tw",
+    "at@domain.com.tw", "au@domain.com.tw", "av@domain.com.tw", "aw@domain.com.tw", "ax@domain.com.tw",
+    "ay@domain.com.tw", "az@domain.com.tw", "ba@domain.com.tw", "bb@domain.com.tw", "bc@domain.com.tw",
+    "bd@domain.com.tw", "be@domain.com.tw", "bf@domain.com.tw", "bg@domain.com.tw", "bh@domain.com.tw",
+    "bi@domain.com.tw", "bj@domain.com.tw", "bk@domain.com.tw", "bl@domain.com.tw", "bm@domain.com.tw",
+    "bn@domain.com.tw", "bo@domain.com.tw", "bp@domain.com.tw", "bq@domain.com.tw", "br@domain.com.tw",
+    "bs@domain.com.tw", "bt@domain.com.tw", "bu@domain.com.tw", "bv@domain.com.tw", "bw@domain.com.tw",
+    "bx@domain.com.tw", "by@domain.com.tw", "bz@domain.com.tw", "ca@domain.com.tw", "cb@domain.com.tw",
+    "cc@domain.com.tw", "cd@domain.com.tw", "ce@domain.com.tw", "cf@domain.com.tw", "cg@domain.com.tw",
+    "ch@domain.com.tw", "ci@domain.com.tw", "cj@domain.com.tw", "ck@domain.com.tw", "cl@domain.com.tw",
+    "cm@domain.com.tw", "cn@domain.com.tw", "co@domain.com.tw", "cp@domain.com.tw", "cqe@domain.com.tw",
+    "cr@domain.com.tw", "cs@domain.com.tw", "ct@domain.com.tw", "cu@domain.com.tw", "cv@domain.com.tw",
+    "cw@domain.com.tw", "cx@domain.com.tw", "cy@domain.com.tw", "cz@domain.com.tw", "da@domain.com.tw",
+    "db@domain.com.tw", "dc@domain.com.tw", "dd@domain.com.tw", "de@domain.com.tw", "df@domain.com.tw",
+    "dg@domain.com.tw", "dh@domain.com.tw", "di@domain.com.tw", "dj@domain.com.tw", "dk@domain.com.tw",
+    "dl@domain.com.tw", "dm@domain.com.tw", "dn@domain.com.tw", "do@domain.com.tw", "dp@domain.com.tw",
+    "dq@domain.com.tw", "dr@domain.com.tw", "ds@domain.com.tw", "dt@domain.com.tw", "du@domain.com.tw",
+    "dv@domain.com.tw", "dw@domain.com.tw", "dx@domain.com.tw", "dy@domain.com.tw", "dz@domain.com.tw",
+    "ea@domain.com.tw", "eb@domain.com.tw", "ec@domain.com.tw", "ed@domain.com.tw", "ee@domain.com.tw",
+    "ef@domain.com.tw", "eg@domain.com.tw", "eh@domain.com.tw", "ei@domain.com.tw", "ej@domain.com.tw",
+    "ek@domain.com.tw", "el@domain.com.tw", "em@domain.com.tw", "en@domain.com.tw", "eo@domain.com.tw",
+    "ep@domain.com.tw", "eq@domain.com.tw", "er@domain.com.tw", "es@domain.com.tw", "et@domain.com.tw",
+    "eu@domain.com.tw", "ev@domain.com.tw", "ew@domain.com.tw", "ex@domain.com.tw", "ey@domain.com.tw",
+    "ez@domain.com.tw", "fa@domain.com.tw", "fb@domain.com.tw", "fc@domain.com.tw", "fd@domain.com.tw",
+    "fe@domain.com.tw", "ff@domain.com.tw", "fg@domain.com.tw", "fh@domain.com.tw", "fi@domain.com.tw",
+    "fj@domain.com.tw", "fk@domain.com.tw", "fl@domain.com.tw", "fm@domain.com.tw", "fn@domain.com.tw",
+    "fo@domain.com.tw", "fp@domain.com.tw", "fq@domain.com.tw", "fr@domain.com.tw", "fs@domain.com.tw",
+    "ft@domain.com.tw", "fu@domain.com.tw", "fv@domain.com.tw", "fw@domain.com.tw", "fx@domain.com.tw",
+    "fy@domain.com.tw", "fz@domain.com.tw", "ga@domain.com.tw", "gb@domain.com.tw", "gc@domain.com.tw",
+    "gd@domain.com.tw", "ge@domain.com.tw", "gf@domain.com.tw", "gg@domain.com.tw", "gh@domain.com.tw",
+    "gi@domain.com.tw", "gj@domain.com.tw", "gk@domain.com.tw", "gl@domain.com.tw", "gm@domain.com.tw",
+    "gn@domain.com.tw", "go@domain.com.tw", "gp@domain.com.tw", "gq@domain.com.tw", "gr@domain.com.tw"
+};
+
+static char *mock_auth_code[200] = {
+    "000001", "000002", "000003", "000004", "000005", "000006", "000007", "000008", "000009", "000010",
+    "000011", "000012", "000013", "000014", "000015", "000016", "000017", "000018", "000019", "000020",
+    "000021", "000022", "000023", "000024", "000025", "000026", "000027", "000028", "000029", "000030",
+    "000031", "000032", "000033", "000034", "000035", "000036", "000037", "000038", "000039", "000040",
+    "000041", "000042", "000043", "000044", "000045", "000046", "000047", "000048", "000049", "000050",
+    "000051", "000052", "000053", "000054", "000055", "000056", "000057", "000058", "000059", "000060",
+    "000061", "000062", "000063", "000064", "000065", "000066", "000067", "000068", "000069", "000070",
+    "000071", "000072", "000073", "000074", "000075", "000076", "000077", "000078", "000079", "000080",
+    "000081", "000082", "000083", "000084", "000085", "000086", "000087", "000088", "000089", "000090",
+    "000091", "000092", "000093", "000094", "000095", "000096", "000097", "000098", "000099", "000100",
+    "000101", "000102", "000103", "000104", "000105", "000106", "000107", "000108", "000109", "000110",
+    "000111", "000112", "000113", "000114", "000115", "000116", "000117", "000118", "000119", "000120",
+    "000121", "000122", "000123", "000124", "000125", "000126", "000127", "000128", "000129", "000130",
+    "000131", "000132", "000133", "000134", "000135", "000136", "000137", "000138", "000139", "000140",
+    "000141", "000142", "000143", "000144", "000145", "000146", "000147", "000148", "000149", "000150",
+    "000151", "000152", "000153", "000154", "000155", "000156", "000157", "000158", "000159", "000160",
+    "000161", "000162", "000163", "000164", "000165", "000166", "000167", "000168", "000169", "000170",
+    "000171", "000172", "000173", "000174", "000175", "000176", "000177", "000178", "000179", "000180",
+    "000181", "000182", "000183", "000184", "000185", "000186", "000187", "000188", "000189", "000190",
+    "000191", "000192", "000193", "000194", "000195", "000196", "000197", "000198", "000199", "000200"
+};
 
 static Skissm__Account *account_data[account_data_max];
 
@@ -1654,6 +1732,49 @@ static void test_medium_group() {
     printf("====================================\n");
 }
 
+static void test_create_group_time() {
+    // test start
+    printf("test_create_group_time begin!!!\n");
+    tear_up();
+    test_begin();
+
+    // prepare account
+    int i;
+    for (i = 0; i < 200; i++) {
+        mock_user_pqc_account(mock_user_name[i], mock_authenticator[i], mock_auth_code[i]);
+    }
+
+    sleep(10);
+
+    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 200);
+    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_members[0]);
+    group_members[0]->user_id = strdup(account_data[0]->address->user->user_id);
+    group_members[0]->domain = strdup(account_data[0]->address->domain);
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    for (i = 1; i < 200; i++) {
+        group_members[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+        skissm__group_member__init(group_members[i]);
+        group_members[i]->user_id = strdup(account_data[i]->address->user->user_id);
+        group_members[i]->domain = strdup(account_data[i]->address->domain);
+        group_members[i]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    }
+
+    time_t start, end;
+    start = time(NULL);
+    // create the group
+    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 200);
+
+    // test stop
+    test_end();
+    tear_down();
+
+    end = time(NULL);
+    printf("Creating group time: %ld seconds\n\n", end - start);
+
+    printf("====================================\n");
+}
+
 int main() {
     // test_create_group();
     // test_add_group_members();
@@ -1666,9 +1787,10 @@ int main() {
     // test_pqc_add_group_members();
     // test_pqc_remove_group_members();
     test_pqc_leave_group();
-    //test_pqc_multiple_devices();
+    test_pqc_multiple_devices();
     test_pqc_add_new_device();
     test_medium_group();
+    // test_create_group_time();
 
     return 0;
 }

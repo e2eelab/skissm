@@ -89,8 +89,8 @@ void test_unload_group_session_by_id(){
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     get_skissm_plugin()->common_handler.gen_rand(group_session->chain_key.data, 32);
 
-    group_session->associated_data.len = AD_LENGTH;
-    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
+    group_session->associated_data.len = 64;
+    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
     memcpy(group_session->associated_data.data, group_session->chain_key.data, 32);
     memcpy((group_session->associated_data.data) + 32, group_session->chain_key.data, CURVE25519_KEY_LENGTH);
 

@@ -330,6 +330,11 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     ssm_notify_log(NULL, DEBUG_LOG, "pqc_complete_outbound_session()");
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
 
+    if (outbound_session->temp_shared_secret.data == NULL) {
+        ssm_notify_log(NULL, BAD_SESSION, "pqc_complete_outbound_session()");
+        return -1;
+    }
+
     ProtobufCBinaryData *their_ratchet_key = NULL;
     if (outbound_session->ratchet->sender_chain != NULL) {
         if (outbound_session->ratchet->sender_chain->their_ratchet_public_key.data != NULL) {

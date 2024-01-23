@@ -482,27 +482,6 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         );
     }
 
-    Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(receiver_address, &account);
-    if (account == NULL) {
-        ssm_notify_log(receiver_address, BAD_ACCOUNT, "consume_new_user_device_msg()");
-        return false;
-    }
-    // get the pre-key bundle from this new device
-    Skissm__InviteResponse *response = get_pre_key_bundle_internal(
-        receiver_address,
-        account->auth,
-        new_user_address->user->user_id, new_user_address->domain,
-        new_user_address->user->device_id, false,
-        NULL, 0
-    );
-    // release
-    if (response != NULL) {
-        skissm__invite_response__free_unpacked(response, NULL);
-    } else {
-        // nothing to do
-    }
-
     // if receiver is the inviter, then add the new device into the joined groups
     if (compare_address(receiver_address, inviter_address)) {
         // load all outbound group addresses

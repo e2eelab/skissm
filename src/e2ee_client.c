@@ -586,8 +586,9 @@ Skissm__SendGroupMsgResponse *send_group_msg_with_filter(
     Skissm__E2eeAddress **allow_list,
     size_t allow_list_len,
     Skissm__E2eeAddress **deny_list,
-    size_t deny_list_len) {
-char *auth = NULL;
+    size_t deny_list_len
+) {
+    char *auth = NULL;
     get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
 
     if (auth == NULL) {

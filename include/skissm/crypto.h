@@ -40,9 +40,6 @@ extern "C" {
 /** length of a Curve25519 signature */
 #define CURVE_SIGNATURE_LENGTH 64
 
-/** length of associated data */
-#define AD_LENGTH 64
-
 /** length of an aes256 key */
 #define AES256_KEY_LENGTH 32
 

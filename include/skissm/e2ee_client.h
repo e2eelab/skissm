@@ -29,10 +29,10 @@ Skissm__RegisterUserResponse *register_user(
 
 /**
  * @brief Send invite request again if the outbound session has not been responded.
- * @param session The outbound session
+ * @param outbound_session The outbound session
  * @return  Skissm__InviteResponse *
  */
-Skissm__InviteResponse *reinvite(Skissm__Session *outbount_session);
+Skissm__InviteResponse *reinvite(Skissm__Session *outbound_session);
 
 /**
  * @brief Send invite request and create a new outbound session
@@ -68,7 +68,7 @@ Skissm__InviteResponse *new_invite(
  * @param from
  * @param to_user_id
  * @param to_domain
- * @param notif_level,
+ * @param notif_level
  * @param plaintext_data
  * @param plaintext_data_len
  * @return Skissm__SendOne2oneMsgResponse *

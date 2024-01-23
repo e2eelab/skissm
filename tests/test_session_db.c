@@ -279,8 +279,8 @@ void test_load_group_session_by_address(uint32_t e2ee_pack_id)
     group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(group_session->group_seed.data, "01234567890123456789012345678901", 32);
 
-    group_session->associated_data.len = AD_LENGTH;
-    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
+    group_session->associated_data.len = 64;
+    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
     memcpy(group_session->associated_data.data, group_session->chain_key.data, 32);
     memcpy((group_session->associated_data.data) + 32, group_session->group_seed.data, CURVE25519_KEY_LENGTH);
 
@@ -360,8 +360,8 @@ void test_load_group_session_by_id(uint32_t e2ee_pack_id)
     group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(group_session->chain_key.data, "01234567890123456789012345678901", 32);
 
-    group_session->associated_data.len = AD_LENGTH;
-    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * AD_LENGTH);
+    group_session->associated_data.len = 64;
+    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
     memcpy(group_session->associated_data.data, group_session->chain_key.data, CURVE25519_KEY_LENGTH);
     memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->chain_key.data, CURVE25519_KEY_LENGTH);
 

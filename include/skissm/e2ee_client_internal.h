@@ -51,8 +51,6 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
 /**
  * @brief Send invite request to server.
  * @param outbound_session
- * @param pre_shared_keys
- * @param pre_shared_keys_num
  * @return Skissm__InviteResponse *
  */
 Skissm__InviteResponse *invite_internal(
@@ -65,6 +63,7 @@ Skissm__InviteResponse *invite_internal(
  * @param from
  * @param to
  * @param ciphertext_1
+ * @param our_ratchet_key
  * @return Skissm__AcceptResponse *
  */
 Skissm__AcceptResponse *accept_internal(
@@ -126,7 +125,14 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
  * @param args_data
  * @param args_data_len
  */
-void store_pending_request_internal(Skissm__E2eeAddress *user_address, Skissm__PendingRequestType type, uint8_t *request_data, size_t request_data_len, uint8_t *args_data, size_t args_data_len);
+void store_pending_request_internal(
+    Skissm__E2eeAddress *user_address,
+    Skissm__PendingRequestType type,
+    uint8_t *request_data,
+    size_t request_data_len,
+    uint8_t *args_data,
+    size_t args_data_len
+);
 
 /**
  * @brief Resume connection with a given account.
