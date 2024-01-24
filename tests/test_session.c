@@ -42,8 +42,11 @@ static Skissm__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
+static uint8_t test_plaintext[] = "Session test!!!";
+static size_t test_plaintext_len;
+
 static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
-    print_log((char *)log_msg, log_code);
+    // print_log((char *)log_msg, log_code);
 }
 
 static void on_user_registered(Skissm__Account *account){
@@ -52,23 +55,23 @@ static void on_user_registered(Skissm__Account *account){
 }
 
 static void on_inbound_session_invited(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from) {
-    printf("on_inbound_session_invited\n");
+    // printf("on_inbound_session_invited\n");
 }
 
 static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *inbound_session){
-    if (inbound_session->f2f == true) {
-        printf("the face-to-face inbound session is ready\n");
-    } else {
-        printf("on_inbound_session_ready\n");
-    }
+    // if (inbound_session->f2f == true) {
+    //     printf("the face-to-face inbound session is ready\n");
+    // } else {
+    //     printf("on_inbound_session_ready\n");
+    // }
 }
 
 static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *outbound_session){
-    if (outbound_session->f2f == true) {
-        printf("the face-to-face outbound session is ready\n");
-    } else {
-        printf("on_outbound_session_ready\n");
-    }
+    // if (outbound_session->f2f == true) {
+    //     printf("the face-to-face outbound session is ready\n");
+    // } else {
+    //     printf("on_outbound_session_ready\n");
+    // }
 }
 
 static void on_one2one_msg_received(
@@ -77,7 +80,8 @@ static void on_one2one_msg_received(
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
-    print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
+    assert(memcmp(plaintext, test_plaintext, plaintext_len) == 0);
+    // print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
 
 static void on_other_device_msg_received(
@@ -86,7 +90,8 @@ static void on_other_device_msg_received(
     Skissm__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
-    print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
+    assert(memcmp(plaintext, test_plaintext, plaintext_len) == 0);
+    // print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
 }
 
 static skissm_event_handler_t test_event_handler = {
@@ -104,6 +109,8 @@ static skissm_event_handler_t test_event_handler = {
 };
 
 static void test_begin(){
+    test_plaintext_len = sizeof(test_plaintext) - 1;
+
     int i;
     for (i = 0; i < account_data_max; i++) {
         account_data[i] = NULL;
@@ -277,9 +284,7 @@ static void test_basic_session(){
     assert(outbound_session->responded == true);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    uint8_t plaintext[] = "Hello, World";
-    size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
+    test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
@@ -318,14 +323,10 @@ static void test_interaction(){
     assert(outbound_session_a->responded == true);
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    uint8_t plaintext[] = "Hi! Bob! This is Alice.";
-    size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
+    test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // Bob sends an encrypted message to Alice, and Alice decrypts the message
-    uint8_t plaintext_2[] = "Hello! This is Bob.";
-    size_t plaintext_len_2 = sizeof(plaintext_2) - 1;
-    test_encryption(bob_address, alice_user_id, alice_domain, plaintext_2, plaintext_len_2);
+    test_encryption(bob_address, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
@@ -358,9 +359,9 @@ static void test_continual_messages(){
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     int i;
     for (i = 0; i < 3000; i++){
-        uint8_t plaintext[64];
-        size_t plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message will be sent a lot of times.", i);
-        test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
+        // uint8_t plaintext[64];
+        // size_t plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message will be sent a lot of times.", i);
+        test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
     }
 
     // test stop
@@ -440,9 +441,7 @@ static void test_one_to_many(){
     assert(compare_protobuf(&(outbound_session->ratchet->receiver_chain->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
 
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    uint8_t plaintext[] = "This message will be sent to Bob's three devices.";
-    size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
+    test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
@@ -486,9 +485,7 @@ static void test_many_to_one() {
 
     sleep(1);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    uint8_t plaintext[] = "This message will be sent to Bob and Alice's other two devices.";
-    size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(device_1, bob_user_id, bob_domain, plaintext, plaintext_len);
+    test_encryption(device_1, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
@@ -526,15 +523,11 @@ static void test_many_to_many() {
 
     sleep(3);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    uint8_t plaintext[] = "This message will be sent to Bob's three devices and Alice's other two devices.";
-    size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(alice_address_1, bob_user_id, bob_domain, plaintext, plaintext_len);
+    test_encryption(alice_address_1, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     sleep(1);
     // Bob sends an encrypted message to Alice, and Alice decrypts the message
-    uint8_t plaintext_2[] = "This message will be sent to Alice's three devices and Bob's other two devices.";
-    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
-    test_encryption(bob_address_1, alice_user_id, alice_domain, plaintext_2, plaintext_2_len);
+    test_encryption(bob_address_1, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
@@ -563,9 +556,7 @@ static void test_basic_pqc_session(){
 
     sleep(1);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    uint8_t plaintext[] = "PQC test.";
-    size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(alice_address, bob_user_id, bob_domain, plaintext, plaintext_len);
+    test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
@@ -606,15 +597,11 @@ static void test_pqc_many_to_many() {
 
     sleep(1);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    uint8_t plaintext[] = "This message will be sent to Bob's three devices and Alice's other two devices via pqc session.";
-    size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(alice_address_1, bob_user_id, bob_domain, plaintext, plaintext_len);
+    test_encryption(alice_address_1, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     sleep(1);
     // Bob sends an encrypted message to Alice, and Alice decrypts the message
-    uint8_t plaintext_2[] = "This message will be sent to Alice's three devices and Bob's other two devices via pqc session.";
-    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
-    test_encryption(bob_address_1, alice_user_id, alice_domain, plaintext_2, plaintext_2_len);
+    test_encryption(bob_address_1, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
@@ -656,16 +643,12 @@ static void test_change_devices() {
 
     sleep(1);
     // Alice sends a message to Bob
-    uint8_t plaintext[] = "This message will be sent to Bob's two devices and Alice's other two devices.";
-    size_t plaintext_len = sizeof(plaintext) - 1;
-    test_encryption(alice_address_1, bob_user_id, bob_domain, plaintext, plaintext_len);
+    test_encryption(alice_address_1, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     sleep(1);
 
     // Bob sends a message to Alice
-    uint8_t plaintext_2[] = "This message will be sent to Alice's three devices and Bob's other device.";
-    size_t plaintext_2_len = sizeof(plaintext_2) - 1;
-    test_encryption(bob_address_1, alice_user_id, alice_domain, plaintext_2, plaintext_2_len);
+    test_encryption(bob_address_1, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);

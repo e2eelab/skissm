@@ -131,7 +131,7 @@ void new_outbound_group_session_invited(
  * @param user_address
  * @param group_pre_key_bundle
  */
-void new_inbound_group_session_by_pre_key_bundle(
+int new_inbound_group_session_by_pre_key_bundle(
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     Skissm__GroupPreKeyBundle *group_pre_key_bundle
@@ -145,7 +145,7 @@ void new_inbound_group_session_by_pre_key_bundle(
  * @param group_member_id
  * @param group_info
  */
-void new_inbound_group_session_by_member_id(
+int new_inbound_group_session_by_member_id(
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
     Skissm__GroupMemberInfo *group_member_id,
@@ -158,7 +158,7 @@ void new_inbound_group_session_by_member_id(
  * @param inbound_group_session
  * @param group_pre_key_bundle
  */
-void complete_inbound_group_session_by_pre_key_bundle(
+int complete_inbound_group_session_by_pre_key_bundle(
     Skissm__GroupSession *inbound_group_session,
     Skissm__GroupPreKeyBundle *group_pre_key_bundle
 );
@@ -169,7 +169,7 @@ void complete_inbound_group_session_by_pre_key_bundle(
  * @param inbound_group_session
  * @param group_member_id
  */
-void complete_inbound_group_session_by_member_id(
+int complete_inbound_group_session_by_member_id(
     Skissm__GroupSession *inbound_group_session,
     Skissm__GroupMemberInfo *group_member_id
 );
@@ -180,7 +180,7 @@ void complete_inbound_group_session_by_member_id(
  * @param group_member_id
  * @param other_inbound_group_session
  */
-void new_and_complete_inbound_group_session(
+int new_and_complete_inbound_group_session(
     Skissm__GroupMemberInfo *group_member_id,
     Skissm__GroupSession *other_inbound_group_session
 );
@@ -192,7 +192,7 @@ void new_and_complete_inbound_group_session(
  * @param other_group_session
  * @param their_chain_key
  */
-void new_and_complete_inbound_group_session_with_chain_key(
+int new_and_complete_inbound_group_session_with_chain_key(
     Skissm__GroupMemberInfo *group_member_id,
     Skissm__GroupSession *other_group_session,
     ProtobufCBinaryData *their_chain_key
@@ -204,7 +204,7 @@ void new_and_complete_inbound_group_session_with_chain_key(
  * @param group_update_key_bundle
  * @param user_address
  */
-void new_and_complete_inbound_group_session_with_ratchet_state(
+int new_and_complete_inbound_group_session_with_ratchet_state(
     Skissm__GroupUpdateKeyBundle *group_update_key_bundle,
     Skissm__E2eeAddress *user_address
 );

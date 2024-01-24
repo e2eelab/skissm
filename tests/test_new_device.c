@@ -35,16 +35,6 @@ static Skissm__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
-typedef struct store_group {
-    Skissm__E2eeAddress *group_address;
-    char *group_name;
-} store_group;
-
-static store_group *group_data[group_max];
-
-static uint8_t group_data_insert_pos;
-store_group group = {NULL, NULL};
-
 static uint8_t test_plaintext[] = "New devices test!!!";
 
 static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
@@ -106,12 +96,6 @@ static void on_group_created(
     Skissm__GroupMember **group_members, size_t group_members_num
 ) {
     print_msg("on_group_created: group_name", (uint8_t *)group_name, strlen(group_name));
-
-    // group_data[group_data_insert_pos] = (store_group *)malloc(sizeof(store_group));
-    // copy_address_from_address(&(group_data[group_data_insert_pos]->group_address), group_address);
-    // group_data[group_data_insert_pos]->group_name = strdup(group_name);
-
-    // group_data_insert_pos++;
 }
 
 static void on_group_members_added(
@@ -159,11 +143,6 @@ static void test_begin(){
     }
     account_data_insert_pos = 0;
 
-    // for (i = 0; i < group_max; i++) {
-    //     group_data[i] = NULL;
-    // }
-    // group_data_insert_pos = 0;
-
     get_skissm_plugin()->event_handler = test_event_handler;
 
     start_mock_server_sending();
@@ -180,15 +159,6 @@ static void test_end(){
         }
     }
     account_data_insert_pos = 0;
-
-    // for (i = 0; i < group_max; i++) {
-    //     if (group_data[i] != NULL) {
-    //         skissm__e2ee_address__free_unpacked(group_data[i]->group_address, NULL);
-    //         free(group_data[i]->group_name);
-    //         group_data[i] = NULL;
-    //     }
-    // }
-    // group_data_insert_pos = 0;
 }
 
 static void mock_alice_account(const char *user_name) {
