@@ -821,6 +821,36 @@ int new_and_complete_inbound_group_session(
         }
     }
 
+    if (other_group_session == NULL) {
+        ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
+        ret = -1;
+    } else {
+        if (other_group_session->sender == NULL) {
+            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
+            ret = -1;
+        }
+        if (other_group_session->version == NULL) {
+            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
+            ret = -1;
+        }
+        if (other_group_session->session_id == NULL) {
+            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
+            ret = -1;
+        }
+        if (other_group_session->session_owner == NULL) {
+            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
+            ret = -1;
+        }
+        if (other_group_session->group_info == NULL) {
+            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
+            ret = -1;
+        }
+        if (other_group_session->group_seed.data == NULL) {
+            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
+            ret = -1;
+        }
+    }
+
     if (ret == 0) {
         Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
         skissm__group_session__init(inbound_group_session);
