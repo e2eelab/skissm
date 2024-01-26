@@ -117,6 +117,10 @@ void init_protobuf(ProtobufCBinaryData *dest);
  */
 void malloc_protobuf(ProtobufCBinaryData *dest, size_t len);
 
+uint8_t *get_identity_public_key_ds_uint8_from_account(Skissm__Account *src);
+
+ProtobufCBinaryData *get_identity_public_key_ds_bytes_from_account(Skissm__Account *src);
+
 /**
  * @brief Copy ProtobufCBinaryData from src to dest.
  *

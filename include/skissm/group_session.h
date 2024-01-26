@@ -78,7 +78,7 @@ size_t pack_group_pre_key_plaintext(
  * @param group_members_num
  * @param old_session_id
  */
-void new_outbound_group_session_by_sender(
+int new_outbound_group_session_by_sender(
     size_t n_member_info_list,
     Skissm__GroupMemberInfo **member_info_list,
     uint32_t e2ee_pack_id,
@@ -102,7 +102,7 @@ void new_outbound_group_session_by_sender(
  * @param group_members
  * @param group_members_num
  */
-void new_outbound_group_session_by_receiver(
+int new_outbound_group_session_by_receiver(
     const ProtobufCBinaryData *group_seed,
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *user_address,
@@ -119,7 +119,7 @@ void new_outbound_group_session_by_receiver(
  * @param group_update_key_bundle
  * @param user_address
  */
-void new_outbound_group_session_invited(
+int new_outbound_group_session_invited(
     Skissm__GroupUpdateKeyBundle *group_update_key_bundle,
     Skissm__E2eeAddress *user_address
 );
@@ -220,7 +220,7 @@ int new_and_complete_inbound_group_session_with_ratchet_state(
  * @param adding_group_members_num
  * @param adding_group_members
  */
-void renew_outbound_group_session_by_welcome_and_add(
+int renew_outbound_group_session_by_welcome_and_add(
     Skissm__GroupSession *outbound_group_session,
     ProtobufCBinaryData *sender_chain_key,
     Skissm__E2eeAddress *sender_address,
@@ -237,7 +237,7 @@ void renew_outbound_group_session_by_welcome_and_add(
  * @param inbound_group_session
  * @param new_group_info
  */
-void renew_inbound_group_session_by_welcome_and_add(
+int renew_inbound_group_session_by_welcome_and_add(
     ProtobufCBinaryData *sender_chain_key,
     Skissm__GroupSession *inbound_group_session,
     Skissm__GroupInfo *new_group_info
@@ -252,7 +252,7 @@ void renew_inbound_group_session_by_welcome_and_add(
  * @param new_device_address
  * @param adding_member_device_info
  */
-void renew_group_sessions_with_new_device(
+int renew_group_sessions_with_new_device(
     Skissm__GroupSession *outbound_group_session,
     ProtobufCBinaryData *sender_chain_key,
     Skissm__E2eeAddress *sender_address,

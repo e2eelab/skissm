@@ -133,6 +133,33 @@ void malloc_protobuf(ProtobufCBinaryData *dest, size_t len) {
     dest->data = (uint8_t *)malloc(sizeof(uint8_t) * len);
 }
 
+///-----------------get keys-----------------///
+uint8_t *get_identity_public_key_ds_uint8_from_account(Skissm__Account *src) {
+    if (src != NULL) {
+        if (src->identity_key != NULL) {
+            if (src->identity_key->sign_key_pair != NULL) {
+                if (src->identity_key->sign_key_pair->public_key.data != NULL) {
+                    return src->identity_key->sign_key_pair->public_key.data;
+                }
+            }
+        }
+    }
+    return NULL;
+}
+
+ProtobufCBinaryData *get_identity_public_key_ds_bytes_from_account(Skissm__Account *src) {
+    if (src != NULL) {
+        if (src->identity_key != NULL) {
+            if (src->identity_key->sign_key_pair != NULL) {
+                if (src->identity_key->sign_key_pair->public_key.data != NULL) {
+                    return &(src->identity_key->sign_key_pair->public_key);
+                }
+            }
+        }
+    }
+    return NULL;
+}
+
 ///-----------------copy protobuf-----------------///
 
 void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src) {
