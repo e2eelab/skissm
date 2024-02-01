@@ -147,10 +147,7 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                     free(pending_plaintext_id);
                 }
 
-                // create or renew an outbound session
-                // unload session first to prevent multiple outbound sessions
-                get_skissm_plugin()->db_handler.unload_session(from, to_address);
-
+                // create an outbound session
                 uint32_t e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
                 Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
                 initialise_session(outbound_session, e2ee_pack_id, from, to_address);
@@ -277,6 +274,9 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 
         // store session state
         get_skissm_plugin()->db_handler.store_session(inbound_session);
+
+        // delete old sessions if necessary
+        get_skissm_plugin()->db_handler.unload_old_session(receiver_address, e2ee_msg->from);
 
         if (plain_text_data != NULL && plain_text_data_len > 0) {
             Skissm__Plaintext *plaintext = skissm__plaintext__unpack(NULL, plain_text_data_len, plain_text_data);
@@ -568,11 +568,13 @@ bool consume_invite_response(
 }
 
 bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *invite_msg) {
-    ssm_notify_log(receiver_address, DEBUG_LOG, "consume_invite_msg(): from [%s:%s], to [%s:%s]",
+    ssm_notify_log(
+        receiver_address, DEBUG_LOG, "consume_invite_msg(): from [%s:%s], to [%s:%s]",
         invite_msg->from->user->user_id,
         invite_msg->from->user->device_id,
         invite_msg->to->user->user_id,
-        invite_msg->to->user->device_id);
+        invite_msg->to->user->device_id
+    );
 
     uint32_t e2ee_pack_id = invite_msg->e2ee_pack_id;
     Skissm__E2eeAddress *from = invite_msg->from;

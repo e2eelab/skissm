@@ -154,6 +154,13 @@ static const char *SESSION_DELETE_DATA_BY_ADDRESSES = "DELETE FROM SESSION "
                                                       "AND THEIR_ADDRESS IN "
                                                       "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?));";
 
+static const char *SESSION_DELETE_OLD_DATA = "DELETE FROM SESSION "
+                                             "WHERE OUR_ADDRESS IN "
+                                             "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?)) "
+                                             "AND THEIR_ADDRESS IN "
+                                             "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?)) "
+                                             "AND TIMESTAMP < date('now', '-1 days');";
+
 static const char *GROUP_SESSION_DROP_TABLE = "DROP TABLE IF EXISTS GROUP_SESSION;";
 static const char *GROUP_SESSION_CREATE_TABLE = "CREATE TABLE GROUP_SESSION( "
                                                 "ID TEXT NOT NULL, "
@@ -1777,6 +1784,24 @@ void unload_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SESSION_DELETE_DATA_BY_ADDRESSES, &stmt);
+
+    // bind
+    sqlite3_bind_text(stmt, 1, our_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, our_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, their_address->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, their_address->user->device_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
+
+    // release
+    sqlite_finalize(stmt);
+}
+
+void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(SESSION_DELETE_OLD_DATA, &stmt);
 
     // bind
     sqlite3_bind_text(stmt, 1, our_address->user->user_id, -1, SQLITE_TRANSIENT);

@@ -338,11 +338,20 @@ typedef struct skissm_db_handler_t {
         Skissm__Session *session
     );
     /**
-     * @brief delete old inbound session
+     * @brief delete the current session
      * @param our_address
      * @param their_address
      */
     void (*unload_session)(
+        Skissm__E2eeAddress *our_address,
+        Skissm__E2eeAddress *their_address
+    );
+    /**
+     * @brief delete the old session
+     * @param our_address
+     * @param their_address
+     */
+    void (*unload_old_session)(
         Skissm__E2eeAddress *our_address,
         Skissm__E2eeAddress *their_address
     );

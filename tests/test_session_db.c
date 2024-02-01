@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <unistd.h>
 
 #include "skissm/account.h"
 #include "skissm/crypto.h"
@@ -704,6 +705,56 @@ void test_equal_ratchet_inbound(uint32_t e2ee_pack_id)
     tear_down();
 }
 
+void test_session_timestamp(uint32_t e2ee_pack_id) {
+    tear_up();
+
+    // create sessions
+    Skissm__E2eeAddress *from, *to, *from_2, *to_2;
+    mock_address(&from, "alice", "alice's domain", "alice's device");
+    mock_address(&to, "bob", "bob's domain", "bob's device");
+    mock_address(&from_2, "claire", "claire's domain", "claire's device");
+    mock_address(&to_2, "david", "david's domain", "david's device");
+
+    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    initialise_session(session, e2ee_pack_id, from, to);
+    Skissm__Session *session_2 = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    initialise_session(session_2, e2ee_pack_id, from_2, to_2);
+
+    session->session_id = generate_uuid_str();
+    session_2->session_id = generate_uuid_str();
+
+    session->associated_data.len = 64;
+    session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
+    store_session(session);
+
+    session_2->associated_data.len = 64;
+    session_2->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    memcpy(session_2->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
+    store_session(session_2);
+
+    sleep(3);
+    // modify
+    session->fingerprint.len = 64;
+    session->fingerprint.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    memcpy(session->fingerprint.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
+    store_session(session);
+
+    // unload
+    unload_old_session(from, to);
+    unload_old_session(from_2, to_2);
+
+    // free
+    skissm__e2ee_address__free_unpacked(from, NULL);
+    skissm__e2ee_address__free_unpacked(to, NULL);
+    skissm__e2ee_address__free_unpacked(from_2, NULL);
+    skissm__e2ee_address__free_unpacked(to_2, NULL);
+    skissm__session__free_unpacked(session, NULL);
+    skissm__session__free_unpacked(session_2, NULL);
+
+    tear_down();
+}
+
 int main(){
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
@@ -722,5 +773,7 @@ int main(){
     test_store_session(e2ee_pack_id);
     test_equal_ratchet_outbound(e2ee_pack_id);
     test_equal_ratchet_inbound(e2ee_pack_id);
+    // test_session_timestamp(e2ee_pack_id);
+
     return 0;
 }
