@@ -150,25 +150,6 @@ Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_use
     return invite_response;
 }
 
-static void store_pending_common_plaintext_data(
-    Skissm__E2eeAddress *from,
-    Skissm__E2eeAddress *to,
-    uint8_t *common_plaintext_data,
-    size_t common_plaintext_data_len
-) {
-    char *pending_plaintext_id = generate_uuid_str();
-    get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-        from,
-        to,
-        pending_plaintext_id,
-        common_plaintext_data,
-        common_plaintext_data_len
-    );
-
-    // release
-    free(pending_plaintext_id);
-}
-
 void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, size_t plaintext_data_len) {
     Skissm__Session **self_outbound_sessions = NULL;
     size_t self_outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(from, from->user->user_id, from->domain, &self_outbound_sessions);
@@ -198,7 +179,7 @@ void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, siz
                     // send syncing plaintext to server
                     Skissm__SendOne2oneMsgResponse *sync_response = send_one2one_msg_internal(
                         self_outbound_session,
-                        NOTIFICATION_LEVEL_NORMAL,
+                        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
                         common_plaintext_data,
                         common_plaintext_data_len
                     );
@@ -214,11 +195,12 @@ void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, siz
                         self_outbound_session->their_address->user->device_id
                     );
                     // store pending common_plaintext_data
-                    store_pending_common_plaintext_data(
+                    store_pending_common_plaintext_data_internal(
                         self_outbound_session->our_address,
                         self_outbound_session->their_address,
                         common_plaintext_data,
-                        common_plaintext_data_len
+                        common_plaintext_data_len,
+                        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL
                     );
                 }
             }
@@ -272,7 +254,7 @@ void send_sync_invite_msg(Skissm__E2eeAddress *from, const char *to_user_id, con
                     // send syncing plaintext to server
                     Skissm__SendOne2oneMsgResponse *sync_response = send_one2one_msg_internal(
                         self_outbound_session,
-                        NOTIFICATION_LEVEL_NORMAL,
+                        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
                         invite_msg_data,
                         invite_msg_data_len
                     );
@@ -288,11 +270,12 @@ void send_sync_invite_msg(Skissm__E2eeAddress *from, const char *to_user_id, con
                         self_outbound_session->their_address->user->device_id
                     );
                     // store pending common_plaintext_data
-                    store_pending_common_plaintext_data(
+                    store_pending_common_plaintext_data_internal(
                         self_outbound_session->our_address,
                         self_outbound_session->their_address,
                         invite_msg_data,
-                        invite_msg_data_len
+                        invite_msg_data_len,
+                        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL
                     );
                 }
             }
@@ -340,11 +323,12 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         // no specific deviceId currently
         to->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
         to->user = peer_user;
-        store_pending_common_plaintext_data(
+        store_pending_common_plaintext_data_internal(
             from,
             to,
             common_plaintext_data,
-            common_plaintext_data_len
+            common_plaintext_data_len,
+            notif_level
         );
         // release
         skissm__e2ee_address__free_unpacked(to, NULL);
@@ -370,11 +354,12 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
                 outbound_session->session_id
             );
             // store pending common_plaintext_data
-            store_pending_common_plaintext_data(
+            store_pending_common_plaintext_data_internal(
                 outbound_session->our_address,
                 outbound_session->their_address,
                 common_plaintext_data,
-                common_plaintext_data_len
+                common_plaintext_data_len,
+                notif_level
             );
             // release
             skissm__session__free_unpacked(outbound_session, NULL);
@@ -382,9 +367,11 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
         }
 
         // send message to server
-        Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(outbound_session,
+        Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(
+            outbound_session,
             notif_level,
-            common_plaintext_data, common_plaintext_data_len);
+            common_plaintext_data, common_plaintext_data_len
+        );
         ssm_notify_log(
             from,
             DEBUG_LOG,

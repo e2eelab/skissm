@@ -139,7 +139,8 @@ static void test_one_group_pre_key() {
         member_address,
         pending_plaintext_id,
         group_pre_key_plaintext,
-        group_pre_key_plaintext_len
+        group_pre_key_plaintext_len,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
     );
 
     // load group pre-key
@@ -152,7 +153,8 @@ static void test_one_group_pre_key() {
         member_address,
         &pending_plaintext_id_list,
         &group_pre_key_plaintext_data_list,
-        &group_pre_key_plaintext_data_len_list
+        &group_pre_key_plaintext_data_len_list,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
     );
     assert(group_pre_key_plaintext_len == group_pre_key_plaintext_data_len_list[0]);
     assert(memcmp(group_pre_key_plaintext, group_pre_key_plaintext_data_list[0], group_pre_key_plaintext_data_len_list[0]) == 0);
@@ -167,7 +169,8 @@ static void test_one_group_pre_key() {
         member_address,
         &pending_plaintext_id_list_null,
         &group_pre_key_plaintext_data_list_null,
-        &group_pre_key_plaintext_data_len_list_null
+        &group_pre_key_plaintext_data_len_list_null,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
     );
     assert(pending_plaintext_id_list_null == NULL);
     assert(group_pre_key_plaintext_data_list_null == NULL);
@@ -215,21 +218,24 @@ static void test_multiple_group_pre_keys() {
         member_address,
         pending_plaintext_1_id,
         plaintext_1,
-        plaintext_1_len
+        plaintext_1_len,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
     );
     get_skissm_plugin()->db_handler.store_pending_plaintext_data(
         user_address,
         member_address,
         pending_plaintext_2_id,
         plaintext_2,
-        plaintext_2_len
+        plaintext_2_len,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
     );
     get_skissm_plugin()->db_handler.store_pending_plaintext_data(
         user_address,
         member_address,
         pending_plaintext_3_id,
         plaintext_3,
-        plaintext_3_len
+        plaintext_3_len,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
     );
 
     // load pending plaintext
@@ -242,7 +248,8 @@ static void test_multiple_group_pre_keys() {
         member_address,
         &pending_plaintext_id_list,
         &pending_plaintext_data_list,
-        &pending_plaintext_data_len_list
+        &pending_plaintext_data_len_list,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
     );
     assert(n_pending_plaintext == 3);
 
@@ -259,7 +266,8 @@ static void test_multiple_group_pre_keys() {
         member_address,
         &pending_plaintext_id_left_list,
         &pending_plaintext_data_left_list,
-        &pending_plaintext_data_len_left_list
+        &pending_plaintext_data_len_left_list,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
     );
     assert(n_pending_plaintext_left == 2);
 
@@ -381,7 +389,7 @@ static void test_sending_before_accept() {
         send_one2one_msg(
             alice_address,
             bob_address->user->user_id, bob_address->domain,
-            NOTIFICATION_LEVEL_NORMAL,
+            SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
             plaintext, plaintext_len);
     }
 

@@ -117,6 +117,22 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
 );
 
 /**
+ * @brief Store pending plain text data to db.
+ * @param from
+ * @param to
+ * @param common_plaintext_data
+ * @param common_plaintext_data_len
+ * @param notif_level
+*/
+void store_pending_common_plaintext_data_internal(
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    uint8_t *common_plaintext_data,
+    size_t common_plaintext_data_len,
+    Skissm__NotifLevel notif_level
+);
+
+/**
  * @brief Store pending request to db.
  * @param user_address
  * @param type

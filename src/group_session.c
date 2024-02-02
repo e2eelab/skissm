@@ -415,7 +415,7 @@ int new_outbound_group_session_by_sender(
                         Skissm__SendOne2oneMsgResponse *response;
                         response = send_one2one_msg_internal(
                             outbound_session,
-                            NOTIFICATION_LEVEL_NORMAL,
+                            SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION,
                             group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
                         );
                         skissm__send_one2one_msg_response__free_unpacked(response, NULL);
@@ -423,15 +423,12 @@ int new_outbound_group_session_by_sender(
                         /** Since the other has not responded, we store the group pre-key first so that
                          *  we can send it right after receiving the other's accept message.
                          */
-                        char *pending_plaintext_id = generate_uuid_str();
-                        get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-                            outbound_session->our_address,
-                            outbound_session->their_address,
-                            pending_plaintext_id,
-                            group_pre_key_plaintext_data,
-                            group_pre_key_plaintext_data_len
-                        );
-                        free(pending_plaintext_id);
+                        store_pending_common_plaintext_data_internal(
+                                     outbound_session->our_address,
+                                     outbound_session->their_address,
+                                     group_pre_key_plaintext_data,
+                                     group_pre_key_plaintext_data_len,
+                                     SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION);
                     }
                     // release outbound_session
                     skissm__session__free_unpacked(outbound_session, NULL);
@@ -1311,7 +1308,7 @@ int renew_outbound_group_session_by_welcome_and_add(
                         Skissm__SendOne2oneMsgResponse *response;
                         response = send_one2one_msg_internal(
                             outbound_session,
-                            NOTIFICATION_LEVEL_NORMAL,
+                            SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION,
                             group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
                         );
                         skissm__send_one2one_msg_response__free_unpacked(response, NULL);
@@ -1319,15 +1316,13 @@ int renew_outbound_group_session_by_welcome_and_add(
                         /** Since the other has not responded, we store the group pre-key first so that
                          *  we can send it right after receiving the other's accept message.
                          */
-                        char *pending_plaintext_id = generate_uuid_str();
-                        get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                        store_pending_common_plaintext_data_internal(
                             outbound_session->our_address,
                             outbound_session->their_address,
-                            pending_plaintext_id,
                             group_ratchet_state_plaintext_data,
-                            group_ratchet_state_plaintext_data_len
+                            group_ratchet_state_plaintext_data_len,
+                            SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
                         );
-                        free(pending_plaintext_id);
                     }
                     // release outbound_session
                     skissm__session__free_unpacked(outbound_session, NULL);
@@ -1637,7 +1632,7 @@ int renew_group_sessions_with_new_device(
                 Skissm__SendOne2oneMsgResponse *response;
                 response = send_one2one_msg_internal(
                     outbound_session,
-                    NOTIFICATION_LEVEL_NORMAL,
+                    SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION,
                     group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
                 );
                 skissm__send_one2one_msg_response__free_unpacked(response, NULL);
@@ -1650,15 +1645,13 @@ int renew_group_sessions_with_new_device(
                 /** Since the other has not responded, we store the group pre-key first so that
                  *  we can send it right after receiving the other's accept message.
                  */
-                char *pending_plaintext_id = generate_uuid_str();
-                get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+                store_pending_common_plaintext_data_internal(
                     outbound_session->our_address,
                     outbound_session->their_address,
-                    pending_plaintext_id,
                     group_ratchet_state_plaintext_data,
-                    group_ratchet_state_plaintext_data_len
-                );
-                free(pending_plaintext_id);
+                    group_ratchet_state_plaintext_data_len,
+                    SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
+                );                
             }
             // release outbound_session
             skissm__session__free_unpacked(outbound_session, NULL);

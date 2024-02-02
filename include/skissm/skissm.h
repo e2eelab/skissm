@@ -61,6 +61,7 @@
 #include "skissm/LeaveGroupResponse.pb-c.h"
 #include "skissm/MsgKey.pb-c.h"
 #include "skissm/NewUserDeviceMsg.pb-c.h"
+#include "skissm/NotifLevel.pb-c.h"
 #include "skissm/One2oneMsgPayload.pb-c.h"
 #include "skissm/OneTimePreKey.pb-c.h"
 #include "skissm/OneTimePreKeyPublic.pb-c.h"
@@ -106,7 +107,6 @@ extern "C" {
 #define UUID_LEN 16
 #define SIGNED_PRE_KEY_EXPIRATION_MS    604800000       // 7 days
 #define INVITE_WAITING_TIME_MS          60000           // 1 minute
-#define NOTIFICATION_LEVEL_NORMAL       0               // normal (non emergency) notication level
 
 #define E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519           0
 #define E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM2           1
@@ -338,7 +338,7 @@ typedef struct skissm_db_handler_t {
         Skissm__Session *session
     );
     /**
-     * @brief delete the current session
+     * @brief delete all sessions
      * @param our_address
      * @param their_address
      */
@@ -347,7 +347,7 @@ typedef struct skissm_db_handler_t {
         Skissm__E2eeAddress *their_address
     );
     /**
-     * @brief delete the old session
+     * @brief delete old sessions that older tha
      * @param our_address
      * @param their_address
      */
@@ -439,13 +439,15 @@ typedef struct skissm_db_handler_t {
      * @param plaintext_id
      * @param plaintext_data
      * @param plaintext_data_len
+     * @param notif_level
      */
     void (*store_pending_plaintext_data)(
         Skissm__E2eeAddress *from_address,
         Skissm__E2eeAddress *to_address,
         char *plaintext_id,
         uint8_t *plaintext_data,
-        size_t plaintext_data_len
+        size_t plaintext_data_len,
+        Skissm__NotifLevel notif_level
     );
     /**
      * @brief load pending plaintext data
@@ -454,6 +456,7 @@ typedef struct skissm_db_handler_t {
      * @param plaintext_id_list
      * @param plaintext_data_list
      * @param plaintext_data_len_list
+     * @param notif_level
      * @return number of loaded plaintext_data list
      */
     size_t (*load_pending_plaintext_data)(
@@ -461,7 +464,8 @@ typedef struct skissm_db_handler_t {
         Skissm__E2eeAddress *to_address,
         char ***plaintext_id_list,
         uint8_t ***plaintext_data_list,
-        size_t **plaintext_data_len_list
+        size_t **plaintext_data_len_list,
+        Skissm__NotifLevel *notif_level
     );
     /**
      * @brief delete pending plaintext data

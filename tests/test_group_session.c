@@ -432,7 +432,7 @@ static void test_encryption(Skissm__E2eeAddress *sender_address, Skissm__E2eeAdd
     Skissm__SendGroupMsgResponse *response = send_group_msg(
         sender_address,
         group_address,
-        NOTIFICATION_LEVEL_NORMAL,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
         plaintext_data, plaintext_data_len);
     
     assert(response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);

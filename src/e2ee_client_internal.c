@@ -290,6 +290,27 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
     return response;
 }
 
+void store_pending_common_plaintext_data_internal(
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    uint8_t *common_plaintext_data,
+    size_t common_plaintext_data_len,
+    Skissm__NotifLevel notif_level
+) {
+    char *pending_plaintext_id = generate_uuid_str();
+    get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+        from,
+        to,
+        pending_plaintext_id,
+        common_plaintext_data,
+        common_plaintext_data_len,
+        notif_level
+    );
+
+    // release
+    free(pending_plaintext_id);
+}
+
 void store_pending_request_internal(
     Skissm__E2eeAddress *user_address, Skissm__PendingRequestType type,
     uint8_t *request_data, size_t request_data_len,

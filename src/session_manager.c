@@ -17,13 +17,15 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     char **pending_plaintext_id_list;
     uint8_t **pending_plaintext_data_list;
     size_t *pending_plaintext_data_len_list;
+    Skissm__NotifLevel notif_level;
     pending_plaintext_data_list_num =
         get_skissm_plugin()->db_handler.load_pending_plaintext_data(
             outbound_session->our_address,
             outbound_session->their_address,
             &pending_plaintext_id_list,
             &pending_plaintext_data_list,
-            &pending_plaintext_data_len_list
+            &pending_plaintext_data_len_list,
+            &notif_level
         );
     if (pending_plaintext_data_list_num > 0) {
         ssm_notify_log(
@@ -36,7 +38,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
         for (i = 0; i < pending_plaintext_data_list_num; i++) {
             Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(
                 outbound_session,
-                NOTIFICATION_LEVEL_NORMAL,
+                notif_level,
                 pending_plaintext_data_list[i],
                 pending_plaintext_data_len_list[i]
             );
@@ -141,7 +143,8 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
                         to_address,
                         pending_plaintext_id,
                         group_pre_key_plaintext_data,
-                        group_pre_key_plaintext_data_len
+                        group_pre_key_plaintext_data_len,
+                        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
                     );
                     // release
                     free(pending_plaintext_id);

@@ -311,7 +311,7 @@ static void test_encryption(
     Skissm__SendOne2oneMsgResponse *response = NULL;
     response = send_one2one_msg(
         from_address, to_user_id, to_domain,
-        NOTIFICATION_LEVEL_NORMAL,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
         plaintext, plaintext_len);
 
     // release
@@ -324,7 +324,7 @@ static void test_group_encryption(
 ) {
     Skissm__SendGroupMsgResponse *response = send_group_msg(
         sender_address, group_address,
-        NOTIFICATION_LEVEL_NORMAL,
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
         plaintext_data, plaintext_data_len);
     
     // release
