@@ -456,7 +456,7 @@ typedef struct skissm_db_handler_t {
      * @param plaintext_id_list
      * @param plaintext_data_list
      * @param plaintext_data_len_list
-     * @param notif_level
+     * @param notif_level_list
      * @return number of loaded plaintext_data list
      */
     size_t (*load_pending_plaintext_data)(
@@ -465,7 +465,7 @@ typedef struct skissm_db_handler_t {
         char ***plaintext_id_list,
         uint8_t ***plaintext_data_list,
         size_t **plaintext_data_len_list,
-        Skissm__NotifLevel *notif_level
+        Skissm__NotifLevel **notif_level_list
     );
     /**
      * @brief delete pending plaintext data

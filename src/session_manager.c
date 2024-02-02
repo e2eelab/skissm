@@ -17,7 +17,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     char **pending_plaintext_id_list;
     uint8_t **pending_plaintext_data_list;
     size_t *pending_plaintext_data_len_list;
-    Skissm__NotifLevel notif_level;
+    Skissm__NotifLevel *notif_level_list;
     pending_plaintext_data_list_num =
         get_skissm_plugin()->db_handler.load_pending_plaintext_data(
             outbound_session->our_address,
@@ -25,7 +25,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
             &pending_plaintext_id_list,
             &pending_plaintext_data_list,
             &pending_plaintext_data_len_list,
-            &notif_level
+            &notif_level_list
         );
     if (pending_plaintext_data_list_num > 0) {
         ssm_notify_log(
@@ -38,7 +38,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
         for (i = 0; i < pending_plaintext_data_list_num; i++) {
             Skissm__SendOne2oneMsgResponse *response = send_one2one_msg_internal(
                 outbound_session,
-                notif_level,
+                notif_level_list[i],
                 pending_plaintext_data_list[i],
                 pending_plaintext_data_len_list[i]
             );
@@ -60,6 +60,7 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
         free_mem((void **)&pending_plaintext_id_list, sizeof(char *) * pending_plaintext_data_list_num);
         free_mem((void **)&pending_plaintext_data_list, sizeof(uint8_t *) * pending_plaintext_data_list_num);
         free_mem((void **)&pending_plaintext_data_len_list, sizeof(size_t) * pending_plaintext_data_list_num);
+        free_mem((void **)&notif_level_list, sizeof(Skissm__NotifLevel) * pending_plaintext_data_list_num);
     }
 }
 
@@ -595,9 +596,6 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
             skissm__session__free_unpacked(our_session, NULL);
             // just consume
             return true;
-        } else {
-            // unload the old session if necessary
-            get_skissm_plugin()->db_handler.unload_session(receiver_address, from);
         }
     }
 

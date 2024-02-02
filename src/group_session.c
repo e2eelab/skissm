@@ -424,11 +424,12 @@ int new_outbound_group_session_by_sender(
                          *  we can send it right after receiving the other's accept message.
                          */
                         store_pending_common_plaintext_data_internal(
-                                     outbound_session->our_address,
-                                     outbound_session->their_address,
-                                     group_pre_key_plaintext_data,
-                                     group_pre_key_plaintext_data_len,
-                                     SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION);
+                            outbound_session->our_address,
+                            outbound_session->their_address,
+                            group_pre_key_plaintext_data,
+                            group_pre_key_plaintext_data_len,
+                            SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
+                        );
                     }
                     // release outbound_session
                     skissm__session__free_unpacked(outbound_session, NULL);

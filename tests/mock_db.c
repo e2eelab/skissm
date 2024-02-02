@@ -245,13 +245,14 @@ static const char *PENDING_PLAINTEXT_DATA_CREATE_TABLE = "CREATE TABLE PENDING_P
                                                          "FROM_ADDRESS INTEGER NOT NULL, "
                                                          "TO_ADDRESS INTEGER NOT NULL, "
                                                          "PLAINTEXT_DATA BLOB NOT NULL, "
+                                                         "NOTIF_LEVEL INTEGER NOT NULL, "
                                                          "FOREIGN KEY(FROM_ADDRESS) REFERENCES ADDRESS(ID), "
                                                          "FOREIGN KEY(TO_ADDRESS) REFERENCES ADDRESS(ID), "
                                                          "PRIMARY KEY (PENDING_PLAINTEXT_ID, FROM_ADDRESS, TO_ADDRESS));";
 
 static const char *PENDING_PLAINTEXT_DATA_INSERT = "INSERT INTO PENDING_PLAINTEXT_DATA "
-                                                   "(PENDING_PLAINTEXT_ID, FROM_ADDRESS, TO_ADDRESS, PLAINTEXT_DATA) "
-                                                   "VALUES (?, ? ,?, ?);";
+                                                   "(PENDING_PLAINTEXT_ID, FROM_ADDRESS, TO_ADDRESS, PLAINTEXT_DATA, NOTIF_LEVEL) "
+                                                   "VALUES (?, ? ,?, ?, ?);";
 
 static const char *N_PENDING_PLAINTEXT_DATA_LOAD = "SELECT COUNT(*) "
                                                    "FROM PENDING_PLAINTEXT_DATA "
@@ -263,7 +264,8 @@ static const char *N_PENDING_PLAINTEXT_DATA_LOAD = "SELECT COUNT(*) "
                                                    "AND a2.DOMAIN is (?) AND a2.USER_ID is (?) AND a2.DEVICE_ID is (?);";
 
 static const char *PENDING_PLAINTEXT_DATA_LOAD = "SELECT PENDING_PLAINTEXT_ID, "
-                                                 "PLAINTEXT_DATA "
+                                                 "PLAINTEXT_DATA, "
+                                                 "NOTIF_LEVEL "
                                                  "FROM PENDING_PLAINTEXT_DATA "
                                                  "INNER JOIN ADDRESS AS a1 "
                                                  "ON PENDING_PLAINTEXT_DATA.FROM_ADDRESS = a1.ID "
@@ -2078,8 +2080,14 @@ void unload_group_session_by_id(Skissm__E2eeAddress *session_owner, char *sessio
     sqlite_finalize(stmt);
 }
 
-void store_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, char *pending_plaintext_id, uint8_t *group_pre_key_plaintext,
-                                  size_t group_pre_key_plaintext_len) {
+void store_pending_plaintext_data(
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *to_address,
+    char *pending_plaintext_id,
+    uint8_t *group_pre_key_plaintext,
+    size_t group_pre_key_plaintext_len,
+    Skissm__NotifLevel notif_level
+) {
     // insert the sender's and the receiver's address
     int from_address_id = insert_address(from_address);
     int to_address_id = insert_address(to_address);
@@ -2093,6 +2101,7 @@ void store_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2e
     sqlite3_bind_int(stmt, 2, from_address_id);
     sqlite3_bind_int(stmt, 3, to_address_id);
     sqlite3_bind_blob(stmt, 4, group_pre_key_plaintext, group_pre_key_plaintext_len, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 5, notif_level);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -2124,8 +2133,14 @@ int load_n_group_pre_keys(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress
     return n_group_pre_keys;
 }
 
-size_t load_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, char ***pending_plaintext_id_list, uint8_t ***e2ee_plaintext_data_list,
-                                   size_t **e2ee_plaintext_data_len_list) {
+size_t load_pending_plaintext_data(
+    Skissm__E2eeAddress *from_address,
+    Skissm__E2eeAddress *to_address,
+    char ***pending_plaintext_id_list,
+    uint8_t ***e2ee_plaintext_data_list,
+    size_t **e2ee_plaintext_data_len_list,
+    Skissm__NotifLevel **notif_level_list
+) {
     // allocate memory
     size_t n_group_pre_keys = load_n_group_pre_keys(from_address, to_address);
     if (n_group_pre_keys == 0) {
@@ -2139,6 +2154,8 @@ size_t load_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2
     (*e2ee_plaintext_data_list) = (uint8_t **)malloc(sizeof(uint8_t *) * n_group_pre_keys);
 
     *e2ee_plaintext_data_len_list = (size_t *)malloc(sizeof(size_t) * n_group_pre_keys);
+
+    *notif_level_list = (Skissm__NotifLevel *)malloc(sizeof(Skissm__NotifLevel) * n_group_pre_keys);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -2158,6 +2175,7 @@ size_t load_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2
         (*pending_plaintext_id_list)[i] = strdup((char *)sqlite3_column_text(stmt, 0));
         size_t e2ee_plaintext_data_len = sqlite3_column_bytes(stmt, 1);
         uint8_t *e2ee_plaintext_data = (uint8_t *)sqlite3_column_blob(stmt, 1);
+        (*notif_level_list)[i] = sqlite3_column_int(stmt, 2);
 
         // assign
         (*e2ee_plaintext_data_list)[i] = (uint8_t *)malloc(e2ee_plaintext_data_len * sizeof(uint8_t));

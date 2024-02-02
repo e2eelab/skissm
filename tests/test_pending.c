@@ -148,13 +148,14 @@ static void test_one_group_pre_key() {
     char **pending_plaintext_id_list;
     uint8_t **group_pre_key_plaintext_data_list;
     size_t *group_pre_key_plaintext_data_len_list;
+    Skissm__NotifLevel *notif_level;
     n_group_pre_keys = get_skissm_plugin()->db_handler.load_pending_plaintext_data(
         user_address,
         member_address,
         &pending_plaintext_id_list,
         &group_pre_key_plaintext_data_list,
         &group_pre_key_plaintext_data_len_list,
-        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
+        &notif_level
     );
     assert(group_pre_key_plaintext_len == group_pre_key_plaintext_data_len_list[0]);
     assert(memcmp(group_pre_key_plaintext, group_pre_key_plaintext_data_list[0], group_pre_key_plaintext_data_len_list[0]) == 0);
@@ -164,13 +165,14 @@ static void test_one_group_pre_key() {
     char **pending_plaintext_id_list_null;
     uint8_t **group_pre_key_plaintext_data_list_null;
     size_t *group_pre_key_plaintext_data_len_list_null;
+    Skissm__NotifLevel *notif_level_null;
     get_skissm_plugin()->db_handler.load_pending_plaintext_data(
         user_address,
         member_address,
         &pending_plaintext_id_list_null,
         &group_pre_key_plaintext_data_list_null,
         &group_pre_key_plaintext_data_len_list_null,
-        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
+        &notif_level_null
     );
     assert(pending_plaintext_id_list_null == NULL);
     assert(group_pre_key_plaintext_data_list_null == NULL);
@@ -187,6 +189,7 @@ static void test_one_group_pre_key() {
     free_mem((void **)&pending_plaintext_id_list, sizeof(char *) * n_group_pre_keys);
     free_mem((void **)&group_pre_key_plaintext_data_list, sizeof(uint8_t *) * n_group_pre_keys);
     free_mem((void **)&group_pre_key_plaintext_data_len_list, sizeof(size_t) * n_group_pre_keys);
+    free_mem((void **)&notif_level, sizeof(Skissm__NotifLevel) * n_group_pre_keys);
 
     // test stop
     tear_down();
@@ -243,13 +246,14 @@ static void test_multiple_group_pre_keys() {
     char **pending_plaintext_id_list;
     uint8_t **pending_plaintext_data_list;
     size_t *pending_plaintext_data_len_list;
+    Skissm__NotifLevel *notif_level;
     n_pending_plaintext = get_skissm_plugin()->db_handler.load_pending_plaintext_data(
         user_address,
         member_address,
         &pending_plaintext_id_list,
         &pending_plaintext_data_list,
         &pending_plaintext_data_len_list,
-        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
+        &notif_level
     );
     assert(n_pending_plaintext == 3);
 
@@ -261,13 +265,14 @@ static void test_multiple_group_pre_keys() {
     char **pending_plaintext_id_left_list;
     uint8_t **pending_plaintext_data_left_list;
     size_t *pending_plaintext_data_len_left_list;
+    Skissm__NotifLevel *notif_level_left;
     n_pending_plaintext_left = get_skissm_plugin()->db_handler.load_pending_plaintext_data(
         user_address,
         member_address,
         &pending_plaintext_id_left_list,
         &pending_plaintext_data_left_list,
         &pending_plaintext_data_len_left_list,
-        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
+        &notif_level_left
     );
     assert(n_pending_plaintext_left == 2);
 
@@ -280,9 +285,11 @@ static void test_multiple_group_pre_keys() {
     free_mem((void **)&pending_plaintext_id_list, sizeof(char *) * n_pending_plaintext);
     free_mem((void **)&pending_plaintext_data_list, sizeof(uint8_t *) * n_pending_plaintext);
     free_mem((void **)&pending_plaintext_data_len_list, sizeof(size_t) * n_pending_plaintext);
+    free_mem((void **)&notif_level, sizeof(Skissm__NotifLevel) * n_pending_plaintext);
     free_mem((void **)&pending_plaintext_id_left_list, sizeof(char *) * n_pending_plaintext_left);
     free_mem((void **)&pending_plaintext_data_left_list, sizeof(uint8_t *) * n_pending_plaintext_left);
     free_mem((void **)&pending_plaintext_data_len_left_list, sizeof(size_t) * n_pending_plaintext_left);
+    free_mem((void **)&notif_level_left, sizeof(Skissm__NotifLevel) * n_pending_plaintext_left);
 
     // test stop
     tear_down();

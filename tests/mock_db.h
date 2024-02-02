@@ -81,11 +81,11 @@ void unload_group_session_by_address(Skissm__E2eeAddress *session_owner, Skissm_
 void unload_group_session_by_id(Skissm__E2eeAddress *session_owner, char *session_id);
 void store_pending_plaintext_data(
     Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, char *pending_plaintext_id,
-    uint8_t *group_pre_key_plaintext, size_t group_pre_key_plaintext_len
+    uint8_t *group_pre_key_plaintext, size_t group_pre_key_plaintext_len, Skissm__NotifLevel notif_level
 );
 size_t load_pending_plaintext_data(
     Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, char ***pending_plaintext_id_list,
-    uint8_t ***e2ee_plaintext_data_list, size_t **e2ee_plaintext_data_len_list
+    uint8_t ***e2ee_plaintext_data_list, size_t **e2ee_plaintext_data_len_list, Skissm__NotifLevel **notif_level_list
 );
 void unload_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, char *pending_plaintext_id);
 void store_pending_request_data(Skissm__E2eeAddress *user_address, char *request_id, uint8_t request_type, uint8_t *request_data, size_t request_data_len);
