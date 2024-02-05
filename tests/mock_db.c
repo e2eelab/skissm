@@ -98,7 +98,7 @@ static const char *SESSION_CREATE_TABLE = "CREATE TABLE SESSION( "
                                           "ID TEXT NOT NULL, "
                                           "OUR_ADDRESS INTEGER NOT NULL, "
                                           "THEIR_ADDRESS INTEGER NOT NULL, "
-                                          "TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, "
+                                          "INVITE_T INTEGER NOT NULL, "
                                           "DATA BLOB NOT NULL, "
                                           "FOREIGN KEY(OUR_ADDRESS) REFERENCES ADDRESS(ID), "
                                           "FOREIGN KEY(THEIR_ADDRESS) REFERENCES ADDRESS(ID), "
@@ -115,8 +115,8 @@ static const char *SESSION_LOAD_DATA_BY_ADDRESSES = "SELECT DATA FROM SESSION "
                                                     "LIMIT 1;";
 
 static const char *SESSION_INSERT_OR_REPLACE = "INSERT OR REPLACE INTO SESSION "
-                                               "(ID, OUR_ADDRESS, THEIR_ADDRESS, DATA) "
-                                               "VALUES (?, ?, ?, ?);";
+                                               "(ID, OUR_ADDRESS, THEIR_ADDRESS, INVITE_T, DATA) "
+                                               "VALUES (?, ?, ?, ?, ?);";
 
 static const char *SESSION_LOAD_DATA_BY_ADDRESS_AND_ID = "SELECT DATA FROM SESSION "
                                                          "INNER JOIN ADDRESS "
@@ -159,7 +159,7 @@ static const char *SESSION_DELETE_OLD_DATA = "DELETE FROM SESSION "
                                              "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?)) "
                                              "AND THEIR_ADDRESS IN "
                                              "(SELECT ID FROM ADDRESS WHERE USER_ID is (?) AND DEVICE_ID is (?)) "
-                                             "AND TIMESTAMP < date('now', '-1 days');";
+                                             "AND INVITE_T < (?);";
 
 static const char *GROUP_SESSION_DROP_TABLE = "DROP TABLE IF EXISTS GROUP_SESSION;";
 static const char *GROUP_SESSION_CREATE_TABLE = "CREATE TABLE GROUP_SESSION( "
@@ -1763,6 +1763,7 @@ void store_session(Skissm__Session *session) {
 
     sqlite_int64 our_id = insert_address(session->our_address);
     sqlite_int64 their_id = insert_address(session->their_address);
+    sqlite_int64 invite_t = session->invite_t;
 
     // prepare
     sqlite3_stmt *stmt;
@@ -1770,9 +1771,10 @@ void store_session(Skissm__Session *session) {
 
     // bind
     sqlite3_bind_text(stmt, 1, session_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_int(stmt, 2, our_id);
-    sqlite3_bind_int(stmt, 3, their_id);
-    sqlite3_bind_blob(stmt, 4, session_data, session_data_len, SQLITE_STATIC);
+    sqlite3_bind_int64(stmt, 2, our_id);
+    sqlite3_bind_int64(stmt, 3, their_id);
+    sqlite3_bind_int64(stmt, 4, invite_t);
+    sqlite3_bind_blob(stmt, 5, session_data, session_data_len, SQLITE_STATIC);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
@@ -1800,7 +1802,7 @@ void unload_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their
     sqlite_finalize(stmt);
 }
 
-void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address) {
+void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address, int64_t invite_t) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SESSION_DELETE_OLD_DATA, &stmt);
@@ -1810,6 +1812,7 @@ void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *t
     sqlite3_bind_text(stmt, 2, our_address->user->device_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, their_address->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 4, their_address->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, invite_t - (int64_t)86400000, -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);

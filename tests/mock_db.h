@@ -69,7 +69,7 @@ int load_n_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their
 size_t load_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their_user_id, const char *their_domain, Skissm__Session ***outbound_sessions);
 void store_session(Skissm__Session *session);
 void unload_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address);
-void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address);
+void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address, int64_t invite_t);
 void load_group_session_by_address(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress *group_address, Skissm__GroupSession **group_session);
 void load_group_session_by_id(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, char *session_id, Skissm__GroupSession **group_session);
 int load_n_group_sessions(Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress *group_address);
