@@ -280,7 +280,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
         get_skissm_plugin()->db_handler.store_session(inbound_session);
 
         // delete old sessions if necessary
-        get_skissm_plugin()->db_handler.unload_old_session(receiver_address, e2ee_msg->from);
+        get_skissm_plugin()->db_handler.unload_old_session(receiver_address, e2ee_msg->from, e2ee_msg->session_id);
 
         if (plain_text_data != NULL && plain_text_data_len > 0) {
             Skissm__Plaintext *plaintext = skissm__plaintext__unpack(NULL, plain_text_data_len, plain_text_data);

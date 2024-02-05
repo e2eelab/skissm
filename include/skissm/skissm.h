@@ -347,13 +347,15 @@ typedef struct skissm_db_handler_t {
         Skissm__E2eeAddress *their_address
     );
     /**
-     * @brief delete old sessions that older tha
+     * @brief delete old sessions that are older than 1 day after the creation of session specified by session_id 
      * @param our_address
      * @param their_address
+     * @param session_id
      */
     void (*unload_old_session)(
         Skissm__E2eeAddress *our_address,
-        Skissm__E2eeAddress *their_address
+        Skissm__E2eeAddress *their_address,
+        char *session_id
     );
 
     // group session related handlers
