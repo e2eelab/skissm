@@ -1812,7 +1812,7 @@ void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *t
     sqlite3_bind_text(stmt, 2, our_address->user->device_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, their_address->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 4, their_address->user->device_id, -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 5, invite_t - (int64_t)86400000, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int64(stmt, 5, invite_t - (int64_t)86400000);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
