@@ -18,7 +18,7 @@
 #
 # ##############################################################################
 
-cmake_minimum_required(VERSION 3.15.0)
+cmake_minimum_required(VERSION 3.21)
 project(
   skissm
   LANGUAGES CXX C)
@@ -170,8 +170,6 @@ target_include_directories(
           ${lib_DIR}/curve25519/ed25519/additions
           ${lib_DIR}/curve25519/ed25519/nacl_includes)
 
-target_compile_features(skissm_static PRIVATE c_std_17 cxx_std_17)
-
 set_target_properties(
   skissm_static
   PROPERTIES OUTPUT_NAME "skissm"
@@ -203,8 +201,6 @@ target_include_directories(
   PRIVATE ${lib_DIR} ${lib_DIR}/curve25519 ${lib_DIR}/curve25519/ed25519
           ${lib_DIR}/curve25519/ed25519/additions
           ${lib_DIR}/curve25519/ed25519/nacl_includes)
-
-target_compile_features(skissm_shared PRIVATE c_std_17 cxx_std_17)
 
 set_target_properties(
   skissm_shared
