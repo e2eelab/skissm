@@ -643,7 +643,7 @@ Skissm__ConsumeProtoMsgResponse *consume_proto_msg(Skissm__E2eeAddress *sender_a
     Skissm__ConsumeProtoMsgRequest *request = (Skissm__ConsumeProtoMsgRequest*)malloc(sizeof(Skissm__ConsumeProtoMsgRequest));
     skissm__consume_proto_msg_request__init(request);
     request->proto_msg_id = strdup(proto_msg_id);
-    Skissm__ConsumeProtoMsgResponse *response = get_skissm_plugin()->proto_handler.consume_proto_msg(sender_address, auth,  request);
+    Skissm__ConsumeProtoMsgResponse *response = get_skissm_plugin()->proto_handler.consume_proto_msg(sender_address, auth, request);
 
     // release
     free(auth);
@@ -718,7 +718,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
                 response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_SERVICE_UNAVAILABLE;
             }
             if (save_pending_request) {
-                // pack and save as pending reuest
+                // pack and save as pending request
                 size_t request_data_len = skissm__proto_msg__get_packed_size(proto_msg);
                 uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
                 skissm__proto_msg__pack(proto_msg, request_data);
@@ -733,9 +733,11 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
         }
     } else {
-        ssm_notify_log(receiver_address, DEBUG_LOG, "process_proto_msg() proto_msg is not consumed payload_case: %d, proto_msg_id: %s",
+        ssm_notify_log(
+            receiver_address, DEBUG_LOG, "process_proto_msg() proto_msg is not consumed payload_case: %d, proto_msg_id: %s",
             proto_msg->payload_case,
-            proto_msg->tag == NULL ? "" : proto_msg->tag->proto_msg_id);
+            proto_msg->tag == NULL ? "" : proto_msg->tag->proto_msg_id
+        );
         response = (Skissm__ConsumeProtoMsgResponse *)malloc(sizeof(Skissm__ConsumeProtoMsgResponse));
         skissm__consume_proto_msg_response__init(response);
         response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
