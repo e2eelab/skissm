@@ -62,6 +62,10 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
     // set the cipher suite id
     outbound_session->e2ee_pack_id = local_account->e2ee_pack_id;
+    // set the session ID
+    outbound_session->session_id = generate_uuid_str();
+    // set session not verified
+    outbound_session->f2f = false;
 
     // store some information into the session
     Skissm__KeyPair *my_identity_key_pair = local_account->identity_key->asym_key_pair;
@@ -140,9 +144,6 @@ Skissm__InviteResponse *pqc_new_outbound_session(
     outbound_session->temp_shared_secret.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_session->temp_shared_secret.len);
     memcpy(outbound_session->temp_shared_secret.data, zero_array, shared_secret_len);
     memcpy(outbound_session->temp_shared_secret.data + shared_secret_len, secret, x3dh_epoch * shared_secret_len);
-
-    // set the session ID
-    outbound_session->session_id = generate_uuid_str();
 
     // prepare the encaps_ciphertext_list
     outbound_session->n_pre_shared_input_list = x3dh_epoch;

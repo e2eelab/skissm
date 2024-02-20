@@ -111,7 +111,7 @@ static const char *SESSION_LOAD_DATA_BY_ADDRESSES = "SELECT DATA FROM SESSION "
                                                     "ON SESSION.THEIR_ADDRESS = a2.ID "
                                                     "WHERE a1.USER_ID is (?) AND a2.USER_ID is (?) "
                                                     "AND a1.DEVICE_ID is (?) AND a2.DEVICE_ID is (?) "
-                                                    "ORDER BY TIMESTAMP DESC "
+                                                    "ORDER BY INVITE_T DESC "
                                                     "LIMIT 1;";
 
 static const char *SESSION_INSERT_OR_REPLACE = "INSERT OR REPLACE INTO SESSION "

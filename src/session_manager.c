@@ -561,10 +561,18 @@ bool consume_invite_response(
     Skissm__InviteResponse *response
 ) {
     if (response != NULL) {
-        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
-            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND
-        ) {
-            ssm_notify_log(user_address, DEBUG_LOG, "consume_invite_response() response code: %d", response->code);
+        ssm_notify_log(user_address, DEBUG_LOG, "consume_invite_response() response code: %d", response->code);
+        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            // load the corresponding inbound session
+            Skissm__Session *inbound_session = NULL;
+            get_skissm_plugin()->db_handler.load_inbound_session(response->session_id, user_address, &inbound_session);
+            if (inbound_session != NULL) {
+                // update invite_t
+                inbound_session->invite_t = response->invite_t;
+                get_skissm_plugin()->db_handler.store_session(inbound_session);
+            }
+            return true;
+        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
             return true;
         }
     }
@@ -589,15 +597,16 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         return false;
     }
 
-    Skissm__Session *our_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_session(receiver_address, from, &our_session);
-    if (our_session != NULL) {
-        if (our_session->invite_t > invite_msg->invite_t) {
-            skissm__session__free_unpacked(our_session, NULL);
-            // just consume
-            return true;
-        }
-    }
+    // Skissm__Session *our_session = NULL;
+    // get_skissm_plugin()->db_handler.load_outbound_session(receiver_address, from, &our_session);
+    // if (our_session != NULL) {
+    //     int64_t invite_t = our_session->invite_t;
+    //     skissm__session__free_unpacked(our_session, NULL);
+    //     if ( invite_t > invite_msg->invite_t) {
+    //         // just consume
+    //         return true;
+    //     }
+    // }
 
     // notify
     ssm_notify_inbound_session_invited(receiver_address, from);

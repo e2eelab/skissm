@@ -57,6 +57,10 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
     // set the cipher suite id
     outbound_session->e2ee_pack_id = local_account->e2ee_pack_id;
+    // set the session ID
+    outbound_session->session_id = generate_uuid_str();
+    // set session not verified
+    outbound_session->f2f = false;
 
     // generate a new random ephemeral key pair
     Skissm__KeyPair my_ephemeral_key;
@@ -110,10 +114,6 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
         secret, sizeof(secret),
         &my_ratchet_key, &(their_pre_key_bundle->signed_pre_key_public->public_key), NULL
     );
-    outbound_session->session_id = generate_uuid_str();
-
-    // this is not a face-to-face session
-    outbound_session->f2f = false;
 
     // store sesson state before send invite
     outbound_session->invite_t = get_skissm_plugin()->common_handler.gen_ts();
