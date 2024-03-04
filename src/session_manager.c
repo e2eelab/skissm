@@ -693,7 +693,8 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
 
     if (!compare_address(receiver_address, accept_msg->to)) {
         ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_accept_msg()");
-        return false;
+        // just consume it
+        return true;
     }
 
     Skissm__Session *outbound_session = NULL;
@@ -703,12 +704,13 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
         ssm_notify_log(
             receiver_address,
             BAD_MESSAGE_FORMAT,
-            "consume_accept_msg() from [], to []: can't load outbound session and make it a complete and responded session.",
+            "consume_accept_msg() from [%s:%s], to [%s:%s]: can't load outbound session and make it a complete and responded session.",
             accept_msg->from->user->user_id,
             accept_msg->from->user->device_id,
             accept_msg->to->user->user_id,
             accept_msg->to->user->device_id);
-        return false;
+        // just consume it, since no outbound session to work with accept msg
+        return true;
     }
     const session_suite_t *session_suite = get_e2ee_pack(accept_msg->e2ee_pack_id)->session_suite;
     int result = session_suite->complete_outbound_session(outbound_session, accept_msg);

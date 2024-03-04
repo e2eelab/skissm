@@ -122,11 +122,6 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     // send the invite request to the peer
     Skissm__InviteResponse *response = invite_internal(outbound_session);
 
-    if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-        // unload outbound_session to enable retry
-        get_skissm_plugin()->db_handler.unload_session(outbound_session->our_address, outbound_session->their_address);
-    }
-
     // release
     free_protobuf(&(my_ephemeral_key.private_key));
     free_protobuf(&(my_ephemeral_key.public_key));
