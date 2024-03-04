@@ -427,7 +427,8 @@ Skissm__CreateGroupResponse *create_group(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__create_group_request__pack(request, request_data);
         
-        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_CREATE_GROUP, request_data, request_data_len, NULL, 0);
+        // skip saving pending request for creating group
+        // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_CREATE_GROUP, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
     }
@@ -471,7 +472,8 @@ Skissm__AddGroupMembersResponse *add_group_members(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__add_group_members_request__pack(request, request_data);
 
-        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
+        // skip saving pending request for adding group members
+        // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
     }
@@ -517,7 +519,8 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__remove_group_members_request__pack(request, request_data);
 
-        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_REMOVE_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
+        // skip saving pending request for removing group members
+        // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_REMOVE_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
     }
@@ -553,7 +556,8 @@ Skissm__LeaveGroupResponse *leave_group(
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__leave_group_request__pack(request, request_data);
 
-        store_pending_request_internal(user_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_LEAVE_GROUP, request_data, request_data_len, NULL, 0);
+        // skip saving pending request for leaving group
+        // store_pending_request_internal(user_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_LEAVE_GROUP, request_data, request_data_len, NULL, 0);
         // release
         free_mem((void *)&request_data, request_data_len);
     }
@@ -695,7 +699,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
         default:
             // consume the message that is arriving here
             consumed = true;
-            break;
+                break;
     };
 
     // notify server that the proto_msg has been consumed
