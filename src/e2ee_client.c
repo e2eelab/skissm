@@ -550,21 +550,21 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
 }
 
 Skissm__LeaveGroupResponse *leave_group(
-    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address
 ) {
     char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
+    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
 
     if (auth == NULL) {
-        ssm_notify_log(user_address, BAD_ACCOUNT, "leave_group()");
+        ssm_notify_log(sender_address, BAD_ACCOUNT, "leave_group()");
         return NULL;
     }
 
     // send message to server
-    Skissm__LeaveGroupRequest *request = produce_leave_group_request(user_address, group_address);
-    Skissm__LeaveGroupResponse *response = get_skissm_plugin()->proto_handler.leave_group(user_address, auth, request);
-    bool succ = consume_leave_group_response(user_address, response);
+    Skissm__LeaveGroupRequest *request = produce_leave_group_request(sender_address, group_address);
+    Skissm__LeaveGroupResponse *response = get_skissm_plugin()->proto_handler.leave_group(sender_address, auth, request);
+    bool succ = consume_leave_group_response(sender_address, response);
     if (!succ) {
         ssm_notify_log(
                 sender_address,
