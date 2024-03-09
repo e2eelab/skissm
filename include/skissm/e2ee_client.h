@@ -145,12 +145,12 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
 
 /**
  * @brief Leave group.
- * @param user_address
+ * @param sender_address
  * @param group_address
  * @return Skissm__LeaveGroupResponse *
  */
 Skissm__LeaveGroupResponse *leave_group(
-    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address
 );
 
