@@ -463,8 +463,13 @@ Skissm__AddGroupMembersResponse *add_group_members(
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
-        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_members()");
-        return NULL;
+        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_members() outbound_group_session does not exist, return a response with response code not found");        
+        Skissm__AddGroupMembersResponse *response = (Skissm__AddGroupMembersResponse *)malloc(sizeof(Skissm__AddGroupMembersResponse));
+        skissm__add_group_members_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+        // release
+        free(auth);
+        return response;
     }
 
     Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
@@ -515,8 +520,13 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
 
     if (outbound_group_session == NULL) {
-        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "remove_group_members()");
-        return NULL;
+        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "remove_group_members(), outbound_group_session is null, return a response with response code not found");
+        Skissm__RemoveGroupMembersResponse *response = (Skissm__RemoveGroupMembersResponse *)malloc(sizeof(Skissm__RemoveGroupMembersResponse));
+        skissm__remove_group_members_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+        // release
+        free(auth);
+        return response;
     }
 
     // send message to server
@@ -550,21 +560,21 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
 }
 
 Skissm__LeaveGroupResponse *leave_group(
-    Skissm__E2eeAddress *user_address,
+    Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address
 ) {
     char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
+    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
 
     if (auth == NULL) {
-        ssm_notify_log(user_address, BAD_ACCOUNT, "leave_group()");
+        ssm_notify_log(sender_address, BAD_ACCOUNT, "leave_group()");
         return NULL;
     }
 
     // send message to server
-    Skissm__LeaveGroupRequest *request = produce_leave_group_request(user_address, group_address);
-    Skissm__LeaveGroupResponse *response = get_skissm_plugin()->proto_handler.leave_group(user_address, auth, request);
-    bool succ = consume_leave_group_response(user_address, response);
+    Skissm__LeaveGroupRequest *request = produce_leave_group_request(sender_address, group_address);
+    Skissm__LeaveGroupResponse *response = get_skissm_plugin()->proto_handler.leave_group(sender_address, auth, request);
+    bool succ = consume_leave_group_response(sender_address, response);
     if (!succ) {
         ssm_notify_log(
                 sender_address,
@@ -611,8 +621,13 @@ Skissm__SendGroupMsgResponse *send_group_msg_with_filter(
     Skissm__GroupSession *outbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
     if (outbound_group_session == NULL) {
-        ssm_notify_log(sender_address, DEBUG_LOG, "send_group_msg() outbound_group_session does not exist");
-        return NULL;
+        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "send_group_msg() outbound_group_session does not exist, return a response with response code not found");        
+        Skissm__SendGroupMsgResponse *response = (Skissm__SendGroupMsgResponse *)malloc(sizeof(Skissm__SendGroupMsgResponse));
+        skissm__send_group_msg_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+        // release
+        free(auth);
+        return response;
     }
 
     Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, notif_level, plaintext_data, plaintext_data_len, allow_list, allow_list_len, deny_list, deny_list_len);

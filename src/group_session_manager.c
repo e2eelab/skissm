@@ -768,7 +768,7 @@ bool consume_leave_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__Leav
             succ = true;
         } else if(remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
             // member already removed, just consume it
-            ssm_notify_log(receiver_address, DEBUG_LOG, "consume_leave_group_msg(), no such member");
+            ssm_notify_log(receiver_address, DEBUG_LOG, "consume_leave_group_msg(), group session nnot found or no such member");
             succ = true;
         }
         // release
