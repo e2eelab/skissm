@@ -96,16 +96,29 @@ bool consume_one2one_msg(
 );
 
 /**
- * @brief Process an incoming NewUserDeviceMsg message.
+ * @brief Process an incoming AddUserDeviceMsg message.
  *
  * @param receiver_address
  * @param msg
  * @return true
  * @return false
  */
-bool consume_new_user_device_msg(
+bool consume_add_user_device_msg(
     Skissm__E2eeAddress *receiver_address,
-    Skissm__NewUserDeviceMsg *msg
+    Skissm__AddUserDeviceMsg *msg
+);
+
+/**
+ * @brief Process an incoming Skissm__RemoveUserDeviceMsg message.
+ *
+ * @param receiver_address
+ * @param msg
+ * @return true
+ * @return false
+ */
+bool consume_remove_user_device_msg(
+    Skissm__E2eeAddress *receiver_address,
+    Skissm__RemoveUserDeviceMsg *msg
 );
 
 /**

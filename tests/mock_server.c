@@ -89,6 +89,8 @@ static bool session_record[user_data_max][user_data_max];
 
 static bool group_record[user_data_max][group_data_max];
 
+static bool device_invited_record[user_data_max][group_data_max];
+
 static uint8_t user_data_set_insert_pos = 0;
 
 static uint8_t group_data_set_insert_pos = 0;
@@ -251,6 +253,7 @@ void mock_server_begin() {
         }
         for (j = 0; j < group_data_max; j++) {
             group_record[i][j] = 0;
+            device_invited_record[i][j] = 0;
         }
     }
 }
@@ -399,12 +402,16 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
         skissm__proto_msg__init(proto_msg);
         copy_address_from_address(&(proto_msg->from), cur_data->address);
         copy_address_from_address(&(proto_msg->to), receiver_addresses[j]);
-        proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_NEW_USER_DEVICE_MSG;
-        proto_msg->new_user_device_msg = (Skissm__NewUserDeviceMsg *)malloc(sizeof(Skissm__NewUserDeviceMsg));
-        skissm__new_user_device_msg__init(proto_msg->new_user_device_msg);
-        copy_address_from_address(&(proto_msg->new_user_device_msg->user_address), cur_data->address);
+        proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_ADD_USER_DEVICE_MSG;
+        proto_msg->add_user_device_msg = (Skissm__AddUserDeviceMsg *)malloc(sizeof(Skissm__AddUserDeviceMsg));
+        skissm__add_user_device_msg__init(proto_msg->add_user_device_msg);
+        copy_address_from_address(&(proto_msg->add_user_device_msg->user_address), cur_data->address);
         if (other_device_num > 0) {
-            copy_address_from_address(&(proto_msg->new_user_device_msg->inviter_address), other_device_address_list[0]);
+            proto_msg->add_user_device_msg->n_old_address_list = other_device_num;
+            proto_msg->add_user_device_msg->old_address_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * other_device_num);
+        }
+        for (i = 0; i < other_device_num; i++) {
+            copy_address_from_address(&((proto_msg->add_user_device_msg->old_address_list)[i]), other_device_address_list[i]);
         }
 
         send_proto_msg(proto_msg);
@@ -1044,14 +1051,13 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
 Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
     Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMemberDeviceRequest *request
 ) {
-    Skissm__AddGroupMemberDeviceMsg *add_group_member_device_msg = NULL;
-    copy_add_group_member_device_msg(&(add_group_member_device_msg), request->msg);
+    uint8_t device_pos = find_address(request->msg->adding_member_device->member_address);
 
     // find the group
     uint8_t group_data_find = 0;
     while (group_data_find < group_data_set_insert_pos) {
-        if ((group_data_set[group_data_find].group_address) && (add_group_member_device_msg->group_info->group_address) &&
-            compare_address(group_data_set[group_data_find].group_address, add_group_member_device_msg->group_info->group_address)) {
+        if ((group_data_set[group_data_find].group_address) && (request->msg->group_info->group_address) &&
+            compare_address(group_data_set[group_data_find].group_address, request->msg->group_info->group_address)) {
             break;
         }
         group_data_find++;
@@ -1064,6 +1070,15 @@ Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
         response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_INTERNAL_SERVER_ERROR;
         return response;
     }
+
+    if (device_invited_record[device_pos][group_data_find] == true) {
+        Skissm__AddGroupMemberDeviceResponse *response = (Skissm__AddGroupMemberDeviceResponse *)malloc(sizeof(Skissm__AddGroupMemberDeviceResponse));
+        skissm__add_group_member_device_response__init(response);
+        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+        return response;
+    }
+
+    device_invited_record[device_pos][group_data_find] = true;
 
     group_data *cur_group_data = &(group_data_set[group_data_find]);
 
@@ -1080,12 +1095,13 @@ Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
         to_member_addresses_total_num += to_member_addresses_num_list[i];
     }
 
-    uint8_t device_pos = find_address(request->msg->adding_member_device->member_address);
-
     Skissm__GroupMemberInfo *adding_member_device_info = (Skissm__GroupMemberInfo *)malloc(sizeof(Skissm__GroupMemberInfo));
     skissm__group_member_info__init(adding_member_device_info);
     copy_address_from_address(&(adding_member_device_info->member_address), request->msg->adding_member_device->member_address);
     copy_protobuf_from_protobuf(&(adding_member_device_info->sign_public_key), &(user_data_set[device_pos].identity_key_public->sign_public_key));
+
+    Skissm__AddGroupMemberDeviceMsg *add_group_member_device_msg = NULL;
+    copy_add_group_member_device_msg(&(add_group_member_device_msg), request->msg);
 
     copy_group_member_id(&(add_group_member_device_msg->adding_member_device), adding_member_device_info);
 

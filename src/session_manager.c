@@ -11,6 +11,11 @@
 #include "skissm/ratchet.h"
 #include "skissm/session.h"
 
+typedef struct group_address_node {
+    Skissm__E2eeAddress *group_address;
+    struct group_address_node *next;
+} group_address_node;
+
 static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     // load pending plaintext data(may be the group pre-key or the common plaintext)
     uint32_t pending_plaintext_data_list_num;
@@ -459,55 +464,56 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
     return true;
 }
 
-bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__NewUserDeviceMsg *msg) {
-    Skissm__E2eeAddress *inviter_address = msg->inviter_address;
+bool consume_add_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddUserDeviceMsg *msg) {
     Skissm__E2eeAddress *new_user_address = msg->user_address;
-    if (inviter_address != NULL) {
-        ssm_notify_log(
-            receiver_address,
-            DEBUG_LOG,
-            "consume_new_user_device_msg(): receiver address [%s:%s], inviter address: [%s:%s], new user address[%s:%s]",
-            receiver_address->user->user_id,
-            receiver_address->user->device_id,
-            inviter_address->user->user_id,
-            inviter_address->user->device_id,
-            new_user_address->user->user_id,
-            new_user_address->user->device_id
-        );
-    } else {
-        ssm_notify_log(
-            receiver_address,
-            DEBUG_LOG,
-            "consume_new_user_device_msg(): receiver address [%s:%s], inviter address: null, new user address[%s:%s]",
-            receiver_address->user->user_id,
-            receiver_address->user->device_id,
-            new_user_address->user->user_id,
-            new_user_address->user->device_id
-        );
+    Skissm__E2eeAddress **old_address_list = msg->old_address_list;
+    size_t old_address_list_number = msg->n_old_address_list;
+
+    if (old_address_list == NULL || old_address_list_number == 0) {
+        return true;
     }
 
-    // if receiver is the inviter, then add the new device into the joined groups
-    if (compare_address(receiver_address, inviter_address)) {
+    size_t i, j;
+    group_address_node *group_address_list = NULL;
+    group_address_node *cur_group_address_node = NULL;
+    group_address_node *tail_group_address_node = NULL;
+    for (i = 0; i < old_address_list_number; i++) {
         // load all outbound group addresses
         Skissm__E2eeAddress **group_addresses = NULL;
-        size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(receiver_address, receiver_address, &group_addresses);
+        size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(old_address_list[i], receiver_address, &group_addresses);
 
-        size_t i;
-        for (i = 0; i < group_address_num; i++) {
-            Skissm__AddGroupMemberDeviceResponse *add_group_member_device_response = 
-                add_group_member_device_internal(receiver_address, group_addresses[i], new_user_address);
+        if (group_address_num == 0)
+            continue;
 
-            // release
-            if (add_group_member_device_response != NULL) {
-                skissm__add_group_member_device_response__free_unpacked(add_group_member_device_response, NULL);
-                add_group_member_device_response = NULL;
+        for (j = 0; j < group_address_num; j++) {
+            if (group_address_list != NULL) {
+                cur_group_address_node = group_address_list;
+                tail_group_address_node = NULL;
+                while (cur_group_address_node != NULL) {
+                    if (compare_address(cur_group_address_node->group_address, group_addresses[j])) {
+                        break;
+                    }
+                    if (cur_group_address_node->next == NULL) {
+                        tail_group_address_node = cur_group_address_node;
+                    }
+                    cur_group_address_node = cur_group_address_node->next;
+                }
+                if (tail_group_address_node != NULL) {
+                    tail_group_address_node->next = (group_address_node *)malloc(sizeof(group_address_node));
+                    copy_address_from_address(&(tail_group_address_node->next->group_address), group_addresses[j]);
+                    tail_group_address_node->next->next = NULL;
+                }
+            } else {
+                group_address_list = (group_address_node *)malloc(sizeof(group_address_node));
+                copy_address_from_address(&(group_address_list->group_address), group_addresses[j]);
+                group_address_list->next = NULL;
             }
         }
 
         // release
-        for (i = 0; i < group_address_num; i++) {
-            skissm__e2ee_address__free_unpacked(group_addresses[i], NULL);
-            group_addresses[i] = NULL;
+        for (j = 0; j < group_address_num; j++) {
+            skissm__e2ee_address__free_unpacked(group_addresses[j], NULL);
+            group_addresses[j] = NULL;
         }
         if (group_addresses != NULL) {
             free_mem((void **)&group_addresses, sizeof(Skissm__E2eeAddress *) * group_address_num);
@@ -515,7 +521,30 @@ bool consume_new_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
         }
     }
 
+    if (group_address_list != NULL) {
+        cur_group_address_node = group_address_list;
+        while (cur_group_address_node != NULL) {
+            Skissm__AddGroupMemberDeviceResponse *add_group_member_device_response = 
+                add_group_member_device_internal(receiver_address, cur_group_address_node->group_address, new_user_address);
+
+            // release
+            if (add_group_member_device_response != NULL) {
+                skissm__add_group_member_device_response__free_unpacked(add_group_member_device_response, NULL);
+                add_group_member_device_response = NULL;
+            }
+
+            cur_group_address_node = cur_group_address_node->next;
+        }
+    }
+
     // done
+    return true;
+}
+
+bool consume_remove_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveUserDeviceMsg *msg) {
+    // delete the corresponding session
+    get_skissm_plugin()->db_handler.unload_session(receiver_address, msg->user_address);
+
     return true;
 }
 

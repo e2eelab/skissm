@@ -701,8 +701,11 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
         case SKISSM__PROTO_MSG__PAYLOAD_SUPPLY_OPKS_MSG:
             consumed = consume_supply_opks_msg(receiver_address, proto_msg->supply_opks_msg);
             break;
-        case SKISSM__PROTO_MSG__PAYLOAD_NEW_USER_DEVICE_MSG:
-            consumed = consume_new_user_device_msg(receiver_address, proto_msg->new_user_device_msg);
+        case SKISSM__PROTO_MSG__PAYLOAD_ADD_USER_DEVICE_MSG:
+            consumed = consume_add_user_device_msg(receiver_address, proto_msg->add_user_device_msg);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_USER_DEVICE_MSG:
+            consumed = consume_remove_user_device_msg(receiver_address, proto_msg->remove_user_device_msg);
             break;
         case SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG:
             consumed = consume_invite_msg(receiver_address, proto_msg->invite_msg);
