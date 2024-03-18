@@ -267,7 +267,7 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
 
     Skissm__AddGroupMemberDeviceRequest *request = produce_add_group_member_device_request(outbound_group_session, new_device_address);
     Skissm__AddGroupMemberDeviceResponse *response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, request);
-    bool succ = consume_add_group_member_device_response(outbound_group_session, response, new_device_address);
+    bool succ = consume_add_group_member_device_response(outbound_group_session, response);
     if (!succ) {
         // pack reuest to request_data
         size_t request_data_len = skissm__add_group_member_device_request__get_packed_size(request);
@@ -535,9 +535,7 @@ static void resend_pending_request(Skissm__Account *account) {
                     Skissm__AddGroupMemberDeviceResponse *add_group_member_device_response = get_skissm_plugin()->proto_handler.add_group_member_device(user_address, auth, add_group_member_device_request);
 
                     succ = consume_add_group_member_device_response(
-                        outbound_group_session_4, add_group_member_device_response,
-                        add_group_member_device_response->adding_member_device_info->member_address
-                    );
+                        outbound_group_session_4, add_group_member_device_response);
 
                     // release
                     skissm__add_group_member_device_response__free_unpacked(add_group_member_device_response, NULL);

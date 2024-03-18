@@ -376,8 +376,7 @@ Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
 
 bool consume_add_group_member_device_response(
     Skissm__GroupSession *outbound_group_session,
-    Skissm__AddGroupMemberDeviceResponse *response,
-    Skissm__E2eeAddress *new_device_address
+    Skissm__AddGroupMemberDeviceResponse *response
 ) {
     const char *group_name = outbound_group_session->group_info->group_name;
     Skissm__E2eeAddress *session_owner = outbound_group_session->session_owner;
@@ -386,6 +385,29 @@ bool consume_add_group_member_device_response(
     if (response != NULL) {
         if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             Skissm__GroupMemberInfo *adding_member_device_info = response->adding_member_device_info;
+            if (adding_member_device_info == NULL) {
+                ssm_notify_log(
+                        outbound_group_session->session_owner,
+                        DEBUG_LOG,
+                        "consume_add_group_member_device_response() adding_member_device_info is null, give up: group_address:[%s@%s]",
+                        group_address->group->group_id,
+                        group_address->domain
+                );
+                // give up
+                return true;
+            }
+            Skissm__E2eeAddress *new_device_address = adding_member_device_info->member_address;
+            if (new_device_address == NULL) {
+                ssm_notify_log(
+                        outbound_group_session->session_owner,
+                        DEBUG_LOG,
+                        "consume_add_group_member_device_response() new_device_address is null, give up: group_address:[%s@%s]",
+                        group_address->group->group_id,
+                        group_address->domain
+                );
+                // give up
+                return true;
+            }
             // renew the outbound group session
             renew_group_sessions_with_new_device(
                 outbound_group_session, NULL, session_owner, new_device_address, adding_member_device_info
@@ -405,9 +427,7 @@ bool consume_add_group_member_device_response(
             ssm_notify_log(
                 outbound_group_session->session_owner,
                 DEBUG_LOG,
-                "consume_add_group_member_device_response() no content, give up: [%s:%s], group_address:[%s@%s]",
-                new_device_address->user->user_id,
-                new_device_address->user->device_id,
+                "consume_add_group_member_device_response() no content, give up: group_address:[%s@%s]",
                 group_address->group->group_id,
                 group_address->domain
             );
@@ -418,8 +438,6 @@ bool consume_add_group_member_device_response(
                 outbound_group_session->session_owner,
                 DEBUG_LOG,
                 "consume_add_group_member_device_response() response error, new_device_address: [%s:%s], group_address:[%s@%s]",
-                new_device_address->user->user_id,
-                new_device_address->user->device_id,
                 group_address->group->group_id,
                 group_address->domain
             );
@@ -430,9 +448,7 @@ bool consume_add_group_member_device_response(
         ssm_notify_log(
             outbound_group_session->session_owner,
             DEBUG_LOG,
-            "consume_add_group_member_device_response() no response error, new_device_address: [%s:%s], group_address:[%s@%s]",
-            new_device_address->user->user_id,
-            new_device_address->user->device_id,
+            "consume_add_group_member_device_response() no response error: group_address:[%s@%s]",
             group_address->group->group_id,
             group_address->domain
         );
