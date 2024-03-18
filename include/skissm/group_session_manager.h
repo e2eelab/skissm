@@ -134,13 +134,11 @@ Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
  * @brief Process an incoming AddGroupMemberDeviceResponse message.
  * @param outbound_group_session
  * @param response
- * @param new_device_address
  * @return true for success
  */
 bool consume_add_group_member_device_response(
     Skissm__GroupSession *outbound_group_session,
-    Skissm__AddGroupMemberDeviceResponse *response,
-    Skissm__E2eeAddress *new_device_address
+    Skissm__AddGroupMemberDeviceResponse *response
 );
 
 /**
