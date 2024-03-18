@@ -574,7 +574,7 @@ size_t decrypt_ratchet(
                 return 0;
             }
         } else {
-            /* They use the same ratchet key. The sequence of the payload(incoming message) 
+            /* They use the same ratchet key. The sequence of the payload(incoming message)
              * may be bigger than or equal to the index of our receiver chain. */
             result = verify_and_decrypt_for_existing_chain(
                 cipher_suite,
@@ -596,30 +596,47 @@ size_t decrypt_ratchet(
          * We will generate a new key when we send the next message. */
 
         if (payload->sending_message_sequence - ratchet->received_message_sequence > payload->sequence + 1) {
-            // we skipped some messages in the previous ratchet
-            size_t skipped_num = payload->sending_message_sequence - ratchet->received_message_sequence - (payload->sequence + 1);
-            if (ratchet->skipped_msg_key_list == NULL){
-                ratchet->skipped_msg_key_list = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *) * skipped_num);
-            } else{
-                Skissm__SkippedMsgKeyNode **temp_skipped_message_keys;
-                temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **) malloc(sizeof(Skissm__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_key_list + skipped_num));
-                copy_skipped_msg_key_node(temp_skipped_message_keys, ratchet->skipped_msg_key_list, ratchet->n_skipped_msg_key_list);
-                free_skipped_message_key(&(ratchet->skipped_msg_key_list), ratchet->n_skipped_msg_key_list);
-                ratchet->skipped_msg_key_list = temp_skipped_message_keys;
+            int ret = 0;
+            if (ratchet->receiver_chain->chain_key == NULL) {
+                ret = -1;
             }
-            size_t cur_seq;
-            for (cur_seq = 0; cur_seq < skipped_num; cur_seq++){
-                // insert data
-                Skissm__SkippedMsgKeyNode *key = (Skissm__SkippedMsgKeyNode *) malloc(sizeof(Skissm__SkippedMsgKeyNode));
-                skissm__skipped_msg_key_node__init(key);
-                key->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
-                skissm__msg_key__init(key->msg_key);
-                create_msg_keys(cipher_suite, ratchet->receiver_chain->chain_key, key->msg_key);
-                copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(ratchet->receiver_chain->their_ratchet_public_key));
 
-                ratchet->skipped_msg_key_list[ratchet->n_skipped_msg_key_list] = key;
-                (ratchet->n_skipped_msg_key_list)++;
-                advance_chain_key(cipher_suite, ratchet->receiver_chain->chain_key);
+            if (ret == 0) {
+                // we skipped some messages in the previous ratchet
+                size_t skipped_num =
+                        payload->sending_message_sequence - ratchet->received_message_sequence -
+                        (payload->sequence + 1);
+                if (ratchet->skipped_msg_key_list == NULL) {
+                    ratchet->skipped_msg_key_list = (Skissm__SkippedMsgKeyNode **) malloc(
+                            sizeof(Skissm__SkippedMsgKeyNode * ) * skipped_num);
+                } else {
+                    Skissm__SkippedMsgKeyNode **temp_skipped_message_keys;
+                    temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **) malloc(
+                            sizeof(Skissm__SkippedMsgKeyNode * ) *
+                            (ratchet->n_skipped_msg_key_list + skipped_num));
+                    copy_skipped_msg_key_node(temp_skipped_message_keys,
+                                              ratchet->skipped_msg_key_list,
+                                              ratchet->n_skipped_msg_key_list);
+                    free_skipped_message_key(&(ratchet->skipped_msg_key_list),
+                                             ratchet->n_skipped_msg_key_list);
+                    ratchet->skipped_msg_key_list = temp_skipped_message_keys;
+                }
+                size_t cur_seq;
+                for (cur_seq = 0; cur_seq < skipped_num; cur_seq++) {
+                    // insert data
+                    Skissm__SkippedMsgKeyNode *key = (Skissm__SkippedMsgKeyNode *) malloc(
+                            sizeof(Skissm__SkippedMsgKeyNode));
+                    skissm__skipped_msg_key_node__init(key);
+                    key->msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+                    skissm__msg_key__init(key->msg_key);
+                    create_msg_keys(cipher_suite, ratchet->receiver_chain->chain_key, key->msg_key);
+                    copy_protobuf_from_protobuf(&(key->ratchet_key_public),
+                                                &(ratchet->receiver_chain->their_ratchet_public_key));
+
+                    ratchet->skipped_msg_key_list[ratchet->n_skipped_msg_key_list] = key;
+                    (ratchet->n_skipped_msg_key_list)++;
+                    advance_chain_key(cipher_suite, ratchet->receiver_chain->chain_key);
+                }
             }
         }
 
