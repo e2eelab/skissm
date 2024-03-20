@@ -562,6 +562,85 @@ void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__Grou
     }
 }
 
+Skissm__GroupMember *member_info_to_group_member(Skissm__GroupMemberInfo *member_info) {
+    if (member_info == NULL)
+        return NULL;
+    if (member_info->member_address == NULL)
+        return NULL;
+    if (member_info->member_address->user == NULL)
+        return NULL;
+    if (member_info->member_address->user->user_id == NULL)
+        return NULL;
+    if (member_info->member_address->domain == NULL)
+        return NULL;
+
+    Skissm__GroupMember *group_member = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
+    skissm__group_member__init(group_member);
+    group_member->user_id = strdup(member_info->member_address->user->user_id);
+    group_member->domain = strdup(member_info->member_address->domain);
+    return group_member;
+}
+
+size_t member_info_to_group_members(Skissm__GroupMember ***dest,
+                                    Skissm__GroupMemberInfo **member_info_list, size_t member_info_list_num,
+                                    Skissm__GroupMember **member_list, size_t member_list_num) {
+    size_t dest_num = 0;
+    size_t i, j, k, l;
+    if (member_info_list_num > 0) {
+        dest_num = 1;
+        for (i = 1; i < member_info_list_num; i++) {
+            Skissm__GroupMemberInfo *member_info = member_info_list[i];
+            bool exist = false;
+            for (j = 0; j < member_info_list_num && j != i; j++) {
+                Skissm__GroupMemberInfo *scan_member_info = member_info_list[i];
+                if (compare_user_id(member_info->member_address,
+                                    scan_member_info->member_address->user->user_id,
+                                    scan_member_info->member_address->domain)) {
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist) {
+                dest_num++;
+            }
+        }
+    }
+
+    *dest = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * dest_num);
+    k = 0;
+    for (i = 0; i < member_info_list_num; i++) {
+        Skissm__GroupMemberInfo *member_info = member_info_list[i];
+        bool exist = false;
+        for (j = 0; j < k; j++) {
+            Skissm__GroupMember *scan_member = dest[j];
+            if (compare_user_id(member_info->member_address, scan_member->user_id, scan_member->domain)) {
+                exist = true;
+                break;
+            }
+        }
+        if (!exist) {
+            Skissm__GroupMember *group_member = member_info_to_group_member(member_info);
+            bool role_set = false;
+            for(l = 0; l < member_list_num; l++) {
+                Skissm__GroupMember *scan_member = member_list[l];
+                if (compare_user_id(member_info->member_address, scan_member->user_id, scan_member->domain)) {
+                    group_member->role = scan_member->role;
+                    role_set = true;
+                    break;
+                }
+            }
+            if (!role_set) {
+                ssm_notify_log(NULL, DEBUG_LOG, "member_info_to_group_members() group member has no member info: %s@%s", group_member->user_id, group_member->domain);
+            }
+            (*dest)[k] = group_member;
+            k++;
+        }
+    }
+
+    // done
+    return dest_num;
+}
+
 ///-----------------release-----------------///
 
 void free_e2ee_addresses(Skissm__E2eeAddress ***dest, size_t e2ee_addresses_num) {

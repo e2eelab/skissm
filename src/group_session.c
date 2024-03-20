@@ -656,6 +656,25 @@ int new_outbound_group_session_invited(
         // store
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
+        // notify
+        Skissm__GroupMember **added_member_list = NULL;
+        size_t added_group_members_num = member_info_to_group_members(&added_member_list,
+                                                                      group_update_key_bundle->adding_member_info_list, group_update_key_bundle->n_adding_member_info_list,
+                                                                      outbound_group_session->group_info->group_member_list, outbound_group_session->group_info->n_group_member_list);
+        if (added_group_members_num > 0) {
+            ssm_notify_group_members_added(
+                    user_address,
+                    outbound_group_session->group_info->group_address,
+                    outbound_group_session->group_info->group_name,
+                    outbound_group_session->group_info->group_member_list,
+                    outbound_group_session->group_info->n_group_member_list,
+                    added_member_list,
+                    added_group_members_num
+            );
+            // release
+            free_group_members(&added_member_list, added_group_members_num);
+        }
+
         // release
         skissm__account__free_unpacked(account, NULL);
         skissm__group_session__free_unpacked(outbound_group_session, NULL);

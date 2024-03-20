@@ -390,6 +390,25 @@ void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo
 void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **removing_members, size_t removing_members_num);
 
 /**
+ * @brief Copy member info to group member.
+ * @param member_info
+ * @return
+ */
+Skissm__GroupMember *member_info_to_group_member(Skissm__GroupMemberInfo *member_info);
+
+/**
+ *  * @brief Collect unique user ID from member_info_list then convert and collect it into member_list
+ * @param dest
+ * @param member_info_list
+ * @param member_info_list_num
+ * @param member_list
+ * @param member_list_num
+ * @return
+ */
+size_t member_info_to_group_members(Skissm__GroupMember ***dest, Skissm__GroupMemberInfo **member_info_list, size_t member_info_list_num,
+                                    Skissm__GroupMember **member_list, size_t member_list_num);
+
+/**
  * @brief Release memory of Skissm__E2eeAddress array.
  *
  * @param dest
