@@ -612,7 +612,7 @@ size_t member_info_to_group_members(Skissm__GroupMember ***dest,
         Skissm__GroupMemberInfo *member_info = member_info_list[i];
         bool exist = false;
         for (j = 0; j < k; j++) {
-            Skissm__GroupMember *scan_member = dest[j];
+            Skissm__GroupMember *scan_member = (*dest)[j];
             if (compare_user_id(member_info->member_address, scan_member->user_id, scan_member->domain)) {
                 exist = true;
                 break;
