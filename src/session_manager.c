@@ -620,22 +620,25 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     uint32_t e2ee_pack_id = invite_msg->e2ee_pack_id;
     Skissm__E2eeAddress *from = invite_msg->from;
     Skissm__E2eeAddress *to = invite_msg->to;
+    char *version = invite_msg->version;
+    char *session_id = invite_msg->session_id;
 
     if (!compare_address(receiver_address, to)) {
-        ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_invite_msg()");
-        return false;
+        ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_invite_msg() wrong receiver_address, just consume it");
+        // just consume it
+        return true;
     }
 
-    // Skissm__Session *our_session = NULL;
-    // get_skissm_plugin()->db_handler.load_outbound_session(receiver_address, from, &our_session);
-    // if (our_session != NULL) {
-    //     int64_t invite_t = our_session->invite_t;
-    //     skissm__session__free_unpacked(our_session, NULL);
-    //     if ( invite_t > invite_msg->invite_t) {
-    //         // just consume
-    //         return true;
-    //     }
-    // }
+    // check if session ID has been used
+    Skissm__Session *inbound_session = NULL;
+    get_skissm_plugin()->db_handler.load_inbound_session(session_id, receiver_address, &inbound_session);
+    if (inbound_session != NULL) {
+        ssm_notify_log(receiver_address, BAD_SESSION, "consume_invite_msg() session ID has been used, just consume it");
+        // release
+        skissm__session__free_unpacked(inbound_session, NULL);
+        // just consume it
+        return true;
+    }
 
     // notify
     ssm_notify_inbound_session_invited(receiver_address, from);
@@ -648,13 +651,12 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         return false;
     }
     // create a new inbound session
-    Skissm__Session *inbound_session = NULL;
     inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     initialise_session(inbound_session, e2ee_pack_id, to, from);
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
     // set the version and session id
-    inbound_session->version = strdup(invite_msg->version);
-    inbound_session->session_id = strdup(invite_msg->session_id);
+    inbound_session->version = strdup(version);
+    inbound_session->session_id = strdup(session_id);
     // create a new inbound session
     int result = session_suite->new_inbound_session(inbound_session, account, invite_msg);
 
