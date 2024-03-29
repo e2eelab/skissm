@@ -33,7 +33,7 @@ ctest
 
 # Doc
 
-[SLISSM Whitepaper](doc/skissm-whitepaper-v1.2.3.pdf)
+[SKISSM Whitepaper](doc/skissm-whitepaper-v1.2.3.pdf)
 
 # Licensing
 
