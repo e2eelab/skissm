@@ -8,7 +8,7 @@
     tag = v3.19.2
 [submodule "protos/src/skissm"]
 	path = protos/src/skissm
-	url = https://github.com/ziv-e2eelab-org/skissm-protos
+	url = https://github.com/e2eelab/skissm-protos
 	branch = master
 [submodule "lib/PQClean/src"]
 	path = lib/PQClean/src
