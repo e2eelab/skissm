@@ -33,7 +33,7 @@ ctest
 
 # Doc
 
-[SKISSM Whitepaper](doc/skissm-whitepaper-v1.2.3.pdf)
+[SKISSM Whitepaper](https://www.e2eelab.org/docs/skissm-whitepapers/)
 
 # Licensing
 
