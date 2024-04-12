@@ -59,10 +59,13 @@ size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len);
  * @param plaintext_data
  * @param plaintext_data_len
  * @param ciphertext_data
+ * @param ciphertext_data_len
  * @return size_t length of ciphertext_data
  */
-size_t aes256_gcm_encrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
-    const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **ciphertext_data
+int aes256_gcm_encrypt(
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key,
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    uint8_t **ciphertext_data, size_t *ciphertext_data_len
 );
 
 /**
@@ -75,7 +78,8 @@ size_t aes256_gcm_encrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
  * @param plaintext_data
  * @return size_t length of plaintext_data
  */
-size_t aes256_gcm_decrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
+int aes256_gcm_decrypt(
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key,
     const uint8_t *ciphertext_data, size_t ciphertext_data_len, uint8_t **plaintext_data
 );
 

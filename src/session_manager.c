@@ -9,6 +9,7 @@
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
+#include "skissm/safe_check.h"
 #include "skissm/session.h"
 
 typedef struct group_address_node {
@@ -69,17 +70,37 @@ static void send_pending_plaintext_data(Skissm__Session *outbound_session) {
     }
 }
 
-Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(
-    const char *to_user_id, const char *to_domain, const char *to_device_id
+int produce_get_pre_key_bundle_request(
+    Skissm__GetPreKeyBundleRequest **request_out,
+    const char *to_user_id,
+    const char *to_domain,
+    const char *to_device_id
 ) {
-    Skissm__GetPreKeyBundleRequest *request =
-        (Skissm__GetPreKeyBundleRequest *)malloc(sizeof(Skissm__GetPreKeyBundleRequest));
-    skissm__get_pre_key_bundle_request__init(request);
-    request->domain = strdup(to_domain);
-    request->user_id = strdup(to_user_id);
-    if (to_device_id != NULL)
-        request->device_id = strdup(to_device_id);
-    return request;
+    int ret = 0;
+
+    Skissm__GetPreKeyBundleRequest *request = NULL;
+
+    if (!nonempty_string(to_user_id)) {
+        ret = -1;
+    }
+    if (!nonempty_string(to_domain)) {
+        ret = -1;
+    }
+
+    if (ret == 0) {
+        request = (Skissm__GetPreKeyBundleRequest *)malloc(sizeof(Skissm__GetPreKeyBundleRequest));
+        skissm__get_pre_key_bundle_request__init(request);
+        request->domain = strdup(to_domain);
+        request->user_id = strdup(to_user_id);
+        if (to_device_id != NULL) {
+            // the device ID may be empty or nonempty
+            request->device_id = strdup(to_device_id);
+        }
+
+        *request_out = request;
+    }
+
+    return ret;
 }
 
 Skissm__InviteResponse *consume_get_pre_key_bundle_response(
@@ -88,106 +109,176 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     size_t group_pre_key_plaintext_data_len,
     Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response
 ) {
-    // find an account
+    int ret = 0;
+
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(from, &account);
-    if (account == NULL) {
-        ssm_notify_log(from, BAD_ACCOUNT, "consume_get_pre_key_bundle_response()");
-        return NULL;
+    Skissm__PreKeyBundle **their_pre_key_bundles = NULL;
+    size_t n_pre_key_bundles;
+    Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
+    Skissm__E2eeAddress *to_address = NULL;
+    uint32_t e2ee_pack_id;
+    Skissm__InviteResponse *invite_response = NULL;
+
+    if (safe_address(from)) {
+        if (safe_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
+            their_pre_key_bundles = get_pre_key_bundle_response->pre_key_bundles;
+            n_pre_key_bundles = get_pre_key_bundle_response->n_pre_key_bundles;
+        } else {
+            ret = -1;
+        }
+    } else {
+        ret = -1;
     }
 
-    ssm_notify_log(
-        from,
-        DEBUG_LOG,
-        "consume_get_pre_key_bundle_response() from[%s:%s]",
-        from->user->user_id,
-        from->user->device_id
-    );
+    // ssm_notify_log(
+    //     from,
+    //     DEBUG_LOG,
+    //     "consume_get_pre_key_bundle_response() from[%s:%s]",
+    //     from->user->user_id,
+    //     from->user->device_id
+    // );
 
-    Skissm__InviteResponse *invite_response = NULL;
-    if (get_pre_key_bundle_response == NULL) {
-        ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() got error getPreKeyBundleResponse");
-    } else {
-        if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            // handle received pre-key bundles
-            Skissm__PreKeyBundle **their_pre_key_bundles = get_pre_key_bundle_response->pre_key_bundles;
-            size_t n_pre_key_bundles = get_pre_key_bundle_response->n_pre_key_bundles;
-            if (their_pre_key_bundles == NULL || n_pre_key_bundles == 0) {
-                // release
-                skissm__account__free_unpacked(account, NULL);
-
-                // error, should redo again
-                ssm_notify_log(from, BAD_PRE_KEY_BUNDLE, "consume_get_pre_key_bundle_response() empty pre_key_bundles error");
-                return NULL;
-            }
-            size_t i;
-            for (i = 0; i < n_pre_key_bundles; i++) {
-                Skissm__PreKeyBundle *cur_pre_key_bundle = their_pre_key_bundles[i];
-                Skissm__E2eeAddress *to_address = cur_pre_key_bundle->user_address;
-                // skip if the pre-key bundle is from this device
-                if (safe_strcmp(from->user->user_id, to_address->user->user_id)) {
-                    if (compare_address(from, to_address)) {
-                        continue;
-                    }
+    if (ret == 0) {
+        size_t i;
+        for (i = 0; i < n_pre_key_bundles; i++) {
+            cur_pre_key_bundle = their_pre_key_bundles[i];
+            e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
+            to_address = cur_pre_key_bundle->user_address;
+            // skip if the pre-key bundle is from this device
+            if (safe_strcmp(from->user->user_id, to_address->user->user_id)) {
+                if (compare_address(from, to_address)) {
+                    continue;
                 }
-                ssm_notify_log(
+            }
+            // ssm_notify_log(
+            //     from,
+            //     DEBUG_LOG,
+            //     "consume_get_pre_key_bundle_response() [%d of %d] sending invite to: %s:%s",
+            //     i + 1,
+            //     n_pre_key_bundles,
+            //     to_address->user->user_id,
+            //     to_address->user->device_id
+            // );
+
+            // store the group pre-keys if necessary
+            if (group_pre_key_plaintext_data != NULL) {
+                ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() store the group pre-keys");
+                char *pending_plaintext_id = generate_uuid_str();
+                get_skissm_plugin()->db_handler.store_pending_plaintext_data(
                     from,
-                    DEBUG_LOG,
-                    "consume_get_pre_key_bundle_response() [%d of %d] sending invite to: %s:%s",
-                    i + 1,
-                    n_pre_key_bundles,
-                    to_address->user->user_id,
-                    to_address->user->device_id
+                    to_address,
+                    pending_plaintext_id,
+                    group_pre_key_plaintext_data,
+                    group_pre_key_plaintext_data_len,
+                    SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
                 );
-
-                // store the group pre-keys if necessary
-                if (group_pre_key_plaintext_data != NULL) {
-                    ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() store the group pre-keys");
-                    char *pending_plaintext_id = generate_uuid_str();
-                    get_skissm_plugin()->db_handler.store_pending_plaintext_data(
-                        from,
-                        to_address,
-                        pending_plaintext_id,
-                        group_pre_key_plaintext_data,
-                        group_pre_key_plaintext_data_len,
-                        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
-                    );
-                    // release
-                    free(pending_plaintext_id);
-                }
-
-                // create an outbound session
-                uint32_t e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
-                Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
-                initialise_session(outbound_session, e2ee_pack_id, from, to_address);
-                copy_address_from_address(&(outbound_session->our_address), from);
-
-                const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-                invite_response =
-                    session_suite->new_outbound_session(outbound_session, account, cur_pre_key_bundle);
-
                 // release
-                skissm__session__free_unpacked(outbound_session, NULL);
-
-                // error check
-                if (invite_response != NULL) {
-                    // return last invite response
-                    if (i != (n_pre_key_bundles-1)) {
-                        skissm__invite_response__free_unpacked(invite_response, NULL);
-                    }
-                } else {
-                    ssm_notify_log(from, BAD_SESSION, "consume_get_pre_key_bundle_response() got NULL invite_response");
-                    // TODO: continue the rest, if there are ?
-                    break;
-                }
+                free(pending_plaintext_id);
+                pending_plaintext_id = NULL;
             }
-        } else if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
-            ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() got no content response, pending reqest should be skipped");
-            invite_response = (Skissm__InviteResponse *)malloc(sizeof(Skissm__InviteResponse));
-            skissm__invite_response__init(invite_response);
-            invite_response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+
+            // create an outbound session
+            const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
+            ret = session_suite->new_outbound_session(&invite_response, from, cur_pre_key_bundle);
+
+            // error check
+            if (invite_response != NULL) {
+                // return last invite response
+                if (i != (n_pre_key_bundles-1)) {
+                    skissm__invite_response__free_unpacked(invite_response, NULL);
+                }
+            } else {
+                ssm_notify_log(from, BAD_SESSION, "consume_get_pre_key_bundle_response() got NULL invite_response");
+                // TODO: continue the rest, if there are ?
+                break;
+            }
         }
     }
+
+    // Skissm__InviteResponse *invite_response = NULL;
+    // if (get_pre_key_bundle_response == NULL) {
+    //     ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() got error getPreKeyBundleResponse");
+    // } else {
+    //     if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+    //         // handle received pre-key bundles
+    //         Skissm__PreKeyBundle **their_pre_key_bundles = get_pre_key_bundle_response->pre_key_bundles;
+    //         size_t n_pre_key_bundles = get_pre_key_bundle_response->n_pre_key_bundles;
+    //         if (their_pre_key_bundles == NULL || n_pre_key_bundles == 0) {
+    //             // release
+    //             skissm__account__free_unpacked(account, NULL);
+
+    //             // error, should redo again
+    //             ssm_notify_log(from, BAD_PRE_KEY_BUNDLE, "consume_get_pre_key_bundle_response() empty pre_key_bundles error");
+    //             return NULL;
+    //         }
+    //         size_t i;
+    //         for (i = 0; i < n_pre_key_bundles; i++) {
+    //             Skissm__PreKeyBundle *cur_pre_key_bundle = their_pre_key_bundles[i];
+    //             Skissm__E2eeAddress *to_address = cur_pre_key_bundle->user_address;
+    //             // skip if the pre-key bundle is from this device
+    //             if (safe_strcmp(from->user->user_id, to_address->user->user_id)) {
+    //                 if (compare_address(from, to_address)) {
+    //                     continue;
+    //                 }
+    //             }
+    //             ssm_notify_log(
+    //                 from,
+    //                 DEBUG_LOG,
+    //                 "consume_get_pre_key_bundle_response() [%d of %d] sending invite to: %s:%s",
+    //                 i + 1,
+    //                 n_pre_key_bundles,
+    //                 to_address->user->user_id,
+    //                 to_address->user->device_id
+    //             );
+
+    //             // store the group pre-keys if necessary
+    //             if (group_pre_key_plaintext_data != NULL) {
+    //                 ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() store the group pre-keys");
+    //                 char *pending_plaintext_id = generate_uuid_str();
+    //                 get_skissm_plugin()->db_handler.store_pending_plaintext_data(
+    //                     from,
+    //                     to_address,
+    //                     pending_plaintext_id,
+    //                     group_pre_key_plaintext_data,
+    //                     group_pre_key_plaintext_data_len,
+    //                     SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION
+    //                 );
+    //                 // release
+    //                 free(pending_plaintext_id);
+    //             }
+
+    //             // create an outbound session
+    //             uint32_t e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
+    //             Skissm__Session *outbound_session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    //             initialise_session(outbound_session, e2ee_pack_id, from, to_address);
+    //             copy_address_from_address(&(outbound_session->our_address), from);
+
+    //             const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
+    //             invite_response =
+    //                 session_suite->new_outbound_session(outbound_session, account, cur_pre_key_bundle);
+
+    //             // release
+    //             skissm__session__free_unpacked(outbound_session, NULL);
+
+    //             // error check
+    //             if (invite_response != NULL) {
+    //                 // return last invite response
+    //                 if (i != (n_pre_key_bundles-1)) {
+    //                     skissm__invite_response__free_unpacked(invite_response, NULL);
+    //                 }
+    //             } else {
+    //                 ssm_notify_log(from, BAD_SESSION, "consume_get_pre_key_bundle_response() got NULL invite_response");
+    //                 // TODO: continue the rest, if there are ?
+    //                 break;
+    //             }
+    //         }
+    //     } else if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+    //         ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() got no content response, pending reqest should be skipped");
+    //         invite_response = (Skissm__InviteResponse *)malloc(sizeof(Skissm__InviteResponse));
+    //         skissm__invite_response__init(invite_response);
+    //         invite_response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+    //     }
+    // }
 
     // release
     skissm__account__free_unpacked(account, NULL);
@@ -196,32 +287,62 @@ Skissm__InviteResponse *consume_get_pre_key_bundle_response(
     return invite_response;
 }
 
-Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(
+int produce_send_one2one_msg_request(
+    Skissm__SendOne2oneMsgRequest **request_out,
     Skissm__Session *outbound_session,
     uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 ) {
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+    int ret = 0;
 
-    Skissm__SendOne2oneMsgRequest *request = (Skissm__SendOne2oneMsgRequest *)malloc(sizeof(Skissm__SendOne2oneMsgRequest));
-    skissm__send_one2one_msg_request__init(request);
+    Skissm__One2oneMsgPayload *payload_out = NULL;
 
-    // prepare an e2ee message
-    Skissm__E2eeMsg *e2ee_msg = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
-    skissm__e2ee_msg__init(e2ee_msg);
+    if (outbound_session != NULL) {
+        if (outbound_session->session_id == NULL)
+            ret = -1;
+        if (outbound_session->our_address == NULL)
+            ret = -1;
+        if (outbound_session->their_address == NULL)
+            ret = -1;
+        if (outbound_session->ratchet == NULL)
+            ret = -1;
+    } else {
+        ret = -1;
+    }
 
-    e2ee_msg->version = strdup(E2EE_PROTOCOL_VERSION);
-    e2ee_msg->session_id = strdup(outbound_session->session_id);
-    e2ee_msg->msg_id = generate_uuid_str();
-    e2ee_msg->notif_level = notif_level;
-    copy_address_from_address(&(e2ee_msg->from), outbound_session->our_address);
-    copy_address_from_address(&(e2ee_msg->to), outbound_session->their_address);
-    e2ee_msg->payload_case = SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG;
-    encrypt_ratchet(cipher_suite, outbound_session->ratchet, outbound_session->associated_data, plaintext_data, plaintext_data_len, &(e2ee_msg->one2one_msg));
+    if (ret == 0) {
+        const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+        ret = encrypt_ratchet(
+            &payload_out, cipher_suite,
+            outbound_session->ratchet, outbound_session->associated_data,
+            plaintext_data, plaintext_data_len
+        );
+    }
 
-    // done
-    request->msg = e2ee_msg;
-    return request;
+    if (ret == 0) {
+        // prepare an e2ee message
+        Skissm__E2eeMsg *e2ee_msg = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
+        skissm__e2ee_msg__init(e2ee_msg);
+
+        e2ee_msg->version = strdup(E2EE_PROTOCOL_VERSION);
+        e2ee_msg->session_id = strdup(outbound_session->session_id);
+        e2ee_msg->msg_id = generate_uuid_str();
+        e2ee_msg->notif_level = notif_level;
+        copy_address_from_address(&(e2ee_msg->from), outbound_session->our_address);
+        copy_address_from_address(&(e2ee_msg->to), outbound_session->their_address);
+        e2ee_msg->payload_case = SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG;
+        e2ee_msg->one2one_msg = payload_out;
+
+        Skissm__SendOne2oneMsgRequest *request = (Skissm__SendOne2oneMsgRequest *)malloc(sizeof(Skissm__SendOne2oneMsgRequest));
+        skissm__send_one2one_msg_request__init(request);
+        request->msg = e2ee_msg;
+
+        *request_out = request;
+    } else {
+        *request_out = NULL;
+    }
+
+    return ret;
 }
 
 bool consume_send_one2one_msg_response(
@@ -272,14 +393,14 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 
     // ssm_notify_log(receiver_address, DEBUG_LOG, "consume_one2one_msg(), session_id: %s, from: [%s:%s], to: [%s:%s]", e2ee_msg->session_id, e2ee_msg->from->user->user_id, e2ee_msg->from->user->device_id, e2ee_msg->to->user->user_id, e2ee_msg->to->user->device_id);
     Skissm__One2oneMsgPayload *payload = NULL;
-    size_t plain_text_data_len = -1;
     if (e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG) {
         payload = e2ee_msg->one2one_msg;
     }
     if (payload != NULL) {
-        uint8_t *plain_text_data = NULL;
+        uint8_t *decrypted_data_out = NULL;
+        size_t decrypted_data_len_out;
         const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
-        plain_text_data_len = decrypt_ratchet(cipher_suite, inbound_session->ratchet, inbound_session->associated_data, payload, &plain_text_data);
+        plain_text_data_len = decrypt_ratchet(&decrypted_data_out, &decrypted_data_len_out, cipher_suite, inbound_session->ratchet, inbound_session->associated_data, payload);
 
         // store session state
         get_skissm_plugin()->db_handler.store_session(inbound_session);
@@ -287,8 +408,8 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
         // delete old sessions if necessary
         get_skissm_plugin()->db_handler.unload_old_session(receiver_address, e2ee_msg->from, inbound_session->invite_t);
 
-        if (plain_text_data != NULL && plain_text_data_len > 0) {
-            Skissm__Plaintext *plaintext = skissm__plaintext__unpack(NULL, plain_text_data_len, plain_text_data);
+        if (decrypted_data_out != NULL && decrypted_data_len_out > 0) {
+            Skissm__Plaintext *plaintext = skissm__plaintext__unpack(NULL, decrypted_data_len_out, decrypted_data_out);
             if (plaintext != NULL) {
                 if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_MSG) {
                     ssm_notify_one2one_msg(receiver_address, e2ee_msg->from, e2ee_msg->to, plaintext->common_msg.data, plaintext->common_msg.len);
@@ -450,7 +571,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                 // error
             }
             // release
-            free_mem((void **)&plain_text_data, plain_text_data_len);
+            free_mem((void **)&decrypted_data_out, decrypted_data_len_out);
         } else {
             ssm_notify_log(receiver_address, BAD_MESSAGE_FORMAT, "consume_one2one_msg() wrong plaintext data");
         }
@@ -548,64 +669,99 @@ bool consume_remove_user_device_msg(Skissm__E2eeAddress *receiver_address, Skiss
     return true;
 }
 
-Skissm__InviteRequest *produce_invite_request(
+int produce_invite_request(
+    Skissm__InviteRequest **request_out,
     Skissm__Session *outbound_session
 ) {
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+    int ret = 0;
 
-    Skissm__InviteRequest *request = (Skissm__InviteRequest *) malloc(sizeof(Skissm__InviteRequest));
-    skissm__invite_request__init(request);
+    Skissm__InviteRequest *request = NULL;
+    Skissm__InviteMsg *msg = NULL;
 
-    Skissm__InviteMsg *msg = (Skissm__InviteMsg *) malloc(sizeof(Skissm__InviteMsg));
-    skissm__invite_msg__init(msg);
-
-    msg->version = strdup(outbound_session->version);
-    msg->e2ee_pack_id = outbound_session->e2ee_pack_id;
-    msg->session_id = strdup(outbound_session->session_id);
-    copy_address_from_address(&(msg->from), outbound_session->our_address);
-    copy_address_from_address(&(msg->to), outbound_session->their_address);
-
-    msg->n_pre_shared_input_list = outbound_session->n_pre_shared_input_list;
-    msg->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * msg->n_pre_shared_input_list);
-    size_t i;
-    for (i = 0; i < msg->n_pre_shared_input_list; i++) {
-        init_protobuf(&(msg->pre_shared_input_list[i]));
-        copy_protobuf_from_protobuf(&(msg->pre_shared_input_list[i]), &(outbound_session->pre_shared_input_list[i]));
+    if (!safe_uncompleted_session(outbound_session)) {
+        ret = -1;
     }
 
-    copy_protobuf_from_protobuf(&(msg->alice_base_key), &(outbound_session->alice_base_key->public_key));
+    if (ret == 0) {
+        msg = (Skissm__InviteMsg *)malloc(sizeof(Skissm__InviteMsg));
+        skissm__invite_msg__init(msg);
 
-    msg->bob_signed_pre_key_id = outbound_session->bob_signed_pre_key_id;
-    msg->bob_one_time_pre_key_id = outbound_session->bob_one_time_pre_key_id;
+        msg->version = strdup(outbound_session->version);
+        msg->e2ee_pack_id = outbound_session->e2ee_pack_id;
+        msg->session_id = strdup(outbound_session->session_id);
+        copy_address_from_address(&(msg->from), outbound_session->our_address);
+        copy_address_from_address(&(msg->to), outbound_session->their_address);
 
-    msg->invite_t = outbound_session->invite_t;
+        msg->n_pre_shared_input_list = outbound_session->n_pre_shared_input_list;
+        msg->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * msg->n_pre_shared_input_list);
+        size_t i;
+        for (i = 0; i < msg->n_pre_shared_input_list; i++) {
+            init_protobuf(&(msg->pre_shared_input_list[i]));
+            copy_protobuf_from_protobuf(&(msg->pre_shared_input_list[i]), &(outbound_session->pre_shared_input_list[i]));
+        }
 
-    // done
-    request->msg = msg;
-    return request;
+        copy_protobuf_from_protobuf(&(msg->alice_base_key), &(outbound_session->alice_base_key->public_key));
+
+        msg->bob_signed_pre_key_id = outbound_session->bob_signed_pre_key_id;
+        msg->bob_one_time_pre_key_id = outbound_session->bob_one_time_pre_key_id;
+
+        msg->invite_t = outbound_session->invite_t;
+
+        request = (Skissm__InviteRequest *)malloc(sizeof(Skissm__InviteRequest));
+        skissm__invite_request__init(request);
+        request->msg = msg;
+
+        *request_out = request;
+    }
+
+    return ret;
 }
 
-bool consume_invite_response(
+int consume_invite_response(
     Skissm__E2eeAddress *user_address,
     Skissm__InviteResponse *response
 ) {
-    if (response != NULL) {
-        ssm_notify_log(user_address, DEBUG_LOG, "consume_invite_response() response code: %d", response->code);
-        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-            // load the corresponding inbound session
-            Skissm__Session *inbound_session = NULL;
-            get_skissm_plugin()->db_handler.load_inbound_session(response->session_id, user_address, &inbound_session);
-            if (inbound_session != NULL) {
-                // update invite_t
-                inbound_session->invite_t = response->invite_t;
-                get_skissm_plugin()->db_handler.store_session(inbound_session);
-            }
-            return true;
-        } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
-            return true;
+    int ret = 0;
+
+    if (safe_address(user_address)) {
+        if (!safe_invite_response(response)) {
+            ret = -1;
+        }
+    } else {
+        ret = -1;
+    }
+
+    if (ret == 0) {
+        // load the corresponding inbound session
+        Skissm__Session *inbound_session = NULL;
+        get_skissm_plugin()->db_handler.load_inbound_session(response->session_id, user_address, &inbound_session);
+        if (inbound_session != NULL) {
+            // update invite_t
+            inbound_session->invite_t = response->invite_t;
+            get_skissm_plugin()->db_handler.store_session(inbound_session);
+        } else {
+            ret = -1;
         }
     }
-    return false;
+
+    // if (response != NULL) {
+    //     ssm_notify_log(user_address, DEBUG_LOG, "consume_invite_response() response code: %d", response->code);
+    //     if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+    //         // load the corresponding inbound session
+    //         Skissm__Session *inbound_session = NULL;
+    //         get_skissm_plugin()->db_handler.load_inbound_session(response->session_id, user_address, &inbound_session);
+    //         if (inbound_session != NULL) {
+    //             // update invite_t
+    //             inbound_session->invite_t = response->invite_t;
+    //             get_skissm_plugin()->db_handler.store_session(inbound_session);
+    //         }
+    //         return true;
+    //     } else if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+    //         return true;
+    //     }
+    // }
+
+    return ret;
 }
 
 bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *invite_msg) {
@@ -676,47 +832,84 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     return result == 0;
 }
 
-Skissm__AcceptRequest *produce_accept_request(
+int produce_accept_request(
+    Skissm__AcceptRequest **request_out,
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     ProtobufCBinaryData *ciphertext_1,
     ProtobufCBinaryData *our_ratchet_key
 ) {
-    Skissm__AcceptRequest *request = (Skissm__AcceptRequest *) malloc(sizeof(Skissm__AcceptRequest));
-    skissm__accept_request__init(request);
+    int ret = 0;
 
-    Skissm__AcceptMsg *msg = (Skissm__AcceptMsg *) malloc(sizeof(Skissm__AcceptMsg));
-    skissm__accept_msg__init(msg);
+    Skissm__AcceptRequest *request = NULL;
+    Skissm__AcceptMsg *msg = NULL;
 
-    msg->e2ee_pack_id = e2ee_pack_id;
-    copy_address_from_address(&(msg->from), from);
-    copy_address_from_address(&(msg->to), to);
-
-    if (ciphertext_1 != NULL) {
-        copy_protobuf_from_protobuf(&(msg->encaps_ciphertext), ciphertext_1);
+    if (!safe_e2ee_pack_id(e2ee_pack_id)) {
+        ret = -1;
+    }
+    if (!safe_address(from)) {
+        ret = -1;
+    }
+    if (!safe_address(to)) {
+        ret = -1;
+    }
+    if (!safe_protobuf(ciphertext_1)) {
+        ret = -1;
+    }
+    if (!safe_protobuf(our_ratchet_key)) {
+        ret = -1;
     }
 
-    copy_protobuf_from_protobuf(&(msg->ratchet_key), our_ratchet_key);
+    if (ret == 0) {
+        msg = (Skissm__AcceptMsg *)malloc(sizeof(Skissm__AcceptMsg));
+        skissm__accept_msg__init(msg);
 
-    // done
-    request->msg = msg;
-    return request;
+        msg->e2ee_pack_id = e2ee_pack_id;
+        copy_address_from_address(&(msg->from), from);
+        copy_address_from_address(&(msg->to), to);
+
+        if (ciphertext_1 != NULL) {
+            copy_protobuf_from_protobuf(&(msg->encaps_ciphertext), ciphertext_1);
+        }
+
+        copy_protobuf_from_protobuf(&(msg->ratchet_key), our_ratchet_key);
+
+        request = (Skissm__AcceptRequest *)malloc(sizeof(Skissm__AcceptRequest));
+        skissm__accept_request__init(request);
+        request->msg = msg;
+
+        *request_out = request;
+    }
+
+    return ret;
 }
 
-bool consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response) {
-    if (response != NULL) {
-        ssm_notify_log(user_address, DEBUG_LOG, "consume_accept_response() response code: %d", response->code);
-        if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
-            || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
-            return true;
+int consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response) {
+    int ret = 0;
+
+    if (safe_address(user_address)) {
+        if (!safe_accept_response(response)) {
+            ret = -1;
         }
+    } else {
+        ret = -1;
     }
-    return false;
+
+    // if (response != NULL) {
+    //     ssm_notify_log(user_address, DEBUG_LOG, "consume_accept_response() response code: %d", response->code);
+    //     if (response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK
+    //         || response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+    //         return true;
+    //     }
+    // }
+
+    return ret;
 }
 
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *accept_msg) {
-    ssm_notify_log(receiver_address, DEBUG_LOG, "consume_accept_msg(): from [%s:%s], to [%s:%s]", 
+    ssm_notify_log(
+        receiver_address, DEBUG_LOG, "consume_accept_msg(): from [%s:%s], to [%s:%s]", 
         accept_msg->from->user->user_id,
         accept_msg->from->user->device_id,
         accept_msg->to->user->user_id,

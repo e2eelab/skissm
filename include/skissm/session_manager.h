@@ -30,13 +30,17 @@ extern "C" {
 /**
  * @brief Create a get_pre_key_bundle_request to be sent to messaging server.
  *
+ * @param request_out
  * @param to_user_id
  * @param to_domain
  * @param to_device_id
- * @return Skissm__GetPreKeyBundleRequest*
+ * @return 0 if success
  */
-Skissm__GetPreKeyBundleRequest *produce_get_pre_key_bundle_request(
-    const char *to_user_id, const char *to_domain, const char *to_device_id
+int produce_get_pre_key_bundle_request(
+    Skissm__GetPreKeyBundleRequest **request_out,
+    const char *to_user_id,
+    const char *to_domain,
+    const char *to_device_id
 );
 
 /**
@@ -124,10 +128,12 @@ bool consume_remove_user_device_msg(
 /**
  * @brief Create a Skissm__InviteRequest message to be sent to server.
  *
+ * @param request_out
  * @param outbound_session
- * @return Skissm__InviteRequest*
+ * @return 0 if success
  */
-Skissm__InviteRequest *produce_invite_request(
+int produce_invite_request(
+    Skissm__InviteRequest **request_out,
     Skissm__Session *outbound_session
 );
 
@@ -139,7 +145,7 @@ Skissm__InviteRequest *produce_invite_request(
  * @return true
  * @return false
  */
-bool consume_invite_response(
+int consume_invite_response(
     Skissm__E2eeAddress *user_address,
     Skissm__InviteResponse *response
 );
@@ -160,13 +166,15 @@ bool consume_invite_msg(
 /**
  * @brief Create a Skissm__AcceptRequest message to be sent to server.
  *
+ * @param request_out
  * @param e2ee_pack_id
  * @param from
  * @param to
  * @param ciphertext_1
- * @return Skissm__AcceptRequest*
+ * @return 0 if success
  */
-Skissm__AcceptRequest *produce_accept_request(
+int produce_accept_request(
+    Skissm__AcceptRequest **request_out,
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
@@ -182,7 +190,7 @@ Skissm__AcceptRequest *produce_accept_request(
  * @return true
  * @return false
  */
-bool consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response);
+int consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response);
 
 /**
  * @brief Process an incoming AcceptMsg message.

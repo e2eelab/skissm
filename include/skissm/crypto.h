@@ -450,7 +450,7 @@ void crypto_sha256(
  * @param add_len
  * @param ciphertext_data
  */
-void crypto_aes_encrypt_gcm(
+int crypto_aes_encrypt_gcm(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     const uint8_t *aes_key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
@@ -468,13 +468,14 @@ void crypto_aes_encrypt_gcm(
  * @param add
  * @param add_len
  * @param plaintext_data
+ * @param plaintext_data_len
  * @return size_t plaintext data length
  */
-size_t crypto_aes_decrypt_gcm(
+int crypto_aes_decrypt_gcm(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
     const uint8_t *aes_key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
-    uint8_t *plaintext_data
+    uint8_t *plaintext_data, size_t *plaintext_data_len
 );
 
 /**

@@ -50,23 +50,27 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
 
 /**
  * @brief Send invite request to server.
+ * @param response_out
  * @param outbound_session
- * @return Skissm__InviteResponse *
+ * @return 0 if success
  */
-Skissm__InviteResponse *invite_internal(
+int invite_internal(
+    Skissm__InviteResponse **response_out,
     Skissm__Session *outbound_session
 );
 
 /**
  * @brief Send accept request to server.
+ * @param response_out
  * @param e2ee_pack_id
  * @param from
  * @param to
  * @param ciphertext_1
  * @param our_ratchet_key
- * @return Skissm__AcceptResponse *
+ * @return 0 if success
  */
-Skissm__AcceptResponse *accept_internal(
+int accept_internal(
+    Skissm__AcceptResponse **response_out,
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
