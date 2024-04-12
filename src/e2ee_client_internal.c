@@ -5,16 +5,57 @@
 #include "skissm/account_manager.h"
 #include "skissm/group_session_manager.h"
 #include "skissm/mem_util.h"
+#include "skissm/safe_check.h"
 #include "skissm/session_manager.h"
 #include "skissm/e2ee_client.h"
 
 Skissm__InviteResponse *get_pre_key_bundle_internal(
-    Skissm__E2eeAddress *from, const char *auth, const char *to_user_id, const char *to_domain, const char *to_device_id, bool active,
-    uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len
+    Skissm__E2eeAddress *from,
+    const char *auth,
+    const char *to_user_id,
+    const char *to_domain,
+    const char *to_device_id,
+    bool active,
+    uint8_t *group_pre_key_plaintext_data,
+    size_t group_pre_key_plaintext_data_len
 ) {
-    // to_device_id can be null
-    Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = produce_get_pre_key_bundle_request(to_user_id, to_domain, to_device_id);
-    Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(from, auth, get_pre_key_bundle_request);
+    int ret = 0;
+
+    Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = NULL;
+    Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = NULL;
+    Skissm__InviteResponse *invite_response = NULL;
+
+    if (!safe_address(from)) {
+        ret = -1;
+    }
+    if (!nonempty_string(auth)) {
+        ret = -1;
+    }
+    if (!nonempty_string(to_user_id)) {
+        ret = -1;
+    }
+    if (!nonempty_string(to_domain)) {
+        ret = -1;
+    }
+
+    if (ret == 0) {
+        // to_device_id can be null
+        ret = produce_get_pre_key_bundle_request(&get_pre_key_bundle_request, to_user_id, to_domain, to_device_id);
+    }
+
+    if (ret == 0) {
+        get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(from, auth, get_pre_key_bundle_request);
+
+        if (!safe_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
+            ret = -1;
+        }
+    }
+
+    if (ret == 0) {
+        invite_response = consume_get_pre_key_bundle_response(
+            from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
+        );
+    }
 
     // does not invite, if the get_pre_key_bundle_response code is no content
     if (get_pre_key_bundle_response != NULL 
@@ -28,7 +69,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
         return NULL;
     }
 
-    Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
+    invite_response = consume_get_pre_key_bundle_response(
         from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
     );
 
@@ -82,86 +123,152 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
     return invite_response;
 }
 
-Skissm__InviteResponse *invite_internal(
+int invite_internal(
+    Skissm__InviteResponse **response_out,
     Skissm__Session *outbound_session
 ) {
-    Skissm__E2eeAddress *user_address = outbound_session->our_address;
+    int ret = 0;
+
+    Skissm__InviteRequest *request = NULL;
+    Skissm__InviteResponse *response = NULL;
+    Skissm__E2eeAddress *user_address = NULL;
     char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
 
-    if (auth == NULL) {
-        ssm_notify_log(user_address, BAD_ACCOUNT, "invite_internal()");
-        return NULL;
+    if (safe_uncompleted_session(outbound_session)) {
+        user_address = outbound_session->our_address;
+        get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
+        if (!nonempty_string(auth)) {
+            ssm_notify_log(user_address, BAD_ACCOUNT, "invite_internal()");
+            ret = -1;
+        }
+    } else {
+        ret = -1;
     }
 
-    Skissm__InviteRequest *request = produce_invite_request(outbound_session);
-    Skissm__InviteResponse *response = get_skissm_plugin()->proto_handler.invite(user_address, auth, request);
-    bool succ = consume_invite_response(user_address, response);
-    if (!succ) {
-        // pack reuest to request_data
-        size_t request_data_len = skissm__invite_request__get_packed_size(request);
-        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        skissm__invite_request__pack(request, request_data);
+    if (ret == 0) {
+        ret = produce_invite_request(&request, outbound_session);
+    }
 
-        store_pending_request_internal(
-            user_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_INVITE, request_data, request_data_len, NULL, 0
-        );
+    if (ret == 0) {
+        response = get_skissm_plugin()->proto_handler.invite(user_address, auth, request);
+
+        if (safe_invite_response(response)) {
+            ret = consume_invite_response(user_address, response);
+        } else {
+            // pack request to request_data
+            size_t request_data_len = skissm__invite_request__get_packed_size(request);
+            uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+            skissm__invite_request__pack(request, request_data);
+
+            // store the request_data into pending
+            store_pending_request_internal(
+                user_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_INVITE, request_data, request_data_len, NULL, 0
+            );
+            // release
+            free_mem((void *)&request_data, request_data_len);
+        }
+
         // release
-        free_mem((void *)&request_data, request_data_len);
+        free(auth);
+        auth = NULL;
+        skissm__invite_request__free_unpacked(request, NULL);
+        request = NULL;
     }
 
-    // release
-    free(auth);
-    skissm__invite_request__free_unpacked(request, NULL);
+    if (ret == 0) {
+        *response_out = response;
+    }
 
     // done
-    return response;
+    return ret;
 }
 
-Skissm__AcceptResponse *accept_internal(
+int accept_internal(
+    Skissm__AcceptResponse **response_out,
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *from,
     Skissm__E2eeAddress *to,
     ProtobufCBinaryData *ciphertext_1,
     ProtobufCBinaryData *our_ratchet_key
 ) {
-    // ssm_notify_log(from, DEBUG_LOG, "accept_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
+    int ret = 0;
 
+    Skissm__AcceptRequest *request = NULL;
+    Skissm__AcceptResponse *response = NULL;
     char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(from, &auth);
 
-    if (auth == NULL) {
-        ssm_notify_log(from, BAD_ACCOUNT, "accept_internal()");
-        return NULL;
+    if (!safe_e2ee_pack_id(e2ee_pack_id)) {
+        ret = -1;
+    }
+    if (safe_address(from)) {
+        get_skissm_plugin()->db_handler.load_auth(from, &auth);
+        if (!nonempty_string(auth)) {
+            ssm_notify_log(from, BAD_ACCOUNT, "accept_internal()");
+            ret = -1;
+        }
+    } else {
+        ret = -1;
+    }
+    if (!safe_address(to)) {
+        ret = -1;
+    }
+    if (!safe_protobuf(ciphertext_1)) {
+        ret = -1;
+    }
+    if (!safe_protobuf(our_ratchet_key)) {
+        ret = -1;
     }
 
-    Skissm__AcceptRequest *request = produce_accept_request(e2ee_pack_id, from, to, ciphertext_1, our_ratchet_key);
-    Skissm__AcceptResponse *response = get_skissm_plugin()->proto_handler.accept(from, auth, request);
-    bool succ = consume_accept_response(from, response);
-    if (!succ) {
-        // pack reuest to request_data
-        size_t request_data_len = skissm__accept_request__get_packed_size(request);
-        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        skissm__accept_request__pack(request, request_data);
-        
-        store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ACCEPT, request_data, request_data_len, NULL, 0);
+    // ssm_notify_log(from, DEBUG_LOG, "accept_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
+    if (ret == 0) {
+        ret = produce_accept_request(&request, e2ee_pack_id, from, to, ciphertext_1, our_ratchet_key);
+    }
+
+    if (ret == 0) {
+        response = get_skissm_plugin()->proto_handler.accept(from, auth, request);
+
+        if (safe_accept_response(response)) {
+            ret = consume_accept_response(from, response);
+        } else {
+            // pack request to request_data
+            size_t request_data_len = skissm__accept_request__get_packed_size(request);
+            uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+            skissm__accept_request__pack(request, request_data);
+
+            store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ACCEPT, request_data, request_data_len, NULL, 0);
+            // release
+            free_mem((void *)&request_data, request_data_len);
+        }
+
         // release
-        free_mem((void *)&request_data, request_data_len);
+        free(auth);
+        auth = NULL;
+        skissm__accept_request__free_unpacked(request, NULL);
+        request = NULL;
     }
 
-    // release
-    free(auth);
-    skissm__accept_request__free_unpacked(request, NULL);
+    if (ret == 0) {
+        *response_out = response;
+    }
 
     // done
-    return response;
+    return ret;
 }
 
-Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
+Skissm__PublishSpkResponse *publish_spk_internal(
+    Skissm__PublishSpkResponse **response_out,
+    Skissm__Account *account
+) {
+    int ret = 0;
+
+    Skissm__PublishSpkRequest *request = NULL;
+    Skissm__PublishSpkResponse *response = NULL;
+
     // ssm_notify_log(account->address, DEBUG_LOG, "publish_spk_internal(): user_address [%s:%s]", account->address->user->user_id, account->address->user->device_id);
     
-    Skissm__PublishSpkRequest *request = produce_publish_spk_request(account);
-    Skissm__PublishSpkResponse *response = get_skissm_plugin()->proto_handler.publish_spk(account->address, account->auth, request);
+    ret = produce_publish_spk_request(&request, account);
+    if (ret == 0) {}
+    response = get_skissm_plugin()->proto_handler.publish_spk(account->address, account->auth, request);
     bool succ = consume_publish_spk_response(account, response);
     if (!succ) {
         // we do not store pending request here
@@ -172,15 +279,30 @@ Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account) {
     skissm__publish_spk_request__free_unpacked(request, NULL);
 
     // done
-    return response;
+    return ret;
 }
 
 Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint32_t opks_num) {
-    Skissm__SupplyOpksRequest *request = produce_supply_opks_request(account, opks_num);
+    int ret = 0;
+
+    Skissm__SupplyOpksRequest *request = NULL;
+
+    if (opks_num != 0) {
+        if (!safe_registered_account(account)) {
+            ret = -1;
+        }
+    } else {
+        ret = -1;
+    }
+
+    if (ret == 0) {
+        ret = produce_supply_opks_request(&request, account, opks_num);
+    }
+
     Skissm__SupplyOpksResponse *response = get_skissm_plugin()->proto_handler.supply_opks(account->address, account->auth, request);
     bool succ = consume_supply_opks_response(account, opks_num, response);
     if (!succ) {
-        // pack reuest to request_data
+        // pack request to request_data
         size_t request_data_len = skissm__supply_opks_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__supply_opks_request__pack(request, request_data);
@@ -217,7 +339,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
     Skissm__SendOne2oneMsgResponse *response = get_skissm_plugin()->proto_handler.send_one2one_msg(user_address, auth, request);
     bool succ = consume_send_one2one_msg_response(outbound_session, response);
     if (!succ) {
-        // pack reuest to request_data
+        // pack request to request_data
         size_t request_data_len = skissm__send_one2one_msg_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__send_one2one_msg_request__pack(request, request_data);
@@ -269,7 +391,7 @@ Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
     Skissm__AddGroupMemberDeviceResponse *response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, request);
     bool succ = consume_add_group_member_device_response(outbound_group_session, response);
     if (!succ) {
-        // pack reuest to request_data
+        // pack request to request_data
         size_t request_data_len = skissm__add_group_member_device_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__add_group_member_device_request__pack(request, request_data);

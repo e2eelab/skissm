@@ -1257,15 +1257,16 @@ int crypto_curve25519_verify(
     return curve25519_verify(signature_in, public_key, msg, msg_len);
 }
 
-void crypto_aes_encrypt_gcm(
+int crypto_aes_encrypt_gcm(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     const uint8_t *aes_key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
     uint8_t *ciphertext_data
 ) {
+    int ret = 0;
+
     mbedtls_gcm_context ctx;
     unsigned char *tag_buf = ciphertext_data + plaintext_data_len;
-    int ret;
     mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
     int key_len = AES256_KEY_LENGTH * 8;
 
@@ -1281,19 +1282,22 @@ void crypto_aes_encrypt_gcm(
     }
 
     mbedtls_gcm_free(&ctx);
+
+    return ret;
 }
 
-size_t crypto_aes_decrypt_gcm(
+int crypto_aes_decrypt_gcm(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
     const uint8_t *aes_key, const uint8_t *iv,
     const uint8_t *add, size_t add_len,
-    uint8_t *plaintext_data
+    uint8_t *plaintext_data, size_t *plaintext_data_len
 ) {
+    int ret = 0;
+
     mbedtls_gcm_context ctx;
     unsigned char *input_tag_buf =
         (unsigned char *)(ciphertext_data + ciphertext_data_len - AES256_GCM_TAG_LENGTH);
     unsigned char tag_buf[AES256_GCM_TAG_LENGTH];
-    int ret;
     mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
     int key_len = AES256_KEY_LENGTH * 8;
 
@@ -1314,10 +1318,13 @@ size_t crypto_aes_decrypt_gcm(
     for (i = 0; i < AES256_GCM_TAG_LENGTH; i++)
         diff |= input_tag_buf[i] ^ tag_buf[i];
     if (diff == 0) {
-        return (ciphertext_data_len - AES256_GCM_TAG_LENGTH);
+        *plaintext_data_len = ciphertext_data_len - AES256_GCM_TAG_LENGTH;
     } else {
-        return 0;
+        *plaintext_data_len = 0;
+        ret = -1;
     }
+
+    return ret;
 }
 
 size_t encrypt_aes_data_with_iv(

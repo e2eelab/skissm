@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "skissm/mem_util.h"
+#include "skissm/safe_check.h"
 #include "skissm/account.h"
 #include "skissm/account_cash.h"
 #include "skissm/account_manager.h"
@@ -32,7 +33,8 @@
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 
-Skissm__RegisterUserResponse *register_user(
+int register_user(
+    Skissm__RegisterUserResponse **response_out,
     uint32_t e2ee_pack_id,
     const char *user_name,
     const char *user_id,
@@ -40,28 +42,72 @@ Skissm__RegisterUserResponse *register_user(
     const char *authenticator,
     const char *auth_code
 ) {
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    int ret = 0;
 
-    // register account to server
-    Skissm__RegisterUserRequest *request = produce_register_request(account);
-    request->user_name = strdup(user_name);
-    request->user_id = strdup(user_id);
-    request->device_id = strdup(device_id);
-    request->authenticator = strdup(authenticator);
-    request->auth_code = strdup(auth_code);
-    request->e2ee_pack_id = e2ee_pack_id;
+    Skissm__Account *account = NULL;
+    Skissm__RegisterUserRequest *request = NULL;
+    Skissm__RegisterUserResponse *response = NULL;
 
-    Skissm__RegisterUserResponse *response = get_skissm_plugin()->proto_handler.register_user(request);
-    bool consumed = consume_register_response(account, response);
-    if (!consumed) {
-        skissm__account__free_unpacked(account, NULL);
+    if (!safe_e2ee_pack_id(e2ee_pack_id)) {
+        ret = -1;
+    }
+    if (!nonempty_string(user_name)) {
+        ret = -1;
+    }
+    if (!nonempty_string(user_id)) {
+        ret = -1;
+    }
+    if (!nonempty_string(device_id)) {
+        ret = -1;
+    }
+    if (!nonempty_string(authenticator)) {
+        ret = -1;
+    }
+    if (!nonempty_string(auth_code)) {
+        ret = -1;
+    }
+
+    if (ret == 0) {
+        // generate an account
+        ret = create_account(&account, e2ee_pack_id);
+    }
+
+    if (ret == 0) {
+        // register account to server
+        ret = produce_register_request(&request, account);
+    }
+
+    if (ret == 0) {
+        request->user_name = strdup(user_name);
+        request->user_id = strdup(user_id);
+        request->device_id = strdup(device_id);
+        request->authenticator = strdup(authenticator);
+        request->auth_code = strdup(auth_code);
+        request->e2ee_pack_id = e2ee_pack_id;
+
+        response = get_skissm_plugin()->proto_handler.register_user(request);
+
+        if (safe_register_user_response(response)) {
+            bool consumed = consume_register_response(account, response);
+        }
+    }
+
+    if (ret == 0) {
+        *response_out = response;
     }
 
     // release
-    skissm__register_user_request__free_unpacked(request, NULL);
+    if (account != NULL) {
+        skissm__account__free_unpacked(account, NULL);
+        account = NULL;
+    }
+    if (request != NULL) {
+        skissm__register_user_request__free_unpacked(request, NULL);
+        request = NULL;
+    }
 
     // done
-    return response;
+    return ret;
 }
 
 Skissm__InviteResponse *reinvite(Skissm__Session *outbound_session) {
@@ -101,27 +147,50 @@ Skissm__InviteResponse *reinvite(Skissm__Session *outbound_session) {
     return response;
 }
 
-Skissm__InviteResponse *invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
-    // ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to_user_id [%s]", from->user->user_id, from->user->device_id, to_user_id);
+Skissm__InviteResponse *invite(
+    Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain
+) {
+    int ret = 0;
 
     char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(from, &auth);
+    Skissm__InviteResponse *invite_response = NULL;
 
-    if (auth == NULL) {
-        ssm_notify_log(from, BAD_ACCOUNT, "invite() from [%s:%s] to [%s@%s]",
-            from->user->user_id,
-            from->user->device_id,
-            to_user_id,
-            to_domain);
-        return NULL;
+    if (safe_address(from)) {
+        get_skissm_plugin()->db_handler.load_auth(from, &auth);
+        if (auth == NULL) {
+            ssm_notify_log(
+                from, BAD_ACCOUNT, "invite() from [%s:%s] to [%s@%s]",
+                from->user->user_id,
+                from->user->device_id,
+                to_user_id,
+                to_domain
+            );
+            ret = -1;
+        }
+    } else {
+        ret = -1;
     }
+    if (!nonempty_string(to_user_id)) {
+        ret = -1;
+    }
+    if (!nonempty_string(to_domain)) {
+        ret = -1;
+    }
+
+    // ssm_notify_log(from, DEBUG_LOG, "invite(): from [%s:%s] to_user_id [%s]", from->user->user_id, from->user->device_id, to_user_id);
+
     // we should always call get_pre_key_bundle_internal() since there may be new devices for to_user_id@to_domain
     // not just check outbound sessions in db currently.
 
-    Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, true, NULL, 0);
+    if (ret == 0) {
+        invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, true, NULL, 0);
+    }
 
     // release
-    free(auth);
+    if (auth != NULL) {
+        free(auth);
+        auth = NULL;
+    }
 
     // done
     return invite_response;
@@ -441,7 +510,7 @@ Skissm__CreateGroupResponse *create_group(
                 response->code
             );
         // skip saving pending request for creating group
-        // // pack reuest to request_data
+        // // pack request to request_data
         // size_t request_data_len = skissm__create_group_request__get_packed_size(request);
         // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         // skissm__create_group_request__pack(request, request_data);
@@ -493,13 +562,13 @@ Skissm__AddGroupMembersResponse *add_group_members(
     bool succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
     if (!succ) {
         ssm_notify_log(
-                sender_address,
-                DEBUG_LOG,
-                "add_group_members(): consume filed with response code: %d, skip saving pending request",
-                response->code
-            );
+            sender_address,
+            DEBUG_LOG,
+            "add_group_members(): consume filed with response code: %d, skip saving pending request",
+            response->code
+        );
         // skip saving pending request for adding group members
-        // // pack reuest to request_data
+        // // pack request to request_data
         // size_t request_data_len = skissm__add_group_members_request__get_packed_size(request);
         // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         // skissm__add_group_members_request__pack(request, request_data);
@@ -550,13 +619,13 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
     bool succ = consume_remove_group_members_response(outbound_group_session, response, removing_members, removing_members_num);
     if (!succ) {
         ssm_notify_log(
-                sender_address,
-                DEBUG_LOG,
-                "remove_group_members(): consume filed with response code: %d, skip saving pending request",
-                response->code
-            );
+            sender_address,
+            DEBUG_LOG,
+            "remove_group_members(): consume filed with response code: %d, skip saving pending request",
+            response->code
+        );
         // skip saving pending request for removing group members
-        // // pack reuest to request_data
+        // // pack request to request_data
         // size_t request_data_len = skissm__remove_group_members_request__get_packed_size(request);
         // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         // skissm__remove_group_members_request__pack(request, request_data);
@@ -592,13 +661,13 @@ Skissm__LeaveGroupResponse *leave_group(
     bool succ = consume_leave_group_response(sender_address, response);
     if (!succ) {
         ssm_notify_log(
-                sender_address,
-                DEBUG_LOG,
-                "leave_group(): consume filed with response code: %d, skip saving pending request",
-                response->code
-            );
+            sender_address,
+            DEBUG_LOG,
+            "leave_group(): consume filed with response code: %d, skip saving pending request",
+            response->code
+        );
         // skip saving pending request for leaving group
-        // // pack reuest to request_data
+        // // pack request to request_data
         // size_t request_data_len = skissm__leave_group_request__get_packed_size(request);
         // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         // skissm__leave_group_request__pack(request, request_data);
@@ -649,7 +718,7 @@ Skissm__SendGroupMsgResponse *send_group_msg_with_filter(
     Skissm__SendGroupMsgResponse *response = get_skissm_plugin()->proto_handler.send_group_msg(sender_address, auth, request);
     bool succ = consume_send_group_msg_response(outbound_group_session, response);
     if (!succ) {
-        // pack reuest to request_data
+        // pack request to request_data
         size_t request_data_len = skissm__send_group_msg_request__get_packed_size(request);
         uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
         skissm__send_group_msg_request__pack(request, request_data);
@@ -694,7 +763,7 @@ Skissm__ConsumeProtoMsgResponse *consume_proto_msg(Skissm__E2eeAddress *sender_a
         return NULL;
     }
 
-    Skissm__ConsumeProtoMsgRequest *request = (Skissm__ConsumeProtoMsgRequest*)malloc(sizeof(Skissm__ConsumeProtoMsgRequest));
+    Skissm__ConsumeProtoMsgRequest *request = (Skissm__ConsumeProtoMsgRequest *)malloc(sizeof(Skissm__ConsumeProtoMsgRequest));
     skissm__consume_proto_msg_request__init(request);
     request->proto_msg_id = strdup(proto_msg_id);
     Skissm__ConsumeProtoMsgResponse *response = get_skissm_plugin()->proto_handler.consume_proto_msg(sender_address, auth, request);

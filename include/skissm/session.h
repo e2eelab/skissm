@@ -31,14 +31,14 @@ typedef struct session_suite_t {
     /**
      * @brief Create a new outbound session.
      *
-     * @param session The outbound session
-     * @param local_account Our account
+     * @param response_out The output invite response
+     * @param from The sender's address
      * @param their_pre_key_bundle Their pre-key bundle
-     * @return Skissm__InviteResponse *
+     * @return 0 if success
      */
-    Skissm__InviteResponse * (*new_outbound_session)(
-        Skissm__Session *,
-        const Skissm__Account *,
+    int (*new_outbound_session)(
+        Skissm__InviteResponse **,
+        Skissm__E2eeAddress *,
         Skissm__PreKeyBundle *
     );
 

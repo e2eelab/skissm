@@ -29,10 +29,14 @@ extern "C" {
 /**
  * @brief Create a RegisterUserRequest message to be sent to server.
  *
+ * @param request_out
  * @param account
- * @return Skissm__RegisterUserRequest*
+ * @return 0 if success
  */
-Skissm__RegisterUserRequest *produce_register_request(Skissm__Account *account);
+int produce_register_request(
+    Skissm__RegisterUserRequest **request_out,
+    Skissm__Account *account
+);
 
 /**
  * @brief Process an incoming RegisterUserResponse message.
@@ -47,10 +51,14 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
 /**
  * @brief Create a PublishSpkRequest message to be sent to server.
  *
+ * @param request_out
  * @param account
- * @return Skissm__PublishSpkRequest*
+ * @return 0 if success
  */
-Skissm__PublishSpkRequest *produce_publish_spk_request(Skissm__Account *account);
+int produce_publish_spk_request(
+    Skissm__PublishSpkRequest **request_out,
+    Skissm__Account *account
+);
 
 /**
  * @brief Process an incoming PublishSpkResponse message.
@@ -65,11 +73,16 @@ bool consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkRe
 /**
  * @brief Create a SupplyOpksRequest message to be sent to server.
  *
+ * @param request_out
  * @param account
  * @param opks_num
- * @return Skissm__SupplyOpksRequest*
+ * @return 0 if success
  */
-Skissm__SupplyOpksRequest *produce_supply_opks_request(Skissm__Account *account, uint32_t opks_num);
+int produce_supply_opks_request(
+    Skissm__SupplyOpksRequest **request_out,
+    Skissm__Account *account,
+    uint32_t opks_num
+);
 
 /**
  * @brief Process an incoming SupplyOpksResponse message.
