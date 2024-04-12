@@ -37,10 +37,31 @@ void account_end();
  * @brief Create a new account object
  * This will generate an identity key pair, a signed pre-key pair,
  * a signature, and 100 one-time pre-key pairs.
- * @param e2ee_pack_id an id (0, 1) of e2ee package
- * @return Skissm__Account*
+ * @param account_out The generated account
+ * @param e2ee_pack_id The e2ee pack ID
+ * @return 0 if success
  */
-Skissm__Account *create_account(uint32_t e2ee_pack_id);
+int create_account(Skissm__Account **account_out, uint32_t e2ee_pack_id);
+
+int generate_identity_key(
+    Skissm__IdentityKey **identity_key_out,
+    uint32_t e2ee_pack_id
+);
+
+/**
+ * @brief Generate a new signed pre-key pair and a new signature.
+ *
+ * @param signed_pre_key_out The generated signed pre-key
+ * @param e2ee_pack_id The e2ee pack ID
+ * @param cur_spk_id The current signed pre-key ID
+ * @param identity_private_key The private part of the identity key
+ * @return 0 if success
+ */
+int generate_signed_pre_key(
+    Skissm__SignedPreKey **signed_pre_key_out,
+    uint32_t e2ee_pack_id, uint32_t cur_spk_id,
+    const uint8_t *identity_private_key
+);
 
 /**
  * @brief Lookup an one-time pre-key with a given public key
@@ -55,25 +76,20 @@ const Skissm__OneTimePreKey *lookup_one_time_pre_key(
 );
 
 /**
- * @brief Generate a new signed pre-key pair and a new signature.
- *
- * @param account The account to be updated with new generated signed pre-key
- * @return Success or not
- */
-size_t generate_signed_pre_key(Skissm__Account *account);
-
-/**
  * @brief Generates a number of new one-time pre-keys
  *
+ * @param one_time_pre_key_out The generated one-time pre-key list
  * @param number_of_keys The given number
- * @param account The account to be appended with new generated one-time
- * pre-keys
- * @return Skissm__OneTimePreKey**
+ * @param e2ee_pack_id The e2ee pack ID
+ * @param cur_opk_id The current one-time pre-key ID
+ * @return 0 if success
  */
-Skissm__OneTimePreKey **generate_opks(
-    size_t number_of_keys,
-    Skissm__Account *account
+int generate_opks(
+    Skissm__OneTimePreKey ***one_time_pre_key_out, size_t number_of_keys,
+    uint32_t e2ee_pack_id, uint32_t cur_opk_id
 );
+
+int insert_opks(Skissm__Account *account, Skissm__OneTimePreKey **src, size_t src_num);
 
 /**
  * @brief Mark one of the one-time pre-key pairs as used given by ID

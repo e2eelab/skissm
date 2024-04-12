@@ -318,7 +318,7 @@ static void test_pending_request_data() {
 
     Skissm__AcceptRequest *accept_request = produce_accept_request(e2ee_pack_id, alice_address, bob_address, NULL, our_ratchet_key);
 
-    // pack reuest to request_data
+    // pack request to request_data
     size_t request_data_len = skissm__accept_request__get_packed_size(accept_request);
     uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
     skissm__accept_request__pack(accept_request, request_data);

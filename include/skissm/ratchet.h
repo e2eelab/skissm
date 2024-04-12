@@ -33,7 +33,7 @@ void initialise_ratchet(Skissm__Ratchet **ratchet);
 
 /** Initialise the session using a shared secret and the public part of the
  * remote's first ratchet key */
-void initialise_as_bob(
+int initialise_as_bob(
     const cipher_suite_t *cipher_suite,
     Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
@@ -41,7 +41,7 @@ void initialise_as_bob(
 
 /** Initialise the session using a shared secret and the public/private key
  * pair for the first ratchet key */
-void initialise_as_alice(
+int initialise_as_alice(
     const cipher_suite_t *cipher_suite,
     Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key,
@@ -52,19 +52,19 @@ void initialise_as_alice(
  * @brief Encrypt plaintext_data to Skissm__One2oneMsgPayload payload
  * and keep updated ratchet states.
  *
+ * @param payload_out
  * @param cipher_suite
  * @param ratchet
  * @param ad
  * @param plaintext_data
  * @param plaintext_data_len
- * @param payload
  */
-void encrypt_ratchet(
+int encrypt_ratchet(
+    Skissm__One2oneMsgPayload **payload_out,
     const cipher_suite_t *cipher_suite,
     Skissm__Ratchet *ratchet,
     ProtobufCBinaryData ad,
-    const uint8_t *plaintext_data, size_t plaintext_data_len,
-    Skissm__One2oneMsgPayload **payload
+    const uint8_t *plaintext_data, size_t plaintext_data_len
 );
 
 /**
@@ -79,10 +79,10 @@ void encrypt_ratchet(
  * @return length of plaintext_data
  * @return 0 for error
  */
-size_t decrypt_ratchet(
+int decrypt_ratchet(
+    uint8_t **decrypted_data_out, size_t *decrypted_data_len_out,
     const cipher_suite_t *cipher_suite,
-    Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload,
-    uint8_t **plaintext_data
+    Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload
 );
 
 #ifdef __cplusplus

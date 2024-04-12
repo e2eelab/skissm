@@ -132,31 +132,33 @@ typedef struct symmetric_encryption_suite_t {
      * @param key The secret key
      * @param plaintext_data The plaintext to encrypt
      * @param plaintext_data_len The plaintext length
-     * @param ciphertext_data The output cipher text
+     * @param ciphertext_data The output ciphertext
+     * @param ciphertext_data_len The output ciphertext length
      * @return Success or not
      */
-    size_t (*encrypt)(
+    int (*encrypt)(
         const ProtobufCBinaryData *,
         const uint8_t *,
         const uint8_t *, size_t,
-        uint8_t **
+        uint8_t **, size_t *
     );
 
     /**
      * @brief Decrypt a given ciphertext.
      *
+     * @param decrypted_data_out The output plaintext
+     * @param decrypted_data_len_out The output plaintext length
      * @param ad The associated data
      * @param key The secret key
      * @param ciphertext_data The ciphertext to decrypt
      * @param ciphertext_data_len The ciphertext length
-     * @param plaintext_data The output plaintext
      * @return The length of plaintext_data or -1 for decryption error
      */
-    size_t (*decrypt)(
+    int (*decrypt)(
+        uint8_t **, size_t *,
         const ProtobufCBinaryData *,
         const uint8_t *,
-        const uint8_t *, size_t,
-        uint8_t **
+        const uint8_t *, size_t
     );
 
     /**
@@ -237,10 +239,13 @@ size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len);
  * @param plaintext_data
  * @param plaintext_data_len
  * @param ciphertext_data
+ * @param ciphertext_data_len
  * @return size_t length of ciphertext_data
  */
-size_t aes256_gcm_encrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
-    const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **ciphertext_data
+int aes256_gcm_encrypt(
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key,
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    uint8_t **ciphertext_data, size_t *ciphertext_data_len
 );
 
 /**
@@ -253,7 +258,8 @@ size_t aes256_gcm_encrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
  * @param plaintext_data
  * @return size_t length of plaintext_data
  */
-size_t aes256_gcm_decrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key,
+int aes256_gcm_decrypt(
+    const ProtobufCBinaryData *ad, const uint8_t *aes_key,
     const uint8_t *ciphertext_data, size_t ciphertext_data_len, uint8_t **plaintext_data
 );
 
