@@ -481,6 +481,24 @@ size_t crypto_aes_decrypt_gcm(
  * @param plaintext_data
  * @param plaintext_data_len
  * @param aes_key
+ * @param iv
+ * @param ciphertext_data
+ * @return
+ */
+size_t encrypt_aes_data_with_iv(
+        const uint8_t *plaintext_data, size_t plaintext_data_len,
+        const uint8_t aes_key[AES256_KEY_LENGTH],
+        const uint8_t iv[AES256_DATA_IV_LENGTH],
+        uint8_t **ciphertext_data
+);
+
+/**
+ * @brief AES256 encrypt data in GCM mode.
+ * The initial vector iv is designated to zeros.
+ *
+ * @param plaintext_data
+ * @param plaintext_data_len
+ * @param aes_key
  * @param ciphertext_data
  * @return size_t ciphertext data length
  */
@@ -491,7 +509,25 @@ size_t encrypt_aes_data(
 );
 
 /**
+ *  @brief AES256 decrypt data in GCM mode.
+ *
+ * @param ciphertext_data
+ * @param ciphertext_data_len
+ * @param aes_key
+ * @param iv
+ * @param plaintext_data
+ * @return
+ */
+size_t decrypt_aes_data_with_iv(
+        const uint8_t *ciphertext_data, size_t ciphertext_data_len,
+        const uint8_t aes_key[AES256_KEY_LENGTH],
+        const uint8_t iv[AES256_DATA_IV_LENGTH],
+        uint8_t **plaintext_data
+);
+
+/**
  * @brief AES256 decrypt data in GCM mode.
+ * The initial vector iv is designated to zeros.
  *
  * @param ciphertext_data
  * @param ciphertext_data_len
@@ -507,6 +543,7 @@ size_t decrypt_aes_data(
 
 /**
  * @brief AES256 encrypt file in GCM mode.
+ * The initial vector iv is designated to zeros.
  *
  * @param in_file_path
  * @param out_file_path
@@ -520,6 +557,7 @@ int encrypt_aes_file(
 
 /**
  * @brief AES256 decrypt file in GCM mode.
+ * The initial vector iv is designated to zeros.
  *
  * @param in_file_path
  * @param out_file_path
@@ -532,7 +570,9 @@ int decrypt_aes_file(
 );
 
 /**
- * @brief AES256 encrypt file in GCM mode with arbitrary password length.
+ * @brief AES256 encrypt file in GCM mode.
+ * The initial vector iv is designated to zeros.
+ * The password is an arbitrary vector with non-zero length.
  *
  * @param in_file_path
  * @param out_file_path
@@ -547,7 +587,9 @@ int encrypt_file(
 );
 
 /**
- * @brief AES256 decrypt file in GCM mode with arbitrary password length.
+ * @brief AES256 decrypt file in GCM mode.
+ * The initial vector iv is designated to zeros.
+ * The password is an arbitrary vector with non-zero length.
  *
  * @param in_file_path
  * @param out_file_path
@@ -579,6 +621,60 @@ char *crypto_base64_encode(const uint8_t *msg, size_t msg_len);
  */
 char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len);
 
+/**
+ * @brief Generate a random key pair that will be used to generate or verify a signature
+ * with respect to the specific e2ee pack ID raw number.
+ *
+ * @param e2ee_pack_id_raw
+ * @param pub_key
+ * @param priv_key
+ * @return value < 0 for error
+ */
+int crypto_ds_key_gen_by_e2ee_pack_id(
+        uint32_t e2ee_pack_id_raw,
+        ProtobufCBinaryData *pub_key,
+        ProtobufCBinaryData *priv_key
+);
+
+/**
+ * @brief Sign a message
+ * with respect to the specific e2ee pack ID raw number.
+ *
+ * @param e2ee_pack_id_raw
+ * @param signature_out
+ * @param signature_out_len
+ * @param msg
+ * @param msg_len
+ * @param private_key
+ * @param private_key_len
+ * @return value < 0 for error
+ */
+int crypto_ds_sign_by_e2ee_pack_id(
+        uint32_t e2ee_pack_id_raw,
+        uint8_t **signature_out, size_t *signature_out_len,
+        const uint8_t *msg, size_t msg_len,
+        const uint8_t *private_key, size_t private_key_len
+);
+
+/**
+ * @brief Verify a signature with a given message
+ * with respect to the specific e2ee pack ID raw number.
+ *
+ * @param e2ee_pack_id_raw
+ * @param signature_in
+ * @param signature_in_len
+ * @param msg
+ * @param msg_len
+ * @param public_key
+ * @param public_key_len
+ * @return value < 0 for error
+ */
+int crypto_ds_verify_by_e2ee_pack_id(
+        uint32_t e2ee_pack_id_raw,
+        const uint8_t *signature_in, size_t signature_in_len,
+        const uint8_t *msg, size_t msg_len,
+        const uint8_t *public_key, size_t public_key_len
+);
 
 #ifdef __cplusplus
 }

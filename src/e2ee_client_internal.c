@@ -37,7 +37,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
             || (invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND)
         )
     ) {
-        // we do not store pending request if the invite_response code is no content
+        // we do not store pending request if the invite_response code is not found
     } else {
         ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request will be stored.");
         // pack request to get_pre_key_bundle_request_data which will be freed inside store_pending_request_internal

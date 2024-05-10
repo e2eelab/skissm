@@ -664,12 +664,14 @@ void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num) {
 }
 
 void free_protobuf(ProtobufCBinaryData *output) {
-    if (output->data) {
-        unset(output->data, output->len);
-        free(output->data);
+    if (output != NULL) {
+        if (output->data) {
+            unset(output->data, output->len);
+            free(output->data);
+        }
+        output->len = 0;
+        output->data = NULL;
     }
-    output->len = 0;
-    output->data = NULL;
 }
 
 void free_protobuf_list(ProtobufCBinaryData **output, size_t protobuf_num) {

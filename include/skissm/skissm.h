@@ -103,11 +103,11 @@ extern "C" {
 #include "skissm/log_code.h"
 #include "skissm/session.h"
 
-#define E2EE_PROTOCOL_VERSION           "E2EE_PROTOCOL_v1.0"
-#define E2EE_PLAINTEXT_VERSION          "E2EE_PLAINTEXT_v1.0"
-#define UUID_LEN 16
-#define SIGNED_PRE_KEY_EXPIRATION_MS    604800000       // 7 days
-#define INVITE_WAITING_TIME_MS          60000           // 1 minute
+#define E2EE_PROTOCOL_VERSION                                "E2EE_PROTOCOL_v1.0"
+#define E2EE_PLAINTEXT_VERSION                               "E2EE_PLAINTEXT_v1.0"
+#define UUID_LEN                                             16
+#define SIGNED_PRE_KEY_EXPIRATION_MS                         604800000       // 7 days
+#define INVITE_WAITING_TIME_MS                               60000           // 1 minute
 
 #define E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519           0
 #define E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM2           1
@@ -148,7 +148,7 @@ extern "C" {
 
 #define E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256     1
 
-#define CIPHER_SUITE_PART_LEN_IN_BITS 8
+#define CIPHER_SUITE_PART_LEN_IN_BITS                        8
 
 typedef struct e2ee_pack_id_t {
     unsigned ver:CIPHER_SUITE_PART_LEN_IN_BITS;
@@ -187,6 +187,186 @@ typedef struct crypto_symmetric_encryption_param_t {
     uint32_t aead_iv_len;
     uint32_t aead_tag_len;
 } crypto_symmetric_encryption_param_t;
+
+typedef struct digital_signature_suite_t {
+    /**
+     * @brief Get the parameters of this digital signature suite.
+     * @return crypto_digital_signature_param_t
+     */
+    struct crypto_digital_signature_param_t (*get_crypto_param)(void);
+
+    /**
+     * @brief Generate a random key pair that will be used to generate or verify a signature.
+     *
+     * @param pub_key
+     * @param priv_key
+     * @return value < 0 for error
+     */
+    int (*sign_key_gen)(
+            ProtobufCBinaryData *pub_key,
+            ProtobufCBinaryData *priv_key
+    );
+
+    /**
+     * @brief Sign a message.
+     *
+     * @param signature_out
+     * @param signature_out_len
+     * @param msg
+     * @param msg_len
+     * @param private_key
+     * @return value < 0 for error
+     */
+    int (*sign)(
+            uint8_t *signature_out, size_t *signature_out_len,
+            const uint8_t *msg, size_t msg_len,
+            const uint8_t *private_key
+    );
+
+    /**
+     * @brief Verify a signature with a given message.
+     *
+     * @param signature_in
+     * @param signature_in_len
+     * @param msg
+     * @param msg_len
+     * @param public_key
+     * @return value < 0 for error
+     */
+    int (*verify)(
+            const uint8_t *signature_in, size_t signature_in_len,
+            const uint8_t *msg, size_t msg_len,
+            const uint8_t *public_key
+    );
+} digital_signature_suite_t;
+
+typedef struct kem_suite_t {
+    /**
+     * @brief Get the parameters of this kem suite.
+     * @return crypto_kem_param_t
+     */
+    struct crypto_kem_param_t (*get_crypto_param)(void);
+
+    /**
+     * @brief Generate a random key pair that will be used to calculate shared secret keys.
+     *
+     * @param pub_key
+     * @param priv_key
+     */
+    int (*asym_key_gen)(
+            ProtobufCBinaryData *pub_key,
+            ProtobufCBinaryData *priv_key
+    );
+
+    /**
+    * @brief Calculate shared secret key.
+    *
+    * @param our_key
+    * @param their_key
+    * @param shared_secret
+    * @return Cipher text (optional) that could be used to calculate shared secret key.
+    */
+    uint8_t *(*ss_key_gen)(
+            const ProtobufCBinaryData *our_key,
+            const ProtobufCBinaryData *their_key,
+            uint8_t *shared_secret
+    );
+} kem_suite_t;
+
+typedef struct symmetric_encryption_suite_t {
+    /**
+     * @brief Get the parameters of this kem suite.
+     * @return crypto_symmetric_encryption_param_t
+     */
+    struct crypto_symmetric_encryption_param_t (*get_crypto_param)(void);
+
+    /**
+     * @brief Encrypt a given plaintext.
+     *
+     * @param ad The associated data
+     * @param key The secret key
+     * @param plaintext_data The plaintext to encrypt
+     * @param plaintext_data_len The plaintext length
+     * @param ciphertext_data The output cipher text
+     * @return Success or not
+     */
+    size_t (*encrypt)(
+            const ProtobufCBinaryData * ad,
+            const uint8_t *key,
+            const uint8_t *plaintext_data, size_t plaintext_data_len,
+            uint8_t **ciphertext_data
+    );
+
+    /**
+     * @brief Decrypt a given ciphertext.
+     *
+     * @param ad The associated data
+     * @param key The secret key
+     * @param ciphertext_data The ciphertext to decrypt
+     * @param ciphertext_data_len The ciphertext length
+     * @param plaintext_data The output plaintext
+     * @return The length of plaintext_data or -1 for decryption error
+     */
+    size_t (*decrypt)(
+            const ProtobufCBinaryData *ad,
+            const uint8_t *key,
+            const uint8_t *ciphertext_data, size_t ciphertext_data_len,
+            uint8_t **plaintext_data
+    );
+
+    /**
+     * @brief HMAC-based key derivation function.
+     *
+     * @param input
+     * @param input_len
+     * @param salt
+     * @param salt_len
+     * @param info
+     * @param info_len
+     * @param output
+     * @param output_len
+     */
+    void (*hkdf)(
+            const uint8_t *input, size_t input_len,
+            const uint8_t *salt, size_t salt_len,
+            const uint8_t *info, size_t info_len,
+            uint8_t *output, size_t output_len
+    );
+
+    /**
+     * @brief Keyed-Hashing for message authentication.
+     *
+     * @param key
+     * @param key_len
+     * @param input
+     * @param input_len
+     * @param output
+     */
+    void (*hmac)(
+            const uint8_t *key, size_t key_len,
+            const uint8_t *input, size_t input_len,
+            uint8_t *output
+    );
+
+    /**
+     * @brief Hash function.
+     *
+     * @param msg
+     * @param msg_len
+     * @param hash_out
+     */
+    void (*hash)(
+            const uint8_t *msg,
+            size_t msg_len,
+            uint8_t *hash_out
+    );
+} symmetric_encryption_suite_t;
+
+typedef struct cipher_suite_t {
+    digital_signature_suite_t *digital_signature_suite;
+    kem_suite_t *kem_suite;
+    symmetric_encryption_suite_t *symmetric_encryption_suite;
+} cipher_suite_t;
 
 typedef struct skissm_common_handler_t {
     /**
@@ -851,9 +1031,32 @@ typedef struct skissm_plugin_t {
     skissm_event_handler_t event_handler;
 } skissm_plugin_t;
 
+/**
+ * @brief Get digital signature suit by ID.
+ *
+ * @param digital_signature_id
+ * @return
+ */
+digital_signature_suite_t *get_digital_signature_suite(unsigned digital_signature_id);
 
 /**
- * @brief Generate the e2ee pack id raw number.
+ * @brief Get kem suite by ID.
+ *
+ * @param kem_id
+ * @return
+ */
+kem_suite_t *get_kem_suite(unsigned kem_id);
+
+/**
+ * @brief Get symmetric encryption suite by ID.
+ *
+ * @param symmetric_encryption_id
+ * @return
+ */
+symmetric_encryption_suite_t *get_symmetric_encryption_suite(unsigned symmetric_encryption_id);
+
+/**
+ * @brief Generate the e2ee pack ID raw number.
  * @param ver
  * @param digital_signature
  * @param kem

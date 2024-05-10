@@ -66,6 +66,7 @@
 #include "PQClean/src/crypto_sign/sphincs-shake-256s-simple/clean/api.h"
 
 #include "skissm/account.h"
+#include "skissm/cipher.h"
 #include "skissm/mem_util.h"
 
 /** amount of random data required to create a Curve25519 keypair */
@@ -511,11 +512,8 @@ int crypto_sphincs_sha2_128f_generate_key_pair(
 int crypto_sphincs_sha2_128s_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -523,11 +521,8 @@ int crypto_sphincs_sha2_128s_generate_key_pair(
 int crypto_sphincs_sha2_192f_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -535,11 +530,8 @@ int crypto_sphincs_sha2_192f_generate_key_pair(
 int crypto_sphincs_sha2_192s_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -547,11 +539,8 @@ int crypto_sphincs_sha2_192s_generate_key_pair(
 int crypto_sphincs_sha2_256f_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -559,11 +548,8 @@ int crypto_sphincs_sha2_256f_generate_key_pair(
 int crypto_sphincs_sha2_256s_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -571,11 +557,8 @@ int crypto_sphincs_sha2_256s_generate_key_pair(
 int crypto_sphincs_shake_128f_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -583,11 +566,8 @@ int crypto_sphincs_shake_128f_generate_key_pair(
 int crypto_sphincs_shake_128s_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -595,11 +575,8 @@ int crypto_sphincs_shake_128s_generate_key_pair(
 int crypto_sphincs_shake_192f_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -607,11 +584,8 @@ int crypto_sphincs_shake_192f_generate_key_pair(
 int crypto_sphincs_shake_192s_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -619,11 +593,8 @@ int crypto_sphincs_shake_192s_generate_key_pair(
 int crypto_sphincs_shake_256f_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -631,11 +602,8 @@ int crypto_sphincs_shake_256f_generate_key_pair(
 int crypto_sphincs_shake_256s_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
-    priv_key->len = PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
-    pub_key->len = PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES;
+    malloc_protobuf(priv_key, PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES);
+    malloc_protobuf(pub_key, PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES);
 
     return PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_crypto_sign_keypair(pub_key->data, priv_key->data);
 }
@@ -1345,10 +1313,11 @@ size_t crypto_aes_decrypt_gcm(
     }
 }
 
-size_t encrypt_aes_data(
-    const uint8_t *plaintext_data, size_t plaintext_data_len,
-    const uint8_t aes_key[AES256_KEY_LENGTH],
-    uint8_t **ciphertext_data
+size_t encrypt_aes_data_with_iv(
+        const uint8_t *plaintext_data, size_t plaintext_data_len,
+        const uint8_t aes_key[AES256_KEY_LENGTH],
+        const uint8_t iv[AES256_DATA_IV_LENGTH],
+        uint8_t **ciphertext_data
 ) {
     size_t ciphertext_data_len = aes256_gcm_ciphertext_data_len(plaintext_data_len);
     *ciphertext_data = (uint8_t *)malloc(ciphertext_data_len);
@@ -1364,12 +1333,11 @@ size_t encrypt_aes_data(
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
-        uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
         ret = mbedtls_gcm_crypt_and_tag(
-            &ctx, MBEDTLS_GCM_ENCRYPT,
-            plaintext_data_len, iv,
-            AES256_DATA_IV_LENGTH, AD, AES256_DATA_AD_LEN, plaintext_data,
-            *ciphertext_data, AES256_GCM_TAG_LENGTH, tag_buf
+                &ctx, MBEDTLS_GCM_ENCRYPT,
+                plaintext_data_len, iv,
+                AES256_DATA_IV_LENGTH, AD, AES256_DATA_AD_LEN, plaintext_data,
+                *ciphertext_data, AES256_GCM_TAG_LENGTH, tag_buf
         );
     }
 
@@ -1385,17 +1353,27 @@ size_t encrypt_aes_data(
     }
 }
 
-size_t decrypt_aes_data(
-    const uint8_t *ciphertext_data, size_t ciphertext_data_len,
+size_t encrypt_aes_data(
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
     const uint8_t aes_key[AES256_KEY_LENGTH],
-    uint8_t **plaintext_data
+    uint8_t **ciphertext_data
+) {
+    uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
+    return encrypt_aes_data_with_iv(plaintext_data, plaintext_data_len, aes_key, iv, ciphertext_data);
+}
+
+size_t decrypt_aes_data_with_iv(
+        const uint8_t *ciphertext_data, size_t ciphertext_data_len,
+        const uint8_t aes_key[AES256_KEY_LENGTH],
+        const uint8_t iv[AES256_DATA_IV_LENGTH],
+        uint8_t **plaintext_data
 ) {
     size_t plaintext_data_len = aes256_gcm_plaintext_data_len(ciphertext_data_len);
     *plaintext_data = (uint8_t *)malloc(plaintext_data_len);
 
     mbedtls_gcm_context ctx;
     unsigned char *input_tag_buf =
-        (unsigned char *)(ciphertext_data + ciphertext_data_len - AES256_GCM_TAG_LENGTH);
+            (unsigned char *)(ciphertext_data + ciphertext_data_len - AES256_GCM_TAG_LENGTH);
     unsigned char tag_buf[AES256_GCM_TAG_LENGTH];
     int ret;
     mbedtls_cipher_id_t cipher = MBEDTLS_CIPHER_ID_AES;
@@ -1406,12 +1384,11 @@ size_t decrypt_aes_data(
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
     if (ret == 0) {
-        uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
         ret = mbedtls_gcm_crypt_and_tag(
-            &ctx, MBEDTLS_GCM_DECRYPT,
-            plaintext_data_len, iv,
-            AES256_DATA_IV_LENGTH, AD, AES256_DATA_AD_LEN, ciphertext_data,
-            *plaintext_data, AES256_GCM_TAG_LENGTH, tag_buf
+                &ctx, MBEDTLS_GCM_DECRYPT,
+                plaintext_data_len, iv,
+                AES256_DATA_IV_LENGTH, AD, AES256_DATA_AD_LEN, ciphertext_data,
+                *plaintext_data, AES256_GCM_TAG_LENGTH, tag_buf
         );
     }
     mbedtls_gcm_free(&ctx);
@@ -1425,6 +1402,15 @@ size_t decrypt_aes_data(
     } else {
         return 0;
     }
+}
+
+size_t decrypt_aes_data(
+    const uint8_t *ciphertext_data, size_t ciphertext_data_len,
+    const uint8_t aes_key[AES256_KEY_LENGTH],
+    uint8_t **plaintext_data
+) {
+    uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
+    return decrypt_aes_data_with_iv(ciphertext_data, ciphertext_data_len, aes_key, iv, plaintext_data);
 }
 
 int encrypt_aes_file(
@@ -1697,4 +1683,108 @@ char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len) {
     char* output = (char*)malloc(sizeof(char) * len);
     mbedtls_base64_decode((unsigned char*)output, len, &len, (const unsigned char *)base64_data, base64_data_len);
     return output;
+}
+
+int crypto_ds_key_gen_by_e2ee_pack_id(
+        uint32_t e2ee_pack_id_raw,
+        ProtobufCBinaryData *pub_key,
+        ProtobufCBinaryData *priv_key) {
+    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
+    digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
+    if (digital_signature_suite == NULL) {
+        ssm_notify_log(
+                NULL,
+                BAD_SIGN_KEY,
+                "crypto_ds_key_gen_by_e2ee_pack_id() e2ee pack not found: %d.", e2ee_pack_id_raw
+        );
+        return -1;
+    }
+
+    int result = digital_signature_suite->sign_key_gen(pub_key, priv_key);
+    if (result < 0) {
+        ssm_notify_log(
+                NULL,
+                BAD_SIGN_KEY,
+                "crypto_ds_key_gen_by_e2ee_pack_id() gen key failed."
+        );
+        free_protobuf(pub_key);
+        free_protobuf(priv_key);
+    }
+
+    return result;
+}
+
+int crypto_ds_sign_by_e2ee_pack_id(
+        uint32_t e2ee_pack_id_raw,
+        uint8_t **signature_out, size_t *signature_out_len,
+        const uint8_t *msg, size_t msg_len,
+        const uint8_t *private_key, size_t private_key_len) {
+    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
+    digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
+    if (digital_signature_suite == NULL) {
+        ssm_notify_log(
+                NULL,
+                BAD_SIGN_KEY,
+                "crypto_ds_sign_by_e2ee_pack_id() e2ee pack not found: %d.", e2ee_pack_id_raw
+        );
+        return -1;
+    }
+    if (private_key == NULL || private_key_len != digital_signature_suite->get_crypto_param().sign_priv_key_len) {
+        ssm_notify_log(
+                NULL,
+                BAD_SIGN_KEY,
+                "crypto_ds_sign_by_e2ee_pack_id() private_key wrong."
+        );
+        return -1;
+    }
+
+    int sig_len = digital_signature_suite->get_crypto_param().sig_len;
+    *signature_out = (uint8_t *)malloc(sizeof(uint8_t) * sig_len);
+    int result = digital_signature_suite->sign(*signature_out, signature_out_len, msg, msg_len, private_key);
+    if (result < 0) {
+        ssm_notify_log(
+                NULL,
+                BAD_SIGNATURE,
+                "crypto_ds_sign_by_e2ee_pack_id() sign failed."
+        );
+        free_mem((void **)signature_out, sig_len);
+    }
+
+    return result;
+}
+
+int crypto_ds_verify_by_e2ee_pack_id(
+        uint32_t e2ee_pack_id_raw,
+        const uint8_t *signature_in, size_t signature_in_len,
+        const uint8_t *msg, size_t msg_len,
+        const uint8_t *public_key, size_t public_key_len) {
+    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
+    digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
+    if (digital_signature_suite == NULL) {
+        ssm_notify_log(
+                NULL,
+                BAD_SIGN_KEY,
+                "crypto_ds_verify_by_e2ee_pack_id() e2ee pack not found: %d.", e2ee_pack_id_raw
+        );
+        return -1;
+    }
+    if (public_key == NULL || public_key_len != digital_signature_suite->get_crypto_param().sign_pub_key_len) {
+        ssm_notify_log(
+                NULL,
+                BAD_SIGN_KEY,
+                "crypto_ds_sign_by_e2ee_pack_id() public_key wrong."
+        );
+        return -1;
+    }
+
+    int result = digital_signature_suite->verify(signature_in, signature_in_len, msg, msg_len, public_key);
+    if (result < 0) {
+        ssm_notify_log(
+                NULL,
+                BAD_SIGNATURE,
+                "crypto_ds_verify_by_e2ee_pack_id() verify failed."
+        );
+    }
+
+    return result;
 }
