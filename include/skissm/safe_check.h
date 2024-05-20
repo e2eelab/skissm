@@ -82,6 +82,8 @@ bool safe_group_info_list(const Skissm__GroupInfo **src, size_t len);
 
 bool safe_register_user_response(const Skissm__RegisterUserResponse *src);
 
+bool safe_publish_spk_response(const Skissm__PublishSpkResponse *src);
+
 bool safe_get_pre_key_bundle_response(const Skissm__GetPreKeyBundleResponse *src);
 
 bool safe_invite_response(const Skissm__InviteResponse *src);

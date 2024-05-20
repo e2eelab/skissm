@@ -55,10 +55,13 @@ void account_begin() {
                     skissm__signed_pre_key__free_unpacked(cur_account->signed_pre_key, NULL);
                     cur_account->signed_pre_key = signed_pre_key;
 
-                    Skissm__PublishSpkResponse *response = publish_spk_internal(cur_account);
+                    Skissm__PublishSpkResponse *response = NULL;
+                    ret = publish_spk_internal(&response, cur_account);
                     // release
-                    if (response != NULL)
+                    if (response != NULL) {
                         skissm__publish_spk_response__free_unpacked(response, NULL);
+                        response = NULL;
+                    }
                 }
             }
 
@@ -407,6 +410,8 @@ int generate_opks(
                 // release
                 skissm__key_pair__free_unpacked(key_pair, NULL);
                 key_pair = NULL;
+
+                // if there is something wrong with the newly generated key pair, then we break the procedure
                 break;
             }
         }
@@ -414,6 +419,7 @@ int generate_opks(
         if (ret == 0) {
             *one_time_pre_key_out = one_time_pre_key_list;
         } else {
+            // if ret != 0, then release the whole one_time_pre_key_list
             if (one_time_pre_key_list != NULL) {
                 for (i = 0; i < number_of_keys; i++) {
                     if (one_time_pre_key_list[i] != NULL) {

@@ -65,10 +65,12 @@ int produce_publish_spk_request(
  *
  * @param account
  * @param response
- * @return true
- * @return false
+ * @return 0 if success
  */
-bool consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkResponse *response);
+int consume_publish_spk_response(
+    Skissm__Account *account,
+    Skissm__PublishSpkResponse *response
+);
 
 /**
  * @brief Create a SupplyOpksRequest message to be sent to server.

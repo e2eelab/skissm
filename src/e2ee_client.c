@@ -153,6 +153,7 @@ Skissm__InviteResponse *invite(
 
     char *auth = NULL;
     Skissm__InviteResponse *invite_response = NULL;
+    Skissm__InviteResponse **invite_response_list = NULL;
 
     if (safe_address(from)) {
         get_skissm_plugin()->db_handler.load_auth(from, &auth);
@@ -182,7 +183,16 @@ Skissm__InviteResponse *invite(
     // not just check outbound sessions in db currently.
 
     if (ret == 0) {
-        invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, true, NULL, 0);
+        ret = get_pre_key_bundle_internal(
+            &invite_response_list,
+            from,
+            auth,
+            to_user_id,
+            to_domain,
+            NULL,
+            true,
+            NULL, 0
+        );
     }
 
     // release
@@ -195,29 +205,29 @@ Skissm__InviteResponse *invite(
     return invite_response;
 }
 
-Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(from, &auth);
+// Skissm__InviteResponse *new_invite(Skissm__E2eeAddress *from, const char *to_user_id, const char *to_domain) {
+//     char *auth = NULL;
+//     get_skissm_plugin()->db_handler.load_auth(from, &auth);
 
-    if (auth == NULL) {
-        ssm_notify_log(from, BAD_ACCOUNT, "invite() from [%s:%s] to [%s@%s]",
-            from->user->user_id,
-            from->user->device_id,
-            to_user_id,
-            to_domain);
-        return NULL;
-    }
+//     if (auth == NULL) {
+//         ssm_notify_log(from, BAD_ACCOUNT, "invite() from [%s:%s] to [%s@%s]",
+//             from->user->user_id,
+//             from->user->device_id,
+//             to_user_id,
+//             to_domain);
+//         return NULL;
+//     }
 
-    Skissm__InviteResponse *invite_response = NULL;
-    invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, true, NULL, 0);
+//     Skissm__InviteResponse *invite_response = NULL;
+//     invite_response = get_pre_key_bundle_internal(from, auth, to_user_id, to_domain, NULL, true, NULL, 0);
 
-    // release
-    free(auth);
+//     // release
+//     free(auth);
 
-    // done
-    // response can be NULL
-    return invite_response;
-}
+//     // done
+//     // response can be NULL
+//     return invite_response;
+// }
 
 void send_sync_msg(Skissm__E2eeAddress *from, const uint8_t *plaintext_data, size_t plaintext_data_len) {
     Skissm__Session **self_outbound_sessions = NULL;
