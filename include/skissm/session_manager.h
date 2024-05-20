@@ -46,28 +46,33 @@ int produce_get_pre_key_bundle_request(
 /**
  * @brief Process an incoming get_pre_key_bundle_response_payload.
  *
+ * @param invite_response_list_out
  * @param from
  * @param group_pre_key_plaintext_data
  * @param group_pre_key_plaintext_data_len
  * @param get_pre_key_bundle_response
- * @return Skissm__InviteResponse *
+ * @return 0 if success
  */
-Skissm__InviteResponse *consume_get_pre_key_bundle_response(
+int consume_get_pre_key_bundle_response(
+    Skissm__InviteResponse ***invite_response_list_out,
     Skissm__E2eeAddress *from,
     uint8_t *group_pre_key_plaintext_data,
     size_t group_pre_key_plaintext_data_len,
     Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response
 );
+
 /**
  * @brief Create a send_one2one_msg_request to be sent to messaging server.
  *
+ * @param request_out
  * @param outbound_session
  * @param notif_level
  * @param plaintext_data
  * @param plaintext_data_len
- * @return Skissm__SendOne2oneMsgRequest*
+ * @return 0 if success
  */
-Skissm__SendOne2oneMsgRequest *produce_send_one2one_msg_request(
+int produce_send_one2one_msg_request(
+    Skissm__SendOne2oneMsgRequest **request_out,
     Skissm__Session *outbound_session,
     uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len
