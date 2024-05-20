@@ -9,7 +9,8 @@
 #include "skissm/session_manager.h"
 #include "skissm/e2ee_client.h"
 
-Skissm__InviteResponse *get_pre_key_bundle_internal(
+int get_pre_key_bundle_internal(
+    Skissm__InviteResponse ***invite_response_list_out,
     Skissm__E2eeAddress *from,
     const char *auth,
     const char *to_user_id,
@@ -23,7 +24,8 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
 
     Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = NULL;
     Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = NULL;
-    Skissm__InviteResponse *invite_response = NULL;
+    // Skissm__InviteResponse *invite_response = NULL;
+    Skissm__InviteResponse **invite_response_list = NULL;
 
     if (!safe_address(from)) {
         ret = -1;
@@ -52,53 +54,17 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
     }
 
     if (ret == 0) {
-        invite_response = consume_get_pre_key_bundle_response(
-            from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
+        ret = consume_get_pre_key_bundle_response(
+            &invite_response_list,
+            from,
+            group_pre_key_plaintext_data,
+            group_pre_key_plaintext_data_len,
+            get_pre_key_bundle_response
         );
     }
 
-    // does not invite, if the get_pre_key_bundle_response code is no content
-    if (get_pre_key_bundle_response != NULL 
-        && get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND
-    ) {
-        ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() got no content response, skip.");
-        // release
-        skissm__get_pre_key_bundle_request__free_unpacked(get_pre_key_bundle_request, NULL);
-        skissm__get_pre_key_bundle_response__free_unpacked(get_pre_key_bundle_response, NULL);
-        // skip invite
-        return NULL;
-    }
-
-    invite_response = consume_get_pre_key_bundle_response(
-        from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
-    );
-
-    if ((invite_response != NULL)
-        && ((invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK)
-            || (invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND)
-        )
-    ) {
-        // we do not store pending request if the invite_response code is not found
-    } else {
-        ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request will be stored.");
-        // pack request to get_pre_key_bundle_request_data which will be freed inside store_pending_request_internal
-        size_t get_pre_key_bundle_request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(get_pre_key_bundle_request);
-        uint8_t *get_pre_key_bundle_request_data = (uint8_t *)malloc(sizeof(uint8_t) * get_pre_key_bundle_request_data_len);
-        skissm__get_pre_key_bundle_request__pack(get_pre_key_bundle_request, get_pre_key_bundle_request_data);
-
-        store_pending_request_internal(
-            from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_GET_PRE_KEY_BUNDLE,
-            get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len,
-            group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
-        );
-
-        // release
-        free_mem((void *)&get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len);
-    }
-
-    if (active == true) {
-        // this device has invited, but other devices has not
-        if (get_pre_key_bundle_response != NULL) {
+    if (ret == 0) {
+        if (active == true) {
             size_t their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
             char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
             Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
@@ -109,10 +75,93 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
             }
             // send to other devices in order to create sessions
             send_sync_invite_msg(from, to_user_id, to_domain, their_device_id, their_device_num);
-        } else {
-            send_sync_invite_msg(from, to_user_id, to_domain, NULL, 0);
+
+            // release
+            for (i = 0; i < their_device_num; i++) {
+                free(their_device_id[i]);
+            }
+            free_mem((void **)&their_device_id, sizeof(char *) * their_device_num);
         }
+
+        *invite_response_list_out = invite_response_list;
+    } else {
+        if (get_pre_key_bundle_response != NULL) {
+            if (get_pre_key_bundle_response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+                ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() get_pre_key_bundle_response got error, pending request will be stored.");
+                // pack request to get_pre_key_bundle_request_data which will be freed inside store_pending_request_internal
+                size_t get_pre_key_bundle_request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(get_pre_key_bundle_request);
+                uint8_t *get_pre_key_bundle_request_data = (uint8_t *)malloc(sizeof(uint8_t) * get_pre_key_bundle_request_data_len);
+                skissm__get_pre_key_bundle_request__pack(get_pre_key_bundle_request, get_pre_key_bundle_request_data);
+
+                store_pending_request_internal(
+                    from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_GET_PRE_KEY_BUNDLE,
+                    get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len,
+                    group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
+                );
+
+                // release
+                free_mem((void *)&get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len);
+            }
+        }
+        // What if get_pre_key_bundle_response is NULL? Should we store pending request?
     }
+
+    // // does not invite, if the get_pre_key_bundle_response code is no content
+    // if (get_pre_key_bundle_response != NULL 
+    //     && get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND
+    // ) {
+    //     ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() got no content response, skip.");
+    //     // release
+    //     skissm__get_pre_key_bundle_request__free_unpacked(get_pre_key_bundle_request, NULL);
+    //     skissm__get_pre_key_bundle_response__free_unpacked(get_pre_key_bundle_response, NULL);
+    //     // skip invite
+    //     return NULL;
+    // }
+
+    // invite_response = consume_get_pre_key_bundle_response(
+    //     from, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
+    // );
+
+    // if ((invite_response != NULL)
+    //     && ((invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK)
+    //         || (invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND)
+    //     )
+    // ) {
+    //     // we do not store pending request if the invite_response code is no content
+    // } else {
+    //     ssm_notify_log(from, DEBUG_LOG, "get_pre_key_bundle_internal() invite_response got error, pending request will be stored.");
+    //     // pack request to get_pre_key_bundle_request_data which will be freed inside store_pending_request_internal
+    //     size_t get_pre_key_bundle_request_data_len = skissm__get_pre_key_bundle_request__get_packed_size(get_pre_key_bundle_request);
+    //     uint8_t *get_pre_key_bundle_request_data = (uint8_t *)malloc(sizeof(uint8_t) * get_pre_key_bundle_request_data_len);
+    //     skissm__get_pre_key_bundle_request__pack(get_pre_key_bundle_request, get_pre_key_bundle_request_data);
+
+    //     store_pending_request_internal(
+    //         from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_GET_PRE_KEY_BUNDLE,
+    //         get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len,
+    //         group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
+    //     );
+
+    //     // release
+    //     free_mem((void *)&get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len);
+    // }
+
+    // if (active == true) {
+    //     // this device has invited, but other devices has not
+    //     if (get_pre_key_bundle_response != NULL) {
+    //         size_t their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
+    //         char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
+    //         Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
+    //         size_t i;
+    //         for (i = 0; i < their_device_num; i++) {
+    //             cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[i];
+    //             their_device_id[i] = strdup(cur_pre_key_bundle->user_address->user->device_id);
+    //         }
+    //         // send to other devices in order to create sessions
+    //         send_sync_invite_msg(from, to_user_id, to_domain, their_device_id, their_device_num);
+    //     } else {
+    //         send_sync_invite_msg(from, to_user_id, to_domain, NULL, 0);
+    //     }
+    // }
 
     // release
     skissm__get_pre_key_bundle_request__free_unpacked(get_pre_key_bundle_request, NULL);
@@ -120,7 +169,7 @@ Skissm__InviteResponse *get_pre_key_bundle_internal(
         skissm__get_pre_key_bundle_response__free_unpacked(get_pre_key_bundle_response, NULL);
 
     // done
-    return invite_response;
+    return ret;
 }
 
 int invite_internal(
@@ -255,7 +304,7 @@ int accept_internal(
     return ret;
 }
 
-Skissm__PublishSpkResponse *publish_spk_internal(
+int publish_spk_internal(
     Skissm__PublishSpkResponse **response_out,
     Skissm__Account *account
 ) {
@@ -267,16 +316,36 @@ Skissm__PublishSpkResponse *publish_spk_internal(
     // ssm_notify_log(account->address, DEBUG_LOG, "publish_spk_internal(): user_address [%s:%s]", account->address->user->user_id, account->address->user->device_id);
     
     ret = produce_publish_spk_request(&request, account);
-    if (ret == 0) {}
-    response = get_skissm_plugin()->proto_handler.publish_spk(account->address, account->auth, request);
-    bool succ = consume_publish_spk_response(account, response);
-    if (!succ) {
-        // we do not store pending request here
-        ssm_notify_log(account->address, DEBUG_LOG, "publish_spk_internal() failed, do it on next start");
+
+    if (ret == 0) {
+        response = get_skissm_plugin()->proto_handler.publish_spk(account->address, account->auth, request);
+
+        if (safe_publish_spk_response(response)) {
+            ret = consume_publish_spk_response(account, response);
+
+            if (ret == -1) {
+                skissm__publish_spk_response__free_unpacked(response, NULL);
+                response = NULL;
+                // we do not store pending request here
+                ssm_notify_log(account->address, DEBUG_LOG, "publish_spk_internal() failed, do it on next start");
+            }
+        } else {
+            if (response != NULL) {
+                skissm__publish_spk_response__free_unpacked(response, NULL);
+                response = NULL;
+            }
+        }
     }
 
     // release
-    skissm__publish_spk_request__free_unpacked(request, NULL);
+    if (request != NULL) {
+        skissm__publish_spk_request__free_unpacked(request, NULL);
+        request = NULL;
+    }
+
+    if (ret == 0) {
+        *response_out = response;
+    }
 
     // done
     return ret;
@@ -494,29 +563,78 @@ static void resend_pending_request(Skissm__Account *account) {
         );
         switch (request_type_list[i]) {
             case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_GET_PRE_KEY_BUNDLE: {
+                int ret = 0;
+                size_t their_device_num;
                 Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = skissm__get_pre_key_bundle_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(user_address, auth, get_pre_key_bundle_request);
+                size_t i;
                 // check if pre_key_bundles is empty
-                if (get_pre_key_bundle_response != NULL) {
-                    if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
-                        bool has_args = pending_request->n_request_arg_list == 1;
-                        size_t group_pre_key_plaintext_data_len = has_args ? pending_request->request_arg_list[0].len : 0;
-                        uint8_t *group_pre_key_plaintext_data = has_args ? pending_request->request_arg_list[0].data : NULL;
-                        Skissm__InviteResponse *invite_response = consume_get_pre_key_bundle_response(
-                            user_address, group_pre_key_plaintext_data, group_pre_key_plaintext_data_len, get_pre_key_bundle_response
-                        );
-                        succ = (invite_response != NULL && invite_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
-                        skissm__invite_response__free_unpacked(invite_response, NULL);
-                    } else if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
-                        ssm_notify_log(
-                            user_address,
-                            DEBUG_LOG,
-                            "consume_get_pre_key_bundle_response() got empty pre_key_bundles, remove pending request"
-                        );
-                        succ = true;
+                if (!safe_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
+                    ret = -1;
+                }
+                if (ret == 0) {
+                    their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
+                    Skissm__InviteResponse **invite_response_list = NULL;
+                    bool has_args = pending_request->n_request_arg_list == 1;
+                    size_t group_pre_key_plaintext_data_len = has_args ? pending_request->request_arg_list[0].len : 0;
+                    uint8_t *group_pre_key_plaintext_data = has_args ? pending_request->request_arg_list[0].data : NULL;
+                    ret = consume_get_pre_key_bundle_response(
+                        &invite_response_list,
+                        user_address,
+                        group_pre_key_plaintext_data,
+                        group_pre_key_plaintext_data_len,
+                        get_pre_key_bundle_response
+                    );
+
+                    // release
+                    if (invite_response_list != NULL) {
+                        for (i = 0; i < their_device_num; i++) {
+                            if (invite_response_list[i] != NULL) {
+                                skissm__invite_response__free_unpacked(invite_response_list[i], NULL);
+                            }
+                        }
+                        free_mem((void **)&invite_response_list, sizeof(Skissm__InviteResponse *) * their_device_num);
+                    }
+                } else {
+                    // if the get_pre_key_bundle_response code is no content, we will unload the pending request data
+                    if (get_pre_key_bundle_response != NULL) {
+                        if (get_pre_key_bundle_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
+                            ssm_notify_log(
+                                user_address,
+                                DEBUG_LOG,
+                                "consume_get_pre_key_bundle_response() got empty pre_key_bundles, remove pending request"
+                            );
+                            succ = true;
+                        }
                     }
                 }
-                if (succ) {
+                if (ret == 0) {
+                    if (get_pre_key_bundle_request->active == true) {
+                        their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
+                        char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
+                        Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
+                        for (i = 0; i < their_device_num; i++) {
+                            cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[i];
+                            their_device_id[i] = strdup(cur_pre_key_bundle->user_address->user->device_id);
+                        }
+                        // send to other devices in order to create sessions
+                        send_sync_invite_msg(
+                            user_address,
+                            get_pre_key_bundle_request->user_id,
+                            get_pre_key_bundle_request->domain,
+                            their_device_id,
+                            their_device_num
+                        );
+
+                        // release
+                        for (i = 0; i < their_device_num; i++) {
+                            free(their_device_id[i]);
+                        }
+                        free_mem((void **)&their_device_id, sizeof(char *) * their_device_num);
+                    }
+                }
+                
+                if (ret == 0 || succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 } else {
                     ssm_notify_log(user_address, DEBUG_LOG, "handle pending get_pre_key_bundle_request failed");

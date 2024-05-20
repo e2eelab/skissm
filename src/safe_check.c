@@ -686,6 +686,18 @@ bool safe_register_user_response(const Skissm__RegisterUserResponse *src) {
     return true;
 }
 
+bool safe_publish_spk_response(const Skissm__PublishSpkResponse *src) {
+    if (src != NULL) {
+        if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 bool safe_get_pre_key_bundle_response(const Skissm__GetPreKeyBundleResponse *src) {
     if (src != NULL) {
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {

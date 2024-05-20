@@ -27,6 +27,7 @@ extern "C" {
 
 /**
  * @brief Get the pre-key bundle internal object.
+ * @param invite_response_list_out
  * @param from
  * @param auth
  * @param to_user_id
@@ -35,9 +36,10 @@ extern "C" {
  * @param active
  * @param group_pre_key_plaintext_data
  * @param group_pre_key_plaintext_data_len
- * @return Skissm__InviteResponse *
+ * @return 0 if success
  */
-Skissm__InviteResponse *get_pre_key_bundle_internal(
+int get_pre_key_bundle_internal(
+    Skissm__InviteResponse ***invite_response_list_out,
     Skissm__E2eeAddress *from,
     const char *auth,
     const char *to_user_id,
@@ -80,10 +82,14 @@ int accept_internal(
 
 /**
  * @brief Send publish_spk request to server.
+ * @param response_out
  * @param account The account to be processed
- * @return Skissm__PublishSpkResponse *
+ * @return 0 if success
  */
-Skissm__PublishSpkResponse *publish_spk_internal(Skissm__Account *account);
+int publish_spk_internal(
+    Skissm__PublishSpkResponse **response_out,
+    Skissm__Account *account
+);
 
 /**
  * @brief Send supply_opks request to server.

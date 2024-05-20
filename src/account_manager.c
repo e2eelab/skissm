@@ -124,7 +124,9 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                     other_device_address->user->user_id,
                     other_device_address->user->device_id
                 );
-                Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
+                Skissm__InviteResponse **invite_response_list = NULL;
+                ret = get_pre_key_bundle_internal(
+                    &invite_response_list,
                     address,
                     auth,
                     other_device_address->user->user_id,
@@ -133,9 +135,10 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                     false,
                     NULL, 0
                 );
-                if (invite_response != NULL) {
-                    skissm__invite_response__free_unpacked(invite_response, NULL);
-                    invite_response = NULL;
+                if (ret == 0) {
+                    skissm__invite_response__free_unpacked(invite_response_list[0], NULL);
+                    invite_response_list[0] = NULL;
+                    free_mem((void **)&invite_response_list, sizeof(Skissm__InviteResponse **) * 1);
                 }
             }
         }
@@ -162,11 +165,21 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                     continue;
                 }
 
-                Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
-                    address, auth, to_address->user->user_id, to_address->domain, to_address->user->device_id, false, NULL, 0
+                Skissm__InviteResponse **invite_response_list = NULL;
+                ret = get_pre_key_bundle_internal(
+                    &invite_response_list,
+                    address,
+                    auth,
+                    to_address->user->user_id,
+                    to_address->domain,
+                    to_address->user->device_id,
+                    false,
+                    NULL, 0
                 );
-                if (invite_response != NULL) {
-                    skissm__invite_response__free_unpacked(invite_response, NULL);
+                if (ret == 0) {
+                    skissm__invite_response__free_unpacked(invite_response_list[0], NULL);
+                    invite_response_list[0] = NULL;
+                    free_mem((void **)&invite_response_list, sizeof(Skissm__InviteResponse **) * 1);
                 }
             }
         }
@@ -228,17 +241,35 @@ int produce_publish_spk_request(
     return ret;
 }
 
-bool consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkResponse *response) {
-    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+int consume_publish_spk_response(
+    Skissm__Account *account,
+    Skissm__PublishSpkResponse *response
+) {
+    int ret = 0;
+
+    if (!safe_publish_spk_response(response)) {
+        ret = -1;
+    }
+    if (account != NULL) {
+        if (!safe_address(account->address)) {
+            ret = -1;
+        }
+        if (!safe_signed_pre_key(account->signed_pre_key)) {
+            ret = -1;
+        }
+    } else {
+        ret = -1;
+    }
+
+    if (ret == 0) {
         // save to db
         if (account->saved == true) {
             Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;
             get_skissm_plugin()->db_handler.update_signed_pre_key(account->address, signed_pre_key);
         }
-        return true;
-    } else {
-        return false;
     }
+
+    return ret;
 }
 
 int produce_supply_opks_request(
