@@ -162,6 +162,9 @@ extern "C" {
 #define CIPHER_SUITE_PART_LEN_IN_BITS                        8
 #define CIPHER_SUITE_PART_HALF_LEN_IN_BITS                   4
 
+/**
+ * @brief Type definition of end-to-end encryption pack id.
+ */
 typedef struct e2ee_pack_id_t {
     unsigned ver:CIPHER_SUITE_PART_LEN_IN_BITS;
     unsigned digital_signature:CIPHER_SUITE_PART_LEN_IN_BITS;
@@ -172,13 +175,16 @@ typedef struct e2ee_pack_id_t {
 
 /**
  * @brief Type definition of end-to-end encryption pack.
- *        A e2ee_pack consists of cipher suite and session suite.
+ *        An e2ee_pack consists of cipher suite and session suite.
  */
 typedef struct e2ee_pack_t {
     struct cipher_suite_t *cipher_suite;
     struct session_suite_t *session_suite;
 } e2ee_pack_t;
 
+/**
+ * @brief Type definition of digital signature algorithm parameters.
+ */
 typedef struct crypto_digital_signature_param_t {
     bool pqc_param;
     uint32_t sign_pub_key_len;
@@ -186,6 +192,9 @@ typedef struct crypto_digital_signature_param_t {
     uint32_t sig_len;
 } crypto_digital_signature_param_t;
 
+/**
+ * @brief Type definition of kem algorithm parameters.
+ */
 typedef struct crypto_kem_param_t {
     bool pqc_param;
     uint32_t asym_pub_key_len;
@@ -194,16 +203,25 @@ typedef struct crypto_kem_param_t {
     uint32_t shared_secret_len;
 } crypto_kem_param_t;
 
+/**
+ * @brief Type definition of symmetric encryption algorithm parameters.
+ */
 typedef struct crypto_symmetric_encryption_param_t {
     uint32_t aead_key_len;
     uint32_t aead_iv_len;
     uint32_t aead_tag_len;
 } crypto_symmetric_encryption_param_t;
 
+/**
+ * @brief Type definition of hash algorithm parameters.
+ */
 typedef struct crypto_hash_param_t {
     uint32_t hash_len;
 } crypto_hash_param_t;
 
+/**
+ * @brief Type definition of digital signature algorithm suite.
+ */
 typedef struct digital_signature_suite_t {
     /**
      * @brief Get the parameters of this digital signature suite.
@@ -256,6 +274,9 @@ typedef struct digital_signature_suite_t {
     );
 } digital_signature_suite_t;
 
+/**
+ * @brief Type definition of kem algorithm suite.
+ */
 typedef struct kem_suite_t {
     /**
      * @brief Get the parameters of this kem suite.
@@ -289,6 +310,9 @@ typedef struct kem_suite_t {
     );
 } kem_suite_t;
 
+/**
+ * @brief Type definition of symmetric encryption algorithm suite.
+ */
 typedef struct symmetric_encryption_suite_t {
     /**
      * @brief Get the parameters of this symmetric encryption suite.
@@ -331,6 +355,9 @@ typedef struct symmetric_encryption_suite_t {
     );
 } symmetric_encryption_suite_t;
 
+/**
+ * @brief Type definition of hash algorithm suite.
+ */
 typedef struct hash_suite_t {
     /**
      * @brief Get the parameters of this hash suite.
@@ -386,6 +413,9 @@ typedef struct hash_suite_t {
     );
 } hash_suite_t;
 
+/**
+ * @brief Type definition of cipher suite.
+ */
 typedef struct cipher_suite_t {
     digital_signature_suite_t *digital_signature_suite;
     kem_suite_t *kem_suite;
@@ -393,6 +423,9 @@ typedef struct cipher_suite_t {
     hash_suite_t *hash_suite;
 } cipher_suite_t;
 
+/**
+ * @brief Type definition of common handler.
+ */
 typedef struct skissm_common_handler_t {
     /**
      * @brief generate time stamp
@@ -409,6 +442,9 @@ typedef struct skissm_common_handler_t {
     void (*gen_uuid)(uint8_t uuid[UUID_LEN]);
 } skissm_common_handler_t;
 
+/**
+ * @brief Type definition of database handler.
+ */
 typedef struct skissm_db_handler_t {
     // account related handlers
     /**
@@ -728,6 +764,9 @@ typedef struct skissm_db_handler_t {
     );
 } skissm_db_handler_t;
 
+/**
+ * @brief Type definition of protocol handler.
+ */
 typedef struct e2ee_proto_handler_t {
     /**
      * @brief Register user

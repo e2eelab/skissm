@@ -631,7 +631,7 @@ char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len);
  * @param msg_len
  * @param hash_out
  * @param hash_out_len
- * @return
+ * @return value < 0 for error
  */
 int crypto_hash_by_e2ee_pack_id(
         uint32_t e2ee_pack_id_raw,
