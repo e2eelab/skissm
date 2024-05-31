@@ -355,13 +355,16 @@ static crypto_kem_param_t mceliece8192128f_param = {
 
 // symmetric encryption
 
-static crypto_symmetric_encryption_param_t aes256_sha256_param = {
-    SHA256_OUTPUT_LENGTH,
+static crypto_symmetric_encryption_param_t aes256_param = {
     AES256_KEY_LENGTH,
     AES256_IV_LENGTH,
     AES256_GCM_TAG_LENGTH
 };
 
+// hash
+static crypto_hash_param_t sha256_param = {
+    SHA256_OUTPUT_LENGTH,
+};
 
 // ditigal signature
 
@@ -679,8 +682,12 @@ crypto_kem_param_t get_mceliece8192128f_param() {
     return mceliece8192128f_param;
 }
 
-crypto_symmetric_encryption_param_t get_aes256_sha256_param() {
-    return aes256_sha256_param;
+crypto_symmetric_encryption_param_t get_aes256_param() {
+    return aes256_param;
+}
+
+crypto_hash_param_t get_sha256_param() {
+    return sha256_param;
 }
 
 int crypto_hqc128_generate_key_pair(

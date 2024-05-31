@@ -1,11 +1,11 @@
 [submodule "lib/protobuf-c"]
 	path = lib/protobuf-c
 	url = https://github.com/protobuf-c/protobuf-c.git
-	tag = v1.4.1
+	branch = edmonds/google-protobuf-26-fixes
 [submodule "lib/protobuf"]
 	path = lib/protobuf
 	url = https://github.com/protocolbuffers/protobuf.git
-    tag = v3.19.2
+    tag = v24.3
 [submodule "protos/src/skissm"]
 	path = protos/src/skissm
 	url = https://github.com/e2eelab/skissm-protos

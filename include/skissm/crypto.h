@@ -190,7 +190,9 @@ crypto_kem_param_t get_mceliece8192128_param();
 
 crypto_kem_param_t get_mceliece8192128f_param();
 
-crypto_symmetric_encryption_param_t get_aes256_sha256_param();
+crypto_symmetric_encryption_param_t get_aes256_param();
+
+crypto_hash_param_t get_sha256_param();
 
 int crypto_hqc128_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key

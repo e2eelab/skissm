@@ -63,7 +63,7 @@ add_subdirectory(${curve25519_DIR} ${EXTERNAL_LIB_DIR}/curve25519)
 add_subdirectory(${mbedcrypto_DIR} ${EXTERNAL_LIB_DIR}/mbedcrypto)
 add_subdirectory(${pqclean_DIR} ${EXTERNAL_LIB_DIR}/PQClean)
 if(SKISSM_BUILD_PROTOBUF)
-  add_subdirectory(${protobuf_DIR}/cmake)
+  add_subdirectory(${protobuf_DIR})
 endif()
 
 # Patch Protobuf-c bug https://github.com/protobuf-c/protobuf-c/pull/482

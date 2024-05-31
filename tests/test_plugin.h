@@ -30,7 +30,7 @@ extern const char *db_name;
 void tear_up();
 void tear_down();
 uint32_t gen_e2ee_pack_id_raw(
-    unsigned head, unsigned digital_signature, unsigned kem, unsigned symmetric_encryption
+    unsigned head, unsigned digital_signature, unsigned kem, unsigned symmetric_encryption, unsigned hash
 );
 
 #endif /* TEST_PLUGIN_H_ */

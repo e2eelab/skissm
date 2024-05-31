@@ -146,7 +146,8 @@ int main(){
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_HASH_SHA2_256
     );
 
     test_load_old_signed_pre_key(e2ee_pack_id);

@@ -59,7 +59,8 @@ static void test_one_group_pre_key() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
@@ -113,11 +114,11 @@ static void test_one_group_pre_key() {
 
     outbound_group_session->sequence = 0;
 
-    outbound_group_session->chain_key.len = test_cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    outbound_group_session->chain_key.len = test_cipher_suite->hash_suite->get_crypto_param().hash_len;
     outbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
     get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
 
-    outbound_group_session->group_seed.len = test_cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    outbound_group_session->group_seed.len = test_cipher_suite->hash_suite->get_crypto_param().hash_len;
     outbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
     get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->group_seed.data, outbound_group_session->group_seed.len);
 
@@ -303,7 +304,8 @@ static void test_pending_request_data() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_HASH_SHA2_256
     );
 
     // mock address
@@ -370,7 +372,8 @@ static void test_sending_before_accept() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_HASH_SHA2_256
     );
     char *alice_device_id = generate_uuid_str();
     const char *alice_authenticator = "alice@domain.com.tw";

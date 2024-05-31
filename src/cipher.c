@@ -66,9 +66,13 @@ size_t aes256_gcm_decrypt(
 // symmetric encryption
 
 const struct symmetric_encryption_suite_t E2EE_AES256_SHA256 = {
-    get_aes256_sha256_param,
+    get_aes256_param,
     aes256_gcm_encrypt,
     aes256_gcm_decrypt,
+};
+
+const struct hash_suite_t E2EE_SHA256 = {
+    get_sha256_param,
     crypto_hkdf_sha256,
     crypto_hmac_sha256,
     crypto_sha256

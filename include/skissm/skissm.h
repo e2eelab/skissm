@@ -146,15 +146,28 @@ extern "C" {
 #define E2EE_PACK_ALG_KEM_MCELIECE8192128                    97
 #define E2EE_PACK_ALG_KEM_MCELIECE8192128F                   101
 
-#define E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256     1
+#define E2EE_PACK_ALG_SYMMETRIC_KEY_AES256                   1
+
+#define E2EE_PACK_ALG_HASH_SHA2_224                          1
+#define E2EE_PACK_ALG_HASH_SHA2_256                          2
+#define E2EE_PACK_ALG_HASH_SHA2_384                          3
+#define E2EE_PACK_ALG_HASH_SHA2_512                          4
+#define E2EE_PACK_ALG_HASH_SHA3_224                          9
+#define E2EE_PACK_ALG_HASH_SHA3_256                          10
+#define E2EE_PACK_ALG_HASH_SHA3_384                          11
+#define E2EE_PACK_ALG_HASH_SHA3_512                          12
+#define E2EE_PACK_ALG_HASH_SHAKE_128                         17
+#define E2EE_PACK_ALG_HASH_SHAKE_256                         18
 
 #define CIPHER_SUITE_PART_LEN_IN_BITS                        8
+#define CIPHER_SUITE_PART_HALF_LEN_IN_BITS                   4
 
 typedef struct e2ee_pack_id_t {
     unsigned ver:CIPHER_SUITE_PART_LEN_IN_BITS;
     unsigned digital_signature:CIPHER_SUITE_PART_LEN_IN_BITS;
     unsigned kem:CIPHER_SUITE_PART_LEN_IN_BITS;
-    unsigned symmetric_encryption:CIPHER_SUITE_PART_LEN_IN_BITS;
+    unsigned symmetric_encryption:CIPHER_SUITE_PART_HALF_LEN_IN_BITS;
+    unsigned hash:CIPHER_SUITE_PART_HALF_LEN_IN_BITS;
 } e2ee_pack_id_t;
 
 /**
@@ -182,11 +195,14 @@ typedef struct crypto_kem_param_t {
 } crypto_kem_param_t;
 
 typedef struct crypto_symmetric_encryption_param_t {
-    uint32_t hash_len;
     uint32_t aead_key_len;
     uint32_t aead_iv_len;
     uint32_t aead_tag_len;
 } crypto_symmetric_encryption_param_t;
+
+typedef struct crypto_hash_param_t {
+    uint32_t hash_len;
+} crypto_hash_param_t;
 
 typedef struct digital_signature_suite_t {
     /**
@@ -275,7 +291,7 @@ typedef struct kem_suite_t {
 
 typedef struct symmetric_encryption_suite_t {
     /**
-     * @brief Get the parameters of this kem suite.
+     * @brief Get the parameters of this symmetric encryption suite.
      * @return crypto_symmetric_encryption_param_t
      */
     struct crypto_symmetric_encryption_param_t (*get_crypto_param)(void);
@@ -313,6 +329,14 @@ typedef struct symmetric_encryption_suite_t {
             const uint8_t *ciphertext_data, size_t ciphertext_data_len,
             uint8_t **plaintext_data
     );
+} symmetric_encryption_suite_t;
+
+typedef struct hash_suite_t {
+    /**
+     * @brief Get the parameters of this hash suite.
+     * @return crypto_hash_param_t
+     */
+    struct crypto_hash_param_t (*get_crypto_param)(void);
 
     /**
      * @brief HMAC-based key derivation function.
@@ -360,12 +384,13 @@ typedef struct symmetric_encryption_suite_t {
             size_t msg_len,
             uint8_t *hash_out
     );
-} symmetric_encryption_suite_t;
+} hash_suite_t;
 
 typedef struct cipher_suite_t {
     digital_signature_suite_t *digital_signature_suite;
     kem_suite_t *kem_suite;
     symmetric_encryption_suite_t *symmetric_encryption_suite;
+    hash_suite_t *hash_suite;
 } cipher_suite_t;
 
 typedef struct skissm_common_handler_t {
@@ -1061,9 +1086,10 @@ symmetric_encryption_suite_t *get_symmetric_encryption_suite(unsigned symmetric_
  * @param digital_signature
  * @param kem
  * @param symmetric_encryption
+ * @param hash
  */
 uint32_t gen_e2ee_pack_id_raw(
-    unsigned ver, unsigned digital_signature, unsigned kem, unsigned symmetric_encryption);
+    unsigned ver, unsigned digital_signature, unsigned kem, unsigned symmetric_encryption, unsigned hash);
 
 /**
  * @brief Get the e2ee_pack by given e2ee_pack_id raw number.

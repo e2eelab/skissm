@@ -84,14 +84,14 @@ static void create_chain_key(
     Skissm__ChainKey *new_chain_key,
     ProtobufCBinaryData *ratchet_public_key
 ) {
-    int shared_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
     int shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
 
     uint8_t secret[shared_secret_len];
     memset(secret, 0, shared_secret_len);
     uint8_t *ciphertext = cipher_suite->kem_suite->ss_key_gen(our_private_key, their_key, secret);
     uint8_t derived_secrets[2 * shared_key_len];
-    cipher_suite->symmetric_encryption_suite->hkdf(
+    cipher_suite->hash_suite->hkdf(
         secret, sizeof(secret),
         root_key.data, root_key.len,
         (uint8_t *)KDF_INFO_RATCHET, sizeof(KDF_INFO_RATCHET) - 1,
@@ -131,10 +131,10 @@ static void advance_chain_key(
     const cipher_suite_t *cipher_suite,
     Skissm__ChainKey *chain_key
 ) {
-    int shared_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
     uint8_t shared_key[shared_key_len];
     memset(shared_key, 0, shared_key_len);
-    cipher_suite->symmetric_encryption_suite->hmac(
+    cipher_suite->hash_suite->hmac(
         chain_key->shared_key.data, chain_key->shared_key.len,
         CHAIN_KEY_SEED, sizeof(CHAIN_KEY_SEED),
         shared_key
@@ -155,10 +155,10 @@ static void create_msg_keys(
     msg_key->derived_key.data = (uint8_t *) malloc(sizeof(uint8_t) * msg_key_len);
     msg_key->derived_key.len = msg_key_len;
 
-    int hash_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
-    cipher_suite->symmetric_encryption_suite->hkdf(
+    cipher_suite->hash_suite->hkdf(
         chain_key->shared_key.data, chain_key->shared_key.len,
         salt, sizeof(salt),
         (uint8_t *)MESSAGE_KEY_SEED, sizeof(MESSAGE_KEY_SEED) - 1,
@@ -295,13 +295,13 @@ void initialise_as_bob(
     Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 ){
-    int shared_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
     // the ssk will be 64 bytes
     uint8_t derived_secrets[2 * shared_key_len];
-    int hash_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
-    cipher_suite->symmetric_encryption_suite->hkdf(
+    cipher_suite->hash_suite->hkdf(
         shared_secret, shared_secret_length,
         salt, sizeof(salt),
         (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
@@ -351,16 +351,16 @@ void initialise_as_alice(
     const Skissm__KeyPair *our_ratchet_key,
     ProtobufCBinaryData *their_ratchet_key, ProtobufCBinaryData *their_encaps_ciphertext
 ){
-    int shared_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
     // the length of derived_secrets will be 64 bytes
     uint8_t derived_secrets[2 * shared_key_len];
     memset(derived_secrets, 0, 2 * shared_key_len);
-    int hash_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+    int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
 
     // shared_secret_length may be 128 or 96
-    cipher_suite->symmetric_encryption_suite->hkdf(
+    cipher_suite->hash_suite->hkdf(
         shared_secret, shared_secret_length,
         salt, sizeof(salt),
         (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
