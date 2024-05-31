@@ -12,7 +12,7 @@ SKISSM implements the Signal protocol and aims to make it easy to build versatil
 SKISSM software architecture
 
 <p align="center">
-  <img src="doc/skissm-software-architecture.png" width="480" />
+  <img src="https://www.e2eelab.org/assets/images/skissm_software_architecture-55ab2d852b347953ae21dc499ea5665a.svg" width="480" />
 </p>
 
 # Build
