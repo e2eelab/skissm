@@ -1694,9 +1694,8 @@ char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len) {
 
 int crypto_hash_by_e2ee_pack_id(
         uint32_t e2ee_pack_id_raw,
-        const uint8_t *msg,
-        size_t msg_len,
-        uint8_t *hash_out) {
+        const uint8_t *msg, size_t msg_len,
+        uint8_t **hash_out, size_t *hash_out_len) {
     e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
     hash_suite_t *hash_suite = get_hash_suite(e2ee_pack_id.hash);
     if (hash_suite == NULL) {
@@ -1708,7 +1707,10 @@ int crypto_hash_by_e2ee_pack_id(
         return -1;
     }
 
-    hash_suite->hash(msg, msg_len, hash_out);
+    uint32_t hash_len = hash_suite->get_crypto_param().hash_len;
+    *hash_out_len = hash_len;
+    *hash_out = (uint8_t *)malloc(sizeof(uint8_t) * hash_len);
+    hash_suite->hash(msg, msg_len, *hash_out);
     return 0;
 }
 

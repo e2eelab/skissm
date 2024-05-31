@@ -630,13 +630,13 @@ char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len);
  * @param msg
  * @param msg_len
  * @param hash_out
- * @return value < 0 for error
+ * @param hash_out_len
+ * @return
  */
 int crypto_hash_by_e2ee_pack_id(
         uint32_t e2ee_pack_id_raw,
-        const uint8_t *msg,
-        size_t msg_len,
-        uint8_t *hash_out);
+        const uint8_t *msg, size_t msg_len,
+        uint8_t **hash_out, size_t *hash_out_len);
 
 /**
  * @brief Generate a random key pair that will be used to generate or verify a signature
