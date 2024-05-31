@@ -236,6 +236,31 @@ static void test_encryption(
         skissm__send_one2one_msg_response__free_unpacked(response, NULL);
 }
 
+static void test_e2ee_pack_id() {
+    // test start
+    printf("test_e2ee_pack_id begin!!!\n");
+    uint32_t default_2ee_pack_id_raw  = 0x113101;
+    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_raw(
+            0,
+            E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
+            E2EE_PACK_ALG_KEM_KYBER1024,
+            E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+            E2EE_PACK_ALG_HASH_SHA2_256
+    );
+
+    assert(e2ee_pack_id_raw == default_2ee_pack_id_raw);
+    printf("default_2ee_pack_id_raw test ok: 0x%x\n", default_2ee_pack_id_raw);
+
+    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(default_2ee_pack_id_raw);
+    assert(e2ee_pack_id.digital_signature == E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5);
+    assert(e2ee_pack_id.kem == E2EE_PACK_ALG_KEM_KYBER1024);
+    assert(e2ee_pack_id.symmetric_encryption == E2EE_PACK_ALG_SYMMETRIC_KEY_AES256);
+    assert(e2ee_pack_id.hash == E2EE_PACK_ALG_HASH_SHA2_256);
+    printf("default_2ee_pack_id_raw to e2ee_pack_id test ok\n");
+
+    printf("====================================\n");
+}
+
 static void test_one_to_one_session_selected() {
     // test start
     printf("test_one_to_one_session_selected begin!!!\n");
@@ -343,6 +368,7 @@ static void test_one_to_one_session_all() {
 }
 
 int main() {
+    test_e2ee_pack_id();
     test_one_to_one_session_selected();
     // test_one_to_one_session_all();
 

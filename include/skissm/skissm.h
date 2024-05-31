@@ -146,18 +146,18 @@ extern "C" {
 #define E2EE_PACK_ALG_KEM_MCELIECE8192128                    97
 #define E2EE_PACK_ALG_KEM_MCELIECE8192128F                   101
 
-#define E2EE_PACK_ALG_SYMMETRIC_KEY_AES256                   1
+#define E2EE_PACK_ALG_SYMMETRIC_KEY_AES256                   0
 
-#define E2EE_PACK_ALG_HASH_SHA2_224                          1
-#define E2EE_PACK_ALG_HASH_SHA2_256                          2
-#define E2EE_PACK_ALG_HASH_SHA2_384                          3
-#define E2EE_PACK_ALG_HASH_SHA2_512                          4
-#define E2EE_PACK_ALG_HASH_SHA3_224                          9
-#define E2EE_PACK_ALG_HASH_SHA3_256                          10
-#define E2EE_PACK_ALG_HASH_SHA3_384                          11
-#define E2EE_PACK_ALG_HASH_SHA3_512                          12
-#define E2EE_PACK_ALG_HASH_SHAKE_128                         17
-#define E2EE_PACK_ALG_HASH_SHAKE_256                         18
+#define E2EE_PACK_ALG_HASH_SHA2_224                          0
+#define E2EE_PACK_ALG_HASH_SHA2_256                          1
+#define E2EE_PACK_ALG_HASH_SHA2_384                          2
+#define E2EE_PACK_ALG_HASH_SHA2_512                          3
+#define E2EE_PACK_ALG_HASH_SHA3_224                          8
+#define E2EE_PACK_ALG_HASH_SHA3_256                          9
+#define E2EE_PACK_ALG_HASH_SHA3_384                          10
+#define E2EE_PACK_ALG_HASH_SHA3_512                          11
+#define E2EE_PACK_ALG_HASH_SHAKE_128                         12
+#define E2EE_PACK_ALG_HASH_SHAKE_256                         13
 
 #define CIPHER_SUITE_PART_LEN_IN_BITS                        8
 #define CIPHER_SUITE_PART_HALF_LEN_IN_BITS                   4
