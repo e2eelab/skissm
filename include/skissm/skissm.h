@@ -1081,6 +1081,13 @@ kem_suite_t *get_kem_suite(unsigned kem_id);
 symmetric_encryption_suite_t *get_symmetric_encryption_suite(unsigned symmetric_encryption_id);
 
 /**
+ * @brief Get hash suite by ID.
+ * @param hash_id
+ * @return
+ */
+hash_suite_t *get_hash_suite(unsigned hash_id);
+
+/**
  * @brief Generate the e2ee pack ID raw number.
  * @param ver
  * @param digital_signature

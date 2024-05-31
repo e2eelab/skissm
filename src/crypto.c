@@ -1692,6 +1692,26 @@ char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len) {
     return output;
 }
 
+int crypto_hash_by_e2ee_pack_id(
+        uint32_t e2ee_pack_id_raw,
+        const uint8_t *msg,
+        size_t msg_len,
+        uint8_t *hash_out) {
+    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
+    hash_suite_t *hash_suite = get_hash_suite(e2ee_pack_id.hash);
+    if (hash_suite == NULL) {
+        ssm_notify_log(
+                NULL,
+                BAD_E2EE_PACK,
+                "crypto_hash_by_e2ee_pack_id() hash_suite not found: %d.", e2ee_pack_id_raw
+        );
+        return -1;
+    }
+
+    hash_suite->hash(msg, msg_len, hash_out);
+    return 0;
+}
+
 int crypto_ds_key_gen_by_e2ee_pack_id(
         uint32_t e2ee_pack_id_raw,
         ProtobufCBinaryData *pub_key,
@@ -1701,8 +1721,8 @@ int crypto_ds_key_gen_by_e2ee_pack_id(
     if (digital_signature_suite == NULL) {
         ssm_notify_log(
                 NULL,
-                BAD_SIGN_KEY,
-                "crypto_ds_key_gen_by_e2ee_pack_id() e2ee pack not found: %d.", e2ee_pack_id_raw
+                BAD_E2EE_PACK,
+                "crypto_ds_key_gen_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
         );
         return -1;
     }
@@ -1731,8 +1751,8 @@ int crypto_ds_sign_by_e2ee_pack_id(
     if (digital_signature_suite == NULL) {
         ssm_notify_log(
                 NULL,
-                BAD_SIGN_KEY,
-                "crypto_ds_sign_by_e2ee_pack_id() e2ee pack not found: %d.", e2ee_pack_id_raw
+                BAD_E2EE_PACK,
+                "crypto_ds_sign_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
         );
         return -1;
     }
@@ -1770,8 +1790,8 @@ int crypto_ds_verify_by_e2ee_pack_id(
     if (digital_signature_suite == NULL) {
         ssm_notify_log(
                 NULL,
-                BAD_SIGN_KEY,
-                "crypto_ds_verify_by_e2ee_pack_id() e2ee pack not found: %d.", e2ee_pack_id_raw
+                BAD_E2EE_PACK,
+                "crypto_ds_verify_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
         );
         return -1;
     }

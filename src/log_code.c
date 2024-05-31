@@ -20,6 +20,7 @@
 
 static const char * LOG_CODE_STRINGS[] = {
     "DEBUG_LOG",
+    "BAD_E2EE_PACK",
     "BAD_ACCOUNT",
     "BAD_SESSION",
     "BAD_GROUP_SESSION",
