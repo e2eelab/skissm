@@ -155,7 +155,8 @@ void test_init_account(uint32_t e2ee_pack_id)
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    Skissm__Account *account = NULL;
+    create_account(&account, e2ee_pack_id);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
@@ -174,7 +175,8 @@ void test_update_signed_pre_key(uint32_t e2ee_pack_id)
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    Skissm__Account *account = NULL;
+    create_account(&account, e2ee_pack_id);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
@@ -201,7 +203,8 @@ void test_add_one_time_pre_key(uint32_t e2ee_pack_id)
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    Skissm__Account *account = NULL;
+    create_account(&account, e2ee_pack_id);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
@@ -228,7 +231,8 @@ void test_load_account(uint32_t e2ee_pack_id)
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create account
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    Skissm__Account *account = NULL;
+    create_account(&account, e2ee_pack_id);
     mock_address(&(account->address), "alice", "alice's domain", "alice's device");
     account->auth = strdup("auth");
 
@@ -256,14 +260,16 @@ void test_two_accounts(uint32_t e2ee_pack_id)
     get_skissm_plugin()->event_handler = test_event_handler;
 
     // create the first account
-    Skissm__Account *account_1 = create_account(e2ee_pack_id);
+    Skissm__Account *account_1 = NULL;
+    create_account(&account_1, e2ee_pack_id);
     mock_address(&(account_1->address), "alice", "alice's domain", "alice's device");
 
     // insert to the db
     store_account(account_1);
 
     // create the first account
-    Skissm__Account *account_2 = create_account(e2ee_pack_id);
+    Skissm__Account *account_2 = NULL;
+    create_account(&account_2, e2ee_pack_id);
     mock_address(&(account_2->address), "bob", "bob's domain", "bob's device");
 
     // insert to the db

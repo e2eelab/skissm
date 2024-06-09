@@ -791,6 +791,8 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     Skissm__E2eeAddress **deny_list,
     size_t deny_list_len
 ) {
+    int ret = 0;
+
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->sender, &account);
     if (account == NULL) {
@@ -825,12 +827,13 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     group_msg_payload->sequence = outbound_group_session->sequence;
 
     // encryption
-    group_msg_payload->ciphertext.len = cipher_suite->symmetric_encryption_suite->encrypt(
+    ret = cipher_suite->symmetric_encryption_suite->encrypt(
         &(outbound_group_session->associated_data),
         msg_key->derived_key.data,
         plaintext_data,
         plaintext_data_len,
-        &(group_msg_payload->ciphertext.data)
+        &(group_msg_payload->ciphertext.data),
+        &(group_msg_payload->ciphertext.len)
     );
 
     // signature
@@ -890,6 +893,8 @@ bool consume_send_group_msg_response(Skissm__GroupSession *outbound_group_sessio
 }
 
 bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg) {
+    int ret = 0;
+
     // load the inbound group session
     Skissm__GroupSession *inbound_group_session = NULL;
     get_skissm_plugin()->db_handler.load_group_session_by_id(e2ee_msg->from, receiver_address, e2ee_msg->session_id, &inbound_group_session);
@@ -940,11 +945,13 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
 
     // decryption
     uint8_t *plaintext_data;
-    size_t plaintext_data_len = cipher_suite->symmetric_encryption_suite->decrypt(
+    size_t plaintext_data_len;
+    ret = cipher_suite->symmetric_encryption_suite->decrypt(
+        &plaintext_data,
+        &plaintext_data_len,
         &(inbound_group_session->associated_data),
         msg_key->derived_key.data,
-        group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len,
-        &plaintext_data
+        group_msg_payload->ciphertext.data, group_msg_payload->ciphertext.len
     );
 
     if (plaintext_data_len <= 0){

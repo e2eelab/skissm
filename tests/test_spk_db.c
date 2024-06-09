@@ -51,7 +51,8 @@ void test_load_old_signed_pre_key(uint32_t e2ee_pack_id){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    Skissm__Account *account = NULL;
+    create_account(&account, e2ee_pack_id);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
@@ -79,7 +80,12 @@ void test_load_old_signed_pre_key(uint32_t e2ee_pack_id){
     print_result("compare signed_pre_key [1]", is_equal_spk(old_spk, account->signed_pre_key));
     
     // generate a new signed pre-key pair
-    generate_signed_pre_key(account);
+    Skissm__SignedPreKey *signed_pre_key = NULL;
+    generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, 1, account->signed_pre_key->key_pair->private_key.data);
+
+    skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
+    account->signed_pre_key = signed_pre_key;
+
     get_skissm_plugin()->db_handler.update_signed_pre_key(account->address, account->signed_pre_key);
 
     // load the updated signed pre-key from db
@@ -102,7 +108,8 @@ void test_remove_expired_signed_pre_key(uint32_t e2ee_pack_id){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    Skissm__Account *account = NULL;
+    create_account(&account, e2ee_pack_id);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
@@ -120,9 +127,20 @@ void test_remove_expired_signed_pre_key(uint32_t e2ee_pack_id){
     uint32_t old_spk_id = account->signed_pre_key->spk_id;
 
     // generate a new signed pre-key pair
-    generate_signed_pre_key(account);
+    Skissm__SignedPreKey *signed_pre_key_1 = NULL;
+    generate_signed_pre_key(&signed_pre_key_1, e2ee_pack_id, 1, account->signed_pre_key->key_pair->private_key.data);
+
+    skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
+    account->signed_pre_key = signed_pre_key_1;
+
     get_skissm_plugin()->db_handler.update_signed_pre_key(account->address, account->signed_pre_key);
-    generate_signed_pre_key(account);
+
+    Skissm__SignedPreKey *signed_pre_key_2 = NULL;
+    generate_signed_pre_key(&signed_pre_key_2, e2ee_pack_id, 2, account->signed_pre_key->key_pair->private_key.data);
+
+    skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
+    account->signed_pre_key = signed_pre_key_2;
+
     get_skissm_plugin()->db_handler.update_signed_pre_key(account->address, account->signed_pre_key);
 
     // remove expired signed pre-keys

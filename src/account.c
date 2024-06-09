@@ -483,7 +483,7 @@ int insert_opks(Skissm__Account *account, Skissm__OneTimePreKey **src, size_t sr
             }
             free_mem((void **)&(cur_one_time_pre_key_list), sizeof(Skissm__OneTimePreKey *) * old_opk_num);
 
-            for (i = 0; i < new_opk_num; i++) {
+            for (i = 0; i < src_num; i++) {
                 j = old_opk_num + i;
                 temp_one_time_pre_key_list[j] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
                 skissm__one_time_pre_key__init(temp_one_time_pre_key_list[j]);

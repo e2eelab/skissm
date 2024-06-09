@@ -283,7 +283,7 @@ int produce_supply_opks_request(
     uint32_t e2ee_pack_id;
     uint32_t cur_opk_id;
 
-    if (!safe_registered_account(account)) {
+    if (safe_registered_account(account)) {
         e2ee_pack_id = account->e2ee_pack_id;
         cur_opk_id = account->next_one_time_pre_key_id;
     } else {

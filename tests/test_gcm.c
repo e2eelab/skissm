@@ -59,7 +59,7 @@ static void test_file(){
         crypto_aes_encrypt_gcm(plaintext, plaintext_len, key, iv, AD, 64, ciphertext);
 
         decrypted_plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
-        decrypted_plaintext_len = crypto_aes_decrypt_gcm(ciphertext, ciphertext_len, key, iv, AD, 64, decrypted_plaintext);
+        crypto_aes_decrypt_gcm(ciphertext, ciphertext_len, key, iv, AD, 64, decrypted_plaintext, &decrypted_plaintext_len);
 
         assert(decrypted_plaintext_len == plaintext_len);
         assert(memcmp(plaintext, decrypted_plaintext, plaintext_len) == 0);

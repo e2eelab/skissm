@@ -76,8 +76,11 @@ static void create_account_test() {
         E2EE_PACK_ALG_SYMMETRIC_ENCRYPTION_AES256_SHA256
     );
 
+    int ret = 0;
+
     // Register test
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    Skissm__Account *account = NULL;
+    ret = create_account(&account, e2ee_pack_id);
 
     assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
     assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
@@ -90,7 +93,11 @@ static void create_account_test() {
     verify_one_time_pre_keys(account, 100);
 
     // Generate a new signed pre-key pair and a new signature
-    generate_signed_pre_key(account);
+    Skissm__SignedPreKey *signed_pre_key = NULL;
+    generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, 1, account->signed_pre_key->key_pair->private_key.data);
+
+    skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
+    account->signed_pre_key = signed_pre_key;
 
     assert(account->signed_pre_key->spk_id == 2);
     assert(account->signed_pre_key->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
@@ -99,7 +106,10 @@ static void create_account_test() {
 
     // Post some new one-time pre-keys test
     // Generate 80 one-time pre-key pairs
-    Skissm__OneTimePreKey **output = generate_opks(80, account);
+    Skissm__OneTimePreKey **output = NULL;
+    generate_opks(&output, 80, e2ee_pack_id, 101);
+
+    insert_opks(account, output, 80);
 
     verify_one_time_pre_keys(account, 180);
 
@@ -151,16 +161,29 @@ static void load_accounts_test(uint64_t num) {
 }
 
 static void test_create_accounts(uint64_t num) {
+    // test start
+    printf("====== test_create_accounts ======\n");
+    tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
+
     uint64_t i;
     for (i = 1; i <= num; i++) {
         create_account_test();
     }
 
     load_accounts_test(num);
+
+    // test stop
+    tear_down();
+    printf("====================================\n");
 }
 
 static void test_register_user() {
+    // test start
     printf("====== test_register_user ======\n");
+    tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
+
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
@@ -172,24 +195,28 @@ static void test_register_user() {
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
-    Skissm__RegisterUserResponse *response =
-        register_user(
-            e2ee_pack_id,
-            user_name,
-            user_id,
-            device_id,
-            authenticator,
-            auth_code
-        );
+    int ret = 0;
+    Skissm__RegisterUserResponse *response = NULL;
+    ret = register_user(
+        &response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
+    );
     assert(safe_strcmp(device_id, response->address->user->device_id));
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
     skissm__register_user_response__free_unpacked(response, NULL);
+
+    // test stop
+    tear_down();
+    printf("====================================\n");
 }
 
 static void test_publish_spk() {
+    // test start
     printf("====== test_publish_spk ======\n");
+    tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
+
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
@@ -201,15 +228,11 @@ static void test_publish_spk() {
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
-    Skissm__RegisterUserResponse *response =
-        register_user(
-            e2ee_pack_id,
-            user_name,
-            user_id,
-            device_id,
-            authenticator,
-            auth_code
-        );
+    int ret = 0;
+    Skissm__RegisterUserResponse *response = NULL;
+    ret = register_user(
+        &response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
+    );
 
     // load account
     Skissm__Account *account = NULL;
@@ -217,9 +240,15 @@ static void test_publish_spk() {
     uint32_t old_spk_id = account->signed_pre_key->spk_id;
 
     // update the signed pre-key
-    generate_signed_pre_key(account);
+    Skissm__SignedPreKey *signed_pre_key = NULL;
+    generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, 1, account->signed_pre_key->key_pair->private_key.data);
+
+    skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
+    account->signed_pre_key = signed_pre_key;
+
     uint32_t new_spk_id = account->signed_pre_key->spk_id;
-    Skissm__PublishSpkResponse *publish_spk_response = publish_spk_internal(account);
+    Skissm__PublishSpkResponse *publish_spk_response = NULL;
+    publish_spk_internal(&publish_spk_response, account);
 
     assert(new_spk_id == old_spk_id + 1);
 
@@ -227,6 +256,10 @@ static void test_publish_spk() {
     skissm__register_user_response__free_unpacked(response, NULL);
     skissm__account__free_unpacked(account, NULL);
     skissm__publish_spk_response__free_unpacked(publish_spk_response, NULL);
+
+    // test stop
+    tear_down();
+    printf("====================================\n");
 }
 
 Skissm__ProtoMsg *mock_supply_opks_msg(Skissm__E2eeAddress *user_address, uint32_t supply_opks_num) {
@@ -244,7 +277,11 @@ Skissm__ProtoMsg *mock_supply_opks_msg(Skissm__E2eeAddress *user_address, uint32
 }
 
 static void test_supply_opks() {
+    // test start
     printf("====== test_supply_opks ======\n");
+    tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
+
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
@@ -256,15 +293,11 @@ static void test_supply_opks() {
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
-    Skissm__RegisterUserResponse *response =
-        register_user(
-            e2ee_pack_id,
-            user_name,
-            user_id,
-            device_id,
-            authenticator,
-            auth_code
-        );
+    int ret = 0;
+    Skissm__RegisterUserResponse *response = NULL;
+    ret = register_user(
+        &response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
+    );
 
     // load account
     Skissm__Account *account = NULL;
@@ -289,10 +322,18 @@ static void test_supply_opks() {
     skissm__account__free_unpacked(account, NULL);
     skissm__account__free_unpacked(account_new, NULL);
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
+
+    // test stop
+    tear_down();
+    printf("====================================\n");
 }
 
 static void test_free_opks() {
+    // test start
     printf("====== test_free_opks ======\n");
+    tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
+
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
@@ -304,10 +345,11 @@ static void test_free_opks() {
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
-    Skissm__RegisterUserResponse *response =
-        register_user(
-            e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
-        );
+    int ret = 0;
+    Skissm__RegisterUserResponse *response = NULL;
+    ret = register_user(
+        &response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
+    );
 
     // load account
     Skissm__Account *account = NULL;
@@ -332,20 +374,18 @@ static void test_free_opks() {
     skissm__register_user_response__free_unpacked(response, NULL);
     skissm__account__free_unpacked(account, NULL);
     skissm__account__free_unpacked(account_new, NULL);
+
+    // test stop
+    tear_down();
+    printf("====================================\n");
 }
 
-int main(){
-    // test start
-    tear_up();
-    get_skissm_plugin()->event_handler = test_event_handler;
-
+int main() {
     test_create_accounts(8);
     test_register_user();
     test_publish_spk();
     test_supply_opks();
     test_free_opks();
 
-    // test stop
-    tear_down();
     return 0;
 }

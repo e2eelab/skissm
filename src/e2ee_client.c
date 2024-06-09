@@ -110,6 +110,8 @@ int register_user(
 }
 
 Skissm__InviteResponse *reinvite(Skissm__Session *outbound_session) {
+    int ret = 0;
+
     Skissm__InviteResponse *response = NULL;
     // only reinvite the outbound session that is not responded
     if (!outbound_session->responded) {
@@ -127,7 +129,7 @@ Skissm__InviteResponse *reinvite(Skissm__Session *outbound_session) {
         // update the invitation time and resend
         outbound_session->invite_t = get_skissm_plugin()->common_handler.gen_ts();
         get_skissm_plugin()->db_handler.store_session(outbound_session);
-        response = invite_internal(outbound_session);
+        ret = invite_internal(&response, outbound_session);
 
         if (response == NULL || response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             // keep outbound session to enable retry
