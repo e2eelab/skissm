@@ -183,15 +183,16 @@ static void mock_alice_account(const char *user_name, uint32_t e2ee_pack_id) {
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
-    Skissm__RegisterUserResponse *response =
-        register_user(
-            e2ee_pack_id,
-            user_name,
-            user_name,
-            device_id,
-            authenticator,
-            auth_code
-        );
+    Skissm__RegisterUserResponse *response = NULL;
+    register_user(
+        &response,
+        e2ee_pack_id,
+        user_name,
+        user_name,
+        device_id,
+        authenticator,
+        auth_code
+    );
 
     printf("%s registered completely!\n", user_name);
 
@@ -204,15 +205,16 @@ static void mock_bob_account(const char *user_name, uint32_t e2ee_pack_id) {
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
-    Skissm__RegisterUserResponse *response =
-        register_user(
-            e2ee_pack_id,
-            user_name,
-            user_name,
-            device_id,
-            authenticator,
-            auth_code
-        );
+    Skissm__RegisterUserResponse *response = NULL;
+    register_user(
+        &response,
+        e2ee_pack_id,
+        user_name,
+        user_name,
+        device_id,
+        authenticator,
+        auth_code
+    );
 
     printf("%s registered completely!\n", user_name);
 

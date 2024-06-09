@@ -10,15 +10,17 @@ extern "C" {
 
 /**
  * @brief Register a new account.
+ * @param response_out The output
  * @param e2ee_pack_id The e2ee package id to be used.
  * @param user_name The user name that is creating the new account.
  * @param user_id The unique user id that will be binded to the new account.
  * @param device_id The device id that will be binded to the new account.
  * @param authenticator The authenticator (email and etc.) is used to receive an register auth code.
  * @param auth_code The auth code that is received by the authenticator.
- * @return Skissm__RegisterUserResponse *
+ * @return 0 if success
  */
-Skissm__RegisterUserResponse *register_user(
+int register_user(
+    Skissm__RegisterUserResponse **response_out,
     uint32_t e2ee_pack_id,
     const char *user_name,
     const char *user_id,

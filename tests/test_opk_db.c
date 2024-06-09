@@ -60,7 +60,8 @@ void test_update_one_time_pre_key(uint32_t e2ee_pack_id){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    Skissm__Account *account = NULL;
+    create_account(&account, e2ee_pack_id);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
@@ -102,7 +103,8 @@ void test_remove_one_time_pre_key(uint32_t e2ee_pack_id){
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    Skissm__Account *account = create_account(e2ee_pack_id);
+    Skissm__Account *account = NULL;
+    create_account(&account, e2ee_pack_id);
     // generate a random address
     account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);

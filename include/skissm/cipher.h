@@ -60,7 +60,7 @@ size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len);
  * @param plaintext_data_len
  * @param ciphertext_data
  * @param ciphertext_data_len
- * @return size_t length of ciphertext_data
+ * @return 0 if success
  */
 int aes256_gcm_encrypt(
     const ProtobufCBinaryData *ad, const uint8_t *aes_key,
@@ -71,16 +71,18 @@ int aes256_gcm_encrypt(
 /**
  * @brief Decrypt a ciphertext with AES GCM.
  *
+ * @param decrypted_data_out
+ * @param decrypted_data_len_out
  * @param ad
  * @param aes_key
  * @param ciphertext_data
  * @param ciphertext_data_len
- * @param plaintext_data
- * @return size_t length of plaintext_data
+ * @return The length of plaintext_data or -1 for decryption error
  */
 int aes256_gcm_decrypt(
+    uint8_t **decrypted_data_out, size_t *decrypted_data_len_out,
     const ProtobufCBinaryData *ad, const uint8_t *aes_key,
-    const uint8_t *ciphertext_data, size_t ciphertext_data_len, uint8_t **plaintext_data
+    const uint8_t *ciphertext_data, size_t ciphertext_data_len
 );
 
 #ifdef __cplusplus

@@ -115,10 +115,10 @@ static void test_ecc_alice_to_bob() {
     /* Alice sends Bob a message */
     Skissm__One2oneMsgPayload *message = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_length, &message);
+    encrypt_ratchet(&message, test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_length);
 
     uint8_t *output = NULL;
-    decrypt_length = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message, &output);
+    decrypt_ratchet(&output, &decrypt_length, test_cipher_suite, bob_ratchet, ad, message);
     assert(decrypt_length == plaintext_length);
     bool result = is_equal(plaintext, output, plaintext_length);
     assert(result);
@@ -207,10 +207,10 @@ static void test_ecc_bob_to_alice() {
     /* Bob sends Alice a message */
     Skissm__One2oneMsgPayload *message = NULL;
 
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_length, &message);
+    encrypt_ratchet(&message, test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_length);
 
     uint8_t *output = NULL;
-    decrypt_length = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message, &output);
+    decrypt_ratchet(&output, &decrypt_length, test_cipher_suite, alice_ratchet, ad, message);
     assert(decrypt_length == plaintext_length);
     bool result = is_equal(plaintext, output, plaintext_length);
     assert(result);
@@ -299,10 +299,11 @@ static void test_ecc_interaction_alice_first() {
 
     Skissm__One2oneMsgPayload *message_1 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
+    encrypt_ratchet(&message_1, test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length);
 
     uint8_t *output_1 = NULL;
-    size_t decrypt_length_1 = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_1, &output_1);
+    size_t decrypt_length_1;
+    decrypt_ratchet(&output_1, &decrypt_length_1, test_cipher_suite, bob_ratchet, ad, message_1);
     assert(decrypt_length_1 == plaintext_1_length);
     result = is_equal(plaintext_1, output_1, plaintext_1_length);
     assert(result);
@@ -319,10 +320,11 @@ static void test_ecc_interaction_alice_first() {
 
     Skissm__One2oneMsgPayload *message_2 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
+    encrypt_ratchet(&message_2, test_cipher_suite, bob_ratchet, ad, plaintext_2, plaintext_2_length);
 
     uint8_t *output_2 = NULL;
-    size_t decrypt_length_2 = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message_2, &output_2);
+    size_t decrypt_length_2;
+    decrypt_ratchet(&output_2, &decrypt_length_2, test_cipher_suite, alice_ratchet, ad, message_2);
     assert(decrypt_length_2 == plaintext_2_length);
     result = is_equal(plaintext_2, output_2, plaintext_2_length);
     assert(result);
@@ -413,10 +415,11 @@ static void test_ecc_interaction_bob_first() {
 
     Skissm__One2oneMsgPayload *message_1 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
+    encrypt_ratchet(&message_1, test_cipher_suite, bob_ratchet, ad, plaintext_1, plaintext_1_length);
 
     uint8_t *output_1 = NULL;
-    size_t decrypt_length_1 = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message_1, &output_1);
+    size_t decrypt_length_1;
+    decrypt_ratchet(&output_1, &decrypt_length_1, test_cipher_suite, alice_ratchet, ad, message_1);
     assert(decrypt_length_1 == plaintext_1_length);
     result = is_equal(plaintext_1, output_1, plaintext_1_length);
     assert(result);
@@ -433,10 +436,11 @@ static void test_ecc_interaction_bob_first() {
 
     Skissm__One2oneMsgPayload *message_2 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
+    encrypt_ratchet(&message_2, test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length);
 
     uint8_t *output_2 = NULL;
-    size_t decrypt_length_2 = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_2, &output_2);
+    size_t decrypt_length_2;
+    decrypt_ratchet(&output_2, &decrypt_length_2, test_cipher_suite, bob_ratchet, ad, message_2);
     assert(decrypt_length_2 == plaintext_2_length);
     result = is_equal(plaintext_2, output_2, plaintext_2_length);
     assert(result);
@@ -527,18 +531,19 @@ static void test_ecc_out_of_order() {
 
     Skissm__One2oneMsgPayload *message_1 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
+    encrypt_ratchet(&message_1, test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length);
 
     uint8_t plaintext_2[] = "Alice's second Message";
     size_t plaintext_2_length = sizeof(plaintext_2) - 1;
 
     Skissm__One2oneMsgPayload *message_2 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
+    encrypt_ratchet(&message_2, test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length);
 
     // decrypt the second message first
     uint8_t *output_2 = NULL;
-    size_t decrypt_length_2 = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_2, &output_2);
+    size_t decrypt_length_2;
+    decrypt_ratchet(&output_2, &decrypt_length_2, test_cipher_suite, bob_ratchet, ad, message_2);
     assert(decrypt_length_2 == plaintext_2_length);
     result = is_equal(plaintext_2, output_2, plaintext_2_length);
     assert(result);
@@ -550,7 +555,8 @@ static void test_ecc_out_of_order() {
     }
 
     uint8_t *output_1 = NULL;
-    size_t decrypt_length_1 = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_1, &output_1);
+    size_t decrypt_length_1;
+    decrypt_ratchet(&output_1, &decrypt_length_1, test_cipher_suite, bob_ratchet, ad, message_1);
     assert(decrypt_length_1 == plaintext_1_length);
     result = is_equal(plaintext_1, output_1, plaintext_1_length);
     assert(result);
@@ -643,7 +649,7 @@ static void test_ecc_continual_message() {
     for (i = 0; i < message_num; i++) {
         plaintext[i] = (uint8_t *) malloc(sizeof(uint8_t) * 64);
         plaintext_len[i] = snprintf((char *)plaintext[i], 64, "[%4d]This message will be sent a lot of times.", i);
-        encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext[i], plaintext_len[i], &message[i]);
+        encrypt_ratchet(&message[i], test_cipher_suite, alice_ratchet, ad, plaintext[i], plaintext_len[i]);
     }
 
     uint8_t **output = (uint8_t **) malloc(sizeof(uint8_t *) * message_num);
@@ -651,7 +657,7 @@ static void test_ecc_continual_message() {
 
     bool result;
     for (i = 0; i < message_num; i++) {
-        output_len[i] = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message[i], &output[i]);
+        decrypt_ratchet(&output[i], &output_len[i], test_cipher_suite, bob_ratchet, ad, message[i]);
 
         assert(output_len[i] == plaintext_len[i]);
         result = is_equal(plaintext[i], output[i], plaintext_len[i]);
@@ -743,10 +749,10 @@ static void test_pqc_alice_to_bob() {
     // Alice sends Bob a message
     Skissm__One2oneMsgPayload *message = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_length, &message);
+    encrypt_ratchet(&message, test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_length);
 
     uint8_t *output = NULL;
-    decrypt_length = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message, &output);
+    decrypt_ratchet(&output, &decrypt_length, test_cipher_suite, bob_ratchet, ad, message);
     assert(decrypt_length == plaintext_length);
     bool result = is_equal(plaintext, output, plaintext_length);
     assert(result);
@@ -835,10 +841,10 @@ static void test_pqc_bob_to_alice() {
     /* Bob sends Alice a message */
     Skissm__One2oneMsgPayload *message = NULL;
 
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_length, &message);
+    encrypt_ratchet(&message, test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_length);
 
     uint8_t *output = NULL;
-    decrypt_length = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message, &output);
+    decrypt_ratchet(&output, &decrypt_length, test_cipher_suite, alice_ratchet, ad, message);
     assert(decrypt_length == plaintext_length);
     bool result = is_equal(plaintext, output, plaintext_length);
     assert(result);
@@ -927,10 +933,11 @@ static void test_pqc_interaction_alice_first() {
 
     Skissm__One2oneMsgPayload *message_1 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
+    encrypt_ratchet(&message_1, test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length);
 
     uint8_t *output_1 = NULL;
-    size_t decrypt_length_1 = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_1, &output_1);
+    size_t decrypt_length_1;
+    decrypt_ratchet(&output_1, &decrypt_length_1, test_cipher_suite, bob_ratchet, ad, message_1);
     assert(decrypt_length_1 == plaintext_1_length);
     result = is_equal(plaintext_1, output_1, plaintext_1_length);
     assert(result);
@@ -947,10 +954,11 @@ static void test_pqc_interaction_alice_first() {
 
     Skissm__One2oneMsgPayload *message_2 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
+    encrypt_ratchet(&message_2, test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length);
 
     uint8_t *output_2 = NULL;
-    size_t decrypt_length_2 = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message_2, &output_2);
+    size_t decrypt_length_2;
+    decrypt_ratchet(&output_2, &decrypt_length_2, test_cipher_suite, alice_ratchet, ad, message_2);
     assert(decrypt_length_2 == plaintext_2_length);
     result = is_equal(plaintext_2, output_2, plaintext_2_length);
     assert(result);
@@ -1041,10 +1049,11 @@ static void test_pqc_interaction_bob_first() {
 
     Skissm__One2oneMsgPayload *message_1 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
+    encrypt_ratchet(&message_1, test_cipher_suite, bob_ratchet, ad, plaintext_1, plaintext_1_length);
 
     uint8_t *output_1 = NULL;
-    size_t decrypt_length_1 = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message_1, &output_1);
+    size_t decrypt_length_1;
+    decrypt_ratchet(&output_1, &decrypt_length_1, test_cipher_suite, alice_ratchet, ad, message_1);
     assert(decrypt_length_1 == plaintext_1_length);
     result = is_equal(plaintext_1, output_1, plaintext_1_length);
     assert(result);
@@ -1061,10 +1070,11 @@ static void test_pqc_interaction_bob_first() {
 
     Skissm__One2oneMsgPayload *message_2 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
+    encrypt_ratchet(&message_2, test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length);
 
     uint8_t *output_2 = NULL;
-    size_t decrypt_length_2 = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_2, &output_2);
+    size_t decrypt_length_2;
+    decrypt_ratchet(&output_2, &decrypt_length_2, test_cipher_suite, bob_ratchet, ad, message_2);
     assert(decrypt_length_2 == plaintext_2_length);
     result = is_equal(plaintext_2, output_2, plaintext_2_length);
     assert(result);
@@ -1155,18 +1165,19 @@ static void test_pqc_out_of_order() {
 
     Skissm__One2oneMsgPayload *message_1 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length, &message_1);
+    encrypt_ratchet(&message_1, test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length);
 
     uint8_t plaintext_2[] = "Alice's second Message";
     size_t plaintext_2_length = sizeof(plaintext_2) - 1;
 
     Skissm__One2oneMsgPayload *message_2 = NULL;
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length, &message_2);
+    encrypt_ratchet(&message_2, test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length);
 
     // decrypt the second message first
     uint8_t *output_2 = NULL;
-    size_t decrypt_length_2 = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_2, &output_2);
+    size_t decrypt_length_2;
+    decrypt_ratchet(&output_2, &decrypt_length_2, test_cipher_suite, bob_ratchet, ad, message_2);
     assert(decrypt_length_2 == plaintext_2_length);
     result = is_equal(plaintext_2, output_2, plaintext_2_length);
     assert(result);
@@ -1178,7 +1189,8 @@ static void test_pqc_out_of_order() {
     }
 
     uint8_t *output_1 = NULL;
-    size_t decrypt_length_1 = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message_1, &output_1);
+    size_t decrypt_length_1;
+    decrypt_ratchet(&output_1, &decrypt_length_1, test_cipher_suite, bob_ratchet, ad, message_1);
     assert(decrypt_length_1 == plaintext_1_length);
     result = is_equal(plaintext_1, output_1, plaintext_1_length);
     assert(result);
@@ -1271,7 +1283,7 @@ static void test_pqc_continual_message() {
     for (i = 0; i < message_num; i++) {
         plaintext[i] = (uint8_t *) malloc(sizeof(uint8_t) * 64);
         plaintext_len[i] = snprintf((char *)plaintext[i], 64, "[%4d]This message will be sent a lot of times.", i);
-        encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext[i], plaintext_len[i], &message[i]);
+        encrypt_ratchet(&message[i], test_cipher_suite, alice_ratchet, ad, plaintext[i], plaintext_len[i]);
     }
 
     uint8_t **output = (uint8_t **) malloc(sizeof(uint8_t *) * message_num);
@@ -1279,7 +1291,7 @@ static void test_pqc_continual_message() {
 
     bool result;
     for (i = 0; i < message_num; i++) {
-        output_len[i] = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message[i], &output[i]);
+        decrypt_ratchet(&output[i], &output_len[i], test_cipher_suite, bob_ratchet, ad, message[i]);
 
         assert(output_len[i] == plaintext_len[i]);
         result = is_equal(plaintext[i], output[i], plaintext_len[i]);
@@ -1375,9 +1387,9 @@ static void test_pqc_interaction_v2() {
     for (i = 0; i < round; i++) {
         // the first time, from Alice to Bob
         plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message is from Alice to Bob.", i * 4);
-        encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_len, &message);
+        encrypt_ratchet(&message, test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_len);
 
-        output_len = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message, &output);
+        decrypt_ratchet(&output, &output_len, test_cipher_suite, bob_ratchet, ad, message);
         assert(output_len == plaintext_len);
         result = is_equal(plaintext, output, plaintext_len);
         assert(result);
@@ -1388,9 +1400,9 @@ static void test_pqc_interaction_v2() {
 
         // the second time, from Alice to Bob
         plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message is from Alice to Bob.", i * 4 + 1);
-        encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_len, &message);
+        encrypt_ratchet(&message, test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_len);
 
-        output_len = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message, &output);
+        decrypt_ratchet(&output, &output_len, test_cipher_suite, bob_ratchet, ad, message);
         assert(output_len == plaintext_len);
         result = is_equal(plaintext, output, plaintext_len);
         assert(result);
@@ -1401,9 +1413,9 @@ static void test_pqc_interaction_v2() {
 
         // the third time, from Bob to Alice
         plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message is from Bob to Alice.", i * 4 + 2);
-        encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_len, &message);
+        encrypt_ratchet(&message, test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_len);
 
-        output_len = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message, &output);
+        decrypt_ratchet(&output, &output_len, test_cipher_suite, alice_ratchet, ad, message);
         assert(output_len == plaintext_len);
         result = is_equal(plaintext, output, plaintext_len);
         assert(result);
@@ -1414,9 +1426,9 @@ static void test_pqc_interaction_v2() {
 
         // the third time, from Bob to Alice
         plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message is from Bob to Alice.", i * 4 + 3);
-        encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_len, &message);
+        encrypt_ratchet(&message, test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_len);
 
-        output_len = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message, &output);
+        decrypt_ratchet(&output, &output_len, test_cipher_suite, alice_ratchet, ad, message);
         assert(output_len == plaintext_len);
         result = is_equal(plaintext, output, plaintext_len);
         assert(result);
@@ -1508,60 +1520,60 @@ static void test_pqc_out_of_order_v2() {
         plaintext_len[i] = snprintf((char *)plaintext[i], 64, "[%4d]This message may be from Alice or Bob.", i);
     }
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext[0], plaintext_len[0], &message[0]);
-    output_len[0] = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message[0], &output[0]);
+    encrypt_ratchet(&message[0], test_cipher_suite, alice_ratchet, ad, plaintext[0], plaintext_len[0]);
+    decrypt_ratchet(&output[0], &output_len[0], test_cipher_suite, bob_ratchet, ad, message[0]);
     assert(output_len[0] == plaintext_len[0]);
     result = is_equal(plaintext[0], output[0], plaintext_len[0]);
     assert(result);
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext[1], plaintext_len[1], &message[1]);
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext[2], plaintext_len[2], &message[2]);
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext[3], plaintext_len[3], &message[3]);
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext[4], plaintext_len[4], &message[4]);
+    encrypt_ratchet(&message[1], test_cipher_suite, alice_ratchet, ad, plaintext[1], plaintext_len[1]);
+    encrypt_ratchet(&message[2], test_cipher_suite, bob_ratchet, ad, plaintext[2], plaintext_len[2]);
+    encrypt_ratchet(&message[3], test_cipher_suite, bob_ratchet, ad, plaintext[3], plaintext_len[3]);
+    encrypt_ratchet(&message[4], test_cipher_suite, bob_ratchet, ad, plaintext[4], plaintext_len[4]);
 
-    output_len[4] = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message[4], &output[4]);
+    decrypt_ratchet(&output[4], &output_len[4], test_cipher_suite, bob_ratchet, ad, message[4]);
     assert(output_len[4] == plaintext_len[4]);
     result = is_equal(plaintext[4], output[4], plaintext_len[4]);
     assert(result);
-    output_len[2] = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message[2], &output[2]);
+    decrypt_ratchet(&output[2], &output_len[2], test_cipher_suite, bob_ratchet, ad, message[2]);
     assert(output_len[2] == plaintext_len[2]);
     result = is_equal(plaintext[2], output[2], plaintext_len[2]);
     assert(result);
 
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext[5], plaintext_len[5], &message[5]);
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext[6], plaintext_len[6], &message[6]);
-    encrypt_ratchet(test_cipher_suite, alice_ratchet, ad, plaintext[7], plaintext_len[7], &message[7]);
+    encrypt_ratchet(&message[5], test_cipher_suite, alice_ratchet, ad, plaintext[5], plaintext_len[5]);
+    encrypt_ratchet(&message[6], test_cipher_suite, alice_ratchet, ad, plaintext[6], plaintext_len[6]);
+    encrypt_ratchet(&message[7], test_cipher_suite, alice_ratchet, ad, plaintext[7], plaintext_len[7]);
 
-    output_len[6] = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message[6], &output[6]);
+    decrypt_ratchet(&output[6], &output_len[6], test_cipher_suite, bob_ratchet, ad, message[6]);
     assert(output_len[6] == plaintext_len[6]);
     result = is_equal(plaintext[6], output[6], plaintext_len[6]);
     assert(result);
-    output_len[1] = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message[1], &output[1]);
+    decrypt_ratchet(&output[1], &output_len[1], test_cipher_suite, bob_ratchet, ad, message[1]);
     assert(output_len[1] == plaintext_len[1]);
     result = is_equal(plaintext[1], output[1], plaintext_len[1]);
     assert(result);
 
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext[8], plaintext_len[8], &message[8]);
-    encrypt_ratchet(test_cipher_suite, bob_ratchet, ad, plaintext[9], plaintext_len[9], &message[9]);
-    output_len[9] = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message[9], &output[9]);
+    encrypt_ratchet(&message[8], test_cipher_suite, bob_ratchet, ad, plaintext[8], plaintext_len[8]);
+    encrypt_ratchet(&message[9], test_cipher_suite, bob_ratchet, ad, plaintext[9], plaintext_len[9]);
+    decrypt_ratchet(&output[9], &output_len[9], test_cipher_suite, bob_ratchet, ad, message[9]);
     assert(output_len[9] == plaintext_len[9]);
     result = is_equal(plaintext[9], output[9], plaintext_len[9]);
     assert(result);
-    output_len[3] = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message[3], &output[3]);
+    decrypt_ratchet(&output[3], &output_len[3], test_cipher_suite, bob_ratchet, ad, message[3]);
     assert(output_len[3] == plaintext_len[3]);
     result = is_equal(plaintext[3], output[3], plaintext_len[3]);
     assert(result);
 
-    output_len[5] = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message[5], &output[5]);
+    decrypt_ratchet(&output[5], &output_len[5], test_cipher_suite, bob_ratchet, ad, message[5]);
     assert(output_len[5] == plaintext_len[5]);
     result = is_equal(plaintext[5], output[5], plaintext_len[5]);
     assert(result);
-    output_len[7] = decrypt_ratchet(test_cipher_suite, bob_ratchet, ad, message[7], &output[7]);
+    decrypt_ratchet(&output[7], &output_len[7], test_cipher_suite, bob_ratchet, ad, message[7]);
     assert(output_len[7] == plaintext_len[7]);
     result = is_equal(plaintext[7], output[7], plaintext_len[7]);
     assert(result);
 
-    output_len[8] = decrypt_ratchet(test_cipher_suite, alice_ratchet, ad, message[8], &output[8]);
+    decrypt_ratchet(&output[8], &output_len[8], test_cipher_suite, bob_ratchet, ad, message[8]);
     assert(output_len[8] == plaintext_len[8]);
     result = is_equal(plaintext[8], output[8], plaintext_len[8]);
     assert(result);

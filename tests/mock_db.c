@@ -813,7 +813,7 @@ bool load_group_address(uint64_t address_id, Skissm__E2eeAddress **address) {
     return succ;
 }
 
-void load_password(uint64_t address_id, char *password) {
+void load_password(uint64_t address_id, char **password) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_PASSWORD_BY_ADDRESS_ID, &stmt);
@@ -823,7 +823,7 @@ void load_password(uint64_t address_id, char *password) {
     bool succ = sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    password = succ ? strdup((char *)sqlite3_column_text(stmt, 0)) : NULL;
+    *password = succ ? strdup((char *)sqlite3_column_text(stmt, 0)) : NULL;
 
     // release
     sqlite_finalize(stmt);
@@ -1540,7 +1540,7 @@ void load_account_by_address_id(uint64_t address_id, Skissm__Account **account) 
         (*account)->saved = load_saved(address_id);
         (*account)->e2ee_pack_id = load_e2ee_pack_id(address_id);
         (*account)->address = address;
-        load_password(address_id, (*account)->password);
+        load_password(address_id, &((*account)->password));
 
         load_signed_pre_key_pair(address_id, &((*account)->signed_pre_key));
         load_identity_key_pair(address_id, &((*account)->identity_key));
@@ -1585,7 +1585,8 @@ void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **acc
         (*account)->saved = load_saved(address_id);
         (*account)->e2ee_pack_id = load_e2ee_pack_id(address_id);
         copy_address_from_address(&((*account)->address), address);
-        load_password(address_id, (*account)->password);
+        load_auth((*account)->address, &((*account)->auth));
+        load_password(address_id, &((*account)->password));
 
         load_signed_pre_key_pair(address_id, &((*account)->signed_pre_key));
         load_identity_key_pair(address_id, &((*account)->identity_key));
