@@ -318,7 +318,8 @@ static void test_pending_request_data() {
     our_ratchet_key->data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
-    Skissm__AcceptRequest *accept_request = produce_accept_request(e2ee_pack_id, alice_address, bob_address, NULL, our_ratchet_key);
+    Skissm__AcceptRequest *accept_request = NULL;
+    produce_accept_request(&accept_request, e2ee_pack_id, alice_address, bob_address, NULL, our_ratchet_key);
 
     // pack request to request_data
     size_t request_data_len = skissm__accept_request__get_packed_size(accept_request);
@@ -378,14 +379,16 @@ static void test_sending_before_accept() {
     char *alice_device_id = generate_uuid_str();
     const char *alice_authenticator = "alice@domain.com.tw";
     const char *alice_auth_code = "123456";
-    Skissm__RegisterUserResponse *alice_response = register_user(
-        e2ee_pack_id, "Alice", "alice", alice_device_id, alice_authenticator, alice_auth_code
+    Skissm__RegisterUserResponse *alice_response = NULL;
+    register_user(
+        &alice_response, e2ee_pack_id, "Alice", "alice", alice_device_id, alice_authenticator, alice_auth_code
     );
     char *bob_device_id = generate_uuid_str();
     const char *bob_authenticator = "bob@domain.com.tw";
     const char *bob_auth_code = "654321";
-    Skissm__RegisterUserResponse *bob_response = register_user(
-        e2ee_pack_id, "Bob", "bob", bob_device_id, bob_authenticator, bob_auth_code
+    Skissm__RegisterUserResponse *bob_response = NULL;
+    register_user(
+        &bob_response, e2ee_pack_id, "Bob", "bob", bob_device_id, bob_authenticator, bob_auth_code
     );
 
     Skissm__E2eeAddress *alice_address = alice_response->address, *bob_address = bob_response->address;

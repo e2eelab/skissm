@@ -42,7 +42,6 @@ static Skissm__KeyPair *server_key_pair = NULL;
 typedef struct user_data {
     char *authenticator;
     Skissm__E2eeAddress *address;
-    const char *user_name;
     uint32_t e2ee_pack_id;
     Skissm__IdentityKeyPublic *identity_key_public;
     Skissm__SignedPreKeyPublic *signed_pre_key_public;
@@ -409,11 +408,6 @@ void mock_server_end() {
             user_data_set[i].address = NULL;
         }
 
-        if (user_data_set[i].user_name != NULL) {
-            free((void *)(user_data_set[i].user_name));
-            user_data_set[i].user_name = NULL;
-        }
-
         user_data_set[i].e2ee_pack_id = 0;
 
         skissm__identity_key_public__free_unpacked(user_data_set[i].identity_key_public, NULL);
@@ -490,7 +484,6 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     // prepare to store
     user_data *cur_data = &(user_data_set[user_data_set_insert_pos]);
     cur_data->authenticator = strdup(request->authenticator);
-    cur_data->user_name = strdup(request->user_name);
     cur_data->e2ee_pack_id = request->e2ee_pack_id;
 
     copy_ik_public_from_ik_public(&(cur_data->identity_key_public), request->identity_key_public);
@@ -510,6 +503,7 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     cur_address->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
     skissm__peer_user__init(cur_address->user);
     cur_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
+    cur_address->user->user_name = strdup(request->user_name);
     cur_address->user->user_id = strdup(request->user_id);
     cur_address->user->device_id = strdup(request->device_id);
 
@@ -519,6 +513,10 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     Skissm__RegisterUserResponse *response = (Skissm__RegisterUserResponse *)malloc(sizeof(Skissm__RegisterUserResponse));
     skissm__register_user_response__init(response);
     copy_address_from_address(&(response->address), cur_data->address);
+    response->username = strdup(request->user_name);
+    response->auth = strdup(request->auth_code);
+    response->authenticator = strdup(request->authenticator);
+    response->password = strdup("password");
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
     if (client_data != NULL) {
         receiver_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * receiver_num);

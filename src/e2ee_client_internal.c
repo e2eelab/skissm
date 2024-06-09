@@ -395,6 +395,10 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
     uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 ) {
+    int ret = 0;
+
+    Skissm__SendOne2oneMsgRequest *request = NULL;
+
     Skissm__E2eeAddress *user_address = outbound_session->our_address;
     char *auth = NULL;
     get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
@@ -404,7 +408,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
         return NULL;
     }
 
-    Skissm__SendOne2oneMsgRequest *request = produce_send_one2one_msg_request(outbound_session, notif_level, plaintext_data, plaintext_data_len);
+    ret = produce_send_one2one_msg_request(&request, outbound_session, notif_level, plaintext_data, plaintext_data_len);
     Skissm__SendOne2oneMsgResponse *response = get_skissm_plugin()->proto_handler.send_one2one_msg(user_address, auth, request);
     bool succ = consume_send_one2one_msg_response(outbound_session, response);
     if (!succ) {

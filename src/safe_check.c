@@ -260,13 +260,13 @@ bool safe_unregistered_account(const Skissm__Account *src) {
         return false;
     }
     // the address, password and auth should not be available in an unregistered account
-    if (src->address != NULL) {
+    if (nonempty_string(src->address)) {
         return false;
     }
-    if (src->password != NULL) {
+    if (nonempty_string(src->password)) {
         return false;
     }
-    if (src->auth != NULL) {
+    if (nonempty_string(src->auth)) {
         return false;
     }
 

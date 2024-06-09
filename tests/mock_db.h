@@ -31,7 +31,7 @@ char *load_version(uint64_t address_id);
 protobuf_c_boolean load_saved(uint64_t address_id);
 bool load_address(uint64_t address_id, Skissm__E2eeAddress **address);
 bool load_group_address(uint64_t address_id, Skissm__E2eeAddress **address);
-void load_password(uint64_t address_id, char *password);
+void load_password(uint64_t address_id, char **password);
 uint32_t load_e2ee_pack_id(uint64_t address_id);
 void load_identity_key_pair(uint64_t address_id, Skissm__IdentityKey **identity_key_pair);
 void load_signed_pre_key_pair(uint64_t address_id, Skissm__SignedPreKey **signed_pre_key);

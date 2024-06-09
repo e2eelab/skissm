@@ -120,7 +120,9 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
     // send the invite request to the peer
-    Skissm__InviteResponse *response = invite_internal(outbound_session);
+    int ret = 0;
+    Skissm__InviteResponse *response = NULL;
+    ret = invite_internal(&response, outbound_session);
 
     // release
     free_protobuf(&(my_ephemeral_key.private_key));
@@ -226,7 +228,10 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
 
     /** The one who sends the accept message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    Skissm__AcceptResponse *response = accept_internal(
+    int ret = 0;
+    Skissm__AcceptResponse *response = NULL;
+    ret = accept_internal(
+        &response,
         inbound_session->e2ee_pack_id,
         inbound_session->our_address,
         inbound_session->their_address,
@@ -251,7 +256,8 @@ int crypto_curve25519_complete_outbound_session(Skissm__Session *outbound_sessio
 }
 
 session_suite_t E2EE_SESSION_ECC = {
-    crypto_curve25519_new_outbound_session,
+    // crypto_curve25519_new_outbound_session,
+    NULL,
     crypto_curve25519_new_inbound_session,
     crypto_curve25519_complete_outbound_session
 };

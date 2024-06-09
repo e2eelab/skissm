@@ -71,11 +71,12 @@ int encrypt_ratchet(
  * @brief Decrypt Skissm__One2oneMsgPayload payload to plaintext_data
  * and keep updated ratchet states.
  *
+ * @param decrypted_data_out
+ * @param decrypted_data_len_out
  * @param cipher_suite
  * @param ratchet
  * @param ad
  * @param payload
- * @param plaintext_data
  * @return length of plaintext_data
  * @return 0 for error
  */
