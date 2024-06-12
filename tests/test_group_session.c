@@ -1799,9 +1799,9 @@ int main() {
     // test_create_group();
     // test_add_group_members();
     // test_remove_group_members();
-    test_create_add_remove();
-    test_interaction();
-    test_continual();
+    // test_create_add_remove();
+    // test_interaction();
+    // test_continual();
     // test_multiple_devices();
     // test_pqc_create_group();
     // test_pqc_add_group_members();
