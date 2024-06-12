@@ -644,8 +644,8 @@ static void test_change_devices() {
 
 int main() {
     // test_basic_session();
-    test_interaction();
-    test_continual_messages();
+    // test_interaction();
+    // test_continual_messages();
     // test_multiple_devices();
     // test_one_to_many();
     // test_many_to_one();

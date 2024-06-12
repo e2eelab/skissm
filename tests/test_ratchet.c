@@ -954,7 +954,7 @@ static void test_pqc_interaction_alice_first() {
 
     Skissm__One2oneMsgPayload *message_2 = NULL;
 
-    encrypt_ratchet(&message_2, test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length);
+    encrypt_ratchet(&message_2, test_cipher_suite, bob_ratchet, ad, plaintext_2, plaintext_2_length);
 
     uint8_t *output_2 = NULL;
     size_t decrypt_length_2;
@@ -1531,11 +1531,11 @@ static void test_pqc_out_of_order_v2() {
     encrypt_ratchet(&message[3], test_cipher_suite, bob_ratchet, ad, plaintext[3], plaintext_len[3]);
     encrypt_ratchet(&message[4], test_cipher_suite, bob_ratchet, ad, plaintext[4], plaintext_len[4]);
 
-    decrypt_ratchet(&output[4], &output_len[4], test_cipher_suite, bob_ratchet, ad, message[4]);
+    decrypt_ratchet(&output[4], &output_len[4], test_cipher_suite, alice_ratchet, ad, message[4]);
     assert(output_len[4] == plaintext_len[4]);
     result = is_equal(plaintext[4], output[4], plaintext_len[4]);
     assert(result);
-    decrypt_ratchet(&output[2], &output_len[2], test_cipher_suite, bob_ratchet, ad, message[2]);
+    decrypt_ratchet(&output[2], &output_len[2], test_cipher_suite, alice_ratchet, ad, message[2]);
     assert(output_len[2] == plaintext_len[2]);
     result = is_equal(plaintext[2], output[2], plaintext_len[2]);
     assert(result);
@@ -1555,11 +1555,11 @@ static void test_pqc_out_of_order_v2() {
 
     encrypt_ratchet(&message[8], test_cipher_suite, bob_ratchet, ad, plaintext[8], plaintext_len[8]);
     encrypt_ratchet(&message[9], test_cipher_suite, bob_ratchet, ad, plaintext[9], plaintext_len[9]);
-    decrypt_ratchet(&output[9], &output_len[9], test_cipher_suite, bob_ratchet, ad, message[9]);
+    decrypt_ratchet(&output[9], &output_len[9], test_cipher_suite, alice_ratchet, ad, message[9]);
     assert(output_len[9] == plaintext_len[9]);
     result = is_equal(plaintext[9], output[9], plaintext_len[9]);
     assert(result);
-    decrypt_ratchet(&output[3], &output_len[3], test_cipher_suite, bob_ratchet, ad, message[3]);
+    decrypt_ratchet(&output[3], &output_len[3], test_cipher_suite, alice_ratchet, ad, message[3]);
     assert(output_len[3] == plaintext_len[3]);
     result = is_equal(plaintext[3], output[3], plaintext_len[3]);
     assert(result);
@@ -1573,7 +1573,7 @@ static void test_pqc_out_of_order_v2() {
     result = is_equal(plaintext[7], output[7], plaintext_len[7]);
     assert(result);
 
-    decrypt_ratchet(&output[8], &output_len[8], test_cipher_suite, bob_ratchet, ad, message[8]);
+    decrypt_ratchet(&output[8], &output_len[8], test_cipher_suite, alice_ratchet, ad, message[8]);
     assert(output_len[8] == plaintext_len[8]);
     result = is_equal(plaintext[8], output[8], plaintext_len[8]);
     assert(result);

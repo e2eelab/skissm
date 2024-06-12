@@ -44,6 +44,7 @@ int produce_register_request(Skissm__RegisterUserRequest **request_out, Skissm__
         signed_pre_key = account->signed_pre_key;
         signed_pre_key_pair = signed_pre_key->key_pair;
     } else {
+        ssm_notify_log(NULL, BAD_ACCOUNT, "produce_register_request() bad account");
         ret = -1;
     }
 
@@ -92,6 +93,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
     char *auth = NULL;
 
     if (!safe_unregistered_account(account)) {
+        ssm_notify_log(NULL, BAD_ACCOUNT, "consume_register_response() bad account");
         ret = -1;
     }
     if (!safe_register_user_response(response)) {
@@ -288,6 +290,7 @@ int produce_supply_opks_request(
         e2ee_pack_id = account->e2ee_pack_id;
         cur_opk_id = account->next_one_time_pre_key_id;
     } else {
+        ssm_notify_log(NULL, BAD_ACCOUNT, "produce_supply_opks_request() bad account");
         ret = -1;
     }
 

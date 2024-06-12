@@ -119,6 +119,7 @@ int create_account(Skissm__Account **account_out, uint32_t e2ee_pack_id) {
     // get the cipher suite
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
     if (!safe_cipher_suite(cipher_suite)) {
+        ssm_notify_log(NULL, BAD_CIPHER_SUITE, "create_account() no cipher suite");
         ret = -1;
     }
 
@@ -196,6 +197,7 @@ int generate_identity_key(
         sign_pub_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
         sign_priv_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_priv_key_len;
     } else {
+        ssm_notify_log(NULL, BAD_CIPHER_SUITE, "generate_identity_key() no cipher suite");
         ret = -1;
     }
 
@@ -205,6 +207,7 @@ int generate_identity_key(
         ret = cipher_suite->kem_suite->asym_key_gen(&(asym_key_pair->public_key), &(asym_key_pair->private_key));
 
         if (!accurate_key_pair(asym_key_pair, asym_pub_key_len, asym_priv_key_len)) {
+            ssm_notify_log(NULL, BAD_KEY_PAIR, "generate_identity_key() bad asym_key_pair");
             ret = -1;
         }
     }
@@ -215,6 +218,7 @@ int generate_identity_key(
         ret = cipher_suite->digital_signature_suite->sign_key_gen(&(sign_key_pair->public_key), &(sign_key_pair->private_key));
 
         if (!accurate_key_pair(sign_key_pair, sign_pub_key_len, sign_priv_key_len)) {
+            ssm_notify_log(NULL, BAD_KEY_PAIR, "generate_identity_key() bad sign_key_pair");
             ret = -1;
         }
     }
@@ -263,6 +267,7 @@ int generate_signed_pre_key(
         asym_priv_key_len = cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
         sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
     } else {
+        ssm_notify_log(NULL, BAD_CIPHER_SUITE, "generate_signed_pre_key() no cipher suite");
         ret = -1;
     }
 
@@ -273,6 +278,7 @@ int generate_signed_pre_key(
         ret = cipher_suite->kem_suite->asym_key_gen(&(key_pair->public_key), &(key_pair->private_key));
 
         if (!accurate_key_pair(key_pair, asym_pub_key_len, asym_priv_key_len)) {
+            ssm_notify_log(NULL, BAD_KEY_PAIR, "generate_signed_pre_key() bad signed pre-key pair");
             ret = -1;
         }
     }
@@ -287,6 +293,7 @@ int generate_signed_pre_key(
         );
 
         if (sig_len != signature_data_len) {
+            ssm_notify_log(NULL, BAD_SIGNATURE, "generate_signed_pre_key() bad signature");
             ret = -1;
         }
     }
@@ -396,6 +403,7 @@ int generate_opks(
         asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
         asym_priv_key_len = cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
     } else {
+        ssm_notify_log(NULL, BAD_CIPHER_SUITE, "generate_opks() no cipher suite");
         ret = -1;
     }
 
@@ -407,6 +415,7 @@ int generate_opks(
             ret = cipher_suite->kem_suite->asym_key_gen(&(key_pair->public_key), &(key_pair->private_key));
 
             if (!accurate_key_pair(key_pair, asym_pub_key_len, asym_priv_key_len)) {
+                ssm_notify_log(NULL, BAD_KEY_PAIR, "generate_opks() bad one-time pre-key pair");
                 ret = -1;
             }
 
