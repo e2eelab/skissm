@@ -217,6 +217,7 @@ int pqc_new_outbound_session_v2(
             if (safe_pre_key_bundle(their_pre_key_bundle)) {
                 e2ee_pack_id = their_pre_key_bundle->e2ee_pack_id;
                 cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+                to = their_pre_key_bundle->user_address;
                 if (safe_cipher_suite(cipher_suite)) {
                     asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
                     sign_pub_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;

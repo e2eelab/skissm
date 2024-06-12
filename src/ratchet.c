@@ -605,8 +605,10 @@ int encrypt_ratchet(
     Skissm__SenderChainNode *sender_chain = NULL;
     Skissm__ChainKey *chain_key = NULL;
 
-    if (!safe_cipher_suite(cipher_suite))
+    if (!safe_cipher_suite(cipher_suite)) {
+        ssm_notify_log(NULL, BAD_CIPHER_SUITE, "encrypt_ratchet()");
         ret = -1;
+    }
     if (ratchet != NULL) {
         if (ratchet->sender_chain != NULL) {
             sender_chain = ratchet->sender_chain;
@@ -696,7 +698,7 @@ int decrypt_ratchet(
         }
         if (ret == 0) {
             if (ratchet->root_sequence == 0) {
-                if (payload->sending_message_sequence != payload->sequence) {
+                if (payload->sending_message_sequence < payload->sequence) {
                     ret = -1;
                 }
             }

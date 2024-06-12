@@ -53,26 +53,26 @@ typedef struct index_node {
 } index_node;
 
 static user_data user_data_set[user_data_max] = {
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0},
-    {NULL, NULL, NULL, 0, NULL, NULL, NULL, 0}};
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0},
+    {NULL, NULL, 0, NULL, NULL, NULL, 0}};
 
 static group_data group_data_set[group_data_max] = {
     {NULL, NULL, 0, NULL},
@@ -366,31 +366,37 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
     if (client_data != NULL) {
         receiver_addresses = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * receiver_num);
-        // other devices
-        response->n_other_device_address_list = other_device_num;
-        response->other_device_address_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * other_device_num);
-        for (i = 0; i < other_device_num; i++) {
-            copy_address_from_address(&((response->other_device_address_list)[i]), other_device_address_list[i]);
-            copy_address_from_address(&(receiver_addresses[i]), other_device_address_list[i]);
+        if (other_device_num > 0) {
+            // other devices
+            response->n_other_device_address_list = other_device_num;
+            response->other_device_address_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * other_device_num);
+            for (i = 0; i < other_device_num; i++) {
+                copy_address_from_address(&((response->other_device_address_list)[i]), other_device_address_list[i]);
+                copy_address_from_address(&(receiver_addresses[i]), other_device_address_list[i]);
+            }
         }
-        // other users
-        response->n_other_user_address_list = friends_num;
-        response->other_user_address_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * friends_num);
-        for (i = 0; i < friends_num; i++) {
-            copy_address_from_address(&((response->other_user_address_list)[i]), friend_addresses[i]);
-            copy_address_from_address(&(receiver_addresses[other_device_num + i]), friend_addresses[i]);
+        if (friends_num > 0) {
+            // other users
+            response->n_other_user_address_list = friends_num;
+            response->other_user_address_list = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * friends_num);
+            for (i = 0; i < friends_num; i++) {
+                copy_address_from_address(&((response->other_user_address_list)[i]), friend_addresses[i]);
+                copy_address_from_address(&(receiver_addresses[other_device_num + i]), friend_addresses[i]);
+            }
         }
-        // group
-        response->n_group_info_list = group_num;
-        response->group_info_list = (Skissm__GroupInfo **)malloc(sizeof(Skissm__GroupInfo *) * group_num);
-        for (i = 0; i < group_num; i++) {
-            (response->group_info_list)[i] = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
-            Skissm__GroupInfo *cur_group = (response->group_info_list)[i];
-            skissm__group_info__init(cur_group);
-            cur_group->group_name = strdup(group_info_list[i]->group_name);
-            copy_address_from_address(&(cur_group->group_address), group_info_list[i]->group_address);
-            cur_group->n_group_member_list = group_info_list[i]->n_group_member_list;
-            copy_group_members(&(cur_group->group_member_list), group_info_list[i]->group_member_list, group_info_list[i]->n_group_member_list);
+        if (group_num > 0) {
+            // group
+            response->n_group_info_list = group_num;
+            response->group_info_list = (Skissm__GroupInfo **)malloc(sizeof(Skissm__GroupInfo *) * group_num);
+            for (i = 0; i < group_num; i++) {
+                (response->group_info_list)[i] = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
+                Skissm__GroupInfo *cur_group = (response->group_info_list)[i];
+                skissm__group_info__init(cur_group);
+                cur_group->group_name = strdup(group_info_list[i]->group_name);
+                copy_address_from_address(&(cur_group->group_address), group_info_list[i]->group_address);
+                cur_group->n_group_member_list = group_info_list[i]->n_group_member_list;
+                copy_group_members(&(cur_group->group_member_list), group_info_list[i]->group_member_list, group_info_list[i]->n_group_member_list);
+            }
         }
     }
 

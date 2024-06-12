@@ -48,21 +48,27 @@ int register_user(
     Skissm__RegisterUserResponse *response = NULL;
 
     if (!safe_e2ee_pack_id(e2ee_pack_id)) {
+        ssm_notify_log(NULL, BAD_E2EE_PACK_ID, "register_user(): no e2ee_pack_id");
         ret = -1;
     }
     if (!nonempty_string(user_name)) {
+        ssm_notify_log(NULL, BAD_USER_NAME, "register_user(): no user_name");
         ret = -1;
     }
     if (!nonempty_string(user_id)) {
+        ssm_notify_log(NULL, BAD_USER_ID, "register_user(): no user_id");
         ret = -1;
     }
     if (!nonempty_string(device_id)) {
+        ssm_notify_log(NULL, BAD_DEVICE_ID, "register_user(): no device_id");
         ret = -1;
     }
     if (!nonempty_string(authenticator)) {
+        ssm_notify_log(NULL, BAD_AUTHENTICATOR, "register_user(): no authenticator");
         ret = -1;
     }
     if (!nonempty_string(auth_code)) {
+        ssm_notify_log(NULL, BAD_AUTH, "register_user(): no auth_code");
         ret = -1;
     }
 
@@ -504,11 +510,11 @@ Skissm__CreateGroupResponse *create_group(
     bool succ = consume_create_group_response(account->e2ee_pack_id, sender_address, group_name, group_members, group_members_num, response);
     if (!succ) {
         ssm_notify_log(
-                sender_address,
-                DEBUG_LOG,
-                "create_group(): consume filed with response code: %d, skip saving pending request",
-                response->code
-            );
+            sender_address,
+            DEBUG_LOG,
+            "create_group(): consume filed with response code: %d, skip saving pending request",
+            response->code
+        );
         // skip saving pending request for creating group
         // // pack request to request_data
         // size_t request_data_len = skissm__create_group_request__get_packed_size(request);
