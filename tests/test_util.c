@@ -504,6 +504,7 @@ void mock_address(Skissm__E2eeAddress **address, const char *user_id, const char
     skissm__peer_user__init((*address)->user);
     (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
     (*address)->domain = strdup(domain);
+    (*address)->user->user_name = strdup(user_id);
     (*address)->user->user_id = strdup(user_id);
     (*address)->user->device_id = strdup(device_id);
 }
