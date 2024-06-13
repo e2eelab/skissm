@@ -278,7 +278,8 @@ int generate_signed_pre_key(
             identity_private_key
         );
 
-        if (sig_len != signature_data_len) {
+        // what if sig_len > signature_data_len?
+        if (sig_len < signature_data_len) {
             ssm_notify_log(NULL, BAD_SIGNATURE, "generate_signed_pre_key() bad signature");
             ret = -1;
         }

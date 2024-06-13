@@ -864,8 +864,10 @@ int produce_accept_request(
     if (!safe_address(to)) {
         ret = -1;
     }
-    if (!safe_protobuf(ciphertext_1)) {
-        ret = -1;
+    if (ciphertext_1 != NULL) {
+        if (!safe_protobuf(ciphertext_1)) {
+            ret = -1;
+        }
     }
     if (!safe_protobuf(our_ratchet_key)) {
         ret = -1;
