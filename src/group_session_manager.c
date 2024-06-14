@@ -20,6 +20,7 @@
 
 #include <string.h>
 
+#include "skissm/account_cash.h"
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/group_session.h"
@@ -33,10 +34,17 @@ Skissm__CreateGroupRequest *produce_create_group_request(
     size_t group_members_num
 ) {
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
-    if (account == NULL) {
-        ssm_notify_log(sender_address, BAD_ACCOUNT, "produce_create_group_request()");
-        return NULL;
+    uint32_t e2ee_pack_id = 0;
+
+    load_e2ee_pack_id_from_cash(&e2ee_pack_id, sender_address);
+
+    if (e2ee_pack_id == 0) {
+        get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
+        if (account == NULL) {
+            ssm_notify_log(sender_address, BAD_ACCOUNT, "produce_create_group_request()");
+            return NULL;
+        }
+        e2ee_pack_id = account->e2ee_pack_id;
     }
 
     Skissm__CreateGroupRequest *request =
@@ -49,7 +57,7 @@ Skissm__CreateGroupRequest *produce_create_group_request(
 
     copy_address_from_address(&(msg->sender_address), sender_address);
 
-    msg->e2ee_pack_id = account->e2ee_pack_id;
+    msg->e2ee_pack_id = e2ee_pack_id;
 
     msg->group_info = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     Skissm__GroupInfo *group_info = msg->group_info;
@@ -59,7 +67,10 @@ Skissm__CreateGroupRequest *produce_create_group_request(
     copy_group_members(&(group_info->group_member_list), group_member_list, group_members_num);
 
     // done
-    skissm__account__free_unpacked(account, NULL);
+    if (account != NULL) {
+        skissm__account__free_unpacked(account, NULL);
+        account = NULL;
+    }
     request->msg = msg;
     return request;
 }
@@ -206,10 +217,17 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
     size_t adding_members_num
 ) {
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
-    if (account == NULL) {
-        ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_add_group_members_request()");
-        return NULL;
+    uint32_t e2ee_pack_id = 0;
+
+    load_e2ee_pack_id_from_cash(&e2ee_pack_id, outbound_group_session->session_owner);
+
+    if (e2ee_pack_id == 0) {
+        get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
+        if (account == NULL) {
+            ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_add_group_members_request()");
+            return NULL;
+        }
+        e2ee_pack_id = account->e2ee_pack_id;
     }
 
     Skissm__AddGroupMembersRequest *request =
@@ -220,7 +238,7 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
         (Skissm__AddGroupMembersMsg *)malloc(sizeof(Skissm__AddGroupMembersMsg));
     skissm__add_group_members_msg__init(msg);
 
-    msg->e2ee_pack_id = account->e2ee_pack_id;
+    msg->e2ee_pack_id = e2ee_pack_id;
 
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
 
@@ -231,7 +249,10 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
     add_group_members_to_group_info(&(msg->group_info), outbound_group_session->group_info, adding_member_list, adding_members_num);
 
     // done
-    skissm__account__free_unpacked(account, NULL);
+    if (account != NULL) {
+        skissm__account__free_unpacked(account, NULL);
+        account = NULL;
+    }
     request->msg = msg;
     return request;
 }
@@ -342,10 +363,17 @@ Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
     Skissm__E2eeAddress *new_device_address
 ) {
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
-    if (account == NULL) {
-        ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_add_group_member_device_request()");
-        return NULL;
+    uint32_t e2ee_pack_id = 0;
+
+    load_e2ee_pack_id_from_cash(&e2ee_pack_id, outbound_group_session->session_owner);
+
+    if (e2ee_pack_id == 0) {
+        get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
+        if (account == NULL) {
+            ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_add_group_member_device_request()");
+            return NULL;
+        }
+        e2ee_pack_id = account->e2ee_pack_id;
     }
 
     Skissm__AddGroupMemberDeviceRequest *request =
@@ -356,7 +384,7 @@ Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
         (Skissm__AddGroupMemberDeviceMsg *)malloc(sizeof(Skissm__AddGroupMemberDeviceMsg));
     skissm__add_group_member_device_msg__init(msg);
 
-    msg->e2ee_pack_id = account->e2ee_pack_id;
+    msg->e2ee_pack_id = e2ee_pack_id;
 
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
 
@@ -369,7 +397,10 @@ Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
     copy_address_from_address(&(msg->adding_member_device->member_address), new_device_address);
 
     // done
-    skissm__account__free_unpacked(account, NULL);
+    if (account != NULL) {
+        skissm__account__free_unpacked(account, NULL);
+        account = NULL;
+    }
     request->msg = msg;
     return request;
 }
@@ -525,10 +556,17 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
     );
 
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
-    if (account == NULL) {
-        ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_remove_group_members_request()");
-        return NULL;
+    uint32_t e2ee_pack_id = 0;
+
+    load_e2ee_pack_id_from_cash(&e2ee_pack_id, outbound_group_session->session_owner);
+
+    if (e2ee_pack_id == 0) {
+        get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
+        if (account == NULL) {
+            ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_remove_group_members_request()");
+            return NULL;
+        }
+        e2ee_pack_id = account->e2ee_pack_id;
     }
 
     Skissm__RemoveGroupMembersRequest *request =
@@ -539,7 +577,7 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
         (Skissm__RemoveGroupMembersMsg *)malloc(sizeof(Skissm__RemoveGroupMembersMsg));
     skissm__remove_group_members_msg__init(msg);
 
-    msg->e2ee_pack_id = account->e2ee_pack_id;
+    msg->e2ee_pack_id = e2ee_pack_id;
 
     copy_address_from_address(&(msg->sender_address), outbound_group_session->session_owner);
 
@@ -551,7 +589,10 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
     copy_group_members(&(msg->removing_member_list), removing_group_members, removing_group_members_num);
 
     // done
-    skissm__account__free_unpacked(account, NULL);
+    if (account != NULL) {
+        skissm__account__free_unpacked(account, NULL);
+        account = NULL;
+    }
     request->msg = msg;
     return request;
 }
@@ -808,10 +849,17 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     size_t deny_list_len
 ) {
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->sender, &account);
-    if (account == NULL) {
-        ssm_notify_log(outbound_group_session->sender, BAD_ACCOUNT, "produce_send_group_msg_request()");
-        return NULL;
+    Skissm__IdentityKey *identity_key = NULL;
+
+    load_identity_key_from_cash(&identity_key, outbound_group_session->sender);
+
+    if (identity_key == NULL) {
+        get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->sender, &account);
+        if (account == NULL) {
+            ssm_notify_log(outbound_group_session->sender, BAD_ACCOUNT, "produce_send_group_msg_request()");
+            return NULL;
+        }
+        copy_ik_from_ik(&identity_key, account->identity_key);
     }
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
@@ -858,7 +906,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
         group_msg_payload->signature.data, &signature_out_len,
         group_msg_payload->ciphertext.data,
         group_msg_payload->ciphertext.len,
-        account->identity_key->sign_key_pair->private_key.data
+        identity_key->sign_key_pair->private_key.data
     );
 
     // optional allow_list and denny_list
@@ -881,7 +929,14 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     }
     
     // release
-    skissm__account__free_unpacked(account, NULL);
+    if (account != NULL) {
+        skissm__account__free_unpacked(account, NULL);
+        account = NULL;
+    }
+    if (identity_key != NULL) {
+        skissm__identity_key__free_unpacked(identity_key, NULL);
+        identity_key = NULL;
+    }
     skissm__msg_key__free_unpacked(msg_key, NULL);
 
     // done

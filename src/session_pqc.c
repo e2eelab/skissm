@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "skissm/account.h"
+#include "skissm/account_cash.h"
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/group_session.h"
@@ -357,18 +358,25 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
 
     // load account to get the private identity key
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->our_address, &account);
-    if (account == NULL) {
-        // release
-        free_protobuf(their_ratchet_key);
-        free_mem((void **)&their_ratchet_key, sizeof(ProtobufCBinaryData));
+    Skissm__IdentityKey *identity_key = NULL;
 
-        ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");
-        return -1;
+    load_identity_key_from_cash(&identity_key, outbound_session->our_address);
+
+    if (identity_key == NULL) {
+        get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->our_address, &account);
+        if (account == NULL) {
+            // release
+            free_protobuf(their_ratchet_key);
+            free_mem((void **)&their_ratchet_key, sizeof(ProtobufCBinaryData));
+
+            ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");
+            return -1;
+        }
+        copy_ik_from_ik(&identity_key, account->identity_key);
     }
 
     // complete the shared secret of the X3DH
-    cipher_suite->kem_suite->ss_key_gen(&(account->identity_key->asym_key_pair->private_key), &(msg->encaps_ciphertext), outbound_session->temp_shared_secret.data);
+    cipher_suite->kem_suite->ss_key_gen(&(identity_key->asym_key_pair->private_key), &(msg->encaps_ciphertext), outbound_session->temp_shared_secret.data);
 
     // create the root key and chain keys
     initialise_as_alice(
@@ -380,7 +388,10 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     // release
     free_protobuf(their_ratchet_key);
     free_mem((void **)&their_ratchet_key, sizeof(ProtobufCBinaryData));
-    skissm__account__free_unpacked(account, NULL);
+    if (account != NULL) {
+        skissm__account__free_unpacked(account, NULL);
+        account = NULL;
+    }
 
     // done
     return 0;

@@ -20,6 +20,7 @@
 
 #include <string.h>
 
+#include "skissm/account_cash.h"
 #include "skissm/account_manager.h"
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client_internal.h"
@@ -55,6 +56,9 @@ void account_begin() {
         // resend the pending data if necessary
         resume_connection_internal(cur_account);
 
+        // store into cash
+        store_account_into_cash(cur_account);
+
         // release
         skissm__account__free_unpacked(cur_account, NULL);
     }
@@ -65,6 +69,7 @@ void account_begin() {
 }
 
 void account_end() {
+    free_account_casher_list();
 }
 
 Skissm__Account *create_account(uint32_t e2ee_pack_id) {

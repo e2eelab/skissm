@@ -25,6 +25,7 @@
 
 #include "skissm/mem_util.h"
 #include "skissm/account.h"
+#include "skissm/account_cash.h"
 #include "skissm/account_manager.h"
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/group_session_manager.h"
@@ -411,16 +412,27 @@ Skissm__CreateGroupResponse *create_group(
     size_t group_members_num
 ) {
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
-    if (account == NULL) {
-        ssm_notify_log(sender_address, BAD_ACCOUNT, "create_group()");
-        return NULL;
+    char *auth = NULL;
+    uint32_t e2ee_pack_id = 0;
+
+    load_e2ee_pack_id_from_cash(&e2ee_pack_id, sender_address);
+
+    if (e2ee_pack_id == 0) {
+        get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
+        if (account == NULL) {
+            ssm_notify_log(sender_address, BAD_ACCOUNT, "create_group()");
+            return NULL;
+        }
+        e2ee_pack_id = account->e2ee_pack_id;
+        auth = strdup(account->auth);
+    } else {
+        get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
     }
 
     // send message to server
     Skissm__CreateGroupRequest *request = produce_create_group_request(sender_address, group_name, group_members, group_members_num);
-    Skissm__CreateGroupResponse *response = get_skissm_plugin()->proto_handler.create_group(account->address, account->auth, request);
-    bool succ = consume_create_group_response(account->e2ee_pack_id, sender_address, group_name, group_members, group_members_num, response);
+    Skissm__CreateGroupResponse *response = get_skissm_plugin()->proto_handler.create_group(sender_address, auth, request);
+    bool succ = consume_create_group_response(e2ee_pack_id, sender_address, group_name, group_members, group_members_num, response);
     if (!succ) {
         ssm_notify_log(
                 sender_address,
@@ -439,7 +451,10 @@ Skissm__CreateGroupResponse *create_group(
     }
 
     // release
-    skissm__account__free_unpacked(account, NULL);
+    if (account != NULL)
+        skissm__account__free_unpacked(account, NULL);
+    if (auth != NULL)
+        free(auth);
     skissm__create_group_request__free_unpacked(request, NULL);
 
     // done

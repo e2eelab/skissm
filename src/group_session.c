@@ -20,6 +20,7 @@
 
 #include <string.h>
 
+#include "skissm/account_cash.h"
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/e2ee_client_internal.h"
@@ -331,20 +332,36 @@ int new_outbound_group_session_by_sender(
     int ret = 0;
 
     Skissm__Account *account = NULL;
+    char *auth = NULL;
+    Skissm__IdentityKey *identity_key = NULL;
     uint8_t *identity_public_key = NULL;
     if (user_address == NULL) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_by_sender()");
         ret = -1;
     } else {
-        get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
-        if (account == NULL) {
-            ssm_notify_log(user_address, BAD_ACCOUNT, "new_outbound_group_session_by_sender()");
-            ret = -1;
-        } else {
-            identity_public_key = get_identity_public_key_ds_uint8_from_account(account);
-            if (identity_public_key == NULL) {
+        load_identity_key_from_cash(&identity_key, user_address);
+
+        if (identity_key == NULL) {
+            get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
+            if (account == NULL) {
                 ssm_notify_log(user_address, BAD_ACCOUNT, "new_outbound_group_session_by_sender()");
                 ret = -1;
+            } else {
+                identity_public_key = get_identity_public_key_ds_uint8_from_account(account);
+                if (identity_public_key == NULL) {
+                    ssm_notify_log(user_address, BAD_ACCOUNT, "new_outbound_group_session_by_sender()");
+                    ret = -1;
+                } else {
+                    auth = strdup(account->auth);
+                }
+            }
+        } else {
+            get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
+            if (auth == NULL) {
+                ssm_notify_log(user_address, BAD_ACCOUNT, "new_outbound_group_session_by_sender()");
+                ret = -1;
+            } else {
+                identity_public_key = identity_key->sign_key_pair->public_key.data;
             }
         }
     }
@@ -440,7 +457,7 @@ int new_outbound_group_session_by_sender(
                 /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
                 Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
                     outbound_group_session->session_owner,
-                    account->auth,
+                    auth,
                     cur_user_id, cur_user_domain,
                     NULL, true,
                     group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
@@ -468,7 +485,14 @@ int new_outbound_group_session_by_sender(
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
         // release
-        skissm__account__free_unpacked(account, NULL);
+        if (account != NULL) {
+            skissm__account__free_unpacked(account, NULL);
+            account = NULL;
+        }
+        if (auth != NULL) {
+            free(auth);
+            auth = NULL;
+        }
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
         free_mem((void **)&group_pre_key_plaintext_data, sizeof(uint8_t) * group_pre_key_plaintext_data_len);
     }
@@ -489,21 +513,28 @@ int new_outbound_group_session_by_receiver(
     int ret = 0;
 
     Skissm__Account *account = NULL;
+    Skissm__IdentityKey *identity_key = NULL;
     uint8_t *identity_public_key = NULL;
     if (user_address == NULL) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_by_receiver()");
         ret = -1;
     } else {
-        get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
-        if (account == NULL) {
-            ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_by_receiver()");
-            ret = -1;
-        } else {
-            identity_public_key = get_identity_public_key_ds_uint8_from_account(account);
-            if (identity_public_key == NULL) {
-                ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_by_receiver()");
+        load_identity_key_from_cash(&identity_key, user_address);
+
+        if (identity_key == NULL) {
+            get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
+            if (account == NULL) {
+                ssm_notify_log(user_address, BAD_ACCOUNT, "new_outbound_group_session_by_receiver()");
                 ret = -1;
+            } else {
+                identity_public_key = get_identity_public_key_ds_uint8_from_account(account);
+                if (identity_public_key == NULL) {
+                    ssm_notify_log(user_address, BAD_ACCOUNT, "new_outbound_group_session_by_receiver()");
+                    ret = -1;
+                }
             }
+        } else {
+            identity_public_key = identity_key->sign_key_pair->public_key.data;
         }
     }
 
@@ -555,7 +586,10 @@ int new_outbound_group_session_by_receiver(
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
         // release
-        skissm__account__free_unpacked(account, NULL);
+        if (account != NULL) {
+            skissm__account__free_unpacked(account, NULL);
+            account = NULL;
+        }
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
     }
 
@@ -569,21 +603,28 @@ int new_outbound_group_session_invited(
     int ret = 0;
 
     Skissm__Account *account = NULL;
+    Skissm__IdentityKey *identity_key = NULL;
     uint8_t *identity_public_key = NULL;
     if (user_address == NULL) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_invited()");
         ret = -1;
     } else {
-        get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
-        if (account == NULL) {
-            ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_invited()");
-            ret = -1;
-        } else {
-            identity_public_key = get_identity_public_key_ds_uint8_from_account(account);
-            if (identity_public_key == NULL) {
-                ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_invited()");
+        load_identity_key_from_cash(&identity_key, user_address);
+
+        if (identity_key == NULL) {
+            get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
+            if (account == NULL) {
+                ssm_notify_log(user_address, BAD_ACCOUNT, "new_outbound_group_session_invited()");
                 ret = -1;
+            } else {
+                identity_public_key = get_identity_public_key_ds_uint8_from_account(account);
+                if (identity_public_key == NULL) {
+                    ssm_notify_log(user_address, BAD_ACCOUNT, "new_outbound_group_session_invited()");
+                    ret = -1;
+                }
             }
+        } else {
+            identity_public_key = identity_key->sign_key_pair->public_key.data;
         }
     }
 
@@ -676,7 +717,10 @@ int new_outbound_group_session_invited(
         }
 
         // release
-        skissm__account__free_unpacked(account, NULL);
+        if (account != NULL) {
+            skissm__account__free_unpacked(account, NULL);
+            account = NULL;
+        }
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
         for (i = 0; i < n_adding_member_info_list; i++) {
             free_protobuf(adding_members_chain_key[i]);
@@ -1230,25 +1274,36 @@ int renew_outbound_group_session_by_welcome_and_add(
     int ret = 0;
 
     Skissm__Account *account = NULL;
+    char *auth = NULL;
+    Skissm__IdentityKey *identity_key = NULL;
     ProtobufCBinaryData *identity_public_key = NULL;
     if (outbound_group_session == NULL) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_outbound_group_session_by_welcome_and_add()");
         ret = -1;
     } else {
-        if (outbound_group_session->session_owner == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_outbound_group_session_by_welcome_and_add()");
-            ret = -1;
-        } else {
+        load_identity_key_from_cash(&identity_key, outbound_group_session->session_owner);
+
+        if (identity_key == NULL) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
             if (account == NULL) {
-                ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_outbound_group_session_welcome_and_add()");
+                ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_outbound_group_session_by_welcome_and_add()");
                 ret = -1;
             } else {
                 identity_public_key = get_identity_public_key_ds_bytes_from_account(account);
                 if (identity_public_key == NULL) {
-                    ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_outbound_group_session_welcome_and_add()");
+                    ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_outbound_group_session_by_welcome_and_add()");
                     ret = -1;
+                } else {
+                    auth = strdup(account->auth);
                 }
+            }
+        } else {
+            get_skissm_plugin()->db_handler.load_auth(outbound_group_session->session_owner, &auth);
+            if (auth == NULL) {
+                ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_outbound_group_session_by_welcome_and_add()");
+                ret = -1;
+            } else {
+                identity_public_key = &(identity_key->sign_key_pair->public_key);
             }
         }
         if (outbound_group_session->version == NULL) {
@@ -1353,7 +1408,7 @@ int renew_outbound_group_session_by_welcome_and_add(
                 /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
                 Skissm__InviteResponse *invite_response = get_pre_key_bundle_internal(
                     outbound_group_session->session_owner,
-                    account->auth,
+                    auth,
                     cur_user_id, cur_user_domain,
                     NULL, true,
                     group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
@@ -1443,7 +1498,14 @@ int renew_outbound_group_session_by_welcome_and_add(
         }
 
         // release
-        skissm__account__free_unpacked(account, NULL);
+        if (account != NULL) {
+            skissm__account__free_unpacked(account, NULL);
+            account = NULL;
+        }
+        if (auth != NULL) {
+            free(auth);
+            auth = NULL;
+        }
         free_mem((void **)&group_ratchet_state_plaintext_data, sizeof(uint8_t) * group_ratchet_state_plaintext_data_len);
         free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
     }
@@ -1520,15 +1582,16 @@ int renew_group_sessions_with_new_device(
     int ret = 0;
 
     Skissm__Account *account = NULL;
+    char *auth = NULL;
+    Skissm__IdentityKey *identity_key = NULL;
     ProtobufCBinaryData *identity_public_key = NULL;
     if (outbound_group_session == NULL) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_group_sessions_with_new_device()");
         ret = -1;
     } else {
-        if (outbound_group_session->session_owner == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        } else {
+        load_identity_key_from_cash(&identity_key, outbound_group_session->session_owner);
+
+        if (identity_key == NULL) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
             if (account == NULL) {
                 ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_group_sessions_with_new_device()");
@@ -1536,9 +1599,19 @@ int renew_group_sessions_with_new_device(
             } else {
                 identity_public_key = get_identity_public_key_ds_bytes_from_account(account);
                 if (identity_public_key == NULL) {
-                    ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_outbound_group_session_welcome_and_add()");
+                    ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_group_sessions_with_new_device()");
                     ret = -1;
+                } else {
+                    auth = strdup(account->auth);
                 }
+            }
+        } else {
+            get_skissm_plugin()->db_handler.load_auth(outbound_group_session->session_owner, &auth);
+            if (auth == NULL) {
+                ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "renew_group_sessions_with_new_device()");
+                ret = -1;
+            } else {
+                identity_public_key = &(identity_key->sign_key_pair->public_key);
             }
         }
         if (outbound_group_session->version == NULL) {
@@ -1684,7 +1757,7 @@ int renew_group_sessions_with_new_device(
             /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
             Skissm__InviteResponse *response = get_pre_key_bundle_internal(
                 outbound_group_session->session_owner,
-                account->auth,
+                auth,
                 cur_user_id, cur_user_domain,
                 cur_user_device_id, false,
                 group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
@@ -1778,7 +1851,14 @@ int renew_group_sessions_with_new_device(
         }
 
         // release
-        skissm__account__free_unpacked(account, NULL);
+        if (account != NULL) {
+            skissm__account__free_unpacked(account, NULL);
+            account = NULL;
+        }
+        if (auth != NULL) {
+            free(auth);
+            auth = NULL;
+        }
         free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
     }
 
