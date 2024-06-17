@@ -20,7 +20,7 @@
 
 #include <string.h>
 
-#include "skissm/account_cash.h"
+#include "skissm/account_cache.h"
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/group_session.h"
@@ -36,7 +36,7 @@ Skissm__CreateGroupRequest *produce_create_group_request(
     Skissm__Account *account = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    load_e2ee_pack_id_from_cash(&e2ee_pack_id, sender_address);
+    load_e2ee_pack_id_from_cache(&e2ee_pack_id, sender_address);
 
     if (e2ee_pack_id == 0) {
         get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
@@ -219,7 +219,7 @@ Skissm__AddGroupMembersRequest *produce_add_group_members_request(
     Skissm__Account *account = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    load_e2ee_pack_id_from_cash(&e2ee_pack_id, outbound_group_session->session_owner);
+    load_e2ee_pack_id_from_cache(&e2ee_pack_id, outbound_group_session->session_owner);
 
     if (e2ee_pack_id == 0) {
         get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
@@ -365,7 +365,7 @@ Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
     Skissm__Account *account = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    load_e2ee_pack_id_from_cash(&e2ee_pack_id, outbound_group_session->session_owner);
+    load_e2ee_pack_id_from_cache(&e2ee_pack_id, outbound_group_session->session_owner);
 
     if (e2ee_pack_id == 0) {
         get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
@@ -558,7 +558,7 @@ Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
     Skissm__Account *account = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    load_e2ee_pack_id_from_cash(&e2ee_pack_id, outbound_group_session->session_owner);
+    load_e2ee_pack_id_from_cache(&e2ee_pack_id, outbound_group_session->session_owner);
 
     if (e2ee_pack_id == 0) {
         get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
@@ -851,7 +851,7 @@ Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
     Skissm__Account *account = NULL;
     Skissm__IdentityKey *identity_key = NULL;
 
-    load_identity_key_from_cash(&identity_key, outbound_group_session->sender);
+    load_identity_key_from_cache(&identity_key, outbound_group_session->sender);
 
     if (identity_key == NULL) {
         get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->sender, &account);

@@ -25,7 +25,7 @@
 
 #include "skissm/mem_util.h"
 #include "skissm/account.h"
-#include "skissm/account_cash.h"
+#include "skissm/account_cache.h"
 #include "skissm/account_manager.h"
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/group_session_manager.h"
@@ -415,7 +415,7 @@ Skissm__CreateGroupResponse *create_group(
     char *auth = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    load_e2ee_pack_id_from_cash(&e2ee_pack_id, sender_address);
+    load_e2ee_pack_id_from_cache(&e2ee_pack_id, sender_address);
 
     if (e2ee_pack_id == 0) {
         get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);

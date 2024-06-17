@@ -20,7 +20,7 @@
 
 #include <string.h>
 
-#include "skissm/account_cash.h"
+#include "skissm/account_cache.h"
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/e2ee_client_internal.h"
@@ -339,7 +339,7 @@ int new_outbound_group_session_by_sender(
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_by_sender()");
         ret = -1;
     } else {
-        load_identity_key_from_cash(&identity_key, user_address);
+        load_identity_key_from_cache(&identity_key, user_address);
 
         if (identity_key == NULL) {
             get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
@@ -519,7 +519,7 @@ int new_outbound_group_session_by_receiver(
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_by_receiver()");
         ret = -1;
     } else {
-        load_identity_key_from_cash(&identity_key, user_address);
+        load_identity_key_from_cache(&identity_key, user_address);
 
         if (identity_key == NULL) {
             get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
@@ -609,7 +609,7 @@ int new_outbound_group_session_invited(
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_invited()");
         ret = -1;
     } else {
-        load_identity_key_from_cash(&identity_key, user_address);
+        load_identity_key_from_cache(&identity_key, user_address);
 
         if (identity_key == NULL) {
             get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
@@ -1281,7 +1281,7 @@ int renew_outbound_group_session_by_welcome_and_add(
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_outbound_group_session_by_welcome_and_add()");
         ret = -1;
     } else {
-        load_identity_key_from_cash(&identity_key, outbound_group_session->session_owner);
+        load_identity_key_from_cache(&identity_key, outbound_group_session->session_owner);
 
         if (identity_key == NULL) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
@@ -1589,7 +1589,7 @@ int renew_group_sessions_with_new_device(
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_group_sessions_with_new_device()");
         ret = -1;
     } else {
-        load_identity_key_from_cash(&identity_key, outbound_group_session->session_owner);
+        load_identity_key_from_cache(&identity_key, outbound_group_session->session_owner);
 
         if (identity_key == NULL) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);

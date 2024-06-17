@@ -22,7 +22,7 @@
 #include <string.h>
 
 #include "skissm/account.h"
-#include "skissm/account_cash.h"
+#include "skissm/account_cache.h"
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/group_session.h"
@@ -360,7 +360,7 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     Skissm__Account *account = NULL;
     Skissm__IdentityKey *identity_key = NULL;
 
-    load_identity_key_from_cash(&identity_key, outbound_session->our_address);
+    load_identity_key_from_cache(&identity_key, outbound_session->our_address);
 
     if (identity_key == NULL) {
         get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->our_address, &account);

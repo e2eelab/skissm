@@ -17,29 +17,29 @@
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "skissm/account_cash.h"
+#include "skissm/account_cache.h"
 
 #include <string.h>
 
 #include "skissm/mem_util.h"
 
-account_casher *account_casher_list = NULL;
+account_cacheer *account_cacheer_list = NULL;
 
-void store_account_into_cash(Skissm__Account *account) {
-    if (account_casher_list == NULL) {
-        account_casher_list = (account_casher *)malloc(sizeof(account_casher));
-        account_casher_list->version = strdup(account->version);
-        account_casher_list->e2ee_pack_id = account->e2ee_pack_id;
-        copy_address_from_address(&(account_casher_list->address), account->address);
-        copy_ik_from_ik(&(account_casher_list->identity_key), account->identity_key);
-        copy_spk_from_spk(&(account_casher_list->signed_pre_key), account->signed_pre_key);
-        account_casher_list->next = NULL;
+void store_account_into_cache(Skissm__Account *account) {
+    if (account_cacheer_list == NULL) {
+        account_cacheer_list = (account_cacheer *)malloc(sizeof(account_cacheer));
+        account_cacheer_list->version = strdup(account->version);
+        account_cacheer_list->e2ee_pack_id = account->e2ee_pack_id;
+        copy_address_from_address(&(account_cacheer_list->address), account->address);
+        copy_ik_from_ik(&(account_cacheer_list->identity_key), account->identity_key);
+        copy_spk_from_spk(&(account_cacheer_list->signed_pre_key), account->signed_pre_key);
+        account_cacheer_list->next = NULL;
     } else {
-        account_casher *cur = account_casher_list;
+        account_cacheer *cur = account_cacheer_list;
         while (cur->next != NULL) {
             cur = cur->next;
         }
-        cur->next = (account_casher *)malloc(sizeof(account_casher));
+        cur->next = (account_cacheer *)malloc(sizeof(account_cacheer));
         cur->next->version = strdup(account->version);
         cur->next->e2ee_pack_id = account->e2ee_pack_id;
         copy_address_from_address(&(cur->next->address), account->address);
@@ -49,8 +49,8 @@ void store_account_into_cash(Skissm__Account *account) {
     }
 }
 
-void load_version_from_cash(char **version_out, Skissm__E2eeAddress *address) {
-    account_casher *cur = account_casher_list;
+void load_version_from_cache(char **version_out, Skissm__E2eeAddress *address) {
+    account_cacheer *cur = account_cacheer_list;
     while (cur != NULL) {
         if (compare_address(cur->address, address)) {
             *version_out = strdup(cur->version);
@@ -61,8 +61,8 @@ void load_version_from_cash(char **version_out, Skissm__E2eeAddress *address) {
     *version_out = NULL;
 }
 
-void load_e2ee_pack_id_from_cash(uint32_t *e2ee_pack_id_out, Skissm__E2eeAddress *address) {
-    account_casher *cur = account_casher_list;
+void load_e2ee_pack_id_from_cache(uint32_t *e2ee_pack_id_out, Skissm__E2eeAddress *address) {
+    account_cacheer *cur = account_cacheer_list;
     while (cur != NULL) {
         if (compare_address(cur->address, address)) {
             *e2ee_pack_id_out = cur->e2ee_pack_id;
@@ -73,8 +73,8 @@ void load_e2ee_pack_id_from_cash(uint32_t *e2ee_pack_id_out, Skissm__E2eeAddress
     *e2ee_pack_id_out = 0;
 }
 
-void load_identity_key_from_cash(Skissm__IdentityKey **identity_key_out, Skissm__E2eeAddress *address) {
-    account_casher *cur = account_casher_list;
+void load_identity_key_from_cache(Skissm__IdentityKey **identity_key_out, Skissm__E2eeAddress *address) {
+    account_cacheer *cur = account_cacheer_list;
     while (cur != NULL) {
         if (compare_address(cur->address, address)) {
             copy_ik_from_ik(identity_key_out, cur->identity_key);
@@ -85,8 +85,8 @@ void load_identity_key_from_cash(Skissm__IdentityKey **identity_key_out, Skissm_
     *identity_key_out = NULL;
 }
 
-void load_signed_pre_key_from_cash(Skissm__SignedPreKey **signed_pre_key_out, Skissm__E2eeAddress *address) {
-    account_casher *cur = account_casher_list;
+void load_signed_pre_key_from_cache(Skissm__SignedPreKey **signed_pre_key_out, Skissm__E2eeAddress *address) {
+    account_cacheer *cur = account_cacheer_list;
     while (cur != NULL) {
         if (compare_address(cur->address, address)) {
             copy_spk_from_spk(signed_pre_key_out, cur->signed_pre_key);
@@ -97,33 +97,33 @@ void load_signed_pre_key_from_cash(Skissm__SignedPreKey **signed_pre_key_out, Sk
     *signed_pre_key_out = NULL;
 }
 
-void free_account_casher(account_casher *casher) {
-    if (casher->version != NULL) {
-        free(casher->version);
-        casher->version = NULL;
+void free_account_cacheer(account_cacheer *cacheer) {
+    if (cacheer->version != NULL) {
+        free(cacheer->version);
+        cacheer->version = NULL;
     }
-    casher->e2ee_pack_id = 0;
-    if (casher->address != NULL) {
-        skissm__e2ee_address__free_unpacked(casher->address, NULL);
-        casher->address = NULL;
+    cacheer->e2ee_pack_id = 0;
+    if (cacheer->address != NULL) {
+        skissm__e2ee_address__free_unpacked(cacheer->address, NULL);
+        cacheer->address = NULL;
     }
-    if (casher->identity_key != NULL) {
-        skissm__identity_key__free_unpacked(casher->identity_key, NULL);
-        casher->identity_key = NULL;
+    if (cacheer->identity_key != NULL) {
+        skissm__identity_key__free_unpacked(cacheer->identity_key, NULL);
+        cacheer->identity_key = NULL;
     }
-    if (casher->signed_pre_key != NULL) {
-        skissm__signed_pre_key__free_unpacked(casher->signed_pre_key, NULL);
-        casher->signed_pre_key = NULL;
+    if (cacheer->signed_pre_key != NULL) {
+        skissm__signed_pre_key__free_unpacked(cacheer->signed_pre_key, NULL);
+        cacheer->signed_pre_key = NULL;
     }
-    casher = NULL;
+    cacheer = NULL;
 }
 
-void free_account_casher_list() {
-    account_casher *cur = account_casher_list;
-    account_casher *temp;
+void free_account_cacheer_list() {
+    account_cacheer *cur = account_cacheer_list;
+    account_cacheer *temp;
     while (cur != NULL) {
         temp = cur;
         cur = cur->next;
-        free_account_casher(temp);
+        free_account_cacheer(temp);
     }
 }

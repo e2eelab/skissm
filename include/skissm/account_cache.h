@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ACCOUNT_CASH_H_
-#define ACCOUNT_CASH_H_
+#ifndef ACCOUNT_CACHE_H_
+#define ACCOUNT_CACHE_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -29,29 +29,29 @@ extern "C" {
 
 #include "skissm/skissm.h"
 
-typedef struct account_casher {
+typedef struct account_cacheer {
     char *version;
     uint32_t e2ee_pack_id;
     Skissm__E2eeAddress *address;
     Skissm__IdentityKey *identity_key;
     Skissm__SignedPreKey *signed_pre_key;
-    struct account_casher *next;
-} account_casher;
+    struct account_cacheer *next;
+} account_cacheer;
 
-void store_account_into_cash(Skissm__Account *account);
+void store_account_into_cache(Skissm__Account *account);
 
-void load_version_from_cash(char **version_out, Skissm__E2eeAddress *address);
+void load_version_from_cache(char **version_out, Skissm__E2eeAddress *address);
 
-void load_e2ee_pack_id_from_cash(uint32_t *e2ee_pack_id_out, Skissm__E2eeAddress *address);
+void load_e2ee_pack_id_from_cache(uint32_t *e2ee_pack_id_out, Skissm__E2eeAddress *address);
 
-void load_identity_key_from_cash(Skissm__IdentityKey **identity_key_out, Skissm__E2eeAddress *address);
+void load_identity_key_from_cache(Skissm__IdentityKey **identity_key_out, Skissm__E2eeAddress *address);
 
-void load_signed_pre_key_from_cash(Skissm__SignedPreKey **signed_pre_key_out, Skissm__E2eeAddress *address);
+void load_signed_pre_key_from_cache(Skissm__SignedPreKey **signed_pre_key_out, Skissm__E2eeAddress *address);
 
-void free_account_casher_list();
+void free_account_cacheer_list();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* ACCOUNT_CASH_H_ */
+#endif /* ACCOUNT_CACHE_H_ */
