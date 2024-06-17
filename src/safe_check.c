@@ -66,11 +66,11 @@ bool safe_cipher_suite(const cipher_suite_t *cipher_suite) {
                 return false;
             if (cipher_suite->symmetric_encryption_suite->get_crypto_param == NULL)
                 return false;
-            if (cipher_suite->symmetric_encryption_suite->hash == NULL)
+            if (cipher_suite->hash_suite->hash == NULL)
                 return false;
-            if (cipher_suite->symmetric_encryption_suite->hkdf == NULL)
+            if (cipher_suite->hash_suite->hkdf == NULL)
                 return false;
-            if (cipher_suite->symmetric_encryption_suite->hmac == NULL)
+            if (cipher_suite->hash_suite->hmac == NULL)
                 return false;
         } else {
             return false;
@@ -260,7 +260,7 @@ bool safe_unregistered_account(const Skissm__Account *src) {
         return false;
     }
     // the address, password and auth should not be available in an unregistered account
-    if (nonempty_string(src->address)) {
+    if (safe_address(src->address)) {
         return false;
     }
     if (nonempty_string(src->password)) {

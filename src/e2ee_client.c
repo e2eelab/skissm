@@ -49,7 +49,7 @@ int register_user(
     Skissm__RegisterUserResponse *response = NULL;
 
     if (!safe_e2ee_pack_id(e2ee_pack_id)) {
-        ssm_notify_log(NULL, BAD_E2EE_PACK_ID, "register_user(): no e2ee_pack_id");
+        ssm_notify_log(NULL, BAD_E2EE_PACK, "register_user(): no e2ee_pack_id");
         ret = -1;
     }
     if (!nonempty_string(user_name)) {
