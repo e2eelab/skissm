@@ -313,12 +313,12 @@ int pqc_new_outbound_session_v2(
         if (x3dh_epoch == 3)
             memcpy(hash_input + asym_pub_key_len + asym_pub_key_len + asym_pub_key_len, their_opk->public_key.data, asym_pub_key_len);
 
-        int shared_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+        int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t derived_secrets[2 * shared_key_len];
-        int hash_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().hash_len;
+        int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t salt[hash_len];
         memset(salt, 0, hash_len);
-        cipher_suite->symmetric_encryption_suite->hkdf(
+        cipher_suite->hash_suite->hkdf(
             hash_input, hash_input_len,
             salt, sizeof(salt),
             (uint8_t *)FINGERPRINT_SEED, sizeof(FINGERPRINT_SEED) - 1,

@@ -1702,14 +1702,15 @@ char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len) {
 int crypto_hash_by_e2ee_pack_id(
         uint32_t e2ee_pack_id_raw,
         const uint8_t *msg, size_t msg_len,
-        uint8_t **hash_out, size_t *hash_out_len) {
+        uint8_t **hash_out, size_t *hash_out_len
+) {
     e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
     hash_suite_t *hash_suite = get_hash_suite(e2ee_pack_id.hash);
     if (hash_suite == NULL) {
         ssm_notify_log(
-                NULL,
-                BAD_E2EE_PACK,
-                "crypto_hash_by_e2ee_pack_id() hash_suite not found: %d.", e2ee_pack_id_raw
+            NULL,
+            BAD_E2EE_PACK,
+            "crypto_hash_by_e2ee_pack_id() hash_suite not found: %d.", e2ee_pack_id_raw
         );
         return -1;
     }
@@ -1724,14 +1725,15 @@ int crypto_hash_by_e2ee_pack_id(
 int crypto_ds_key_gen_by_e2ee_pack_id(
         uint32_t e2ee_pack_id_raw,
         ProtobufCBinaryData *pub_key,
-        ProtobufCBinaryData *priv_key) {
+        ProtobufCBinaryData *priv_key
+) {
     e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
     digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
     if (digital_signature_suite == NULL) {
         ssm_notify_log(
-                NULL,
-                BAD_E2EE_PACK,
-                "crypto_ds_key_gen_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
+            NULL,
+            BAD_E2EE_PACK,
+            "crypto_ds_key_gen_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
         );
         return -1;
     }
@@ -1739,9 +1741,9 @@ int crypto_ds_key_gen_by_e2ee_pack_id(
     int result = digital_signature_suite->sign_key_gen(pub_key, priv_key);
     if (result < 0) {
         ssm_notify_log(
-                NULL,
-                BAD_SIGN_KEY,
-                "crypto_ds_key_gen_by_e2ee_pack_id() gen key failed."
+            NULL,
+            BAD_SIGN_KEY,
+            "crypto_ds_key_gen_by_e2ee_pack_id() gen key failed."
         );
         free_protobuf(pub_key);
         free_protobuf(priv_key);
@@ -1754,22 +1756,23 @@ int crypto_ds_sign_by_e2ee_pack_id(
         uint32_t e2ee_pack_id_raw,
         uint8_t **signature_out, size_t *signature_out_len,
         const uint8_t *msg, size_t msg_len,
-        const uint8_t *private_key, size_t private_key_len) {
+        const uint8_t *private_key, size_t private_key_len
+) {
     e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
     digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
     if (digital_signature_suite == NULL) {
         ssm_notify_log(
-                NULL,
-                BAD_E2EE_PACK,
-                "crypto_ds_sign_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
+            NULL,
+            BAD_E2EE_PACK,
+            "crypto_ds_sign_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
         );
         return -1;
     }
     if (private_key == NULL || private_key_len != digital_signature_suite->get_crypto_param().sign_priv_key_len) {
         ssm_notify_log(
-                NULL,
-                BAD_SIGN_KEY,
-                "crypto_ds_sign_by_e2ee_pack_id() private_key wrong."
+            NULL,
+            BAD_SIGN_KEY,
+            "crypto_ds_sign_by_e2ee_pack_id() private_key wrong."
         );
         return -1;
     }
@@ -1779,9 +1782,9 @@ int crypto_ds_sign_by_e2ee_pack_id(
     int result = digital_signature_suite->sign(*signature_out, signature_out_len, msg, msg_len, private_key);
     if (result < 0) {
         ssm_notify_log(
-                NULL,
-                BAD_SIGNATURE,
-                "crypto_ds_sign_by_e2ee_pack_id() sign failed."
+            NULL,
+            BAD_SIGNATURE,
+            "crypto_ds_sign_by_e2ee_pack_id() sign failed."
         );
         free_mem((void **)signature_out, sig_len);
     }
@@ -1793,22 +1796,23 @@ int crypto_ds_verify_by_e2ee_pack_id(
         uint32_t e2ee_pack_id_raw,
         const uint8_t *signature_in, size_t signature_in_len,
         const uint8_t *msg, size_t msg_len,
-        const uint8_t *public_key, size_t public_key_len) {
+        const uint8_t *public_key, size_t public_key_len
+) {
     e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
     digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
     if (digital_signature_suite == NULL) {
         ssm_notify_log(
-                NULL,
-                BAD_E2EE_PACK,
-                "crypto_ds_verify_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
+            NULL,
+            BAD_E2EE_PACK,
+            "crypto_ds_verify_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
         );
         return -1;
     }
     if (public_key == NULL || public_key_len != digital_signature_suite->get_crypto_param().sign_pub_key_len) {
         ssm_notify_log(
-                NULL,
-                BAD_SIGN_KEY,
-                "crypto_ds_sign_by_e2ee_pack_id() public_key wrong."
+            NULL,
+            BAD_SIGN_KEY,
+            "crypto_ds_sign_by_e2ee_pack_id() public_key wrong."
         );
         return -1;
     }
@@ -1816,9 +1820,9 @@ int crypto_ds_verify_by_e2ee_pack_id(
     int result = digital_signature_suite->verify(signature_in, signature_in_len, msg, msg_len, public_key);
     if (result < 0) {
         ssm_notify_log(
-                NULL,
-                BAD_SIGNATURE,
-                "crypto_ds_verify_by_e2ee_pack_id() verify failed."
+            NULL,
+            BAD_SIGNATURE,
+            "crypto_ds_verify_by_e2ee_pack_id() verify failed."
         );
     }
 
