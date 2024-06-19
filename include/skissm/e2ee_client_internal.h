@@ -115,12 +115,14 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
 
 /**
  * @brief Send add_group_member_device request to server.
+ * @param response_out
  * @param sender_address
  * @param group_address
  * @param new_device_address
- * @return Skissm__AddGroupMemberDeviceResponse *
+ * @return 0 if success
  */
-Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
+int add_group_member_device_internal(
+    Skissm__AddGroupMemberDeviceResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     Skissm__E2eeAddress *new_device_address

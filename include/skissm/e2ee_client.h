@@ -104,26 +104,32 @@ void send_sync_invite_msg(
 
 /**
  * @brief Create a group.
+ * @param response_out
  * @param sender_address
  * @param group_name
  * @param group_members
  * @param group_members_num
- * @return Skissm__CreateGroupResponse *
+ * @return 0 if success
  */
-Skissm__CreateGroupResponse *create_group(
-    Skissm__E2eeAddress *sender_address, const char *group_name,
-    Skissm__GroupMember **group_members, size_t group_members_num
+int create_group(
+    Skissm__CreateGroupResponse **response_out,
+    Skissm__E2eeAddress *sender_address,
+    const char *group_name,
+    Skissm__GroupMember **group_members,
+    size_t group_members_num
 );
 
 /**
  * @brief Add group members.
+ * @param response_out
  * @param sender_address
  * @param group_address
  * @param adding_members
  * @param adding_members_num
- * @return Skissm__AddGroupMembersResponse *
+ * @return 0 if success
  */
-Skissm__AddGroupMembersResponse *add_group_members(
+int add_group_members(
+    Skissm__AddGroupMembersResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **adding_members,
@@ -132,13 +138,15 @@ Skissm__AddGroupMembersResponse *add_group_members(
 
 /**
  * @brief Remove group members.
+ * @param response_out
  * @param sender_address
  * @param group_address
  * @param removing_members
  * @param removing_members_num
- * @return Skissm__RemoveGroupMembersResponse *
+ * @return 0 if success
  */
-Skissm__RemoveGroupMembersResponse *remove_group_members(
+int remove_group_members(
+    Skissm__RemoveGroupMembersResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **removing_members,
@@ -147,32 +155,39 @@ Skissm__RemoveGroupMembersResponse *remove_group_members(
 
 /**
  * @brief Leave group.
+ * @param response_out
  * @param sender_address
  * @param group_address
- * @return Skissm__LeaveGroupResponse *
+ * @return 0 if success
  */
-Skissm__LeaveGroupResponse *leave_group(
+int leave_group(
+    Skissm__LeaveGroupResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address
 );
 
 /**
  * @brief Send group msg.
+ * @param response_out
  * @param sender_address
  * @param group_address
  * @param notif_level,
  * @param plaintext_data
  * @param plaintext_data_len
- * @return Skissm__SendGroupMsgResponse *
+ * @return 0 if success
  */
-Skissm__SendGroupMsgResponse *send_group_msg(
-    Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address,
+int send_group_msg(
+    Skissm__SendGroupMsgResponse **response_out,
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *group_address,
     uint32_t notif_level,
-    const uint8_t *plaintext_data, size_t plaintext_data_len
+    const uint8_t *plaintext_data,
+    size_t plaintext_data_len
 );
 
 /**
  * @brief Send group msg with filter.
+ * @param response_out
  * @param sender_address
  * @param group_address
  * @param notif_level,
@@ -182,9 +197,10 @@ Skissm__SendGroupMsgResponse *send_group_msg(
  * @param allow_list_len optional allow list len with type size_t.
  * @param deny_list optional deny list with type Skissm__E2eeAddress **.
  * @param deny_list_len optional deny list len with type size_t.
- * @return Skissm__SendGroupMsgResponse *
+ * @return 0 if success
  */
-Skissm__SendGroupMsgResponse *send_group_msg_with_filter(
+int send_group_msg_with_filter(
+    Skissm__SendGroupMsgResponse **response_out,
     Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address,
     uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len,

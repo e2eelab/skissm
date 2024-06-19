@@ -30,16 +30,18 @@ extern "C" {
 
 /**
  * @brief Create a CreateGroupRequest message to be sent to server.
+ * @param request_out
  * @param sender_address
  * @param group_name
  * @param group_members
  * @param group_members_num
- * @return Skissm__CreateGroupRequest*
+ * @return 0 if success
  */
-Skissm__CreateGroupRequest *produce_create_group_request(
+int produce_create_group_request(
+    Skissm__CreateGroupRequest **request_out,
     Skissm__E2eeAddress *sender_address,
     const char *group_name,
-    Skissm__GroupMember **group_members,
+    Skissm__GroupMember **group_member_list,
     size_t group_members_num
 );
 
@@ -82,14 +84,16 @@ bool consume_get_group_response(Skissm__GetGroupResponse *response);
 
 /**
  * @brief Create a AddGroupMembersRequest message to be sent to server.
+ * @param request_out
  * @param outbound_group_session
  * @param adding_members
  * @param adding_members_num
- * @return Skissm__AddGroupMembersRequest*
+ * @return 0 if success
  */
-Skissm__AddGroupMembersRequest *produce_add_group_members_request(
+int produce_add_group_members_request(
+    Skissm__AddGroupMembersRequest **request_out,
     Skissm__GroupSession *outbound_group_session,
-    Skissm__GroupMember **adding_members,
+    Skissm__GroupMember **adding_member_list,
     size_t adding_members_num
 );
 
@@ -121,11 +125,13 @@ bool consume_add_group_members_msg(
 
 /**
  * @brief Create a AddGroupMemberDeviceRequest message to be sent to server.
+ * @param request_out
  * @param outbound_group_session
  * @param new_device_address
- * @return Skissm__AddGroupMemberDeviceRequest*
+ * @return 0 if success
  */
-Skissm__AddGroupMemberDeviceRequest *produce_add_group_member_device_request(
+int produce_add_group_member_device_request(
+    Skissm__AddGroupMemberDeviceRequest **request_out,
     Skissm__GroupSession *outbound_group_session,
     Skissm__E2eeAddress *new_device_address
 );
@@ -154,12 +160,14 @@ bool consume_add_group_member_device_msg(
 
 /**
  * @brief Create a RemoveGroupMembersRequest message to be sent to server.
+ * @param request_out
  * @param outbound_group_session
  * @param removing_group_members
  * @param removing_group_members_num
- * @return Skissm__RemoveGroupMembersRequest*
+ * @return 0 if success
  */
-Skissm__RemoveGroupMembersRequest *produce_remove_group_members_request(
+int produce_remove_group_members_request(
+    Skissm__RemoveGroupMembersRequest **request_out,
     Skissm__GroupSession *outbound_group_session,
     Skissm__GroupMember **removing_group_members,
     size_t removing_group_members_num
@@ -193,11 +201,13 @@ bool consume_remove_group_members_msg(
 
 /**
  * @brief Create a Skissm__LeaveGroupRequest message to be sent to server.
+ * @param request_out
  * @param user_address
  * @param group_address
- * @return Skissm__LeaveGroupRequest*
+ * @return 0 if success
  */
-Skissm__LeaveGroupRequest *produce_leave_group_request(
+int produce_leave_group_request(
+    Skissm__LeaveGroupRequest **request_out,
     Skissm__E2eeAddress *user_address,
     Skissm__E2eeAddress *group_address
 );
@@ -226,6 +236,7 @@ bool consume_leave_group_msg(
 
 /**
  * @brief Create a SendGroupMsgRequest message to be sent to server.
+ * @param request_out
  * @param group_session
  * @param notif_level
  * @param plaintext_data
@@ -234,16 +245,17 @@ bool consume_leave_group_msg(
  * @param allow_list_len
  * @param denny_list
  * @param denny_list_len
- * @return Skissm__SendGroupMsgRequest*
+ * @return 0 if success
  */
-Skissm__SendGroupMsgRequest *produce_send_group_msg_request(
-    Skissm__GroupSession *group_session,
+int produce_send_group_msg_request(
+    Skissm__SendGroupMsgRequest **request_out,
+    Skissm__GroupSession *outbound_group_session,
     uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     Skissm__E2eeAddress **allow_list,
     size_t allow_list_len,
-    Skissm__E2eeAddress **denny_list,
-    size_t denny_list_len
+    Skissm__E2eeAddress **deny_list,
+    size_t deny_list_len
 );
 
 /**

@@ -112,6 +112,8 @@ static char *mock_auth_code[200] = {
     "000191", "000192", "000193", "000194", "000195", "000196", "000197", "000198", "000199", "000200"
 };
 
+static int ret;
+
 static Skissm__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
@@ -213,6 +215,8 @@ static skissm_event_handler_t test_event_handler = {
 };
 
 static void test_begin() {
+    ret = 0;
+
     int i;
     for (i = 0; i < account_data_max; i++) {
         account_data[i] = NULL;
@@ -229,6 +233,8 @@ static void test_begin() {
 
 static void test_end() {
     stop_mock_server_sending();
+
+    ret = 0;
 
     int i;
     for (i = 0; i < account_data_max; i++) {
@@ -259,7 +265,7 @@ static void mock_alice_account(const char *user_name) {
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    ret = register_user(
         &response,
         e2ee_pack_id,
         user_name,
@@ -268,7 +274,7 @@ static void mock_alice_account(const char *user_name) {
         authenticator,
         auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -288,7 +294,7 @@ static void mock_bob_account(const char *user_name) {
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    ret = register_user(
         &response,
         e2ee_pack_id,
         user_name,
@@ -297,7 +303,7 @@ static void mock_bob_account(const char *user_name) {
         authenticator,
         auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -317,7 +323,7 @@ static void mock_claire_account(const char *user_name) {
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    ret = register_user(
         &response,
         e2ee_pack_id,
         user_name,
@@ -326,7 +332,7 @@ static void mock_claire_account(const char *user_name) {
         authenticator,
         auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -346,7 +352,7 @@ static void mock_alice_pqc_account(const char *user_name) {
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    ret = register_user(
         &response,
         e2ee_pack_id,
         user_name,
@@ -355,7 +361,7 @@ static void mock_alice_pqc_account(const char *user_name) {
         authenticator,
         auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -375,7 +381,7 @@ static void mock_bob_pqc_account(const char *user_name) {
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    ret = register_user(
         &response,
         e2ee_pack_id,
         user_name,
@@ -384,7 +390,7 @@ static void mock_bob_pqc_account(const char *user_name) {
         authenticator,
         auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -404,7 +410,7 @@ static void mock_claire_pqc_account(const char *user_name) {
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    ret = register_user(
         &response,
         e2ee_pack_id,
         user_name,
@@ -413,7 +419,7 @@ static void mock_claire_pqc_account(const char *user_name) {
         authenticator,
         auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -431,7 +437,7 @@ static void mock_user_pqc_account(const char *user_name, const char *authenticat
     );
     char *device_id = generate_uuid_str();
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    ret = register_user(
         &response,
         e2ee_pack_id,
         user_name,
@@ -440,7 +446,7 @@ static void mock_user_pqc_account(const char *user_name, const char *authenticat
         authenticator,
         auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -448,17 +454,26 @@ static void mock_user_pqc_account(const char *user_name, const char *authenticat
     skissm__register_user_response__free_unpacked(response, NULL);
 }
 
-static void test_encryption(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext_data, size_t plaintext_data_len) {
-    Skissm__SendGroupMsgResponse *response = send_group_msg(
+static void test_encryption(
+    Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address,
+    uint8_t *plaintext_data, size_t plaintext_data_len
+) {
+    Skissm__SendGroupMsgResponse *response = NULL;
+    ret = send_group_msg(
+        &response,
         sender_address,
         group_address,
         SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
-        plaintext_data, plaintext_data_len);
-    
-    assert(response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
+        plaintext_data, plaintext_data_len
+    );
+
+    assert(ret == 0);
     
     // release
-    skissm__send_group_msg_response__free_unpacked(response, NULL);
+    if (response != NULL) {
+        skissm__send_group_msg_response__free_unpacked(response, NULL);
+        response = NULL;
+    }
 }
 
 static void test_create_group() {
@@ -472,7 +487,9 @@ static void test_create_group() {
     mock_bob_account("bob");
 
     // Alice invites Bob to create a group
-    Skissm__InviteResponse *response = invite(account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain);
+    Skissm__InviteResponse *response = invite(
+        account_data[0]->address, account_data[1]->address->user->user_id, account_data[1]->address->domain
+    );
 
     // the first group member is Alice
     Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
@@ -488,9 +505,10 @@ static void test_create_group() {
     group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response, account_data[0]->address, "Group name", group_members, 2);
 
-    assert(create_group_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
+    assert(ret == 0);
     Skissm__E2eeAddress *group_address = create_group_response->group_address;
 
     sleep(2);
@@ -540,7 +558,8 @@ static void test_add_group_members() {
     group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response, account_data[0]->address, "Group name", group_members, 2);
 
     sleep(2);
     // Alice invites Claire to join the group
@@ -554,8 +573,9 @@ static void test_add_group_members() {
     new_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     size_t new_group_member_num = 1;
     // add the new group member to the group
-    Skissm__AddGroupMembersResponse *add_group_members_response = add_group_members(account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
-    assert(add_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
+    Skissm__AddGroupMembersResponse *add_group_members_response = NULL;
+    ret = add_group_members(&add_group_members_response,  account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
+    assert(ret == 0);
 
     sleep(4);
     // Alice sends a message to the group
@@ -615,7 +635,8 @@ static void test_remove_group_members() {
     group_members[2]->domain = strdup(account_data[2]->address->domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  account_data[0]->address, "Group name", group_members, 3);
 
     sleep(2);
     // the removing group member is Claire
@@ -628,8 +649,9 @@ static void test_remove_group_members() {
     size_t removing_group_member_num = 1;
 
     // Alice removes Claire out of the group
-    Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(account_data[0]->address, group.group_address, removing_group_members, removing_group_member_num);
-    assert(remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
+    Skissm__RemoveGroupMembersResponse *remove_group_members_response = NULL;
+    ret = remove_group_members(&remove_group_members_response,  account_data[0]->address, group.group_address, removing_group_members, removing_group_member_num);
+    assert(ret == 0);
 
     sleep(4);
     // Alice sends a message to the group
@@ -683,7 +705,8 @@ static void test_create_add_remove() {
     group_members[1]->domain = strdup(account_data[1]->address->domain);
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 2);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  account_data[0]->address, "Group name", group_members, 2);
 
     sleep(2);
     // Alice sends a message to the group
@@ -703,7 +726,8 @@ static void test_create_add_remove() {
     new_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     size_t new_group_member_num = 1;
     // add the new group member to the group
-    Skissm__AddGroupMembersResponse *add_group_members_response = add_group_members(account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
+    Skissm__AddGroupMembersResponse *add_group_members_response = NULL;
+    ret = add_group_members(&add_group_members_response,  account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
 
     sleep(4);
     // Alice sends a message to the group
@@ -713,7 +737,8 @@ static void test_create_add_remove() {
 
     sleep(1);
     // Alice removes Claire out of the group
-    Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
+    Skissm__RemoveGroupMembersResponse *remove_group_members_response = NULL;
+    ret = remove_group_members(&remove_group_members_response,  account_data[0]->address, group.group_address, new_group_members, new_group_member_num);
 
     sleep(2);
     // Alice sends a message to the group
@@ -777,7 +802,8 @@ static void test_interaction() {
     group_members[2]->domain = strdup(account_data[2]->address->domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  account_data[0]->address, "Group name", group_members, 3);
 
     sleep(2);
     // Alice sends a message to the group
@@ -849,7 +875,8 @@ static void test_continual() {
     group_members[2]->domain = strdup(account_data[2]->address->domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 3);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  account_data[0]->address, "Group name", group_members, 3);
 
     sleep(2);
 
@@ -940,7 +967,8 @@ static void test_multiple_devices() {
     group_members[2]->domain = strdup(claire_domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address_1, "Group name", group_members, 3);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  alice_address_1, "Group name", group_members, 3);
 
     sleep(2);
     // Alice sends a message to the group via the first device
@@ -1023,9 +1051,10 @@ static void test_pqc_create_group() {
     group_members[3]->domain = strdup(david_domain);
     group_members[3]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 4);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  alice_address, "Group name", group_members, 4);
 
-    assert(create_group_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
+    assert(ret == 0);
     Skissm__E2eeAddress *group_address = create_group_response->group_address;
 
     sleep(5);
@@ -1105,7 +1134,8 @@ static void test_pqc_add_group_members() {
     group_members[2]->domain = strdup(claire_domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 3);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  alice_address, "Group name", group_members, 3);
     Skissm__E2eeAddress *group_address = create_group_response->group_address;
 
     sleep(4);
@@ -1118,8 +1148,9 @@ static void test_pqc_add_group_members() {
     new_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     size_t new_group_member_num = 1;
     // add the new group member to the group
-    Skissm__AddGroupMembersResponse *add_group_members_response = add_group_members(alice_address, group_address, new_group_members, new_group_member_num);
-    assert(add_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
+    Skissm__AddGroupMembersResponse *add_group_members_response = NULL;
+    ret = add_group_members(&add_group_members_response,  alice_address, group_address, new_group_members, new_group_member_num);
+    assert(ret == 0);
 
     sleep(3);
     // Everyone sends a message to the group
@@ -1207,7 +1238,8 @@ static void test_pqc_remove_group_members() {
     group_members[3]->domain = strdup(david_domain);
     group_members[3]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 4);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  alice_address, "Group name", group_members, 4);
     Skissm__E2eeAddress *group_address = create_group_response->group_address;
 
     sleep(5);
@@ -1220,10 +1252,11 @@ static void test_pqc_remove_group_members() {
     removing_group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     size_t removing_group_member_num = 1;
     // Alice removes Claire out of the group
-    Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(
-        alice_address, group_address, removing_group_members, removing_group_member_num
+    Skissm__RemoveGroupMembersResponse *remove_group_members_response = NULL;
+    ret = remove_group_members(
+        &remove_group_members_response, alice_address, group_address, removing_group_members, removing_group_member_num
     );
-    assert(remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK);
+    assert(ret == 0);
 
     sleep(4);
     // Everyone sends a message to the group
@@ -1308,12 +1341,14 @@ static void test_pqc_leave_group() {
     group_members[3]->domain = strdup(david_domain);
     group_members[3]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 4);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  alice_address, "Group name", group_members, 4);
     Skissm__E2eeAddress *group_address = create_group_response->group_address;
 
     sleep(5);
     // Claire leaves the group
-    Skissm__LeaveGroupResponse *leave_group_response = leave_group(claire_address, group_address);
+    Skissm__LeaveGroupResponse *leave_group_response = NULL;
+    ret = leave_group(&leave_group_response, claire_address, group_address);
 
     sleep(4);
     // Everyone sends a message to the group
@@ -1395,7 +1430,8 @@ static void test_pqc_multiple_devices() {
     group_members[2]->domain = strdup(claire_domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address_1, "Group name", group_members, 3);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  alice_address_1, "Group name", group_members, 3);
 
     sleep(2);
     // Alice sends a message to the group via the first device
@@ -1469,7 +1505,8 @@ static void test_pqc_add_new_device() {
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 3);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  alice_address, "Group name", group_members, 3);
 
     sleep(2);
 
@@ -1626,7 +1663,8 @@ static void test_medium_group() {
     group_members[9]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 10);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  alice_address, "Group name", group_members, 10);
 
     sleep(10);
 
@@ -1670,8 +1708,9 @@ static void test_medium_group() {
     size_t new_group_member_num = 4;
 
     // add new group members to the group
-    Skissm__AddGroupMembersResponse *add_group_members_response = add_group_members(
-        alice_address, group.group_address, new_group_members, new_group_member_num
+    Skissm__AddGroupMembersResponse *add_group_members_response = NULL;
+    ret = add_group_members(
+        &add_group_members_response, alice_address, group.group_address, new_group_members, new_group_member_num
     );
 
     sleep(10);
@@ -1715,8 +1754,9 @@ static void test_medium_group() {
     removing_group_members[3]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     size_t removing_group_member_num = 4;
 
-    Skissm__RemoveGroupMembersResponse *remove_group_members_response = remove_group_members(
-        alice_address, group.group_address, removing_group_members, removing_group_member_num
+    Skissm__RemoveGroupMembersResponse *remove_group_members_response = NULL;
+    ret = remove_group_members(
+        &remove_group_members_response, alice_address, group.group_address, removing_group_members, removing_group_member_num
     );
 
     sleep(10);
@@ -1783,7 +1823,8 @@ static void test_create_group_time() {
     time_t start, end;
     start = time(NULL);
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(account_data[0]->address, "Group name", group_members, 200);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    ret = create_group(&create_group_response,  account_data[0]->address, "Group name", group_members, 200);
 
     // test stop
     test_end();

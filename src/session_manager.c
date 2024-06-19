@@ -127,6 +127,7 @@ int consume_get_pre_key_bundle_response(
 
             invite_response_list = (Skissm__InviteResponse **)malloc(sizeof(Skissm__InviteResponse *) * n_pre_key_bundles);
         } else {
+            ssm_notify_log(NULL, BAD_RESPONSE, "consume_get_pre_key_bundle_response()");
             ret = -1;
         }
     } else {
@@ -598,6 +599,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 }
 
 bool consume_add_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddUserDeviceMsg *msg) {
+    int ret = 0;
     Skissm__E2eeAddress *new_user_address = msg->user_address;
     Skissm__E2eeAddress **old_address_list = msg->old_address_list;
     size_t old_address_list_number = msg->n_old_address_list;
@@ -657,8 +659,10 @@ bool consume_add_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
     if (group_address_list != NULL) {
         cur_group_address_node = group_address_list;
         while (cur_group_address_node != NULL) {
-            Skissm__AddGroupMemberDeviceResponse *add_group_member_device_response = 
-                add_group_member_device_internal(receiver_address, cur_group_address_node->group_address, new_user_address);
+            Skissm__AddGroupMemberDeviceResponse *add_group_member_device_response = NULL;
+            ret = add_group_member_device_internal(
+                &add_group_member_device_response, receiver_address, cur_group_address_node->group_address, new_user_address
+            );
 
             // release
             if (add_group_member_device_response != NULL) {
@@ -737,6 +741,7 @@ int consume_invite_response(
 
     if (safe_address(user_address)) {
         if (!safe_invite_response(response)) {
+            ssm_notify_log(NULL, BAD_RESPONSE, "consume_invite_response()");
             ret = -1;
         }
     } else {
@@ -904,6 +909,7 @@ int consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptRes
 
     if (safe_address(user_address)) {
         if (!safe_accept_response(response)) {
+            ssm_notify_log(NULL, BAD_RESPONSE, "consume_accept_response()");
             ret = -1;
         }
     } else {

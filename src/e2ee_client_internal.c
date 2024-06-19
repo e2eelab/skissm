@@ -28,15 +28,19 @@ int get_pre_key_bundle_internal(
     Skissm__InviteResponse **invite_response_list = NULL;
 
     if (!safe_address(from)) {
+        ssm_notify_log(NULL, BAD_ADDRESS, "get_pre_key_bundle_internal()");
         ret = -1;
     }
     if (!nonempty_string(auth)) {
+        ssm_notify_log(NULL, BAD_AUTH, "get_pre_key_bundle_internal()");
         ret = -1;
     }
     if (!nonempty_string(to_user_id)) {
+        ssm_notify_log(NULL, BAD_USER_ID, "get_pre_key_bundle_internal()");
         ret = -1;
     }
     if (!nonempty_string(to_domain)) {
+        ssm_notify_log(NULL, BAD_DOMAIN, "get_pre_key_bundle_internal()");
         ret = -1;
     }
 
@@ -49,6 +53,7 @@ int get_pre_key_bundle_internal(
         get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(from, auth, get_pre_key_bundle_request);
 
         if (!safe_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
+            ssm_notify_log(NULL, BAD_RESPONSE, "get_pre_key_bundle_internal()");
             ret = -1;
         }
     }
@@ -79,6 +84,7 @@ int get_pre_key_bundle_internal(
             // release
             for (i = 0; i < their_device_num; i++) {
                 free(their_device_id[i]);
+                their_device_id[i] = NULL;
             }
             free_mem((void **)&their_device_id, sizeof(char *) * their_device_num);
         }
@@ -187,10 +193,11 @@ int invite_internal(
         user_address = outbound_session->our_address;
         get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
         if (!nonempty_string(auth)) {
-            ssm_notify_log(user_address, BAD_ACCOUNT, "invite_internal()");
+            ssm_notify_log(user_address, BAD_AUTH, "invite_internal()");
             ret = -1;
         }
     } else {
+        ssm_notify_log(user_address, BAD_SESSION, "invite_internal()");
         ret = -1;
     }
 
@@ -247,24 +254,29 @@ int accept_internal(
     char *auth = NULL;
 
     if (!safe_e2ee_pack_id(e2ee_pack_id)) {
+        ssm_notify_log(from, BAD_E2EE_PACK, "accept_internal()");
         ret = -1;
     }
     if (safe_address(from)) {
         get_skissm_plugin()->db_handler.load_auth(from, &auth);
         if (!nonempty_string(auth)) {
-            ssm_notify_log(from, BAD_ACCOUNT, "accept_internal()");
+            ssm_notify_log(from, BAD_AUTH, "accept_internal()");
             ret = -1;
         }
     } else {
+        ssm_notify_log(from, BAD_ADDRESS, "accept_internal()");
         ret = -1;
     }
     if (!safe_address(to)) {
+        ssm_notify_log(from, BAD_ADDRESS, "accept_internal()");
         ret = -1;
     }
     if (!safe_protobuf(ciphertext_1)) {
+        ssm_notify_log(from, BAD_INPUT_DATA, "accept_internal()");
         ret = -1;
     }
     if (!safe_protobuf(our_ratchet_key)) {
+        ssm_notify_log(from, BAD_INPUT_DATA, "accept_internal()");
         ret = -1;
     }
 
@@ -358,9 +370,11 @@ Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint3
 
     if (opks_num != 0) {
         if (!safe_registered_account(account)) {
+            ssm_notify_log(account->address, BAD_ACCOUNT, "supply_opks_internal()");
             ret = -1;
         }
     } else {
+        ssm_notify_log(account->address, BAD_INPUT_DATA, "supply_opks_internal()");
         ret = -1;
     }
 
@@ -404,7 +418,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
     get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
 
     if (auth == NULL) {
-        ssm_notify_log(outbound_session->our_address, BAD_ACCOUNT, "send_one2one_msg_internal()");
+        ssm_notify_log(outbound_session->our_address, BAD_AUTH, "send_one2one_msg_internal()");
         return NULL;
     }
 
@@ -440,49 +454,96 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
     return response;
 }
 
-Skissm__AddGroupMemberDeviceResponse *add_group_member_device_internal(
+int add_group_member_device_internal(
+    Skissm__AddGroupMemberDeviceResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     Skissm__E2eeAddress *new_device_address
 ) {
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+    int ret = 0;
 
-    if (auth == NULL) {
-        ssm_notify_log(sender_address, BAD_ACCOUNT, "add_group_member_device_internal()");
-        return NULL;
-    }
-
+    Skissm__AddGroupMemberDeviceRequest *request = NULL;
+    Skissm__AddGroupMemberDeviceResponse *response = NULL;
     Skissm__GroupSession *outbound_group_session = NULL;
-    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
-    if (outbound_group_session == NULL) {
-        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_member_device_internal()");
-        return NULL;
+    char *auth = NULL;
+
+    if (safe_address(sender_address)) {
+        get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+
+        if (auth != NULL) {
+            if (safe_address(group_address)) {
+                get_skissm_plugin()->db_handler.load_group_session_by_address(
+                    sender_address, sender_address, group_address, &outbound_group_session
+                );
+
+                if (outbound_group_session == NULL) {
+                    ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_member_device_internal()");
+                    ret = -1;
+                }
+            } else {
+                ssm_notify_log(NULL, BAD_ADDRESS, "add_group_member_device_internal()");
+                ret = -1;
+            }
+        } {
+            ssm_notify_log(sender_address, BAD_AUTH, "add_group_member_device_internal()");
+            ret = -1;
+        }
+    } else {
+        ssm_notify_log(NULL, BAD_ADDRESS, "add_group_member_device_internal()");
+        ret = -1;
+    }
+    if (!safe_address(new_device_address)) {
+        ssm_notify_log(NULL, BAD_ADDRESS, "add_group_member_device_internal()");
+        ret = -1;
     }
 
-    Skissm__AddGroupMemberDeviceRequest *request = produce_add_group_member_device_request(outbound_group_session, new_device_address);
-    Skissm__AddGroupMemberDeviceResponse *response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, request);
-    bool succ = consume_add_group_member_device_response(outbound_group_session, response);
-    if (!succ) {
-        // pack request to request_data
-        size_t request_data_len = skissm__add_group_member_device_request__get_packed_size(request);
-        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        skissm__add_group_member_device_request__pack(request, request_data);
+    if (ret == 0) {
+        ret = produce_add_group_member_device_request(&request, outbound_group_session, new_device_address);
+    }
 
-        store_pending_request_internal(
-            sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBER_DEVICE,
-            request_data, request_data_len, NULL, 0
-        );
-        // release
-        free_mem((void *)&request_data, request_data_len);
+    if (ret == 0) {
+        response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, request);
+
+        if (!safe_add_group_member_device_response(response)) {
+            ssm_notify_log(NULL, BAD_RESPONSE, "add_group_member_device_internal()");
+            ret = -1;
+        }
+    }
+
+    if (ret == 0) {
+        bool succ = consume_add_group_member_device_response(outbound_group_session, response);
+        if (!succ) {
+            // pack request to request_data
+            size_t request_data_len = skissm__add_group_member_device_request__get_packed_size(request);
+            uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+            skissm__add_group_member_device_request__pack(request, request_data);
+
+            store_pending_request_internal(
+                sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBER_DEVICE,
+                request_data, request_data_len, NULL, 0
+            );
+            // release
+            free_mem((void *)&request_data, request_data_len);
+        }
+
+        *response_out = response;
     }
 
     // release
-    free(auth);
-    skissm__add_group_member_device_request__free_unpacked(request, NULL);
-    skissm__group_session__free_unpacked(outbound_group_session, NULL);
+    if (auth != NULL) {
+        free(auth);
+        auth = NULL;
+    }
+    if (request != NULL) {
+        skissm__add_group_member_device_request__free_unpacked(request, NULL);
+        request = NULL;
+    }
+    if (outbound_group_session) {
+        skissm__group_session__free_unpacked(outbound_group_session, NULL);
+        outbound_group_session = NULL;
+    }
 
-    return response;
+    return ret;
 }
 
 void store_pending_common_plaintext_data_internal(

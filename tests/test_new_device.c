@@ -340,11 +340,14 @@ static void test_group_encryption(
     Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address,
     uint8_t *plaintext_data, size_t plaintext_data_len
 ) {
-    Skissm__SendGroupMsgResponse *response = send_group_msg(
+    Skissm__SendGroupMsgResponse *response = NULL;
+    int ret = send_group_msg(
+        &response,
         sender_address, group_address,
         SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
-        plaintext_data, plaintext_data_len);
-    
+        plaintext_data, plaintext_data_len
+    );
+
     // release
     skissm__send_group_msg_response__free_unpacked(response, NULL);
 }
@@ -514,7 +517,8 @@ static void test_three_members_group_session() {
     group_members[2]->domain = strdup(claire_domain);
     group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response = create_group(alice_address, "Group name", group_members, 3);
+    Skissm__CreateGroupResponse *create_group_response = NULL;
+    create_group(&create_group_response, alice_address, "Group name", group_members, 3);
 
     sleep(2);
 
@@ -668,7 +672,8 @@ static void test_several_members_and_groups() {
     group_members_1[2]->domain = strdup(claire_domain);
     group_members_1[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response_1 = create_group(alice_address_1, "The first group", group_members_1, 3);
+    Skissm__CreateGroupResponse *create_group_response_1 = NULL;
+    create_group(&create_group_response_1, alice_address_1, "The first group", group_members_1, 3);
 
     sleep(2);
 
@@ -690,7 +695,8 @@ static void test_several_members_and_groups() {
     group_members_2[2]->domain = strdup(alice_domain);
     group_members_2[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response_2 = create_group(frank_address, "The second group", group_members_2, 3);
+    Skissm__CreateGroupResponse *create_group_response_2 = NULL;
+    create_group(&create_group_response_2, frank_address, "The second group", group_members_2, 3);
 
     sleep(2);
 

@@ -95,6 +95,9 @@ int register_user(
 
         if (safe_register_user_response(response)) {
             bool consumed = consume_register_response(account, response);
+        } else {
+            ssm_notify_log(NULL, BAD_RESPONSE, "register_user()");
+            ret = -1;
         }
     }
 
@@ -177,12 +180,15 @@ Skissm__InviteResponse *invite(
             ret = -1;
         }
     } else {
+        ssm_notify_log(NULL, BAD_ADDRESS, "invite()");
         ret = -1;
     }
     if (!nonempty_string(to_user_id)) {
+        ssm_notify_log(NULL, BAD_USER_ID, "invite()");
         ret = -1;
     }
     if (!nonempty_string(to_domain)) {
+        ssm_notify_log(NULL, BAD_DOMAIN, "invite()");
         ret = -1;
     }
 
@@ -492,217 +498,385 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg(
     return response;
 }
 
-Skissm__CreateGroupResponse *create_group(
+int create_group(
+    Skissm__CreateGroupResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     const char *group_name,
     Skissm__GroupMember **group_members,
     size_t group_members_num
 ) {
+    int ret = 0;
+
+    Skissm__CreateGroupRequest *request = NULL;
+    Skissm__CreateGroupResponse *response = NULL;
     Skissm__Account *account = NULL;
     char *auth = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    load_e2ee_pack_id_from_cash(&e2ee_pack_id, sender_address);
-
-    if (e2ee_pack_id == 0) {
-        get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
-        if (account == NULL) {
-            ssm_notify_log(sender_address, BAD_ACCOUNT, "create_group()");
-            return NULL;
-        }
-        e2ee_pack_id = account->e2ee_pack_id;
-        auth = strdup(account->auth);
-    } else {
-        get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+    if (!safe_address(sender_address)) {
+        ssm_notify_log(NULL, BAD_ADDRESS, "create_group()");
+        ret = -1;
+    }
+    if (!nonempty_string(group_name)) {
+        ssm_notify_log(NULL, BAD_INPUT_DATA, "create_group()");
+        ret = -1;
+    }
+    if (!safe_group_member_list(group_members, group_members_num)) {
+        ssm_notify_log(NULL, BAD_INPUT_DATA, "create_group()");
+        ret = -1;
     }
 
-    // send message to server
-    Skissm__CreateGroupRequest *request = produce_create_group_request(sender_address, group_name, group_members, group_members_num);
-    Skissm__CreateGroupResponse *response = get_skissm_plugin()->proto_handler.create_group(sender_address, auth, request);
-    bool succ = consume_create_group_response(e2ee_pack_id, sender_address, group_name, group_members, group_members_num, response);
-    if (!succ) {
-        ssm_notify_log(
-            sender_address,
-            DEBUG_LOG,
-            "create_group(): consume filed with response code: %d, skip saving pending request",
-            response->code
-        );
-        // skip saving pending request for creating group
-        // // pack request to request_data
-        // size_t request_data_len = skissm__create_group_request__get_packed_size(request);
-        // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        // skissm__create_group_request__pack(request, request_data);
-        // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_CREATE_GROUP, request_data, request_data_len, NULL, 0);
-        // // release
-        // free_mem((void *)&request_data, request_data_len);
+    if (ret == 0) {
+        load_e2ee_pack_id_from_cash(&e2ee_pack_id, sender_address);
+
+        if (e2ee_pack_id == 0) {
+            get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
+            if (account == NULL) {
+                ssm_notify_log(sender_address, BAD_ACCOUNT, "create_group()");
+                ret = -1;
+            }
+            e2ee_pack_id = account->e2ee_pack_id;
+            auth = strdup(account->auth);
+        } else {
+            get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+        }
+    }
+
+    if (ret == 0) {
+        ret = produce_create_group_request(&request, sender_address, group_name, group_members, group_members_num);
+    }
+
+    if (ret == 0) {
+        // send message to server
+        response = get_skissm_plugin()->proto_handler.create_group(sender_address, auth, request);
+
+        if (!safe_create_group_response(response)) {
+            ssm_notify_log(sender_address, BAD_RESPONSE, "create_group()");
+            ret = -1;
+        }
+    }
+
+    if (ret == 0) {
+        bool succ = consume_create_group_response(e2ee_pack_id, sender_address, group_name, group_members, group_members_num, response);
+        if (!succ) {
+            ssm_notify_log(
+                sender_address,
+                DEBUG_LOG,
+                "create_group(): consume filed with response code: %d, skip saving pending request",
+                response->code
+            );
+            // skip saving pending request for creating group
+            // // pack request to request_data
+            // size_t request_data_len = skissm__create_group_request__get_packed_size(request);
+            // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+            // skissm__create_group_request__pack(request, request_data);
+            // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_CREATE_GROUP, request_data, request_data_len, NULL, 0);
+            // // release
+            // free_mem((void *)&request_data, request_data_len);
+        }
+
+        *response_out = response;
     }
 
     // release
-    if (account != NULL)
+    if (account != NULL) {
         skissm__account__free_unpacked(account, NULL);
-    if (auth != NULL)
+        account = NULL;
+    }
+    if (auth != NULL) {
         free(auth);
-    skissm__create_group_request__free_unpacked(request, NULL);
+        auth = NULL;
+    }
+    if (request != NULL) {
+        skissm__create_group_request__free_unpacked(request, NULL);
+        request = NULL;
+    }
 
     // done
-    return response;
+    return ret;
 }
 
-Skissm__AddGroupMembersResponse *add_group_members(
+int add_group_members(
+    Skissm__AddGroupMembersResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **adding_members,
     size_t adding_members_num
 ) {
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+    int ret = 0;
 
-    if (auth == NULL) {
-        ssm_notify_log(sender_address, BAD_ACCOUNT, "add_group_members()");
-        return NULL;
-    }
-
+    Skissm__AddGroupMembersRequest *request = NULL;
+    Skissm__AddGroupMembersResponse *response = NULL;
     Skissm__GroupSession *outbound_group_session = NULL;
-    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
-    if (outbound_group_session == NULL) {
-        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_members() outbound_group_session does not exist, return a response with response code not found");        
-        Skissm__AddGroupMembersResponse *response = (Skissm__AddGroupMembersResponse *)malloc(sizeof(Skissm__AddGroupMembersResponse));
-        skissm__add_group_members_response__init(response);
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
-        // release
-        free(auth);
-        return response;
+    char *auth = NULL;
+
+    if (safe_address(sender_address)) {
+        get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+        if (auth != NULL) {
+            if (safe_address(group_address)) {
+                get_skissm_plugin()->db_handler.load_group_session_by_address(
+                    sender_address, sender_address, group_address, &outbound_group_session
+                );
+
+                if (outbound_group_session == NULL) {
+                    ssm_notify_log(
+                        sender_address,
+                        BAD_GROUP_SESSION,
+                        "add_group_members() outbound_group_session does not exist, return a response with response code not found"
+                    );        
+                    response = (Skissm__AddGroupMembersResponse *)malloc(sizeof(Skissm__AddGroupMembersResponse));
+                    skissm__add_group_members_response__init(response);
+                    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+
+                    ret = -1;
+                }
+            }
+        } else {
+            ssm_notify_log(sender_address, BAD_AUTH, "add_group_members()");
+            ret = -1;
+        }
+    } else {
+        ssm_notify_log(NULL, BAD_ADDRESS, "add_group_members()");
+        ret = -1;
+    }
+    if (!safe_group_member_list(adding_members, adding_members_num)) {
+        ssm_notify_log(NULL, BAD_INPUT_DATA, "add_group_members()");
+        ret = -1;
     }
 
-    Skissm__AddGroupMembersRequest *request = produce_add_group_members_request(outbound_group_session, adding_members, adding_members_num);
-    Skissm__AddGroupMembersResponse *response = get_skissm_plugin()->proto_handler.add_group_members(sender_address, auth, request);
-    // TODO: replace adding_members, adding_members_num by using response->added_group_member_list
-    bool succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
-    if (!succ) {
-        ssm_notify_log(
-            sender_address,
-            DEBUG_LOG,
-            "add_group_members(): consume filed with response code: %d, skip saving pending request",
-            response->code
-        );
-        // skip saving pending request for adding group members
-        // // pack request to request_data
-        // size_t request_data_len = skissm__add_group_members_request__get_packed_size(request);
-        // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        // skissm__add_group_members_request__pack(request, request_data);
-        // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
-        // // release
-        // free_mem((void *)&request_data, request_data_len);
+    if (ret == 0) {
+        ret = produce_add_group_members_request(&request, outbound_group_session, adding_members, adding_members_num);
+    }
+
+    if (ret == 0) {
+        response = get_skissm_plugin()->proto_handler.add_group_members(sender_address, auth, request);
+        // TODO: replace adding_members, adding_members_num by using response->added_group_member_list
+
+        if (!safe_add_group_members_response(response)) {
+            ssm_notify_log(NULL, BAD_RESPONSE, "add_group_members()");
+            ret = -1;
+        }
+    }
+
+    if (ret == 0) {
+        bool succ = consume_add_group_members_response(outbound_group_session, response, adding_members, adding_members_num);
+        if (!succ) {
+            ssm_notify_log(
+                sender_address,
+                DEBUG_LOG,
+                "add_group_members(): consume filed with response code: %d, skip saving pending request",
+                response->code
+            );
+            // skip saving pending request for adding group members
+            // // pack request to request_data
+            // size_t request_data_len = skissm__add_group_members_request__get_packed_size(request);
+            // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+            // skissm__add_group_members_request__pack(request, request_data);
+            // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
+            // // release
+            // free_mem((void *)&request_data, request_data_len);
+        }
+
+        *response_out = response;
     }
 
     // release
-    free(auth);
-    skissm__add_group_members_request__free_unpacked(request, NULL);
-    skissm__group_session__free_unpacked(outbound_group_session, NULL);
+    if (auth != NULL) {
+        free(auth);
+        auth = NULL;
+    }
+    if (request != NULL) {
+        skissm__add_group_members_request__free_unpacked(request, NULL);
+        request = NULL;
+    }
+    if (outbound_group_session != NULL) {
+        skissm__group_session__free_unpacked(outbound_group_session, NULL);
+        outbound_group_session = NULL;
+    }
 
     // done
-    return response;
+    return ret;
 }
 
-Skissm__RemoveGroupMembersResponse *remove_group_members(
+int remove_group_members(
+    Skissm__RemoveGroupMembersResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     Skissm__GroupMember **removing_members,
     size_t removing_members_num
 ) {
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+    int ret = 0;
 
-    if (auth == NULL) {
-        ssm_notify_log(sender_address, BAD_ACCOUNT, "remove_group_members()");
-        return NULL;
-    }
-
+    Skissm__RemoveGroupMembersRequest *request = NULL;
+    Skissm__RemoveGroupMembersResponse *response = NULL;
     Skissm__GroupSession *outbound_group_session = NULL;
-    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
+    char *auth = NULL;
 
-    if (outbound_group_session == NULL) {
-        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "remove_group_members(), outbound_group_session is null, return a response with response code not found");
-        Skissm__RemoveGroupMembersResponse *response = (Skissm__RemoveGroupMembersResponse *)malloc(sizeof(Skissm__RemoveGroupMembersResponse));
-        skissm__remove_group_members_response__init(response);
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
-        // release
-        free(auth);
-        return response;
+    if (safe_address(sender_address)) {
+        get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+        if (auth != NULL) {
+            if (safe_address(group_address)) {
+                get_skissm_plugin()->db_handler.load_group_session_by_address(
+                    sender_address, sender_address, group_address, &outbound_group_session
+                );
+
+                if (outbound_group_session == NULL) {
+                    ssm_notify_log(
+                        sender_address,
+                        BAD_GROUP_SESSION,
+                        "remove_group_members(), outbound_group_session is null, return a response with response code not found"
+                    );        
+                    response = (Skissm__RemoveGroupMembersResponse *)malloc(sizeof(Skissm__RemoveGroupMembersResponse));
+                    skissm__remove_group_members_response__init(response);
+                    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+
+                    ret = -1;
+                }
+            }
+        } else {
+            ssm_notify_log(sender_address, BAD_AUTH, "remove_group_members()");
+            ret = -1;
+        }
+    } else {
+        ssm_notify_log(NULL, BAD_ADDRESS, "remove_group_members()");
+        ret = -1;
+    }
+    if (!safe_group_member_list(removing_members, removing_members_num)) {
+        ssm_notify_log(NULL, BAD_INPUT_DATA, "remove_group_members()");
+        ret = -1;
     }
 
-    // send message to server
-    Skissm__RemoveGroupMembersRequest *request = produce_remove_group_members_request(outbound_group_session, removing_members, removing_members_num);
-    Skissm__RemoveGroupMembersResponse *response = get_skissm_plugin()->proto_handler.remove_group_members(sender_address, auth, request);
-    bool succ = consume_remove_group_members_response(outbound_group_session, response, removing_members, removing_members_num);
-    if (!succ) {
-        ssm_notify_log(
-            sender_address,
-            DEBUG_LOG,
-            "remove_group_members(): consume filed with response code: %d, skip saving pending request",
-            response->code
-        );
-        // skip saving pending request for removing group members
-        // // pack request to request_data
-        // size_t request_data_len = skissm__remove_group_members_request__get_packed_size(request);
-        // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        // skissm__remove_group_members_request__pack(request, request_data);
-        // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_REMOVE_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
-        // // release
-        // free_mem((void *)&request_data, request_data_len);
+    if (ret == 0) {
+        ret = produce_remove_group_members_request(&request, outbound_group_session, removing_members, removing_members_num);
+    }
+
+    if (ret == 0) {
+        response = get_skissm_plugin()->proto_handler.remove_group_members(sender_address, auth, request);
+
+        if (!safe_remove_group_members_response(response)) {
+            ssm_notify_log(NULL, BAD_RESPONSE, "remove_group_members()");
+            ret = -1;
+        }
+    }
+
+    if (ret == 0) {
+        bool succ = consume_remove_group_members_response(outbound_group_session, response, removing_members, removing_members_num);
+        if (!succ) {
+            ssm_notify_log(
+                sender_address,
+                DEBUG_LOG,
+                "remove_group_members(): consume filed with response code: %d, skip saving pending request",
+                response->code
+            );
+            // skip saving pending request for removing group members
+            // // pack request to request_data
+            // size_t request_data_len = skissm__remove_group_members_request__get_packed_size(request);
+            // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+            // skissm__remove_group_members_request__pack(request, request_data);
+            // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_REMOVE_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
+            // // release
+            // free_mem((void *)&request_data, request_data_len);
+        }
+
+        *response_out = response;
     }
 
     // release
-    free(auth);
-    skissm__remove_group_members_request__free_unpacked(request, NULL);
-    skissm__group_session__free_unpacked(outbound_group_session, NULL);
+    if (auth != NULL) {
+        free(auth);
+        auth = NULL;
+    }
+    if (request != NULL) {
+        skissm__remove_group_members_request__free_unpacked(request, NULL);
+        request = NULL;
+    }
+    if (outbound_group_session != NULL) {
+        skissm__group_session__free_unpacked(outbound_group_session, NULL);
+        outbound_group_session = NULL;
+    }
 
     // done
-    return response;
+    return ret;
 }
 
-Skissm__LeaveGroupResponse *leave_group(
+int leave_group(
+    Skissm__LeaveGroupResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address
 ) {
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+    int ret = 0;
 
-    if (auth == NULL) {
-        ssm_notify_log(sender_address, BAD_ACCOUNT, "leave_group()");
-        return NULL;
+    Skissm__LeaveGroupRequest *request = NULL;
+    Skissm__LeaveGroupResponse *response = NULL;
+    char *auth = NULL;
+
+    if (safe_address(sender_address)) {
+        get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+
+        if (auth == NULL) {
+            ssm_notify_log(sender_address, BAD_AUTH, "leave_group()");
+            ret = -1;
+        }
+    } else {
+        ssm_notify_log(NULL, BAD_ADDRESS, "leave_group()");
+        ret = -1;
+    }
+    if (!safe_address(group_address)) {
+        ssm_notify_log(NULL, BAD_ADDRESS, "leave_group()");
+        ret = -1;
     }
 
-    // send message to server
-    Skissm__LeaveGroupRequest *request = produce_leave_group_request(sender_address, group_address);
-    Skissm__LeaveGroupResponse *response = get_skissm_plugin()->proto_handler.leave_group(sender_address, auth, request);
-    bool succ = consume_leave_group_response(sender_address, response);
-    if (!succ) {
-        ssm_notify_log(
-            sender_address,
-            DEBUG_LOG,
-            "leave_group(): consume filed with response code: %d, skip saving pending request",
-            response->code
-        );
-        // skip saving pending request for leaving group
-        // // pack request to request_data
-        // size_t request_data_len = skissm__leave_group_request__get_packed_size(request);
-        // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        // skissm__leave_group_request__pack(request, request_data);
-        // store_pending_request_internal(user_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_LEAVE_GROUP, request_data, request_data_len, NULL, 0);
-        // // release
-        // free_mem((void *)&request_data, request_data_len);
+    if (ret == 0) {
+        ret = produce_leave_group_request(&request, sender_address, group_address);
+    }
+
+    if (ret == 0) {
+        response = get_skissm_plugin()->proto_handler.leave_group(sender_address, auth, request);
+
+        if (!safe_leave_group_response(response)) {
+            ssm_notify_log(NULL, BAD_RESPONSE, "leave_group()");
+            ret = -1;
+        }
+    }
+
+    if (ret == 0) {
+        bool succ = consume_leave_group_response(sender_address, response);
+        if (!succ) {
+            ssm_notify_log(
+                sender_address,
+                DEBUG_LOG,
+                "leave_group(): consume filed with response code: %d, skip saving pending request",
+                response->code
+            );
+            // skip saving pending request for leaving group
+            // // pack request to request_data
+            // size_t request_data_len = skissm__leave_group_request__get_packed_size(request);
+            // uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+            // skissm__leave_group_request__pack(request, request_data);
+            // store_pending_request_internal(user_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_LEAVE_GROUP, request_data, request_data_len, NULL, 0);
+            // // release
+            // free_mem((void *)&request_data, request_data_len);
+        }
+
+        *response_out = response;
     }
 
     // release
-    free(auth);
-    skissm__leave_group_request__free_unpacked(request, NULL);
+    if (auth != NULL) {
+        free(auth);
+        auth = NULL;
+    }
+    if (request != NULL) {
+        skissm__leave_group_request__free_unpacked(request, NULL);
+        request = NULL;
+    }
 
     // done
-    return response;
+    return ret;
 }
 
-Skissm__SendGroupMsgResponse *send_group_msg_with_filter(
+int send_group_msg_with_filter(
+    Skissm__SendGroupMsgResponse **response_out,
     Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address,
     uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len,
@@ -711,65 +885,136 @@ Skissm__SendGroupMsgResponse *send_group_msg_with_filter(
     Skissm__E2eeAddress **deny_list,
     size_t deny_list_len
 ) {
-    char *auth = NULL;
-    get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+    int ret = 0;
 
-    if (auth == NULL) {
-        ssm_notify_log(sender_address, BAD_ACCOUNT, "send_group_msg()");
-        return NULL;
-    }
-
-    // load the outbound group session
+    Skissm__SendGroupMsgRequest *request = NULL;
+    Skissm__SendGroupMsgResponse *response = NULL;
     Skissm__GroupSession *outbound_group_session = NULL;
-    get_skissm_plugin()->db_handler.load_group_session_by_address(sender_address, sender_address, group_address, &outbound_group_session);
-    if (outbound_group_session == NULL) {
-        ssm_notify_log(sender_address, BAD_GROUP_SESSION, "send_group_msg() outbound_group_session does not exist, return a response with response code not found");        
-        Skissm__SendGroupMsgResponse *response = (Skissm__SendGroupMsgResponse *)malloc(sizeof(Skissm__SendGroupMsgResponse));
-        skissm__send_group_msg_response__init(response);
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
-        // release
-        free(auth);
-        return response;
+    char *auth = NULL;
+
+    if (safe_address(sender_address)) {
+        get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
+        if (auth != NULL) {
+            if (safe_address(group_address)) {
+                get_skissm_plugin()->db_handler.load_group_session_by_address(
+                    sender_address, sender_address, group_address, &outbound_group_session
+                );
+
+                if (outbound_group_session == NULL) {
+                    ssm_notify_log(
+                        sender_address,
+                        BAD_GROUP_SESSION,
+                        "send_group_msg() outbound_group_session does not exist, return a response with response code not found"
+                    );        
+                    response = (Skissm__SendGroupMsgResponse *)malloc(sizeof(Skissm__SendGroupMsgResponse));
+                    skissm__send_group_msg_response__init(response);
+                    response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
+
+                    ret = -1;
+                }
+            }
+        } else {
+            ssm_notify_log(sender_address, BAD_AUTH, "send_group_msg()");
+            ret = -1;
+        }
+    } else {
+        ssm_notify_log(NULL, BAD_ADDRESS, "send_group_msg()");
+        ret = -1;
+    }
+    if (plaintext_data == NULL) {
+        ssm_notify_log(NULL, BAD_INPUT_DATA, "send_group_msg()");
+        ret = -1;
+    }
+    if (plaintext_data_len == 0) {
+        ssm_notify_log(NULL, BAD_INPUT_DATA, "send_group_msg()");
+        ret = -1;
+    }
+    if (!safe_address_list(allow_list, allow_list_len)) {
+        ssm_notify_log(NULL, BAD_ADDRESS, "send_group_msg()");
+        ret = -1;
+    }
+    if (!safe_address_list(deny_list, deny_list_len)) {
+        ssm_notify_log(NULL, BAD_ADDRESS, "send_group_msg()");
+        ret = -1;
     }
 
-    Skissm__SendGroupMsgRequest *request = produce_send_group_msg_request(outbound_group_session, notif_level, plaintext_data, plaintext_data_len, allow_list, allow_list_len, deny_list, deny_list_len);
-    Skissm__SendGroupMsgResponse *response = get_skissm_plugin()->proto_handler.send_group_msg(sender_address, auth, request);
-    bool succ = consume_send_group_msg_response(outbound_group_session, response);
-    if (!succ) {
-        // pack request to request_data
-        size_t request_data_len = skissm__send_group_msg_request__get_packed_size(request);
-        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        skissm__send_group_msg_request__pack(request, request_data);
+    if (ret == 0) {
+        ret = produce_send_group_msg_request(
+            &request,
+            outbound_group_session,
+            notif_level,
+            plaintext_data,
+            plaintext_data_len,
+            allow_list,
+            allow_list_len,
+            deny_list,
+            deny_list_len
+        );
+    }
 
-        store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SEND_GROUP_MSG, request_data, request_data_len, NULL, 0);
-        // release
-        free_mem((void *)&request_data, request_data_len);
-        skissm__send_group_msg_response__free_unpacked(response, NULL);
+    if (ret == 0) {
+        response = get_skissm_plugin()->proto_handler.send_group_msg(sender_address, auth, request);
 
-        // replace response code to enable another try
-        response = (Skissm__SendGroupMsgResponse *)malloc(sizeof(Skissm__SendGroupMsgResponse));
-        skissm__send_group_msg_response__init(response);
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
+        if (!safe_send_group_msg_response(response)) {
+            ssm_notify_log(NULL, BAD_RESPONSE, "send_group_msg()");
+            ret = -1;
+        }
+    }
+
+    if (ret == 0) {   
+        bool succ = consume_send_group_msg_response(outbound_group_session, response);
+        if (!succ) {
+            // pack request to request_data
+            size_t request_data_len = skissm__send_group_msg_request__get_packed_size(request);
+            uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+            skissm__send_group_msg_request__pack(request, request_data);
+
+            store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SEND_GROUP_MSG, request_data, request_data_len, NULL, 0);
+            // release
+            free_mem((void *)&request_data, request_data_len);
+            skissm__send_group_msg_response__free_unpacked(response, NULL);
+
+            // replace response code to enable another try
+            response = (Skissm__SendGroupMsgResponse *)malloc(sizeof(Skissm__SendGroupMsgResponse));
+            skissm__send_group_msg_response__init(response);
+            response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_REQUEST_TIMEOUT;
+        }
+
+        *response_out = response;
     }
 
     // release
-    free(auth);
-    skissm__send_group_msg_request__free_unpacked(request, NULL);
-    skissm__group_session__free_unpacked(outbound_group_session, NULL);
+    if (auth != NULL) {
+        free(auth);
+        auth = NULL;
+    }
+    if (request != NULL) {
+        skissm__send_group_msg_request__free_unpacked(request, NULL);
+        request = NULL;
+    }
+    if (outbound_group_session != NULL) {
+        skissm__group_session__free_unpacked(outbound_group_session, NULL);
+        outbound_group_session = NULL;
+    }
 
     // done
-    return response;
+    return ret;
 }
 
-Skissm__SendGroupMsgResponse *send_group_msg(
+int send_group_msg(
+    Skissm__SendGroupMsgResponse **response_out,
     Skissm__E2eeAddress *sender_address,
     Skissm__E2eeAddress *group_address,
     uint32_t notif_level,
     const uint8_t *plaintext_data,
     size_t plaintext_data_len
 ) {
-    return send_group_msg_with_filter(sender_address, group_address, notif_level, plaintext_data, plaintext_data_len,
-        NULL, 0, NULL, 0);
+    return send_group_msg_with_filter(
+        response_out,
+        sender_address, group_address, notif_level,
+        plaintext_data, plaintext_data_len,
+        NULL, 0, NULL, 0
+    );
 }
 
 Skissm__ConsumeProtoMsgResponse *consume_proto_msg(Skissm__E2eeAddress *sender_address, const char *proto_msg_id) {
