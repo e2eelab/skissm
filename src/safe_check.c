@@ -19,7 +19,7 @@
 #include "skissm/safe_check.h"
 
 ///-----------------accuracy-----------------///
-bool accurate_key_pair(const Skissm__KeyPair *key_pair, uint32_t pub_key_len, uint32_t priv_key_len) {
+bool accurate_key_pair(Skissm__KeyPair *key_pair, uint32_t pub_key_len, uint32_t priv_key_len) {
     if (key_pair != NULL) {
         if (key_pair->public_key.len != pub_key_len) {
             return false;
@@ -82,7 +82,7 @@ bool safe_cipher_suite(const cipher_suite_t *cipher_suite) {
     return true;
 }
 
-bool safe_e2ee_pack_id(const uint32_t e2ee_pack_id) {
+bool safe_e2ee_pack_id(uint32_t e2ee_pack_id) {
     cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     return safe_cipher_suite(cipher_suite);
@@ -95,7 +95,7 @@ bool safe_protobuf(const ProtobufCBinaryData *src) {
     return true;
 }
 
-bool safe_protobuf_list(const ProtobufCBinaryData *src, size_t len) {
+bool safe_protobuf_list(ProtobufCBinaryData *src, size_t len) {
     if (len > 0 && src == NULL)
         return false;
     if (len == 0 && src != NULL)
@@ -122,7 +122,7 @@ bool nonempty_string(const char *src) {
     return true;
 }
 
-bool safe_address(const Skissm__E2eeAddress *src) {
+bool safe_address(Skissm__E2eeAddress *src) {
     if (src != NULL) {
         if (!nonempty_string(src->domain)) {
             return false;
@@ -164,7 +164,7 @@ bool safe_address(const Skissm__E2eeAddress *src) {
     return true;
 }
 
-bool safe_address_list(const Skissm__E2eeAddress **src, size_t len) {
+bool safe_address_list(Skissm__E2eeAddress **src, size_t len) {
     if (len > 0 && src == NULL)
         return false;
     if (len == 0 && src != NULL)
@@ -179,7 +179,7 @@ bool safe_address_list(const Skissm__E2eeAddress **src, size_t len) {
     return true;
 }
 
-bool safe_key_pair(const Skissm__KeyPair *src) {
+bool safe_key_pair(Skissm__KeyPair *src) {
     if (src != NULL) {
         if (!safe_protobuf(&(src->private_key))) {
             return false;
@@ -194,7 +194,7 @@ bool safe_key_pair(const Skissm__KeyPair *src) {
     return true;
 }
 
-bool safe_identity_key(const Skissm__IdentityKey *src) {
+bool safe_identity_key(Skissm__IdentityKey *src) {
     if (src != NULL) {
         if (!safe_key_pair(src->asym_key_pair)) {
             return false;
@@ -209,7 +209,7 @@ bool safe_identity_key(const Skissm__IdentityKey *src) {
     return true;
 }
 
-bool safe_signed_pre_key(const Skissm__SignedPreKey *src) {
+bool safe_signed_pre_key(Skissm__SignedPreKey *src) {
     if (src != NULL) {
         if (!safe_key_pair(src->key_pair)) {
             return false;
@@ -224,7 +224,7 @@ bool safe_signed_pre_key(const Skissm__SignedPreKey *src) {
     return true;
 }
 
-bool safe_one_time_pre_key_list(const Skissm__OneTimePreKey **src, size_t len) {
+bool safe_one_time_pre_key_list(Skissm__OneTimePreKey **src, size_t len) {
     if (len > 0 && src == NULL)
         return false;
     if (len == 0 && src != NULL)
@@ -243,7 +243,7 @@ bool safe_one_time_pre_key_list(const Skissm__OneTimePreKey **src, size_t len) {
     return true;
 }
 
-bool safe_unregistered_account(const Skissm__Account *src) {
+bool safe_unregistered_account(Skissm__Account *src) {
     if (src->version == NULL) {
         return false;
     }
@@ -273,7 +273,7 @@ bool safe_unregistered_account(const Skissm__Account *src) {
     return true;
 }
 
-bool safe_registered_account(const Skissm__Account *src) {
+bool safe_registered_account(Skissm__Account *src) {
     if (src->version == NULL) {
         return false;
     }
@@ -318,7 +318,7 @@ bool safe_chain_key(const Skissm__ChainKey *chain_key) {
     }
 }
 
-bool safe_sender_chain(const Skissm__SenderChainNode *sender_chain) {
+bool safe_sender_chain(Skissm__SenderChainNode *sender_chain) {
     if (sender_chain != NULL) {
         if (!safe_protobuf(&(sender_chain->our_ratchet_public_key))) {
             return false;
@@ -332,7 +332,7 @@ bool safe_sender_chain(const Skissm__SenderChainNode *sender_chain) {
     }
 }
 
-bool safe_receiver_chain(const Skissm__ReceiverChainNode *receiver_chain) {
+bool safe_receiver_chain(Skissm__ReceiverChainNode *receiver_chain) {
     if (receiver_chain != NULL) {
         if (!safe_protobuf(&(receiver_chain->our_ratchet_private_key))) {
             return false;
@@ -346,7 +346,7 @@ bool safe_receiver_chain(const Skissm__ReceiverChainNode *receiver_chain) {
     }
 }
 
-bool safe_skipped_msg_key_node(const Skissm__SkippedMsgKeyNode *skipped_msg_key_node) {
+bool safe_skipped_msg_key_node(Skissm__SkippedMsgKeyNode *skipped_msg_key_node) {
     if (skipped_msg_key_node != NULL) {
         if (!safe_protobuf(&(skipped_msg_key_node->ratchet_key_public))) {
             return false;
@@ -358,7 +358,7 @@ bool safe_skipped_msg_key_node(const Skissm__SkippedMsgKeyNode *skipped_msg_key_
 }
 
 bool safe_skipped_msg_key_list(
-    const Skissm__SkippedMsgKeyNode **skipped_msg_key_list,
+    Skissm__SkippedMsgKeyNode **skipped_msg_key_list,
     size_t skipped_msg_key_list_len
 ) {
     if (skipped_msg_key_list_len == 0 && skipped_msg_key_list != NULL) {
@@ -409,7 +409,7 @@ bool safe_ratchet(const Skissm__Ratchet *ratchet) {
     return true;
 }
 
-bool safe_uncompleted_session(const Skissm__Session *src) {
+bool safe_uncompleted_session(Skissm__Session *src) {
     if (src != NULL) {
         if (!nonempty_string(src->version)) {
             return false;
@@ -445,7 +445,7 @@ bool safe_uncompleted_session(const Skissm__Session *src) {
     return true;
 }
 
-bool safe_completed_session(const Skissm__Session *src) {
+bool safe_completed_session(Skissm__Session *src) {
     if (src != NULL) {
         if (!nonempty_string(src->version)) {
             return false;
@@ -487,7 +487,7 @@ bool safe_completed_session(const Skissm__Session *src) {
     return true;
 }
 
-bool safe_identity_key_public(const Skissm__IdentityKeyPublic *src) {
+bool safe_identity_key_public(Skissm__IdentityKeyPublic *src) {
     if (src != NULL) {
         if (!safe_protobuf(&(src->asym_public_key))) {
             return false;
@@ -502,7 +502,7 @@ bool safe_identity_key_public(const Skissm__IdentityKeyPublic *src) {
     return true;
 }
 
-bool safe_signed_pre_key_public(const Skissm__SignedPreKeyPublic *src) {
+bool safe_signed_pre_key_public(Skissm__SignedPreKeyPublic *src) {
     if (src != NULL) {
         if (!safe_protobuf(&(src->public_key))) {
             return false;
@@ -517,7 +517,7 @@ bool safe_signed_pre_key_public(const Skissm__SignedPreKeyPublic *src) {
     return true;
 }
 
-bool safe_one_time_pre_key_public(const Skissm__OneTimePreKeyPublic *src) {
+bool safe_one_time_pre_key_public(Skissm__OneTimePreKeyPublic *src) {
     if (src != NULL) {
         if (!safe_protobuf(&(src->public_key))) {
             return false;
@@ -529,7 +529,7 @@ bool safe_one_time_pre_key_public(const Skissm__OneTimePreKeyPublic *src) {
     return true;
 }
 
-bool safe_pre_key_bundle(const Skissm__PreKeyBundle *src) {
+bool safe_pre_key_bundle(Skissm__PreKeyBundle *src) {
     if (src != NULL) {
         if (!safe_address(src->user_address)) {
             return false;
@@ -550,7 +550,7 @@ bool safe_pre_key_bundle(const Skissm__PreKeyBundle *src) {
     return true;
 }
 
-bool safe_pre_key_bundle_list(const Skissm__PreKeyBundle **src, size_t len) {
+bool safe_pre_key_bundle_list(Skissm__PreKeyBundle **src, size_t len) {
     if (len > 0 && src == NULL)
         return false;
     if (len == 0 && src != NULL)
@@ -583,7 +583,7 @@ bool safe_one2one_msg_payload(const Skissm__One2oneMsgPayload *payload) {
     return true;
 }
 
-bool safe_group_member(const Skissm__GroupMember *src) {
+bool safe_group_member(Skissm__GroupMember *src) {
     if (src != NULL) {
         if (!nonempty_string(src->user_id)) {
             return false;
@@ -605,7 +605,7 @@ bool safe_group_member(const Skissm__GroupMember *src) {
     return true;
 }
 
-bool safe_group_member_list(const Skissm__GroupMember **src, size_t len) {
+bool safe_group_member_list(Skissm__GroupMember **src, size_t len) {
     if (len > 0 && src == NULL)
         return false;
     if (len == 0 && src != NULL)
@@ -653,7 +653,73 @@ bool safe_group_info_list(const Skissm__GroupInfo **src, size_t len) {
     return true;
 }
 
-bool safe_register_user_response(const Skissm__RegisterUserResponse *src) {
+bool safe_group_member_info(const Skissm__GroupMemberInfo *src) {
+    if (src != NULL) {
+        if (!safe_address(src->member_address)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->sign_public_key))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_group_member_info_list(const Skissm__GroupMemberInfo **src, size_t len) {
+    if (len > 0 && src == NULL)
+        return false;
+    if (len == 0 && src != NULL)
+        return false;
+    size_t i;
+    for (i = 0; i < len; i++) {
+        if (!safe_group_member_info(src[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool safe_group_session(Skissm__GroupSession *src) {
+    if (src != NULL) {
+        if (!nonempty_string(src->version)) {
+            return false;
+        }
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!nonempty_string(src->session_id)) {
+            return false;
+        }
+        if (!safe_address(src->sender)) {
+            return false;
+        }
+        if (!safe_address(src->session_owner)) {
+            return false;
+        }
+        if (!safe_group_info(src->group_info)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->chain_key))) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->group_seed))) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->associated_data))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_register_user_response(Skissm__RegisterUserResponse *src) {
     if (src != NULL) {
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             return false;
@@ -686,7 +752,7 @@ bool safe_register_user_response(const Skissm__RegisterUserResponse *src) {
     return true;
 }
 
-bool safe_publish_spk_response(const Skissm__PublishSpkResponse *src) {
+bool safe_publish_spk_response(Skissm__PublishSpkResponse *src) {
     if (src != NULL) {
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             return false;
@@ -698,7 +764,7 @@ bool safe_publish_spk_response(const Skissm__PublishSpkResponse *src) {
     return true;
 }
 
-bool safe_get_pre_key_bundle_response(const Skissm__GetPreKeyBundleResponse *src) {
+bool safe_get_pre_key_bundle_response(Skissm__GetPreKeyBundleResponse *src) {
     if (src != NULL) {
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             return false;
@@ -716,7 +782,7 @@ bool safe_get_pre_key_bundle_response(const Skissm__GetPreKeyBundleResponse *src
     return true;
 }
 
-bool safe_invite_response(const Skissm__InviteResponse *src) {
+bool safe_invite_response(Skissm__InviteResponse *src) {
     if (src != NULL) {
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             return false;
@@ -731,7 +797,115 @@ bool safe_invite_response(const Skissm__InviteResponse *src) {
     return true;
 }
 
-bool safe_accept_response(const Skissm__AcceptResponse *src) {
+bool safe_accept_response(Skissm__AcceptResponse *src) {
+    if (src != NULL) {
+        if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_create_group_response(Skissm__CreateGroupResponse *src) {
+    if (src != NULL) {
+        if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            return false;
+        }
+        if (!safe_address(src->group_address)) {
+            return false;
+        }
+        if (!safe_group_member_info_list(src->member_info_list, src->n_member_info_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_add_group_members_response(Skissm__AddGroupMembersResponse *src) {
+    if (src != NULL) {
+        if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            return false;
+        }
+        if (!safe_group_member_list(src->added_group_member_list, src->n_added_group_member_list)) {
+            return false;
+        }
+        if (!safe_group_member_list(src->group_member_list, src->n_group_member_list)) {
+            return false;
+        }
+        if (!safe_group_member_info_list(src->adding_member_info_list, src->n_adding_member_info_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_add_group_member_device_response(Skissm__AddGroupMemberDeviceResponse *src) {
+    if (src != NULL) {
+        if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            return false;
+        }
+        if (!safe_group_member_list(src->group_member_list, src->n_group_member_list)) {
+            return false;
+        }
+        if (!safe_group_member_info(src->adding_member_device_info)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_remove_group_members_response(Skissm__RemoveGroupMembersResponse *src) {
+    if (src != NULL) {
+        if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            return false;
+        }
+        if (!safe_group_member_list(src->removed_group_member_list, src->n_removed_group_member_list)) {
+            return false;
+        }
+        if (!safe_group_member_list(src->group_member_list, src->n_group_member_list)) {
+            return false;
+        }
+        if (!safe_group_member_info_list(src->member_info_list, src->n_member_info_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_leave_group_response(Skissm__LeaveGroupResponse *src) {
+    if (src != NULL) {
+        if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            return false;
+        }
+        if (!safe_address(src->leave_group_member_address)) {
+            return false;
+        }
+        if (!safe_address(src->group_address)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_send_group_msg_response(Skissm__SendGroupMsgResponse *src) {
     if (src != NULL) {
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             return false;

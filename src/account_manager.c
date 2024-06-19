@@ -44,7 +44,7 @@ int produce_register_request(Skissm__RegisterUserRequest **request_out, Skissm__
         signed_pre_key = account->signed_pre_key;
         signed_pre_key_pair = signed_pre_key->key_pair;
     } else {
-        ssm_notify_log(NULL, BAD_ACCOUNT, "produce_register_request() bad account");
+        ssm_notify_log(NULL, BAD_ACCOUNT, "produce_register_request()");
         ret = -1;
     }
 
@@ -93,10 +93,11 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
     char *auth = NULL;
 
     if (!safe_unregistered_account(account)) {
-        ssm_notify_log(NULL, BAD_ACCOUNT, "consume_register_response() bad account");
+        ssm_notify_log(NULL, BAD_ACCOUNT, "consume_register_response()");
         ret = -1;
     }
     if (!safe_register_user_response(response)) {
+        ssm_notify_log(NULL, BAD_RESPONSE, "consume_register_response()");
         ret = -1;
     }
 
@@ -200,26 +201,11 @@ int produce_publish_spk_request(
     Skissm__SignedPreKey *signed_pre_key = NULL;
     Skissm__KeyPair *signed_pre_key_pair = NULL;
 
-    if (account != NULL) {
-        if (account->address == NULL) 
-            ret = -1;
-        if (account->signed_pre_key != NULL) {
-            signed_pre_key = account->signed_pre_key;
-            if (signed_pre_key->key_pair != NULL) {
-                signed_pre_key_pair = signed_pre_key->key_pair;
-                if (!safe_protobuf(&(signed_pre_key_pair->public_key))) {
-                    ret = -1;
-                }
-            } else {
-                ret = -1;
-            }
-            if (!safe_protobuf(&(signed_pre_key->signature))) {
-                ret = -1;
-            }
-        } else {
-            ret = -1;
-        }
+    if (safe_registered_account(account)) {
+        signed_pre_key = account->signed_pre_key;
+        signed_pre_key_pair = signed_pre_key->key_pair;
     } else {
+        ssm_notify_log(NULL, BAD_ACCOUNT, "produce_publish_spk_request()");
         ret = -1;
     }
 
@@ -250,16 +236,11 @@ int consume_publish_spk_response(
     int ret = 0;
 
     if (!safe_publish_spk_response(response)) {
+        ssm_notify_log(NULL, BAD_RESPONSE, "consume_publish_spk_response()");
         ret = -1;
     }
-    if (account != NULL) {
-        if (!safe_address(account->address)) {
-            ret = -1;
-        }
-        if (!safe_signed_pre_key(account->signed_pre_key)) {
-            ret = -1;
-        }
-    } else {
+    if (!safe_registered_account(account)) {
+        ssm_notify_log(NULL, BAD_ACCOUNT, "consume_publish_spk_response()");
         ret = -1;
     }
 
@@ -290,7 +271,7 @@ int produce_supply_opks_request(
         e2ee_pack_id = account->e2ee_pack_id;
         cur_opk_id = account->next_one_time_pre_key_id;
     } else {
-        ssm_notify_log(NULL, BAD_ACCOUNT, "produce_supply_opks_request() bad account");
+        ssm_notify_log(NULL, BAD_ACCOUNT, "produce_supply_opks_request()");
         ret = -1;
     }
 
