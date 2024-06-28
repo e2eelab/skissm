@@ -146,7 +146,7 @@ extern "C" {
 #define E2EE_PACK_ALG_KEM_MCELIECE8192128                    97
 #define E2EE_PACK_ALG_KEM_MCELIECE8192128F                   101
 
-#define E2EE_PACK_ALG_SYMMETRIC_KEY_AES256                   0
+#define E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM                0
 
 #define E2EE_PACK_ALG_HASH_SHA2_224                          0
 #define E2EE_PACK_ALG_HASH_SHA2_256                          1

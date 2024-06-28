@@ -58,7 +58,7 @@ static void test_ecc_alice_to_bob() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -150,7 +150,7 @@ static void test_ecc_bob_to_alice() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -242,7 +242,7 @@ static void test_ecc_interaction_alice_first() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -356,7 +356,7 @@ static void test_ecc_interaction_bob_first() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -470,7 +470,7 @@ static void test_ecc_out_of_order() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -584,7 +584,7 @@ static void test_ecc_continual_message() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -686,7 +686,7 @@ static void test_pqc_alice_to_bob() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -778,7 +778,7 @@ static void test_pqc_bob_to_alice() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -870,7 +870,7 @@ static void test_pqc_interaction_alice_first() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -984,7 +984,7 @@ static void test_pqc_interaction_bob_first() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -1098,7 +1098,7 @@ static void test_pqc_out_of_order() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -1212,7 +1212,7 @@ static void test_pqc_continual_message() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -1314,7 +1314,7 @@ static void test_pqc_interaction_v2() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -1446,7 +1446,7 @@ static void test_pqc_out_of_order_v2() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;

@@ -174,7 +174,7 @@ static uint32_t mock_e2ee_pack_id(unsigned digital_signature_choice, unsigned ke
             0,
             digital_signature_choice,
             kem_choice,
-            E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+            E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
             E2EE_PACK_ALG_HASH_SHA2_256
     );
 }
@@ -244,7 +244,7 @@ static void test_e2ee_pack_id() {
             0,
             E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
             E2EE_PACK_ALG_KEM_KYBER1024,
-            E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+            E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
             E2EE_PACK_ALG_HASH_SHA2_256
     );
 
@@ -254,7 +254,7 @@ static void test_e2ee_pack_id() {
     e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(default_2ee_pack_id_raw);
     assert(e2ee_pack_id.digital_signature == E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5);
     assert(e2ee_pack_id.kem == E2EE_PACK_ALG_KEM_KYBER1024);
-    assert(e2ee_pack_id.symmetric_encryption == E2EE_PACK_ALG_SYMMETRIC_KEY_AES256);
+    assert(e2ee_pack_id.symmetric_encryption == E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM);
     assert(e2ee_pack_id.hash == E2EE_PACK_ALG_HASH_SHA2_256);
     printf("default_2ee_pack_id_raw to e2ee_pack_id test ok\n");
 

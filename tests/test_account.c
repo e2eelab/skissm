@@ -73,7 +73,7 @@ static void create_account_test() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
 
@@ -166,7 +166,7 @@ static void test_register_user() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     const char *user_name = "alice";
@@ -196,7 +196,7 @@ static void test_publish_spk() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     const char *user_name = "alice";
@@ -252,7 +252,7 @@ static void test_supply_opks() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     const char *user_name = "alice";
@@ -301,7 +301,7 @@ static void test_free_opks() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     const char *user_name = "alice";

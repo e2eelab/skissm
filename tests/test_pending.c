@@ -59,7 +59,7 @@ static void test_one_group_pre_key() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
@@ -304,7 +304,7 @@ static void test_pending_request_data() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
         E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
 
@@ -372,7 +372,7 @@ static void test_sending_before_accept() {
         0,
         E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
         E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
     char *alice_device_id = generate_uuid_str();

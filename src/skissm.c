@@ -166,7 +166,7 @@ kem_suite_t *get_kem_suite(unsigned kem_id) {
 }
 
 symmetric_encryption_suite_t *get_symmetric_encryption_suite(unsigned symmetric_encryption_id) {
-    if (symmetric_encryption_id == E2EE_PACK_ALG_SYMMETRIC_KEY_AES256) {
+    if (symmetric_encryption_id == E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM) {
         return &E2EE_AES256_SHA256;
     } else {
         return NULL;
