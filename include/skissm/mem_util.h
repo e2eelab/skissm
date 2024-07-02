@@ -199,6 +199,30 @@ void copy_spk_from_spk(Skissm__SignedPreKey **dest, Skissm__SignedPreKey *src);
 void copy_opks_from_opks(Skissm__OneTimePreKey ***dest, Skissm__OneTimePreKey **src, size_t opk_num);
 
 /**
+ * @brief Copy Skissm__Subject from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_subject_from_subject(Skissm__Subject **dest, Skissm__Subject *src);
+
+/**
+ * @brief Copy Skissm__Cert from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_cert_from_cert(Skissm__Cert **dest, Skissm__Cert *src);
+
+/**
+ * @brief Copy Skissm__Certificate from src to dest.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_certificate_from_certificate(Skissm__Certificate **dest, Skissm__Certificate *src);
+
+/**
  * @brief Copy Skissm__Account from src to dest.
  *
  * @param dest

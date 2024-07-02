@@ -254,6 +254,48 @@ void copy_opks_from_opks(Skissm__OneTimePreKey ***dest, Skissm__OneTimePreKey **
     }
 }
 
+///-----------------copy certificate-----------------///
+
+void copy_subject_from_subject(Skissm__Subject **dest, Skissm__Subject *src) {
+    *dest = (Skissm__Subject *)malloc(sizeof(Skissm__Subject));
+    skissm__subject__init(*dest);
+    (*dest)->cn = strdup(src->cn);
+    (*dest)->domain = strdup(src->domain);
+    (*dest)->o = strdup(src->o);
+    size_t n_ou = src->n_ou;
+    (*dest)->n_ou = n_ou;
+    (*dest)->ou = (char **)malloc(sizeof(char *) * n_ou);
+    size_t i;
+    for (i = 0; i < n_ou; i++) {
+        ((*dest)->ou)[i] = strdup((src->ou)[i]);
+    }
+}
+
+void copy_cert_from_cert(Skissm__Cert **dest, Skissm__Cert *src) {
+    *dest = (Skissm__Cert *)malloc(sizeof(Skissm__Cert));
+    skissm__cert__init(*dest);
+    copy_subject_from_subject(&((*dest)->issuee), src->issuee);
+    (*dest)->public_key_alg = src->public_key_alg;
+    copy_protobuf_from_protobuf(&((*dest)->public_key), &(src->public_key));
+    copy_subject_from_subject(&((*dest)->issuer), src->issuer);
+    (*dest)->not_before = src->not_before;
+    (*dest)->not_after = src->not_after;
+}
+
+void copy_certificate_from_certificate(Skissm__Certificate **dest, Skissm__Certificate *src) {
+    *dest = (Skissm__Certificate *)malloc(sizeof(Skissm__Certificate));
+    skissm__certificate__init(*dest);
+    (*dest)->version = src->version;
+    (*dest)->hash_alg = src->hash_alg;
+    (*dest)->signing_alg = src->signing_alg;
+    copy_cert_from_cert(&((*dest)->cert), src->cert);
+    copy_protobuf_from_protobuf(&((*dest)->cert_fingerprint), &(src->cert_fingerprint));
+    copy_protobuf_from_protobuf(&((*dest)->signing_public_key_fingerprint), &(src->signing_public_key_fingerprint));
+    copy_protobuf_from_protobuf(&((*dest)->signature), &(src->signature));
+    (*dest)->ts = src->ts;
+    (*dest)->valid = src->valid;
+}
+
 ///-----------------copy account-----------------///
 
 void copy_account_from_account(Skissm__Account **dest, Skissm__Account *src) {

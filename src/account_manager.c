@@ -61,6 +61,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
     if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
         // insert the address the server gave to our account
         copy_address_from_address(&(account->address), response->address);
+        copy_certificate_from_certificate(&(account->server_cert), response->server_cert);
         account->saved = true;
         account->password = strdup(response->password);
         account->auth = strdup(response->auth);
