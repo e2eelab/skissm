@@ -171,11 +171,11 @@ static void test_end(){
 
 static uint32_t mock_e2ee_pack_id(unsigned digital_signature_choice, unsigned kem_choice) {
     return gen_e2ee_pack_id_raw(
-            0,
-            digital_signature_choice,
-            kem_choice,
-            E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-            E2EE_PACK_ALG_HASH_SHA2_256
+        0,
+        digital_signature_choice,
+        kem_choice,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
+        E2EE_PACK_ALG_HASH_SHA2_256
     );
 }
 
@@ -227,9 +227,11 @@ static void test_encryption(
 ) {
     // send encrypted msg
     Skissm__SendOne2oneMsgResponse *response = NULL;
-    response = send_one2one_msg(from_address, to_user_id, to_domain, 
-         SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
-        plaintext, plaintext_len);
+    response = send_one2one_msg(
+        from_address, to_user_id, to_domain, 
+        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
+        plaintext, plaintext_len
+    );
 
     // release
     if (response != NULL)
@@ -241,11 +243,11 @@ static void test_e2ee_pack_id() {
     printf("test_e2ee_pack_id begin!!!\n");
     uint32_t default_2ee_pack_id_raw  = 0x113101;
     uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_raw(
-            0,
-            E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
-            E2EE_PACK_ALG_KEM_KYBER1024,
-            E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-            E2EE_PACK_ALG_HASH_SHA2_256
+        0,
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
+        E2EE_PACK_ALG_KEM_KYBER1024,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
+        E2EE_PACK_ALG_HASH_SHA2_256
     );
 
     assert(e2ee_pack_id_raw == default_2ee_pack_id_raw);

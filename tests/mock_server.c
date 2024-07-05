@@ -18,6 +18,7 @@
  */
 #include "mock_server.h"
 
+#include <stdio.h>
 #include <string.h>
 
 #include "mock_server_sending.h"
@@ -27,6 +28,14 @@
 
 #define user_data_max 205
 #define group_data_max 8
+
+static Skissm__Certificate *central_certificate = NULL;
+
+static Skissm__Certificate *server_certificate = NULL;
+
+static Skissm__KeyPair *central_key_pair = NULL;
+
+static Skissm__KeyPair *server_key_pair = NULL;
 
 typedef struct user_data {
     char *authenticator;
@@ -245,6 +254,122 @@ static size_t find_group_data(uint8_t user_index, Skissm__GroupInfo ***group_inf
     return group_num;
 }
 
+void mock_certificate() {
+    FILE *fptr;
+    size_t data_len;
+    uint8_t *data = NULL;
+
+    // central private key
+    if ((fptr = fopen("./cert/central_private.txt", "r")) == NULL){
+        printf("Error! Opening file in the data folder failed!\n");
+        // program exits if the file pointer returns NULL.
+        exit(1);
+    } else {
+        central_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
+        skissm__key_pair__init(central_key_pair);
+
+        fseek(fptr, 0, SEEK_END);
+        data_len = ftell(fptr);
+        central_key_pair->private_key.len = data_len;
+        fseek(fptr, 0, SEEK_SET);
+        central_key_pair->private_key.data = (uint8_t *)malloc(sizeof(uint8_t) * data_len);
+        fread(central_key_pair->private_key.data, 1, data_len, fptr);
+        fclose(fptr);
+    }
+
+    // central certificate
+    if ((fptr = fopen("./cert/central_certificate.txt", "r")) == NULL){
+        printf("Error! Opening file in the data folder failed!\n");
+        // program exits if the file pointer returns NULL.
+        exit(1);
+    } else {
+        fseek(fptr, 0, SEEK_END);
+        data_len = ftell(fptr);
+        fseek(fptr, 0, SEEK_SET);
+        data = (uint8_t *) malloc(sizeof(uint8_t) * data_len);
+        fread(data, 1, data_len, fptr);
+        fclose(fptr);
+
+        central_certificate = skissm__certificate__unpack(NULL, data_len, data);
+
+        copy_protobuf_from_protobuf(&(central_key_pair->public_key), &(central_certificate->cert->public_key));
+
+        // release
+        free_mem((void **)&data, data_len);
+    }
+
+    // server private key
+    if ((fptr = fopen("./cert/test_private.txt", "r")) == NULL){
+        printf("Error! Opening file in the data folder failed!\n");
+        // program exits if the file pointer returns NULL.
+        exit(1);
+    } else {
+        server_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
+        skissm__key_pair__init(server_key_pair);
+
+        fseek(fptr, 0, SEEK_END);
+        data_len = ftell(fptr);
+        server_key_pair->private_key.len = data_len;
+        fseek(fptr, 0, SEEK_SET);
+        server_key_pair->private_key.data = (uint8_t *)malloc(sizeof(uint8_t) * data_len);
+        fread(server_key_pair->private_key.data, 1, data_len, fptr);
+        fclose(fptr);
+    }
+
+    // server certificate
+    if ((fptr = fopen("./cert/test_certificate.txt", "r")) == NULL){
+        printf("Error! Opening file in the data folder failed!\n");
+        // program exits if the file pointer returns NULL.
+        exit(1);
+    } else {
+        fseek(fptr, 0, SEEK_END);
+        data_len = ftell(fptr);
+        fseek(fptr, 0, SEEK_SET);
+        data = (uint8_t *) malloc(sizeof(uint8_t) * data_len);
+        fread(data, 1, data_len, fptr);
+        fclose(fptr);
+
+        server_certificate = skissm__certificate__unpack(NULL, data_len, data);
+
+        copy_protobuf_from_protobuf(&(server_key_pair->public_key), &(server_certificate->cert->public_key));
+
+        // release
+        free_mem((void **)&data, data_len);
+    }
+}
+
+void mock_server_signed_signature(
+    Skissm__ServerSignedSignature **out, uint8_t *msg, size_t msg_len
+) {
+    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_raw(
+        0,
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
+        E2EE_PACK_ALG_KEM_KYBER1024,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
+        E2EE_PACK_ALG_HASH_SHA2_256
+    );
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id_raw)->cipher_suite;
+    int sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
+
+    *out = (Skissm__ServerSignedSignature *)malloc(sizeof(Skissm__ServerSignedSignature));
+    skissm__server_signed_signature__init(*out);
+
+    (*out)->version = server_certificate->version;
+    (*out)->hash_alg = server_certificate->hash_alg;
+    (*out)->signing_alg = server_certificate->signing_alg;
+    copy_subject_from_subject(&((*out)->signer), server_certificate->cert->issuee);
+    copy_protobuf_from_protobuf(&((*out)->signing_public_key_fingerprint), &(server_certificate->signing_public_key_fingerprint));
+    copy_protobuf_from_array(&((*out)->msg_fingerprint), msg, msg_len);
+    // sign
+    size_t signature_out_len;
+    malloc_protobuf(&((*out)->signature), sig_len);
+    cipher_suite->digital_signature_suite->sign(
+        (*out)->signature.data, &signature_out_len,
+        msg, msg_len,
+        server_key_pair->private_key.data
+    );
+}
+
 void mock_server_begin() {
     uint8_t i, j;
     for (i = 0; i < user_data_max; i++) {
@@ -256,6 +381,7 @@ void mock_server_begin() {
             device_invited_record[i][j] = 0;
         }
     }
+    mock_certificate();
 }
 
 void mock_server_end() {
@@ -311,6 +437,22 @@ void mock_server_end() {
         group_data_set[i].group_members_num = 0;
     }
     group_data_set_insert_pos = 0;
+    if (central_certificate != NULL) {
+        skissm__certificate__free_unpacked(central_certificate, NULL);
+        central_certificate = NULL;
+    }
+    if (server_certificate != NULL) {
+        skissm__certificate__free_unpacked(server_certificate, NULL);
+        server_certificate = NULL;
+    }
+    if (central_key_pair != NULL) {
+        skissm__key_pair__free_unpacked(central_key_pair, NULL);
+        central_key_pair = NULL;
+    }
+    if (server_key_pair != NULL) {
+        skissm__key_pair__free_unpacked(server_key_pair, NULL);
+        server_key_pair = NULL;
+    }
 }
 
 Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request) {
@@ -362,6 +504,7 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
 
     user_data_set_insert_pos++;
 
+    // prepare response
     Skissm__RegisterUserResponse *response = (Skissm__RegisterUserResponse *)malloc(sizeof(Skissm__RegisterUserResponse));
     skissm__register_user_response__init(response);
     copy_address_from_address(&(response->address), cur_data->address);
@@ -395,8 +538,11 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
             copy_group_members(&(cur_group->group_member_list), group_info_list[i]->group_member_list, group_info_list[i]->n_group_member_list);
         }
     }
+    copy_certificate_from_certificate(&(response->server_cert), server_certificate);
 
     // send the new device message to other devices and users
+    uint8_t *msg = NULL;
+    size_t msg_len;
     for (j = 0; j < receiver_num; j++) {
         Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
         skissm__proto_msg__init(proto_msg);
@@ -414,10 +560,22 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
             copy_address_from_address(&((proto_msg->add_user_device_msg->old_address_list)[i]), other_device_address_list[i]);
         }
 
+        proto_msg_hash(
+            &msg, &msg_len,
+            NULL,
+            proto_msg->from,
+            proto_msg->to,
+            proto_msg->payload_case,
+            proto_msg->add_user_device_msg
+        );
+        proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+        mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
         send_proto_msg(proto_msg);
 
         // release
         skissm__proto_msg__free_unpacked(proto_msg, NULL);
+        free_mem((void **)&msg, msg_len);
     }
 
     // release
@@ -472,6 +630,8 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *fr
     response->pre_key_bundles = (Skissm__PreKeyBundle **)malloc(sizeof(Skissm__PreKeyBundle *) * user_device_num);
 
     size_t j;
+    uint8_t *msg = NULL;
+    size_t msg_len;
     for (j = 0; j < user_device_num; j++) {
         i = user_data_find[j];
         user_data *cur_data = &(user_data_set[i]);
@@ -495,6 +655,18 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *fr
         // release the one-time pre-key
         skissm__one_time_pre_key_public__free_unpacked(cur_data->one_time_pre_key_list[k], NULL);
         cur_data->one_time_pre_key_list[k] = NULL;
+
+        // generate server signed signature
+        pre_key_bundle_hash(
+            &msg, &msg_len,
+            response->pre_key_bundles[j]->user_address,
+            response->pre_key_bundles[j]->identity_key_public,
+            response->pre_key_bundles[j]->signed_pre_key_public,
+            response->pre_key_bundles[j]->one_time_pre_key_public
+        );
+        mock_server_signed_signature(&(response->pre_key_bundles[j]->signature), msg, msg_len);
+
+        free_mem((void **)&msg, msg_len);
     }
 
     response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
@@ -503,6 +675,9 @@ Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *fr
 }
 
 Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__InviteRequest *request) {
+    uint8_t *msg = NULL;
+    size_t msg_len;
+
     // prepare response
     Skissm__InviteResponse *response = (Skissm__InviteResponse *)malloc(sizeof(Skissm__InviteResponse));
     skissm__invite_response__init(response);
@@ -524,10 +699,22 @@ Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth,
         proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG;
         proto_msg->invite_msg = skissm__invite_msg__unpack(NULL, invite_msg_data_len, invite_msg_data);
 
+        proto_msg_hash(
+            &msg, &msg_len,
+            NULL,
+            proto_msg->from,
+            proto_msg->to,
+            proto_msg->payload_case,
+            proto_msg->invite_msg
+        );
+        proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+        mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
         send_proto_msg(proto_msg);
 
         // release
         skissm__proto_msg__free_unpacked(proto_msg, NULL);
+        free_mem((void **)&msg, msg_len);
 
         response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK;
     } else {
@@ -544,6 +731,8 @@ Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth,
     uint8_t accept_msg_data[accept_msg_data_len];
     skissm__accept_msg__pack(accept_msg, accept_msg_data);
 
+    uint8_t *msg = NULL;
+    size_t msg_len;
     // forward a copy of AcceptMsg
     Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
     skissm__proto_msg__init(proto_msg);
@@ -551,6 +740,17 @@ Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth,
     copy_address_from_address(&(proto_msg->to), accept_msg->to);
     proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_ACCEPT_MSG;
     proto_msg->accept_msg = skissm__accept_msg__unpack(NULL, accept_msg_data_len, accept_msg_data);
+
+    proto_msg_hash(
+        &msg, &msg_len,
+        NULL,
+        proto_msg->from,
+        proto_msg->to,
+        proto_msg->payload_case,
+        proto_msg->accept_msg
+    );
+    proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+    mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
 
     send_proto_msg(proto_msg);
 
@@ -567,6 +767,7 @@ Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth,
 
     // release
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
+    free_mem((void **)&msg, msg_len);
 
     // done
     return response;
@@ -651,6 +852,8 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from,
     uint8_t e2ee_msg_data[e2ee_msg_data_len];
     skissm__e2ee_msg__pack(e2ee_msg, e2ee_msg_data);
 
+    uint8_t *msg = NULL;
+    size_t msg_len;
     Skissm__ProtoMsg *proto_msg = NULL;
     // Skissm__ConsumeProtoMsgResponse *consume_proto_msg_response = NULL;
     // check if the receiver's device id exists
@@ -663,10 +866,22 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from,
         proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG;
         proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
 
+        proto_msg_hash(
+            &msg, &msg_len,
+            NULL,
+            proto_msg->from,
+            proto_msg->to,
+            proto_msg->payload_case,
+            proto_msg->e2ee_msg
+        );
+        proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+        mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
         send_proto_msg(proto_msg);
 
         // release
         skissm__proto_msg__free_unpacked(proto_msg, NULL);
+        free_mem((void **)&msg, msg_len);
     } else {
         Skissm__E2eeAddress **to_addresses = NULL;
         size_t to_address_num = find_device_addresses(e2ee_msg->to->user->user_id, &to_addresses);
@@ -680,10 +895,22 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from,
             proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG;
             proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
 
+            proto_msg_hash(
+                &msg, &msg_len,
+                NULL,
+                proto_msg->from,
+                proto_msg->to,
+                proto_msg->payload_case,
+                proto_msg->e2ee_msg
+            );
+            proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+            mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
             send_proto_msg(proto_msg);
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
+            free_mem((void **)&msg, msg_len);
         }
     }
 
@@ -785,6 +1012,8 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const 
     Skissm__E2eeAddress *sender_address = create_group_msg->sender_address;
     const char *sender_user_id = sender_address->user->user_id;
 
+    uint8_t *msg = NULL;
+    size_t msg_len;
     for (i = 0; i < group_members_num; i++) {
         ptr = index_address_list[i];
 
@@ -808,12 +1037,24 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const 
             proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_CREATE_GROUP_MSG;
             proto_msg->create_group_msg = skissm__create_group_msg__unpack(NULL, create_group_msg_data_len, create_group_msg_data);
 
+            proto_msg_hash(
+                &msg, &msg_len,
+                NULL,
+                proto_msg->from,
+                proto_msg->to,
+                proto_msg->payload_case,
+                proto_msg->create_group_msg
+            );
+            proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+            mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
             send_proto_msg(proto_msg);
 
             ptr = ptr->next;
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
+            free_mem((void **)&msg, msg_len);
         }
     }
 
@@ -966,6 +1207,8 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
     Skissm__E2eeAddress *sender_address = add_group_members_msg->sender_address;
     const char *sender_user_id = sender_address->user->user_id;
 
+    uint8_t *msg = NULL;
+    size_t msg_len;
     // send msg to all the other members in the group, including added members
     for (i = 0; i < new_group_members_num; i++) {
         ptr = index_address_list[i];
@@ -989,12 +1232,24 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
             proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBERS_MSG;
             proto_msg->add_group_members_msg = skissm__add_group_members_msg__unpack(NULL, add_group_members_msg_data_len, add_group_members_msg_data);
 
+            proto_msg_hash(
+                &msg, &msg_len,
+                NULL,
+                proto_msg->from,
+                proto_msg->to,
+                proto_msg->payload_case,
+                proto_msg->add_group_members_msg
+            );
+            proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+            mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
             send_proto_msg(proto_msg);
 
             ptr = ptr->next;
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
+            free_mem((void **)&msg, msg_len);
         }
     }
 
@@ -1114,6 +1369,8 @@ Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
     Skissm__E2eeAddress *sender_address = add_group_member_device_msg->sender_address;
     const char *sender_user_id = sender_address->user->user_id;
 
+    uint8_t *msg = NULL;
+    size_t msg_len;
     index_node *ptr;
     Skissm__E2eeAddress *to_member_address;
     uint8_t member_pos;
@@ -1142,12 +1399,24 @@ Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
                 NULL, add_group_member_device_msg_data_len, add_group_member_device_msg_data
             );
 
+            proto_msg_hash(
+                &msg, &msg_len,
+                NULL,
+                proto_msg->from,
+                proto_msg->to,
+                proto_msg->payload_case,
+                proto_msg->add_group_member_device_msg
+            );
+            proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+            mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
             send_proto_msg(proto_msg);
 
             ptr = ptr->next;
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
+            free_mem((void **)&msg, msg_len);
         }
     }
 
@@ -1307,6 +1576,8 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
     uint8_t remove_group_members_msg_data_to_remained[remove_group_members_msg_data_len_to_remained];
     skissm__remove_group_members_msg__pack(remove_group_members_msg_to_remained, remove_group_members_msg_data_to_remained);
 
+    uint8_t *msg = NULL;
+    size_t msg_len;
     // send to removed members
     for (i = 0; i < removed_group_members_num; i++) {
         ptr = removed_index_address_list[i];
@@ -1328,12 +1599,24 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
             proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_REMOVE_GROUP_MEMBERS_MSG;
             proto_msg->remove_group_members_msg = skissm__remove_group_members_msg__unpack(NULL, remove_group_members_msg_data_len_to_removed, remove_group_members_msg_data_to_removed);
 
+            proto_msg_hash(
+                &msg, &msg_len,
+                NULL,
+                proto_msg->from,
+                proto_msg->to,
+                proto_msg->payload_case,
+                proto_msg->remove_group_members_msg
+            );
+            proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+            mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
             send_proto_msg(proto_msg);
 
             ptr = ptr->next;
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
+            free_mem((void **)&msg, msg_len);
         }
     }
 
@@ -1358,12 +1641,24 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
             proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_REMOVE_GROUP_MEMBERS_MSG;
             proto_msg->remove_group_members_msg = skissm__remove_group_members_msg__unpack(NULL, remove_group_members_msg_data_len_to_remained, remove_group_members_msg_data_to_remained);
 
+            proto_msg_hash(
+                &msg, &msg_len,
+                NULL,
+                proto_msg->from,
+                proto_msg->to,
+                proto_msg->payload_case,
+                proto_msg->remove_group_members_msg
+            );
+            proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+            mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
             send_proto_msg(proto_msg);
 
             ptr = ptr->next;
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
+            free_mem((void **)&msg, msg_len);
         }
     }
 
@@ -1490,12 +1785,25 @@ Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, const ch
     uint8_t leave_group_msg_data[leave_group_msg_data_len];
     skissm__leave_group_msg__pack(leave_group_msg, leave_group_msg_data);
 
+    uint8_t *msg = NULL;
+    size_t msg_len;
     Skissm__ProtoMsg *proto_msg = (Skissm__ProtoMsg *)malloc(sizeof(Skissm__ProtoMsg));
     skissm__proto_msg__init(proto_msg);
     copy_address_from_address(&(proto_msg->from), sender_address);
     copy_address_from_address(&(proto_msg->to), group_manager_device_addresses[0]);
     proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_LEAVE_GROUP_MSG;
     proto_msg->leave_group_msg = skissm__leave_group_msg__unpack(NULL, leave_group_msg_data_len, leave_group_msg_data);
+
+    proto_msg_hash(
+        &msg, &msg_len,
+        NULL,
+        proto_msg->from,
+        proto_msg->to,
+        proto_msg->payload_case,
+        proto_msg->leave_group_msg
+    );
+    proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+    mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
 
     send_proto_msg(proto_msg);
 
@@ -1520,6 +1828,7 @@ Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, const ch
     free_mem((void **)&group_manager_device_addresses, sizeof(Skissm__E2eeAddress *) * group_manager_device_num);
 
     skissm__proto_msg__free_unpacked(proto_msg, NULL);
+    free_mem((void **)&msg, msg_len);
 
     return response;
 }
@@ -1555,6 +1864,8 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, con
 
     const char *sender_user_id = sender_address->user->user_id;
     size_t i, j;
+    uint8_t *msg = NULL;
+    size_t msg_len;
     for (i = 0; i < group_data_set[group_data_find].group_members_num; i++) {
         // send to other group members
         const char *member_user_id = cur_group_data->group_member_list[i]->user_id;
@@ -1574,10 +1885,22 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, con
             proto_msg->payload_case = SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG;
             proto_msg->e2ee_msg = skissm__e2ee_msg__unpack(NULL, e2ee_msg_data_len, e2ee_msg_data);
 
+            proto_msg_hash(
+                &msg, &msg_len,
+                NULL,
+                proto_msg->from,
+                proto_msg->to,
+                proto_msg->payload_case,
+                proto_msg->e2ee_msg
+            );
+            proto_msg->signature_list = (Skissm__ServerSignedSignature **)malloc(sizeof(Skissm__ServerSignedSignature *) * 1);
+            mock_server_signed_signature(&(proto_msg->signature_list[0]), msg, msg_len);
+
             send_proto_msg(proto_msg);
 
             // release
             skissm__proto_msg__free_unpacked(proto_msg, NULL);
+            free_mem((void **)&msg, msg_len);
             skissm__e2ee_address__free_unpacked(to_member_address, NULL);
         }
         // release

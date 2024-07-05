@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "skissm/account.h"
+#include "skissm/crypto.h"
 #include "skissm/mem_util.h"
 
 void print_hex(char *title, uint8_t *msg, size_t msg_len) {
@@ -562,6 +563,220 @@ void mock_one_time_pre_keypair(Skissm__OneTimePreKey **one_time_pre_keypair, uin
     mock_keypair(&((*one_time_pre_keypair)->key_pair), public_key, private_key);
     (*one_time_pre_keypair)->opk_id = opk_id;
     (*one_time_pre_keypair)->used = used;
+}
+
+void pre_key_bundle_hash(
+    uint8_t **out,
+    size_t *out_len,
+    Skissm__E2eeAddress *address,
+    Skissm__IdentityKeyPublic *ik,
+    Skissm__SignedPreKeyPublic *spk,
+    Skissm__OneTimePreKeyPublic *opk
+) {
+    uint8_t *address_data = NULL;
+    uint8_t *ik_data = NULL;
+    uint8_t *spk_data = NULL;
+    uint8_t *opk_data = NULL;
+    uint8_t *input = NULL;
+    size_t address_data_len, ik_data_len, spk_data_len, opk_data_len, input_len;
+
+    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_raw(
+        0,
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
+        E2EE_PACK_ALG_KEM_KYBER1024,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
+        E2EE_PACK_ALG_HASH_SHA2_256
+    );
+
+    address_data_len = skissm__e2ee_address__get_packed_size(address);
+    address_data = (uint8_t *)malloc(sizeof(uint8_t) * address_data_len);
+    skissm__e2ee_address__pack(address, address_data);
+
+    ik_data_len = skissm__identity_key_public__get_packed_size(ik);
+    ik_data = (uint8_t *)malloc(sizeof(uint8_t) * ik_data_len);
+    skissm__identity_key_public__pack(ik, ik_data);
+
+    spk_data_len = skissm__signed_pre_key_public__get_packed_size(spk);
+    spk_data = (uint8_t *)malloc(sizeof(uint8_t) * spk_data_len);
+    skissm__signed_pre_key_public__pack(spk, spk_data);
+
+    opk_data_len = skissm__one_time_pre_key_public__get_packed_size(opk);
+    opk_data = (uint8_t *)malloc(sizeof(uint8_t) * opk_data_len);
+    skissm__one_time_pre_key_public__pack(opk, opk_data);
+
+    input_len = address_data_len + ik_data_len + spk_data_len + opk_data_len;
+
+    input = (uint8_t *)malloc(sizeof(uint8_t) * input_len);
+    memcpy(input, address_data, address_data_len);
+    memcpy(input + address_data_len, ik_data, ik_data_len);
+    memcpy(input + address_data_len + ik_data_len, spk_data, spk_data_len);
+    memcpy(input + address_data_len + ik_data_len + spk_data_len, opk_data, opk_data_len);
+
+    crypto_hash_by_e2ee_pack_id(e2ee_pack_id_raw, input, input_len, out, out_len);
+
+    // release
+    free_mem((void **)&address_data, address_data_len);
+    free_mem((void **)&ik_data, ik_data_len);
+    free_mem((void **)&spk_data, spk_data_len);
+    free_mem((void **)&opk_data, opk_data_len);
+    free_mem((void **)&input, input_len);
+}
+
+void proto_msg_hash(
+    uint8_t **out,
+    size_t *out_len,
+    Skissm__ProtoMsgTag *tag,
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    Skissm__ProtoMsg__PayloadCase payload_case,
+    void *payload
+) {
+    uint8_t *tag_data = NULL;
+    uint8_t *from_data = NULL;
+    uint8_t *to_data = NULL;
+    uint8_t *payload_data = NULL;
+    uint8_t *input = NULL;
+    size_t tag_data_len, from_data_len, to_data_len, payload_data_len, input_len;
+
+    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_raw(
+        0,
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
+        E2EE_PACK_ALG_KEM_KYBER1024,
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
+        E2EE_PACK_ALG_HASH_SHA2_256
+    );
+
+    if (tag != NULL) {
+        tag_data_len = skissm__proto_msg_tag__get_packed_size(tag);
+        tag_data = (uint8_t *)malloc(sizeof(uint8_t) * tag_data_len);
+        skissm__proto_msg_tag__pack(tag, tag_data);
+    } else {
+        tag_data_len = 0;
+    }
+
+    from_data_len = skissm__e2ee_address__get_packed_size(from);
+    from_data = (uint8_t *)malloc(sizeof(uint8_t) * from_data_len);
+    skissm__e2ee_address__pack(from, from_data);
+
+    to_data_len = skissm__e2ee_address__get_packed_size(to);
+    to_data = (uint8_t *)malloc(sizeof(uint8_t) * to_data_len);
+    skissm__e2ee_address__pack(to, to_data);
+
+    switch(payload_case) {
+        case SKISSM__PROTO_MSG__PAYLOAD_ACQUIRE_SYNC_MSG:
+            payload_data_len = skissm__acquire_sync_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__acquire_sync_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_SUPPLY_OPKS_MSG:
+            payload_data_len = skissm__supply_opks_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__supply_opks_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG:
+            payload_data_len = skissm__invite_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__invite_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_ACCEPT_MSG:
+            payload_data_len = skissm__accept_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__accept_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_ADD_USER_DEVICE_MSG:
+            payload_data_len = skissm__add_user_device_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__add_user_device_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_USER_DEVICE_MSG:
+            payload_data_len = skissm__remove_user_device_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__remove_user_device_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_CREATE_GROUP_MSG:
+            payload_data_len = skissm__create_group_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__create_group_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBERS_MSG:
+            payload_data_len = skissm__add_group_members_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__add_group_members_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBER_DEVICE_MSG:
+            payload_data_len = skissm__add_group_member_device_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__add_group_member_device_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_GROUP_MEMBERS_MSG:
+            payload_data_len = skissm__remove_group_members_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__remove_group_members_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_LEAVE_GROUP_MSG:
+            payload_data_len = skissm__leave_group_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__leave_group_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG:
+            payload_data_len = skissm__e2ee_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__e2ee_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_UPDATE_USER_MSG:
+            payload_data_len = skissm__update_user_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__update_user_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_FRIEND_MANAGER_MSG:
+            payload_data_len = skissm__friend_manager_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__friend_manager_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_GROUP_MANAGER_MSG:
+            payload_data_len = skissm__group_manager_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__group_manager_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_SYSTEM_MANAGER_MSG:
+            payload_data_len = skissm__system_manager_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__system_manager_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_CLIENT_HEARTBEAT_MSG:
+            payload_data_len = skissm__client_heartbeat_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__client_heartbeat_msg__pack(payload, payload_data);
+            break;
+        case SKISSM__PROTO_MSG__PAYLOAD_SERVER_HEARTBEAT_MSG:
+            payload_data_len = skissm__server_heartbeat_msg__get_packed_size(payload);
+            payload_data = (uint8_t *)malloc(sizeof(uint8_t) * payload_data_len);
+            skissm__server_heartbeat_msg__pack(payload, payload_data);
+            break;
+        default:
+            break;
+    };
+
+    input_len = tag_data_len + from_data_len + to_data_len + payload_data_len;
+
+    input = (uint8_t *)malloc(sizeof(uint8_t) * input_len);
+    if (tag_data_len != 0) {
+        memcpy(input, tag_data, tag_data_len);
+    }
+    memcpy(input + tag_data_len, from_data, from_data_len);
+    memcpy(input + tag_data_len + from_data_len, to_data, to_data_len);
+    memcpy(input + tag_data_len + from_data_len + to_data_len, payload_data, payload_data_len);
+
+    crypto_hash_by_e2ee_pack_id(e2ee_pack_id_raw, input, input_len, out, out_len);
+
+    // release
+    if (tag_data != NULL) {
+        free_mem((void **)&tag_data, tag_data_len);
+    }
+    free_mem((void **)&from_data, from_data_len);
+    free_mem((void **)&to_data, to_data_len);
+    free_mem((void **)&payload_data, payload_data_len);
+    free_mem((void **)&input, input_len);
 }
 
 void free_account(Skissm__Account *account) {

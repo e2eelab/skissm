@@ -63,6 +63,26 @@ void mock_identity_keypair(Skissm__IdentityKey **identity_keypair, const char *p
 void mock_signed_pre_keypair(Skissm__SignedPreKey **signed_pre_keypair, uint32_t spk_id, const char *public_key, const char *private_key, const char *signature);
 void mock_one_time_pre_keypair(Skissm__OneTimePreKey **one_time_pre_keypair, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key);
 
+// hash
+void pre_key_bundle_hash(
+    uint8_t **out,
+    size_t *out_len,
+    Skissm__E2eeAddress *address,
+    Skissm__IdentityKeyPublic *ik,
+    Skissm__SignedPreKeyPublic *spk,
+    Skissm__OneTimePreKeyPublic *opk
+);
+
+void proto_msg_hash(
+    uint8_t **out,
+    size_t *out_len,
+    Skissm__ProtoMsgTag *tag,
+    Skissm__E2eeAddress *from,
+    Skissm__E2eeAddress *to,
+    Skissm__ProtoMsg__PayloadCase payload_case,
+    void *payload
+);
+
 // free
 void free_account(Skissm__Account *account);
 void free_keypair(Skissm__KeyPair *keypair);
