@@ -482,14 +482,8 @@ int new_outbound_group_session_by_sender(
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
         // release
-        if (account != NULL) {
-            skissm__account__free_unpacked(account, NULL);
-            account = NULL;
-        }
-        if (auth != NULL) {
-            free(auth);
-            auth = NULL;
-        }
+        free_proto(account);
+        free_string(&auth);
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
         free_mem((void **)&group_pre_key_plaintext_data, sizeof(uint8_t) * group_pre_key_plaintext_data_len);
     }
@@ -583,10 +577,7 @@ int new_outbound_group_session_by_receiver(
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
         // release
-        if (account != NULL) {
-            skissm__account__free_unpacked(account, NULL);
-            account = NULL;
-        }
+        free_proto(account);
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
     }
 
@@ -714,10 +705,7 @@ int new_outbound_group_session_invited(
         }
 
         // release
-        if (account != NULL) {
-            skissm__account__free_unpacked(account, NULL);
-            account = NULL;
-        }
+        free_proto(account);
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
         for (i = 0; i < n_adding_member_info_list; i++) {
             free_protobuf(adding_members_chain_key[i]);
@@ -1492,14 +1480,8 @@ int renew_outbound_group_session_by_welcome_and_add(
         }
 
         // release
-        if (account != NULL) {
-            skissm__account__free_unpacked(account, NULL);
-            account = NULL;
-        }
-        if (auth != NULL) {
-            free(auth);
-            auth = NULL;
-        }
+        free_proto(account);
+        free_string(&auth);
         free_mem((void **)&group_ratchet_state_plaintext_data, sizeof(uint8_t) * group_ratchet_state_plaintext_data_len);
         free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
     }
@@ -1842,14 +1824,8 @@ int renew_group_sessions_with_new_device(
         }
 
         // release
-        if (account != NULL) {
-            skissm__account__free_unpacked(account, NULL);
-            account = NULL;
-        }
-        if (auth != NULL) {
-            free(auth);
-            auth = NULL;
-        }
+        free_proto(account);
+        free_string(&auth);
         free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
     }
 

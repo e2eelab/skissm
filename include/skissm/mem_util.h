@@ -29,6 +29,12 @@ extern "C" {
 
 #include "skissm/skissm.h"
 
+#define free_proto(name) \
+    if (name != NULL) { \
+        skissm__##name##__free_unpacked(name, NULL); \
+        name = NULL; \
+    }
+
 /** Check if two buffers are equal in constant time. */
 bool is_equal(const uint8_t *buffer_a, const uint8_t *buffer_b, size_t len);
 
@@ -100,7 +106,12 @@ bool compare_address(Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *addres
  * @return true
  * @return false
  */
-bool compare_group_member(Skissm__GroupMember **group_members_1, size_t group_member_num_1, Skissm__GroupMember **group_members_2, size_t group_member_num_2);
+bool compare_group_member(
+    Skissm__GroupMember **group_members_1,
+    size_t group_member_num_1,
+    Skissm__GroupMember **group_members_2,
+    size_t group_member_num_2
+);
 
 /**
  * @brief Initialize the ProtobufCBinaryData.
@@ -245,7 +256,11 @@ void copy_receiver_chain_from_receiver_chain(Skissm__ReceiverChainNode **dest, S
  * @param src
  * @param skipped_msg_keys_num
  */
-void copy_skipped_msg_keys_from_skipped_msg_keys(Skissm__SkippedMsgKeyNode ***dest, Skissm__SkippedMsgKeyNode **src, size_t skipped_msg_keys_num);
+void copy_skipped_msg_keys_from_skipped_msg_keys(
+    Skissm__SkippedMsgKeyNode ***dest,
+    Skissm__SkippedMsgKeyNode **src,
+    size_t skipped_msg_keys_num
+);
 
 /**
  * @brief Copy Skissm__Ratchet from src to dest.
@@ -377,7 +392,12 @@ void copy_leave_group_msg(Skissm__LeaveGroupMsg **dest, Skissm__LeaveGroupMsg *s
  * @param adding_members
  * @param adding_members_num
  */
-void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **adding_members, size_t adding_members_num);
+void add_group_members_to_group_info(
+    Skissm__GroupInfo **dest,
+    Skissm__GroupInfo *old_group_info,
+    Skissm__GroupMember **adding_members,
+    size_t adding_members_num
+);
 
 /**
  * @brief Remove some Skissm__GroupMember from old_group_info.
@@ -387,7 +407,12 @@ void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo
  * @param removing_members
  * @param removing_members_num
  */
-void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **removing_members, size_t removing_members_num);
+void remove_group_members_from_group_info(
+    Skissm__GroupInfo **dest,
+    Skissm__GroupInfo *old_group_info,
+    Skissm__GroupMember **removing_members,
+    size_t removing_members_num
+);
 
 /**
  * @brief Copy member info to group member.
@@ -405,8 +430,13 @@ Skissm__GroupMember *member_info_to_group_member(Skissm__GroupMemberInfo *member
  * @param member_list_num
  * @return
  */
-size_t member_info_to_group_members(Skissm__GroupMember ***dest, Skissm__GroupMemberInfo **member_info_list, size_t member_info_list_num,
-                                    Skissm__GroupMember **member_list, size_t member_list_num);
+size_t member_info_to_group_members(
+    Skissm__GroupMember ***dest,
+    Skissm__GroupMemberInfo **member_info_list,
+    size_t member_info_list_num,
+    Skissm__GroupMember **member_list,
+    size_t member_list_num
+);
 
 /**
  * @brief Release memory of Skissm__E2eeAddress array.
@@ -438,6 +468,13 @@ void free_protobuf(ProtobufCBinaryData *output);
  * @param protobuf_num
  */
 void free_protobuf_list(ProtobufCBinaryData **output, size_t protobuf_num);
+
+/**
+ * @brief Release a string.
+ *
+ * @param buffer
+ */
+void free_string(char **buffer);
 
 /**
  * @brief Release a memory block.

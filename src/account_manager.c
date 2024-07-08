@@ -337,11 +337,11 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
         return false;
     }
 
-    Skissm__SupplyOpksResponse *response = supply_opks_internal(account, opks_num);
+    Skissm__SupplyOpksResponse *supply_opks_response = supply_opks_internal(account, opks_num);
 
     // release
-    skissm__account__free_unpacked(account, NULL);
-    skissm__supply_opks_response__free_unpacked(response, NULL);
+    free_proto(account);
+    free_proto(supply_opks_response);
 
     // done
     return true;

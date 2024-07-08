@@ -45,7 +45,7 @@ int register_user(
     int ret = 0;
 
     Skissm__Account *account = NULL;
-    Skissm__RegisterUserRequest *request = NULL;
+    Skissm__RegisterUserRequest *register_user_request = NULL;
     Skissm__RegisterUserResponse *response = NULL;
 
     if (!safe_e2ee_pack_id(e2ee_pack_id)) {
@@ -80,18 +80,18 @@ int register_user(
 
     if (ret == 0) {
         // register account to server
-        ret = produce_register_request(&request, account);
+        ret = produce_register_request(&register_user_request, account);
     }
 
     if (ret == 0) {
-        request->user_name = strdup(user_name);
-        request->user_id = strdup(user_id);
-        request->device_id = strdup(device_id);
-        request->authenticator = strdup(authenticator);
-        request->auth_code = strdup(auth_code);
-        request->e2ee_pack_id = e2ee_pack_id;
+        register_user_request->user_name = strdup(user_name);
+        register_user_request->user_id = strdup(user_id);
+        register_user_request->device_id = strdup(device_id);
+        register_user_request->authenticator = strdup(authenticator);
+        register_user_request->auth_code = strdup(auth_code);
+        register_user_request->e2ee_pack_id = e2ee_pack_id;
 
-        response = get_skissm_plugin()->proto_handler.register_user(request);
+        response = get_skissm_plugin()->proto_handler.register_user(register_user_request);
 
         if (safe_register_user_response(response)) {
             bool consumed = consume_register_response(account, response);
@@ -106,14 +106,8 @@ int register_user(
     }
 
     // release
-    if (account != NULL) {
-        skissm__account__free_unpacked(account, NULL);
-        account = NULL;
-    }
-    if (request != NULL) {
-        skissm__register_user_request__free_unpacked(request, NULL);
-        request = NULL;
-    }
+    free_proto(account);
+    free_proto(register_user_request);
 
     // done
     return ret;
@@ -211,10 +205,7 @@ Skissm__InviteResponse *invite(
     }
 
     // release
-    if (auth != NULL) {
-        free(auth);
-        auth = NULL;
-    }
+    free_string(&auth);
 
     // done
     return invite_response;
@@ -579,14 +570,8 @@ int create_group(
     }
 
     // release
-    if (account != NULL) {
-        skissm__account__free_unpacked(account, NULL);
-        account = NULL;
-    }
-    if (auth != NULL) {
-        free(auth);
-        auth = NULL;
-    }
+    free_proto(account);
+    free_string(&auth);
     if (request != NULL) {
         skissm__create_group_request__free_unpacked(request, NULL);
         request = NULL;
@@ -681,10 +666,7 @@ int add_group_members(
     }
 
     // release
-    if (auth != NULL) {
-        free(auth);
-        auth = NULL;
-    }
+    free_string(&auth);
     if (request != NULL) {
         skissm__add_group_members_request__free_unpacked(request, NULL);
         request = NULL;
@@ -782,10 +764,7 @@ int remove_group_members(
     }
 
     // release
-    if (auth != NULL) {
-        free(auth);
-        auth = NULL;
-    }
+    free_string(&auth);
     if (request != NULL) {
         skissm__remove_group_members_request__free_unpacked(request, NULL);
         request = NULL;
@@ -862,10 +841,7 @@ int leave_group(
     }
 
     // release
-    if (auth != NULL) {
-        free(auth);
-        auth = NULL;
-    }
+    free_string(&auth);
     if (request != NULL) {
         skissm__leave_group_request__free_unpacked(request, NULL);
         request = NULL;
@@ -984,10 +960,7 @@ int send_group_msg_with_filter(
     }
 
     // release
-    if (auth != NULL) {
-        free(auth);
-        auth = NULL;
-    }
+    free_string(&auth);
     if (request != NULL) {
         skissm__send_group_msg_request__free_unpacked(request, NULL);
         request = NULL;
@@ -1032,7 +1005,7 @@ Skissm__ConsumeProtoMsgResponse *consume_proto_msg(Skissm__E2eeAddress *sender_a
     Skissm__ConsumeProtoMsgResponse *response = get_skissm_plugin()->proto_handler.consume_proto_msg(sender_address, auth, request);
 
     // release
-    free(auth);
+    free_string(&auth);
     skissm__consume_proto_msg_request__free_unpacked(request, NULL);
 
     // done
