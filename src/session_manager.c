@@ -74,7 +74,8 @@ int produce_get_pre_key_bundle_request(
     Skissm__GetPreKeyBundleRequest **request_out,
     const char *to_user_id,
     const char *to_domain,
-    const char *to_device_id
+    const char *to_device_id,
+    bool active
 ) {
     int ret = 0;
 
@@ -96,6 +97,7 @@ int produce_get_pre_key_bundle_request(
             // the device ID may be empty or nonempty
             request->device_id = strdup(to_device_id);
         }
+        request->active = active;
 
         *request_out = request;
     }
@@ -468,7 +470,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     }
 
                     // release
-                    free(auth);
+                    free_string(&auth);
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG) {
                     ssm_notify_other_device_msg(receiver_address, e2ee_msg->from, e2ee_msg->to, plaintext->common_sync_msg.data, plaintext->common_sync_msg.len);
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY_BUNDLE) {
@@ -842,7 +844,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         ssm_notify_inbound_session_ready(receiver_address, inbound_session);
     }
     // release
-    skissm__account__free_unpacked(account, NULL);
+    free_proto(account);
     skissm__session__free_unpacked(inbound_session, NULL);
 
     // done

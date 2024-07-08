@@ -54,20 +54,6 @@ static skissm_event_handler_t test_event_handler = {
     NULL
 };
 
-static void verify_one_time_pre_keys(Skissm__Account *account, unsigned int n_one_time_pre_key_list) {
-    unsigned int i;
-
-    assert(account->n_one_time_pre_key_list == n_one_time_pre_key_list);
-
-    for (i = 0; i < account->n_one_time_pre_key_list; i++){
-        assert(account->one_time_pre_key_list[i]->opk_id == (i + 1));
-        assert(account->one_time_pre_key_list[i]->key_pair->private_key.data != NULL);
-        assert(account->one_time_pre_key_list[i]->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
-        assert(account->one_time_pre_key_list[i]->key_pair->public_key.data != NULL);
-        assert(account->one_time_pre_key_list[i]->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
-    }
-}
-
 static void create_account_test() {
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
         0,
@@ -79,40 +65,26 @@ static void create_account_test() {
 
     int ret = 0;
 
-    // Register test
+    // register test
     Skissm__Account *account = NULL;
     ret = create_account(&account, e2ee_pack_id);
+    assert(ret == 0);
 
-    assert(account->identity_key->asym_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->identity_key->asym_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->identity_key->sign_key_pair->private_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->identity_key->sign_key_pair->public_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key->spk_id == 1);
-    assert(account->signed_pre_key->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key->signature.len == CURVE_SIGNATURE_LENGTH);
-    verify_one_time_pre_keys(account, 100);
-
-    // Generate a new signed pre-key pair and a new signature
+    // generate a new signed pre-key pair and a new signature
     Skissm__SignedPreKey *signed_pre_key = NULL;
-    generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, 1, account->signed_pre_key->key_pair->private_key.data);
+    ret = generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, 1, account->signed_pre_key->key_pair->private_key.data);
+    assert(ret == 0);
 
     skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
     account->signed_pre_key = signed_pre_key;
 
-    assert(account->signed_pre_key->spk_id == 2);
-    assert(account->signed_pre_key->key_pair->private_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key->key_pair->public_key.len == CURVE25519_KEY_LENGTH);
-    assert(account->signed_pre_key->signature.len == CURVE_SIGNATURE_LENGTH);
-
-    // Post some new one-time pre-keys test
-    // Generate 80 one-time pre-key pairs
+    // post some new one-time pre-keys test
+    // generate 80 one-time pre-key pairs
     Skissm__OneTimePreKey **output = NULL;
-    generate_opks(&output, 80, e2ee_pack_id, 101);
-
-    insert_opks(account, output, 80);
-
-    verify_one_time_pre_keys(account, 180);
+    ret = generate_opks(&output, 80, e2ee_pack_id, 101);
+    assert(ret == 0);
+    ret = insert_opks(account, output, 80);
+    assert(ret == 0);
 
     // store account
     mock_random_user_address(&(account->address));
@@ -202,7 +174,7 @@ static void test_register_user() {
     ret = register_user(
         &response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release

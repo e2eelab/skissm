@@ -98,10 +98,7 @@ int produce_create_group_request(
     }
 
     // done
-    if (account != NULL) {
-        skissm__account__free_unpacked(account, NULL);
-        account = NULL;
-    }
+    free_proto(account);
 
     return ret;
 }
@@ -302,10 +299,7 @@ int produce_add_group_members_request(
     }
 
     // done
-    if (account != NULL) {
-        skissm__account__free_unpacked(account, NULL);
-        account = NULL;
-    }
+    free_proto(account);
 
     return ret;
 }
@@ -472,10 +466,7 @@ int produce_add_group_member_device_request(
     }
 
     // done
-    if (account != NULL) {
-        skissm__account__free_unpacked(account, NULL);
-        account = NULL;
-    }
+    free_proto(account);
 
     return ret;
 }
@@ -686,10 +677,7 @@ int produce_remove_group_members_request(
     }
 
     // done
-    if (account != NULL) {
-        skissm__account__free_unpacked(account, NULL);
-        account = NULL;
-    }
+    free_proto(account);
 
     return ret;
 }
@@ -1097,10 +1085,7 @@ int produce_send_group_msg_request(
     }
     
     // release
-    if (account != NULL) {
-        skissm__account__free_unpacked(account, NULL);
-        account = NULL;
-    }
+    free_proto(account);
     if (identity_key != NULL) {
         skissm__identity_key__free_unpacked(identity_key, NULL);
         identity_key = NULL;

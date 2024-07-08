@@ -613,10 +613,7 @@ int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__Acc
     // release
     free_protobuf(their_ratchet_key);
     free_mem((void **)&their_ratchet_key, sizeof(ProtobufCBinaryData));
-    if (account != NULL) {
-        skissm__account__free_unpacked(account, NULL);
-        account = NULL;
-    }
+    free_proto(account);
 
     // done
     return 0;
