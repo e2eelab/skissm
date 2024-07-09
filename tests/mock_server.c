@@ -959,6 +959,7 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const 
     copy_group_members(&(cur_group_data->group_member_list), group_info->group_member_list, group_info->n_group_member_list);
 
     Skissm__E2eeAddress *group_address = cur_group_data->group_address;
+    group_address->group->group_name = strdup(group_info->group_name);
     size_t group_members_num = cur_group_data->group_members_num;
 
     // create create_group_msg

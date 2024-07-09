@@ -136,13 +136,7 @@ static void test_end(){
 }
 
 static void mock_alice_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
@@ -159,13 +153,7 @@ static void mock_alice_account(const char *user_name) {
 }
 
 static void mock_bob_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
@@ -182,13 +170,7 @@ static void mock_bob_account(const char *user_name) {
 }
 
 static void mock_alice_pqc_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
-        E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
@@ -205,13 +187,7 @@ static void mock_alice_pqc_account(const char *user_name) {
 }
 
 static void mock_bob_pqc_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
-        E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";

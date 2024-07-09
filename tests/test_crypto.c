@@ -224,29 +224,22 @@ static void test_encryption(
     uint8_t *plaintext, size_t plaintext_len
 ) {
     // send encrypted msg
-    Skissm__SendOne2oneMsgResponse *response = NULL;
-    response = send_one2one_msg(
+    Skissm__SendOne2oneMsgResponse *send_one2one_msg_response = NULL;
+    send_one2one_msg_response = send_one2one_msg(
         from_address, to_user_id, to_domain, 
         SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
         plaintext, plaintext_len
     );
 
     // release
-    if (response != NULL)
-        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+    free_proto(send_one2one_msg_response);
 }
 
 static void test_e2ee_pack_id() {
     // test start
     printf("test_e2ee_pack_id begin!!!\n");
     uint32_t default_2ee_pack_id_raw  = 0x113101;
-    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
-        E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_pqc();
 
     assert(e2ee_pack_id_raw == default_2ee_pack_id_raw);
     printf("default_2ee_pack_id_raw test ok: 0x%x\n", default_2ee_pack_id_raw);
@@ -303,7 +296,10 @@ static void test_one_to_one_session_selected() {
             test_encryption(bob_address, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
 
             // test stop
-            skissm__invite_response__free_unpacked(response, NULL);
+            if (response != NULL) {
+                skissm__invite_response__free_unpacked(response, NULL);
+                response = NULL;
+            }
             test_end();
             tear_down();
 

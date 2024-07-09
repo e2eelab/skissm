@@ -759,6 +759,7 @@ int consume_invite_response(
             inbound_session->invite_t = response->invite_t;
             get_skissm_plugin()->db_handler.store_session(inbound_session);
         } else {
+            ssm_notify_log(NULL, BAD_SESSION, "consume_invite_response()");
             ret = -1;
         }
     }

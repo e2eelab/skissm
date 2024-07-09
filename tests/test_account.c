@@ -55,13 +55,7 @@ static skissm_event_handler_t test_event_handler = {
 };
 
 static void create_account_test() {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
 
     int ret = 0;
 
@@ -97,8 +91,11 @@ static void create_account_test() {
     assert(is_equal_account(account, loaded_account));
 
     // release
-    skissm__account__free_unpacked(account, NULL);
-    skissm__account__free_unpacked(loaded_account, NULL);
+    free_proto(account);
+    if (loaded_account != NULL) {
+        skissm__account__free_unpacked(loaded_account, NULL);
+        loaded_account = NULL;
+    }
 }
 
 static void load_accounts_test(uint64_t num) {
@@ -157,13 +154,7 @@ static void test_register_user() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
@@ -191,27 +182,21 @@ static void test_publish_spk() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
     int ret = 0;
-    Skissm__RegisterUserResponse *response = NULL;
+    Skissm__RegisterUserResponse *register_user_response = NULL;
     ret = register_user(
-        &response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
+        &register_user_response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
     );
 
     // load account
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account);
+    get_skissm_plugin()->db_handler.load_account_by_address(register_user_response->address, &account);
     uint32_t old_spk_id = account->signed_pre_key->spk_id;
 
     // update the signed pre-key
@@ -228,9 +213,9 @@ static void test_publish_spk() {
     assert(new_spk_id == old_spk_id + 1);
 
     // release
-    skissm__register_user_response__free_unpacked(response, NULL);
-    skissm__account__free_unpacked(account, NULL);
-    skissm__publish_spk_response__free_unpacked(publish_spk_response, NULL);
+    free_proto(register_user_response);
+    free_proto(account);
+    free_proto(publish_spk_response);
 
     // test stop
     tear_down();
@@ -257,27 +242,21 @@ static void test_supply_opks() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
     int ret = 0;
-    Skissm__RegisterUserResponse *response = NULL;
+    Skissm__RegisterUserResponse *register_user_response = NULL;
     ret = register_user(
-        &response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
+        &register_user_response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
     );
 
     // load account
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account);
+    get_skissm_plugin()->db_handler.load_account_by_address(register_user_response->address, &account);
 
     // the server asks the client to supply some one-time pre-keys
     uint32_t supply_opks_num = 50;
@@ -290,14 +269,17 @@ static void test_supply_opks() {
 
     // assert
     Skissm__Account *account_new = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account_new);
+    get_skissm_plugin()->db_handler.load_account_by_address(register_user_response->address, &account_new);
     assert(account_new->n_one_time_pre_key_list == (100 + supply_opks_num));
 
     // release
-    skissm__register_user_response__free_unpacked(response, NULL);
-    skissm__account__free_unpacked(account, NULL);
-    skissm__account__free_unpacked(account_new, NULL);
-    skissm__proto_msg__free_unpacked(proto_msg, NULL);
+    free_proto(register_user_response);
+    free_proto(account);
+    if (account_new != NULL) {
+        skissm__account__free_unpacked(account_new, NULL);
+        account_new = NULL;
+    }
+    free_proto(proto_msg);
 
     // test stop
     tear_down();
@@ -310,27 +292,21 @@ static void test_free_opks() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
     const char *authenticator = "email";
     const char *auth_code = "123456";
     int ret = 0;
-    Skissm__RegisterUserResponse *response = NULL;
+    Skissm__RegisterUserResponse *register_user_response = NULL;
     ret = register_user(
-        &response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
+        &register_user_response, e2ee_pack_id, user_name, user_id, device_id, authenticator, auth_code
     );
 
     // load account
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account);
+    get_skissm_plugin()->db_handler.load_account_by_address(register_user_response->address, &account);
 
     size_t used_opks = 80;
     size_t i;
@@ -343,14 +319,17 @@ static void test_free_opks() {
 
     // load account
     Skissm__Account *account_new = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(response->address, &account_new);
+    get_skissm_plugin()->db_handler.load_account_by_address(register_user_response->address, &account_new);
     assert(account_new->n_one_time_pre_key_list == (100 - used_opks));
     assert(account_new->one_time_pre_key_list[100 - used_opks] == NULL);
 
     // release
-    skissm__register_user_response__free_unpacked(response, NULL);
-    skissm__account__free_unpacked(account, NULL);
-    skissm__account__free_unpacked(account_new, NULL);
+    free_proto(register_user_response);
+    free_proto(account);
+    if (account_new != NULL) {
+        skissm__account__free_unpacked(account_new, NULL);
+        account_new = NULL;
+    }
 
     // test stop
     tear_down();

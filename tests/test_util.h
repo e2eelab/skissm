@@ -25,6 +25,24 @@
 #define TEST_E2EE_PACK_ID_ECC       "0"
 #define TEST_E2EE_PACK_ID_PQC       "1"
 
+#define gen_e2ee_pack_id_ecc() \
+    gen_e2ee_pack_id_raw( \
+        0, \
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519, \
+        E2EE_PACK_ALG_KEM_CURVE25519, \
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256, \
+        E2EE_PACK_ALG_HASH_SHA2_256 \
+    )
+
+#define gen_e2ee_pack_id_pqc() \
+    gen_e2ee_pack_id_raw( \
+        0, \
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5, \
+        E2EE_PACK_ALG_KEM_KYBER1024, \
+        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256, \
+        E2EE_PACK_ALG_HASH_SHA2_256 \
+    )
+
 // debug msg to console
 void print_hex(char *title, uint8_t *msg, size_t msg_len);
 void print_msg(char *title, uint8_t *msg, size_t len);

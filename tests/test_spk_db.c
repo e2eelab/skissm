@@ -160,13 +160,7 @@ void test_remove_expired_signed_pre_key(uint32_t e2ee_pack_id){
 }
 
 int main(){
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
 
     test_load_old_signed_pre_key(e2ee_pack_id);
     test_remove_expired_signed_pre_key(e2ee_pack_id);
