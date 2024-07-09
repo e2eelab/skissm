@@ -53,9 +53,9 @@ int produce_create_group_request(
  * @param group_members
  * @param group_members_num
  * @param response
- * @return true for success
+ * @return 0 if success
  */
-bool consume_create_group_response(
+int consume_create_group_response(
     uint32_t e2ee_pack_id,
     Skissm__E2eeAddress *sender_address,
     const char *group_name,
@@ -103,9 +103,9 @@ int produce_add_group_members_request(
  * @param response
  * @param adding_members
  * @param adding_members_num
- * @return true for success
+ * @return 0 if success
  */
-bool consume_add_group_members_response(
+int consume_add_group_members_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__AddGroupMembersResponse *response,
     Skissm__GroupMember **adding_members,
@@ -140,9 +140,9 @@ int produce_add_group_member_device_request(
  * @brief Process an incoming AddGroupMemberDeviceResponse message.
  * @param outbound_group_session
  * @param response
- * @return true for success
+ * @return 0 if success
  */
-bool consume_add_group_member_device_response(
+int consume_add_group_member_device_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__AddGroupMemberDeviceResponse *response
 );
@@ -179,9 +179,9 @@ int produce_remove_group_members_request(
  * @param response
  * @param removing_members
  * @param removing_members_num
- * @return true for success
+ * @return 0 if success
  */
-bool consume_remove_group_members_response(
+int consume_remove_group_members_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__RemoveGroupMembersResponse *response,
     Skissm__GroupMember **removing_members,
@@ -216,9 +216,9 @@ int produce_leave_group_request(
  * @brief Process an incoming Skissm__LeaveGroupResponse message.
  * @param user_address
  * @param response
- * @return true for success
+ * @return 0 if success
  */
-bool consume_leave_group_response(
+int consume_leave_group_response(
     Skissm__E2eeAddress *user_address,
     Skissm__LeaveGroupResponse *response
 );
@@ -262,9 +262,9 @@ int produce_send_group_msg_request(
  * @brief Process an incoming SendGroupMsgResponse message.
  * @param outbound_group_session
  * @param response
- * @return true for success
+ * @return 0 if success
  */
-bool consume_send_group_msg_response(
+int consume_send_group_msg_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__SendGroupMsgResponse *response
 );

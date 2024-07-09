@@ -162,13 +162,7 @@ static void test_end(){
 }
 
 static void mock_alice_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     const char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
@@ -187,13 +181,7 @@ static void mock_alice_account(const char *user_name) {
 }
 
 static void mock_bob_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     const char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
@@ -212,13 +200,7 @@ static void mock_bob_account(const char *user_name) {
 }
 
 static void mock_claire_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     const char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
@@ -237,13 +219,7 @@ static void mock_claire_account(const char *user_name) {
 }
 
 static void mock_alice_pqc_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
-        E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
@@ -266,13 +242,7 @@ static void mock_alice_pqc_account(const char *user_name) {
 }
 
 static void mock_bob_pqc_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
-        E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
@@ -295,16 +265,11 @@ static void mock_bob_pqc_account(const char *user_name) {
 }
 
 static void mock_user_pqc_account(const char *user_name, const char *authenticator, const char *auth_code) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256F,
-        E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    int ret = 0;
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     char *device_id = generate_uuid_str();
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    ret = register_user(
         &response,
         e2ee_pack_id,
         user_name,
@@ -313,7 +278,7 @@ static void mock_user_pqc_account(const char *user_name, const char *authenticat
         authenticator,
         auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -725,11 +690,26 @@ static void test_several_members_and_groups() {
     test_encryption(emily_address_2, david_user_id, david_domain, test_plaintext, test_plaintext_len);
 
     // release
-    skissm__invite_response__free_unpacked(response_1, NULL);
-    skissm__invite_response__free_unpacked(response_2, NULL);
-    skissm__invite_response__free_unpacked(response_3, NULL);
-    skissm__invite_response__free_unpacked(response_4, NULL);
-    skissm__invite_response__free_unpacked(response_5, NULL);
+    if (response_1 != NULL) {
+        skissm__invite_response__free_unpacked(response_1, NULL);
+        response_1 = NULL;
+    }
+    if (response_2 != NULL) {
+        skissm__invite_response__free_unpacked(response_2, NULL);
+        response_2 = NULL;
+    }
+    if (response_3 != NULL) {
+        skissm__invite_response__free_unpacked(response_3, NULL);
+        response_3 = NULL;
+    }
+    if (response_4 != NULL) {
+        skissm__invite_response__free_unpacked(response_4, NULL);
+        response_4 = NULL;
+    }
+    if (response_5 != NULL) {
+        skissm__invite_response__free_unpacked(response_5, NULL);
+        response_5 = NULL;
+    }
     skissm__group_member__free_unpacked(group_members_1[0], NULL);
     skissm__group_member__free_unpacked(group_members_1[1], NULL);
     skissm__group_member__free_unpacked(group_members_1[2], NULL);

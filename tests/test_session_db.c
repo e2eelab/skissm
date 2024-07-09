@@ -756,13 +756,7 @@ void test_session_timestamp(uint32_t e2ee_pack_id) {
 }
 
 int main(){
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519,
-        E2EE_PACK_ALG_KEM_CURVE25519,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     test_load_outbound_session(e2ee_pack_id);
