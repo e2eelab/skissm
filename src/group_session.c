@@ -26,6 +26,7 @@
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/group_session_manager.h"
 #include "skissm/mem_util.h"
+#include "skissm/safe_check.h"
 #include "skissm/session.h"
 #include "skissm/session_manager.h"
 
@@ -99,7 +100,7 @@ void create_group_message_key(
     int group_msg_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_key_len + cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_iv_len;
 
     free_protobuf(&(msg_key->derived_key));
-    msg_key->derived_key.data = (uint8_t *) malloc(sizeof(uint8_t) * group_msg_key_len);
+    msg_key->derived_key.data = (uint8_t *)malloc(sizeof(uint8_t) * group_msg_key_len);
     msg_key->derived_key.len = group_msg_key_len;
 
     int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
@@ -335,8 +336,21 @@ int new_outbound_group_session_by_sender(
     char *auth = NULL;
     Skissm__IdentityKey *identity_key = NULL;
     uint8_t *identity_public_key = NULL;
-    if (user_address == NULL) {
-        ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_by_sender()");
+    Skissm__GroupSession *outbound_group_session = NULL;
+    Skissm__GroupInfo *group_info = NULL;
+    uint8_t *group_pre_key_plaintext_data = NULL;
+    size_t group_pre_key_plaintext_data_len;
+    char *cur_user_id = NULL, *cur_user_domain = NULL;
+    Skissm__Session **outbound_sessions = NULL;
+    size_t outbound_sessions_num;
+    Skissm__Session *outbound_session = NULL;
+    Skissm__SendOne2oneMsgResponse *response = NULL;
+    Skissm__InviteResponse **invite_response_list = NULL;
+    size_t invite_response_num;
+    size_t i, j;
+
+    if (!safe_address(user_address)) {
+        ssm_notify_log(NULL, BAD_ADDRESS, "new_outbound_group_session_by_sender()");
         ret = -1;
     } else {
         load_identity_key_from_cash(&identity_key, user_address);
@@ -366,38 +380,34 @@ int new_outbound_group_session_by_sender(
         }
     }
 
-    if (n_member_info_list == 0) {
+    if (!safe_group_member_info_list(member_info_list, n_member_info_list)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_sender()");
         ret = -1;
     }
-    if (member_info_list == NULL) {
+    if (!nonempty_string(group_name)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_sender()");
         ret = -1;
     }
-    if (group_name == NULL) {
+    if (!safe_address(group_address)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_sender()");
         ret = -1;
     }
-    if (group_address == NULL) {
+    if (!safe_group_member_list(group_member_list, group_members_num)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_sender()");
         ret = -1;
     }
-    if (group_member_list == NULL) {
-        ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_sender()");
-        ret = -1;
-    }
-    if (group_members_num == 0) {
+    if ((group_members_num == 0) || (n_member_info_list == 0) || (group_members_num > n_member_info_list)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_sender()");
         ret = -1;
     }
 
     if (ret == 0) {
-        Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+        outbound_group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
         skissm__group_session__init(outbound_group_session);
 
         // the sender needs to generate a random seed secret
         outbound_group_session->group_seed.len = SEED_SECRET_LEN;
-        outbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
+        outbound_group_session->group_seed.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
         get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->group_seed.data, outbound_group_session->group_seed.len);
 
         insert_outbound_group_session_data(
@@ -407,29 +417,26 @@ int new_outbound_group_session_by_sender(
         );
 
         // only the group creator needs to send the group pre-key bundle to others
-        uint8_t *group_pre_key_plaintext_data = NULL;
-        size_t group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(
+        group_pre_key_plaintext_data_len = pack_group_pre_key_plaintext(
             outbound_group_session, &group_pre_key_plaintext_data, old_session_id
         );
 
+        group_info = outbound_group_session->group_info;
         // send the group pre-key message to the members in the group
-        size_t i, j;
-        char *cur_user_id, *cur_user_domain;
-        for (i = 0; i < outbound_group_session->group_info->n_group_member_list; i++) {
-            cur_user_id = outbound_group_session->group_info->group_member_list[i]->user_id;
-            cur_user_domain = outbound_group_session->group_info->group_member_list[i]->domain;
-            Skissm__Session **outbound_sessions = NULL;
-            size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(
+        for (i = 0; i < group_info->n_group_member_list; i++) {
+            // the ith group member
+            cur_user_id = group_info->group_member_list[i]->user_id;
+            cur_user_domain = group_info->group_member_list[i]->domain;
+            outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(
                 outbound_group_session->session_owner, cur_user_id, cur_user_domain, &outbound_sessions
             );
 
             if (outbound_sessions_num > 0 && outbound_sessions != NULL) {
                 for (j = 0; j < outbound_sessions_num; j++) {
-                    Skissm__Session *outbound_session = outbound_sessions[j];
+                    outbound_session = outbound_sessions[j];
                     if (compare_address(outbound_session->their_address, outbound_group_session->session_owner))
                         continue;
                     if (outbound_session->responded) {
-                        Skissm__SendOne2oneMsgResponse *response;
                         response = send_one2one_msg_internal(
                             outbound_session,
                             SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_SESSION,
@@ -455,16 +462,17 @@ int new_outbound_group_session_by_sender(
                 free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
             } else {
                 /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
-                Skissm__InviteResponse **invite_response_list = NULL;
                 ret = get_pre_key_bundle_internal(
                     &invite_response_list,
+                    &invite_response_num,
                     outbound_group_session->session_owner,
                     auth,
                     cur_user_id, cur_user_domain,
                     NULL, true,
                     group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
                 );
-                // release, not done
+                // release
+                free_invite_response_list(&invite_response_list, invite_response_num);
             }
         }
 
@@ -480,13 +488,13 @@ int new_outbound_group_session_by_sender(
 
         // store
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
-
-        // release
-        free_proto(account);
-        free_string(&auth);
-        skissm__group_session__free_unpacked(outbound_group_session, NULL);
-        free_mem((void **)&group_pre_key_plaintext_data, sizeof(uint8_t) * group_pre_key_plaintext_data_len);
     }
+
+    // release
+    free_proto(account);
+    free_string(&auth);
+    skissm__group_session__free_unpacked(outbound_group_session, NULL);
+    free_mem((void **)&group_pre_key_plaintext_data, sizeof(uint8_t) * group_pre_key_plaintext_data_len);
 
     return ret;
 }
@@ -506,7 +514,7 @@ int new_outbound_group_session_by_receiver(
     Skissm__Account *account = NULL;
     Skissm__IdentityKey *identity_key = NULL;
     uint8_t *identity_public_key = NULL;
-    if (user_address == NULL) {
+    if (!safe_address(user_address)) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_by_receiver()");
         ret = -1;
     } else {
@@ -529,27 +537,28 @@ int new_outbound_group_session_by_receiver(
         }
     }
 
-    if (group_seed->data == NULL) {
+    if (safe_protobuf(group_seed)) {
+        if (group_seed->data == NULL) {
+            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_receiver()");
+            ret = -1;
+        }
+    } else {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_receiver()");
         ret = -1;
     }
-    if (group_name == NULL) {
+    if (!nonempty_string(group_name)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_receiver()");
         ret = -1;
     }
-    if (group_address == NULL) {
+    if (!safe_address(group_address)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_receiver()");
         ret = -1;
     }
-    if (session_id == NULL) {
+    if (!nonempty_string(session_id)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_receiver()");
         ret = -1;
     }
-    if (group_member_list == NULL) {
-        ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_receiver()");
-        ret = -1;
-    }
-    if (group_members_num == 0) {
+    if (!safe_group_member_list(group_member_list, group_members_num)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_receiver()");
         ret = -1;
     }
@@ -593,7 +602,7 @@ int new_outbound_group_session_invited(
     Skissm__Account *account = NULL;
     Skissm__IdentityKey *identity_key = NULL;
     uint8_t *identity_public_key = NULL;
-    if (user_address == NULL) {
+    if (!safe_address(user_address)) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_outbound_group_session_invited()");
         ret = -1;
     } else {
@@ -615,24 +624,7 @@ int new_outbound_group_session_invited(
             identity_public_key = identity_key->sign_key_pair->public_key.data;
         }
     }
-
-    if (group_update_key_bundle->version == NULL) {
-        ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_invited()");
-        ret = -1;
-    }
-    if (group_update_key_bundle->session_id == NULL) {
-        ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_invited()");
-        ret = -1;
-    }
-    if (group_update_key_bundle->group_info == NULL) {
-        ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_invited()");
-        ret = -1;
-    }
-    if (group_update_key_bundle->chain_key.data == NULL) {
-        ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_invited()");
-        ret = -1;
-    }
-    if (group_update_key_bundle->adding_member_info_list == NULL) {
+    if (!safe_group_update_key_bundle(group_update_key_bundle)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_invited()");
         ret = -1;
     }
@@ -687,18 +679,22 @@ int new_outbound_group_session_invited(
 
         // notify
         Skissm__GroupMember **added_member_list = NULL;
-        size_t added_group_members_num = member_info_to_group_members(&added_member_list,
-                                                                      group_update_key_bundle->adding_member_info_list, group_update_key_bundle->n_adding_member_info_list,
-                                                                      outbound_group_session->group_info->group_member_list, outbound_group_session->group_info->n_group_member_list);
+        size_t added_group_members_num = member_info_to_group_members(
+            &added_member_list,
+            group_update_key_bundle->adding_member_info_list,
+            group_update_key_bundle->n_adding_member_info_list,
+            outbound_group_session->group_info->group_member_list,
+            outbound_group_session->group_info->n_group_member_list
+        );
         if (added_group_members_num > 0) {
             ssm_notify_group_members_added(
-                    user_address,
-                    outbound_group_session->group_info->group_address,
-                    outbound_group_session->group_info->group_name,
-                    outbound_group_session->group_info->group_member_list,
-                    outbound_group_session->group_info->n_group_member_list,
-                    added_member_list,
-                    added_group_members_num
+                user_address,
+                outbound_group_session->group_info->group_address,
+                outbound_group_session->group_info->group_name,
+                outbound_group_session->group_info->group_member_list,
+                outbound_group_session->group_info->n_group_member_list,
+                added_member_list,
+                added_group_members_num
             );
             // release
             free_group_members(&added_member_list, added_group_members_num);
@@ -724,37 +720,13 @@ int new_inbound_group_session_by_pre_key_bundle(
 ) {
     int ret = 0;
 
-    if (user_address == NULL) {
+    if (!safe_address(user_address)) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_inbound_group_session_by_pre_key_bundle()");
         ret = -1;
     }
-
-    if (group_pre_key_bundle == NULL) {
+    if (!safe_group_pre_key_bundle(group_pre_key_bundle)) {
         ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "new_inbound_group_session_by_pre_key_bundle()");
         ret = -1;
-    }
-
-    if (ret == 0) {
-        if (group_pre_key_bundle->version == NULL) {
-            ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "new_inbound_group_session_by_pre_key_bundle()");
-            ret = -1;
-        }
-        if (group_pre_key_bundle->session_id == NULL) {
-            ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "new_inbound_group_session_by_pre_key_bundle()");
-            ret = -1;
-        }
-        if (group_pre_key_bundle->sender == NULL) {
-            ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "new_inbound_group_session_by_pre_key_bundle()");
-            ret = -1;
-        }
-        if (group_pre_key_bundle->group_info == NULL) {
-            ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "new_inbound_group_session_by_pre_key_bundle()");
-            ret = -1;
-        }
-        if (group_pre_key_bundle->group_seed.data == NULL) {
-            ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "new_inbound_group_session_by_pre_key_bundle()");
-            ret = -1;
-        }
     }
 
     if (ret == 0) {
@@ -798,24 +770,15 @@ int new_inbound_group_session_by_member_id(
 ) {
     int ret = 0;
 
-    if (user_address == NULL) {
+    if (!safe_address(user_address)) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "new_inbound_group_session_by_member_id()");
         ret = -1;
     }
-    if (group_member_id == NULL) {
+    if (!safe_group_member_info(group_member_id)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_inbound_group_session_by_member_id()");
         ret = -1;
-    } else {
-        if (group_member_id->member_address == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_inbound_group_session_by_member_id()");
-            ret = -1;
-        }
-        if (group_member_id->sign_public_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_inbound_group_session_by_member_id()");
-            ret = -1;
-        }
     }
-    if (group_info == NULL) {
+    if (!safe_group_info(group_info)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_inbound_group_session_by_member_id()");
         ret = -1;
     }
@@ -854,31 +817,13 @@ int complete_inbound_group_session_by_pre_key_bundle(
 ) {
     int ret = 0;
 
-    if (inbound_group_session == NULL) {
+    if (!safe_group_session(inbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "complete_inbound_group_session_by_pre_key_bundle()");
         ret = -1;
-    } else {
-        if (inbound_group_session->associated_data.data == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "complete_inbound_group_session_by_pre_key_bundle()");
-            ret = -1;
-        }
     }
-    if (group_pre_key_bundle == NULL) {
+    if (!safe_group_pre_key_bundle(group_pre_key_bundle)) {
         ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "complete_inbound_group_session_by_pre_key_bundle()");
         ret = -1;
-    } else {
-        if (group_pre_key_bundle->version == NULL) {
-            ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "complete_inbound_group_session_by_pre_key_bundle()");
-            ret = -1;
-        }
-        if (group_pre_key_bundle->session_id == NULL) {
-            ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "complete_inbound_group_session_by_pre_key_bundle()");
-            ret = -1;
-        }
-        if (group_pre_key_bundle->group_seed.data == NULL) {
-            ssm_notify_log(NULL, BAD_PRE_KEY_BUNDLE, "complete_inbound_group_session_by_pre_key_bundle()");
-            ret = -1;
-        }
     }
 
     if (ret == 0) {
@@ -925,23 +870,13 @@ int complete_inbound_group_session_by_member_id(
 ) {
     int ret = 0;
 
-    if (inbound_group_session == NULL) {
+    if (!safe_group_session(inbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "complete_inbound_group_session_by_member_id()");
         ret = -1;
-    } else {
-        if (inbound_group_session->group_seed.data == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "complete_inbound_group_session_by_member_id()");
-            ret = -1;
-        }
     }
-    if (group_member_id == NULL) {
+    if (!safe_group_member_info(group_member_id)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "complete_inbound_group_session_by_member_id()");
         ret = -1;
-    } else {
-        if (group_member_id->sign_public_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "complete_inbound_group_session_by_member_id()");
-            ret = -1;
-        }
     }
 
     if (ret == 0) {
@@ -993,48 +928,13 @@ int new_and_complete_inbound_group_session(
 ) {
     int ret = 0;
 
-    if (group_member_id == NULL) {
+    if (!safe_group_member_info(group_member_id)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session()");
         ret = -1;
-    } else {
-        if (group_member_id->member_address == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session()");
-            ret = -1;
-        }
-        if (group_member_id->sign_public_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session()");
-            ret = -1;
-        }
     }
-
-    if (other_group_session == NULL) {
+    if (!safe_group_session(other_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
         ret = -1;
-    } else {
-        if (other_group_session->sender == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
-            ret = -1;
-        }
-        if (other_group_session->version == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
-            ret = -1;
-        }
-        if (other_group_session->session_id == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
-            ret = -1;
-        }
-        if (other_group_session->session_owner == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
-            ret = -1;
-        }
-        if (other_group_session->group_info == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
-            ret = -1;
-        }
-        if (other_group_session->group_seed.data == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session()");
-            ret = -1;
-        }
     }
 
     if (ret == 0) {
@@ -1094,39 +994,13 @@ int new_and_complete_inbound_group_session_with_chain_key(
 ) {
     int ret = 0;
 
-    if (group_member_info == NULL) {
+    if (!safe_group_member_info(group_member_info)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_chain_key()");
         ret = -1;
-    } else {
-        if (group_member_info->member_address == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_chain_key()");
-            ret = -1;
-        }
-        if (group_member_info->sign_public_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_chain_key()");
-            ret = -1;
-        }
     }
-    if (other_group_session == NULL) {
+    if (!safe_group_session(other_group_session)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_chain_key()");
         ret = -1;
-    } else {
-        if (other_group_session->session_owner == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_chain_key()");
-            ret = -1;
-        }
-        if (other_group_session->version == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_chain_key()");
-            ret = -1;
-        }
-        if (other_group_session->session_id == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_chain_key()");
-            ret = -1;
-        }
-        if (other_group_session->group_info == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_chain_key()");
-            ret = -1;
-        }
     }
     if (their_chain_key == NULL) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_chain_key()");
@@ -1169,38 +1043,13 @@ int new_and_complete_inbound_group_session_with_ratchet_state(
 ) {
     int ret = 0;
 
-    if (user_address == NULL) {
+    if (!safe_address(user_address)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_ratchet_state()");
         ret = -1;
     }
-    if (group_update_key_bundle == NULL) {
+    if (!safe_group_update_key_bundle(group_update_key_bundle)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_ratchet_state()");
         ret = -1;
-    } else {
-        if (group_update_key_bundle->version == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_ratchet_state()");
-            ret = -1;
-        }
-        if (group_update_key_bundle->session_id == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_ratchet_state()");
-            ret = -1;
-        }
-        if (group_update_key_bundle->sender == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_ratchet_state()");
-            ret = -1;
-        }
-        if (group_update_key_bundle->group_info == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_ratchet_state()");
-            ret = -1;
-        }
-        if (group_update_key_bundle->chain_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_ratchet_state()");
-            ret = -1;
-        }
-        if (group_update_key_bundle->sign_public_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_and_complete_inbound_group_session_with_ratchet_state()");
-            ret = -1;
-        }
     }
 
     if (ret == 0) {
@@ -1262,7 +1111,7 @@ int renew_outbound_group_session_by_welcome_and_add(
     char *auth = NULL;
     Skissm__IdentityKey *identity_key = NULL;
     ProtobufCBinaryData *identity_public_key = NULL;
-    if (outbound_group_session == NULL) {
+    if (!safe_group_session(outbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_outbound_group_session_by_welcome_and_add()");
         ret = -1;
     } else {
@@ -1291,36 +1140,16 @@ int renew_outbound_group_session_by_welcome_and_add(
                 identity_public_key = &(identity_key->sign_key_pair->public_key);
             }
         }
-        if (outbound_group_session->version == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_outbound_group_session_by_welcome_and_add()");
-            ret = -1;
-        }
-        if (outbound_group_session->sender == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_outbound_group_session_by_welcome_and_add()");
-            ret = -1;
-        }
-        if (outbound_group_session->session_id == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_outbound_group_session_by_welcome_and_add()");
-            ret = -1;
-        }
-        if (outbound_group_session->group_info == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_outbound_group_session_by_welcome_and_add()");
-            ret = -1;
-        }
-        if (outbound_group_session->chain_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_outbound_group_session_by_welcome_and_add()");
-            ret = -1;
-        }
     }
-    if (sender_address == NULL) {
+    if (!safe_address(sender_address)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_outbound_group_session_by_welcome_and_add()");
         ret = -1;
     }
-    if (adding_member_info_list == NULL) {
+    if (!safe_group_member_info_list(adding_member_info_list, n_adding_member_info_list)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_outbound_group_session_by_welcome_and_add()");
         ret = -1;
     }
-    if (adding_group_members == NULL) {
+    if (!safe_group_member_list(adding_group_members, adding_group_members_num)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_outbound_group_session_by_welcome_and_add()");
         ret = -1;
     }
@@ -1392,15 +1221,18 @@ int renew_outbound_group_session_by_welcome_and_add(
             } else {
                 /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
                 Skissm__InviteResponse **invite_response_list = NULL;
+                size_t invite_response_num;
                 ret = get_pre_key_bundle_internal(
                     &invite_response_list,
+                    &invite_response_num,
                     outbound_group_session->session_owner,
                     auth,
                     cur_user_id, cur_user_domain,
                     NULL, true,
                     group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
                 );
-                // release, not done
+                // release
+                free_invite_response_list(&invite_response_list, invite_response_num);
             }
         }
 
@@ -1496,22 +1328,9 @@ int renew_inbound_group_session_by_welcome_and_add(
 ) {
     int ret = 0;
 
-    if (inbound_group_session == NULL) {
+    if (!safe_group_session(inbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_inbound_group_session_by_welcome_and_add()");
         ret = -1;
-    } else {
-        if (inbound_group_session->session_owner == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_inbound_group_session_by_welcome_and_add()");
-            ret = -1;
-        }
-        if (inbound_group_session->group_info == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_inbound_group_session_by_welcome_and_add()");
-            ret = -1;
-        }
-        if (inbound_group_session->chain_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_inbound_group_session_by_welcome_and_add()");
-            ret = -1;
-        }
     }
     if (new_group_info == NULL) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_inbound_group_session_by_welcome_and_add()");
@@ -1561,7 +1380,7 @@ int renew_group_sessions_with_new_device(
     char *auth = NULL;
     Skissm__IdentityKey *identity_key = NULL;
     ProtobufCBinaryData *identity_public_key = NULL;
-    if (outbound_group_session == NULL) {
+    if (!safe_group_session(outbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_group_sessions_with_new_device()");
         ret = -1;
     } else {
@@ -1590,73 +1409,18 @@ int renew_group_sessions_with_new_device(
                 identity_public_key = &(identity_key->sign_key_pair->public_key);
             }
         }
-        if (outbound_group_session->version == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
-        if (outbound_group_session->sender == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
-        if (outbound_group_session->session_id == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
-        if (outbound_group_session->group_info == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
-        if (outbound_group_session->chain_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_GROUP_SESSION, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
     }
-    if (sender_address == NULL) {
+    if (!safe_address(sender_address)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
         ret = -1;
-    } else {
-        if (sender_address->user->user_id == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
-        if (sender_address->domain == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
-        if (sender_address->user->device_id == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
     }
-    if (new_device_address == NULL) {
+    if (!safe_address(new_device_address)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
         ret = -1;
-    } else {
-        if (new_device_address->user->user_id == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
-        if (new_device_address->domain == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
-        if (new_device_address->user->device_id == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
     }
-    if (adding_member_device_info == NULL) {
+    if (!safe_group_member_info(adding_member_device_info)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
         ret = -1;
-    } else {
-        if (adding_member_device_info->member_address == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
-        if (adding_member_device_info->sign_public_key.data == NULL) {
-            ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_group_sessions_with_new_device()");
-            ret = -1;
-        }
     }
 
     if (ret == 0) {
@@ -1732,15 +1496,18 @@ int renew_group_sessions_with_new_device(
             );
             /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
             Skissm__InviteResponse **invite_response_list = NULL;
+            size_t invite_response_num;
             ret = get_pre_key_bundle_internal(
                 &invite_response_list,
+                &invite_response_num,
                 outbound_group_session->session_owner,
                 auth,
                 cur_user_id, cur_user_domain,
                 cur_user_device_id, false,
                 group_ratchet_state_plaintext_data, group_ratchet_state_plaintext_data_len
             );
-            // release, not done
+            // release
+            free_invite_response_list(&invite_response_list, invite_response_num);
         }
 
         ProtobufCBinaryData *their_chain_keys = NULL;

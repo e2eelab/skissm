@@ -160,6 +160,7 @@ Skissm__InviteResponse *invite(
     char *auth = NULL;
     Skissm__InviteResponse *invite_response = NULL;
     Skissm__InviteResponse **invite_response_list = NULL;
+    size_t invite_response_num;
 
     if (safe_address(from)) {
         get_skissm_plugin()->db_handler.load_auth(from, &auth);
@@ -194,6 +195,7 @@ Skissm__InviteResponse *invite(
     if (ret == 0) {
         ret = get_pre_key_bundle_internal(
             &invite_response_list,
+            &invite_response_num,
             from,
             auth,
             to_user_id,
@@ -206,6 +208,7 @@ Skissm__InviteResponse *invite(
 
     // release
     free_string(&auth);
+    free_invite_response_list(&invite_response_list, invite_response_num);
 
     // done
     return invite_response;
@@ -1024,7 +1027,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
         default:
             // consume the message that is arriving here
             consumed = true;
-                break;
+            break;
     };
 
     // notify server that the proto_msg has been consumed

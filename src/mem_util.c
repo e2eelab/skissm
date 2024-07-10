@@ -649,8 +649,16 @@ void free_e2ee_addresses(Skissm__E2eeAddress ***dest, size_t e2ee_addresses_num)
         skissm__e2ee_address__free_unpacked((*dest)[i], NULL);
         (*dest)[i] = NULL;
     }
-    free(*dest);
-    *dest = NULL;
+    free_mem((void **)&(*dest), sizeof(Skissm__E2eeAddress **) * e2ee_addresses_num);
+}
+
+void free_invite_response_list(Skissm__InviteResponse ***dest, size_t invite_response_num) {
+    size_t i;
+    for (i = 0; i < invite_response_num; i++) {
+        skissm__invite_response__free_unpacked((*dest)[i], NULL);
+        (*dest)[i] = NULL;
+    }
+    free_mem((void **)&(*dest), sizeof(Skissm__InviteResponse **) * invite_response_num);
 }
 
 void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num) {
@@ -659,8 +667,7 @@ void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num) {
         skissm__group_member__free_unpacked((*dest)[i], NULL);
         (*dest)[i] = NULL;
     }
-    free(*dest);
-    *dest = NULL;
+    free_mem((void **)&(*dest), sizeof(Skissm__GroupMember **) * group_members_num);
 }
 
 void free_protobuf(ProtobufCBinaryData *output) {
@@ -691,6 +698,10 @@ void free_string(char **buffer) {
 }
 
 void free_mem(void **buffer, size_t buffer_len) {
+    if (buffer_len == 0) {
+        // skip
+        return;
+    }
     unset(*buffer, buffer_len);
     free(*buffer);
     *buffer = NULL;

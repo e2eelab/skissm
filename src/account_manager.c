@@ -91,6 +91,11 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
 
     Skissm__E2eeAddress *address = NULL;
     char *auth = NULL;
+    Skissm__E2eeAddress *other_device_address = NULL;
+    Skissm__E2eeAddress *to_address = NULL;
+    Skissm__InviteResponse **invite_response_list = NULL;
+    size_t invite_response_num;
+    size_t i;
 
     if (!safe_unregistered_account(account)) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "consume_register_response()");
@@ -117,18 +122,17 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
 
         // create outbound sessions to other devices
         if (response->n_other_device_address_list > 0) {
-            size_t i;
             for (i = 0; i < response->n_other_device_address_list; i++) {
-                Skissm__E2eeAddress *other_device_address = (response->other_device_address_list)[i];
+                other_device_address = (response->other_device_address_list)[i];
                 ssm_notify_log(
                     address, DEBUG_LOG, "consume_register_response() other_device_address_list %zu of %zu: address [%s:%s]",
                     i + 1, response->n_other_device_address_list,
                     other_device_address->user->user_id,
                     other_device_address->user->device_id
                 );
-                Skissm__InviteResponse **invite_response_list = NULL;
                 ret = get_pre_key_bundle_internal(
                     &invite_response_list,
+                    &invite_response_num,
                     address,
                     auth,
                     other_device_address->user->user_id,
@@ -138,18 +142,15 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                     NULL, 0
                 );
                 if (ret == 0) {
-                    skissm__invite_response__free_unpacked(invite_response_list[0], NULL);
-                    invite_response_list[0] = NULL;
-                    free_mem((void **)&invite_response_list, sizeof(Skissm__InviteResponse **) * 1);
+                    free_invite_response_list(&invite_response_list, invite_response_num);
                 }
             }
         }
 
         // send to other friends if necessary
         if (response->n_other_user_address_list > 0) {
-            size_t i;
             for (i = 0; i < response->n_other_user_address_list; i++) {
-                Skissm__E2eeAddress *to_address = (response->other_user_address_list)[i];
+                to_address = (response->other_user_address_list)[i];
                 ssm_notify_log(
                     address, DEBUG_LOG, "consume_register_response() other_user_address_list %zu of %zu: address [%s:%s]",
                     i + 1, response->n_other_user_address_list,
@@ -167,9 +168,9 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                     continue;
                 }
 
-                Skissm__InviteResponse **invite_response_list = NULL;
                 ret = get_pre_key_bundle_internal(
                     &invite_response_list,
+                    &invite_response_num,
                     address,
                     auth,
                     to_address->user->user_id,
@@ -179,9 +180,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                     NULL, 0
                 );
                 if (ret == 0) {
-                    skissm__invite_response__free_unpacked(invite_response_list[0], NULL);
-                    invite_response_list[0] = NULL;
-                    free_mem((void **)&invite_response_list, sizeof(Skissm__InviteResponse **) * 1);
+                    free_invite_response_list(&invite_response_list, invite_response_num);
                 }
             }
         }
@@ -304,18 +303,26 @@ int produce_supply_opks_request(
     return ret;
 }
 
-bool consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response) {
-    if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+int consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response) {
+    int ret = 0;
+
+    if (!safe_registered_account(account)) {
+        ret = -1;
+    }
+    if (!safe_supply_opks_response(response)) {
+        ret = -1;
+    }
+
+    if (ret == 0) {
         size_t old_opks_num = account->n_one_time_pre_key_list - opks_num;
         // save to db
         size_t i;
         for (i = 0; i < opks_num; i++) {
             get_skissm_plugin()->db_handler.add_one_time_pre_key(account->address, account->one_time_pre_key_list[old_opks_num + i]);
         }
-        return true;
-    } else {
-        return false;
     }
+
+    return ret;
 }
 
 bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__SupplyOpksMsg *msg) {
@@ -337,7 +344,8 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
         return false;
     }
 
-    Skissm__SupplyOpksResponse *supply_opks_response = supply_opks_internal(account, opks_num);
+    Skissm__SupplyOpksResponse *supply_opks_response = NULL;
+    supply_opks_internal(&supply_opks_response, account, opks_num);
 
     // release
     free_proto(account);

@@ -447,6 +447,14 @@ size_t member_info_to_group_members(
 void free_e2ee_addresses(Skissm__E2eeAddress ***dest, size_t e2ee_addresses_num);
 
 /**
+ * @brief Release memory of Skissm__InviteResponse array.
+ *
+ * @param dest
+ * @param invite_response_num
+ */
+void free_invite_response_list(Skissm__InviteResponse ***dest, size_t invite_response_num);
+
+/**
  * @brief Release memory of Skissm__GroupMember array.
  *
  * @param dest

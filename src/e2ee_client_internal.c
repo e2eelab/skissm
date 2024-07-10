@@ -11,6 +11,7 @@
 
 int get_pre_key_bundle_internal(
     Skissm__InviteResponse ***invite_response_list_out,
+    size_t *invite_response_num_out,
     Skissm__E2eeAddress *from,
     const char *auth,
     const char *to_user_id,
@@ -26,6 +27,7 @@ int get_pre_key_bundle_internal(
     Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = NULL;
     // Skissm__InviteResponse *invite_response = NULL;
     Skissm__InviteResponse **invite_response_list = NULL;
+    size_t invite_response_num;
 
     if (!safe_address(from)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "get_pre_key_bundle_internal()");
@@ -61,6 +63,7 @@ int get_pre_key_bundle_internal(
     if (ret == 0) {
         ret = consume_get_pre_key_bundle_response(
             &invite_response_list,
+            &invite_response_num,
             from,
             group_pre_key_plaintext_data,
             group_pre_key_plaintext_data_len,
@@ -90,6 +93,7 @@ int get_pre_key_bundle_internal(
         }
 
         *invite_response_list_out = invite_response_list;
+        *invite_response_num_out = invite_response_num;
     } else {
         if (get_pre_key_bundle_response != NULL) {
             if (get_pre_key_bundle_response->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_NO_CONTENT) {
@@ -355,10 +359,15 @@ int publish_spk_internal(
     return ret;
 }
 
-Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint32_t opks_num) {
+int supply_opks_internal(
+    Skissm__SupplyOpksResponse **response_out,
+    Skissm__Account *account,
+    uint32_t opks_num
+) {
     int ret = 0;
 
     Skissm__SupplyOpksRequest *supply_opks_request = NULL;
+    Skissm__SupplyOpksResponse *response = NULL;
 
     if (opks_num != 0) {
         if (!safe_registered_account(account)) {
@@ -374,26 +383,34 @@ Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint3
         ret = produce_supply_opks_request(&supply_opks_request, account, opks_num);
     }
 
-    Skissm__SupplyOpksResponse *response = get_skissm_plugin()->proto_handler.supply_opks(account->address, account->auth, supply_opks_request);
-    bool succ = consume_supply_opks_response(account, opks_num, response);
-    if (!succ) {
-        // pack request to request_data
-        size_t request_data_len = skissm__supply_opks_request__get_packed_size(supply_opks_request);
-        uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
-        skissm__supply_opks_request__pack(supply_opks_request, request_data);
-        
-        store_pending_request_internal(
-            account->address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SUPPLY_OPKS, request_data, request_data_len, NULL, 0
-        );
-        //release
-        free_mem((void *)&request_data, request_data_len);
+    if (ret == 0) {
+        response = get_skissm_plugin()->proto_handler.supply_opks(account->address, account->auth, supply_opks_request);
+
+        if (safe_supply_opks_response(response)) {
+            ret = consume_supply_opks_response(account, opks_num, response);
+        } else {
+            // pack request to request_data
+            size_t request_data_len = skissm__supply_opks_request__get_packed_size(supply_opks_request);
+            uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
+            skissm__supply_opks_request__pack(supply_opks_request, request_data);
+            
+            store_pending_request_internal(
+                account->address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SUPPLY_OPKS, request_data, request_data_len, NULL, 0
+            );
+            // release
+            free_mem((void *)&request_data, request_data_len);
+        }
+    }
+
+    if (ret == 0) {
+        *response_out = response;
     }
 
     // release
     free_proto(supply_opks_request);
 
     // done
-    return response;
+    return ret;
 }
 
 Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
@@ -428,7 +445,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
             request_data, request_data_len, NULL, 0
         );
 
-        //release
+        // release
         free_mem((void *)&request_data, request_data_len);
         skissm__send_one2one_msg_response__free_unpacked(response, NULL);
         
@@ -499,6 +516,7 @@ int add_group_member_device_internal(
         if (!safe_add_group_member_device_response(response)) {
             ssm_notify_log(NULL, BAD_RESPONSE, "add_group_member_device_internal()");
             ret = -1;
+            // note that packing the pending request will be skipped in some cases
             // pack add_group_member_device_request to request_data
             size_t request_data_len = skissm__add_group_member_device_request__get_packed_size(add_group_member_device_request);
             uint8_t *request_data = (uint8_t *)malloc(sizeof(uint8_t) * request_data_len);
@@ -627,11 +645,13 @@ static void resend_pending_request(Skissm__Account *account) {
                 if (ret == 0) {
                     their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
                     Skissm__InviteResponse **invite_response_list = NULL;
+                    size_t invite_response_num;
                     bool has_args = pending_request->n_request_arg_list == 1;
                     size_t group_pre_key_plaintext_data_len = has_args ? pending_request->request_arg_list[0].len : 0;
                     uint8_t *group_pre_key_plaintext_data = has_args ? pending_request->request_arg_list[0].data : NULL;
                     ret = consume_get_pre_key_bundle_response(
                         &invite_response_list,
+                        &invite_response_num,
                         user_address,
                         group_pre_key_plaintext_data,
                         group_pre_key_plaintext_data_len,
@@ -747,8 +767,9 @@ static void resend_pending_request(Skissm__Account *account) {
             case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SUPPLY_OPKS: {
                 Skissm__SupplyOpksRequest *supply_opks_request = skissm__supply_opks_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__SupplyOpksResponse *supply_opks_response = get_skissm_plugin()->proto_handler.supply_opks(user_address, auth,  supply_opks_request);
-                succ = consume_supply_opks_response(account, (uint32_t)supply_opks_request->n_one_time_pre_key_public_list, supply_opks_response);
+                succ = safe_supply_opks_response(supply_opks_response);
                 if (succ) {
+                    ret = consume_supply_opks_response(account, (uint32_t)supply_opks_request->n_one_time_pre_key_public_list, supply_opks_response);
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 } else {
                     ssm_notify_log(user_address, DEBUG_LOG, "handle pending supply_opks_request failed");

@@ -49,6 +49,7 @@ int produce_get_pre_key_bundle_request(
  * @brief Process an incoming get_pre_key_bundle_response_payload.
  *
  * @param invite_response_list_out
+ * @param invite_response_num
  * @param from
  * @param group_pre_key_plaintext_data
  * @param group_pre_key_plaintext_data_len
@@ -57,6 +58,7 @@ int produce_get_pre_key_bundle_request(
  */
 int consume_get_pre_key_bundle_response(
     Skissm__InviteResponse ***invite_response_list_out,
+    size_t *invite_response_num,
     Skissm__E2eeAddress *from,
     uint8_t *group_pre_key_plaintext_data,
     size_t group_pre_key_plaintext_data_len,
