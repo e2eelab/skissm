@@ -28,6 +28,7 @@ extern "C" {
 /**
  * @brief Get the pre-key bundle internal object.
  * @param invite_response_list_out
+ * @param invite_response_num_out
  * @param from
  * @param auth
  * @param to_user_id
@@ -40,6 +41,7 @@ extern "C" {
  */
 int get_pre_key_bundle_internal(
     Skissm__InviteResponse ***invite_response_list_out,
+    size_t *invite_response_num_out,
     Skissm__E2eeAddress *from,
     const char *auth,
     const char *to_user_id,
@@ -93,11 +95,16 @@ int publish_spk_internal(
 
 /**
  * @brief Send supply_opks request to server.
+ * @param response_out
  * @param account
  * @param opks_num
- * @return Skissm__SupplyOpksResponse *
+ * @return 0 if success
  */
-Skissm__SupplyOpksResponse *supply_opks_internal(Skissm__Account *account, uint32_t opks_num);
+int supply_opks_internal(
+    Skissm__SupplyOpksResponse **response_out,
+    Skissm__Account *account,
+    uint32_t opks_num
+);
 
 /**
  * @brief Send one2one_msg request to server.

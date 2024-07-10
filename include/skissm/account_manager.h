@@ -92,10 +92,9 @@ int produce_supply_opks_request(
  * @param account
  * @param opks_num
  * @param response
- * @return true
- * @return false
+ * @return 0 if success
  */
-bool consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response);
+int consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response);
 
 /**
  * @brief Process an incoming SupplyOpksMsg message.

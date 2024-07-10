@@ -719,6 +719,66 @@ bool safe_group_session(Skissm__GroupSession *src) {
     return true;
 }
 
+bool safe_group_update_key_bundle(Skissm__GroupUpdateKeyBundle *src) {
+    if (src != NULL) {
+        if (!nonempty_string(src->version)) {
+            return false;
+        }
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!safe_address(src->sender)) {
+            return false;
+        }
+        if (!nonempty_string(src->session_id)) {
+            return false;
+        }
+        if (!safe_group_info(src->group_info)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->chain_key))) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->sign_public_key))) {
+            return false;
+        }
+        if (!safe_group_member_info_list(src->adding_member_info_list, src->n_adding_member_info_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_group_pre_key_bundle(Skissm__GroupPreKeyBundle *src) {
+    if (src != NULL) {
+        if (!nonempty_string(src->version)) {
+            return false;
+        }
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!safe_address(src->sender)) {
+            return false;
+        }
+        if (!nonempty_string(src->session_id)) {
+            return false;
+        }
+        if (!safe_group_info(src->group_info)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->group_seed))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 bool safe_register_user_response(Skissm__RegisterUserResponse *src) {
     if (src != NULL) {
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
@@ -753,6 +813,18 @@ bool safe_register_user_response(Skissm__RegisterUserResponse *src) {
 }
 
 bool safe_publish_spk_response(Skissm__PublishSpkResponse *src) {
+    if (src != NULL) {
+        if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_supply_opks_response(Skissm__SupplyOpksResponse *src) {
     if (src != NULL) {
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             return false;
