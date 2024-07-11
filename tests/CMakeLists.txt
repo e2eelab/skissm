@@ -106,6 +106,7 @@ foreach(test IN ITEMS ${TEST_SKISSM})
 endforeach(test)
 
 file(COPY data DESTINATION .)
+file(COPY cert DESTINATION .)
 
 add_test(AES test_aes)
 add_test(GCM test_gcm)

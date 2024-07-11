@@ -1684,12 +1684,19 @@ char *crypto_base64_encode(const uint8_t *msg, size_t msg_len) {
     return output;
 }
 
-char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len) {
-    int pad = base64_data_len > 0 && (base64_data_len % 4 || base64_data[base64_data_len - 1] == '=');
-    size_t len = ((len + 3) / 4 - pad) * 4 + 1;
-    char* output = (char*)malloc(sizeof(char) * len);
-    mbedtls_base64_decode((unsigned char*)output, len, &len, (const unsigned char *)base64_data, base64_data_len);
-    return output;
+size_t crypto_base64_decode(uint8_t **msg_out, const unsigned char *base64_str) {
+    size_t base64_str_len = strlen(base64_str);
+    int pad = base64_str_len > 0 && (base64_str_len % 4 || base64_str[base64_str_len - 1] == '=');
+    size_t len = ((base64_str_len + 3) / 4 - pad) * 4;
+    unsigned char buffer[len + 1];
+    size_t msg_out_len;
+    mbedtls_base64_decode(buffer, len + 1, &msg_out_len, base64_str, base64_str_len);
+
+    // msg_out_len == len
+    *msg_out = (uint8_t *)malloc(sizeof(uint8_t) * msg_out_len);
+    memcpy(*msg_out, buffer, msg_out_len);
+
+    return msg_out_len;
 }
 
 int crypto_hash_by_e2ee_pack_id(

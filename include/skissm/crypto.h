@@ -621,7 +621,7 @@ char *crypto_base64_encode(const uint8_t *msg, size_t msg_len);
  * @param base64_data_len
  * @return char*
  */
-char *crypto_base64_decode(const uint8_t *base64_data, size_t base64_data_len);
+size_t crypto_base64_decode(uint8_t **msg_out, const unsigned char *base64_str);
 
 /**
  * @brief Calculate hash with respect to the specific e2ee pack ID raw number.

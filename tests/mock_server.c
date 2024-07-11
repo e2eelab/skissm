@@ -18,10 +18,12 @@
  */
 #include "mock_server.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "mock_server_sending.h"
+#include "skissm/crypto.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/mem_util.h"
 #include "test_util.h"
@@ -258,10 +260,13 @@ void mock_certificate() {
     FILE *fptr;
     size_t data_len;
     uint8_t *data = NULL;
+    uint8_t *certificate_data = NULL;
+    size_t certificate_data_len;
 
     // central private key
-    if ((fptr = fopen("./cert/central_private.txt", "r")) == NULL){
+    if ((fptr = fopen("../cert/central_private.txt", "r")) == NULL){
         printf("Error! Opening file in the data folder failed!\n");
+        printf("errorno: %d\n", errno);
         // program exits if the file pointer returns NULL.
         exit(1);
     } else {
@@ -278,7 +283,7 @@ void mock_certificate() {
     }
 
     // central certificate
-    if ((fptr = fopen("./cert/central_certificate.txt", "r")) == NULL){
+    if ((fptr = fopen("../cert/central_certificate.txt", "r")) == NULL){
         printf("Error! Opening file in the data folder failed!\n");
         // program exits if the file pointer returns NULL.
         exit(1);
@@ -290,16 +295,19 @@ void mock_certificate() {
         fread(data, 1, data_len, fptr);
         fclose(fptr);
 
-        central_certificate = skissm__certificate__unpack(NULL, data_len, data);
+        certificate_data_len = crypto_base64_decode(&certificate_data, data);
+
+        central_certificate = skissm__certificate__unpack(NULL, certificate_data_len, certificate_data);
 
         copy_protobuf_from_protobuf(&(central_key_pair->public_key), &(central_certificate->cert->public_key));
 
         // release
         free_mem((void **)&data, data_len);
+        free_mem((void **)&certificate_data, certificate_data_len);
     }
 
     // server private key
-    if ((fptr = fopen("./cert/test_private.txt", "r")) == NULL){
+    if ((fptr = fopen("../cert/test_private.txt", "r")) == NULL){
         printf("Error! Opening file in the data folder failed!\n");
         // program exits if the file pointer returns NULL.
         exit(1);
@@ -317,7 +325,7 @@ void mock_certificate() {
     }
 
     // server certificate
-    if ((fptr = fopen("./cert/test_certificate.txt", "r")) == NULL){
+    if ((fptr = fopen("../cert/test_certificate.txt", "r")) == NULL){
         printf("Error! Opening file in the data folder failed!\n");
         // program exits if the file pointer returns NULL.
         exit(1);
@@ -329,12 +337,15 @@ void mock_certificate() {
         fread(data, 1, data_len, fptr);
         fclose(fptr);
 
-        server_certificate = skissm__certificate__unpack(NULL, data_len, data);
+        certificate_data_len = crypto_base64_decode(&certificate_data, data);
+
+        server_certificate = skissm__certificate__unpack(NULL, certificate_data_len, certificate_data);
 
         copy_protobuf_from_protobuf(&(server_key_pair->public_key), &(server_certificate->cert->public_key));
 
         // release
         free_mem((void **)&data, data_len);
+        free_mem((void **)&certificate_data, certificate_data_len);
     }
 }
 
