@@ -983,55 +983,83 @@ Skissm__ConsumeProtoMsgResponse *consume_proto_msg(Skissm__E2eeAddress *sender_a
 }
 
 Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size_t proto_msg_data_len) {
-    Skissm__ProtoMsg *proto_msg = skissm__proto_msg__unpack(NULL, proto_msg_data_len, proto_msg_data);
-    Skissm__E2eeAddress *receiver_address = proto_msg->to;
-
+    int ret = 0;
+    int server_check = 0;
     bool consumed = false;
-    switch(proto_msg->payload_case) {
-        case SKISSM__PROTO_MSG__PAYLOAD_SUPPLY_OPKS_MSG:
-            consumed = consume_supply_opks_msg(receiver_address, proto_msg->supply_opks_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_ADD_USER_DEVICE_MSG:
-            consumed = consume_add_user_device_msg(receiver_address, proto_msg->add_user_device_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_USER_DEVICE_MSG:
-            consumed = consume_remove_user_device_msg(receiver_address, proto_msg->remove_user_device_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG:
-            consumed = consume_invite_msg(receiver_address, proto_msg->invite_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_ACCEPT_MSG:
-            consumed = consume_accept_msg(receiver_address, proto_msg->accept_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG:
-            if (proto_msg->e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG)
-                consumed = consume_one2one_msg(receiver_address, proto_msg->e2ee_msg);
-            else if (proto_msg->e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_GROUP_MSG)
-                consumed = consume_group_msg(receiver_address, proto_msg->e2ee_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_CREATE_GROUP_MSG:
-            consumed = consume_create_group_msg(receiver_address, proto_msg->create_group_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBERS_MSG:
-            consumed = consume_add_group_members_msg(receiver_address, proto_msg->add_group_members_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBER_DEVICE_MSG:
-            consumed = consume_add_group_member_device_msg(receiver_address, proto_msg->add_group_member_device_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_GROUP_MEMBERS_MSG:
-            consumed = consume_remove_group_members_msg(receiver_address, proto_msg->remove_group_members_msg);
-            break;
-        case SKISSM__PROTO_MSG__PAYLOAD_LEAVE_GROUP_MSG:
-            consumed = consume_leave_group_msg(receiver_address, proto_msg->leave_group_msg);
-            break;
-        default:
-            // consume the message that is arriving here
-            consumed = true;
-            break;
-    };
+
+    digital_signature_suite_t *digital_signature_suite = NULL;
+    Skissm__E2eeAddress *receiver_address = NULL;
+    ProtobufCBinaryData server_public_key;
+    Skissm__ConsumeProtoMsgResponse *response = NULL;
+    Skissm__ProtoMsg *proto_msg = skissm__proto_msg__unpack(NULL, proto_msg_data_len, proto_msg_data);
+    size_t i;
+
+    if (safe_proto_msg(proto_msg)) {
+        receiver_address = proto_msg->to;
+        load_server_public_key_from_cache(&server_public_key, receiver_address);
+        for (i = 0; i < proto_msg->n_signature_list; i++) {
+            digital_signature_suite = get_digital_signature_suite(proto_msg->signature_list[i]->signing_alg);
+            server_check = digital_signature_suite->verify(
+                proto_msg->signature_list[i]->signature.data,
+                proto_msg->signature_list[i]->signature.len,
+                proto_msg->signature_list[i]->msg_fingerprint.data,
+                proto_msg->signature_list[i]->msg_fingerprint.len,
+                server_public_key.data
+            );
+            if (server_check < 0) {
+                ssm_notify_log(NULL, BAD_SERVER_SIGNATURE, "process_proto_msg()");
+            }
+        }
+    } else {
+        ret = -1;
+    }
+
+    if (ret == 0) {
+        switch(proto_msg->payload_case) {
+            case SKISSM__PROTO_MSG__PAYLOAD_SUPPLY_OPKS_MSG:
+                consumed = consume_supply_opks_msg(receiver_address, proto_msg->supply_opks_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_ADD_USER_DEVICE_MSG:
+                consumed = consume_add_user_device_msg(receiver_address, proto_msg->add_user_device_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_USER_DEVICE_MSG:
+                consumed = consume_remove_user_device_msg(receiver_address, proto_msg->remove_user_device_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_INVITE_MSG:
+                consumed = consume_invite_msg(receiver_address, proto_msg->invite_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_ACCEPT_MSG:
+                consumed = consume_accept_msg(receiver_address, proto_msg->accept_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_E2EE_MSG:
+                if (proto_msg->e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG)
+                    consumed = consume_one2one_msg(receiver_address, proto_msg->e2ee_msg);
+                else if (proto_msg->e2ee_msg->payload_case == SKISSM__E2EE_MSG__PAYLOAD_GROUP_MSG)
+                    consumed = consume_group_msg(receiver_address, proto_msg->e2ee_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_CREATE_GROUP_MSG:
+                consumed = consume_create_group_msg(receiver_address, proto_msg->create_group_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBERS_MSG:
+                consumed = consume_add_group_members_msg(receiver_address, proto_msg->add_group_members_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_ADD_GROUP_MEMBER_DEVICE_MSG:
+                consumed = consume_add_group_member_device_msg(receiver_address, proto_msg->add_group_member_device_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_REMOVE_GROUP_MEMBERS_MSG:
+                consumed = consume_remove_group_members_msg(receiver_address, proto_msg->remove_group_members_msg);
+                break;
+            case SKISSM__PROTO_MSG__PAYLOAD_LEAVE_GROUP_MSG:
+                consumed = consume_leave_group_msg(receiver_address, proto_msg->leave_group_msg);
+                break;
+            default:
+                // consume the message that is arriving here
+                consumed = true;
+                break;
+        };
+    }
 
     // notify server that the proto_msg has been consumed
-    Skissm__ConsumeProtoMsgResponse *response = NULL;
     if (consumed) {
         if (proto_msg->tag != NULL) {
             response = consume_proto_msg(receiver_address, proto_msg->tag->proto_msg_id);
@@ -1070,13 +1098,10 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             proto_msg->payload_case,
             proto_msg->tag == NULL ? "" : proto_msg->tag->proto_msg_id
         );
-        response = (Skissm__ConsumeProtoMsgResponse *)malloc(sizeof(Skissm__ConsumeProtoMsgResponse));
-        skissm__consume_proto_msg_response__init(response);
-        response->code = SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND;
     }
 
     // release
-    skissm__proto_msg__free_unpacked(proto_msg, NULL);
+    free_proto(proto_msg);
 
     // done
     return response;

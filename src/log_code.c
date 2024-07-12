@@ -45,6 +45,7 @@ static const char * LOG_CODE_STRINGS[] = {
     "BAD_REMOVE_OPK",
     "BAD_RESPONSE",
     "BAD_SERVER_MESSAGE",
+    "BAD_SERVER_SIGNATURE",
     "BAD_SESSION",
     "BAD_SIGN_KEY",
     "BAD_SIGNATURE",

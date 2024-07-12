@@ -351,13 +351,7 @@ void mock_certificate() {
 void mock_server_signed_signature(
     Skissm__ServerSignedSignature **out, uint8_t *msg, size_t msg_len
 ) {
-    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_raw(
-        0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
-        E2EE_PACK_ALG_KEM_KYBER1024,
-        E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
-        E2EE_PACK_ALG_HASH_SHA2_256
-    );
+    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_pqc();
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id_raw)->cipher_suite;
     int sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
 

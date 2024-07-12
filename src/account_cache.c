@@ -33,6 +33,7 @@ void store_account_into_cache(Skissm__Account *account) {
         copy_address_from_address(&(account_cacheer_list->address), account->address);
         copy_ik_from_ik(&(account_cacheer_list->identity_key), account->identity_key);
         copy_spk_from_spk(&(account_cacheer_list->signed_pre_key), account->signed_pre_key);
+        copy_protobuf_from_protobuf(&(account_cacheer_list->server_public_key), &(account->server_cert->cert->public_key));
         account_cacheer_list->next = NULL;
     } else {
         account_cacheer *cur = account_cacheer_list;
@@ -45,6 +46,7 @@ void store_account_into_cache(Skissm__Account *account) {
         copy_address_from_address(&(cur->next->address), account->address);
         copy_ik_from_ik(&(cur->next->identity_key), account->identity_key);
         copy_spk_from_spk(&(cur->next->signed_pre_key), account->signed_pre_key);
+        copy_protobuf_from_protobuf(&(cur->next->server_public_key), &(account->server_cert->cert->public_key));
         cur->next->next = NULL;
     }
 }
@@ -97,6 +99,17 @@ void load_signed_pre_key_from_cache(Skissm__SignedPreKey **signed_pre_key_out, S
     *signed_pre_key_out = NULL;
 }
 
+void load_server_public_key_from_cache(ProtobufCBinaryData *server_public_key, Skissm__E2eeAddress *address) {
+    account_cacheer *cur = account_cacheer_list;
+    while (cur != NULL) {
+        if (compare_address(cur->address, address)) {
+            copy_protobuf_from_protobuf(server_public_key, &(cur->server_public_key));
+            return;
+        }
+        cur = cur->next;
+    }
+}
+
 void free_account_cacheer(account_cacheer *cacheer) {
     if (cacheer->version != NULL) {
         free(cacheer->version);
@@ -115,6 +128,7 @@ void free_account_cacheer(account_cacheer *cacheer) {
         skissm__signed_pre_key__free_unpacked(cacheer->signed_pre_key, NULL);
         cacheer->signed_pre_key = NULL;
     }
+    free_protobuf(&(cacheer->server_public_key));
     cacheer = NULL;
 }
 

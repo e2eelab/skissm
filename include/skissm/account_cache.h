@@ -35,6 +35,7 @@ typedef struct account_cacheer {
     Skissm__E2eeAddress *address;
     Skissm__IdentityKey *identity_key;
     Skissm__SignedPreKey *signed_pre_key;
+    ProtobufCBinaryData server_public_key;
     struct account_cacheer *next;
 } account_cacheer;
 
@@ -47,6 +48,8 @@ void load_e2ee_pack_id_from_cache(uint32_t *e2ee_pack_id_out, Skissm__E2eeAddres
 void load_identity_key_from_cache(Skissm__IdentityKey **identity_key_out, Skissm__E2eeAddress *address);
 
 void load_signed_pre_key_from_cache(Skissm__SignedPreKey **signed_pre_key_out, Skissm__E2eeAddress *address);
+
+void load_server_public_key_from_cache(ProtobufCBinaryData *server_public_key, Skissm__E2eeAddress *address);
 
 void free_account_cacheer_list();
 

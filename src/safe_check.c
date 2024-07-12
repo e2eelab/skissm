@@ -122,6 +122,17 @@ bool nonempty_string(const char *src) {
     return true;
 }
 
+bool nonempty_string_list(char **src, size_t len) {
+    size_t i;
+    for (i = 0; i < len; i++) {
+        if (!nonempty_string(src[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool safe_address(Skissm__E2eeAddress *src) {
     if (src != NULL) {
         if (!nonempty_string(src->domain)) {
@@ -984,6 +995,116 @@ bool safe_send_group_msg_response(Skissm__SendGroupMsgResponse *src) {
         }
     } else {
         return false;
+    }
+
+    return true;
+}
+
+bool safe_proto_msg(Skissm__ProtoMsg *src) {
+    if (src != NULL) {
+        if (!safe_address(src->from)) {
+            return false;
+        }
+        if (!safe_address(src->to)) {
+            return false;
+        }
+        if (!safe_server_signed_signature_list(src->signature_list, src->n_signature_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_subject(Skissm__Subject *src) {
+    if (src != NULL) {
+        if (!nonempty_string(src->cn)) {
+            return false;
+        }
+        if (!nonempty_string(src->domain)) {
+            return false;
+        }
+        if (!nonempty_string(src->o)) {
+            return false;
+        }
+        if (!nonempty_string_list(src->ou, src->n_ou)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_cert(Skissm__Cert *src) {
+    if (src != NULL) {
+        if (!safe_subject(src->issuee)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->public_key))) {
+            return false;
+        }
+        if (!safe_subject(src->issuer)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_certificate(Skissm__Certificate *src) {
+    if (src != NULL) {
+        if (!safe_cert(src->cert)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->cert_fingerprint))) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->signing_public_key_fingerprint))) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->signature))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_server_signed_signature(Skissm__ServerSignedSignature *src) {
+    if (src != NULL) {
+        if (!safe_subject(src->signer)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->signing_public_key_fingerprint))) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->msg_fingerprint))) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->signature))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_server_signed_signature_list(Skissm__ServerSignedSignature **src, size_t len) {
+    size_t i;
+    for (i = 0; i < len; i++) {
+        if (!safe_server_signed_signature(src[i])) {
+            return false;
+        }
     }
 
     return true;

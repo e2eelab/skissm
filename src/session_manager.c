@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "skissm/account.h"
+#include "skissm/account_cache.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/group_session.h"
@@ -122,6 +123,8 @@ int consume_get_pre_key_bundle_response(
     uint32_t e2ee_pack_id;
     Skissm__InviteResponse **invite_response_list = NULL;
     int invite_response_ret = 0;    // this parameter may be useful
+    int server_check = 0;
+    ProtobufCBinaryData server_public_key;
 
     if (safe_address(from)) {
         if (safe_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
@@ -129,6 +132,8 @@ int consume_get_pre_key_bundle_response(
             n_pre_key_bundles = get_pre_key_bundle_response->n_pre_key_bundles;
 
             invite_response_list = (Skissm__InviteResponse **)malloc(sizeof(Skissm__InviteResponse *) * n_pre_key_bundles);
+
+            load_server_public_key_from_cache(&server_public_key, from);
         } else {
             ssm_notify_log(NULL, BAD_RESPONSE, "consume_get_pre_key_bundle_response()");
             ret = -1;
@@ -148,6 +153,23 @@ int consume_get_pre_key_bundle_response(
                 if (compare_address(from, to_address)) {
                     continue;
                 }
+            }
+
+            if (safe_server_signed_signature(cur_pre_key_bundle->signature)) {
+                digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(cur_pre_key_bundle->signature->signing_alg);
+                server_check = digital_signature_suite->verify(
+                    cur_pre_key_bundle->signature->signature.data,
+                    cur_pre_key_bundle->signature->signature.len,
+                    cur_pre_key_bundle->signature->msg_fingerprint.data,
+                    cur_pre_key_bundle->signature->msg_fingerprint.len,
+                    server_public_key.data
+                );
+
+                if (server_check < 0) {
+                    ssm_notify_log(NULL, BAD_SERVER_SIGNATURE, "consume_get_pre_key_bundle_response()");
+                }
+            } else {
+                ssm_notify_log(NULL, BAD_SERVER_SIGNATURE, "consume_get_pre_key_bundle_response()");
             }
 
             // store the group pre-keys if necessary

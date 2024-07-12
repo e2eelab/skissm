@@ -23,6 +23,8 @@ bool safe_protobuf_list(ProtobufCBinaryData *src, size_t len);
 
 bool nonempty_string(const char *src);
 
+bool nonempty_string_list(char **src, size_t len);
+
 bool safe_address(Skissm__E2eeAddress *src);
 
 bool safe_address_list(Skissm__E2eeAddress **src, size_t len);
@@ -113,6 +115,18 @@ bool safe_remove_group_members_response(Skissm__RemoveGroupMembersResponse *src)
 bool safe_leave_group_response(Skissm__LeaveGroupResponse *src);
 
 bool safe_send_group_msg_response(Skissm__SendGroupMsgResponse *src);
+
+bool safe_proto_msg(Skissm__ProtoMsg *src);
+
+bool safe_subject(Skissm__Subject *src);
+
+bool safe_cert(Skissm__Cert *src);
+
+bool safe_certificate(Skissm__Certificate *src);
+
+bool safe_server_signed_signature(Skissm__ServerSignedSignature *src);
+
+bool safe_server_signed_signature_list(Skissm__ServerSignedSignature **src, size_t len);
 
 #ifdef __cplusplus
 }

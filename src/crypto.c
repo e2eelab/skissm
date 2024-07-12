@@ -1328,10 +1328,10 @@ int crypto_aes_decrypt_gcm(
 }
 
 size_t encrypt_aes_data_with_iv(
-        const uint8_t *plaintext_data, size_t plaintext_data_len,
-        const uint8_t aes_key[AES256_KEY_LENGTH],
-        const uint8_t iv[AES256_DATA_IV_LENGTH],
-        uint8_t **ciphertext_data
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    const uint8_t aes_key[AES256_KEY_LENGTH],
+    const uint8_t iv[AES256_DATA_IV_LENGTH],
+    uint8_t **ciphertext_data
 ) {
     size_t ciphertext_data_len = aes256_gcm_ciphertext_data_len(plaintext_data_len);
     *ciphertext_data = (uint8_t *)malloc(ciphertext_data_len);
