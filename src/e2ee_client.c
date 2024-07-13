@@ -989,7 +989,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
 
     digital_signature_suite_t *digital_signature_suite = NULL;
     Skissm__E2eeAddress *receiver_address = NULL;
-    ProtobufCBinaryData server_public_key;
+    ProtobufCBinaryData server_public_key = {0, NULL};
     Skissm__ConsumeProtoMsgResponse *response = NULL;
     Skissm__ProtoMsg *proto_msg = skissm__proto_msg__unpack(NULL, proto_msg_data_len, proto_msg_data);
     size_t i;

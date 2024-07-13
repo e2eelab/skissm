@@ -332,18 +332,23 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
     /** The server notifies us to generate some new one-time pre-keys 
         since our published one-time pre-keys are going to used up. */
 
-    if (!compare_address(receiver_address, msg->user_address)){
-        ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
+    if (!safe_address(receiver_address)) {
+        ssm_notify_log(NULL, BAD_ADDRESS, "consume_supply_opks_msg()");
         return false;
+    }
+    if (safe_supply_opks_msg(msg)) {
+        if (!compare_address(receiver_address, msg->user_address)){
+            ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
+            return false;
+        }
     }
 
     uint32_t opks_num = msg->opks_num;
-    Skissm__E2eeAddress *user_address = msg->user_address;
     Skissm__Account *account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(user_address, &account);
+    get_skissm_plugin()->db_handler.load_account_by_address(receiver_address, &account);
 
-    if (account == NULL || !(account->saved)) {
-        ssm_notify_log(receiver_address, BAD_ONE_TIME_PRE_KEY, "consume_supply_opks_msg()");
+    if (!safe_registered_account(account)) {
+        ssm_notify_log(receiver_address, BAD_ACCOUNT, "consume_supply_opks_msg()");
         return false;
     }
 

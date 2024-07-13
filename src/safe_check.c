@@ -790,6 +790,24 @@ bool safe_group_pre_key_bundle(Skissm__GroupPreKeyBundle *src) {
     return true;
 }
 
+bool safe_group_msg_payload(const Skissm__GroupMsgPayload *payload) {
+    if (payload != NULL) {
+        if (!safe_protobuf(&(payload->ciphertext))) {
+            // there is some wrong with the ciphertext data in the payload
+            return false;
+        }
+        if (!safe_protobuf(&(payload->signature))) {
+            // there is some wrong with the signature data in the payload
+            return false;
+        }
+    } else {
+        // the payload is NULL
+        return false;
+    }
+
+    return true;
+}
+
 bool safe_register_user_response(Skissm__RegisterUserResponse *src) {
     if (src != NULL) {
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
@@ -1000,11 +1018,244 @@ bool safe_send_group_msg_response(Skissm__SendGroupMsgResponse *src) {
     return true;
 }
 
-bool safe_proto_msg(Skissm__ProtoMsg *src) {
+bool safe_supply_opks_msg(Skissm__SupplyOpksMsg *src) {
+    if (src != NULL) {
+        if (!safe_address(src->user_address)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_add_user_device_msg(Skissm__AddUserDeviceMsg *src) {
+    if (src != NULL) {
+        if (!safe_address(src->user_address)) {
+            return false;
+        }
+        if (!safe_address_list(src->old_address_list, src->n_old_address_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_remove_user_device_msg(Skissm__RemoveUserDeviceMsg *src) {
+    if (src != NULL) {
+        if (!safe_address(src->user_address)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_invite_msg(Skissm__InviteMsg *src) {
+    if (src != NULL) {
+        if (!nonempty_string(src->version)) {
+            return false;
+        }
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!nonempty_string(src->session_id)) {
+            return false;
+        }
+        if (!safe_address(src->from)) {
+            return false;
+        }
+        if (!safe_address(src->to)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->alice_identity_key))) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->alice_base_key))) {
+            return false;
+        }
+        if (!safe_protobuf_list(src->pre_shared_input_list, src->n_pre_shared_input_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_accept_msg(Skissm__AcceptMsg *src) {
     if (src != NULL) {
         if (!safe_address(src->from)) {
             return false;
         }
+        if (!safe_address(src->to)) {
+            return false;
+        }
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->encaps_ciphertext))) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->ratchet_key))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_e2ee_msg(Skissm__E2eeMsg *src) {
+    if (src != NULL) {
+        if (!nonempty_string(src->version)) {
+            return false;
+        }
+        if (!safe_address(src->from)) {
+            return false;
+        }
+        if (!safe_address(src->to)) {
+            return false;
+        }
+        if (!nonempty_string(src->session_id)) {
+            return false;
+        }
+        if (src->payload_case == SKISSM__E2EE_MSG__PAYLOAD_ONE2ONE_MSG) {
+            if (!safe_one2one_msg_payload(src->one2one_msg)) {
+                return false;
+            }
+        } else if (src->payload_case == SKISSM__E2EE_MSG__PAYLOAD_GROUP_MSG) {
+            if (!safe_group_msg_payload(src->group_msg)) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_create_group_msg(Skissm__CreateGroupMsg *src) {
+    if (src != NULL) {
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!safe_address(src->sender_address)) {
+            return false;
+        }
+        if (!safe_group_info(src->group_info)) {
+            return false;
+        }
+        if (!safe_group_member_info_list(src->member_info_list, src->n_member_info_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_add_group_members_msg(Skissm__AddGroupMembersMsg *src) {
+    if (src != NULL) {
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!safe_address(src->sender_address)) {
+            return false;
+        }
+        if (!safe_group_info(src->group_info)) {
+            return false;
+        }
+        if (!safe_group_member_list(src->adding_member_list, src->n_adding_member_list)) {
+            return false;
+        }
+        if (!safe_group_member_info_list(src->adding_member_info_list, src->n_adding_member_info_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_add_group_member_device_msg(Skissm__AddGroupMemberDeviceMsg *src) {
+    if (src != NULL) {
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!safe_address(src->sender_address)) {
+            return false;
+        }
+        if (!safe_group_info(src->group_info)) {
+            return false;
+        }
+        if (!safe_group_member_info(src->adding_member_device)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_remove_group_members_msg(Skissm__RemoveGroupMembersMsg *src) {
+    if (src != NULL) {
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!safe_address(src->sender_address)) {
+            return false;
+        }
+        if (!safe_group_info(src->group_info)) {
+            return false;
+        }
+        if (!safe_group_member_list(src->removing_member_list, src->n_removing_member_list)) {
+            return false;
+        }
+        if (!safe_group_member_info_list(src->member_info_list, src->n_member_info_list)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_leave_group_msg(Skissm__LeaveGroupMsg *src) {
+    if (src != NULL) {
+        if (!safe_address(src->user_address)) {
+            return false;
+        }
+        if (!safe_address(src->group_address)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_proto_msg(Skissm__ProtoMsg *src) {
+    if (src != NULL) {
+        // if (!safe_address(src->from)) {
+        //     return false;
+        // }
         if (!safe_address(src->to)) {
             return false;
         }

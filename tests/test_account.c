@@ -55,7 +55,7 @@ static skissm_event_handler_t test_event_handler = {
 };
 
 static void create_account_test() {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
 
     int ret = 0;
 
@@ -154,7 +154,7 @@ static void test_register_user() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
@@ -182,7 +182,7 @@ static void test_publish_spk() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
@@ -242,7 +242,7 @@ static void test_supply_opks() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();
@@ -292,7 +292,7 @@ static void test_free_opks() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     const char *user_name = "alice";
     const char *user_id = "alice";
     const char *device_id = generate_uuid_str();

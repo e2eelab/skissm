@@ -1697,11 +1697,16 @@ size_t crypto_base64_decode(uint8_t **msg_out, const unsigned char *base64_str) 
     size_t len = ((base64_str_len + 3) / 4 - pad) * 4;
     unsigned char buffer[len + 1];
     size_t msg_out_len;
-    mbedtls_base64_decode(buffer, len + 1, &msg_out_len, base64_str, base64_str_len);
+    int ret = mbedtls_base64_decode(buffer, len + 1, &msg_out_len, base64_str, base64_str_len);
 
-    // msg_out_len == len
+    if (msg_out_len > (len + 1)) {
+        // something wrong with the length
+        return 0;
+    }
     *msg_out = (uint8_t *)malloc(sizeof(uint8_t) * msg_out_len);
     memcpy(*msg_out, buffer, msg_out_len);
+
+    unset(buffer, len + 1);
 
     return msg_out_len;
 }

@@ -55,7 +55,7 @@ static void test_one_group_pre_key() {
     tear_up();
     get_skissm_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     // mock address
@@ -294,7 +294,7 @@ static void test_pending_request_data() {
     // test start
     tear_up();
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
 
     // mock address
     Skissm__E2eeAddress *alice_address, *bob_address;

@@ -92,6 +92,8 @@ bool safe_group_update_key_bundle(Skissm__GroupUpdateKeyBundle *src);
 
 bool safe_group_pre_key_bundle(Skissm__GroupPreKeyBundle *src);
 
+bool safe_group_msg_payload(const Skissm__GroupMsgPayload *payload);
+
 bool safe_register_user_response(Skissm__RegisterUserResponse *src);
 
 bool safe_publish_spk_response(Skissm__PublishSpkResponse *src);
@@ -115,6 +117,28 @@ bool safe_remove_group_members_response(Skissm__RemoveGroupMembersResponse *src)
 bool safe_leave_group_response(Skissm__LeaveGroupResponse *src);
 
 bool safe_send_group_msg_response(Skissm__SendGroupMsgResponse *src);
+
+bool safe_supply_opks_msg(Skissm__SupplyOpksMsg *src);
+
+bool safe_add_user_device_msg(Skissm__AddUserDeviceMsg *src);
+
+bool safe_remove_user_device_msg(Skissm__RemoveUserDeviceMsg *src);
+
+bool safe_invite_msg(Skissm__InviteMsg *src);
+
+bool safe_accept_msg(Skissm__AcceptMsg *src);
+
+bool safe_e2ee_msg(Skissm__E2eeMsg *src);
+
+bool safe_create_group_msg(Skissm__CreateGroupMsg *src);
+
+bool safe_add_group_members_msg(Skissm__AddGroupMembersMsg *src);
+
+bool safe_add_group_member_device_msg(Skissm__AddGroupMemberDeviceMsg *src);
+
+bool safe_remove_group_members_msg(Skissm__RemoveGroupMembersMsg *src);
+
+bool safe_leave_group_msg(Skissm__LeaveGroupMsg *src);
 
 bool safe_proto_msg(Skissm__ProtoMsg *src);
 

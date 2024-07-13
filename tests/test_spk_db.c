@@ -160,7 +160,7 @@ void test_remove_expired_signed_pre_key(uint32_t e2ee_pack_id){
 }
 
 int main(){
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
 
     test_load_old_signed_pre_key(e2ee_pack_id);
     test_remove_expired_signed_pre_key(e2ee_pack_id);

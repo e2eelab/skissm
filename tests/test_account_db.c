@@ -297,7 +297,7 @@ void test_two_accounts(uint32_t e2ee_pack_id)
 
 int main()
 {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
 
     test_setup();
     test_setup_call_twice();

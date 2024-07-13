@@ -152,6 +152,13 @@ int consume_create_group_response(
 }
 
 bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg) {
+    if (!safe_address(receiver_address)) {
+        return false;
+    }
+    if (!safe_create_group_msg(msg)) {
+        return false;
+    }
+
     uint32_t e2ee_pack_id = msg->e2ee_pack_id;
     Skissm__GroupInfo *group_info = msg->group_info;
     const char *group_name = group_info->group_name;
@@ -389,6 +396,13 @@ int consume_add_group_members_response(
 }
 
 bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddGroupMembersMsg *msg) {
+    if (!safe_address(receiver_address)) {
+        return false;
+    }
+    if (!safe_add_group_members_msg(msg)) {
+        return false;
+    }
+
     Skissm__E2eeAddress *group_address = msg->group_info->group_address;
     const char *group_name = msg->group_info->group_name;
     Skissm__GroupMember **new_group_members = msg->group_info->group_member_list;
@@ -569,6 +583,13 @@ bool consume_add_group_member_device_msg(
     Skissm__E2eeAddress *receiver_address,
     Skissm__AddGroupMemberDeviceMsg *msg
 ) {
+    if (!safe_address(receiver_address)) {
+        return false;
+    }
+    if (!safe_add_group_member_device_msg(msg)) {
+        return false;
+    }
+
     Skissm__E2eeAddress *group_address = msg->group_info->group_address;
     const char *group_name = msg->group_info->group_name;
     Skissm__GroupMember **group_member_list = msg->group_info->group_member_list;
@@ -772,6 +793,13 @@ int consume_remove_group_members_response(
 }
 
 bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveGroupMembersMsg *msg) {
+    if (!safe_address(receiver_address)) {
+        return false;
+    }
+    if (!safe_remove_group_members_msg(msg)) {
+        return false;
+    }
+
     uint32_t e2ee_pack_id = msg->e2ee_pack_id;
     Skissm__GroupInfo *group_info = msg->group_info;
     const char *group_name = group_info->group_name;
@@ -938,6 +966,13 @@ int consume_leave_group_response(
 }
 
 bool consume_leave_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__LeaveGroupMsg *msg) {
+    if (!safe_address(receiver_address)) {
+        return false;
+    }
+    if (!safe_leave_group_msg(msg)) {
+        return false;
+    }
+
     // prepare the removing group member
     Skissm__GroupMember **removing_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *));
     removing_group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));

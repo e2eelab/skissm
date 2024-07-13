@@ -26,6 +26,7 @@
 #include "skissm/crypto.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/mem_util.h"
+#include "skissm/safe_check.h"
 #include "test_util.h"
 
 #define user_data_max 205
@@ -351,27 +352,27 @@ void mock_certificate() {
 void mock_server_signed_signature(
     Skissm__ServerSignedSignature **out, uint8_t *msg, size_t msg_len
 ) {
-    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_pqc();
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id_raw)->cipher_suite;
-    int sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
+    // uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_pqc();
+    // const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id_raw)->cipher_suite;
+    // int sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
 
-    *out = (Skissm__ServerSignedSignature *)malloc(sizeof(Skissm__ServerSignedSignature));
-    skissm__server_signed_signature__init(*out);
+    // *out = (Skissm__ServerSignedSignature *)malloc(sizeof(Skissm__ServerSignedSignature));
+    // skissm__server_signed_signature__init(*out);
 
-    (*out)->version = server_certificate->version;
-    (*out)->hash_alg = server_certificate->hash_alg;
-    (*out)->signing_alg = server_certificate->signing_alg;
-    copy_subject_from_subject(&((*out)->signer), server_certificate->cert->issuee);
-    copy_protobuf_from_protobuf(&((*out)->signing_public_key_fingerprint), &(server_certificate->signing_public_key_fingerprint));
-    copy_protobuf_from_array(&((*out)->msg_fingerprint), msg, msg_len);
-    // sign
-    size_t signature_out_len;
-    malloc_protobuf(&((*out)->signature), sig_len);
-    cipher_suite->digital_signature_suite->sign(
-        (*out)->signature.data, &signature_out_len,
-        msg, msg_len,
-        server_key_pair->private_key.data
-    );
+    // (*out)->version = server_certificate->version;
+    // (*out)->hash_alg = server_certificate->hash_alg;
+    // (*out)->signing_alg = server_certificate->signing_alg;
+    // copy_subject_from_subject(&((*out)->signer), server_certificate->cert->issuee);
+    // copy_protobuf_from_protobuf(&((*out)->signing_public_key_fingerprint), &(server_certificate->signing_public_key_fingerprint));
+    // copy_protobuf_from_array(&((*out)->msg_fingerprint), msg, msg_len);
+    // // sign
+    // size_t signature_out_len;
+    // malloc_protobuf(&((*out)->signature), sig_len);
+    // cipher_suite->digital_signature_suite->sign(
+    //     (*out)->signature.data, &signature_out_len,
+    //     msg, msg_len,
+    //     server_key_pair->private_key.data
+    // );
 }
 
 void mock_server_begin() {
@@ -385,7 +386,7 @@ void mock_server_begin() {
             device_invited_record[i][j] = 0;
         }
     }
-    mock_certificate();
+    // mock_certificate();
 }
 
 void mock_server_end() {
@@ -547,7 +548,9 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
             }
         }
     }
-    copy_certificate_from_certificate(&(response->server_cert), server_certificate);
+    if (safe_certificate(server_certificate)) {
+        copy_certificate_from_certificate(&(response->server_cert), server_certificate);
+    }
 
     // send the new device message to other devices and users
     uint8_t *msg = NULL;

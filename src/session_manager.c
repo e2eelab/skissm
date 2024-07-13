@@ -124,7 +124,7 @@ int consume_get_pre_key_bundle_response(
     Skissm__InviteResponse **invite_response_list = NULL;
     int invite_response_ret = 0;    // this parameter may be useful
     int server_check = 0;
-    ProtobufCBinaryData server_public_key;
+    ProtobufCBinaryData server_public_key = {0, NULL};
 
     if (safe_address(from)) {
         if (safe_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
@@ -524,22 +524,35 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 
 bool consume_add_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddUserDeviceMsg *msg) {
     int ret = 0;
-    Skissm__E2eeAddress *new_user_address = msg->user_address;
-    Skissm__E2eeAddress **old_address_list = msg->old_address_list;
-    size_t old_address_list_number = msg->n_old_address_list;
 
-    if (old_address_list == NULL || old_address_list_number == 0) {
-        return true;
-    }
-
-    size_t i, j;
+    Skissm__E2eeAddress *new_user_address = NULL;
+    Skissm__E2eeAddress **old_address_list = NULL;
+    size_t old_address_list_number;
     group_address_node *group_address_list = NULL;
     group_address_node *cur_group_address_node = NULL;
     group_address_node *tail_group_address_node = NULL;
+    Skissm__E2eeAddress **group_addresses = NULL;
+    size_t group_address_num;
+    size_t i, j;
+
+    if (!safe_address(receiver_address)) {
+        ret = -1;
+    }
+    if (safe_add_user_device_msg(msg)) {
+        new_user_address = msg->user_address;
+        old_address_list = msg->old_address_list;
+        old_address_list_number = msg->n_old_address_list;
+    } else {
+        ret = -1;
+    }
+
+    if (ret == -1) {
+        return false;
+    }
+
     for (i = 0; i < old_address_list_number; i++) {
         // load all outbound group addresses
-        Skissm__E2eeAddress **group_addresses = NULL;
-        size_t group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(old_address_list[i], receiver_address, &group_addresses);
+        group_address_num = get_skissm_plugin()->db_handler.load_group_addresses(old_address_list[i], receiver_address, &group_addresses);
 
         if (group_address_num == 0)
             continue;
@@ -600,6 +613,12 @@ bool consume_add_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
 }
 
 bool consume_remove_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveUserDeviceMsg *msg) {
+    if (!safe_address(receiver_address)) {
+        return false;
+    }
+    if (!safe_remove_user_device_msg(msg)) {
+        return false;
+    }
     // delete the corresponding session
     get_skissm_plugin()->db_handler.unload_session(receiver_address, msg->user_address);
 
@@ -704,6 +723,13 @@ int consume_invite_response(
 }
 
 bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *invite_msg) {
+    if (!safe_address(receiver_address)) {
+        return false;
+    }
+    if (!safe_invite_msg(invite_msg)) {
+        return false;
+    }
+
     ssm_notify_log(
         receiver_address, DEBUG_LOG, "consume_invite_msg(): from [%s:%s], to [%s:%s]",
         invite_msg->from->user->user_id,
@@ -851,6 +877,13 @@ int consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptRes
 }
 
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *accept_msg) {
+    if (!safe_address(receiver_address)) {
+        return false;
+    }
+    if (!safe_accept_msg(accept_msg)) {
+        return false;
+    }
+
     ssm_notify_log(
         receiver_address, DEBUG_LOG, "consume_accept_msg(): from [%s:%s], to [%s:%s]", 
         accept_msg->from->user->user_id,

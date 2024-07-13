@@ -537,7 +537,12 @@ void test_store_session(uint32_t e2ee_pack_id)
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key, NULL);
+    ProtobufCBinaryData their_encaps_ciphertext;
+    their_encaps_ciphertext.len = 32;
+    their_encaps_ciphertext.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(their_encaps_ciphertext.data, "11111111111111111111111111111111", 32);
+
+    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key, &their_encaps_ciphertext);
 
     // insert to the db
     store_session(session);
@@ -603,7 +608,12 @@ void test_equal_ratchet_outbound(uint32_t e2ee_pack_id)
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key, NULL);
+    ProtobufCBinaryData their_encaps_ciphertext;
+    their_encaps_ciphertext.len = 32;
+    their_encaps_ciphertext.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    memcpy(their_encaps_ciphertext.data, "11111111111111111111111111111111", 32);
+
+    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key, &their_encaps_ciphertext);
 
     // insert to the db
     store_session(session);
@@ -756,7 +766,7 @@ void test_session_timestamp(uint32_t e2ee_pack_id) {
 }
 
 int main(){
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     test_load_outbound_session(e2ee_pack_id);
