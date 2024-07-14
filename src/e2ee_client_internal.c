@@ -435,7 +435,7 @@ int add_group_member_device_internal(
                 ssm_notify_log(NULL, BAD_ADDRESS, "add_group_member_device_internal()");
                 ret = -1;
             }
-        } {
+        } else {
             ssm_notify_log(sender_address, BAD_AUTH, "add_group_member_device_internal()");
             ret = -1;
         }

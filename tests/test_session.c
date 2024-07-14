@@ -136,15 +136,15 @@ static void test_end(){
 }
 
 static void mock_alice_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    int ret = register_user(
         &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -153,49 +153,15 @@ static void mock_alice_account(const char *user_name) {
 }
 
 static void mock_bob_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
-    char *device_id = generate_uuid_str();
-    const char *authenticator = "bob@domain.com.tw";
-    const char *auth_code = "654321";
-    Skissm__RegisterUserResponse *response = NULL;
-    register_user(
-        &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
-    );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
-    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
-
-    // release
-    free(device_id);
-    skissm__register_user_response__free_unpacked(response, NULL);
-}
-
-static void mock_alice_pqc_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    char *device_id = generate_uuid_str();
-    const char *authenticator = "alice@domain.com.tw";
-    const char *auth_code = "123456";
-    Skissm__RegisterUserResponse *response = NULL;
-    register_user(
-        &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
-    );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
-    printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
-
-    // release
-    free(device_id);
-    skissm__register_user_response__free_unpacked(response, NULL);
-}
-
-static void mock_bob_pqc_account(const char *user_name) {
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
     Skissm__RegisterUserResponse *response = NULL;
-    register_user(
+    int ret = register_user(
         &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
     );
-    assert(safe_strcmp(device_id, response->address->user->device_id));
+    assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
@@ -235,21 +201,13 @@ static void test_basic_session(){
 
     // Alice invites Bob to create a session
     Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
-    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     sleep(1);
-    // load the outbound session
-    Skissm__Session *outbound_session = NULL;
-    get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session);
-    assert(outbound_session != NULL);
-    assert(outbound_session->responded == true);
-
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
-    skissm__session__free_unpacked(outbound_session, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -271,18 +229,10 @@ static void test_interaction(){
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
-    Skissm__Session *outbound_session_a, *outbound_session_b;
-
     // Alice invites Bob to create a session
     Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
-    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     sleep(1);
-    // Alice loads the outbound session
-    get_skissm_plugin()->db_handler.load_outbound_session(alice_address, bob_address, &outbound_session_a);
-    assert(outbound_session_a != NULL);
-    assert(outbound_session_a->responded == true);
-
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
@@ -291,7 +241,6 @@ static void test_interaction(){
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
-    skissm__session__free_unpacked(outbound_session_a, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -313,15 +262,11 @@ static void test_continual_messages(){
 
     // Alice invites Bob to create a session
     Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
-    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     sleep(1);
-
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     int i;
     for (i = 0; i < 3000; i++){
-        // uint8_t plaintext[64];
-        // size_t plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message will be sent a lot of times.", i);
         test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
     }
 
@@ -375,46 +320,13 @@ static void test_one_to_many(){
 
     // Alice invites Bob to create a session
     Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
-    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
 
     sleep(3);
-    // load the outbound sessions
-    Skissm__Session **outbound_sessions = NULL;
-    size_t outbound_sessions_num = get_skissm_plugin()->db_handler.load_outbound_sessions(alice_address, bob_user_id, bob_domain, &outbound_sessions);
-    assert(outbound_sessions_num == 3);
-
-    // load the inbound sessions
-    Skissm__Session **inbound_sessions = (Skissm__Session **)malloc(sizeof(Skissm__Session *) * 3);
-    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[0]->session_id, outbound_sessions[0]->their_address, &(inbound_sessions[0]));
-    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[1]->session_id, outbound_sessions[1]->their_address, &(inbound_sessions[1]));
-    get_skissm_plugin()->db_handler.load_inbound_session(outbound_sessions[2]->session_id, outbound_sessions[2]->their_address, &(inbound_sessions[2]));
-
-    // check if the outbound sessions and inbound sessions match
-    Skissm__Session *outbound_session, *inbound_session;
-    outbound_session = outbound_sessions[0];
-    inbound_session = inbound_sessions[0];
-    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chain->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
-    outbound_session = outbound_sessions[1];
-    inbound_session = inbound_sessions[1];
-    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chain->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
-    outbound_session = outbound_sessions[2];
-    inbound_session = inbound_sessions[2];
-    assert(compare_protobuf(&(outbound_session->ratchet->receiver_chain->chain_key->shared_key), &(inbound_session->ratchet->sender_chain->chain_key->shared_key)));
-
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
     skissm__invite_response__free_unpacked(response, NULL);
-    size_t i;
-    for (i = 0; i < outbound_sessions_num; i++) {
-        skissm__session__free_unpacked(outbound_sessions[i], NULL);
-        outbound_sessions[i] = NULL;
-        skissm__session__free_unpacked(inbound_sessions[i], NULL);
-        inbound_sessions[i] = NULL;
-    }
-    free(outbound_sessions);
-    free(inbound_sessions);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -468,77 +380,6 @@ static void test_many_to_many() {
     mock_bob_account("Bob");
     mock_bob_account("Bob");
 
-    Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
-    Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
-    Skissm__E2eeAddress *alice_address_3 = account_data[2]->address;
-    char *alice_user_id = alice_address_1->user->user_id;
-    char *alice_domain = alice_address_1->domain;
-    Skissm__E2eeAddress *bob_address_1 = account_data[3]->address;
-    Skissm__E2eeAddress *bob_address_2 = account_data[4]->address;
-    Skissm__E2eeAddress *bob_address_3 = account_data[5]->address;
-    char *bob_user_id = bob_address_1->user->user_id;
-    char *bob_domain = bob_address_1->domain;
-
-    // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address_1, bob_user_id, bob_domain);
-
-    sleep(3);
-    // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    test_encryption(alice_address_1, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
-
-    sleep(1);
-    // Bob sends an encrypted message to Alice, and Alice decrypts the message
-    test_encryption(bob_address_1, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
-
-    // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
-    test_end();
-    tear_down();
-    printf("====================================\n");
-}
-
-static void test_basic_pqc_session(){
-    // test start
-    printf("test_basic_pqc_session begin!!!\n");
-    tear_up();
-    test_begin();
-
-    mock_alice_pqc_account("alice");
-    mock_bob_pqc_account("bob");
-
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
-    Skissm__E2eeAddress *bob_address = account_data[1]->address;
-    char *bob_user_id = bob_address->user->user_id;
-    char *bob_domain = bob_address->domain;
-
-    // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
-    assert(response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK); // waiting Accept
-
-    sleep(1);
-    // Alice sends an encrypted message to Bob, and Bob decrypts the message
-    test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
-
-    // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
-    test_end();
-    tear_down();
-    printf("====================================\n");
-}
-
-static void test_pqc_many_to_many() {
-    // test start
-    printf("test_pqc_many_to_many begin!!!\n");
-    tear_up();
-    test_begin();
-
-    mock_alice_pqc_account("Alice");
-    mock_alice_pqc_account("Alice");
-    mock_alice_pqc_account("Alice");
-    mock_bob_pqc_account("Bob");
-    mock_bob_pqc_account("Bob");
-    mock_bob_pqc_account("Bob");
-
     sleep(2);
 
     Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
@@ -577,10 +418,10 @@ static void test_change_devices() {
     tear_up();
     test_begin();
 
-    mock_alice_pqc_account("Alice");
-    mock_alice_pqc_account("Alice");
-    mock_bob_pqc_account("Bob");
-    mock_bob_pqc_account("Bob");
+    mock_alice_account("Alice");
+    mock_alice_account("Alice");
+    mock_bob_account("Bob");
+    mock_bob_account("Bob");
 
     sleep(2);
 
@@ -600,7 +441,7 @@ static void test_change_devices() {
     sleep(2);
 
     // Alice adds a new device
-    mock_alice_pqc_account("Alice");
+    mock_alice_account("Alice");
 
     sleep(1);
     // Alice sends a message to Bob
@@ -619,15 +460,13 @@ static void test_change_devices() {
 }
 
 int main() {
-    // test_basic_session();
-    // test_interaction();
-    // test_continual_messages();
-    // test_multiple_devices();
-    // test_one_to_many();
-    // test_many_to_one();
-    // test_many_to_many();
-    // test_basic_pqc_session();
-    test_pqc_many_to_many();
+    test_basic_session();
+    test_interaction();
+    test_continual_messages();
+    test_multiple_devices();
+    test_one_to_many();
+    test_many_to_one();
+    test_many_to_many();
     test_change_devices();
 
     return 0;

@@ -326,6 +326,7 @@ static const char *ADDRESS_CREATE_TABLE = "CREATE TABLE ADDRESS( "
                                           "DOMAIN TEXT NOT NULL, "
                                           "DEVICE_ID TEXT, "
                                           "GROUP_ID TEXT, "
+                                          "GROUP_NAME TEXT, "
                                           "UNIQUE (USER_ID, DOMAIN, DEVICE_ID, GROUP_ID));";
 
 static const char *KEYPAIR_DROP_TABLE = "DROP TABLE IF EXISTS KEYPAIR;";
@@ -423,6 +424,7 @@ static const char *LOAD_ADDRESS = "SELECT "
 
 static const char *LOAD_GROUP_ADDRESS = "SELECT "
                                         "DOMAIN, "
+                                        "GROUP_NAME, "
                                         "GROUP_ID "
                                         "FROM ADDRESS "
                                         "WHERE ADDRESS.ID is (?);";
@@ -530,8 +532,8 @@ static const char *ADDRESS_LOAD = "SELECT ROWID "
                                   "ADDRESS.GROUP_ID is (?);";
 
 static const char *ADDRESS_INSERT = "INSERT OR IGNORE INTO ADDRESS "
-                                    "(DOMAIN, USER_ID, DEVICE_ID, GROUP_ID) "
-                                    "VALUES (?, ?, ?, ?);";
+                                    "(DOMAIN, USER_ID, DEVICE_ID, GROUP_ID, GROUP_NAME) "
+                                    "VALUES (?, ?, ?, ?, ?);";
 
 static const char *IDENTITY_KEY_INSERT = "INSERT INTO IDENTITY_KEY "
                                          "(ASYM_KEYPAIR, SIGN_KEYPAIR) "
@@ -804,7 +806,8 @@ bool load_group_address(uint64_t address_id, Skissm__E2eeAddress **address) {
         skissm__peer_group__init((*address)->group);
         (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
         (*address)->domain = strdup((char *)sqlite3_column_text(stmt, 0));
-        (*address)->group->group_id = strdup((char *)sqlite3_column_text(stmt, 1));
+        (*address)->group->group_name = strdup((char *)sqlite3_column_text(stmt, 1));
+        (*address)->group->group_id = strdup((char *)sqlite3_column_text(stmt, 2));
     }
 
     // release
@@ -1083,6 +1086,7 @@ sqlite_int64 insert_address(Skissm__E2eeAddress *address) {
         sqlite3_bind_null(stmt, 2);
         sqlite3_bind_null(stmt, 3);
         sqlite3_bind_text(stmt, 4, address->group->group_id, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(stmt, 5, address->group->group_name, -1, SQLITE_TRANSIENT);
     }
 
     // step

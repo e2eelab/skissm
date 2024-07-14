@@ -694,6 +694,60 @@ bool safe_group_member_info_list(const Skissm__GroupMemberInfo **src, size_t len
     return true;
 }
 
+bool safe_group_session_by_member_id(Skissm__GroupSession *src) {
+    if (src != NULL) {
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!safe_address(src->sender)) {
+            return false;
+        }
+        if (!safe_address(src->session_owner)) {
+            return false;
+        }
+        if (!safe_group_info(src->group_info)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->associated_data))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool safe_group_session_by_pre_key_bundle(Skissm__GroupSession *src) {
+    if (src != NULL) {
+        if (!nonempty_string(src->version)) {
+            return false;
+        }
+        if (!safe_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!nonempty_string(src->session_id)) {
+            return false;
+        }
+        if (!safe_address(src->sender)) {
+            return false;
+        }
+        if (!safe_address(src->session_owner)) {
+            return false;
+        }
+        if (!safe_group_info(src->group_info)) {
+            return false;
+        }
+        if (!safe_protobuf(&(src->group_seed))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 bool safe_group_session(Skissm__GroupSession *src) {
     if (src != NULL) {
         if (!nonempty_string(src->version)) {
@@ -715,9 +769,6 @@ bool safe_group_session(Skissm__GroupSession *src) {
             return false;
         }
         if (!safe_protobuf(&(src->chain_key))) {
-            return false;
-        }
-        if (!safe_protobuf(&(src->group_seed))) {
             return false;
         }
         if (!safe_protobuf(&(src->associated_data))) {

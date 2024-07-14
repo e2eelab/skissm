@@ -86,6 +86,10 @@ bool safe_group_member_info(const Skissm__GroupMemberInfo *src);
 
 bool safe_group_member_info_list(const Skissm__GroupMemberInfo **src, size_t len);
 
+bool safe_group_session_by_member_id(Skissm__GroupSession *src);
+
+bool safe_group_session_by_pre_key_bundle(Skissm__GroupSession *src);
+
 bool safe_group_session(Skissm__GroupSession *src);
 
 bool safe_group_update_key_bundle(Skissm__GroupUpdateKeyBundle *src);

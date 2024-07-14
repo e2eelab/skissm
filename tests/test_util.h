@@ -43,6 +43,41 @@
         E2EE_PACK_ALG_HASH_SHA2_256 \
     )
 
+#define malloc_group_members(number) \
+    group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * number ); \
+    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember)); \
+    skissm__group_member__init(group_members[0]); \
+    group_members[0]->user_id = strdup(user_id_list[0]); \
+    group_members[0]->domain = strdup(domain_list[0]); \
+    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER; \
+    for (i = 1; i < number ; i++) { \
+        group_members[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember)); \
+        skissm__group_member__init(group_members[i]); \
+        group_members[i]->user_id = strdup(user_id_list[i]); \
+        group_members[i]->domain = strdup(domain_list[i]); \
+        group_members[i]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER; \
+    }
+
+#define malloc_new_group_members(number) \
+    new_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * number ); \
+    for (i = 0; i < number ; i++) { \
+        new_group_members[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember)); \
+        skissm__group_member__init(new_group_members[i]); \
+        new_group_members[i]->user_id = strdup(new_user_id_list[i]); \
+        new_group_members[i]->domain = strdup(new_domain_list[i]); \
+        new_group_members[i]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER; \
+    }
+
+#define malloc_removing_group_members(number) \
+    removing_group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * number ); \
+    for (i = 0; i < number ; i++) { \
+        removing_group_members[i] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember)); \
+        skissm__group_member__init(removing_group_members[i]); \
+        removing_group_members[i]->user_id = strdup(removing_user_id_list[i]); \
+        removing_group_members[i]->domain = strdup(removing_domain_list[i]); \
+        removing_group_members[i]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER; \
+    }
+
 // debug msg to console
 void print_hex(char *title, uint8_t *msg, size_t msg_len);
 void print_msg(char *title, uint8_t *msg, size_t len);

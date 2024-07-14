@@ -817,7 +817,7 @@ int complete_inbound_group_session_by_pre_key_bundle(
 ) {
     int ret = 0;
 
-    if (!safe_group_session(inbound_group_session)) {
+    if (!safe_group_session_by_member_id(inbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "complete_inbound_group_session_by_pre_key_bundle()");
         ret = -1;
     }
@@ -870,7 +870,7 @@ int complete_inbound_group_session_by_member_id(
 ) {
     int ret = 0;
 
-    if (!safe_group_session(inbound_group_session)) {
+    if (!safe_group_session_by_pre_key_bundle(inbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "complete_inbound_group_session_by_member_id()");
         ret = -1;
     }
