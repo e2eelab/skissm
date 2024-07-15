@@ -561,7 +561,12 @@ void copy_leave_group_msg(Skissm__LeaveGroupMsg **dest, Skissm__LeaveGroupMsg *s
 
 ///-----------------add or remove group members-----------------///
 
-void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **adding_member_list, size_t adding_members_num) {
+void add_group_members_to_group_info(
+    Skissm__GroupInfo **dest,
+    Skissm__GroupInfo *old_group_info,
+    Skissm__GroupMember **adding_member_list,
+    size_t adding_members_num
+) {
     size_t old_group_members_num = old_group_info->n_group_member_list;
     size_t new_group_members_num = old_group_members_num + adding_members_num;
     *dest = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
@@ -581,7 +586,12 @@ void add_group_members_to_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo
     }
 }
 
-void remove_group_members_from_group_info(Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **removing_member_list, size_t removing_members_num) {
+void remove_group_members_from_group_info(
+    Skissm__GroupInfo **dest,
+    Skissm__GroupInfo *old_group_info,
+    Skissm__GroupMember **removing_member_list,
+    size_t removing_members_num
+) {
     size_t old_group_members_num = old_group_info->n_group_member_list;
     size_t new_group_members_num = old_group_members_num - removing_members_num;
     *dest = (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
@@ -623,9 +633,11 @@ Skissm__GroupMember *member_info_to_group_member(Skissm__GroupMemberInfo *member
     return group_member;
 }
 
-size_t member_info_to_group_members(Skissm__GroupMember ***dest,
-                                    Skissm__GroupMemberInfo **member_info_list, size_t member_info_list_num,
-                                    Skissm__GroupMember **member_list, size_t member_list_num) {
+size_t member_info_to_group_members(
+    Skissm__GroupMember ***dest,
+    Skissm__GroupMemberInfo **member_info_list, size_t member_info_list_num,
+    Skissm__GroupMember **member_list, size_t member_list_num
+) {
     size_t dest_num = 0;
     size_t i, j, k, l;
     if (member_info_list_num > 0) {
@@ -691,7 +703,7 @@ void free_e2ee_addresses(Skissm__E2eeAddress ***dest, size_t e2ee_addresses_num)
         skissm__e2ee_address__free_unpacked((*dest)[i], NULL);
         (*dest)[i] = NULL;
     }
-    free_mem((void **)&(*dest), sizeof(Skissm__E2eeAddress **) * e2ee_addresses_num);
+    free_mem((void **)&(*dest), sizeof(Skissm__E2eeAddress *) * e2ee_addresses_num);
 }
 
 void free_invite_response_list(Skissm__InviteResponse ***dest, size_t invite_response_num) {
@@ -700,7 +712,7 @@ void free_invite_response_list(Skissm__InviteResponse ***dest, size_t invite_res
         skissm__invite_response__free_unpacked((*dest)[i], NULL);
         (*dest)[i] = NULL;
     }
-    free_mem((void **)&(*dest), sizeof(Skissm__InviteResponse **) * invite_response_num);
+    free_mem((void **)&(*dest), sizeof(Skissm__InviteResponse *) * invite_response_num);
 }
 
 void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num) {
@@ -709,7 +721,7 @@ void free_group_members(Skissm__GroupMember ***dest, size_t group_members_num) {
         skissm__group_member__free_unpacked((*dest)[i], NULL);
         (*dest)[i] = NULL;
     }
-    free_mem((void **)&(*dest), sizeof(Skissm__GroupMember **) * group_members_num);
+    free_mem((void **)&(*dest), sizeof(Skissm__GroupMember *) * group_members_num);
 }
 
 void free_protobuf(ProtobufCBinaryData *output) {

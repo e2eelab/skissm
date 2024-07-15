@@ -47,9 +47,9 @@ static skissm_event_handler_t test_event_handler = {
     NULL
 };
 
-static void test_pqc_alice_to_bob() {
+static void test_alice_to_bob() {
     // test start
-    printf("test_pqc_alice_to_bob begin!!!\n");
+    printf("test_alice_to_bob begin!!!\n");
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
@@ -133,9 +133,9 @@ static void test_pqc_alice_to_bob() {
     printf("====================================\n");
 }
 
-static void test_pqc_bob_to_alice() {
+static void test_bob_to_alice() {
     // test start
-    printf("test_pqc_bob_to_alice begin!!!\n");
+    printf("test_bob_to_alice begin!!!\n");
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
@@ -219,9 +219,9 @@ static void test_pqc_bob_to_alice() {
     printf("====================================\n");
 }
 
-static void test_pqc_interaction_alice_first() {
+static void test_interaction_alice_first() {
     // test start
-    printf("test_pqc_interaction_alice_first begin!!!\n");
+    printf("test_interaction_alice_first begin!!!\n");
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
@@ -329,9 +329,9 @@ static void test_pqc_interaction_alice_first() {
     printf("====================================\n");
 }
 
-static void test_pqc_interaction_bob_first() {
+static void test_interaction_bob_first() {
     // test start
-    printf("test_pqc_interaction_bob_first begin!!!\n");
+    printf("test_interaction_bob_first begin!!!\n");
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
@@ -439,9 +439,9 @@ static void test_pqc_interaction_bob_first() {
     printf("====================================\n");
 }
 
-static void test_pqc_out_of_order() {
+static void test_out_of_order() {
     // test start
-    printf("test_pqc_out_of_order begin!!!\n");
+    printf("test_out_of_order begin!!!\n");
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
@@ -549,9 +549,9 @@ static void test_pqc_out_of_order() {
     printf("====================================\n");
 }
 
-static void test_pqc_continual_message() {
+static void test_continual_message() {
     // test start
-    printf("test_pqc_continual_message begin!!!\n");
+    printf("test_continual_message begin!!!\n");
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
@@ -645,9 +645,9 @@ static void test_pqc_continual_message() {
     printf("====================================\n");
 }
 
-static void test_pqc_interaction_v2() {
+static void test_interaction_v2() {
     // test start
-    printf("test_pqc_interaction_v2 begin!!!\n");
+    printf("test_interaction_v2 begin!!!\n");
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
@@ -771,9 +771,9 @@ static void test_pqc_interaction_v2() {
     printf("====================================\n");
 }
 
-static void test_pqc_out_of_order_v2() {
+static void test_out_of_order_v2() {
     // test start
-    printf("test_pqc_out_of_order_v2 begin!!!\n");
+    printf("test_out_of_order_v2 begin!!!\n");
     tear_up();
 
     get_skissm_plugin()->event_handler = test_event_handler;
@@ -914,14 +914,14 @@ static void test_pqc_out_of_order_v2() {
 }
 
 int main() {
-    test_pqc_alice_to_bob();
-    test_pqc_bob_to_alice();
-    test_pqc_interaction_alice_first();
-    test_pqc_interaction_bob_first();
-    test_pqc_out_of_order();
-    test_pqc_continual_message();
-    test_pqc_interaction_v2();
-    test_pqc_out_of_order_v2();
+    test_alice_to_bob();
+    test_bob_to_alice();
+    test_interaction_alice_first();
+    test_interaction_bob_first();
+    test_out_of_order();
+    test_continual_message();
+    test_interaction_v2();
+    test_out_of_order_v2();
 
     return 0;
 }

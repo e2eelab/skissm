@@ -395,69 +395,65 @@ int pqc_new_inbound_session(Skissm__Session *inbound_session, Skissm__Account *l
 }
 
 int pqc_complete_outbound_session(Skissm__Session *outbound_session, Skissm__AcceptMsg *msg) {
-    ssm_notify_log(NULL, DEBUG_LOG, "pqc_complete_outbound_session()");
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
+    int ret = 0;
 
-    if (outbound_session->temp_shared_secret.data == NULL) {
-        ssm_notify_log(NULL, BAD_SESSION, "pqc_complete_outbound_session()");
-        return -1;
-    }
+    cipher_suite_t *cipher_suite = NULL;
+    Skissm__Account *account = NULL;
+    Skissm__IdentityKey *identity_key = NULL;
+    ProtobufCBinaryData their_ratchet_key = {0, NULL};
 
-    ProtobufCBinaryData *their_ratchet_key = NULL;
-    if (outbound_session->ratchet->sender_chain != NULL) {
-        if (outbound_session->ratchet->sender_chain->their_ratchet_public_key.data != NULL) {
-            their_ratchet_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-            copy_protobuf_from_protobuf(their_ratchet_key, &(outbound_session->ratchet->sender_chain->their_ratchet_public_key));
+    if (safe_uncompleted_session(outbound_session)) {
+        load_identity_key_from_cache(&identity_key, outbound_session->our_address);
 
-            skissm__sender_chain_node__free_unpacked(outbound_session->ratchet->sender_chain, NULL);
-            outbound_session->ratchet->sender_chain = NULL;
-        } else {
-            ssm_notify_log(NULL, BAD_SESSION, "pqc_complete_outbound_session()");
-            return -1;
+        if (identity_key == NULL) {
+            get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->our_address, &account);
+            if (safe_registered_account(account)) {
+                copy_ik_from_ik(&identity_key, account->identity_key);
+            } else {
+                ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");
+                ret = -1;
+            }
         }
     } else {
         ssm_notify_log(NULL, BAD_SESSION, "pqc_complete_outbound_session()");
-        return -1;
+        ret = -1;
+    }
+    if (!safe_accept_msg(msg)) {
+        ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "pqc_complete_outbound_session()");
+        ret = -1;
     }
 
-    outbound_session->responded = true;
+    if (ret == 0) {
+        cipher_suite = get_e2ee_pack(outbound_session->e2ee_pack_id)->cipher_suite;
 
-    // load account to get the private identity key
-    Skissm__Account *account = NULL;
-    Skissm__IdentityKey *identity_key = NULL;
+        copy_protobuf_from_protobuf(&their_ratchet_key, &(outbound_session->ratchet->sender_chain->their_ratchet_public_key));
+        skissm__sender_chain_node__free_unpacked(outbound_session->ratchet->sender_chain, NULL);
+        outbound_session->ratchet->sender_chain = NULL;
 
-    load_identity_key_from_cache(&identity_key, outbound_session->our_address);
+        outbound_session->responded = true;
 
-    if (identity_key == NULL) {
-        get_skissm_plugin()->db_handler.load_account_by_address(outbound_session->our_address, &account);
-        if (account == NULL) {
-            // release
-            free_protobuf(their_ratchet_key);
-            free_mem((void **)&their_ratchet_key, sizeof(ProtobufCBinaryData));
+        // complete the shared secret of the X3DH
+        cipher_suite->kem_suite->ss_key_gen(
+            &(identity_key->asym_key_pair->private_key),
+            &(msg->encaps_ciphertext),
+            outbound_session->temp_shared_secret.data
+        );
 
-            ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");
-            return -1;
-        }
-        copy_ik_from_ik(&identity_key, account->identity_key);
+        // create the root key and chain keys
+        ret = initialise_as_alice(
+            cipher_suite, outbound_session->ratchet,
+            outbound_session->temp_shared_secret.data, outbound_session->temp_shared_secret.len,
+            outbound_session->alice_base_key, &their_ratchet_key, &(msg->ratchet_key)
+        );
     }
-
-    // complete the shared secret of the X3DH
-    cipher_suite->kem_suite->ss_key_gen(&(identity_key->asym_key_pair->private_key), &(msg->encaps_ciphertext), outbound_session->temp_shared_secret.data);
-
-    // create the root key and chain keys
-    initialise_as_alice(
-        cipher_suite, outbound_session->ratchet,
-        outbound_session->temp_shared_secret.data, outbound_session->temp_shared_secret.len,
-        outbound_session->alice_base_key, their_ratchet_key, &(msg->ratchet_key)
-    );
 
     // release
-    free_protobuf(their_ratchet_key);
-    free_mem((void **)&their_ratchet_key, sizeof(ProtobufCBinaryData));
+    free_protobuf(&their_ratchet_key);
     free_proto(account);
+    free_proto(identity_key);
 
     // done
-    return 0;
+    return ret;
 }
 
 session_suite_t E2EE_SESSION_PQC = {

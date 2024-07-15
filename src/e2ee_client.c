@@ -553,7 +553,7 @@ int create_group(
             skissm__create_group_request__pack(create_group_request, request_data);
             store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_CREATE_GROUP, request_data, request_data_len, NULL, 0);
             // release
-            free_mem((void *)&request_data, request_data_len);
+            free_mem((void **)&request_data, request_data_len);
         }
     }
 
@@ -639,7 +639,7 @@ int add_group_members(
             skissm__add_group_members_request__pack(add_group_members_request, request_data);
             store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ADD_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
             // release
-            free_mem((void *)&request_data, request_data_len);
+            free_mem((void **)&request_data, request_data_len);
         }
     }
 
@@ -727,7 +727,7 @@ int remove_group_members(
             skissm__remove_group_members_request__pack(remove_group_members_request, request_data);
             store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_REMOVE_GROUP_MEMBERS, request_data, request_data_len, NULL, 0);
             // release
-            free_mem((void *)&request_data, request_data_len);
+            free_mem((void **)&request_data, request_data_len);
         }
     }
 
@@ -794,7 +794,7 @@ int leave_group(
             skissm__leave_group_request__pack(leave_group_request, request_data);
             store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_LEAVE_GROUP, request_data, request_data_len, NULL, 0);
             // release
-            free_mem((void *)&request_data, request_data_len);
+            free_mem((void **)&request_data, request_data_len);
         }
     }
 
@@ -904,7 +904,7 @@ int send_group_msg_with_filter(
 
             store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SEND_GROUP_MSG, request_data, request_data_len, NULL, 0);
             // release
-            free_mem((void *)&request_data, request_data_len);
+            free_mem((void **)&request_data, request_data_len);
         }
     }
 
@@ -918,7 +918,7 @@ int send_group_msg_with_filter(
 
             // store_pending_request_internal(sender_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SEND_GROUP_MSG, request_data, request_data_len, NULL, 0);
             // // release
-            // free_mem((void *)&request_data, request_data_len);
+            // free_mem((void **)&request_data, request_data_len);
             // skissm__send_group_msg_response__free_unpacked(response, NULL);
 
             // // replace response code to enable another try
@@ -1085,7 +1085,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
                 
                 store_pending_request_internal(proto_msg->to, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_PROTO_MSG, request_data, request_data_len, NULL, 0);
                 // release
-                free_mem((void *)&request_data, request_data_len);
+                free_mem((void **)&request_data, request_data_len);
             }
         } else {
             response = (Skissm__ConsumeProtoMsgResponse *)malloc(sizeof(Skissm__ConsumeProtoMsgResponse));

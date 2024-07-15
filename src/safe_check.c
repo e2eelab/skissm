@@ -437,16 +437,35 @@ bool safe_uncompleted_session(Skissm__Session *src) {
         if (!safe_address(src->their_address)) {
             return false;
         }
-        if (!safe_protobuf(&(src->temp_shared_secret))) {
+        if (safe_protobuf(&(src->temp_shared_secret))) {
+            if (src->temp_shared_secret.data == NULL) {
+                return false;
+            }
+        } else {
             return false;
         }
-        if (!safe_protobuf(&(src->fingerprint))) {
+        if (safe_protobuf(&(src->fingerprint))) {
+            if (src->fingerprint.data == NULL) {
+                return false;
+            }
+        } else {
             return false;
         }
         if (!safe_key_pair(src->alice_base_key)) {
             return false;
         }
         if (!safe_protobuf_list(src->pre_shared_input_list, src->n_pre_shared_input_list)) {
+            return false;
+        }
+        if (src->ratchet != NULL) {
+            if (src->ratchet->sender_chain != NULL) {
+                if (!safe_protobuf(&(src->ratchet->sender_chain->their_ratchet_public_key))) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
             return false;
         }
     } else {

@@ -483,8 +483,7 @@ int new_outbound_group_session_by_sender(
         }
 
         // we do not store the seed secret in the session
-        free_mem((void **)&(outbound_group_session->group_seed.data), sizeof(uint8_t) * outbound_group_session->group_seed.len);
-        outbound_group_session->group_seed.len = 0;
+        free_protobuf(&(outbound_group_session->group_seed));
 
         // store
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
@@ -579,8 +578,7 @@ int new_outbound_group_session_by_receiver(
         );
 
         // we do not store the seed secret in the session
-        free_mem((void **)&(outbound_group_session->group_seed.data), sizeof(uint8_t) * outbound_group_session->group_seed.len);
-        outbound_group_session->group_seed.len = 0;
+        free_protobuf(&(outbound_group_session->group_seed));
 
         // store
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
@@ -897,8 +895,7 @@ int complete_inbound_group_session_by_member_id(
         memcpy(secret + SEED_SECRET_LEN, group_member_id->sign_public_key.data, sign_key_len);
 
         // we do not store the seed secret in the session
-        free_mem((void **)&(inbound_group_session->group_seed.data), sizeof(uint8_t) * inbound_group_session->group_seed.len);
-        inbound_group_session->group_seed.len = 0;
+        free_protobuf(&(inbound_group_session->group_seed));
 
         // generate a chain key
         int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
@@ -1315,7 +1312,11 @@ int renew_outbound_group_session_by_welcome_and_add(
         free_proto(account);
         free_string(&auth);
         free_mem((void **)&group_ratchet_state_plaintext_data, sizeof(uint8_t) * group_ratchet_state_plaintext_data_len);
-        free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
+        for (i = 0; i < n_adding_member_info_list; i++) {
+            free_protobuf(their_chain_keys[i]);
+            free_mem((void **)&(their_chain_keys[i]), sizeof(ProtobufCBinaryData));
+        }
+        free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData *) * n_adding_member_info_list);
     }
 
     return ret;

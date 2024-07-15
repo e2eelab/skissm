@@ -326,8 +326,8 @@ static void test_two_members_session() {
     tear_up();
     test_begin();
 
-    mock_alice_account("alice");
-    mock_bob_account("bob");
+    mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
+    mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
 
     Skissm__E2eeAddress *alice_address = account_data[0]->address;
     char *alice_user_id = alice_address->user->user_id;
@@ -337,12 +337,12 @@ static void test_two_members_session() {
     char *bob_domain = bob_address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response_1 = invite(alice_address, bob_user_id, bob_domain);
+    Skissm__InviteResponse *invite_response = invite(alice_address, bob_user_id, bob_domain);
 
     sleep(1);
 
     // Alice add a new device
-    mock_alice_account("alice");
+    mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
 
     Skissm__E2eeAddress *device_2 = account_data[2]->address;
 
@@ -351,7 +351,7 @@ static void test_two_members_session() {
     test_encryption(device_2, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // release
-    skissm__invite_response__free_unpacked(response_1, NULL);
+    free_proto(invite_response);
 
     // test stop
     test_end();
@@ -368,8 +368,8 @@ static void test_two_members_four_devices() {
     tear_up();
     test_begin();
 
-    mock_alice_pqc_account("alice");
-    mock_bob_pqc_account("bob");
+    mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
+    mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
 
     Skissm__E2eeAddress *alice_device_1 = account_data[0]->address;
     char *alice_user_id = alice_device_1->user->user_id;
@@ -379,7 +379,7 @@ static void test_two_members_four_devices() {
     char *bob_domain = bob_device_1->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response_1 = invite(alice_device_1, bob_user_id, bob_domain);
+    Skissm__InviteResponse *invite_response = invite(alice_device_1, bob_user_id, bob_domain);
 
     sleep(3);
 
@@ -392,7 +392,7 @@ static void test_two_members_four_devices() {
     sleep(2);
 
     // Alice adds a new device
-    mock_alice_pqc_account("alice");
+    mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
 
     Skissm__E2eeAddress *alice_device_2 = account_data[2]->address;
 
@@ -408,7 +408,7 @@ static void test_two_members_four_devices() {
     sleep(2);
 
     // Bob adds a new device
-    mock_bob_pqc_account("bob");
+    mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
 
     Skissm__E2eeAddress *bob_device_2 = account_data[3]->address;
 
@@ -424,92 +424,7 @@ static void test_two_members_four_devices() {
     test_encryption(alice_device_2, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // release
-    skissm__invite_response__free_unpacked(response_1, NULL);
-
-    // test stop
-    test_end();
-    tear_down();
-    printf("====================================\n");
-}
-
-static void test_three_members_group_session() {
-    // test start
-    printf("test_three_members_group_session begin!!!\n");
-
-    size_t test_plaintext_len = sizeof(test_plaintext) - 1;
-
-    tear_up();
-    test_begin();
-
-    // prepare account
-    mock_alice_account("alice");
-    mock_bob_account("bob");
-    mock_claire_account("claire");
-
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
-    char *alice_user_id = alice_address->user->user_id;
-    char *alice_domain = alice_address->domain;
-    Skissm__E2eeAddress *bob_address = account_data[1]->address;
-    char *bob_user_id = bob_address->user->user_id;
-    char *bob_domain = bob_address->domain;
-    Skissm__E2eeAddress *claire_address = account_data[2]->address;
-    char *claire_user_id = claire_address->user->user_id;
-    char *claire_domain = claire_address->domain;
-
-    // Alice, Bob and Claire invite each others
-    Skissm__InviteResponse *response_1 = invite(alice_address, bob_user_id, bob_domain);
-    Skissm__InviteResponse *response_2 = invite(alice_address, claire_user_id, claire_domain);
-    Skissm__InviteResponse *response_3 = invite(bob_address, claire_user_id, claire_domain);
-
-    sleep(3);
-    // the first group member is Alice
-    Skissm__GroupMember **group_members = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
-    group_members[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members[0]);
-    group_members[0]->user_id = strdup(alice_user_id);
-    group_members[0]->domain = strdup(alice_domain);
-    group_members[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
-    // the second group member is Bob
-    group_members[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members[1]);
-    group_members[1]->user_id = strdup(bob_user_id);
-    group_members[1]->domain = strdup(bob_domain);
-    group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
-    // the third group member is Claire
-    group_members[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members[2]);
-    group_members[2]->user_id = strdup(claire_user_id);
-    group_members[2]->domain = strdup(claire_domain);
-    group_members[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
-    // create the group
-    Skissm__CreateGroupResponse *create_group_response = NULL;
-    create_group(&create_group_response, alice_address, "Group name", group_members, 3);
-
-    sleep(2);
-
-    // Alice adds a new device
-    mock_alice_account("alice");
-
-    Skissm__E2eeAddress *alice_address_2 = account_data[3]->address;
-
-    sleep(1);
-    // Alice sends a message to the group via the second device
-    printf("Alice sent a message.\n");
-    test_group_encryption(alice_address_2, create_group_response->group_address, test_plaintext, test_plaintext_len);
-
-    // Claire sends a message to the group
-    printf("Claire sent a message.\n");
-    test_group_encryption(claire_address, create_group_response->group_address, test_plaintext, test_plaintext_len);
-
-    // release
-    skissm__invite_response__free_unpacked(response_1, NULL);
-    skissm__invite_response__free_unpacked(response_2, NULL);
-    skissm__invite_response__free_unpacked(response_3, NULL);
-    skissm__group_member__free_unpacked(group_members[0], NULL);
-    skissm__group_member__free_unpacked(group_members[1], NULL);
-    skissm__group_member__free_unpacked(group_members[2], NULL);
-    free(group_members);
-    skissm__create_group_response__free_unpacked(create_group_response, NULL);
+    free_proto(invite_response);
 
     // test stop
     test_end();
@@ -540,7 +455,7 @@ static void test_multiple_devices() {
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
-    Skissm__InviteResponse *response_1 = invite(alice_address_1, bob_user_id, bob_domain);
+    Skissm__InviteResponse *invite_response = invite(alice_address_1, bob_user_id, bob_domain);
 
     sleep(3);
 
@@ -551,7 +466,7 @@ static void test_multiple_devices() {
     test_encryption(bob_address, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
 
     // release
-    skissm__invite_response__free_unpacked(response_1, NULL);
+    free_proto(invite_response);
 
     // test stop
     test_end();
@@ -730,7 +645,6 @@ static void test_several_members_and_groups() {
 int main() {
     // test_two_members_session();
     // test_two_members_four_devices();
-    // test_three_members_group_session();
     // test_multiple_devices();
     test_several_members_and_groups();
     return 0;

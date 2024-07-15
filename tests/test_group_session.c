@@ -296,9 +296,9 @@ static void test_encryption(
     }
 }
 
-static void test_pqc_create_group() {
+static void test_create_group() {
     // test start
-    printf("test_pqc_create_group begin!!!\n");
+    printf("test_create_group begin!!!\n");
     tear_up();
     test_begin();
 
@@ -357,9 +357,9 @@ static void test_pqc_create_group() {
     printf("====================================\n");
 }
 
-static void test_pqc_add_group_members() {
+static void test_add_group_members() {
     // test start
-    printf("test_pqc_add_group_members begin!!!\n");
+    printf("test_add_group_members begin!!!\n");
     tear_up();
     test_begin();
 
@@ -433,9 +433,9 @@ static void test_pqc_add_group_members() {
     printf("====================================\n");
 }
 
-static void test_pqc_remove_group_members() {
+static void test_remove_group_members() {
     // test start
-    printf("test_pqc_remove_group_members begin!!!\n");
+    printf("test_remove_group_members begin!!!\n");
     tear_up();
     test_begin();
 
@@ -593,9 +593,9 @@ static void test_create_add_remove() {
     printf("====================================\n");
 }
 
-static void test_pqc_leave_group() {
+static void test_leave_group() {
     // test start
-    printf("test_pqc_leave_group begin!!!\n");
+    printf("test_leave_group begin!!!\n");
     tear_up();
     test_begin();
 
@@ -717,9 +717,9 @@ static void test_continual() {
     printf("====================================\n");
 }
 
-static void test_pqc_multiple_devices() {
+static void test_multiple_devices() {
     // test start
-    printf("test_pqc_multiple_devices begin!!!\n");
+    printf("test_multiple_devices begin!!!\n");
     tear_up();
     test_begin();
 
@@ -776,9 +776,9 @@ static void test_pqc_multiple_devices() {
     printf("====================================\n");
 }
 
-static void test_pqc_add_new_device() {
+static void test_add_new_device() {
     // test start
-    printf("test_pqc_add_new_device begin!!!\n");
+    printf("test_add_new_device begin!!!\n");
     tear_up();
     test_begin();
 
@@ -1009,15 +1009,15 @@ static void test_create_group_time() {
 }
 
 int main() {
-    test_pqc_create_group();
-    test_pqc_add_group_members();
-    test_pqc_remove_group_members();
+    test_create_group();
+    test_add_group_members();
+    test_remove_group_members();
     test_create_add_remove();
-    test_pqc_leave_group();
+    test_leave_group();
     test_continual();
-    test_pqc_multiple_devices();
-    test_pqc_add_new_device();
-    // test_medium_group();
+    test_multiple_devices();
+    test_add_new_device();
+    test_medium_group();
     // test_create_group_time();
 
     return 0;

@@ -109,7 +109,7 @@ int get_pre_key_bundle_internal(
                 );
 
                 // release
-                free_mem((void *)&get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len);
+                free_mem((void **)&get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len);
             }
         }
         // What if get_pre_key_bundle_response is NULL? Should we store pending request?
@@ -166,7 +166,7 @@ int invite_internal(
                 user_address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_INVITE, request_data, request_data_len, NULL, 0
             );
             // release
-            free_mem((void *)&request_data, request_data_len);
+            free_mem((void **)&request_data, request_data_len);
         }
 
         // release
@@ -241,7 +241,7 @@ int accept_internal(
 
             store_pending_request_internal(from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_ACCEPT, request_data, request_data_len, NULL, 0);
             // release
-            free_mem((void *)&request_data, request_data_len);
+            free_mem((void **)&request_data, request_data_len);
         }
 
         // release
@@ -340,7 +340,7 @@ int supply_opks_internal(
                 account->address, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_SUPPLY_OPKS, request_data, request_data_len, NULL, 0
             );
             // release
-            free_mem((void *)&request_data, request_data_len);
+            free_mem((void **)&request_data, request_data_len);
         }
     }
 
@@ -388,7 +388,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
         );
 
         // release
-        free_mem((void *)&request_data, request_data_len);
+        free_mem((void **)&request_data, request_data_len);
         skissm__send_one2one_msg_response__free_unpacked(response, NULL);
         
         // replace response code to enable another try
@@ -469,7 +469,7 @@ int add_group_member_device_internal(
                 request_data, request_data_len, NULL, 0
             );
             // release
-            free_mem((void *)&request_data, request_data_len);
+            free_mem((void **)&request_data, request_data_len);
         }
     }
 
@@ -544,7 +544,7 @@ void store_pending_request_internal(
     );
     // release
     skissm__pending_request__free_unpacked(pending_request, NULL);
-    free_mem((void *)(&pending_request_data), pending_request_data_len);
+    free_mem((void **)(&pending_request_data), pending_request_data_len);
     free(pending_request_id);
 }
 
