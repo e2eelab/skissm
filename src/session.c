@@ -39,7 +39,6 @@ void initialise_session(
     session->e2ee_pack_id = e2ee_pack_id;
     copy_address_from_address(&(session->our_address), our_address);
     copy_address_from_address(&(session->their_address), their_address);
-    initialise_ratchet(&(session->ratchet));
 }
 
 void pack_common_plaintext(

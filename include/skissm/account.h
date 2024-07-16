@@ -70,7 +70,7 @@ int generate_signed_pre_key(
  * @param one_time_pre_key_id The one-time pre-key id to be matched
  * @return const Skissm__OneTimePreKey* The matched one-time pre-key.
  */
-const Skissm__OneTimePreKey *lookup_one_time_pre_key(
+Skissm__OneTimePreKey *lookup_one_time_pre_key(
     Skissm__Account *account,
     uint32_t one_time_pre_key_id
 );

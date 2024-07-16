@@ -325,7 +325,7 @@ int generate_signed_pre_key(
     return ret;
 }
 
-const Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__Account *account, uint32_t one_time_pre_key_id) {
+Skissm__OneTimePreKey *lookup_one_time_pre_key(Skissm__Account *account, uint32_t one_time_pre_key_id) {
     Skissm__OneTimePreKey **cur = account->one_time_pre_key_list;
     if (cur == NULL) {
         // there is no one-tme pre-keys in the account

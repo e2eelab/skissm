@@ -45,13 +45,13 @@ typedef struct session_suite_t {
     /**
      * @brief Create a new inbound session.
      *
-     * @param session The inbound session
+     * @param inbound_session_out The inbound session
      * @param local_account Our account
      * @param request The invite message
      * @return value < 0 for error
      */
     int (*new_inbound_session)(
-        Skissm__Session *,
+        Skissm__Session **,
         Skissm__Account *,
         Skissm__InviteMsg *
     );
@@ -59,12 +59,12 @@ typedef struct session_suite_t {
     /**
      * @brief Complete an outbound session.
      *
-     * @param outbound_session The outbound session
+     * @param outbound_session_out The outbound session
      * @param msg The accept message
      * @return value < 0 for error
      */
     int (*complete_outbound_session)(
-        Skissm__Session *,
+        Skissm__Session **,
         Skissm__AcceptMsg *
     );
 } session_suite_t;
@@ -111,20 +111,20 @@ int crypto_curve25519_complete_outbound_session(
 );
 
 /* PQC-related */
-Skissm__InviteResponse *pqc_new_outbound_session(
-    Skissm__Session *session,
-    const Skissm__Account *local_account,
+int pqc_new_outbound_session_v2(
+    Skissm__InviteResponse **response_out,
+    Skissm__E2eeAddress *from,
     Skissm__PreKeyBundle *their_pre_key_bundle
 );
 
 int pqc_new_inbound_session(
-    Skissm__Session *session,
+    Skissm__Session **inbound_session_out,
     Skissm__Account *local_account,
     Skissm__InviteMsg *msg
 );
 
 int pqc_complete_outbound_session(
-    Skissm__Session *outbound_session,
+    Skissm__Session **outbound_session_out,
     Skissm__AcceptMsg *msg
 );
 

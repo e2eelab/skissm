@@ -237,8 +237,8 @@ typedef struct digital_signature_suite_t {
      * @return value < 0 for error
      */
     int (*sign_key_gen)(
-            ProtobufCBinaryData *pub_key,
-            ProtobufCBinaryData *priv_key
+        ProtobufCBinaryData *pub_key,
+        ProtobufCBinaryData *priv_key
     );
 
     /**
@@ -252,9 +252,9 @@ typedef struct digital_signature_suite_t {
      * @return value < 0 for error
      */
     int (*sign)(
-            uint8_t *signature_out, size_t *signature_out_len,
-            const uint8_t *msg, size_t msg_len,
-            const uint8_t *private_key
+        uint8_t *signature_out, size_t *signature_out_len,
+        const uint8_t *msg, size_t msg_len,
+        const uint8_t *private_key
     );
 
     /**
@@ -268,9 +268,9 @@ typedef struct digital_signature_suite_t {
      * @return value < 0 for error
      */
     int (*verify)(
-            const uint8_t *signature_in, size_t signature_in_len,
-            const uint8_t *msg, size_t msg_len,
-            const uint8_t *public_key
+        const uint8_t *signature_in, size_t signature_in_len,
+        const uint8_t *msg, size_t msg_len,
+        const uint8_t *public_key
     );
 } digital_signature_suite_t;
 
@@ -291,8 +291,8 @@ typedef struct kem_suite_t {
      * @param priv_key
      */
     int (*asym_key_gen)(
-            ProtobufCBinaryData *pub_key,
-            ProtobufCBinaryData *priv_key
+        ProtobufCBinaryData *pub_key,
+        ProtobufCBinaryData *priv_key
     );
 
     /**
@@ -304,9 +304,9 @@ typedef struct kem_suite_t {
     * @return Cipher text (optional) that could be used to calculate shared secret key.
     */
     uint8_t *(*ss_key_gen)(
-            const ProtobufCBinaryData *our_key,
-            const ProtobufCBinaryData *their_key,
-            uint8_t *shared_secret
+        const ProtobufCBinaryData *our_key,
+        const ProtobufCBinaryData *their_key,
+        uint8_t *shared_secret
     );
 } kem_suite_t;
 
@@ -380,10 +380,10 @@ typedef struct hash_suite_t {
      * @param output_len
      */
     void (*hkdf)(
-            const uint8_t *input, size_t input_len,
-            const uint8_t *salt, size_t salt_len,
-            const uint8_t *info, size_t info_len,
-            uint8_t *output, size_t output_len
+        const uint8_t *input, size_t input_len,
+        const uint8_t *salt, size_t salt_len,
+        const uint8_t *info, size_t info_len,
+        uint8_t *output, size_t output_len
     );
 
     /**
@@ -396,9 +396,9 @@ typedef struct hash_suite_t {
      * @param output
      */
     void (*hmac)(
-            const uint8_t *key, size_t key_len,
-            const uint8_t *input, size_t input_len,
-            uint8_t *output
+        const uint8_t *key, size_t key_len,
+        const uint8_t *input, size_t input_len,
+        uint8_t *output
     );
 
     /**
@@ -409,9 +409,9 @@ typedef struct hash_suite_t {
      * @param hash_out
      */
     void (*hash)(
-            const uint8_t *msg,
-            size_t msg_len,
-            uint8_t *hash_out
+        const uint8_t *msg,
+        size_t msg_len,
+        uint8_t *hash_out
     );
 } hash_suite_t;
 

@@ -399,12 +399,14 @@ void initialise_ratchet(Skissm__Ratchet **ratchet){
 }
 
 int initialise_as_bob(
+    Skissm__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
-    Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
+    const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
-){
+) {
     int ret = 0;
 
+    Skissm__Ratchet *ratchet = NULL;
     bool pqc_param;
 
     if (safe_cipher_suite(cipher_suite)) {
@@ -412,22 +414,16 @@ int initialise_as_bob(
     } else {
         ret = -1;
     }
-    if (ratchet == NULL)
-        ret = -1;
     if (shared_secret == NULL)
         ret = -1;
     if (shared_secret_length == 0)
         ret = -1;
-    if (our_ratchet_key != NULL) {
-        if (!safe_protobuf(&(our_ratchet_key->private_key)))
-            ret = -1;
-        if (!safe_protobuf(&(our_ratchet_key->public_key)))
-            ret = -1;
-    } else {
+    if (!safe_key_pair(our_ratchet_key)) {
         ret = -1;
     }
-    if (!safe_protobuf(their_ratchet_key))
+    if (!safe_protobuf(their_ratchet_key)) {
         ret = -1;
+    }
 
     if (ret == 0) {
         int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
@@ -442,6 +438,9 @@ int initialise_as_bob(
             (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
             derived_secrets, sizeof(derived_secrets)
         );
+
+        ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
+        skissm__ratchet__init(ratchet);
 
         ratchet->receiver_chain = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
         Skissm__ReceiverChainNode *receiver_chain = ratchet->receiver_chain;
@@ -480,17 +479,27 @@ int initialise_as_bob(
         unset(derived_secrets, sizeof(derived_secrets));
     }
 
+    if (ret == 0) {
+        *ratchet_out = ratchet;
+    } else {
+        free_proto(ratchet);
+    }
+
     return ret;
 }
 
 int initialise_as_alice(
+    Skissm__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
-    Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
+    const uint8_t *shared_secret,
+    size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key,
-    ProtobufCBinaryData *their_ratchet_key, ProtobufCBinaryData *their_encaps_ciphertext
-){
+    ProtobufCBinaryData *their_ratchet_key,
+    ProtobufCBinaryData *their_encaps_ciphertext
+) {
     int ret = 0;
 
+    Skissm__Ratchet *ratchet = NULL;
     bool pqc_param;
 
     if (safe_cipher_suite(cipher_suite)) {
@@ -505,18 +514,11 @@ int initialise_as_alice(
     } else {
         ret = -1;
     }
-    if (ratchet == NULL)
-        ret = -1;
     if (shared_secret == NULL)
         ret = -1;
     if (shared_secret_length == 0)
         ret = -1;
-    if (our_ratchet_key != NULL) {
-        if (!safe_protobuf(&(our_ratchet_key->private_key)))
-            ret = -1;
-        if (!safe_protobuf(&(our_ratchet_key->public_key)))
-            ret = -1;
-    } else {
+    if (!safe_key_pair(our_ratchet_key)) {
         ret = -1;
     }
     if (!safe_protobuf(their_ratchet_key))
@@ -538,6 +540,9 @@ int initialise_as_alice(
             (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
             derived_secrets, sizeof(derived_secrets)
         );
+
+        ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
+        skissm__ratchet__init(ratchet);
         ratchet->receiver_chain = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
         Skissm__ReceiverChainNode *receiver_chain = ratchet->receiver_chain;
         skissm__receiver_chain_node__init(receiver_chain);
@@ -588,6 +593,12 @@ int initialise_as_alice(
         ratchet->root_sequence = 1;
 
         unset(derived_secrets, sizeof(derived_secrets));
+    }
+
+    if (ret == 0) {
+        *ratchet_out = ratchet;
+    } else {
+        free_proto(ratchet);
     }
 
     return ret;

@@ -110,7 +110,7 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
 
     // create the root key and chain keys
     initialise_as_alice(
-        cipher_suite, outbound_session->ratchet,
+        &(outbound_session->ratchet), cipher_suite,
         secret, sizeof(secret),
         &my_ratchet_key, &(their_pre_key_bundle->signed_pre_key_public->public_key), NULL
     );
@@ -170,7 +170,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
     memcpy((inbound_session->associated_data.data) + key_len, local_account->identity_key->asym_key_pair->public_key.data, key_len);
 
     // mark the one-time pre-key as used
-    const Skissm__OneTimePreKey *our_one_time_pre_key;
+    Skissm__OneTimePreKey *our_one_time_pre_key;
     if (x3dh_epoch == 4) {
         our_one_time_pre_key = lookup_one_time_pre_key(local_account, msg->bob_one_time_pre_key_id);
 
@@ -214,7 +214,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
         cipher_suite->kem_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), &inbound_session->pre_shared_input_list[0], pos);
     }
 
-    initialise_as_bob(cipher_suite, inbound_session->ratchet, secret, sizeof(secret), bob_signed_pre_key, &(msg->alice_base_key));
+    initialise_as_bob(&inbound_session->ratchet, cipher_suite, secret, sizeof(secret), bob_signed_pre_key, &(msg->alice_base_key));
 
     inbound_session->responded = true;
 
@@ -257,7 +257,9 @@ int crypto_curve25519_complete_outbound_session(Skissm__Session *outbound_sessio
 
 session_suite_t E2EE_SESSION_ECC = {
     // crypto_curve25519_new_outbound_session,
+    // crypto_curve25519_new_inbound_session,
+    // crypto_curve25519_complete_outbound_session
     NULL,
-    crypto_curve25519_new_inbound_session,
-    crypto_curve25519_complete_outbound_session
+    NULL,
+    NULL
 };

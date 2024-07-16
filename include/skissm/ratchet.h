@@ -34,18 +34,22 @@ void initialise_ratchet(Skissm__Ratchet **ratchet);
 /** Initialise the session using a shared secret and the public part of the
  * remote's first ratchet key */
 int initialise_as_bob(
+    Skissm__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
-    Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
+    const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 );
 
 /** Initialise the session using a shared secret and the public/private key
  * pair for the first ratchet key */
 int initialise_as_alice(
+    Skissm__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
-    Skissm__Ratchet *ratchet, const uint8_t *shared_secret, size_t shared_secret_length,
+    const uint8_t *shared_secret,
+    size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key,
-    ProtobufCBinaryData *their_ratchet_key, ProtobufCBinaryData *their_encaps_ciphertext
+    ProtobufCBinaryData *their_ratchet_key,
+    ProtobufCBinaryData *their_encaps_ciphertext
 );
 
 /**

@@ -771,15 +771,11 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
         ssm_notify_log(receiver_address, BAD_ACCOUNT, "consume_invite_msg()");
         return false;
     }
-    // create a new inbound session
-    inbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
-    initialise_session(inbound_session, e2ee_pack_id, to, from);
+
+    inbound_session = NULL;
     const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-    // set the version and session id
-    inbound_session->version = strdup(version);
-    inbound_session->session_id = strdup(session_id);
     // create a new inbound session
-    int result = session_suite->new_inbound_session(inbound_session, account, invite_msg);
+    int result = session_suite->new_inbound_session(&inbound_session, account, invite_msg);
 
     if (result != 0
         || safe_strcmp(inbound_session->session_id, invite_msg->session_id) == false
@@ -889,7 +885,8 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
         accept_msg->from->user->user_id,
         accept_msg->from->user->device_id,
         accept_msg->to->user->user_id,
-        accept_msg->to->user->device_id);
+        accept_msg->to->user->device_id
+    );
 
     if (!compare_address(receiver_address, accept_msg->to)) {
         ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_accept_msg()");
@@ -898,31 +895,16 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
     }
 
     Skissm__Session *outbound_session = NULL;
-    // Is it unique?
-    get_skissm_plugin()->db_handler.load_outbound_session(accept_msg->to, accept_msg->from, &outbound_session);
-    if (outbound_session == NULL) {
-        ssm_notify_log(
-            receiver_address,
-            BAD_MESSAGE_FORMAT,
-            "consume_accept_msg() from [%s:%s], to [%s:%s]: can't load outbound session and make it a complete and responded session.",
-            accept_msg->from->user->user_id,
-            accept_msg->from->user->device_id,
-            accept_msg->to->user->user_id,
-            accept_msg->to->user->device_id);
-        // just consume it, since no outbound session to work with accept msg
-        return true;
-    }
     const session_suite_t *session_suite = get_e2ee_pack(accept_msg->e2ee_pack_id)->session_suite;
-    int result = session_suite->complete_outbound_session(outbound_session, accept_msg);
+    int result = session_suite->complete_outbound_session(&outbound_session, accept_msg);
 
-    // store sesson state
-    get_skissm_plugin()->db_handler.store_session(outbound_session);
+    if (result == 0) {
+        // notify
+        ssm_notify_outbound_session_ready(receiver_address, outbound_session);
 
-    // notify
-    ssm_notify_outbound_session_ready(receiver_address, outbound_session);
-
-    // try to send group pre-keys if necessary
-    send_pending_plaintext_data(outbound_session);
+        // try to send group pre-keys if necessary
+        send_pending_plaintext_data(outbound_session);
+    }
 
     return result >= 0;
 }

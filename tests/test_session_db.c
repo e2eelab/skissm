@@ -521,8 +521,6 @@ void test_store_session(uint32_t e2ee_pack_id)
 
     session->session_id = generate_uuid_str();
 
-    // initialise ratchet
-    initialise_ratchet(&(session->ratchet));
     uint8_t secret[128] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx";
     ProtobufCBinaryData their_ratchet_key;
     their_ratchet_key.len = 32;
@@ -542,7 +540,7 @@ void test_store_session(uint32_t e2ee_pack_id)
     their_encaps_ciphertext.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(their_encaps_ciphertext.data, "11111111111111111111111111111111", 32);
 
-    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key, &their_encaps_ciphertext);
+    initialise_as_alice(&(session->ratchet), test_cipher_suite, secret, 128, our_ratchet_key, &their_ratchet_key, &their_encaps_ciphertext);
 
     // insert to the db
     store_session(session);
@@ -592,8 +590,6 @@ void test_equal_ratchet_outbound(uint32_t e2ee_pack_id)
 
     session->session_id = generate_uuid_str();
 
-    // initialise ratchet
-    initialise_ratchet(&(session->ratchet));
     uint8_t secret[128] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx";
     ProtobufCBinaryData their_ratchet_key;
     their_ratchet_key.len = 32;
@@ -613,7 +609,7 @@ void test_equal_ratchet_outbound(uint32_t e2ee_pack_id)
     their_encaps_ciphertext.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(their_encaps_ciphertext.data, "11111111111111111111111111111111", 32);
 
-    initialise_as_alice(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key, &their_encaps_ciphertext);
+    initialise_as_alice(&(session->ratchet), test_cipher_suite, secret, 128, our_ratchet_key, &their_ratchet_key, &their_encaps_ciphertext);
 
     // insert to the db
     store_session(session);
@@ -658,8 +654,7 @@ void test_equal_ratchet_inbound(uint32_t e2ee_pack_id)
 
     session->session_id = generate_uuid_str();
 
-    // initialise ratchet
-    initialise_ratchet(&(session->ratchet));
+    // mock ratchet key pairs
     ProtobufCBinaryData their_ratchet_key;
     their_ratchet_key.len = 32;
     their_ratchet_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
@@ -674,7 +669,7 @@ void test_equal_ratchet_inbound(uint32_t e2ee_pack_id)
     our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
-    initialise_as_bob(test_cipher_suite, session->ratchet, secret, 128, our_ratchet_key, &their_ratchet_key);
+    initialise_as_bob(&session->ratchet, test_cipher_suite, secret, 128, our_ratchet_key, &their_ratchet_key);
 
     // insert to the db
     store_session(session);

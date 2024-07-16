@@ -79,20 +79,18 @@ static void test_alice_to_bob() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
 
     initialise_as_bob(
+        &bob_ratchet,
         test_cipher_suite,
-        bob_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
     initialise_as_alice(
+        &alice_ratchet,
         test_cipher_suite,
-        alice_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &alice_ratchet_key,
@@ -165,20 +163,18 @@ static void test_bob_to_alice() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
 
     initialise_as_bob(
+        &bob_ratchet,
         test_cipher_suite,
-        bob_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
     initialise_as_alice(
+        &alice_ratchet,
         test_cipher_suite,
-        alice_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &alice_ratchet_key,
@@ -251,20 +247,18 @@ static void test_interaction_alice_first() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
 
     initialise_as_bob(
+        &bob_ratchet,
         test_cipher_suite,
-        bob_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
     initialise_as_alice(
+        &alice_ratchet,
         test_cipher_suite,
-        alice_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &alice_ratchet_key,
@@ -361,20 +355,18 @@ static void test_interaction_bob_first() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
 
     initialise_as_bob(
+        &bob_ratchet,
         test_cipher_suite,
-        bob_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
     initialise_as_alice(
+        &alice_ratchet,
         test_cipher_suite,
-        alice_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &alice_ratchet_key,
@@ -471,20 +463,18 @@ static void test_out_of_order() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
 
     initialise_as_bob(
+        &bob_ratchet,
         test_cipher_suite,
-        bob_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
     initialise_as_alice(
+        &alice_ratchet,
         test_cipher_suite,
-        alice_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &alice_ratchet_key,
@@ -581,20 +571,18 @@ static void test_continual_message() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
 
     initialise_as_bob(
+        &bob_ratchet,
         test_cipher_suite,
-        bob_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
     initialise_as_alice(
+        &alice_ratchet,
         test_cipher_suite,
-        alice_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &alice_ratchet_key,
@@ -677,20 +665,18 @@ static void test_interaction_v2() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
 
     initialise_as_bob(
+        &bob_ratchet,
         test_cipher_suite,
-        bob_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
     initialise_as_alice(
+        &alice_ratchet,
         test_cipher_suite,
-        alice_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &alice_ratchet_key,
@@ -803,20 +789,18 @@ static void test_out_of_order_v2() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-    initialise_ratchet(&alice_ratchet);
-    initialise_ratchet(&bob_ratchet);
 
     initialise_as_bob(
+        &bob_ratchet,
         test_cipher_suite,
-        bob_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &bob_spk,
         &(alice_ratchet_key.public_key)
     );
     initialise_as_alice(
+        &alice_ratchet,
         test_cipher_suite,
-        alice_ratchet,
         shared_secret,
         strlen((const char *)shared_secret),
         &alice_ratchet_key,

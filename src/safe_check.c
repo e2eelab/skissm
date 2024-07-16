@@ -235,6 +235,18 @@ bool safe_signed_pre_key(Skissm__SignedPreKey *src) {
     return true;
 }
 
+bool safe_one_time_pre_key(Skissm__OneTimePreKey *src) {
+    if (src != NULL) {
+        if (!safe_key_pair(src->key_pair)) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 bool safe_one_time_pre_key_list(Skissm__OneTimePreKey **src, size_t len) {
     if (len > 0 && src == NULL)
         return false;
@@ -242,11 +254,7 @@ bool safe_one_time_pre_key_list(Skissm__OneTimePreKey **src, size_t len) {
         return false;
     size_t i;
     for (i = 0; i < len; i++) {
-        if (src[i] != NULL) {
-            if (!safe_key_pair(src[i]->key_pair)) {
-                return false;
-            }
-        } else {
+        if (!safe_one_time_pre_key(src[i])) {
             return false;
         }
     }

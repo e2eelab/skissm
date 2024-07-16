@@ -35,6 +35,8 @@ bool safe_identity_key(Skissm__IdentityKey *src);
 
 bool safe_signed_pre_key(Skissm__SignedPreKey *src);
 
+bool safe_one_time_pre_key(Skissm__OneTimePreKey *src);
+
 bool safe_one_time_pre_key_list(Skissm__OneTimePreKey **src, size_t len);
 
 bool safe_unregistered_account(Skissm__Account *src);
