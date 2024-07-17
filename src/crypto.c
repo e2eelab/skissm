@@ -1646,33 +1646,36 @@ int decrypt_file(
     return decrypt_aes_file(in_file_path, out_file_path, aes_key);
 }
 
-void crypto_hkdf_sha256(
+int crypto_hkdf_sha256(
     const uint8_t *input, size_t input_len,
     const uint8_t *salt, size_t salt_len,
     const uint8_t *info, size_t info_len, uint8_t *output,
     size_t output_len
 ) {
     const mbedtls_md_info_t *sha256_info = mbedtls_md_info_from_type(MBEDTLS_MD_SHA256);
-    mbedtls_hkdf(sha256_info, salt, salt_len, input, input_len, info, info_len, output, output_len);
+    return mbedtls_hkdf(sha256_info, salt, salt_len, input, input_len, info, info_len, output, output_len);
 }
 
-void crypto_hmac_sha256(
+int crypto_hmac_sha256(
     const uint8_t *key, size_t key_len,
     const uint8_t *input, size_t input_len,
     uint8_t *output
 ) {
+    int ret = 0;
     mbedtls_md_context_t ctx;
     mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
 
     mbedtls_md_init(&ctx);
-    mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(md_type), 1);
-    mbedtls_md_hmac_starts(&ctx, (const unsigned char *)key, key_len);
-    mbedtls_md_hmac_update(&ctx, (const unsigned char *)input, input_len);
-    mbedtls_md_hmac_finish(&ctx, output);
+    ret = mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(md_type), 1);
+    ret = mbedtls_md_hmac_starts(&ctx, (const unsigned char *)key, key_len);
+    ret = mbedtls_md_hmac_update(&ctx, (const unsigned char *)input, input_len);
+    ret = mbedtls_md_hmac_finish(&ctx, output);
     mbedtls_md_free(&ctx);
+
+    return ret;
 }
 
-void crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
+int crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
     int buflen, ret = 0;
     mbedtls_sha256_context ctx;
 
@@ -1680,8 +1683,9 @@ void crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
     ret = mbedtls_sha256_starts_ret(&ctx, 0);
     ret = mbedtls_sha256_update_ret(&ctx, msg, msg_len);
     ret = mbedtls_sha256_finish_ret(&ctx, hash_out);
-
     mbedtls_sha256_free(&ctx);
+
+    return ret;
 }
 
 char *crypto_base64_encode(const uint8_t *msg, size_t msg_len) {

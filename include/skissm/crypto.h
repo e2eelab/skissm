@@ -399,7 +399,7 @@ int crypto_curve25519_verify(
  * @param output
  * @param output_len
  */
-void crypto_hkdf_sha256(
+int crypto_hkdf_sha256(
     const uint8_t *input, size_t input_len,
     const uint8_t *salt, size_t salt_len,
     const uint8_t *info, size_t info_len,
@@ -418,7 +418,7 @@ void crypto_hkdf_sha256(
  * @param input_len
  * @param output
  */
-void crypto_hmac_sha256(
+int crypto_hmac_sha256(
     const uint8_t *key, size_t key_len,
     const uint8_t *input, size_t input_len,
     uint8_t *output
@@ -434,7 +434,7 @@ void crypto_hmac_sha256(
  * @param msg_len
  * @param hash_out
  */
-void crypto_sha256(
+int crypto_sha256(
     const uint8_t *msg, size_t msg_len,
     uint8_t *hash_out
 );

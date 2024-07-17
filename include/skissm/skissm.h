@@ -378,8 +378,9 @@ typedef struct hash_suite_t {
      * @param info_len
      * @param output
      * @param output_len
+     * @return 0 if success
      */
-    void (*hkdf)(
+    int (*hkdf)(
         const uint8_t *input, size_t input_len,
         const uint8_t *salt, size_t salt_len,
         const uint8_t *info, size_t info_len,
@@ -394,8 +395,9 @@ typedef struct hash_suite_t {
      * @param input
      * @param input_len
      * @param output
+     * @return 0 if success
      */
-    void (*hmac)(
+    int (*hmac)(
         const uint8_t *key, size_t key_len,
         const uint8_t *input, size_t input_len,
         uint8_t *output
@@ -407,8 +409,9 @@ typedef struct hash_suite_t {
      * @param msg
      * @param msg_len
      * @param hash_out
+     * @return 0 if success
      */
-    void (*hash)(
+    int (*hash)(
         const uint8_t *msg,
         size_t msg_len,
         uint8_t *hash_out

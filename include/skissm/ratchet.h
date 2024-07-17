@@ -29,8 +29,6 @@ extern "C" {
 #include "skissm/skissm.h"
 #include "skissm/cipher.h"
 
-void initialise_ratchet(Skissm__Ratchet **ratchet);
-
 /** Initialise the session using a shared secret and the public part of the
  * remote's first ratchet key */
 int initialise_as_bob(

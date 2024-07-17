@@ -184,6 +184,10 @@ static int create_msg_keys(
     Skissm__MsgKey **msg_key_out
 ) {
     int ret = 0;
+    Skissm__MsgKey *msg_key = NULL;
+    uint8_t *output = NULL;
+    int msg_key_len = 0;
+    int hash_len;
 
     if (safe_cipher_suite(cipher_suite)) {
         if (!safe_chain_key(chain_key)) {
@@ -194,26 +198,31 @@ static int create_msg_keys(
     }
 
     if (ret == 0) {
-        Skissm__MsgKey *msg_key = (Skissm__MsgKey *)malloc(sizeof(Skissm__MsgKey));
-        skissm__msg_key__init(msg_key);
-
-        int msg_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_key_len
-                        + cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_iv_len;
-        msg_key->derived_key.data = (uint8_t *)malloc(sizeof(uint8_t) * msg_key_len);
-        msg_key->derived_key.len = msg_key_len;
-
-        int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        msg_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_key_len
+                    + cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_iv_len;
+        output = (uint8_t *)malloc(sizeof(uint8_t) * msg_key_len);
+        hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t salt[hash_len];
         memset(salt, 0, hash_len);
-        cipher_suite->hash_suite->hkdf(
+        ret = cipher_suite->hash_suite->hkdf(
             chain_key->shared_key.data, chain_key->shared_key.len,
             salt, sizeof(salt),
             (uint8_t *)MESSAGE_KEY_SEED, sizeof(MESSAGE_KEY_SEED) - 1,
-            msg_key->derived_key.data, msg_key->derived_key.len
+            output, msg_key_len
         );
+    }
+
+    if (ret == 0) {
+        msg_key = (Skissm__MsgKey *)malloc(sizeof(Skissm__MsgKey));
+        skissm__msg_key__init(msg_key);
+
+        msg_key->derived_key.data = output;
+        msg_key->derived_key.len = msg_key_len;
         msg_key->index = chain_key->index;
 
         *msg_key_out = msg_key;
+    } else {
+        free_mem((void **)&output, sizeof(uint8_t) * msg_key_len);
     }
 
     return ret;
@@ -393,11 +402,6 @@ static size_t verify_and_decrypt_for_new_chain(
     return ret;
 }
 
-void initialise_ratchet(Skissm__Ratchet **ratchet){
-    *ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
-    skissm__ratchet__init(*ratchet);
-}
-
 int initialise_as_bob(
     Skissm__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
@@ -408,6 +412,10 @@ int initialise_as_bob(
 
     Skissm__Ratchet *ratchet = NULL;
     bool pqc_param;
+    int shared_key_len;
+    int hash_len;
+    uint8_t *derived_secrets = NULL;
+    size_t derived_secrets_len = 0;
 
     if (safe_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
@@ -426,19 +434,22 @@ int initialise_as_bob(
     }
 
     if (ret == 0) {
-        int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         // the ssk will be 64 bytes
-        uint8_t derived_secrets[2 * shared_key_len];
-        int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        derived_secrets_len = shared_key_len * 2;
+        derived_secrets = (uint8_t *)malloc(sizeof(uint8_t) * derived_secrets_len);
+        hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t salt[hash_len];
         memset(salt, 0, hash_len);
-        cipher_suite->hash_suite->hkdf(
+        ret = cipher_suite->hash_suite->hkdf(
             shared_secret, shared_secret_length,
             salt, sizeof(salt),
             (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
-            derived_secrets, sizeof(derived_secrets)
+            derived_secrets, derived_secrets_len
         );
+    }
 
+    if (ret == 0) {
         ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
         skissm__ratchet__init(ratchet);
 
@@ -475,8 +486,8 @@ int initialise_as_bob(
 
             unset(temp_secret, sizeof(temp_secret));
         }
-
-        unset(derived_secrets, sizeof(derived_secrets));
+    } else {
+        free_mem((void **)&derived_secrets, sizeof(uint8_t) * derived_secrets_len);
     }
 
     if (ret == 0) {
@@ -501,6 +512,10 @@ int initialise_as_alice(
 
     Skissm__Ratchet *ratchet = NULL;
     bool pqc_param;
+    int shared_key_len = 0;
+    int hash_len = 0;
+    uint8_t *derived_secrets = NULL;
+    size_t derived_secrets_len = 0;
 
     if (safe_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
@@ -525,22 +540,23 @@ int initialise_as_alice(
         ret = -1;
 
     if (ret == 0) {
-        int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         // the length of derived_secrets will be 64 bytes
-        uint8_t derived_secrets[2 * shared_key_len];
-        memset(derived_secrets, 0, 2 * shared_key_len);
-        int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        derived_secrets_len = shared_key_len * 2;
+        derived_secrets = (uint8_t *)malloc(sizeof(uint8_t) * derived_secrets_len);
+        hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t salt[hash_len];
         memset(salt, 0, hash_len);
-
         // shared_secret_length may be 128 or 96
-        cipher_suite->hash_suite->hkdf(
+        ret = cipher_suite->hash_suite->hkdf(
             shared_secret, shared_secret_length,
             salt, sizeof(salt),
             (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
-            derived_secrets, sizeof(derived_secrets)
+            derived_secrets, derived_secrets_len
         );
+    }
 
+    if (ret == 0) {
         ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
         skissm__ratchet__init(ratchet);
         ratchet->receiver_chain = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
@@ -591,8 +607,8 @@ int initialise_as_alice(
 
         // inviter's initial root sequence
         ratchet->root_sequence = 1;
-
-        unset(derived_secrets, sizeof(derived_secrets));
+    } else {
+        free_mem((void **)&derived_secrets, sizeof(uint8_t) * derived_secrets_len);
     }
 
     if (ret == 0) {
