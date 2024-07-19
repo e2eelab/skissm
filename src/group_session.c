@@ -346,7 +346,7 @@ int new_outbound_group_session_by_sender(
     Skissm__Session *outbound_session = NULL;
     Skissm__SendOne2oneMsgResponse *response = NULL;
     Skissm__InviteResponse **invite_response_list = NULL;
-    size_t invite_response_num;
+    size_t invite_response_num = 0;
     size_t i, j;
 
     if (!safe_address(user_address)) {
@@ -462,7 +462,7 @@ int new_outbound_group_session_by_sender(
                 free_mem((void **)&outbound_sessions, sizeof(Skissm__Session *) * outbound_sessions_num);
             } else {
                 /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
-                ret = get_pre_key_bundle_internal(
+                int invite_response_ret = get_pre_key_bundle_internal(
                     &invite_response_list,
                     &invite_response_num,
                     outbound_group_session->session_owner,
@@ -649,7 +649,7 @@ int new_outbound_group_session_invited(
         ProtobufCBinaryData **adding_members_chain_key = (ProtobufCBinaryData **)malloc(sizeof(ProtobufCBinaryData *) * n_adding_member_info_list);
         for (i = 0; i < n_adding_member_info_list; i++) {
             // generate the chain keys, including the sender's and new members'
-            advance_group_chain_key_by_welcome(cipher_suite, sender_chain_key, &adding_members_chain_key[i]);
+            advance_group_chain_key_by_welcome(cipher_suite, sender_chain_key, &(adding_members_chain_key[i]));
             advance_group_chain_key_by_add(cipher_suite, adding_members_chain_key[i], sender_chain_key);
 
             if (compare_address(group_update_key_bundle->adding_member_info_list[i]->member_address, user_address)) {
@@ -675,28 +675,28 @@ int new_outbound_group_session_invited(
         // store
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
 
-        // notify
-        Skissm__GroupMember **added_member_list = NULL;
-        size_t added_group_members_num = member_info_to_group_members(
-            &added_member_list,
-            group_update_key_bundle->adding_member_info_list,
-            group_update_key_bundle->n_adding_member_info_list,
-            outbound_group_session->group_info->group_member_list,
-            outbound_group_session->group_info->n_group_member_list
-        );
-        if (added_group_members_num > 0) {
-            ssm_notify_group_members_added(
-                user_address,
-                outbound_group_session->group_info->group_address,
-                outbound_group_session->group_info->group_name,
-                outbound_group_session->group_info->group_member_list,
-                outbound_group_session->group_info->n_group_member_list,
-                added_member_list,
-                added_group_members_num
-            );
-            // release
-            free_group_members(&added_member_list, added_group_members_num);
-        }
+        // notify: how to convert group member info to group members?
+        // Skissm__GroupMember **added_member_list = NULL;
+        // size_t added_group_members_num = member_info_to_group_members(
+        //     &added_member_list,
+        //     group_update_key_bundle->adding_member_info_list,
+        //     group_update_key_bundle->n_adding_member_info_list,
+        //     outbound_group_session->group_info->group_member_list,
+        //     outbound_group_session->group_info->n_group_member_list
+        // );
+        // if (added_group_members_num > 0) {
+        //     ssm_notify_group_members_added(
+        //         user_address,
+        //         outbound_group_session->group_info->group_address,
+        //         outbound_group_session->group_info->group_name,
+        //         outbound_group_session->group_info->group_member_list,
+        //         outbound_group_session->group_info->n_group_member_list,
+        //         added_member_list,
+        //         added_group_members_num
+        //     );
+        //     // release
+        //     free_group_members(&added_member_list, added_group_members_num);
+        // }
 
         // release
         free_proto(account);
@@ -1218,8 +1218,8 @@ int renew_outbound_group_session_by_welcome_and_add(
             } else {
                 /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
                 Skissm__InviteResponse **invite_response_list = NULL;
-                size_t invite_response_num;
-                ret = get_pre_key_bundle_internal(
+                size_t invite_response_num = 0;
+                int invite_response_ret = get_pre_key_bundle_internal(
                     &invite_response_list,
                     &invite_response_num,
                     outbound_group_session->session_owner,
@@ -1497,8 +1497,8 @@ int renew_group_sessions_with_new_device(
             );
             /** Since we haven't created any session, we need to create a session before sending the group pre-key. */
             Skissm__InviteResponse **invite_response_list = NULL;
-            size_t invite_response_num;
-            ret = get_pre_key_bundle_internal(
+            size_t invite_response_num = 0;
+            int invite_response_ret = get_pre_key_bundle_internal(
                 &invite_response_list,
                 &invite_response_num,
                 outbound_group_session->session_owner,

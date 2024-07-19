@@ -160,7 +160,7 @@ Skissm__InviteResponse *invite(
     char *auth = NULL;
     Skissm__InviteResponse *invite_response = NULL;
     Skissm__InviteResponse **invite_response_list = NULL;
-    size_t invite_response_num;
+    size_t invite_response_num = 0;
 
     if (safe_address(from)) {
         get_skissm_plugin()->db_handler.load_auth(from, &auth);

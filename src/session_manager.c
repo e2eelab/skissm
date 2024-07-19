@@ -125,13 +125,33 @@ int consume_get_pre_key_bundle_response(
     int invite_response_ret = 0;    // this parameter may be useful
     int server_check = 0;
     ProtobufCBinaryData server_public_key = {0, NULL};
+    bool is_self = false;
+    char *from_user_id = NULL;
 
     if (safe_address(from)) {
+        from_user_id = from->user->user_id;
         if (safe_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
             their_pre_key_bundles = get_pre_key_bundle_response->pre_key_bundles;
             n_pre_key_bundles = get_pre_key_bundle_response->n_pre_key_bundles;
 
-            invite_response_list = (Skissm__InviteResponse **)malloc(sizeof(Skissm__InviteResponse *) * n_pre_key_bundles);
+            if (safe_strcmp(from_user_id, get_pre_key_bundle_response->user_id)) {
+                if (n_pre_key_bundles > 1) {
+                    // pre-key bundles from this and other devices, but we need not invite this device
+                    is_self = true;
+                    invite_response_list = (Skissm__InviteResponse **)malloc(sizeof(Skissm__InviteResponse *) * (n_pre_key_bundles - 1));
+                } else if (n_pre_key_bundles == 1) {
+                    if (!compare_address(from, their_pre_key_bundles[0]->user_address)) {
+                        invite_response_list = (Skissm__InviteResponse **)malloc(sizeof(Skissm__InviteResponse *));
+                    } else {
+                        ret = -1;
+                    }
+                } else {
+                    ssm_notify_log(NULL, BAD_RESPONSE, "consume_get_pre_key_bundle_response()");
+                    ret = -1;
+                }
+            } else {
+                invite_response_list = (Skissm__InviteResponse **)malloc(sizeof(Skissm__InviteResponse *) * n_pre_key_bundles);
+            }
 
             load_server_public_key_from_cache(&server_public_key, from);
         } else {
@@ -144,12 +164,13 @@ int consume_get_pre_key_bundle_response(
 
     if (ret == 0) {
         size_t i;
+        int insert_pos = 0;
         for (i = 0; i < n_pre_key_bundles; i++) {
             cur_pre_key_bundle = their_pre_key_bundles[i];
             e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
             to_address = cur_pre_key_bundle->user_address;
             // skip if the pre-key bundle is from this device
-            if (safe_strcmp(from->user->user_id, to_address->user->user_id)) {
+            if (is_self) {
                 if (compare_address(from, to_address)) {
                     continue;
                 }
@@ -191,7 +212,8 @@ int consume_get_pre_key_bundle_response(
 
             // create an outbound session
             const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
-            invite_response_ret = session_suite->new_outbound_session(&(invite_response_list[i]), from, cur_pre_key_bundle);
+            invite_response_ret = session_suite->new_outbound_session(&(invite_response_list[insert_pos]), from, cur_pre_key_bundle);
+            insert_pos++;
         }
 
         *invite_response_list_out = invite_response_list;
@@ -351,7 +373,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
 
                     Skissm__InviteResponse *invite_response = NULL;
                     Skissm__InviteResponse **invite_response_list = NULL;
-                    size_t invite_response_num;
+                    size_t invite_response_num = 0;
                     size_t their_devices_num = their_device_id_list->n_device_id_list;
                     size_t i;
                     if (their_devices_num == 0) {

@@ -94,7 +94,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
     Skissm__E2eeAddress *other_device_address = NULL;
     Skissm__E2eeAddress *to_address = NULL;
     Skissm__InviteResponse **invite_response_list = NULL;
-    size_t invite_response_num;
+    size_t invite_response_num = 0;
     size_t i;
 
     if (!safe_unregistered_account(account)) {
@@ -146,6 +146,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                 );
                 if (ret == 0) {
                     free_invite_response_list(&invite_response_list, invite_response_num);
+                    invite_response_num = 0;
                 }
             }
         }
@@ -184,6 +185,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                 );
                 if (ret == 0) {
                     free_invite_response_list(&invite_response_list, invite_response_num);
+                    invite_response_num = 0;
                 }
             }
         }

@@ -646,10 +646,13 @@ size_t member_info_to_group_members(
             Skissm__GroupMemberInfo *member_info = member_info_list[i];
             bool exist = false;
             for (j = 0; j < member_info_list_num && j != i; j++) {
-                Skissm__GroupMemberInfo *scan_member_info = member_info_list[i];
-                if (compare_user_id(member_info->member_address,
-                                    scan_member_info->member_address->user->user_id,
-                                    scan_member_info->member_address->domain)) {
+                Skissm__GroupMemberInfo *scan_member_info = member_info_list[j];
+                if (compare_user_id(
+                        member_info->member_address,
+                        scan_member_info->member_address->user->user_id,
+                        scan_member_info->member_address->domain
+                    )
+                ) {
                     exist = true;
                     break;
                 }

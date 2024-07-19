@@ -308,6 +308,25 @@ typedef struct kem_suite_t {
         const ProtobufCBinaryData *their_key,
         uint8_t *shared_secret
     );
+
+    // int (*ss_key_gen)(
+    //     const ProtobufCBinaryData *our_key,
+    //     const ProtobufCBinaryData *their_key,
+    //     uint8_t **shared_secret,
+    //     ProtobufCBinaryData *ciphertext
+    // );
+
+    // int (*encaps)(
+    //     uint8_t **ciphertext,
+    //     uint8_t **shared_secret,
+    //     const ProtobufCBinaryData *their_key
+    // );
+
+    // int (*decaps)(
+    //     uint8_t **shared_secret,
+    //     const ProtobufCBinaryData *our_key,
+    //     const ProtobufCBinaryData *ciphertext
+    // );
 } kem_suite_t;
 
 /**

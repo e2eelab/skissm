@@ -291,9 +291,12 @@ void mock_certificate() {
         fseek(fptr, 0, SEEK_END);
         data_len = ftell(fptr);
         fseek(fptr, 0, SEEK_SET);
+        // data = (uint8_t *) malloc(sizeof(uint8_t) * (data_len + 1));
         data = (uint8_t *) malloc(sizeof(uint8_t) * data_len);
         fread(data, 1, data_len, fptr);
         fclose(fptr);
+
+        // data[data_len] = '\0';
 
         certificate_data_len = crypto_base64_decode(&certificate_data, data);
 
@@ -333,9 +336,12 @@ void mock_certificate() {
         fseek(fptr, 0, SEEK_END);
         data_len = ftell(fptr);
         fseek(fptr, 0, SEEK_SET);
+        // data = (uint8_t *) malloc(sizeof(uint8_t) * (data_len + 1));
         data = (uint8_t *) malloc(sizeof(uint8_t) * data_len);
         fread(data, 1, data_len, fptr);
         fclose(fptr);
+
+        // data[data_len] = '\0';
 
         certificate_data_len = crypto_base64_decode(&certificate_data, data);
 
