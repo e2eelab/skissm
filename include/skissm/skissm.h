@@ -296,37 +296,32 @@ typedef struct kem_suite_t {
     );
 
     /**
-    * @brief Calculate shared secret key.
+    * @brief Encapsulation.
     *
-    * @param our_key
-    * @param their_key
     * @param shared_secret
-    * @return Cipher text (optional) that could be used to calculate shared secret key.
+    * @param ciphertext
+    * @param their_key
+    * @return value < 0 for error.
     */
-    uint8_t *(*ss_key_gen)(
-        const ProtobufCBinaryData *our_key,
-        const ProtobufCBinaryData *their_key,
-        uint8_t *shared_secret
+    int (*encaps)(
+        uint8_t *shared_secret,
+        ProtobufCBinaryData *ciphertext,
+        const ProtobufCBinaryData *their_key
     );
 
-    // int (*ss_key_gen)(
-    //     const ProtobufCBinaryData *our_key,
-    //     const ProtobufCBinaryData *their_key,
-    //     uint8_t **shared_secret,
-    //     ProtobufCBinaryData *ciphertext
-    // );
-
-    // int (*encaps)(
-    //     uint8_t **ciphertext,
-    //     uint8_t **shared_secret,
-    //     const ProtobufCBinaryData *their_key
-    // );
-
-    // int (*decaps)(
-    //     uint8_t **shared_secret,
-    //     const ProtobufCBinaryData *our_key,
-    //     const ProtobufCBinaryData *ciphertext
-    // );
+    /**
+    * @brief Decapsulation.
+    *
+    * @param shared_secret
+    * @param our_key
+    * @param ciphertext
+    * @return value < 0 for error.
+    */
+    int (*decaps)(
+        uint8_t *shared_secret,
+        const ProtobufCBinaryData *our_key,
+        const ProtobufCBinaryData *ciphertext
+    );
 } kem_suite_t;
 
 /**

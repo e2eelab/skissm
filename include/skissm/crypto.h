@@ -258,100 +258,196 @@ int crypto_mceliece8192128f_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-uint8_t *crypto_hqc128_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_hqc128_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_hqc192_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_hqc192_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_hqc256_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_hqc256_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_kyber512_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_kyber512_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_kyber768_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_kyber768_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_kyber1024_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_kyber1024_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece348864_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece348864_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece348864f_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece348864f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece460896_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece460896_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece460896f_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece460896f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece6688128_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece6688128_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece6688128f_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece6688128f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece6960119_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece6960119_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece6960119f_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece6960119f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece8192128_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece8192128_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 );
 
-uint8_t *crypto_mceliece8192128f_shared_secret(
+int crypto_mceliece8192128f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
+);
+
+int crypto_hqc128_decaps(
+    uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_hqc192_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_hqc256_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_kyber512_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_kyber768_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_kyber1024_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece348864_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece348864f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece460896_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece460896f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece6688128_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece6688128f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece6960119_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece6960119f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece8192128_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+);
+
+int crypto_mceliece8192128f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
 );
 
 int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key);
@@ -370,10 +466,10 @@ int CURVE25519_crypto_sign_verify(
     const uint8_t *public_key
 );
 
-uint8_t *crypto_curve25519_dh(
+int crypto_curve25519_dh(
+    uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+    const ProtobufCBinaryData *ciphertext
 );
 
 void crypto_curve25519_sign(uint8_t *private_key,
@@ -489,10 +585,10 @@ int crypto_aes_decrypt_gcm(
  * @return
  */
 size_t encrypt_aes_data_with_iv(
-        const uint8_t *plaintext_data, size_t plaintext_data_len,
-        const uint8_t aes_key[AES256_KEY_LENGTH],
-        const uint8_t iv[AES256_DATA_IV_LENGTH],
-        uint8_t **ciphertext_data
+    const uint8_t *plaintext_data, size_t plaintext_data_len,
+    const uint8_t aes_key[AES256_KEY_LENGTH],
+    const uint8_t iv[AES256_DATA_IV_LENGTH],
+    uint8_t **ciphertext_data
 );
 
 /**
@@ -522,10 +618,10 @@ size_t encrypt_aes_data(
  * @return
  */
 size_t decrypt_aes_data_with_iv(
-        const uint8_t *ciphertext_data, size_t ciphertext_data_len,
-        const uint8_t aes_key[AES256_KEY_LENGTH],
-        const uint8_t iv[AES256_DATA_IV_LENGTH],
-        uint8_t **plaintext_data
+    const uint8_t *ciphertext_data, size_t ciphertext_data_len,
+    const uint8_t aes_key[AES256_KEY_LENGTH],
+    const uint8_t iv[AES256_DATA_IV_LENGTH],
+    uint8_t **plaintext_data
 );
 
 /**
@@ -635,9 +731,10 @@ size_t crypto_base64_decode(uint8_t **msg_out, const unsigned char *base64_str);
  * @return value < 0 for error
  */
 int crypto_hash_by_e2ee_pack_id(
-        uint32_t e2ee_pack_id_raw,
-        const uint8_t *msg, size_t msg_len,
-        uint8_t **hash_out, size_t *hash_out_len);
+    uint32_t e2ee_pack_id_raw,
+    const uint8_t *msg, size_t msg_len,
+    uint8_t **hash_out, size_t *hash_out_len
+);
 
 /**
  * @brief Generate a random key pair that will be used to generate or verify a signature
@@ -649,9 +746,9 @@ int crypto_hash_by_e2ee_pack_id(
  * @return value < 0 for error
  */
 int crypto_ds_key_gen_by_e2ee_pack_id(
-        uint32_t e2ee_pack_id_raw,
-        ProtobufCBinaryData *pub_key,
-        ProtobufCBinaryData *priv_key
+    uint32_t e2ee_pack_id_raw,
+    ProtobufCBinaryData *pub_key,
+    ProtobufCBinaryData *priv_key
 );
 
 /**
@@ -668,10 +765,10 @@ int crypto_ds_key_gen_by_e2ee_pack_id(
  * @return value < 0 for error
  */
 int crypto_ds_sign_by_e2ee_pack_id(
-        uint32_t e2ee_pack_id_raw,
-        uint8_t **signature_out, size_t *signature_out_len,
-        const uint8_t *msg, size_t msg_len,
-        const uint8_t *private_key, size_t private_key_len
+    uint32_t e2ee_pack_id_raw,
+    uint8_t **signature_out, size_t *signature_out_len,
+    const uint8_t *msg, size_t msg_len,
+    const uint8_t *private_key, size_t private_key_len
 );
 
 /**
@@ -688,10 +785,10 @@ int crypto_ds_sign_by_e2ee_pack_id(
  * @return value < 0 for error
  */
 int crypto_ds_verify_by_e2ee_pack_id(
-        uint32_t e2ee_pack_id_raw,
-        const uint8_t *signature_in, size_t signature_in_len,
-        const uint8_t *msg, size_t msg_len,
-        const uint8_t *public_key, size_t public_key_len
+    uint32_t e2ee_pack_id_raw,
+    const uint8_t *signature_in, size_t signature_in_len,
+    const uint8_t *msg, size_t msg_len,
+    const uint8_t *public_key, size_t public_key_len
 );
 
 #ifdef __cplusplus

@@ -98,14 +98,14 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     uint8_t secret[x3dh_epoch * shared_secret_len];
     uint8_t *pos = secret;
 
-    cipher_suite->kem_suite->ss_key_gen(&(my_identity_key_pair.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
+    cipher_suite->kem_suite->decaps(pos, &(my_identity_key_pair.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key));
     pos += shared_secret_len;
-    cipher_suite->kem_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->identity_key_public->asym_public_key), pos);
+    cipher_suite->kem_suite->decaps(pos, &(my_ephemeral_key.private_key), &(their_pre_key_bundle->identity_key_public->asym_public_key));
     pos += shared_secret_len;
-    cipher_suite->kem_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key), pos);
+    cipher_suite->kem_suite->decaps(pos, &(my_ephemeral_key.private_key), &(their_pre_key_bundle->signed_pre_key_public->public_key));
     if (x3dh_epoch == 4) {
         pos += shared_secret_len;
-        cipher_suite->kem_suite->ss_key_gen(&(my_ephemeral_key.private_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key), pos);
+        cipher_suite->kem_suite->decaps(pos, &(my_ephemeral_key.private_key), &(their_pre_key_bundle->one_time_pre_key_public->public_key));
     }
 
     // create the root key and chain keys
@@ -204,14 +204,14 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
     // calculate the shared secret S via quadruple DH
     uint8_t secret[x3dh_epoch * shared_secret_len];
     uint8_t *pos = secret;
-    cipher_suite->kem_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &msg->alice_identity_key, pos);
+    cipher_suite->kem_suite->decaps(pos, &(bob_signed_pre_key->private_key), &msg->alice_identity_key);
     pos += shared_secret_len;
-    cipher_suite->kem_suite->ss_key_gen(&(bob_identity_key->private_key), &inbound_session->pre_shared_input_list[0], pos);
+    cipher_suite->kem_suite->decaps(pos, &(bob_identity_key->private_key), &inbound_session->pre_shared_input_list[0]);
     pos += shared_secret_len;
-    cipher_suite->kem_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &inbound_session->pre_shared_input_list[0], pos);
+    cipher_suite->kem_suite->decaps(pos, &(bob_signed_pre_key->private_key), &inbound_session->pre_shared_input_list[0]);
     if (x3dh_epoch == 4) {
         pos += shared_secret_len;
-        cipher_suite->kem_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), &inbound_session->pre_shared_input_list[0], pos);
+        cipher_suite->kem_suite->decaps(pos, &(bob_one_time_pre_key->private_key), &inbound_session->pre_shared_input_list[0]);
     }
 
     initialise_as_bob(&inbound_session->ratchet, cipher_suite, secret, sizeof(secret), bob_signed_pre_key, &(msg->alice_base_key));

@@ -54,7 +54,9 @@ bool safe_cipher_suite(const cipher_suite_t *cipher_suite) {
                 return false;
             if (cipher_suite->kem_suite->get_crypto_param == NULL)
                 return false;
-            if (cipher_suite->kem_suite->ss_key_gen == NULL)
+            if (cipher_suite->kem_suite->encaps == NULL)
+                return false;
+            if (cipher_suite->kem_suite->decaps == NULL)
                 return false;
         } else {
             return false;

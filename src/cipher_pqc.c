@@ -185,95 +185,111 @@ struct digital_signature_suite_t E2EE_SPHINCS_SHAKE_256S = {
 struct kem_suite_t E2EE_HQC128 = {
     get_hqc128_param,
     crypto_hqc128_generate_key_pair,
-    crypto_hqc128_shared_secret
+    crypto_hqc128_encaps,
+    crypto_hqc128_decaps
 };
 
 struct kem_suite_t E2EE_HQC192 = {
     get_hqc192_param,
     crypto_hqc192_generate_key_pair,
-    crypto_hqc192_shared_secret
+    crypto_hqc192_encaps,
+    crypto_hqc192_decaps
 };
 
 struct kem_suite_t E2EE_HQC256 = {
     get_hqc256_param,
     crypto_hqc256_generate_key_pair,
-    crypto_hqc256_shared_secret
+    crypto_hqc256_encaps,
+    crypto_hqc256_decaps
 };
 
 struct kem_suite_t E2EE_KYBER512 = {
     get_kyber512_param,
     crypto_kyber512_generate_key_pair,
-    crypto_kyber512_shared_secret
+    crypto_kyber512_encaps,
+    crypto_kyber512_decaps
 };
 
 struct kem_suite_t E2EE_KYBER768 = {
     get_kyber768_param,
     crypto_kyber768_generate_key_pair,
-    crypto_kyber768_shared_secret
+    crypto_kyber768_encaps,
+    crypto_kyber768_decaps
 };
 
 struct kem_suite_t E2EE_KYBER1024 = {
     get_kyber1024_param,
     crypto_kyber1024_generate_key_pair,
-    crypto_kyber1024_shared_secret
+    crypto_kyber1024_encaps,
+    crypto_kyber1024_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE348864 = {
     get_mceliece348864_param,
     crypto_mceliece348864_generate_key_pair,
-    crypto_mceliece348864_shared_secret
+    crypto_mceliece348864_encaps,
+    crypto_mceliece348864_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE348864F = {
     get_mceliece348864f_param,
     crypto_mceliece348864f_generate_key_pair,
-    crypto_mceliece348864f_shared_secret
+    crypto_mceliece348864f_encaps,
+    crypto_mceliece348864f_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE460896 = {
     get_mceliece460896_param,
     crypto_mceliece460896_generate_key_pair,
-    crypto_mceliece460896_shared_secret
+    crypto_mceliece460896_encaps,
+    crypto_mceliece460896_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE460896F = {
     get_mceliece460896f_param,
     crypto_mceliece460896f_generate_key_pair,
-    crypto_mceliece460896f_shared_secret
+    crypto_mceliece460896f_encaps,
+    crypto_mceliece460896f_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE6688128 = {
     get_mceliece6688128_param,
     crypto_mceliece6688128_generate_key_pair,
-    crypto_mceliece6688128_shared_secret
+    crypto_mceliece6688128_encaps,
+    crypto_mceliece6688128_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE6688128F = {
     get_mceliece6688128f_param,
     crypto_mceliece6688128f_generate_key_pair,
-    crypto_mceliece6688128f_shared_secret
+    crypto_mceliece6688128f_encaps,
+    crypto_mceliece6688128f_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE6960119 = {
     get_mceliece6960119_param,
     crypto_mceliece6960119_generate_key_pair,
-    crypto_mceliece6960119_shared_secret
+    crypto_mceliece6960119_encaps,
+    crypto_mceliece6960119_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE6960119F = {
     get_mceliece6960119f_param,
     crypto_mceliece6960119f_generate_key_pair,
-    crypto_mceliece6960119f_shared_secret
+    crypto_mceliece6960119f_encaps,
+    crypto_mceliece6960119f_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE8192128 = {
     get_mceliece8192128_param,
     crypto_mceliece8192128_generate_key_pair,
-    crypto_mceliece8192128_shared_secret
+    crypto_mceliece8192128_encaps,
+    crypto_mceliece8192128_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE8192128F = {
     get_mceliece8192128f_param,
     crypto_mceliece8192128f_generate_key_pair,
-    crypto_mceliece8192128f_shared_secret
+    crypto_mceliece8192128f_encaps,
+    crypto_mceliece8192128f_decaps
 };

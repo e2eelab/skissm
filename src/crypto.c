@@ -882,276 +882,292 @@ int crypto_mceliece8192128f_generate_key_pair(
     return PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-uint8_t *crypto_hqc128_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_hqc128_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC128_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_HQC128_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_HQC128_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC128_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_HQC128_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_HQC128_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_hqc192_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_hqc192_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC192_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_HQC192_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_HQC192_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC192_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_HQC192_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_HQC192_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_hqc256_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_hqc256_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC256_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_HQC256_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_HQC256_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC256_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_HQC256_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_HQC256_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_kyber512_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_kyber512_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER512_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_KYBER512_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_KYBER512_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER512_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_KYBER512_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_KYBER512_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_kyber768_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_kyber768_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER768_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_KYBER768_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_KYBER768_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER768_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_KYBER768_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_KYBER768_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_kyber1024_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_kyber1024_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER1024_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_KYBER1024_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_KYBER1024_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_KYBER1024_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_KYBER1024_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_KYBER1024_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece348864_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece348864_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece348864f_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece348864f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece460896_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece460896_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece460896f_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece460896f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece6688128_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece6688128_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece6688128f_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece6688128f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece6960119_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece6960119_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece6960119f_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece6960119f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece8192128_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece8192128_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-uint8_t *crypto_mceliece8192128f_shared_secret(
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+int crypto_mceliece8192128f_encaps(
+    uint8_t *shared_secret,
+    ProtobufCBinaryData *ciphertext,
+    const ProtobufCBinaryData *their_key
 ) {
-    if (our_key == NULL) {
-        // Encapsulation
-        uint8_t *ct = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
-        PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_enc(ct, shared_secret, their_key->data);
-        return ct;
-    } else {
-        // Decapsulation
-        PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_dec(shared_secret, their_key->data, our_key->data);
-        return NULL;
-    }
+    ciphertext->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_CIPHERTEXTBYTES);
+    ciphertext->len = PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_CIPHERTEXTBYTES;
+    return PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
+}
+
+int crypto_hqc128_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_HQC128_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_hqc192_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_HQC192_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_hqc256_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_HQC256_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_kyber512_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_KYBER512_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_kyber768_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_KYBER768_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_kyber1024_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_KYBER1024_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece348864_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece348864f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece460896_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece460896f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece6688128_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece6688128f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece6960119_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece6960119f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece8192128_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
+}
+
+int crypto_mceliece8192128f_decaps(
+    uint8_t *shared_secret,
+    const ProtobufCBinaryData *our_key,
+    const ProtobufCBinaryData *ciphertext
+) {
+    return PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
 static void crypto_curve25519_generate_private_key(uint8_t *private_key) {
@@ -1231,13 +1247,12 @@ int CURVE25519_crypto_sign_verify(
     return curve25519_verify(signature_in, public_key, msg, msg_len);
 }
 
-uint8_t *crypto_curve25519_dh(
+int crypto_curve25519_dh(
+    uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *their_key,
-    uint8_t *shared_secret
+    const ProtobufCBinaryData *ciphertext
 ) {
-    curve25519_donna(shared_secret, our_key->data, their_key->data);
-    return NULL;
+    return curve25519_donna(shared_secret, our_key->data, ciphertext->data);
 }
 
 void crypto_curve25519_sign(

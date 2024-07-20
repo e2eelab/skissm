@@ -177,17 +177,12 @@ int pqc_new_outbound_session_v2(
         uint8_t *pos = secret;
         ProtobufCBinaryData ciphertext_2, ciphertext_3, ciphertext_4;
 
-        uint32_t ciphertext_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
-
-        ciphertext_2.len = ciphertext_len;
-        ciphertext_2.data = cipher_suite->kem_suite->ss_key_gen(NULL, &(their_ik->asym_public_key), pos);
+        cipher_suite->kem_suite->encaps(pos, &ciphertext_2, &(their_ik->asym_public_key));
         pos += shared_secret_len;
-        ciphertext_3.len = ciphertext_len;
-        ciphertext_3.data = cipher_suite->kem_suite->ss_key_gen(NULL, &(their_spk->public_key), pos);
+        cipher_suite->kem_suite->encaps(pos, &ciphertext_3, &(their_spk->public_key));
         if (x3dh_epoch == 3) {
             pos += shared_secret_len;
-            ciphertext_4.len = ciphertext_len;
-            ciphertext_4.data = cipher_suite->kem_suite->ss_key_gen(NULL, &(their_opk->public_key), pos);
+            cipher_suite->kem_suite->encaps(pos, &ciphertext_4, &(their_opk->public_key));
         } else{
             ciphertext_4.len = 0;
             ciphertext_4.data = NULL;
@@ -390,15 +385,14 @@ int pqc_new_inbound_session(
         uint8_t secret[x3dh_epoch * shared_secret_len];
         uint8_t *pos = secret;
 
-        ciphertext_1.len = ciphertext_len;
-        ciphertext_1.data = cipher_suite->kem_suite->ss_key_gen(NULL, &(msg->alice_identity_key), pos);
+        cipher_suite->kem_suite->encaps(pos, &ciphertext_1, &(msg->alice_identity_key));
         pos += shared_secret_len;
-        cipher_suite->kem_suite->ss_key_gen(&(bob_identity_key->private_key), &(msg->pre_shared_input_list[0]), pos);
+        cipher_suite->kem_suite->decaps(pos, &(bob_identity_key->private_key), &(msg->pre_shared_input_list[0]));
         pos += shared_secret_len;
-        cipher_suite->kem_suite->ss_key_gen(&(bob_signed_pre_key->private_key), &(msg->pre_shared_input_list[1]), pos);
+        cipher_suite->kem_suite->decaps(pos, &(bob_signed_pre_key->private_key), &(msg->pre_shared_input_list[1]));
         if (x3dh_epoch == 4) {
             pos += shared_secret_len;
-            cipher_suite->kem_suite->ss_key_gen(&(bob_one_time_pre_key->private_key), &(msg->pre_shared_input_list[2]), pos);
+            cipher_suite->kem_suite->decaps(pos, &(bob_one_time_pre_key->private_key), &(msg->pre_shared_input_list[2]));
         }
 
         ret = initialise_as_bob(&ratchet, cipher_suite, secret, sizeof(secret), bob_signed_pre_key, &(msg->alice_base_key));
@@ -489,10 +483,10 @@ int pqc_complete_outbound_session(Skissm__Session **outbound_session_out, Skissm
         session->responded = true;
 
         // complete the shared secret of the X3DH
-        cipher_suite->kem_suite->ss_key_gen(
+        cipher_suite->kem_suite->decaps(
+            session->temp_shared_secret.data,
             &(identity_key->asym_key_pair->private_key),
-            &(msg->encaps_ciphertext),
-            session->temp_shared_secret.data
+            &(msg->encaps_ciphertext)
         );
 
         // create the root key and chain keys

@@ -37,5 +37,6 @@ struct digital_signature_suite_t E2EE_CURVE25519_SIGN = {
 struct kem_suite_t E2EE_CURVE25519_ECDH = {
     get_curve25519_ECDH_param,
     CURVE25519_crypto_keypair,
+    NULL,
     crypto_curve25519_dh
 };

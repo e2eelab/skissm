@@ -106,7 +106,20 @@ static int create_chain_key(
 
         uint8_t secret[shared_secret_len];
         memset(secret, 0, shared_secret_len);
-        uint8_t *ciphertext = cipher_suite->kem_suite->ss_key_gen(our_private_key, their_key, secret);
+        ProtobufCBinaryData ciphertext = {0, NULL};
+        if (our_private_key == NULL) {
+            cipher_suite->kem_suite->encaps(secret, &ciphertext, their_key);
+            if (ratchet_public_key->data != NULL) {
+                free_mem((void **)&(ratchet_public_key->data), ratchet_public_key->len);
+                ratchet_public_key->len = 0;
+            }
+            uint32_t ciphertext_len = ciphertext.len;
+            ratchet_public_key->data = (uint8_t *)malloc(sizeof(uint8_t) * ciphertext_len);
+            memcpy(ratchet_public_key->data, ciphertext.data, ciphertext_len);
+            ratchet_public_key->len = ciphertext_len;
+        } else {
+            cipher_suite->kem_suite->decaps(secret, our_private_key, their_key);
+        }
         uint8_t derived_secrets[2 * shared_key_len];
         cipher_suite->hash_suite->hkdf(
             secret, sizeof(secret),
@@ -121,18 +134,6 @@ static int create_chain_key(
             copy_protobuf_from_array(new_root_key, derived_secrets, shared_key_len);
         }
 
-        if (ciphertext != NULL) {
-            if (ratchet_public_key->data != NULL) {
-                free_mem((void **)&(ratchet_public_key->data), ratchet_public_key->len);
-                ratchet_public_key->len = 0;
-            }
-            uint32_t ciphertext_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
-            ratchet_public_key->data = (uint8_t *)malloc(sizeof(uint8_t) * ciphertext_len);
-            memcpy(ratchet_public_key->data, ciphertext, ciphertext_len);
-            ratchet_public_key->len = ciphertext_len;
-
-            free_mem((void **)&ciphertext, ciphertext_len);
-        }
         new_chain_key->index = 0;
         if (new_chain_key->shared_key.data) {
             overwrite_protobuf_from_array(&(new_chain_key->shared_key), derived_secrets + shared_key_len);
@@ -140,6 +141,7 @@ static int create_chain_key(
             copy_protobuf_from_array(&(new_chain_key->shared_key), derived_secrets + shared_key_len, shared_key_len);
         }
 
+        free_protobuf(&ciphertext);
         unset(derived_secrets, sizeof(derived_secrets));
         unset(secret, sizeof(secret));
     }
@@ -416,6 +418,7 @@ int initialise_as_bob(
     int hash_len;
     uint8_t *derived_secrets = NULL;
     size_t derived_secrets_len = 0;
+    ProtobufCBinaryData ciphertext = {0, NULL};
 
     if (safe_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
@@ -450,6 +453,14 @@ int initialise_as_bob(
     }
 
     if (ret == 0) {
+        int temp_shared_key_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
+        uint8_t temp_secret[temp_shared_key_len];
+        ret = cipher_suite->kem_suite->encaps(temp_secret, &ciphertext, their_ratchet_key);
+
+        unset(temp_secret, sizeof(temp_secret));
+    }
+
+    if (ret == 0) {
         ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
         skissm__ratchet__init(ratchet);
 
@@ -478,13 +489,7 @@ int initialise_as_bob(
             copy_protobuf_from_protobuf(&(sender_chain->our_ratchet_public_key), &(our_ratchet_key->public_key));
         } else {
             // PQC mode
-            uint32_t ciphertext_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
-            sender_chain->our_ratchet_public_key.len = ciphertext_len;
-            int temp_shared_key_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
-            uint8_t temp_secret[temp_shared_key_len];
-            sender_chain->our_ratchet_public_key.data = cipher_suite->kem_suite->ss_key_gen(NULL, their_ratchet_key, temp_secret);
-
-            unset(temp_secret, sizeof(temp_secret));
+            copy_protobuf_from_protobuf(&(sender_chain->our_ratchet_public_key), &ciphertext);
         }
     } else {
         free_mem((void **)&derived_secrets, sizeof(uint8_t) * derived_secrets_len);
