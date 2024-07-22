@@ -25,7 +25,7 @@
 #include "skissm/e2ee_client.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
-#include "skissm/safe_check.h"
+#include "skissm/validation.h"
 #include "skissm/session.h"
 
 int produce_create_group_request(
@@ -42,15 +42,15 @@ int produce_create_group_request(
     Skissm__Account *account = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    if (!safe_address(sender_address)) {
+    if (!is_valid_address(sender_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_create_group_request()");
         ret = -1;
     }
-    if (!nonempty_string(group_name)) {
+    if (!is_valid_string(group_name)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_create_group_request()");
         ret = -1;
     }
-    if (!safe_group_member_list(group_member_list, group_members_num)) {
+    if (!is_valid_group_member_list(group_member_list, group_members_num)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_create_group_request()");
         ret = -1;
     }
@@ -115,19 +115,19 @@ int consume_create_group_response(
 
     Skissm__E2eeAddress *group_address = NULL;
 
-    if (!safe_e2ee_pack_id(e2ee_pack_id)) {
+    if (!is_valid_e2ee_pack_id(e2ee_pack_id)) {
         ret = -1;
     }
-    if (!safe_address(sender_address)) {
+    if (!is_valid_address(sender_address)) {
         ret = -1;
     }
-    if (!nonempty_string(group_name)) {
+    if (!is_valid_string(group_name)) {
         ret = -1;
     }
-    if (!safe_group_member_list(group_member_list, group_members_num)) {
+    if (!is_valid_group_member_list(group_member_list, group_members_num)) {
         ret = -1;
     }
-    if (safe_create_group_response(response)) {
+    if (is_valid_create_group_response(response)) {
         group_address = response->group_address;
     } else {
         ret = -1;
@@ -152,10 +152,10 @@ int consume_create_group_response(
 }
 
 bool consume_create_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__CreateGroupMsg *msg) {
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         return false;
     }
-    if (!safe_create_group_msg(msg)) {
+    if (!is_valid_create_group_msg(msg)) {
         return false;
     }
 
@@ -283,11 +283,11 @@ int produce_add_group_members_request(
     Skissm__Account *account = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    if (!safe_group_session(outbound_group_session)) {
+    if (!is_valid_group_session(outbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "produce_add_group_members_request()");
         ret = -1;
     }
-    if (!safe_group_member_list(adding_member_list, adding_members_num)) {
+    if (!is_valid_group_member_list(adding_member_list, adding_members_num)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_add_group_members_request()");
         ret = -1;
     }
@@ -349,18 +349,18 @@ int consume_add_group_members_response(
     char *group_name = NULL;
     Skissm__E2eeAddress *group_address = NULL;
 
-    if (safe_group_session(outbound_group_session)) {
+    if (is_valid_group_session(outbound_group_session)) {
         session_owner = outbound_group_session->session_owner;
     } else {
         ret = -1;
     }
-    if (safe_add_group_members_response(response)) {
+    if (is_valid_add_group_members_response(response)) {
         new_group_members = response->group_member_list;
         new_group_members_num = response->n_group_member_list;
     } else {
         ret = -1;
     }
-    if (!safe_group_member_list(added_members, added_members_num)) {
+    if (!is_valid_group_member_list(added_members, added_members_num)) {
         ret = -1;
     }
 
@@ -396,10 +396,10 @@ int consume_add_group_members_response(
 }
 
 bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddGroupMembersMsg *msg) {
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         return false;
     }
-    if (!safe_add_group_members_msg(msg)) {
+    if (!is_valid_add_group_members_msg(msg)) {
         return false;
     }
 
@@ -475,11 +475,11 @@ int produce_add_group_member_device_request(
     Skissm__Account *account = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    if (!safe_group_session(outbound_group_session)) {
+    if (!is_valid_group_session(outbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "produce_add_group_member_device_request()");
         ret = -1;
     }
-    if (!safe_address(new_device_address)) {
+    if (!is_valid_address(new_device_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_add_group_member_device_request()");
         ret = -1;
     }
@@ -541,14 +541,14 @@ int consume_add_group_member_device_response(
     Skissm__GroupMemberInfo *adding_member_device_info = NULL;
     Skissm__E2eeAddress *new_device_address = NULL;
 
-    if (safe_group_session(outbound_group_session)) {
+    if (is_valid_group_session(outbound_group_session)) {
         group_name = outbound_group_session->group_info->group_name;
         session_owner = outbound_group_session->session_owner;
         group_address = outbound_group_session->group_info->group_address;
     } else {
         ret = -1;
     }
-    if (safe_add_group_member_device_response(response)) {
+    if (is_valid_add_group_member_device_response(response)) {
         adding_member_device_info = response->adding_member_device_info;
         new_device_address = adding_member_device_info->member_address;
     } else {
@@ -583,10 +583,10 @@ bool consume_add_group_member_device_msg(
     Skissm__E2eeAddress *receiver_address,
     Skissm__AddGroupMemberDeviceMsg *msg
 ) {
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         return false;
     }
-    if (!safe_add_group_member_device_msg(msg)) {
+    if (!is_valid_add_group_member_device_msg(msg)) {
         return false;
     }
 
@@ -661,11 +661,11 @@ int produce_remove_group_members_request(
     Skissm__Account *account = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    if (!safe_group_session(outbound_group_session)) {
+    if (!is_valid_group_session(outbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "produce_remove_group_members_request()");
         ret = -1;
     }
-    if (!safe_group_member_list(removing_group_members, removing_group_members_num)) {
+    if (!is_valid_group_member_list(removing_group_members, removing_group_members_num)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_remove_group_members_request()");
         ret = -1;
     }
@@ -742,7 +742,7 @@ int consume_remove_group_members_response(
     char *old_session_id = NULL;
     char *group_name = NULL;
 
-    if (safe_group_session(outbound_group_session)) {
+    if (is_valid_group_session(outbound_group_session)) {
         e2ee_pack_id = outbound_group_session->e2ee_pack_id;
         sender_address = outbound_group_session->session_owner;
         group_address = outbound_group_session->group_info->group_address;
@@ -751,7 +751,7 @@ int consume_remove_group_members_response(
     } else {
         ret = -1;
     }
-    if (safe_remove_group_members_response(response)) {
+    if (is_valid_remove_group_members_response(response)) {
         group_member_list = response->group_member_list;
         group_members_num = response->n_group_member_list;
     } else {
@@ -793,10 +793,10 @@ int consume_remove_group_members_response(
 }
 
 bool consume_remove_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveGroupMembersMsg *msg) {
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         return false;
     }
-    if (!safe_remove_group_members_msg(msg)) {
+    if (!is_valid_remove_group_members_msg(msg)) {
         return false;
     }
 
@@ -911,11 +911,11 @@ int produce_leave_group_request(
     Skissm__LeaveGroupRequest *request = NULL;
     Skissm__LeaveGroupMsg *msg = NULL;
 
-    if (!safe_address(user_address)) {
+    if (!is_valid_address(user_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_leave_group_request()");
         ret = -1;
     }
-    if (!safe_address(group_address)) {
+    if (!is_valid_address(group_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_leave_group_request()");
         ret = -1;
     }
@@ -947,10 +947,10 @@ int consume_leave_group_response(
 ) {
     int ret = 0;
 
-    if (!safe_address(user_address)) {
+    if (!is_valid_address(user_address)) {
         ret = -1;
     }
-    if (!safe_leave_group_response(response)) {
+    if (!is_valid_leave_group_response(response)) {
         ret = -1;
     }
 
@@ -966,10 +966,10 @@ int consume_leave_group_response(
 }
 
 bool consume_leave_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__LeaveGroupMsg *msg) {
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         return false;
     }
-    if (!safe_leave_group_msg(msg)) {
+    if (!is_valid_leave_group_msg(msg)) {
         return false;
     }
 
@@ -1030,7 +1030,7 @@ int produce_send_group_msg_request(
     uint8_t *ciphertext_data = NULL;
     size_t ciphertext_data_len = 0;
 
-    if (safe_group_session(outbound_group_session)) {
+    if (is_valid_group_session(outbound_group_session)) {
         cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
     } else {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "produce_send_group_msg_request()");
@@ -1044,11 +1044,11 @@ int produce_send_group_msg_request(
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_send_group_msg_request()");
         ret = -1;
     }
-    if (!safe_address_list(allow_list, allow_list_len)) {
+    if (!is_valid_address_list(allow_list, allow_list_len)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_send_group_msg_request()");
         ret = -1;
     }
-    if (!safe_address_list(deny_list, deny_list_len)) {
+    if (!is_valid_address_list(deny_list, deny_list_len)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_send_group_msg_request()");
         ret = -1;
     }
@@ -1170,12 +1170,12 @@ int consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session
 
     cipher_suite_t *cipher_suite = NULL;
 
-    if (safe_group_session(outbound_group_session)) {
+    if (is_valid_group_session(outbound_group_session)) {
         cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
     } else {
         ret = -1;
     }
-    if (!safe_send_group_msg_response(response)) {
+    if (!is_valid_send_group_msg_response(response)) {
         ret = -1;
     }
 

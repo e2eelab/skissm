@@ -24,7 +24,7 @@
 #include <string.h>
 
 #include "skissm/mem_util.h"
-#include "skissm/safe_check.h"
+#include "skissm/validation.h"
 #include "skissm/account.h"
 #include "skissm/account_cache.h"
 #include "skissm/account_manager.h"
@@ -48,27 +48,27 @@ int register_user(
     Skissm__RegisterUserRequest *register_user_request = NULL;
     Skissm__RegisterUserResponse *response = NULL;
 
-    if (!safe_e2ee_pack_id(e2ee_pack_id)) {
+    if (!is_valid_e2ee_pack_id(e2ee_pack_id)) {
         ssm_notify_log(NULL, BAD_E2EE_PACK, "register_user(): no e2ee_pack_id");
         ret = -1;
     }
-    if (!nonempty_string(user_name)) {
+    if (!is_valid_string(user_name)) {
         ssm_notify_log(NULL, BAD_USER_NAME, "register_user(): no user_name");
         ret = -1;
     }
-    if (!nonempty_string(user_id)) {
+    if (!is_valid_string(user_id)) {
         ssm_notify_log(NULL, BAD_USER_ID, "register_user(): no user_id");
         ret = -1;
     }
-    if (!nonempty_string(device_id)) {
+    if (!is_valid_string(device_id)) {
         ssm_notify_log(NULL, BAD_DEVICE_ID, "register_user(): no device_id");
         ret = -1;
     }
-    if (!nonempty_string(authenticator)) {
+    if (!is_valid_string(authenticator)) {
         ssm_notify_log(NULL, BAD_AUTHENTICATOR, "register_user(): no authenticator");
         ret = -1;
     }
-    if (!nonempty_string(auth_code)) {
+    if (!is_valid_string(auth_code)) {
         ssm_notify_log(NULL, BAD_AUTH, "register_user(): no auth_code");
         ret = -1;
     }
@@ -93,7 +93,7 @@ int register_user(
 
         response = get_skissm_plugin()->proto_handler.register_user(register_user_request);
 
-        if (safe_register_user_response(response)) {
+        if (is_valid_register_user_response(response)) {
             bool consumed = consume_register_response(account, response);
         } else {
             ssm_notify_log(NULL, BAD_RESPONSE, "register_user()");
@@ -162,7 +162,7 @@ Skissm__InviteResponse *invite(
     Skissm__InviteResponse **invite_response_list = NULL;
     size_t invite_response_num = 0;
 
-    if (safe_address(from)) {
+    if (is_valid_address(from)) {
         get_skissm_plugin()->db_handler.load_auth(from, &auth);
         if (auth == NULL) {
             ssm_notify_log(
@@ -178,11 +178,11 @@ Skissm__InviteResponse *invite(
         ssm_notify_log(NULL, BAD_ADDRESS, "invite()");
         ret = -1;
     }
-    if (!nonempty_string(to_user_id)) {
+    if (!is_valid_string(to_user_id)) {
         ssm_notify_log(NULL, BAD_USER_ID, "invite()");
         ret = -1;
     }
-    if (!nonempty_string(to_domain)) {
+    if (!is_valid_string(to_domain)) {
         ssm_notify_log(NULL, BAD_DOMAIN, "invite()");
         ret = -1;
     }
@@ -507,15 +507,15 @@ int create_group(
     char *auth = NULL;
     uint32_t e2ee_pack_id = 0;
 
-    if (!safe_address(sender_address)) {
+    if (!is_valid_address(sender_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "create_group()");
         ret = -1;
     }
-    if (!nonempty_string(group_name)) {
+    if (!is_valid_string(group_name)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "create_group()");
         ret = -1;
     }
-    if (!safe_group_member_list(group_members, group_members_num)) {
+    if (!is_valid_group_member_list(group_members, group_members_num)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "create_group()");
         ret = -1;
     }
@@ -544,7 +544,7 @@ int create_group(
         // send message to server
         response = get_skissm_plugin()->proto_handler.create_group(sender_address, auth, create_group_request);
 
-        if (!safe_create_group_response(response)) {
+        if (!is_valid_create_group_response(response)) {
             ssm_notify_log(sender_address, BAD_RESPONSE, "create_group()");
             ret = -1;
             // pack reuest to request_data
@@ -588,10 +588,10 @@ int add_group_members(
     Skissm__GroupSession *outbound_group_session = NULL;
     char *auth = NULL;
 
-    if (safe_address(sender_address)) {
+    if (is_valid_address(sender_address)) {
         get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
         if (auth != NULL) {
-            if (safe_address(group_address)) {
+            if (is_valid_address(group_address)) {
                 get_skissm_plugin()->db_handler.load_group_session_by_address(
                     sender_address, sender_address, group_address, &outbound_group_session
                 );
@@ -617,7 +617,7 @@ int add_group_members(
         ssm_notify_log(NULL, BAD_ADDRESS, "add_group_members()");
         ret = -1;
     }
-    if (!safe_group_member_list(adding_members, adding_members_num)) {
+    if (!is_valid_group_member_list(adding_members, adding_members_num)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "add_group_members()");
         ret = -1;
     }
@@ -630,7 +630,7 @@ int add_group_members(
         response = get_skissm_plugin()->proto_handler.add_group_members(sender_address, auth, add_group_members_request);
         // TODO: replace adding_members, adding_members_num by using response->added_group_member_list
 
-        if (!safe_add_group_members_response(response)) {
+        if (!is_valid_add_group_members_response(response)) {
             ssm_notify_log(NULL, BAD_RESPONSE, "add_group_members()");
             ret = -1;
             // pack reuest to request_data
@@ -677,10 +677,10 @@ int remove_group_members(
     Skissm__GroupSession *outbound_group_session = NULL;
     char *auth = NULL;
 
-    if (safe_address(sender_address)) {
+    if (is_valid_address(sender_address)) {
         get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
         if (auth != NULL) {
-            if (safe_address(group_address)) {
+            if (is_valid_address(group_address)) {
                 get_skissm_plugin()->db_handler.load_group_session_by_address(
                     sender_address, sender_address, group_address, &outbound_group_session
                 );
@@ -706,7 +706,7 @@ int remove_group_members(
         ssm_notify_log(NULL, BAD_ADDRESS, "remove_group_members()");
         ret = -1;
     }
-    if (!safe_group_member_list(removing_members, removing_members_num)) {
+    if (!is_valid_group_member_list(removing_members, removing_members_num)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "remove_group_members()");
         ret = -1;
     }
@@ -718,7 +718,7 @@ int remove_group_members(
     if (ret == 0) {
         response = get_skissm_plugin()->proto_handler.remove_group_members(sender_address, auth, remove_group_members_request);
 
-        if (!safe_remove_group_members_response(response)) {
+        if (!is_valid_remove_group_members_response(response)) {
             ssm_notify_log(NULL, BAD_RESPONSE, "remove_group_members()");
             ret = -1;
             // pack request to request_data
@@ -762,7 +762,7 @@ int leave_group(
     Skissm__LeaveGroupResponse *response = NULL;
     char *auth = NULL;
 
-    if (safe_address(sender_address)) {
+    if (is_valid_address(sender_address)) {
         get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
 
         if (auth == NULL) {
@@ -773,7 +773,7 @@ int leave_group(
         ssm_notify_log(NULL, BAD_ADDRESS, "leave_group()");
         ret = -1;
     }
-    if (!safe_address(group_address)) {
+    if (!is_valid_address(group_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "leave_group()");
         ret = -1;
     }
@@ -785,7 +785,7 @@ int leave_group(
     if (ret == 0) {
         response = get_skissm_plugin()->proto_handler.leave_group(sender_address, auth, leave_group_request);
 
-        if (!safe_leave_group_response(response)) {
+        if (!is_valid_leave_group_response(response)) {
             ssm_notify_log(NULL, BAD_RESPONSE, "leave_group()");
             ret = -1;
             // pack request to request_data
@@ -831,10 +831,10 @@ int send_group_msg_with_filter(
     Skissm__GroupSession *outbound_group_session = NULL;
     char *auth = NULL;
 
-    if (safe_address(sender_address)) {
+    if (is_valid_address(sender_address)) {
         get_skissm_plugin()->db_handler.load_auth(sender_address, &auth);
         if (auth != NULL) {
-            if (safe_address(group_address)) {
+            if (is_valid_address(group_address)) {
                 get_skissm_plugin()->db_handler.load_group_session_by_address(
                     sender_address, sender_address, group_address, &outbound_group_session
                 );
@@ -868,11 +868,11 @@ int send_group_msg_with_filter(
         ssm_notify_log(NULL, BAD_INPUT_DATA, "send_group_msg()");
         ret = -1;
     }
-    if (!safe_address_list(allow_list, allow_list_len)) {
+    if (!is_valid_address_list(allow_list, allow_list_len)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "send_group_msg()");
         ret = -1;
     }
-    if (!safe_address_list(deny_list, deny_list_len)) {
+    if (!is_valid_address_list(deny_list, deny_list_len)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "send_group_msg()");
         ret = -1;
     }
@@ -894,7 +894,7 @@ int send_group_msg_with_filter(
     if (ret == 0) {
         response = get_skissm_plugin()->proto_handler.send_group_msg(sender_address, auth, send_group_msg_request);
 
-        if (!safe_send_group_msg_response(response)) {
+        if (!is_valid_send_group_msg_response(response)) {
             ssm_notify_log(NULL, BAD_RESPONSE, "send_group_msg()");
             ret = -1;
             // pack request to request_data
@@ -994,7 +994,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
     Skissm__ProtoMsg *proto_msg = skissm__proto_msg__unpack(NULL, proto_msg_data_len, proto_msg_data);
     size_t i;
 
-    if (safe_proto_msg(proto_msg)) {
+    if (is_valid_proto_msg(proto_msg)) {
         receiver_address = proto_msg->to;
         load_server_public_key_from_cache(&server_public_key, receiver_address);
         for (i = 0; i < proto_msg->n_signature_list; i++) {

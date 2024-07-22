@@ -25,7 +25,7 @@
 #include "skissm/cipher.h"
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/mem_util.h"
-#include "skissm/safe_check.h"
+#include "skissm/validation.h"
 
 void account_begin() {
     int ret = 0;
@@ -40,7 +40,7 @@ void account_begin() {
     for (i = 0; i < account_num; i++) {
         cur_account = accounts[i];
 
-        if (safe_registered_account(cur_account)) {
+        if (is_valid_registered_account(cur_account)) {
             // check if the signed pre-key expired
             now = get_skissm_plugin()->common_handler.gen_ts();
             if (now > cur_account->signed_pre_key->ttl) {
@@ -118,7 +118,7 @@ int create_account(Skissm__Account **account_out, uint32_t e2ee_pack_id) {
 
     // get the cipher suite
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-    if (!safe_cipher_suite(cipher_suite)) {
+    if (!is_valid_cipher_suite(cipher_suite)) {
         ssm_notify_log(NULL, BAD_CIPHER_SUITE, "create_account() no cipher suite");
         ret = -1;
     }
@@ -191,7 +191,7 @@ int generate_identity_key(
 
     // get the cipher suite
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-    if (safe_cipher_suite(cipher_suite)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
         asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
         asym_priv_key_len = cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
         sign_pub_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
@@ -262,7 +262,7 @@ int generate_signed_pre_key(
 
     // get the cipher suite
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-    if (safe_cipher_suite(cipher_suite)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
         asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
         asym_priv_key_len = cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
         sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
@@ -360,7 +360,7 @@ int generate_opks(
     size_t i;
 
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-    if (safe_cipher_suite(cipher_suite)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
         asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
         asym_priv_key_len = cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
     } else {
@@ -430,7 +430,7 @@ int insert_opks(Skissm__Account *account, Skissm__OneTimePreKey **src, size_t sr
     Skissm__OneTimePreKey *cur_one_time_pre_key = NULL;
     Skissm__KeyPair *cur_key_pair = NULL;
 
-    if (safe_one_time_pre_key_list(account->one_time_pre_key_list, account->n_one_time_pre_key_list)) {
+    if (is_valid_one_time_pre_key_list(account->one_time_pre_key_list, account->n_one_time_pre_key_list)) {
         old_opk_num = account->n_one_time_pre_key_list;
         new_opk_num = old_opk_num + src_num;
     } else {

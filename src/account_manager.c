@@ -25,7 +25,7 @@
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
-#include "skissm/safe_check.h"
+#include "skissm/validation.h"
 
 int produce_register_request(Skissm__RegisterUserRequest **request_out, Skissm__Account *account) {
     int ret = 0;
@@ -37,7 +37,7 @@ int produce_register_request(Skissm__RegisterUserRequest **request_out, Skissm__
     Skissm__KeyPair *signed_pre_key_pair = NULL;
     Skissm__OneTimePreKey *one_time_pre_key = NULL;
 
-    if (safe_unregistered_account(account)) {
+    if (is_valid_unregistered_account(account)) {
         identity_key = account->identity_key;
         identity_key_pair_asym = identity_key->asym_key_pair;
         identity_key_pair_sign = identity_key->sign_key_pair;
@@ -97,11 +97,11 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
     size_t invite_response_num = 0;
     size_t i;
 
-    if (!safe_unregistered_account(account)) {
+    if (!is_valid_unregistered_account(account)) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "consume_register_response()");
         ret = -1;
     }
-    if (!safe_register_user_response(response)) {
+    if (!is_valid_register_user_response(response)) {
         ssm_notify_log(NULL, BAD_RESPONSE, "consume_register_response()");
         ret = -1;
     }
@@ -109,7 +109,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
     if (ret == 0) {
         // insert the address the server gave to our account
         copy_address_from_address(&(account->address), response->address);
-        if (safe_certificate(response->server_cert)) {
+        if (is_valid_certificate(response->server_cert)) {
             copy_certificate_from_certificate(&(account->server_cert), response->server_cert);
         }
         account->saved = true;
@@ -204,7 +204,7 @@ int produce_publish_spk_request(
     Skissm__SignedPreKey *signed_pre_key = NULL;
     Skissm__KeyPair *signed_pre_key_pair = NULL;
 
-    if (safe_registered_account(account)) {
+    if (is_valid_registered_account(account)) {
         signed_pre_key = account->signed_pre_key;
         signed_pre_key_pair = signed_pre_key->key_pair;
     } else {
@@ -238,11 +238,11 @@ int consume_publish_spk_response(
 ) {
     int ret = 0;
 
-    if (!safe_publish_spk_response(response)) {
+    if (!is_valid_publish_spk_response(response)) {
         ssm_notify_log(NULL, BAD_RESPONSE, "consume_publish_spk_response()");
         ret = -1;
     }
-    if (!safe_registered_account(account)) {
+    if (!is_valid_registered_account(account)) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "consume_publish_spk_response()");
         ret = -1;
     }
@@ -270,7 +270,7 @@ int produce_supply_opks_request(
     uint32_t e2ee_pack_id;
     uint32_t cur_opk_id;
 
-    if (safe_registered_account(account)) {
+    if (is_valid_registered_account(account)) {
         e2ee_pack_id = account->e2ee_pack_id;
         cur_opk_id = account->next_one_time_pre_key_id;
     } else {
@@ -311,10 +311,10 @@ int produce_supply_opks_request(
 int consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response) {
     int ret = 0;
 
-    if (!safe_registered_account(account)) {
+    if (!is_valid_registered_account(account)) {
         ret = -1;
     }
-    if (!safe_supply_opks_response(response)) {
+    if (!is_valid_supply_opks_response(response)) {
         ret = -1;
     }
 
@@ -334,11 +334,11 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
     /** The server notifies us to generate some new one-time pre-keys 
         since our published one-time pre-keys are going to used up. */
 
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "consume_supply_opks_msg()");
         return false;
     }
-    if (safe_supply_opks_msg(msg)) {
+    if (is_valid_supply_opks_msg(msg)) {
         if (!compare_address(receiver_address, msg->user_address)){
             ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
             return false;
@@ -349,7 +349,7 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
     Skissm__Account *account = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(receiver_address, &account);
 
-    if (!safe_registered_account(account)) {
+    if (!is_valid_registered_account(account)) {
         ssm_notify_log(receiver_address, BAD_ACCOUNT, "consume_supply_opks_msg()");
         return false;
     }

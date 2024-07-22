@@ -26,7 +26,7 @@
 #include "skissm/crypto.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/mem_util.h"
-#include "skissm/safe_check.h"
+#include "skissm/validation.h"
 #include "test_util.h"
 
 #define user_data_max 205
@@ -554,7 +554,7 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
             }
         }
     }
-    if (safe_certificate(server_certificate)) {
+    if (is_valid_certificate(server_certificate)) {
         copy_certificate_from_certificate(&(response->server_cert), server_certificate);
     }
 

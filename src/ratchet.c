@@ -23,7 +23,7 @@
 
 #include "skissm/cipher.h"
 #include "skissm/mem_util.h"
-#include "skissm/safe_check.h"
+#include "skissm/validation.h"
 
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
@@ -74,24 +74,25 @@ static int create_chain_key(
 
     bool pqc_param;
 
-    if (safe_cipher_suite(cipher_suite)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
         if ((our_private_key == NULL && ratchet_public_key == NULL) || (our_private_key != NULL && ratchet_public_key != NULL)) {
             ret = -1;
         }
         if (our_private_key != NULL) {
-            if (!safe_protobuf(our_private_key)) {
+            if (!is_valid_protobuf(our_private_key)) {
                 ret = -1;
             }
         }
         if (ratchet_public_key != NULL) {
-            if (!safe_protobuf(ratchet_public_key)) {
+            // ratchet_public_key should be {0, NULL}
+            if (is_valid_protobuf(ratchet_public_key)) {
                 ret = -1;
             }
         }
-        if (!safe_protobuf(&(root_key))) {
+        if (!is_valid_protobuf(&(root_key))) {
             ret = -1;
         }
-        if (!safe_protobuf(their_key)) {
+        if (!is_valid_protobuf(their_key)) {
             ret = -1;
         }
     } else {
@@ -109,10 +110,6 @@ static int create_chain_key(
         ProtobufCBinaryData ciphertext = {0, NULL};
         if (our_private_key == NULL) {
             cipher_suite->kem_suite->encaps(secret, &ciphertext, their_key);
-            if (ratchet_public_key->data != NULL) {
-                free_mem((void **)&(ratchet_public_key->data), ratchet_public_key->len);
-                ratchet_public_key->len = 0;
-            }
             uint32_t ciphertext_len = ciphertext.len;
             ratchet_public_key->data = (uint8_t *)malloc(sizeof(uint8_t) * ciphertext_len);
             memcpy(ratchet_public_key->data, ciphertext.data, ciphertext_len);
@@ -155,8 +152,8 @@ static int advance_chain_key(
 ) {
     int ret = 0;
 
-    if (safe_cipher_suite(cipher_suite)) {
-        if (!safe_chain_key(chain_key)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
+        if (!is_valid_chain_key(chain_key)) {
             ret = -1;
         }
     } else {
@@ -191,8 +188,8 @@ static int create_msg_keys(
     int msg_key_len = 0;
     int hash_len;
 
-    if (safe_cipher_suite(cipher_suite)) {
-        if (!safe_chain_key(chain_key)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
+        if (!is_valid_chain_key(chain_key)) {
             ret = -1;
         }
     } else {
@@ -240,14 +237,14 @@ static int verify_and_decrypt(
 ) {
     int ret = 0;
 
-    if (safe_cipher_suite(cipher_suite)) {
-        if (!safe_protobuf(&ad)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
+        if (!is_valid_protobuf(&ad)) {
             ret = -1;
         }
-        if (!safe_msg_key(message_key)) {
+        if (!is_valid_msg_key(message_key)) {
             ret = -1;
         }
-        if (!safe_one2one_msg_payload(payload)) {
+        if (!is_valid_one2one_msg_payload(payload)) {
             ret = -1;
         }
     } else {
@@ -278,14 +275,14 @@ static int verify_and_decrypt_for_existing_chain(
 ) {
     int ret = 0;
 
-    if (safe_cipher_suite(cipher_suite)) {
-        if (!safe_protobuf(&ad)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
+        if (!is_valid_protobuf(&ad)) {
             ret = -1;
         }
-        if (!safe_chain_key(chain)) {
+        if (!is_valid_chain_key(chain)) {
             ret = -1;
         }
-        if (!safe_one2one_msg_payload(payload)) {
+        if (!is_valid_one2one_msg_payload(payload)) {
             ret = -1;
         }
         if (ret == 0) {
@@ -335,17 +332,17 @@ static size_t verify_and_decrypt_for_new_chain(
     uint32_t coming_root_sequence;
     uint32_t our_root_sequence;
 
-    if (safe_cipher_suite(cipher_suite)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
-        if (!safe_protobuf(&ad)) {
+        if (!is_valid_protobuf(&ad)) {
             ret = -1;
         }
-        if (safe_ratchet(ratchet)) {
+        if (is_valid_ratchet(ratchet)) {
             our_root_sequence = ratchet->root_sequence;
         } else {
             ret = -1;
         }
-        if (safe_one2one_msg_payload(payload)) {
+        if (is_valid_one2one_msg_payload(payload)) {
             coming_root_sequence = payload->root_sequence;
             // coming_root_sequence should be positive
             if (coming_root_sequence == 0) {
@@ -420,7 +417,7 @@ int initialise_as_bob(
     size_t derived_secrets_len = 0;
     ProtobufCBinaryData ciphertext = {0, NULL};
 
-    if (safe_cipher_suite(cipher_suite)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
     } else {
         ret = -1;
@@ -429,10 +426,10 @@ int initialise_as_bob(
         ret = -1;
     if (shared_secret_length == 0)
         ret = -1;
-    if (!safe_key_pair(our_ratchet_key)) {
+    if (!is_valid_key_pair(our_ratchet_key)) {
         ret = -1;
     }
-    if (!safe_protobuf(their_ratchet_key)) {
+    if (!is_valid_protobuf(their_ratchet_key)) {
         ret = -1;
     }
 
@@ -522,10 +519,10 @@ int initialise_as_alice(
     uint8_t *derived_secrets = NULL;
     size_t derived_secrets_len = 0;
 
-    if (safe_cipher_suite(cipher_suite)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
         if (pqc_param) {
-            if (!safe_protobuf(their_encaps_ciphertext))
+            if (!is_valid_protobuf(their_encaps_ciphertext))
                 ret = -1;
         } else {
             if (their_encaps_ciphertext != NULL)
@@ -538,10 +535,10 @@ int initialise_as_alice(
         ret = -1;
     if (shared_secret_length == 0)
         ret = -1;
-    if (!safe_key_pair(our_ratchet_key)) {
+    if (!is_valid_key_pair(our_ratchet_key)) {
         ret = -1;
     }
-    if (!safe_protobuf(their_ratchet_key))
+    if (!is_valid_protobuf(their_ratchet_key))
         ret = -1;
 
     if (ret == 0) {
@@ -637,20 +634,14 @@ int encrypt_ratchet(
     Skissm__SenderChainNode *sender_chain = NULL;
     Skissm__ChainKey *chain_key = NULL;
 
-    if (!safe_cipher_suite(cipher_suite)) {
+    if (!is_valid_cipher_suite(cipher_suite)) {
         ssm_notify_log(NULL, BAD_CIPHER_SUITE, "encrypt_ratchet()");
         ret = -1;
     }
     if (ratchet != NULL) {
-        if (ratchet->sender_chain != NULL) {
+        if (is_valid_sender_chain(ratchet->sender_chain)) {
             sender_chain = ratchet->sender_chain;
-            if (sender_chain->chain_key != NULL) {
-                chain_key = sender_chain->chain_key;
-            } else {
-                ret = -1;
-            }
-            if (!safe_protobuf(&(sender_chain->our_ratchet_public_key)))
-                ret = -1;
+            chain_key = sender_chain->chain_key;
         } else {
             ret = -1;
         }
@@ -705,7 +696,7 @@ int decrypt_ratchet(
     Skissm__ReceiverChainNode *corresponding_receiver_chain = NULL;
     bool skipped_message = false;
 
-    if (safe_cipher_suite(cipher_suite)) {
+    if (is_valid_cipher_suite(cipher_suite)) {
         // the cipher suite should exist and be safe
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
         if (pqc_param == false) {
@@ -713,7 +704,7 @@ int decrypt_ratchet(
         } else {
             ratchet_key_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
         }
-        if (safe_one2one_msg_payload(payload)) {
+        if (is_valid_one2one_msg_payload(payload)) {
             if (payload->ratchet_key.len != ratchet_key_len) {
                 // the ratchet key length should be equal
                 ret = -1;
@@ -722,10 +713,10 @@ int decrypt_ratchet(
             // something wrong with the payload
             ret = -1;
         }
-        if (!safe_protobuf(&ad)) {
+        if (!is_valid_protobuf(&ad)) {
             ret = -1;
         }
-        if (!safe_ratchet(ratchet)) {
+        if (!is_valid_ratchet(ratchet)) {
             ret = -1;
         }
         if (ret == 0) {

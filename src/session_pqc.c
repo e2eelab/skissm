@@ -28,7 +28,7 @@
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
-#include "skissm/safe_check.h"
+#include "skissm/validation.h"
 
 static const char FINGERPRINT_SEED[] = "Fingerprint";
 
@@ -51,16 +51,16 @@ int pqc_new_outbound_session_v2(
     Skissm__Session *outbound_session = NULL;
     Skissm__InviteResponse *response = NULL;
 
-    if (safe_address(from)) {
+    if (is_valid_address(from)) {
         // load the account
         get_skissm_plugin()->db_handler.load_account_by_address(from, &local_account);
-        if (safe_registered_account(local_account)) {
+        if (is_valid_registered_account(local_account)) {
             my_identity_key_pair = local_account->identity_key->asym_key_pair;
-            if (safe_pre_key_bundle(their_pre_key_bundle)) {
+            if (is_valid_pre_key_bundle(their_pre_key_bundle)) {
                 e2ee_pack_id = their_pre_key_bundle->e2ee_pack_id;
                 cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
                 to = their_pre_key_bundle->user_address;
-                if (safe_cipher_suite(cipher_suite)) {
+                if (is_valid_cipher_suite(cipher_suite)) {
                     asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
                     sign_pub_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
                     sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
@@ -279,7 +279,7 @@ int pqc_new_inbound_session(
     ProtobufCBinaryData ciphertext_1 = {0, NULL};
     Skissm__Ratchet *ratchet = NULL;
 
-    if (safe_registered_account(local_account)) {
+    if (is_valid_registered_account(local_account)) {
         our_ik = local_account->identity_key;
         our_spk = local_account->signed_pre_key;
         address = local_account->address;
@@ -287,7 +287,7 @@ int pqc_new_inbound_session(
         ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_new_inbound_session()");
         ret = -1;
     }
-    if (safe_invite_msg(msg)) {
+    if (is_valid_invite_msg(msg)) {
         cipher_suite = get_e2ee_pack(msg->e2ee_pack_id)->cipher_suite;
         asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
         shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
@@ -305,7 +305,7 @@ int pqc_new_inbound_session(
         // verify the signed pre-key
         if (our_spk->spk_id != bob_signed_pre_key_id) {
             get_skissm_plugin()->db_handler.load_signed_pre_key(address, bob_signed_pre_key_id, &old_spk_data);
-            if (safe_signed_pre_key(old_spk_data)) {
+            if (is_valid_signed_pre_key(old_spk_data)) {
                 old_spk = true;
             } else {
                 ssm_notify_log(NULL, BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
@@ -319,7 +319,7 @@ int pqc_new_inbound_session(
         if (bob_one_time_pre_key_id != 0) {
             x3dh_epoch = 4;
             our_one_time_pre_key = lookup_one_time_pre_key(local_account, bob_one_time_pre_key_id);
-            if (!safe_one_time_pre_key(our_one_time_pre_key)) {
+            if (!is_valid_one_time_pre_key(our_one_time_pre_key)) {
                 ssm_notify_log(NULL, BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
                 ret = -1;
             }
@@ -450,14 +450,14 @@ int pqc_complete_outbound_session(Skissm__Session **outbound_session_out, Skissm
     Skissm__IdentityKey *identity_key = NULL;
     ProtobufCBinaryData their_ratchet_key = {0, NULL};
 
-    if (safe_accept_msg(msg)) {
+    if (is_valid_accept_msg(msg)) {
         get_skissm_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &session);
-        if (safe_uncompleted_session(session)) {
+        if (is_valid_uncompleted_session(session)) {
             load_identity_key_from_cache(&identity_key, session->our_address);
 
             if (identity_key == NULL) {
                 get_skissm_plugin()->db_handler.load_account_by_address(session->our_address, &account);
-                if (safe_registered_account(account)) {
+                if (is_valid_registered_account(account)) {
                     copy_ik_from_ik(&identity_key, account->identity_key);
                 } else {
                     ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");

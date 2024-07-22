@@ -10,7 +10,7 @@
 #include "skissm/group_session.h"
 #include "skissm/mem_util.h"
 #include "skissm/ratchet.h"
-#include "skissm/safe_check.h"
+#include "skissm/validation.h"
 #include "skissm/session.h"
 
 typedef struct group_address_node {
@@ -82,10 +82,10 @@ int produce_get_pre_key_bundle_request(
 
     Skissm__GetPreKeyBundleRequest *request = NULL;
 
-    if (!nonempty_string(to_user_id)) {
+    if (!is_valid_string(to_user_id)) {
         ret = -1;
     }
-    if (!nonempty_string(to_domain)) {
+    if (!is_valid_string(to_domain)) {
         ret = -1;
     }
 
@@ -128,9 +128,9 @@ int consume_get_pre_key_bundle_response(
     bool is_self = false;
     char *from_user_id = NULL;
 
-    if (safe_address(from)) {
+    if (is_valid_address(from)) {
         from_user_id = from->user->user_id;
-        if (safe_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
+        if (is_valid_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
             their_pre_key_bundles = get_pre_key_bundle_response->pre_key_bundles;
             n_pre_key_bundles = get_pre_key_bundle_response->n_pre_key_bundles;
 
@@ -176,7 +176,7 @@ int consume_get_pre_key_bundle_response(
                 }
             }
 
-            if (safe_server_signed_signature(cur_pre_key_bundle->signature)) {
+            if (is_valid_server_signed_signature(cur_pre_key_bundle->signature)) {
                 digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(cur_pre_key_bundle->signature->signing_alg);
                 server_check = digital_signature_suite->verify(
                     cur_pre_key_bundle->signature->signature.data,
@@ -557,10 +557,10 @@ bool consume_add_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
     size_t group_address_num;
     size_t i, j;
 
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         ret = -1;
     }
-    if (safe_add_user_device_msg(msg)) {
+    if (is_valid_add_user_device_msg(msg)) {
         new_user_address = msg->user_address;
         old_address_list = msg->old_address_list;
         old_address_list_number = msg->n_old_address_list;
@@ -635,10 +635,10 @@ bool consume_add_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__
 }
 
 bool consume_remove_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveUserDeviceMsg *msg) {
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         return false;
     }
-    if (!safe_remove_user_device_msg(msg)) {
+    if (!is_valid_remove_user_device_msg(msg)) {
         return false;
     }
     // delete the corresponding session
@@ -656,7 +656,7 @@ int produce_invite_request(
     Skissm__InviteRequest *request = NULL;
     Skissm__InviteMsg *msg = NULL;
 
-    if (!safe_uncompleted_session(outbound_session)) {
+    if (!is_valid_uncompleted_session(outbound_session)) {
         ret = -1;
     }
 
@@ -701,8 +701,8 @@ int consume_invite_response(
 ) {
     int ret = 0;
 
-    if (safe_address(user_address)) {
-        if (!safe_invite_response(response)) {
+    if (is_valid_address(user_address)) {
+        if (!is_valid_invite_response(response)) {
             ssm_notify_log(NULL, BAD_RESPONSE, "consume_invite_response()");
             ret = -1;
         }
@@ -745,10 +745,10 @@ int consume_invite_response(
 }
 
 bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *invite_msg) {
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         return false;
     }
-    if (!safe_invite_msg(invite_msg)) {
+    if (!is_valid_invite_msg(invite_msg)) {
         return false;
     }
 
@@ -829,21 +829,21 @@ int produce_accept_request(
     Skissm__AcceptRequest *request = NULL;
     Skissm__AcceptMsg *msg = NULL;
 
-    if (!safe_e2ee_pack_id(e2ee_pack_id)) {
+    if (!is_valid_e2ee_pack_id(e2ee_pack_id)) {
         ret = -1;
     }
-    if (!safe_address(from)) {
+    if (!is_valid_address(from)) {
         ret = -1;
     }
-    if (!safe_address(to)) {
+    if (!is_valid_address(to)) {
         ret = -1;
     }
     if (ciphertext_1 != NULL) {
-        if (!safe_protobuf(ciphertext_1)) {
+        if (!is_valid_protobuf(ciphertext_1)) {
             ret = -1;
         }
     }
-    if (!safe_protobuf(our_ratchet_key)) {
+    if (!is_valid_protobuf(our_ratchet_key)) {
         ret = -1;
     }
 
@@ -874,8 +874,8 @@ int produce_accept_request(
 int consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response) {
     int ret = 0;
 
-    if (safe_address(user_address)) {
-        if (!safe_accept_response(response)) {
+    if (is_valid_address(user_address)) {
+        if (!is_valid_accept_response(response)) {
             ssm_notify_log(NULL, BAD_RESPONSE, "consume_accept_response()");
             ret = -1;
         }
@@ -895,10 +895,10 @@ int consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptRes
 }
 
 bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *accept_msg) {
-    if (!safe_address(receiver_address)) {
+    if (!is_valid_address(receiver_address)) {
         return false;
     }
-    if (!safe_accept_msg(accept_msg)) {
+    if (!is_valid_accept_msg(accept_msg)) {
         return false;
     }
 
