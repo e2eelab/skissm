@@ -140,7 +140,7 @@ size_t pack_group_pre_key_plaintext(
     uint8_t **group_pre_key_plaintext_data,
     char *old_session_id
 ) {
-    Skissm__GroupPreKeyBundle *group_pre_key_bundle = (Skissm__GroupPreKeyBundle *) malloc(sizeof(Skissm__GroupPreKeyBundle));
+    Skissm__GroupPreKeyBundle *group_pre_key_bundle = (Skissm__GroupPreKeyBundle *)malloc(sizeof(Skissm__GroupPreKeyBundle));
     skissm__group_pre_key_bundle__init(group_pre_key_bundle);
 
     group_pre_key_bundle->version = strdup(outbound_group_session->version);
@@ -276,7 +276,7 @@ static void insert_outbound_group_session_data(
 
     // combine seed secret and ID
     size_t secret_len = SEED_SECRET_LEN + sign_key_len;
-    uint8_t *secret = (uint8_t *) malloc(sizeof(uint8_t) * secret_len);
+    uint8_t *secret = (uint8_t *)malloc(sizeof(uint8_t) * secret_len);
     memcpy(secret, outbound_group_session->group_seed.data, SEED_SECRET_LEN);
     memcpy(secret + SEED_SECRET_LEN, identity_public_key, sign_key_len);
 
@@ -285,7 +285,7 @@ static void insert_outbound_group_session_data(
     uint8_t salt[hash_len];
     memset(salt, 0, hash_len);
     outbound_group_session->chain_key.len = hash_len;
-    outbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
+    outbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
     cipher_suite->hash_suite->hkdf(
         secret, secret_len,
         salt, sizeof(salt),
@@ -295,7 +295,7 @@ static void insert_outbound_group_session_data(
 
     int ad_len = 2 * sign_key_len;
     outbound_group_session->associated_data.len = ad_len;
-    outbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+    outbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
     memcpy(outbound_group_session->associated_data.data, identity_public_key, sign_key_len);
     memcpy((outbound_group_session->associated_data.data) + sign_key_len, identity_public_key, sign_key_len);
 
@@ -380,7 +380,7 @@ int new_outbound_group_session_by_sender(
         }
     }
 
-    if (!is_valid_group_member_info_list(member_info_list, n_member_info_list)) {
+    if (!is_valid_group_member_info_list((const Skissm__GroupMemberInfo **)member_info_list, n_member_info_list)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "new_outbound_group_session_by_sender()");
         ret = -1;
     }
@@ -558,12 +558,12 @@ int new_outbound_group_session_by_receiver(
     }
 
     if (ret == 0) {
-        Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+        Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
         skissm__group_session__init(outbound_group_session);
 
         // the receiver gets the seed secret from the sender
         outbound_group_session->group_seed.len = group_seed->len;
-        outbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
+        outbound_group_session->group_seed.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
         memcpy(outbound_group_session->group_seed.data, group_seed->data, group_seed->len);
 
         insert_outbound_group_session_data(
@@ -626,7 +626,7 @@ int new_outbound_group_session_invited(
         const cipher_suite_t *cipher_suite = get_e2ee_pack(group_update_key_bundle->e2ee_pack_id)->cipher_suite;
         int sign_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
 
-        Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+        Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
         skissm__group_session__init(outbound_group_session);
 
         outbound_group_session->version = strdup(group_update_key_bundle->version);
@@ -663,7 +663,7 @@ int new_outbound_group_session_invited(
 
         int ad_len = 2 * sign_key_len;
         outbound_group_session->associated_data.len = ad_len;
-        outbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+        outbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
         memcpy(outbound_group_session->associated_data.data, identity_public_key, sign_key_len);
         memcpy((outbound_group_session->associated_data.data) + sign_key_len, identity_public_key, sign_key_len);
 
@@ -726,7 +726,7 @@ int new_inbound_group_session_by_pre_key_bundle(
         const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
         int sign_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
 
-        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
         skissm__group_session__init(inbound_group_session);
 
         inbound_group_session->e2ee_pack_id = e2ee_pack_id;
@@ -743,7 +743,7 @@ int new_inbound_group_session_by_pre_key_bundle(
 
         ProtobufCBinaryData *group_seed = &(group_pre_key_bundle->group_seed);
         inbound_group_session->group_seed.len = group_seed->len;
-        inbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * inbound_group_session->group_seed.len);
+        inbound_group_session->group_seed.data = (uint8_t *)malloc(sizeof(uint8_t) * inbound_group_session->group_seed.len);
         memcpy(inbound_group_session->group_seed.data, group_seed->data, group_seed->len);
 
         get_skissm_plugin()->db_handler.store_group_session(inbound_group_session);
@@ -780,7 +780,7 @@ int new_inbound_group_session_by_member_id(
         const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
         int sign_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
 
-        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
         skissm__group_session__init(inbound_group_session);
 
         inbound_group_session->e2ee_pack_id = e2ee_pack_id;
@@ -791,7 +791,7 @@ int new_inbound_group_session_by_member_id(
 
         int ad_len = 2 * sign_key_len;
         inbound_group_session->associated_data.len = ad_len;
-        inbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+        inbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
         memcpy(inbound_group_session->associated_data.data, group_member_id->sign_public_key.data, sign_key_len);
         memcpy((inbound_group_session->associated_data.data) + sign_key_len, group_member_id->sign_public_key.data, sign_key_len);
 
@@ -824,7 +824,7 @@ int complete_inbound_group_session_by_pre_key_bundle(
         int sign_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
 
         size_t secret_len = SEED_SECRET_LEN + sign_key_len;
-        uint8_t *secret = (uint8_t *) malloc(sizeof(uint8_t) * secret_len);
+        uint8_t *secret = (uint8_t *)malloc(sizeof(uint8_t) * secret_len);
 
         inbound_group_session->version = strdup(group_pre_key_bundle->version);
         inbound_group_session->session_id = strdup(group_pre_key_bundle->session_id);
@@ -840,7 +840,7 @@ int complete_inbound_group_session_by_pre_key_bundle(
         uint8_t salt[hash_len];
         memset(salt, 0, hash_len);
         inbound_group_session->chain_key.len = hash_len;
-        inbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * inbound_group_session->chain_key.len);
+        inbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * inbound_group_session->chain_key.len);
         cipher_suite->hash_suite->hkdf(
             secret, secret_len,
             salt, sizeof(salt),
@@ -877,11 +877,11 @@ int complete_inbound_group_session_by_member_id(
         int sign_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
 
         size_t secret_len = SEED_SECRET_LEN + sign_key_len;
-        uint8_t *secret = (uint8_t *) malloc(sizeof(uint8_t) * secret_len);
+        uint8_t *secret = (uint8_t *)malloc(sizeof(uint8_t) * secret_len);
 
         int ad_len = 2 * sign_key_len;
         inbound_group_session->associated_data.len = ad_len;
-        inbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+        inbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
         memcpy(inbound_group_session->associated_data.data, group_member_id->sign_public_key.data, sign_key_len);
         memcpy((inbound_group_session->associated_data.data) + sign_key_len, group_member_id->sign_public_key.data, sign_key_len);
 
@@ -897,7 +897,7 @@ int complete_inbound_group_session_by_member_id(
         uint8_t salt[hash_len];
         memset(salt, 0, hash_len);
         inbound_group_session->chain_key.len = hash_len;
-        inbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * inbound_group_session->chain_key.len);
+        inbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * inbound_group_session->chain_key.len);
         cipher_suite->hash_suite->hkdf(
             secret, secret_len,
             salt, sizeof(salt),
@@ -930,7 +930,7 @@ int new_and_complete_inbound_group_session(
     }
 
     if (ret == 0) {
-        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
         skissm__group_session__init(inbound_group_session);
 
         insert_inbound_group_session_data(group_member_id, other_group_session, inbound_group_session);
@@ -943,7 +943,7 @@ int new_and_complete_inbound_group_session(
         ProtobufCBinaryData *group_seed = &(other_group_session->group_seed);
 
         size_t secret_len = SEED_SECRET_LEN + sign_key_len;
-        uint8_t *secret = (uint8_t *) malloc(sizeof(uint8_t) * secret_len);
+        uint8_t *secret = (uint8_t *)malloc(sizeof(uint8_t) * secret_len);
 
         // combine seed secret and ID
         memcpy(secret, group_seed->data, SEED_SECRET_LEN);
@@ -954,7 +954,7 @@ int new_and_complete_inbound_group_session(
         uint8_t salt[hash_len];
         memset(salt, 0, hash_len);
         inbound_group_session->chain_key.len = hash_len;
-        inbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * inbound_group_session->chain_key.len);
+        inbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * inbound_group_session->chain_key.len);
         cipher_suite->hash_suite->hkdf(
             secret, secret_len,
             salt, sizeof(salt),
@@ -965,7 +965,7 @@ int new_and_complete_inbound_group_session(
 
         int ad_len = 2 * sign_key_len;
         inbound_group_session->associated_data.len = ad_len;
-        inbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+        inbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
         memcpy(inbound_group_session->associated_data.data, identity_public_key, sign_key_len);
         memcpy((inbound_group_session->associated_data.data) + sign_key_len, identity_public_key, sign_key_len);
 
@@ -1000,7 +1000,7 @@ int new_and_complete_inbound_group_session_with_chain_key(
     }
 
     if (ret == 0) {
-        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
         skissm__group_session__init(inbound_group_session);
 
         insert_inbound_group_session_data(group_member_info, other_group_session, inbound_group_session);
@@ -1015,7 +1015,7 @@ int new_and_complete_inbound_group_session_with_chain_key(
 
         int ad_len = 2 * sign_key_len;
         inbound_group_session->associated_data.len = ad_len;
-        inbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+        inbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
 
         memcpy(inbound_group_session->associated_data.data, identity_public_key, sign_key_len);
         memcpy((inbound_group_session->associated_data.data) + sign_key_len, identity_public_key, sign_key_len);
@@ -1045,7 +1045,7 @@ int new_and_complete_inbound_group_session_with_ratchet_state(
     }
 
     if (ret == 0) {
-        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+        Skissm__GroupSession *inbound_group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
         skissm__group_session__init(inbound_group_session);
 
         inbound_group_session->version = strdup(group_update_key_bundle->version);
@@ -1075,7 +1075,7 @@ int new_and_complete_inbound_group_session_with_ratchet_state(
 
         int ad_len = 2 * sign_key_len;
         inbound_group_session->associated_data.len = ad_len;
-        inbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+        inbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
         memcpy(inbound_group_session->associated_data.data, identity_public_key, sign_key_len);
         memcpy((inbound_group_session->associated_data.data) + sign_key_len, identity_public_key, sign_key_len);
 
@@ -1137,7 +1137,7 @@ int renew_outbound_group_session_by_welcome_and_add(
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_outbound_group_session_by_welcome_and_add()");
         ret = -1;
     }
-    if (!is_valid_group_member_info_list(adding_member_info_list, n_adding_member_info_list)) {
+    if (!is_valid_group_member_info_list((const Skissm__GroupMemberInfo **)adding_member_info_list, n_adding_member_info_list)) {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "renew_outbound_group_session_by_welcome_and_add()");
         ret = -1;
     }

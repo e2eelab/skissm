@@ -56,16 +56,16 @@ void test_unload_group_session_by_id(){
     group_member_list[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
-    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
-    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    group_address->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
     skissm__peer_group__init(group_address->group);
     group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = mock_domain_str();
     group_address->group->group_id = generate_uuid_str();
 
     // create inbound group session
-    Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    Skissm__GroupSession *group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(group_session);
 
     group_session->version = strdup(E2EE_PROTOCOL_VERSION);
@@ -75,7 +75,7 @@ void test_unload_group_session_by_id(){
     group_session->session_id = generate_uuid_str();
 
     group_session->group_info =
-    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     Skissm__GroupInfo *group_info = group_session->group_info;
     skissm__group_info__init(group_info);
     group_info->group_name = strdup("test_group");
@@ -86,11 +86,11 @@ void test_unload_group_session_by_id(){
     group_session->sequence = 0;
 
     group_session->chain_key.len = 32;
-    group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     get_skissm_plugin()->common_handler.gen_rand(group_session->chain_key.data, 32);
 
     group_session->associated_data.len = 64;
-    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(group_session->associated_data.data, group_session->chain_key.data, 32);
     memcpy((group_session->associated_data.data) + 32, group_session->chain_key.data, CURVE25519_KEY_LENGTH);
 

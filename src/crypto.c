@@ -1711,7 +1711,7 @@ char *crypto_base64_encode(const uint8_t *msg, size_t msg_len) {
 }
 
 size_t crypto_base64_decode(uint8_t **msg_out, const unsigned char *base64_str) {
-    size_t base64_str_len = strlen(base64_str);
+    size_t base64_str_len = strlen((const char *)base64_str);
     int pad = base64_str_len > 0 && (base64_str_len % 4 || base64_str[base64_str_len - 1] == '=');
     size_t len = ((base64_str_len + 3) / 4 - pad) * 4;
     unsigned char buffer[len + 1];

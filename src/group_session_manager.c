@@ -1068,7 +1068,7 @@ int produce_send_group_msg_request(
 
     if (ret == 0) {
         // create the message key
-        msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+        msg_key = (Skissm__MsgKey *)malloc(sizeof(Skissm__MsgKey));
         skissm__msg_key__init(msg_key);
         create_group_message_key(cipher_suite, &(outbound_group_session->chain_key), msg_key);
     
@@ -1085,7 +1085,7 @@ int produce_send_group_msg_request(
 
     if (ret == 0) {
         // prepare a group_msg_payload
-        group_msg_payload = (Skissm__GroupMsgPayload *) malloc(sizeof(Skissm__GroupMsgPayload));
+        group_msg_payload = (Skissm__GroupMsgPayload *)malloc(sizeof(Skissm__GroupMsgPayload));
         skissm__group_msg_payload__init(group_msg_payload);
         group_msg_payload->sequence = outbound_group_session->sequence;
 
@@ -1096,7 +1096,7 @@ int produce_send_group_msg_request(
         // signature
         uint32_t sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
         group_msg_payload->signature.len = sig_len;
-        group_msg_payload->signature.data = (uint8_t *) malloc(sizeof(uint8_t) * sig_len);
+        group_msg_payload->signature.data = (uint8_t *)malloc(sizeof(uint8_t) * sig_len);
         size_t signature_out_len;
         ret = cipher_suite->digital_signature_suite->sign(
             group_msg_payload->signature.data, &signature_out_len,
@@ -1111,7 +1111,7 @@ int produce_send_group_msg_request(
         skissm__send_group_msg_request__init(request);
 
         // prepare an e2ee message
-        e2ee_msg = (Skissm__E2eeMsg *) malloc(sizeof(Skissm__E2eeMsg));
+        e2ee_msg = (Skissm__E2eeMsg *)malloc(sizeof(Skissm__E2eeMsg));
         skissm__e2ee_msg__init(e2ee_msg);
         e2ee_msg->version = strdup(outbound_group_session->version);
         e2ee_msg->session_id = strdup(outbound_group_session->session_id);
@@ -1237,7 +1237,7 @@ bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e
     }
 
     // create the message key
-    Skissm__MsgKey *msg_key = (Skissm__MsgKey *) malloc(sizeof(Skissm__MsgKey));
+    Skissm__MsgKey *msg_key = (Skissm__MsgKey *)malloc(sizeof(Skissm__MsgKey));
     skissm__msg_key__init(msg_key);
     create_group_message_key(cipher_suite, &(inbound_group_session->chain_key), msg_key);
 

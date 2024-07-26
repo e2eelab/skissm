@@ -88,12 +88,14 @@ bool is_null(void *pointer_1, void *pointer_2);
 bool is_not_null(void *pointer_1, void *pointer_2);
 
 // is_equal
-bool is_equal_data(ProtobufCBinaryData *data1, ProtobufCBinaryData *data2);
+bool is_equal_data(ProtobufCBinaryData *src_1, ProtobufCBinaryData *src_2);
 bool is_equal_str(char *str1, char *str2);
-bool is_equal_keypair(Skissm__KeyPair *keypair1, Skissm__KeyPair *keypair2);
-bool is_equal_spk(Skissm__SignedPreKey *spk1, Skissm__SignedPreKey *spk2);
-bool is_equal_opk(Skissm__OneTimePreKey *opk1, Skissm__OneTimePreKey *opk2);
-bool is_equal_account(Skissm__Account *account1, Skissm__Account *account2);
+bool is_equal_keypair(Skissm__KeyPair *src_1, Skissm__KeyPair *src_2);
+bool is_equal_ik(Skissm__IdentityKey *src_1, Skissm__IdentityKey *src_2);
+bool is_equal_spk(Skissm__SignedPreKey *src_1, Skissm__SignedPreKey *src_2);
+bool is_equal_opk(Skissm__OneTimePreKey *src_1, Skissm__OneTimePreKey *src_2);
+bool is_equal_opk_list(Skissm__OneTimePreKey **src_1, Skissm__OneTimePreKey **src_2, size_t len);
+bool is_equal_account(Skissm__Account *src_1, Skissm__Account *src_2);
 bool is_equal_message_key(Skissm__MsgKey *msg_key_1, Skissm__MsgKey *msg_key_2);
 bool is_equal_chain(Skissm__ChainKey *chain_key_1, Skissm__ChainKey *chain_key_2);
 bool is_equal_sender_chain(Skissm__SenderChainNode *sender_chain_1, Skissm__SenderChainNode *sender_chain_2);
@@ -111,10 +113,12 @@ char *mock_domain_str();
 void mock_address(Skissm__E2eeAddress **address_pp, const char *user_id, const char *domain, const char *device_id);
 void mock_random_group_address(Skissm__E2eeAddress **address);
 void mock_random_user_address(Skissm__E2eeAddress **address);
-void mock_keypair(Skissm__KeyPair **keypair, const char *public_key, const char *private_key);
-void mock_identity_keypair(Skissm__IdentityKey **identity_keypair, const char *public_key, const char *private_key);
-void mock_signed_pre_keypair(Skissm__SignedPreKey **signed_pre_keypair, uint32_t spk_id, const char *public_key, const char *private_key, const char *signature);
-void mock_one_time_pre_keypair(Skissm__OneTimePreKey **one_time_pre_keypair, uint32_t opk_id, protobuf_c_boolean used, const char *public_key, const char *private_key);
+void mock_keypair(Skissm__KeyPair **keypair);
+void mock_identity_key(Skissm__IdentityKey **identity_keypair);
+void mock_signed_pre_key(Skissm__SignedPreKey **signed_pre_keypair, uint32_t spk_id);
+void mock_one_time_pre_key(Skissm__OneTimePreKey **one_time_pre_keypair, uint32_t opk_id);
+void mock_one_time_pre_key_list(Skissm__OneTimePreKey ***one_time_pre_key_list);
+void mock_account(Skissm__Account **account_out);
 
 // hash
 void pre_key_bundle_hash(
@@ -138,9 +142,6 @@ void proto_msg_hash(
 
 // free
 void free_account(Skissm__Account *account);
-void free_keypair(Skissm__KeyPair *keypair);
-void free_signed_pre_keypair(Skissm__SignedPreKey *signed_pre_keypair);
-void free_one_time_pre_key_pair(Skissm__OneTimePreKey *one_time_pre_keypair);
 void free_address(Skissm__E2eeAddress *address);
 
 #endif /* TEST_UTIL_H_ */

@@ -260,8 +260,8 @@ void mock_certificate() {
     FILE *fptr;
     size_t data_len;
     uint8_t *data = NULL;
-    uint8_t *certificate_data = NULL;
-    size_t certificate_data_len;
+    uint8_t *decoded_data = NULL;
+    size_t decoded_data_len = 0;
 
     // central private key
     if ((fptr = fopen("../cert/central_private.txt", "r")) == NULL){
@@ -270,16 +270,20 @@ void mock_certificate() {
         // program exits if the file pointer returns NULL.
         exit(1);
     } else {
-        central_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-        skissm__key_pair__init(central_key_pair);
-
         fseek(fptr, 0, SEEK_END);
         data_len = ftell(fptr);
-        central_key_pair->private_key.len = data_len;
         fseek(fptr, 0, SEEK_SET);
-        central_key_pair->private_key.data = (uint8_t *)malloc(sizeof(uint8_t) * data_len);
-        fread(central_key_pair->private_key.data, 1, data_len, fptr);
+        data = (uint8_t *)malloc(sizeof(uint8_t) * (data_len + 1));
+        fread(data, 1, data_len, fptr);
         fclose(fptr);
+
+        data[data_len] = '\0';
+        decoded_data_len = crypto_base64_decode(&decoded_data, data);
+        central_key_pair = skissm__key_pair__unpack(NULL, decoded_data_len, decoded_data);
+
+        // release
+        free_mem((void **)&data, data_len + 1);
+        free_mem((void **)&decoded_data, decoded_data_len);
     }
 
     // central certificate
@@ -291,22 +295,20 @@ void mock_certificate() {
         fseek(fptr, 0, SEEK_END);
         data_len = ftell(fptr);
         fseek(fptr, 0, SEEK_SET);
-        // data = (uint8_t *) malloc(sizeof(uint8_t) * (data_len + 1));
-        data = (uint8_t *) malloc(sizeof(uint8_t) * data_len);
+        data = (uint8_t *)malloc(sizeof(uint8_t) * (data_len + 1));
         fread(data, 1, data_len, fptr);
         fclose(fptr);
 
-        // data[data_len] = '\0';
-
-        certificate_data_len = crypto_base64_decode(&certificate_data, data);
-
-        central_certificate = skissm__certificate__unpack(NULL, certificate_data_len, certificate_data);
-
-        copy_protobuf_from_protobuf(&(central_key_pair->public_key), &(central_certificate->cert->public_key));
+        data[data_len] = '\0';
+        decoded_data_len = crypto_base64_decode(&decoded_data, data);
+        central_certificate = skissm__certificate__unpack(NULL, decoded_data_len, decoded_data);
+        if (central_certificate != NULL) {
+            copy_protobuf_from_protobuf(&(central_key_pair->public_key), &(central_certificate->cert->public_key));
+        }
 
         // release
-        free_mem((void **)&data, data_len);
-        free_mem((void **)&certificate_data, certificate_data_len);
+        free_mem((void **)&data, data_len + 1);
+        free_mem((void **)&decoded_data, decoded_data_len);
     }
 
     // server private key
@@ -315,16 +317,20 @@ void mock_certificate() {
         // program exits if the file pointer returns NULL.
         exit(1);
     } else {
-        server_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-        skissm__key_pair__init(server_key_pair);
-
         fseek(fptr, 0, SEEK_END);
         data_len = ftell(fptr);
-        server_key_pair->private_key.len = data_len;
         fseek(fptr, 0, SEEK_SET);
-        server_key_pair->private_key.data = (uint8_t *)malloc(sizeof(uint8_t) * data_len);
-        fread(server_key_pair->private_key.data, 1, data_len, fptr);
+        data = (uint8_t *)malloc(sizeof(uint8_t) * (data_len + 1));
+        fread(data, 1, data_len, fptr);
         fclose(fptr);
+
+        data[data_len] = '\0';
+        decoded_data_len = crypto_base64_decode(&decoded_data, data);
+        server_key_pair = skissm__key_pair__unpack(NULL, decoded_data_len, decoded_data);
+
+        // release
+        free_mem((void **)&data, data_len + 1);
+        free_mem((void **)&decoded_data, decoded_data_len);
     }
 
     // server certificate
@@ -336,22 +342,20 @@ void mock_certificate() {
         fseek(fptr, 0, SEEK_END);
         data_len = ftell(fptr);
         fseek(fptr, 0, SEEK_SET);
-        // data = (uint8_t *) malloc(sizeof(uint8_t) * (data_len + 1));
-        data = (uint8_t *) malloc(sizeof(uint8_t) * data_len);
+        data = (uint8_t *)malloc(sizeof(uint8_t) * (data_len + 1));
         fread(data, 1, data_len, fptr);
         fclose(fptr);
 
-        // data[data_len] = '\0';
-
-        certificate_data_len = crypto_base64_decode(&certificate_data, data);
-
-        server_certificate = skissm__certificate__unpack(NULL, certificate_data_len, certificate_data);
-
-        copy_protobuf_from_protobuf(&(server_key_pair->public_key), &(server_certificate->cert->public_key));
+        data[data_len] = '\0';
+        decoded_data_len = crypto_base64_decode(&decoded_data, data);
+        server_certificate = skissm__certificate__unpack(NULL, decoded_data_len, decoded_data);
+        if (server_certificate != NULL) {
+            copy_protobuf_from_protobuf(&(server_key_pair->public_key), &(server_certificate->cert->public_key));
+        }
 
         // release
-        free_mem((void **)&data, data_len);
-        free_mem((void **)&certificate_data, certificate_data_len);
+        free_mem((void **)&data, data_len + 1);
+        free_mem((void **)&decoded_data, decoded_data_len);
     }
 }
 

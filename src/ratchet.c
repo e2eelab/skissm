@@ -919,11 +919,11 @@ int decrypt_ratchet(
                 Skissm__SenderChainNode *new_sender_chain = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
                 skissm__sender_chain_node__init(new_sender_chain);
 
-                new_sender_chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
+                new_sender_chain->chain_key = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
                 skissm__chain_key__init(new_sender_chain->chain_key);
                 if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
                     // ECC mode
-                    new_ratchet_key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+                    new_ratchet_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
                     skissm__key_pair__init(new_ratchet_key_pair);
                     cipher_suite->kem_suite->asym_key_gen(&new_ratchet_key_pair->public_key, &new_ratchet_key_pair->private_key);
 

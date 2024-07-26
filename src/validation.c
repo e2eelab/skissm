@@ -197,7 +197,7 @@ bool is_valid_address_list(Skissm__E2eeAddress **src, size_t len) {
     return true;
 }
 
-bool is_valid_key_pair(Skissm__KeyPair *src) {
+bool is_valid_key_pair(const Skissm__KeyPair *src) {
     if (src != NULL) {
         if (!is_valid_protobuf(&(src->private_key))) {
             return false;
@@ -838,7 +838,10 @@ bool is_valid_group_update_key_bundle(Skissm__GroupUpdateKeyBundle *src) {
         if (!is_valid_protobuf(&(src->sign_public_key))) {
             return false;
         }
-        if (!is_valid_group_member_info_list(src->adding_member_info_list, src->n_adding_member_info_list)) {
+        if (!is_valid_group_member_info_list(
+                (const Skissm__GroupMemberInfo **)src->adding_member_info_list,
+                src->n_adding_member_info_list)
+        ) {
             return false;
         }
     } else {
@@ -916,7 +919,7 @@ bool is_valid_register_user_response(Skissm__RegisterUserResponse *src) {
         if (!is_valid_address_list(src->other_user_address_list, src->n_other_user_address_list)) {
             return false;
         }
-        if (!is_valid_group_info_list(src->group_info_list, src->n_group_info_list)) {
+        if (!is_valid_group_info_list((const Skissm__GroupInfo **)src->group_info_list, src->n_group_info_list)) {
             return false;
         }
     } else {
@@ -1003,7 +1006,10 @@ bool is_valid_create_group_response(Skissm__CreateGroupResponse *src) {
         if (!is_valid_address(src->group_address)) {
             return false;
         }
-        if (!is_valid_group_member_info_list(src->member_info_list, src->n_member_info_list)) {
+        if (!is_valid_group_member_info_list(
+                (const Skissm__GroupMemberInfo **)src->member_info_list,
+                src->n_member_info_list)
+        ) {
             return false;
         }
     } else {
@@ -1024,7 +1030,10 @@ bool is_valid_add_group_members_response(Skissm__AddGroupMembersResponse *src) {
         if (!is_valid_group_member_list(src->group_member_list, src->n_group_member_list)) {
             return false;
         }
-        if (!is_valid_group_member_info_list(src->adding_member_info_list, src->n_adding_member_info_list)) {
+        if (!is_valid_group_member_info_list(
+                (const Skissm__GroupMemberInfo **)src->adding_member_info_list,
+                src->n_adding_member_info_list)
+        ) {
             return false;
         }
     } else {
@@ -1063,7 +1072,10 @@ bool is_valid_remove_group_members_response(Skissm__RemoveGroupMembersResponse *
         if (!is_valid_group_member_list(src->group_member_list, src->n_group_member_list)) {
             return false;
         }
-        if (!is_valid_group_member_info_list(src->member_info_list, src->n_member_info_list)) {
+        if (!is_valid_group_member_info_list(
+                (const Skissm__GroupMemberInfo **)src->member_info_list,
+                src->n_member_info_list)
+        ) {
             return false;
         }
     } else {
@@ -1242,7 +1254,10 @@ bool is_valid_create_group_msg(Skissm__CreateGroupMsg *src) {
         if (!is_valid_group_info(src->group_info)) {
             return false;
         }
-        if (!is_valid_group_member_info_list(src->member_info_list, src->n_member_info_list)) {
+        if (!is_valid_group_member_info_list(
+                (const Skissm__GroupMemberInfo **)src->member_info_list,
+                src->n_member_info_list)
+        ) {
             return false;
         }
     } else {
@@ -1266,7 +1281,10 @@ bool is_valid_add_group_members_msg(Skissm__AddGroupMembersMsg *src) {
         if (!is_valid_group_member_list(src->adding_member_list, src->n_adding_member_list)) {
             return false;
         }
-        if (!is_valid_group_member_info_list(src->adding_member_info_list, src->n_adding_member_info_list)) {
+        if (!is_valid_group_member_info_list(
+                (const Skissm__GroupMemberInfo **)src->adding_member_info_list,
+                src->n_adding_member_info_list)
+        ) {
             return false;
         }
     } else {
@@ -1311,7 +1329,10 @@ bool is_valid_remove_group_members_msg(Skissm__RemoveGroupMembersMsg *src) {
         if (!is_valid_group_member_list(src->removing_member_list, src->n_removing_member_list)) {
             return false;
         }
-        if (!is_valid_group_member_info_list(src->member_info_list, src->n_member_info_list)) {
+        if (!is_valid_group_member_info_list(
+                (const Skissm__GroupMemberInfo **)src->member_info_list,
+                src->n_member_info_list)
+        ) {
             return false;
         }
     } else {

@@ -79,16 +79,16 @@ static void test_one_group_pre_key() {
     group_members[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
-    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
-    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    group_address->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
     skissm__peer_group__init(group_address->group);
     group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = mock_domain_str();
     group_address->group->group_id = generate_uuid_str();
 
     // create an outbound group session
-    Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    Skissm__GroupSession *outbound_group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(outbound_group_session);
 
     outbound_group_session->version = strdup(E2EE_PROTOCOL_VERSION);
@@ -98,7 +98,7 @@ static void test_one_group_pre_key() {
     outbound_group_session->session_id = generate_uuid_str();
 
     outbound_group_session->group_info =
-    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     Skissm__GroupInfo *group_info = outbound_group_session->group_info;
     skissm__group_info__init(group_info);
     group_info->group_name = strdup("test_group");
@@ -109,16 +109,16 @@ static void test_one_group_pre_key() {
     outbound_group_session->sequence = 0;
 
     outbound_group_session->chain_key.len = test_cipher_suite->hash_suite->get_crypto_param().hash_len;
-    outbound_group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
+    outbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
     get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
 
     outbound_group_session->group_seed.len = test_cipher_suite->hash_suite->get_crypto_param().hash_len;
-    outbound_group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
+    outbound_group_session->group_seed.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
     get_skissm_plugin()->common_handler.gen_rand(outbound_group_session->group_seed.data, outbound_group_session->group_seed.len);
 
     int ad_len = 2 * key_len;
     outbound_group_session->associated_data.len = ad_len;
-    outbound_group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * ad_len);
+    outbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
     memcpy(outbound_group_session->associated_data.data, outbound_group_session->chain_key.data, key_len);
     memcpy((outbound_group_session->associated_data.data) + key_len, outbound_group_session->chain_key.data, key_len);
 

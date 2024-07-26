@@ -43,7 +43,7 @@ void test_load_outbound_session(uint32_t e2ee_pack_id)
     tear_up();
 
     // create session and two addresses
-    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    Skissm__Session *session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
@@ -53,11 +53,11 @@ void test_load_outbound_session(uint32_t e2ee_pack_id)
     // create mock public keys
     session->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
     session->pre_shared_input_list[0].len = 32;
-    session->pre_shared_input_list[0].data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    session->pre_shared_input_list[0].data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(session->pre_shared_input_list[0].data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
     session->associated_data.len = 64;
-    session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
     session->session_id = generate_uuid_str();
@@ -87,9 +87,9 @@ void test_load_outbound_sessions(uint32_t e2ee_pack_id)
 
     // create sessions
     Skissm__Session *session_1, *session_2, *session_3;
-    session_1 = (Skissm__Session *) malloc(sizeof(Skissm__Session));
-    session_2 = (Skissm__Session *) malloc(sizeof(Skissm__Session));
-    session_3 = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    session_1 = (Skissm__Session *)malloc(sizeof(Skissm__Session));
+    session_2 = (Skissm__Session *)malloc(sizeof(Skissm__Session));
+    session_3 = (Skissm__Session *)malloc(sizeof(Skissm__Session));
 
     // create addresses
     Skissm__E2eeAddress *from, *to_1, *to_2, *to_3;
@@ -109,11 +109,11 @@ void test_load_outbound_sessions(uint32_t e2ee_pack_id)
     // create mock public keys for session_1
     session_1->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
     session_1->pre_shared_input_list[0].len = 32;
-    session_1->pre_shared_input_list[0].data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    session_1->pre_shared_input_list[0].data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(session_1->pre_shared_input_list[0].data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
     session_1->associated_data.len = 64;
-    session_1->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session_1->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session_1->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
     session_1->session_id = generate_uuid_str();
@@ -124,11 +124,11 @@ void test_load_outbound_sessions(uint32_t e2ee_pack_id)
     // create mock public keys for session_2
     session_2->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
     session_2->pre_shared_input_list[0].len = 32;
-    session_2->pre_shared_input_list[0].data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    session_2->pre_shared_input_list[0].data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(session_2->pre_shared_input_list[0].data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
     session_2->associated_data.len = 64;
-    session_2->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session_2->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session_2->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
     session_2->session_id = generate_uuid_str();
@@ -139,11 +139,11 @@ void test_load_outbound_sessions(uint32_t e2ee_pack_id)
     // create mock public keys for session_3
     session_3->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
     session_3->pre_shared_input_list[0].len = 32;
-    session_3->pre_shared_input_list[0].data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    session_3->pre_shared_input_list[0].data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(session_3->pre_shared_input_list[0].data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
     session_3->associated_data.len = 64;
-    session_3->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session_3->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session_3->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
     session_3->session_id = generate_uuid_str();
@@ -151,7 +151,7 @@ void test_load_outbound_sessions(uint32_t e2ee_pack_id)
     // insert to the db
     store_session(session_3);
 
-    Skissm__Session **sessions = (Skissm__Session **) malloc(sizeof(Skissm__Session *) * 3);
+    Skissm__Session **sessions = (Skissm__Session **)malloc(sizeof(Skissm__Session *) * 3);
     sessions[0] = session_1;
     sessions[1] = session_2;
     sessions[2] = session_3;
@@ -180,7 +180,7 @@ void test_load_inbound_session(uint32_t e2ee_pack_id)
     tear_up();
 
     // create session and two addresses
-    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    Skissm__Session *session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     skissm__session__init(session);
 
     Skissm__E2eeAddress *from, *to;
@@ -192,11 +192,11 @@ void test_load_inbound_session(uint32_t e2ee_pack_id)
     // create mock public keys
     session->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
     session->pre_shared_input_list[0].len = 32;
-    session->pre_shared_input_list[0].data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    session->pre_shared_input_list[0].data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(session->pre_shared_input_list[0].data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
     session->associated_data.len = 64;
-    session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
     session->session_id = generate_uuid_str();
@@ -230,29 +230,29 @@ void test_load_group_session_by_address(uint32_t e2ee_pack_id)
     mock_address(&Bob, "bob", "bob's domain", "bob's device");
 
     // create group_member_list
-    Skissm__GroupMember **group_member_list = (Skissm__GroupMember **) malloc(sizeof(Skissm__GroupMember *) * 2);
-    group_member_list[0] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    Skissm__GroupMember **group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
+    group_member_list[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_member_list[0]);
     group_member_list[0]->user_id = strdup("alice");
     group_member_list[0]->domain = strdup("alice's domain");
     group_member_list[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
-    group_member_list[1] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    group_member_list[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_member_list[1]);
     group_member_list[1]->user_id = strdup("bob");
     group_member_list[1]->domain = strdup("bob's domain");
     group_member_list[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
-    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
-    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    group_address->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
     skissm__peer_group__init(group_address->group);
     group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = mock_domain_str();
     group_address->group->group_id = generate_uuid_str();
 
     // create outbound group session
-    Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    Skissm__GroupSession *group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(group_session);
 
     group_session->version = strdup(E2EE_PROTOCOL_VERSION);
@@ -262,7 +262,7 @@ void test_load_group_session_by_address(uint32_t e2ee_pack_id)
     group_session->session_id = generate_uuid_str();
 
     group_session->group_info =
-    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     Skissm__GroupInfo *group_info = group_session->group_info;
     skissm__group_info__init(group_info);
     group_info->group_name = strdup("test_group");
@@ -273,15 +273,15 @@ void test_load_group_session_by_address(uint32_t e2ee_pack_id)
     group_session->sequence = 0;
 
     group_session->chain_key.len = 32;
-    group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(group_session->chain_key.data, "01234567890123456789012345678901", 32);
 
     group_session->group_seed.len = 32;
-    group_session->group_seed.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    group_session->group_seed.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(group_session->group_seed.data, "01234567890123456789012345678901", 32);
 
     group_session->associated_data.len = 64;
-    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(group_session->associated_data.data, group_session->chain_key.data, 32);
     memcpy((group_session->associated_data.data) + 32, group_session->group_seed.data, CURVE25519_KEY_LENGTH);
 
@@ -315,29 +315,29 @@ void test_load_group_session_by_id(uint32_t e2ee_pack_id)
     mock_address(&Bob, "bob", E2EELAB_DOMAIN, "bob's device");
 
     // create group_member_list
-    Skissm__GroupMember **group_member_list = (Skissm__GroupMember **) malloc(sizeof(Skissm__GroupMember *) * 2);
-    group_member_list[0] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    Skissm__GroupMember **group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
+    group_member_list[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_member_list[0]);
     group_member_list[0]->user_id = strdup("alice");
     group_member_list[0]->domain = strdup("alice's domain");
     group_member_list[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
-    group_member_list[1] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    group_member_list[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_member_list[1]);
     group_member_list[1]->user_id = strdup("bob");
     group_member_list[1]->domain = strdup("bob's domain");
     group_member_list[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
-    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
-    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    group_address->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
     skissm__peer_group__init(group_address->group);
     group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = mock_domain_str();
     group_address->group->group_id = generate_uuid_str();
 
     // create inbound group session
-    Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    Skissm__GroupSession *group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(group_session);
 
     group_session->version = strdup(E2EE_PROTOCOL_VERSION);
@@ -347,7 +347,7 @@ void test_load_group_session_by_id(uint32_t e2ee_pack_id)
     group_session->session_id = generate_uuid_str();
 
     group_session->group_info =
-    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     Skissm__GroupInfo *group_info = group_session->group_info;
     skissm__group_info__init(group_info);
     group_info->group_name = strdup("test_group");
@@ -358,11 +358,11 @@ void test_load_group_session_by_id(uint32_t e2ee_pack_id)
     group_session->sequence = 0;
 
     group_session->chain_key.len = 32;
-    group_session->chain_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(group_session->chain_key.data, "01234567890123456789012345678901", 32);
 
     group_session->associated_data.len = 64;
-    group_session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(group_session->associated_data.data, group_session->chain_key.data, CURVE25519_KEY_LENGTH);
     memcpy((group_session->associated_data.data) + CURVE25519_KEY_LENGTH, group_session->chain_key.data, CURVE25519_KEY_LENGTH);
 
@@ -395,37 +395,37 @@ void test_load_group_addresses(uint32_t e2ee_pack_id) {
     mock_address(&Bob, "bob", E2EELAB_DOMAIN, "bob's device");
 
     // create group_member_list
-    Skissm__GroupMember **group_member_list = (Skissm__GroupMember **) malloc(sizeof(Skissm__GroupMember *) * 2);
-    group_member_list[0] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    Skissm__GroupMember **group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
+    group_member_list[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_member_list[0]);
     group_member_list[0]->user_id = strdup("alice");
     group_member_list[0]->domain = strdup("alice's domain");
     group_member_list[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
-    group_member_list[1] = (Skissm__GroupMember *) malloc(sizeof(Skissm__GroupMember));
+    group_member_list[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
     skissm__group_member__init(group_member_list[1]);
     group_member_list[1]->user_id = strdup("bob");
     group_member_list[1]->domain = strdup("bob's domain");
     group_member_list[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock two group addresses
-    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address);
-    group_address->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    group_address->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
     skissm__peer_group__init(group_address->group);
     group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = mock_domain_str();
     group_address->group->group_id = generate_uuid_str();
 
-    Skissm__E2eeAddress *group_address_2 = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    Skissm__E2eeAddress *group_address_2 = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(group_address_2);
-    group_address_2->group = (Skissm__PeerGroup *) malloc(sizeof(Skissm__PeerGroup));
+    group_address_2->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
     skissm__peer_group__init(group_address_2->group);
     group_address_2->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
     group_address_2->domain = mock_domain_str();
     group_address_2->group->group_id = generate_uuid_str();
 
     // create an outbound group session
-    Skissm__GroupSession *group_session = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    Skissm__GroupSession *group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(group_session);
 
     group_session->version = strdup(E2EE_PROTOCOL_VERSION);
@@ -435,7 +435,7 @@ void test_load_group_addresses(uint32_t e2ee_pack_id) {
     group_session->session_id = generate_uuid_str();
 
     group_session->group_info =
-    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     Skissm__GroupInfo *group_info = group_session->group_info;
     skissm__group_info__init(group_info);
     group_info->group_name = strdup("test_group");
@@ -447,7 +447,7 @@ void test_load_group_addresses(uint32_t e2ee_pack_id) {
     store_group_session(group_session);
 
     // create a second outbound group session
-    Skissm__GroupSession *group_session_2 = (Skissm__GroupSession *) malloc(sizeof(Skissm__GroupSession));
+    Skissm__GroupSession *group_session_2 = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
     skissm__group_session__init(group_session_2);
 
     group_session_2->version = strdup(E2EE_PROTOCOL_VERSION);
@@ -457,7 +457,7 @@ void test_load_group_addresses(uint32_t e2ee_pack_id) {
     group_session_2->session_id = generate_uuid_str();
 
     group_session_2->group_info =
-    (Skissm__GroupInfo *) malloc(sizeof(Skissm__GroupInfo));
+    (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
     group_info = group_session_2->group_info;
     skissm__group_info__init(group_info);
     group_info->group_name = strdup("test_group");
@@ -502,7 +502,7 @@ void test_store_session(uint32_t e2ee_pack_id)
     tear_up();
 
     // create session and two addresses
-    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    Skissm__Session *session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
@@ -512,11 +512,11 @@ void test_store_session(uint32_t e2ee_pack_id)
     // create mock public keys
     session->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
     session->pre_shared_input_list[0].len = 32;
-    session->pre_shared_input_list[0].data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    session->pre_shared_input_list[0].data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(session->pre_shared_input_list[0].data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
     session->associated_data.len = 64;
-    session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
     session->session_id = generate_uuid_str();
@@ -524,20 +524,20 @@ void test_store_session(uint32_t e2ee_pack_id)
     uint8_t secret[128] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx";
     ProtobufCBinaryData their_ratchet_key;
     their_ratchet_key.len = 32;
-    their_ratchet_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    their_ratchet_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(their_ratchet_key.data, "11111111111111111111111111111111", 32);
-    Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+    Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(our_ratchet_key);
     our_ratchet_key->private_key.len = 32;
-    our_ratchet_key->private_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    our_ratchet_key->private_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->private_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
     our_ratchet_key->public_key.len = 32;
-    our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    our_ratchet_key->public_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
     ProtobufCBinaryData their_encaps_ciphertext;
     their_encaps_ciphertext.len = 32;
-    their_encaps_ciphertext.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    their_encaps_ciphertext.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(their_encaps_ciphertext.data, "11111111111111111111111111111111", 32);
 
     initialise_as_alice(&(session->ratchet), test_cipher_suite, secret, 128, our_ratchet_key, &their_ratchet_key, &their_encaps_ciphertext);
@@ -571,7 +571,7 @@ void test_equal_ratchet_outbound(uint32_t e2ee_pack_id)
     tear_up();
 
     // create session and two addresses
-    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    Skissm__Session *session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
@@ -581,11 +581,11 @@ void test_equal_ratchet_outbound(uint32_t e2ee_pack_id)
     // create mock public keys
     session->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
     session->pre_shared_input_list[0].len = 32;
-    session->pre_shared_input_list[0].data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    session->pre_shared_input_list[0].data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(session->pre_shared_input_list[0].data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
     session->associated_data.len = 64;
-    session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
     session->session_id = generate_uuid_str();
@@ -593,20 +593,20 @@ void test_equal_ratchet_outbound(uint32_t e2ee_pack_id)
     uint8_t secret[128] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx";
     ProtobufCBinaryData their_ratchet_key;
     their_ratchet_key.len = 32;
-    their_ratchet_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    their_ratchet_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(their_ratchet_key.data, "11111111111111111111111111111111", 32);
-    Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+    Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(our_ratchet_key);
     our_ratchet_key->private_key.len = 32;
-    our_ratchet_key->private_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    our_ratchet_key->private_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->private_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
     our_ratchet_key->public_key.len = 32;
-    our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    our_ratchet_key->public_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
     ProtobufCBinaryData their_encaps_ciphertext;
     their_encaps_ciphertext.len = 32;
-    their_encaps_ciphertext.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    their_encaps_ciphertext.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(their_encaps_ciphertext.data, "11111111111111111111111111111111", 32);
 
     initialise_as_alice(&(session->ratchet), test_cipher_suite, secret, 128, our_ratchet_key, &their_ratchet_key, &their_encaps_ciphertext);
@@ -635,7 +635,7 @@ void test_equal_ratchet_inbound(uint32_t e2ee_pack_id)
     tear_up();
 
     // create session and two addresses
-    Skissm__Session *session = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    Skissm__Session *session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     Skissm__E2eeAddress *from, *to;
     mock_address(&from, "alice", "alice's domain", "alice's device");
     mock_address(&to, "bob", "bob's domain", "bob's device");
@@ -645,11 +645,11 @@ void test_equal_ratchet_inbound(uint32_t e2ee_pack_id)
     // create mock public keys
     session->pre_shared_input_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
     session->pre_shared_input_list[0].len = 32;
-    session->pre_shared_input_list[0].data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    session->pre_shared_input_list[0].data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(session->pre_shared_input_list[0].data, "abcdefghijklmnopqrstuvwxyz012345", 32);
 
     session->associated_data.len = 64;
-    session->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
 
     session->session_id = generate_uuid_str();
@@ -657,16 +657,16 @@ void test_equal_ratchet_inbound(uint32_t e2ee_pack_id)
     // mock ratchet key pairs
     ProtobufCBinaryData their_ratchet_key;
     their_ratchet_key.len = 32;
-    their_ratchet_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    their_ratchet_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(their_ratchet_key.data, "11111111111111111111111111111111", 32);
     uint8_t secret[128] = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx";
-    Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+    Skissm__KeyPair *our_ratchet_key = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(our_ratchet_key);
     our_ratchet_key->private_key.len = 32;
-    our_ratchet_key->private_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    our_ratchet_key->private_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->private_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
     our_ratchet_key->public_key.len = 32;
-    our_ratchet_key->public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    our_ratchet_key->public_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(our_ratchet_key->public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
 
     initialise_as_bob(&session->ratchet, test_cipher_suite, secret, 128, our_ratchet_key, &their_ratchet_key);
@@ -675,19 +675,19 @@ void test_equal_ratchet_inbound(uint32_t e2ee_pack_id)
     store_session(session);
 
     // create mock receiver chain
-    Skissm__ReceiverChainNode *chain = (Skissm__ReceiverChainNode *) malloc(sizeof(Skissm__ReceiverChainNode));
+    Skissm__ReceiverChainNode *chain = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
     skissm__receiver_chain_node__init(chain);
-    chain->chain_key = (Skissm__ChainKey *) malloc(sizeof(Skissm__ChainKey));
+    chain->chain_key = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
     skissm__chain_key__init(chain->chain_key);
     chain->chain_key->index = 0;
     chain->chain_key->shared_key.len = 32;
-    chain->chain_key->shared_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    chain->chain_key->shared_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(chain->chain_key->shared_key.data, "abcdefghijklmnopqrstuvwxyz012345", 32);
     chain->their_ratchet_public_key.len = 32;
-    chain->their_ratchet_public_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    chain->their_ratchet_public_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(chain->their_ratchet_public_key.data, "012345abcdefghijklmnopqrstuvwxyz", 32);
     chain->our_ratchet_private_key.len = 32;
-    chain->our_ratchet_private_key.data = (uint8_t *) malloc(sizeof(uint8_t) * 32);
+    chain->our_ratchet_private_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
     memcpy(chain->our_ratchet_private_key.data, "abcdefghijkl012345mnopqrstuvwxyz", 32);
     session->ratchet->receiver_chain = chain;
 
@@ -720,19 +720,19 @@ void test_session_timestamp(uint32_t e2ee_pack_id) {
     mock_address(&from_2, "claire", "claire's domain", "claire's device");
     mock_address(&to_2, "david", "david's domain", "david's device");
 
-    Skissm__Session *session_1 = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    Skissm__Session *session_1 = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     initialise_session(session_1, e2ee_pack_id, from_1, to_1);
     session_1->session_id = generate_uuid_str();
     session_1->associated_data.len = 64;
-    session_1->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session_1->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session_1->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
     store_session(session_1);
 
-    Skissm__Session *session_2 = (Skissm__Session *) malloc(sizeof(Skissm__Session));
+    Skissm__Session *session_2 = (Skissm__Session *)malloc(sizeof(Skissm__Session));
     initialise_session(session_2, e2ee_pack_id, from_2, to_2);
     session_2->session_id = generate_uuid_str();
     session_2->associated_data.len = 64;
-    session_2->associated_data.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session_2->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session_2->associated_data.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
     store_session(session_2);
 
@@ -740,7 +740,7 @@ void test_session_timestamp(uint32_t e2ee_pack_id) {
 
     // modify session_1
     session_1->fingerprint.len = 64;
-    session_1->fingerprint.data = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    session_1->fingerprint.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     memcpy(session_1->fingerprint.data, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl", 64);
     store_session(session_1);
 

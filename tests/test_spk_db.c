@@ -54,9 +54,9 @@ void test_load_old_signed_pre_key(uint32_t e2ee_pack_id){
     Skissm__Account *account = NULL;
     create_account(&account, e2ee_pack_id);
     // generate a random address
-    account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    account->address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
-    account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
+    account->address->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
     skissm__peer_user__init(account->address->user);
     account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
     account->address->domain = mock_domain_str();
@@ -67,10 +67,10 @@ void test_load_old_signed_pre_key(uint32_t e2ee_pack_id){
     account->saved = true;
     get_skissm_plugin()->db_handler.store_account(account);
 
-    Skissm__SignedPreKey *old_spk = (Skissm__SignedPreKey *) malloc(sizeof(Skissm__SignedPreKey));
+    Skissm__SignedPreKey *old_spk = (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
     skissm__signed_pre_key__init(old_spk);
     old_spk->spk_id = account->signed_pre_key->spk_id;
-    old_spk->key_pair = (Skissm__KeyPair *) malloc(sizeof(Skissm__KeyPair));
+    old_spk->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
     skissm__key_pair__init(old_spk->key_pair);
     copy_protobuf_from_protobuf(&(old_spk->key_pair->private_key), &(account->signed_pre_key->key_pair->private_key));
     copy_protobuf_from_protobuf(&(old_spk->key_pair->public_key), &(account->signed_pre_key->key_pair->public_key));
@@ -111,9 +111,9 @@ void test_remove_expired_signed_pre_key(uint32_t e2ee_pack_id){
     Skissm__Account *account = NULL;
     create_account(&account, e2ee_pack_id);
     // generate a random address
-    account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    account->address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
-    account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
+    account->address->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
     skissm__peer_user__init(account->address->user);
     account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
     account->address->domain = mock_domain_str();

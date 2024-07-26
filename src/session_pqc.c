@@ -192,7 +192,7 @@ int pqc_new_outbound_session_v2(
         char zero_array[shared_secret_len];
         memset(zero_array, 0, shared_secret_len);
         outbound_session->temp_shared_secret.len = (x3dh_epoch + 1) * shared_secret_len;
-        outbound_session->temp_shared_secret.data = (uint8_t *) malloc(sizeof(uint8_t) * outbound_session->temp_shared_secret.len);
+        outbound_session->temp_shared_secret.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_session->temp_shared_secret.len);
         memcpy(outbound_session->temp_shared_secret.data, zero_array, shared_secret_len);
         memcpy(outbound_session->temp_shared_secret.data + shared_secret_len, secret, x3dh_epoch * shared_secret_len);
 

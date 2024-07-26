@@ -51,7 +51,7 @@ static void test_file(){
             fseek(fptr, 0, SEEK_END);
             plaintext_len = ftell(fptr);
             fseek(fptr, 0, SEEK_SET);
-            plaintext = (uint8_t *) malloc(sizeof(uint8_t) * plaintext_len);
+            plaintext = (uint8_t *)malloc(sizeof(uint8_t) * plaintext_len);
             fread(plaintext, 1, plaintext_len, fptr);
             fclose(fptr);
         }
@@ -72,7 +72,7 @@ static void test_file(){
             fseek(fptr, 0, SEEK_END);
             decrypted_plaintext_len = ftell(fptr);
             fseek(fptr, 0, SEEK_SET);
-            decrypted_plaintext = (uint8_t *) malloc(sizeof(uint8_t) * decrypted_plaintext_len);
+            decrypted_plaintext = (uint8_t *)malloc(sizeof(uint8_t) * decrypted_plaintext_len);
             fread(decrypted_plaintext, 1, decrypted_plaintext_len, fptr);
             fclose(fptr);
         }

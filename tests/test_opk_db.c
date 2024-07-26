@@ -63,9 +63,9 @@ void test_update_one_time_pre_key(uint32_t e2ee_pack_id){
     Skissm__Account *account = NULL;
     create_account(&account, e2ee_pack_id);
     // generate a random address
-    account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    account->address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
-    account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
+    account->address->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
     skissm__peer_user__init(account->address->user);
     account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
     account->address->domain = mock_domain_str();
@@ -106,9 +106,9 @@ void test_remove_one_time_pre_key(uint32_t e2ee_pack_id){
     Skissm__Account *account = NULL;
     create_account(&account, e2ee_pack_id);
     // generate a random address
-    account->address = (Skissm__E2eeAddress *) malloc(sizeof(Skissm__E2eeAddress));
+    account->address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
     skissm__e2ee_address__init(account->address);
-    account->address->user = (Skissm__PeerUser *) malloc(sizeof(Skissm__PeerUser));
+    account->address->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
     skissm__peer_user__init(account->address->user);
     account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
     account->address->domain = mock_domain_str();

@@ -29,7 +29,7 @@ bool is_valid_address(Skissm__E2eeAddress *src);
 
 bool is_valid_address_list(Skissm__E2eeAddress **src, size_t len);
 
-bool is_valid_key_pair(Skissm__KeyPair *src);
+bool is_valid_key_pair(const Skissm__KeyPair *src);
 
 bool is_valid_identity_key(Skissm__IdentityKey *src);
 

@@ -121,7 +121,7 @@ static void load_accounts_test(uint64_t num) {
     }
 
     for (i = 0; i < accounts_num; i++) {
-        Skissm__Account *unpacked_account  = skissm__account__unpack(NULL, accounts_data_len[i], accounts_data[i]);
+        Skissm__Account *unpacked_account = skissm__account__unpack(NULL, accounts_data_len[i], accounts_data[i]);
         free_mem((void **)(&accounts_data[i]), accounts_data_len[i]);
         assert(is_equal_account(accounts[i], unpacked_account));
         printf("pack/unpack verified\n");

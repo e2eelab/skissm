@@ -68,7 +68,7 @@ static void test_alice_to_bob() {
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
-    ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
+    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
@@ -152,7 +152,7 @@ static void test_bob_to_alice() {
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
-    ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
+    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
@@ -236,7 +236,7 @@ static void test_interaction_alice_first() {
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
-    ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
+    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
@@ -344,7 +344,7 @@ static void test_interaction_bob_first() {
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
-    ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
+    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
@@ -452,7 +452,7 @@ static void test_out_of_order() {
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
-    ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
+    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
@@ -560,7 +560,7 @@ static void test_continual_message() {
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
-    ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
+    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
@@ -594,18 +594,18 @@ static void test_continual_message() {
     // Alice sends Bob messages many times
     int message_num = 1000;
 
-    uint8_t **plaintext = (uint8_t **) malloc(sizeof(uint8_t *) * message_num);
-    size_t *plaintext_len = (size_t *) malloc(sizeof(size_t) * message_num);
+    uint8_t **plaintext = (uint8_t **)malloc(sizeof(uint8_t *) * message_num);
+    size_t *plaintext_len = (size_t *)malloc(sizeof(size_t) * message_num);
     Skissm__One2oneMsgPayload **message = (Skissm__One2oneMsgPayload **)malloc(sizeof(Skissm__One2oneMsgPayload *) * message_num);
 
     for (i = 0; i < message_num; i++) {
-        plaintext[i] = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+        plaintext[i] = (uint8_t *)malloc(sizeof(uint8_t) * 64);
         plaintext_len[i] = snprintf((char *)plaintext[i], 64, "[%4d]This message will be sent a lot of times.", i);
         encrypt_ratchet(&message[i], test_cipher_suite, alice_ratchet, ad, plaintext[i], plaintext_len[i]);
     }
 
-    uint8_t **output = (uint8_t **) malloc(sizeof(uint8_t *) * message_num);
-    size_t *output_len = (size_t *) malloc(sizeof(size_t) * message_num);
+    uint8_t **output = (uint8_t **)malloc(sizeof(uint8_t *) * message_num);
+    size_t *output_len = (size_t *)malloc(sizeof(size_t) * message_num);
 
     bool result;
     for (i = 0; i < message_num; i++) {
@@ -654,7 +654,7 @@ static void test_interaction_v2() {
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
-    ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
+    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
@@ -687,7 +687,7 @@ static void test_interaction_v2() {
 
     int round = 10;
 
-    uint8_t *plaintext = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+    uint8_t *plaintext = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     size_t plaintext_len;
     Skissm__One2oneMsgPayload *message = NULL;
     uint8_t *output = NULL;
@@ -778,7 +778,7 @@ static void test_out_of_order_v2() {
     memset(associated_data, 0, ad_len);
     ProtobufCBinaryData ad;
     ad.len = ad_len;
-    ad.data = (uint8_t *) malloc(ad_len * sizeof(uint8_t));
+    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
     int i;
     for (i = 0; i < ad_len; i++) {
         ad.data[i] = associated_data[i];
@@ -810,15 +810,15 @@ static void test_out_of_order_v2() {
     int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
 
     int msg_num = 10;
-    uint8_t **plaintext = (uint8_t **) malloc(sizeof(uint8_t *) * msg_num);
-    size_t *plaintext_len = (size_t *) malloc(sizeof(size_t) * msg_num);
+    uint8_t **plaintext = (uint8_t **)malloc(sizeof(uint8_t *) * msg_num);
+    size_t *plaintext_len = (size_t *)malloc(sizeof(size_t) * msg_num);
     Skissm__One2oneMsgPayload **message = (Skissm__One2oneMsgPayload **)malloc(sizeof(Skissm__One2oneMsgPayload *) * msg_num);
-    uint8_t **output = (uint8_t **) malloc(sizeof(uint8_t *) * msg_num);
-    size_t *output_len = (size_t *) malloc(sizeof(size_t) * msg_num);
+    uint8_t **output = (uint8_t **)malloc(sizeof(uint8_t *) * msg_num);
+    size_t *output_len = (size_t *)malloc(sizeof(size_t) * msg_num);
     bool result;
 
     for (i = 0; i < msg_num; i++) {
-        plaintext[i] = (uint8_t *) malloc(sizeof(uint8_t) * 64);
+        plaintext[i] = (uint8_t *)malloc(sizeof(uint8_t) * 64);
         plaintext_len[i] = snprintf((char *)plaintext[i], 64, "[%4d]This message may be from Alice or Bob.", i);
     }
 
