@@ -29,140 +29,86 @@
 #include "test_plugin.h"
 #include "test_util.h"
 
-static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
-    print_log((char *)log_msg, log_code);
-}
-
-static skissm_event_handler_t test_event_handler = {
-    on_log,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
-};
-
-void test_load_old_signed_pre_key(uint32_t e2ee_pack_id){
+void test_load_old_signed_pre_key() {
     tear_up();
-    get_skissm_plugin()->event_handler = test_event_handler;
 
+    // mock account
     Skissm__Account *account = NULL;
-    create_account(&account, e2ee_pack_id);
-    // generate a random address
-    account->address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-    skissm__e2ee_address__init(account->address);
-    account->address->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
-    skissm__peer_user__init(account->address->user);
-    account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
-    account->address->domain = mock_domain_str();
-    account->address->user->user_id = generate_uuid_str();
-    account->address->user->device_id = generate_uuid_str();
-
-    // save to db
+    mock_account(&account);
     account->saved = true;
-    get_skissm_plugin()->db_handler.store_account(account);
+    store_account(account);
+    Skissm__E2eeAddress *address = account->address;
 
-    Skissm__SignedPreKey *old_spk = (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
-    skissm__signed_pre_key__init(old_spk);
-    old_spk->spk_id = account->signed_pre_key->spk_id;
-    old_spk->key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-    skissm__key_pair__init(old_spk->key_pair);
-    copy_protobuf_from_protobuf(&(old_spk->key_pair->private_key), &(account->signed_pre_key->key_pair->private_key));
-    copy_protobuf_from_protobuf(&(old_spk->key_pair->public_key), &(account->signed_pre_key->key_pair->public_key));
-    copy_protobuf_from_protobuf(&(old_spk->signature), &(account->signed_pre_key->signature));
-    old_spk->ttl = account->signed_pre_key->ttl;
-
-    print_result("compare signed_pre_key [1]", is_equal_spk(old_spk, account->signed_pre_key));
+    Skissm__SignedPreKey *old_spk = NULL;
+    copy_spk_from_spk(&old_spk, account->signed_pre_key);
     
     // generate a new signed pre-key pair
     Skissm__SignedPreKey *signed_pre_key = NULL;
-    generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, 1, account->signed_pre_key->key_pair->private_key.data);
+    mock_signed_pre_key(&signed_pre_key, 1);
 
     skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
     account->signed_pre_key = signed_pre_key;
 
-    get_skissm_plugin()->db_handler.update_signed_pre_key(account->address, account->signed_pre_key);
+    update_signed_pre_key(address, signed_pre_key);
 
     // load the updated signed pre-key from db
     Skissm__SignedPreKey *old_spk_copy = NULL;
-    load_signed_pre_key(account->address, old_spk->spk_id, &old_spk_copy);
-
-    // assert old_spk equals to old_spk_copy
+    load_signed_pre_key(address, old_spk->spk_id, &old_spk_copy);
     assert(is_equal_spk(old_spk, old_spk_copy));
-    print_result("compare signed_pre_key [2]", is_equal_spk(old_spk, old_spk_copy));
 
-    // free
-    skissm__account__free_unpacked(account, NULL);
+    // release
+    free_proto(account);
     skissm__signed_pre_key__free_unpacked(old_spk, NULL);
     skissm__signed_pre_key__free_unpacked(old_spk_copy, NULL);
 
     tear_down();
 }
 
-void test_remove_expired_signed_pre_key(uint32_t e2ee_pack_id){
+void test_remove_expired_signed_pre_key() {
     tear_up();
-    get_skissm_plugin()->event_handler = test_event_handler;
 
     Skissm__Account *account = NULL;
-    create_account(&account, e2ee_pack_id);
-    // generate a random address
-    account->address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-    skissm__e2ee_address__init(account->address);
-    account->address->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
-    skissm__peer_user__init(account->address->user);
-    account->address->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
-    account->address->domain = mock_domain_str();
-    account->address->user->user_id = generate_uuid_str();
-    account->address->user->device_id = generate_uuid_str();
-
-    // save to db
+    mock_account(&account);
     account->saved = true;
-    get_skissm_plugin()->db_handler.store_account(account);
-
+    store_account(account);
+    Skissm__E2eeAddress *address = account->address;
     uint32_t old_spk_id = account->signed_pre_key->spk_id;
 
     // generate a new signed pre-key pair
     Skissm__SignedPreKey *signed_pre_key_1 = NULL;
-    generate_signed_pre_key(&signed_pre_key_1, e2ee_pack_id, 1, account->signed_pre_key->key_pair->private_key.data);
+    mock_signed_pre_key(&signed_pre_key_1, 1);
 
     skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
     account->signed_pre_key = signed_pre_key_1;
 
-    get_skissm_plugin()->db_handler.update_signed_pre_key(account->address, account->signed_pre_key);
+    update_signed_pre_key(address, account->signed_pre_key);
 
     Skissm__SignedPreKey *signed_pre_key_2 = NULL;
-    generate_signed_pre_key(&signed_pre_key_2, e2ee_pack_id, 2, account->signed_pre_key->key_pair->private_key.data);
+    mock_signed_pre_key(&signed_pre_key_2, 2);
 
     skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
     account->signed_pre_key = signed_pre_key_2;
 
-    get_skissm_plugin()->db_handler.update_signed_pre_key(account->address, account->signed_pre_key);
+    update_signed_pre_key(address, account->signed_pre_key);
 
     // remove expired signed pre-keys
-    remove_expired_signed_pre_key(account->address);
+    remove_expired_signed_pre_key(address);
 
     // load the old signed pre-key
     Skissm__SignedPreKey *old_spk_copy = NULL;
-    load_signed_pre_key(account->address, old_spk_id, &old_spk_copy);
+    load_signed_pre_key(address, old_spk_id, &old_spk_copy);
 
     // assert old_spk_copy is NULL
     assert(old_spk_copy == NULL);
 
-    // free
-    skissm__account__free_unpacked(account, NULL);
+    // release
+    free_proto(account);
 
     tear_down();
 }
 
-int main(){
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-
-    test_load_old_signed_pre_key(e2ee_pack_id);
-    test_remove_expired_signed_pre_key(e2ee_pack_id);
+int main() {
+    test_load_old_signed_pre_key();
+    test_remove_expired_signed_pre_key();
     return 0;
 }
