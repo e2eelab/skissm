@@ -47,41 +47,36 @@ static skissm_event_handler_t test_event_handler = {
     NULL
 };
 
-static void test_alice_to_bob() {
-    // test start
-    printf("test_alice_to_bob begin!!!\n");
-    tear_up();
-
+static void initialization(
+    Skissm__Ratchet **alice_ratchet,
+    Skissm__Ratchet **bob_ratchet,
+    ProtobufCBinaryData *ad
+) {
     get_skissm_plugin()->event_handler = test_event_handler;
 
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
 
     Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
+    test_cipher_suite->kem_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
 
     Skissm__KeyPair bob_spk;
-    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
+    test_cipher_suite->kem_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
 
     int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
-    ProtobufCBinaryData ad;
-    ad.len = ad_len;
-    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
+    ad->len = ad_len;
+    ad->data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
     int i;
     for (i = 0; i < ad_len; i++) {
-        ad.data[i] = associated_data[i];
+        ad->data[i] = associated_data[i];
     }
-
-    char *session_id = generate_uuid_str();
 
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
-    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
-
     initialise_as_bob(
-        &bob_ratchet,
+        bob_ratchet,
         test_cipher_suite,
         shared_secret,
         strlen((const char *)shared_secret),
@@ -89,15 +84,31 @@ static void test_alice_to_bob() {
         &(alice_ratchet_key.public_key)
     );
     initialise_as_alice(
-        &alice_ratchet,
+        alice_ratchet,
         test_cipher_suite,
         shared_secret,
         strlen((const char *)shared_secret),
         &alice_ratchet_key,
         &(bob_spk.public_key),
-        &(bob_ratchet->sender_chain->our_ratchet_public_key)
+        &((*bob_ratchet)->sender_chain->our_ratchet_public_key)
     );
-    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
+
+    // release
+    free_protobuf(&(alice_ratchet_key.public_key));
+    free_protobuf(&(alice_ratchet_key.private_key));
+    free_protobuf(&(bob_spk.public_key));
+    free_protobuf(&(bob_spk.private_key));
+}
+
+static void test_alice_to_bob() {
+    // test start
+    printf("test_alice_to_bob begin!!!\n");
+    tear_up();
+
+    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    ProtobufCBinaryData ad;
+
+    initialization(&alice_ratchet, &bob_ratchet, &ad);
 
     uint8_t plaintext[] = "Message";
     size_t plaintext_length = sizeof(plaintext) - 1;
@@ -121,6 +132,7 @@ static void test_alice_to_bob() {
         print_result("Decryption failed!!!", false);
     }
 
+    free_protobuf(&ad);
     skissm__one2one_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
     skissm__ratchet__free_unpacked(alice_ratchet, NULL);
@@ -136,52 +148,10 @@ static void test_bob_to_alice() {
     printf("test_bob_to_alice begin!!!\n");
     tear_up();
 
-    get_skissm_plugin()->event_handler = test_event_handler;
-
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-
-    Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
-
-    Skissm__KeyPair bob_spk;
-    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
-
-    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-    uint8_t associated_data[ad_len];
-    memset(associated_data, 0, ad_len);
-    ProtobufCBinaryData ad;
-    ad.len = ad_len;
-    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
-    int i;
-    for (i = 0; i < ad_len; i++) {
-        ad.data[i] = associated_data[i];
-    }
-
-    char *session_id = generate_uuid_str();
-
-    uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
-
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    ProtobufCBinaryData ad;
 
-    initialise_as_bob(
-        &bob_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &bob_spk,
-        &(alice_ratchet_key.public_key)
-    );
-    initialise_as_alice(
-        &alice_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &alice_ratchet_key,
-        &(bob_spk.public_key),
-        &(bob_ratchet->sender_chain->our_ratchet_public_key)
-    );
-    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
+    initialization(&alice_ratchet, &bob_ratchet, &ad);
 
     uint8_t plaintext[] = "Message";
     size_t plaintext_length = sizeof(plaintext) - 1;
@@ -205,6 +175,7 @@ static void test_bob_to_alice() {
         print_result("Decryption failed!!!", false);
     }
 
+    free_protobuf(&ad);
     skissm__one2one_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
     skissm__ratchet__free_unpacked(alice_ratchet, NULL);
@@ -220,52 +191,10 @@ static void test_interaction_alice_first() {
     printf("test_interaction_alice_first begin!!!\n");
     tear_up();
 
-    get_skissm_plugin()->event_handler = test_event_handler;
-
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-
-    Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
-
-    Skissm__KeyPair bob_spk;
-    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
-
-    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-    uint8_t associated_data[ad_len];
-    memset(associated_data, 0, ad_len);
-    ProtobufCBinaryData ad;
-    ad.len = ad_len;
-    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
-    int i;
-    for (i = 0; i < ad_len; i++) {
-        ad.data[i] = associated_data[i];
-    }
-
-    char *session_id = generate_uuid_str();
-
-    uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
-
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    ProtobufCBinaryData ad;
 
-    initialise_as_bob(
-        &bob_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &bob_spk,
-        &(alice_ratchet_key.public_key)
-    );
-    initialise_as_alice(
-        &alice_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &alice_ratchet_key,
-        &(bob_spk.public_key),
-        &(bob_ratchet->sender_chain->our_ratchet_public_key)
-    );
-    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
+    initialization(&alice_ratchet, &bob_ratchet, &ad);
 
     bool result;
 
@@ -311,6 +240,7 @@ static void test_interaction_alice_first() {
         print_result("Decryption failed!!!", false);
     }
 
+    free_protobuf(&ad);
     skissm__one2one_msg_payload__free_unpacked(message_1, NULL);
     skissm__one2one_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, decrypt_length_1);
@@ -328,52 +258,10 @@ static void test_interaction_bob_first() {
     printf("test_interaction_bob_first begin!!!\n");
     tear_up();
 
-    get_skissm_plugin()->event_handler = test_event_handler;
-
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-
-    Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
-
-    Skissm__KeyPair bob_spk;
-    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
-
-    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-    uint8_t associated_data[ad_len];
-    memset(associated_data, 0, ad_len);
-    ProtobufCBinaryData ad;
-    ad.len = ad_len;
-    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
-    int i;
-    for (i = 0; i < ad_len; i++) {
-        ad.data[i] = associated_data[i];
-    }
-
-    char *session_id = generate_uuid_str();
-
-    uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
-
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    ProtobufCBinaryData ad;
 
-    initialise_as_bob(
-        &bob_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &bob_spk,
-        &(alice_ratchet_key.public_key)
-    );
-    initialise_as_alice(
-        &alice_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &alice_ratchet_key,
-        &(bob_spk.public_key),
-        &(bob_ratchet->sender_chain->our_ratchet_public_key)
-    );
-    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
+    initialization(&alice_ratchet, &bob_ratchet, &ad);
 
     bool result;
 
@@ -419,6 +307,7 @@ static void test_interaction_bob_first() {
         print_result("Decryption failed!!!", false);
     }
 
+    free_protobuf(&ad);
     skissm__one2one_msg_payload__free_unpacked(message_1, NULL);
     skissm__one2one_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, decrypt_length_1);
@@ -436,52 +325,10 @@ static void test_out_of_order() {
     printf("test_out_of_order begin!!!\n");
     tear_up();
 
-    get_skissm_plugin()->event_handler = test_event_handler;
-
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-
-    Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
-
-    Skissm__KeyPair bob_spk;
-    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
-
-    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-    uint8_t associated_data[ad_len];
-    memset(associated_data, 0, ad_len);
-    ProtobufCBinaryData ad;
-    ad.len = ad_len;
-    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
-    int i;
-    for (i = 0; i < ad_len; i++) {
-        ad.data[i] = associated_data[i];
-    }
-
-    char *session_id = generate_uuid_str();
-
-    uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
-
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    ProtobufCBinaryData ad;
 
-    initialise_as_bob(
-        &bob_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &bob_spk,
-        &(alice_ratchet_key.public_key)
-    );
-    initialise_as_alice(
-        &alice_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &alice_ratchet_key,
-        &(bob_spk.public_key),
-        &(bob_ratchet->sender_chain->our_ratchet_public_key)
-    );
-    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
+    initialization(&alice_ratchet, &bob_ratchet, &ad);
 
     bool result;
 
@@ -527,6 +374,7 @@ static void test_out_of_order() {
         print_result("Decryption failed!!!", false);
     }
 
+    free_protobuf(&ad);
     skissm__one2one_msg_payload__free_unpacked(message_1, NULL);
     skissm__one2one_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, decrypt_length_1);
@@ -544,55 +392,14 @@ static void test_continual_message() {
     printf("test_continual_message begin!!!\n");
     tear_up();
 
-    get_skissm_plugin()->event_handler = test_event_handler;
-
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-
-    Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
-
-    Skissm__KeyPair bob_spk;
-    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
-
-    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-    uint8_t associated_data[ad_len];
-    memset(associated_data, 0, ad_len);
-    ProtobufCBinaryData ad;
-    ad.len = ad_len;
-    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
-    int i;
-    for (i = 0; i < ad_len; i++) {
-        ad.data[i] = associated_data[i];
-    }
-
-    char *session_id = generate_uuid_str();
-
-    uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
-
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    ProtobufCBinaryData ad;
 
-    initialise_as_bob(
-        &bob_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &bob_spk,
-        &(alice_ratchet_key.public_key)
-    );
-    initialise_as_alice(
-        &alice_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &alice_ratchet_key,
-        &(bob_spk.public_key),
-        &(bob_ratchet->sender_chain->our_ratchet_public_key)
-    );
-    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
+    initialization(&alice_ratchet, &bob_ratchet, &ad);
 
     // Alice sends Bob messages many times
     int message_num = 1000;
+    int i;
 
     uint8_t **plaintext = (uint8_t **)malloc(sizeof(uint8_t *) * message_num);
     size_t *plaintext_len = (size_t *)malloc(sizeof(size_t) * message_num);
@@ -616,6 +423,7 @@ static void test_continual_message() {
         assert(result);
     }
 
+    free_protobuf(&ad);
     for (i = 0; i < message_num; i++) {
         free_mem((void **)&plaintext[i], sizeof(uint8_t) * 64);
         free_mem((void **)&output[i], output_len[i]);
@@ -638,54 +446,13 @@ static void test_interaction_v2() {
     printf("test_interaction_v2 begin!!!\n");
     tear_up();
 
-    get_skissm_plugin()->event_handler = test_event_handler;
-
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-
-    Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
-
-    Skissm__KeyPair bob_spk;
-    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
-
-    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-    uint8_t associated_data[ad_len];
-    memset(associated_data, 0, ad_len);
-    ProtobufCBinaryData ad;
-    ad.len = ad_len;
-    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
-    int i;
-    for (i = 0; i < ad_len; i++) {
-        ad.data[i] = associated_data[i];
-    }
-
-    char *session_id = generate_uuid_str();
-
-    uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
-
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    ProtobufCBinaryData ad;
 
-    initialise_as_bob(
-        &bob_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &bob_spk,
-        &(alice_ratchet_key.public_key)
-    );
-    initialise_as_alice(
-        &alice_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &alice_ratchet_key,
-        &(bob_spk.public_key),
-        &(bob_ratchet->sender_chain->our_ratchet_public_key)
-    );
-    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
+    initialization(&alice_ratchet, &bob_ratchet, &ad);
 
     int round = 10;
+    int i;
 
     uint8_t *plaintext = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     size_t plaintext_len;
@@ -748,6 +515,7 @@ static void test_interaction_v2() {
         free_mem((void **)&output, sizeof(uint8_t) * output_len);
     }
 
+    free_protobuf(&ad);
     free_mem((void **)&plaintext, sizeof(uint8_t) * 64);
     skissm__ratchet__free_unpacked(alice_ratchet, NULL);
     skissm__ratchet__free_unpacked(bob_ratchet, NULL);
@@ -762,54 +530,13 @@ static void test_out_of_order_v2() {
     printf("test_out_of_order_v2 begin!!!\n");
     tear_up();
 
-    get_skissm_plugin()->event_handler = test_event_handler;
-
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
-
-    Skissm__KeyPair alice_ratchet_key;
-    test_cipher_suite->kem_suite->asym_key_gen(&alice_ratchet_key.public_key, &alice_ratchet_key.private_key);
-
-    Skissm__KeyPair bob_spk;
-    test_cipher_suite->kem_suite->asym_key_gen(&bob_spk.public_key, &bob_spk.private_key);
-
-    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-    uint8_t associated_data[ad_len];
-    memset(associated_data, 0, ad_len);
-    ProtobufCBinaryData ad;
-    ad.len = ad_len;
-    ad.data = (uint8_t *)malloc(ad_len * sizeof(uint8_t));
-    int i;
-    for (i = 0; i < ad_len; i++) {
-        ad.data[i] = associated_data[i];
-    }
-
-    char *session_id = generate_uuid_str();
-
-    uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
-
     Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    ProtobufCBinaryData ad;
 
-    initialise_as_bob(
-        &bob_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &bob_spk,
-        &(alice_ratchet_key.public_key)
-    );
-    initialise_as_alice(
-        &alice_ratchet,
-        test_cipher_suite,
-        shared_secret,
-        strlen((const char *)shared_secret),
-        &alice_ratchet_key,
-        &(bob_spk.public_key),
-        &(bob_ratchet->sender_chain->our_ratchet_public_key)
-    );
-    int key_len = test_cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
+    initialization(&alice_ratchet, &bob_ratchet, &ad);
 
     int msg_num = 10;
+    int i;
     uint8_t **plaintext = (uint8_t **)malloc(sizeof(uint8_t *) * msg_num);
     size_t *plaintext_len = (size_t *)malloc(sizeof(size_t) * msg_num);
     Skissm__One2oneMsgPayload **message = (Skissm__One2oneMsgPayload **)malloc(sizeof(Skissm__One2oneMsgPayload *) * msg_num);
@@ -880,6 +607,7 @@ static void test_out_of_order_v2() {
     result = is_equal(plaintext[8], output[8], plaintext_len[8]);
     assert(result);
 
+    free_protobuf(&ad);
     for (i = 0; i < msg_num; i++) {
         free_mem((void **)&plaintext[i], sizeof(uint8_t) * 64);
         free_mem((void **)&output[i], output_len[i]);
