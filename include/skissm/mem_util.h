@@ -141,6 +141,14 @@ ProtobufCBinaryData *get_identity_public_key_ds_bytes_from_account(Skissm__Accou
 void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinaryData *src);
 
 /**
+ * @brief Copy ProtobufCBinaryData from bool.
+ *
+ * @param dest
+ * @param src
+ */
+void copy_protobuf_from_bool(ProtobufCBinaryData *dest, bool src);
+
+/**
  * @brief Copy data from byte array to ProtobufCBinaryData.
  *
  * @param dest

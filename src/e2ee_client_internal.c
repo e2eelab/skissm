@@ -102,10 +102,23 @@ int get_pre_key_bundle_internal(
                 uint8_t *get_pre_key_bundle_request_data = (uint8_t *)malloc(sizeof(uint8_t) * get_pre_key_bundle_request_data_len);
                 skissm__get_pre_key_bundle_request__pack(get_pre_key_bundle_request, get_pre_key_bundle_request_data);
 
+                ProtobufCBinaryData *request_arg_list = NULL;
+                size_t request_arg_list_len = 0;
+                if (group_pre_key_plaintext_data != NULL) {
+                    request_arg_list_len = 2;
+                    request_arg_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * request_arg_list_len);
+                    copy_protobuf_from_bool(&(request_arg_list[0]), active);
+                    copy_protobuf_from_array(&(request_arg_list[1]), group_pre_key_plaintext_data, group_pre_key_plaintext_data_len);
+                } else {
+                    request_arg_list_len = 1;
+                    request_arg_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
+                    copy_protobuf_from_bool(&(request_arg_list[0]), active);
+                }
+
                 store_pending_request_internal(
                     from, SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_GET_PRE_KEY_BUNDLE,
                     get_pre_key_bundle_request_data, get_pre_key_bundle_request_data_len,
-                    group_pre_key_plaintext_data, group_pre_key_plaintext_data_len
+                    request_arg_list, request_arg_list_len
                 );
 
                 // release
@@ -512,7 +525,7 @@ void store_pending_common_plaintext_data_internal(
 void store_pending_request_internal(
     Skissm__E2eeAddress *user_address, Skissm__PendingRequestType type,
     uint8_t *request_data, size_t request_data_len,
-    uint8_t *args_data, size_t args_data_len
+    ProtobufCBinaryData *request_arg_list, size_t request_arg_list_len
 ) {
     Skissm__PendingRequest *pending_request = (Skissm__PendingRequest *)malloc(sizeof(Skissm__PendingRequest));
     skissm__pending_request__init(pending_request);
@@ -521,13 +534,10 @@ void store_pending_request_internal(
     // request_data
     copy_protobuf_from_array(&(pending_request->request_data), request_data, request_data_len);
     // args
-    if (args_data && args_data_len > 0) {
-        pending_request->n_request_arg_list = 1;
-        pending_request->request_arg_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
-        init_protobuf(pending_request->request_arg_list);
-        copy_protobuf_from_array(pending_request->request_arg_list, args_data, args_data_len);
-    } else {
-        pending_request->n_request_arg_list = 0;
+    pending_request->n_request_arg_list = request_arg_list_len;
+    if (request_arg_list_len > 0) {
+        pending_request->request_arg_list = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData) * request_arg_list_len);
+        copy_protobuf_list_from_protobuf_list(pending_request->request_arg_list, request_arg_list, request_arg_list_len);
     }
 
     // pack pending_request
@@ -583,10 +593,14 @@ static void resend_pending_request(Skissm__Account *account) {
                 if (ret == 0) {
                     their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
                     Skissm__InviteResponse **invite_response_list = NULL;
-                    size_t invite_response_num;
-                    bool has_args = pending_request->n_request_arg_list == 1;
-                    size_t group_pre_key_plaintext_data_len = has_args ? pending_request->request_arg_list[0].len : 0;
-                    uint8_t *group_pre_key_plaintext_data = has_args ? pending_request->request_arg_list[0].data : NULL;
+                    size_t invite_response_num = 0;
+                    size_t arg_num = pending_request->n_request_arg_list;
+                    size_t group_pre_key_plaintext_data_len = 0;
+                    uint8_t *group_pre_key_plaintext_data = NULL;
+                    if (arg_num == 2) {
+                        group_pre_key_plaintext_data = pending_request->request_arg_list[1].data;
+                        group_pre_key_plaintext_data_len = pending_request->request_arg_list[1].len;
+                    }
                     ret = consume_get_pre_key_bundle_response(
                         &invite_response_list,
                         &invite_response_num,
@@ -605,6 +619,32 @@ static void resend_pending_request(Skissm__Account *account) {
                         }
                         free_mem((void **)&invite_response_list, sizeof(Skissm__InviteResponse *) * their_device_num);
                     }
+
+                    if (ret == 0) {
+                        if (pending_request->request_arg_list[0].data[0] == 'T') {
+                            their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
+                            char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
+                            Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
+                            for (i = 0; i < their_device_num; i++) {
+                                cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[i];
+                                their_device_id[i] = strdup(cur_pre_key_bundle->user_address->user->device_id);
+                            }
+                            // send to other devices in order to create sessions
+                            send_sync_invite_msg(
+                                user_address,
+                                get_pre_key_bundle_request->user_id,
+                                get_pre_key_bundle_request->domain,
+                                their_device_id,
+                                their_device_num
+                            );
+
+                            // release
+                            for (i = 0; i < their_device_num; i++) {
+                                free(their_device_id[i]);
+                            }
+                            free_mem((void **)&their_device_id, sizeof(char *) * their_device_num);
+                        }
+                    }
                 } else {
                     // if the get_pre_key_bundle_response code is no content, we will unload the pending request data
                     if (get_pre_key_bundle_response != NULL) {
@@ -616,31 +656,6 @@ static void resend_pending_request(Skissm__Account *account) {
                             );
                             succ = true;
                         }
-                    }
-                }
-                if (ret == 0) {
-                    if (get_pre_key_bundle_request->active == true) {
-                        their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
-                        char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
-                        Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
-                        for (i = 0; i < their_device_num; i++) {
-                            cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[i];
-                            their_device_id[i] = strdup(cur_pre_key_bundle->user_address->user->device_id);
-                        }
-                        // send to other devices in order to create sessions
-                        send_sync_invite_msg(
-                            user_address,
-                            get_pre_key_bundle_request->user_id,
-                            get_pre_key_bundle_request->domain,
-                            their_device_id,
-                            their_device_num
-                        );
-
-                        // release
-                        for (i = 0; i < their_device_num; i++) {
-                            free(their_device_id[i]);
-                        }
-                        free_mem((void **)&their_device_id, sizeof(char *) * their_device_num);
                     }
                 }
                 

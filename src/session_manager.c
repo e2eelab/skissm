@@ -98,7 +98,6 @@ int produce_get_pre_key_bundle_request(
             // the device ID may be empty or nonempty
             request->device_id = strdup(to_device_id);
         }
-        request->active = active;
 
         *request_out = request;
     }

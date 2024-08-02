@@ -157,16 +157,16 @@ void store_pending_common_plaintext_data_internal(
  * @param type
  * @param request_data
  * @param request_data_len
- * @param args_data
- * @param args_data_len
+ * @param request_arg_list
+ * @param request_arg_list_len
  */
 void store_pending_request_internal(
     Skissm__E2eeAddress *user_address,
     Skissm__PendingRequestType type,
     uint8_t *request_data,
     size_t request_data_len,
-    uint8_t *args_data,
-    size_t args_data_len
+    ProtobufCBinaryData *request_arg_list,
+    size_t request_arg_list_len
 );
 
 /**

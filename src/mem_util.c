@@ -170,6 +170,16 @@ void copy_protobuf_from_protobuf(ProtobufCBinaryData *dest, const ProtobufCBinar
     memcpy(dest->data, src->data, src->len);
 }
 
+void copy_protobuf_from_bool(ProtobufCBinaryData *dest, bool src) {
+    dest->len = 1;
+    dest->data = (uint8_t *)malloc(sizeof(uint8_t));
+    if (src) {
+        (dest->data)[0] = 'T';
+    } else {
+        (dest->data)[0] = 'F';
+    }
+}
+
 void copy_protobuf_from_array(ProtobufCBinaryData *dest, const uint8_t *src, size_t len) {
     dest->len = len;
     dest->data = (uint8_t *)malloc(sizeof(uint8_t) * len);
