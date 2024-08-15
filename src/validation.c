@@ -149,9 +149,10 @@ bool is_valid_address(Skissm__E2eeAddress *src) {
             return false;
         } else if (src->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER) {
             if (src->user != NULL) {
-                if (!is_valid_string(src->user->user_name)) {
-                    return false;
-                }
+                // user_name is optional
+                // if (!is_valid_string(src->user->user_name)) {
+                //    return false;
+                // }
                 if (!is_valid_string(src->user->user_id)) {
                     return false;
                 }
@@ -163,9 +164,10 @@ bool is_valid_address(Skissm__E2eeAddress *src) {
             }
         } else if (src->peer_case == SKISSM__E2EE_ADDRESS__PEER_GROUP) {
             if (src->group != NULL) {
-                if (!is_valid_string(src->group->group_name)) {
-                    return false;
-                }
+                // group_name is optional
+                // if (!is_valid_string(src->group->group_name)) {
+                //     return false;
+                // }
                 if (!is_valid_string(src->group->group_id)) {
                     return false;
                 }
