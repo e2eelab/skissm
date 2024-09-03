@@ -28,7 +28,7 @@
 #include "skissm/validation.h"
 
 void account_begin() {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     // load accounts that may be null
     Skissm__Account **accounts = NULL;
@@ -51,7 +51,7 @@ void account_begin() {
                 // generate a new pair of signed pre-key
                 ret = generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, cur_spk_id, identity_private_key);
 
-                if (ret == 0) {
+                if (ret == SKISSM_RESULT_SUCC) {
                     // release the old signed pre-key
                     skissm__signed_pre_key__free_unpacked(cur_account->signed_pre_key, NULL);
                     cur_account->signed_pre_key = signed_pre_key;
@@ -106,7 +106,7 @@ void account_end() {
 }
 
 int create_account(Skissm__Account **account_out, uint32_t e2ee_pack_id) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__Account *account = NULL;
     Skissm__IdentityKey *identity_key = NULL;
@@ -120,25 +120,25 @@ int create_account(Skissm__Account **account_out, uint32_t e2ee_pack_id) {
     const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
     if (!is_valid_cipher_suite(cipher_suite)) {
         ssm_notify_log(NULL, BAD_CIPHER_SUITE, "create_account() no cipher suite");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // generate the identity key pair
         ret = generate_identity_key(&identity_key, e2ee_pack_id);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // generate a signed pre-key pair
         ret = generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, cur_spk_id, identity_key->sign_key_pair->private_key.data);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // generate 100 one-time pre-key pairs
         ret = generate_opks(&one_time_pre_key_list, number_of_keys, e2ee_pack_id, cur_opk_id);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
         skissm__account__init(account);
 
@@ -179,7 +179,7 @@ int generate_identity_key(
     Skissm__IdentityKey **identity_key_out,
     uint32_t e2ee_pack_id
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     uint32_t asym_pub_key_len;
     uint32_t asym_priv_key_len;
@@ -198,32 +198,32 @@ int generate_identity_key(
         sign_priv_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_priv_key_len;
     } else {
         ssm_notify_log(NULL, BAD_CIPHER_SUITE, "generate_identity_key() no cipher suite");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         asym_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(asym_key_pair);
         ret = cipher_suite->kem_suite->asym_key_gen(&(asym_key_pair->public_key), &(asym_key_pair->private_key));
 
         if (!accurate_key_pair(asym_key_pair, asym_pub_key_len, asym_priv_key_len)) {
             ssm_notify_log(NULL, BAD_KEY_PAIR, "generate_identity_key() bad asym_key_pair");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         sign_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(sign_key_pair);
         ret = cipher_suite->digital_signature_suite->sign_key_gen(&(sign_key_pair->public_key), &(sign_key_pair->private_key));
 
         if (!accurate_key_pair(sign_key_pair, sign_pub_key_len, sign_priv_key_len)) {
             ssm_notify_log(NULL, BAD_KEY_PAIR, "generate_identity_key() bad sign_key_pair");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         identity_key = (Skissm__IdentityKey *)malloc(sizeof(Skissm__IdentityKey));
         skissm__identity_key__init(identity_key);
 
@@ -250,7 +250,7 @@ int generate_signed_pre_key(
     uint32_t e2ee_pack_id, uint32_t cur_spk_id,
     const uint8_t *identity_private_key
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     uint32_t asym_pub_key_len;
     uint32_t asym_priv_key_len;
@@ -268,10 +268,10 @@ int generate_signed_pre_key(
         sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
     } else {
         ssm_notify_log(NULL, BAD_CIPHER_SUITE, "generate_signed_pre_key() no cipher suite");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // generate a signed pre-key pair
         key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
         skissm__key_pair__init(key_pair);
@@ -279,11 +279,11 @@ int generate_signed_pre_key(
 
         if (!accurate_key_pair(key_pair, asym_pub_key_len, asym_priv_key_len)) {
             ssm_notify_log(NULL, BAD_KEY_PAIR, "generate_signed_pre_key() bad signed pre-key pair");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         signature_data = (uint8_t *)malloc(sizeof(uint8_t) * sig_len);
         // generate a signature
         ret = cipher_suite->digital_signature_suite->sign(
@@ -295,11 +295,11 @@ int generate_signed_pre_key(
         // what if sig_len > signature_data_len?
         if (sig_len < signature_data_len) {
             ssm_notify_log(NULL, BAD_SIGNATURE, "generate_signed_pre_key() bad signature");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         signed_pre_key = (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
         skissm__signed_pre_key__init(signed_pre_key);
 
@@ -351,7 +351,7 @@ int generate_opks(
     Skissm__OneTimePreKey ***one_time_pre_key_out, size_t number_of_keys,
     uint32_t e2ee_pack_id, uint32_t cur_opk_id
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     uint32_t asym_pub_key_len;
     uint32_t asym_priv_key_len;
@@ -365,10 +365,10 @@ int generate_opks(
         asym_priv_key_len = cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
     } else {
         ssm_notify_log(NULL, BAD_CIPHER_SUITE, "generate_opks() no cipher suite");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         one_time_pre_key_list = (Skissm__OneTimePreKey **)malloc(sizeof(Skissm__OneTimePreKey *) * number_of_keys);
         for (i = 0; i < number_of_keys; i++) {
             key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
@@ -377,10 +377,10 @@ int generate_opks(
 
             if (!accurate_key_pair(key_pair, asym_pub_key_len, asym_priv_key_len)) {
                 ssm_notify_log(NULL, BAD_KEY_PAIR, "generate_opks() bad one-time pre-key pair");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
 
-            if (ret == 0) {
+            if (ret == SKISSM_RESULT_SUCC) {
                 one_time_pre_key_list[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
                 skissm__one_time_pre_key__init(one_time_pre_key_list[i]);
                 copy_key_pair_from_key_pair(&(one_time_pre_key_list[i]->key_pair), key_pair);
@@ -400,7 +400,7 @@ int generate_opks(
             }
         }
 
-        if (ret == 0) {
+        if (ret == SKISSM_RESULT_SUCC) {
             *one_time_pre_key_out = one_time_pre_key_list;
         } else {
             // if ret != 0, then release the whole one_time_pre_key_list
@@ -420,7 +420,7 @@ int generate_opks(
 }
 
 int insert_opks(Skissm__Account *account, Skissm__OneTimePreKey **src, size_t src_num) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     size_t i, j;
     size_t old_opk_num;
@@ -434,10 +434,11 @@ int insert_opks(Skissm__Account *account, Skissm__OneTimePreKey **src, size_t sr
         old_opk_num = account->n_one_time_pre_key_list;
         new_opk_num = old_opk_num + src_num;
     } else {
-        ret = -1;
+        ssm_notify_log(NULL, BAD_ONE_TIME_PRE_KEY, "insert_opks()");
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         if (old_opk_num == 0) {
             // there is no one-tme pre-keys in the account
             account->one_time_pre_key_list = src;

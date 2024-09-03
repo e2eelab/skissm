@@ -35,7 +35,7 @@ int produce_create_group_request(
     Skissm__GroupMember **group_member_list,
     size_t group_members_num
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__CreateGroupRequest *request = NULL;
     Skissm__CreateGroupMsg *msg = NULL;
@@ -44,35 +44,35 @@ int produce_create_group_request(
 
     if (!is_valid_address(sender_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_create_group_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_string(group_name)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_create_group_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(group_member_list, group_members_num)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_create_group_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (group_members_num == 0) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_create_group_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         load_e2ee_pack_id_from_cache(&e2ee_pack_id, sender_address);
 
         if (e2ee_pack_id == 0) {
             get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
             if (account == NULL) {
                 ssm_notify_log(sender_address, BAD_ACCOUNT, "produce_create_group_request()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
             e2ee_pack_id = account->e2ee_pack_id;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         request = (Skissm__CreateGroupRequest *)malloc(sizeof(Skissm__CreateGroupRequest));
         skissm__create_group_request__init(request);
 
@@ -93,7 +93,7 @@ int produce_create_group_request(
         request->msg = msg;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *request_out = request;
     }
 
@@ -111,36 +111,36 @@ int consume_create_group_response(
     size_t group_members_num,
     Skissm__CreateGroupResponse *response
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__E2eeAddress *group_address = NULL;
 
     if (!is_valid_e2ee_pack_id(e2ee_pack_id)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_address(sender_address)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_string(group_name)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(group_member_list, group_members_num)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (is_valid_create_group_response(response)) {
         group_address = response->group_address;
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = new_outbound_group_session_by_sender(
             response->n_member_info_list, response->member_info_list,
             e2ee_pack_id, sender_address, group_name, group_address, group_member_list, group_members_num, NULL
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // notify
         ssm_notify_group_created(sender_address, group_address, group_name, group_member_list, group_members_num);
     } else {
@@ -276,7 +276,7 @@ int produce_add_group_members_request(
     Skissm__GroupMember **adding_member_list,
     size_t adding_members_num
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__AddGroupMembersRequest *request = NULL;
     Skissm__AddGroupMembersMsg *msg = NULL;
@@ -285,27 +285,27 @@ int produce_add_group_members_request(
 
     if (!is_valid_group_session(outbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "produce_add_group_members_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(adding_member_list, adding_members_num)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_add_group_members_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         load_e2ee_pack_id_from_cache(&e2ee_pack_id, outbound_group_session->session_owner);
 
         if (e2ee_pack_id == 0) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
             if (account == NULL) {
                 ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_add_group_members_request()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
             e2ee_pack_id = account->e2ee_pack_id;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         request = (Skissm__AddGroupMembersRequest *)malloc(sizeof(Skissm__AddGroupMembersRequest));
         skissm__add_group_members_request__init(request);
 
@@ -325,7 +325,7 @@ int produce_add_group_members_request(
         request->msg = msg;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *request_out = request;
     }
 
@@ -341,7 +341,7 @@ int consume_add_group_members_response(
     Skissm__GroupMember **added_members,
     size_t added_members_num
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__GroupMember **new_group_members = NULL;
     size_t new_group_members_num;
@@ -352,19 +352,19 @@ int consume_add_group_members_response(
     if (is_valid_group_session(outbound_group_session)) {
         session_owner = outbound_group_session->session_owner;
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (is_valid_add_group_members_response(response)) {
         new_group_members = response->group_member_list;
         new_group_members_num = response->n_group_member_list;
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(added_members, added_members_num)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // renew the outbound group session
         ret = renew_outbound_group_session_by_welcome_and_add(
             outbound_group_session, NULL, session_owner,
@@ -373,7 +373,7 @@ int consume_add_group_members_response(
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // use renewed group_info
         group_name = outbound_group_session->group_info->group_name;
         group_address = outbound_group_session->group_info->group_address;
@@ -468,7 +468,7 @@ int produce_add_group_member_device_request(
     Skissm__GroupSession *outbound_group_session,
     Skissm__E2eeAddress *new_device_address
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__AddGroupMemberDeviceRequest *request = NULL;
     Skissm__AddGroupMemberDeviceMsg *msg = NULL;
@@ -477,27 +477,27 @@ int produce_add_group_member_device_request(
 
     if (!is_valid_group_session(outbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "produce_add_group_member_device_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_address(new_device_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_add_group_member_device_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         load_e2ee_pack_id_from_cache(&e2ee_pack_id, outbound_group_session->session_owner);
 
         if (e2ee_pack_id == 0) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
             if (account == NULL) {
                 ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_add_group_member_device_request()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
             e2ee_pack_id = account->e2ee_pack_id;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         request = (Skissm__AddGroupMemberDeviceRequest *)malloc(sizeof(Skissm__AddGroupMemberDeviceRequest));
         skissm__add_group_member_device_request__init(request);
 
@@ -519,7 +519,7 @@ int produce_add_group_member_device_request(
         request->msg = msg;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *request_out = request;
     }
 
@@ -533,7 +533,7 @@ int consume_add_group_member_device_response(
     Skissm__GroupSession *outbound_group_session,
     Skissm__AddGroupMemberDeviceResponse *response
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     char *group_name = NULL;
     Skissm__E2eeAddress *session_owner = NULL;
@@ -546,23 +546,23 @@ int consume_add_group_member_device_response(
         session_owner = outbound_group_session->session_owner;
         group_address = outbound_group_session->group_info->group_address;
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (is_valid_add_group_member_device_response(response)) {
         adding_member_device_info = response->adding_member_device_info;
         new_device_address = adding_member_device_info->member_address;
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // renew the outbound group session
         ret = renew_group_sessions_with_new_device(
             outbound_group_session, NULL, session_owner, new_device_address, adding_member_device_info
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ssm_notify_log(
             outbound_group_session->session_owner,
             DEBUG_LOG,
@@ -646,7 +646,7 @@ int produce_remove_group_members_request(
     Skissm__GroupMember **removing_group_members,
     size_t removing_group_members_num
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     // ssm_notify_log(
     //     outbound_group_session->session_owner,
@@ -663,27 +663,27 @@ int produce_remove_group_members_request(
 
     if (!is_valid_group_session(outbound_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "produce_remove_group_members_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(removing_group_members, removing_group_members_num)) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_remove_group_members_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         load_e2ee_pack_id_from_cache(&e2ee_pack_id, outbound_group_session->session_owner);
 
         if (e2ee_pack_id == 0) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
             if (account == NULL) {
                 ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_remove_group_members_request()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
             e2ee_pack_id = account->e2ee_pack_id;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         request = (Skissm__RemoveGroupMembersRequest *)malloc(sizeof(Skissm__RemoveGroupMembersRequest));
         skissm__remove_group_members_request__init(request);
 
@@ -704,7 +704,7 @@ int produce_remove_group_members_request(
         request->msg = msg;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *request_out = request;
     }
 
@@ -732,7 +732,7 @@ int consume_remove_group_members_response(
     Skissm__GroupMember **removed_members,
     size_t removed_members_num
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     uint32_t e2ee_pack_id;
     Skissm__E2eeAddress *sender_address = NULL;
@@ -749,16 +749,16 @@ int consume_remove_group_members_response(
         old_session_id = outbound_group_session->session_id;
         group_name = outbound_group_session->group_info->group_name;
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (is_valid_remove_group_members_response(response)) {
         group_member_list = response->group_member_list;
         group_members_num = response->n_group_member_list;
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // delete the old outbound group session
         get_skissm_plugin()->db_handler.unload_group_session_by_id(sender_address, old_session_id);
 
@@ -774,7 +774,7 @@ int consume_remove_group_members_response(
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // notify
         ssm_notify_group_members_removed(
             sender_address,
@@ -906,21 +906,21 @@ int produce_leave_group_request(
     Skissm__E2eeAddress *user_address,
     Skissm__E2eeAddress *group_address
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__LeaveGroupRequest *request = NULL;
     Skissm__LeaveGroupMsg *msg = NULL;
 
     if (!is_valid_address(user_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_leave_group_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_address(group_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_leave_group_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         request = (Skissm__LeaveGroupRequest *)malloc(sizeof(Skissm__LeaveGroupRequest));
         skissm__leave_group_request__init(request);
 
@@ -933,7 +933,7 @@ int produce_leave_group_request(
         request->msg = msg;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *request_out = request;
     }
 
@@ -945,16 +945,16 @@ int consume_leave_group_response(
     Skissm__E2eeAddress *user_address,
     Skissm__LeaveGroupResponse *response
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     if (!is_valid_address(user_address)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_leave_group_response(response)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ssm_notify_log(user_address, DEBUG_LOG, "consume_leave_group_response() success, unload group session");
         // unload
         get_skissm_plugin()->db_handler.unload_group_session_by_address(user_address, response->group_address);
@@ -1018,7 +1018,7 @@ int produce_send_group_msg_request(
     Skissm__E2eeAddress **deny_list,
     size_t deny_list_len
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__SendGroupMsgRequest *request = NULL;
     Skissm__MsgKey *msg_key = NULL;
@@ -1034,39 +1034,39 @@ int produce_send_group_msg_request(
         cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
     } else {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "produce_send_group_msg_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (plaintext_data == NULL) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_send_group_msg_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (plaintext_data_len == 0) {
         ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_send_group_msg_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_address_list(allow_list, allow_list_len)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_send_group_msg_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_address_list(deny_list, deny_list_len)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "produce_send_group_msg_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         load_identity_key_from_cache(&identity_key, outbound_group_session->sender);
 
         if (identity_key == NULL) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->sender, &account);
             if (account == NULL) {
                 ssm_notify_log(outbound_group_session->sender, BAD_ACCOUNT, "produce_send_group_msg_request()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
             copy_ik_from_ik(&identity_key, account->identity_key);
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // create the message key
         msg_key = (Skissm__MsgKey *)malloc(sizeof(Skissm__MsgKey));
         skissm__msg_key__init(msg_key);
@@ -1083,7 +1083,7 @@ int produce_send_group_msg_request(
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // prepare a group_msg_payload
         group_msg_payload = (Skissm__GroupMsgPayload *)malloc(sizeof(Skissm__GroupMsgPayload));
         skissm__group_msg_payload__init(group_msg_payload);
@@ -1106,7 +1106,7 @@ int produce_send_group_msg_request(
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         request = (Skissm__SendGroupMsgRequest *)malloc(sizeof(Skissm__SendGroupMsgRequest));
         skissm__send_group_msg_request__init(request);
 
@@ -1144,7 +1144,7 @@ int produce_send_group_msg_request(
         request->msg = e2ee_msg;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *request_out = request;
     }
     
@@ -1166,20 +1166,20 @@ int produce_send_group_msg_request(
 }
 
 int consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session, Skissm__SendGroupMsgResponse *response) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     cipher_suite_t *cipher_suite = NULL;
 
     if (is_valid_group_session(outbound_group_session)) {
         cipher_suite = get_e2ee_pack(outbound_group_session->e2ee_pack_id)->cipher_suite;
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_send_group_msg_response(response)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // prepare a new chain key for next encryption
         advance_group_chain_key(cipher_suite, &(outbound_group_session->chain_key));
         outbound_group_session->sequence += 1;
@@ -1191,7 +1191,7 @@ int consume_send_group_msg_response(Skissm__GroupSession *outbound_group_session
 }
 
 bool consume_group_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     // load the inbound group session
     Skissm__GroupSession *inbound_group_session = NULL;

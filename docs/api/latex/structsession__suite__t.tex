@@ -1,0 +1,83 @@
+\doxysection{session\+\_\+suite\+\_\+t Struct Reference}
+\hypertarget{structsession__suite__t}{}\label{structsession__suite__t}\index{session\_suite\_t@{session\_suite\_t}}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structsession__suite__t_ab5f6c96cee99efe9ebd43be570e4f670}{new\+\_\+outbound\+\_\+session}} )(Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+Pre\+Key\+Bundle \texorpdfstring{$\ast$}{*})
+\begin{DoxyCompactList}\small\item\em Create a new outbound session. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structsession__suite__t_a583c9f2475ecae467fdb79815e5d21b4}{new\+\_\+inbound\+\_\+session}} )(Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+Invite\+Msg \texorpdfstring{$\ast$}{*})
+\begin{DoxyCompactList}\small\item\em Create a new inbound session. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structsession__suite__t_a50767fed0b4b136fa01212b05bed1940}{complete\+\_\+outbound\+\_\+session}} )(Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+Accept\+Msg \texorpdfstring{$\ast$}{*})
+\begin{DoxyCompactList}\small\item\em Complete an outbound session. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structsession__suite__t_a50767fed0b4b136fa01212b05bed1940}\index{session\_suite\_t@{session\_suite\_t}!complete\_outbound\_session@{complete\_outbound\_session}}
+\index{complete\_outbound\_session@{complete\_outbound\_session}!session\_suite\_t@{session\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{complete\_outbound\_session}{complete\_outbound\_session}}
+{\footnotesize\ttfamily \label{structsession__suite__t_a50767fed0b4b136fa01212b05bed1940} 
+int(\texorpdfstring{$\ast$}{*} session\+\_\+suite\+\_\+t\+::complete\+\_\+outbound\+\_\+session) (Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+Accept\+Msg \texorpdfstring{$\ast$}{*})}
+
+
+
+Complete an outbound session. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em outbound\+\_\+session\+\_\+out} & The outbound session \\
+\hline
+{\em msg} & The accept message \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+value \texorpdfstring{$<$}{<} 0 for error 
+\end{DoxyReturn}
+\Hypertarget{structsession__suite__t_a583c9f2475ecae467fdb79815e5d21b4}\index{session\_suite\_t@{session\_suite\_t}!new\_inbound\_session@{new\_inbound\_session}}
+\index{new\_inbound\_session@{new\_inbound\_session}!session\_suite\_t@{session\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{new\_inbound\_session}{new\_inbound\_session}}
+{\footnotesize\ttfamily \label{structsession__suite__t_a583c9f2475ecae467fdb79815e5d21b4} 
+int(\texorpdfstring{$\ast$}{*} session\+\_\+suite\+\_\+t\+::new\+\_\+inbound\+\_\+session) (Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+Invite\+Msg \texorpdfstring{$\ast$}{*})}
+
+
+
+Create a new inbound session. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inbound\+\_\+session\+\_\+out} & The inbound session \\
+\hline
+{\em local\+\_\+account} & Our account \\
+\hline
+{\em request} & The invite message \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+value \texorpdfstring{$<$}{<} 0 for error 
+\end{DoxyReturn}
+\Hypertarget{structsession__suite__t_ab5f6c96cee99efe9ebd43be570e4f670}\index{session\_suite\_t@{session\_suite\_t}!new\_outbound\_session@{new\_outbound\_session}}
+\index{new\_outbound\_session@{new\_outbound\_session}!session\_suite\_t@{session\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{new\_outbound\_session}{new\_outbound\_session}}
+{\footnotesize\ttfamily \label{structsession__suite__t_ab5f6c96cee99efe9ebd43be570e4f670} 
+int(\texorpdfstring{$\ast$}{*} session\+\_\+suite\+\_\+t\+::new\+\_\+outbound\+\_\+session) (Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}, Skissm\+\_\+\+\_\+\+Pre\+Key\+Bundle \texorpdfstring{$\ast$}{*})}
+
+
+
+Create a new outbound session. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response\+\_\+out} & The output invite response \\
+\hline
+{\em from} & The sender\textquotesingle{}s address \\
+\hline
+{\em their\+\_\+pre\+\_\+key\+\_\+bundle} & Their pre-\/key bundle \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/skissm/\mbox{\hyperlink{session_8h}{session.\+h}}\end{DoxyCompactItemize}

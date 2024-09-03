@@ -1,0 +1,118 @@
+\doxysection{digital\+\_\+signature\+\_\+suite\+\_\+t Struct Reference}
+\hypertarget{structdigital__signature__suite__t}{}\label{structdigital__signature__suite__t}\index{digital\_signature\_suite\_t@{digital\_signature\_suite\_t}}
+
+
+Type definition of digital signature algorithm suite.  
+
+
+
+
+{\ttfamily \#include $<$skissm.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\+\_\+digital\+\_\+signature\+\_\+param\+\_\+t}}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdigital__signature__suite__t_a14e4326278f81c25614702b71baadcb1}{get\+\_\+crypto\+\_\+param}} )(void)
+\begin{DoxyCompactList}\small\item\em Get the parameters of this digital signature suite. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdigital__signature__suite__t_a24a07d8a7e1e3ac3772ab2e672794b5c}{sign\+\_\+key\+\_\+gen}} )(Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Generate a random key pair that will be used to generate or verify a signature. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdigital__signature__suite__t_a80ff5d983335660199b68cdcfca478ed}{sign}} )(uint8\+\_\+t \texorpdfstring{$\ast$}{*}signature\+\_\+out, size\+\_\+t \texorpdfstring{$\ast$}{*}signature\+\_\+out\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}msg, size\+\_\+t msg\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}private\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Sign a message. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structdigital__signature__suite__t_ae0ee14e17294bfe9029fc1c839afeb71}{verify}} )(const uint8\+\_\+t \texorpdfstring{$\ast$}{*}signature\+\_\+in, size\+\_\+t signature\+\_\+in\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}msg, size\+\_\+t msg\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}public\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Verify a signature with a given message. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Type definition of digital signature algorithm suite. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structdigital__signature__suite__t_a14e4326278f81c25614702b71baadcb1}\index{digital\_signature\_suite\_t@{digital\_signature\_suite\_t}!get\_crypto\_param@{get\_crypto\_param}}
+\index{get\_crypto\_param@{get\_crypto\_param}!digital\_signature\_suite\_t@{digital\_signature\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{get\_crypto\_param}{get\_crypto\_param}}
+{\footnotesize\ttfamily \label{structdigital__signature__suite__t_a14e4326278f81c25614702b71baadcb1} 
+struct \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\+\_\+digital\+\_\+signature\+\_\+param\+\_\+t}}(\texorpdfstring{$\ast$}{*} digital\+\_\+signature\+\_\+suite\+\_\+t\+::get\+\_\+crypto\+\_\+param) (void)}
+
+
+
+Get the parameters of this digital signature suite. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{structcrypto__digital__signature__param__t}{crypto\+\_\+digital\+\_\+signature\+\_\+param\+\_\+t} 
+\end{DoxyReturn}
+\Hypertarget{structdigital__signature__suite__t_a80ff5d983335660199b68cdcfca478ed}\index{digital\_signature\_suite\_t@{digital\_signature\_suite\_t}!sign@{sign}}
+\index{sign@{sign}!digital\_signature\_suite\_t@{digital\_signature\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{sign}{sign}}
+{\footnotesize\ttfamily \label{structdigital__signature__suite__t_a80ff5d983335660199b68cdcfca478ed} 
+int(\texorpdfstring{$\ast$}{*} digital\+\_\+signature\+\_\+suite\+\_\+t\+::sign) (uint8\+\_\+t \texorpdfstring{$\ast$}{*}signature\+\_\+out, size\+\_\+t \texorpdfstring{$\ast$}{*}signature\+\_\+out\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}msg, size\+\_\+t msg\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}private\+\_\+key)}
+
+
+
+Sign a message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em signature\+\_\+out} & \\
+\hline
+{\em signature\+\_\+out\+\_\+len} & \\
+\hline
+{\em msg} & \\
+\hline
+{\em msg\+\_\+len} & \\
+\hline
+{\em private\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+value \texorpdfstring{$<$}{<} 0 for error 
+\end{DoxyReturn}
+\Hypertarget{structdigital__signature__suite__t_a24a07d8a7e1e3ac3772ab2e672794b5c}\index{digital\_signature\_suite\_t@{digital\_signature\_suite\_t}!sign\_key\_gen@{sign\_key\_gen}}
+\index{sign\_key\_gen@{sign\_key\_gen}!digital\_signature\_suite\_t@{digital\_signature\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{sign\_key\_gen}{sign\_key\_gen}}
+{\footnotesize\ttfamily \label{structdigital__signature__suite__t_a24a07d8a7e1e3ac3772ab2e672794b5c} 
+int(\texorpdfstring{$\ast$}{*} digital\+\_\+signature\+\_\+suite\+\_\+t\+::sign\+\_\+key\+\_\+gen) (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)}
+
+
+
+Generate a random key pair that will be used to generate or verify a signature. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pub\+\_\+key} & \\
+\hline
+{\em priv\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+value \texorpdfstring{$<$}{<} 0 for error 
+\end{DoxyReturn}
+\Hypertarget{structdigital__signature__suite__t_ae0ee14e17294bfe9029fc1c839afeb71}\index{digital\_signature\_suite\_t@{digital\_signature\_suite\_t}!verify@{verify}}
+\index{verify@{verify}!digital\_signature\_suite\_t@{digital\_signature\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{verify}{verify}}
+{\footnotesize\ttfamily \label{structdigital__signature__suite__t_ae0ee14e17294bfe9029fc1c839afeb71} 
+int(\texorpdfstring{$\ast$}{*} digital\+\_\+signature\+\_\+suite\+\_\+t\+::verify) (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}signature\+\_\+in, size\+\_\+t signature\+\_\+in\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}msg, size\+\_\+t msg\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}public\+\_\+key)}
+
+
+
+Verify a signature with a given message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em signature\+\_\+in} & \\
+\hline
+{\em signature\+\_\+in\+\_\+len} & \\
+\hline
+{\em msg} & \\
+\hline
+{\em msg\+\_\+len} & \\
+\hline
+{\em public\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+value \texorpdfstring{$<$}{<} 0 for error 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/skissm/\mbox{\hyperlink{skissm_8h}{skissm.\+h}}\end{DoxyCompactItemize}

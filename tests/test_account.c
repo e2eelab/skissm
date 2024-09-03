@@ -1,6 +1,9 @@
-/*
- * Copyright © 2020-2021 by Academia Sinica
+/**
+ * @file
+ * @copyright © 2020-2021 by Academia Sinica
+ * @brief account test
  *
+ * @page test_account account documentation
  * This file is part of SKISSM.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,6 +18,109 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @section test_create_accounts
+ * Test if we can create accounts.
+ * 
+ * @section test_register_user
+ * This can check if a client can register or not.
+ * 
+ * @section test_publish_spk
+ * If the signed pre-key is expired, the client should generate a new signed pre-key and publish it to the server.
+ * 
+ * @section test_supply_opks
+ * The client will be notified to generate a number of one-time pre-keys if the server finds that the one-time pre-keys are used up.
+ * 
+ * 
+ * 
+ * @defgroup Unit Unit test
+ * This includes unit tests.
+ * 
+ * @defgroup Integration Integration test
+ * This includes integration tests.
+ * 
+ * 
+ * @defgroup account_unit account unit test
+ * @ingroup Unit
+ * This includes unit tests about account.
+ * 
+ * @defgroup account_begin account begin test
+ * @ingroup account_unit
+ * 
+ * @defgroup account_end account end test
+ * @ingroup account_unit
+ * 
+ * @defgroup create_account create account test
+ * @ingroup account_unit
+ * 
+ * @defgroup generate_identity_key generate identity key test
+ * @ingroup account_unit
+ * 
+ * @defgroup generate_signed_pre_key generate signed pre-key test
+ * @ingroup account_unit
+ * 
+ * @defgroup generate_opks generate one-time pre-key test
+ * @ingroup account_unit
+ * 
+ * 
+ * @defgroup account_int account integration test
+ * @ingroup Integration
+ * This includes integration tests about account.
+ * 
+ * @defgroup account_test_create_accounts create account test
+ * @ingroup account_int
+ * @{
+ * @section sec1001 Test Description
+ * This test case generates a certain number, given by the input, of accounts.
+ * These accounts will be stored into db and will be loaded to check integrity.
+ * @section sec1002 Test Objectives
+ * @section sec1003 Test Case ID
+ * @section sec1004 Test Case Title: test_create_accounts
+ * @section sec1005 Preconditions
+ * The input parameter num should be inserted.
+ * @section sec1006 Test Steps
+ * @section sec1007 Expected Results
+ * @}
+ * 
+ * @defgroup account_test_register_user register user test
+ * @ingroup account_int
+ * @{
+ * @section sec1101 Test Description
+ * To call the function register_user with given inputs.
+ * @section sec1102 Test Objectives
+ * @section sec1103 Test Case ID
+ * @section sec1104 Test Case Title: test_register_user
+ * @section sec1105 Preconditions
+ * @section sec1106 Test Steps
+ * @section sec1107 Expected Results
+ * @}
+ * 
+ * @defgroup account_test_publish_spk publish spk test
+ * @ingroup account_int
+ * @{
+ * @section sec1201 Test Description
+ * A registered account will generate a new pair of signed pre-key pair and publish the public part of the key pair and the signature to the server.
+ * @section sec1202 Test Objectives
+ * @section sec1203 Test Case ID
+ * @section sec1204 Test Case Title: test_publish_spk
+ * @section sec1205 Preconditions
+ * @section sec1206 Test Steps
+ * @section sec1207 Expected Results
+ * @}
+ * 
+ * @defgroup account_test_supply_opks supply opks test
+ * @ingroup account_int
+ * @{
+ * @section sec1301 Test Description
+ * The server notifies the client to generate a number of one-time pre-keys.
+ * @section sec1302 Test Objectives
+ * @section sec1303 Test Case ID
+ * @section sec1304 Test Case Title: test_supply_opks
+ * @section sec1305 Preconditions
+ * @section sec1306 Test Steps
+ * @section sec1307 Expected Results
+ * @}
+ * 
  */
 #include <string.h>
 #include <stdlib.h>

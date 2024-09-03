@@ -1,0 +1,61 @@
+\doxysection{account.\+h}
+\hypertarget{account_8h_source}{}\label{account_8h_source}\index{include/skissm/account.h@{include/skissm/account.h}}
+\mbox{\hyperlink{account_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#ifndef\ ACCOUNT\_H\_}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ ACCOUNT\_H\_}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <stdbool.h>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00028\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{skissm_8h}{skissm/skissm.h}}"{}}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keywordtype}{void}\ account\_begin();}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keywordtype}{void}\ account\_end();}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00045\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{account_8h_acc61be04a857570ee55439f01e8f30c7}{create\_account}}(Skissm\_\_Account\ **account\_out,\ uint32\_t\ e2ee\_pack\_id);}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{keywordtype}{int}\ generate\_identity\_key(}
+\DoxyCodeLine{00048\ \ \ \ \ Skissm\_\_IdentityKey\ **identity\_key\_out,}
+\DoxyCodeLine{00049\ \ \ \ \ uint32\_t\ e2ee\_pack\_id}
+\DoxyCodeLine{00050\ );}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00061\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{account_8h_aa95327406cb557a1346dcacac6686b44}{generate\_signed\_pre\_key}}(}
+\DoxyCodeLine{00062\ \ \ \ \ Skissm\_\_SignedPreKey\ **signed\_pre\_key\_out,}
+\DoxyCodeLine{00063\ \ \ \ \ uint32\_t\ e2ee\_pack\_id,\ uint32\_t\ cur\_spk\_id,}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *identity\_private\_key}
+\DoxyCodeLine{00065\ );}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00074\ Skissm\_\_OneTimePreKey\ *\mbox{\hyperlink{account_8h_a939d33806c6bb2473dfa8375f1f1766d}{lookup\_one\_time\_pre\_key}}(}
+\DoxyCodeLine{00075\ \ \ \ \ Skissm\_\_Account\ *account,}
+\DoxyCodeLine{00076\ \ \ \ \ uint32\_t\ one\_time\_pre\_key\_id}
+\DoxyCodeLine{00077\ );}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00088\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{account_8h_a8d009b61eeffaf429c18d163cd371c51}{generate\_opks}}(}
+\DoxyCodeLine{00089\ \ \ \ \ Skissm\_\_OneTimePreKey\ ***one\_time\_pre\_key\_out,\ \textcolor{keywordtype}{size\_t}\ number\_of\_keys,}
+\DoxyCodeLine{00090\ \ \ \ \ uint32\_t\ e2ee\_pack\_id,\ uint32\_t\ cur\_opk\_id}
+\DoxyCodeLine{00091\ );}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \textcolor{keywordtype}{int}\ insert\_opks(Skissm\_\_Account\ *account,\ Skissm\_\_OneTimePreKey\ **src,\ \textcolor{keywordtype}{size\_t}\ src\_num);}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00102\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{account_8h_a11dd90393c9b16548bdfa107fedf4bee}{mark\_opk\_as\_used}}(}
+\DoxyCodeLine{00103\ \ \ \ \ Skissm\_\_Account\ *account,}
+\DoxyCodeLine{00104\ \ \ \ \ uint32\_t\ \textcolor{keywordtype}{id}}
+\DoxyCodeLine{00105\ );}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00112\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{account_8h_a8cb64db81c2c65f3c054880b96e28e5d}{free\_one\_time\_pre\_key}}(Skissm\_\_Account\ *account);}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00115\ \}}
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ ACCOUNT\_H\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

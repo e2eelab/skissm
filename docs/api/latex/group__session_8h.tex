@@ -1,0 +1,382 @@
+\doxysection{include/skissm/group\+\_\+session.h File Reference}
+\hypertarget{group__session_8h}{}\label{group__session_8h}\index{include/skissm/group\_session.h@{include/skissm/group\_session.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+{\ttfamily \#include "{}skissm/skissm.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{group__session_8h_a92489a129519dfc9a8168075cc7b4c11}{advance\+\_\+group\+\_\+chain\+\_\+key}} (const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}cipher\+\_\+suite, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}chain\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Advance the chain key of group session. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{group__session_8h_a55c64ec1587b3e5ae847a55427abc6ae}{create\+\_\+group\+\_\+message\+\_\+key}} (const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}cipher\+\_\+suite, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}chain\+\_\+key, Skissm\+\_\+\+\_\+\+Msg\+Key \texorpdfstring{$\ast$}{*}message\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Create group message key. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{group__session_8h_a61ea17b3590ab876f7c49a3a7761d4eb}{pack\+\_\+group\+\_\+pre\+\_\+key\+\_\+plaintext}} (Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+pre\+\_\+key\+\_\+plaintext\+\_\+data, char \texorpdfstring{$\ast$}{*}old\+\_\+session\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Pack the group pre-\/keys. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_a78057e7997c82d86d34ba71262d4f6e5}{new\+\_\+outbound\+\_\+group\+\_\+session\+\_\+by\+\_\+sender}} (size\+\_\+t n\+\_\+member\+\_\+info\+\_\+list, Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}member\+\_\+info\+\_\+list, uint32\+\_\+t e2ee\+\_\+pack\+\_\+id, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members, size\+\_\+t group\+\_\+members\+\_\+num, char \texorpdfstring{$\ast$}{*}old\+\_\+session\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Create an outbound group session by a group creator. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_abda463aceed174e99b9db6d639b3f95e}{new\+\_\+outbound\+\_\+group\+\_\+session\+\_\+by\+\_\+receiver}} (const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}group\+\_\+seed, uint32\+\_\+t e2ee\+\_\+pack\+\_\+id, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, const char \texorpdfstring{$\ast$}{*}session\+\_\+id, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members, size\+\_\+t group\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Create an outbound group session by a group receiver. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_a5204ffc06de8f27a1951f008dcc1f82e}{new\+\_\+outbound\+\_\+group\+\_\+session\+\_\+invited}} (Skissm\+\_\+\+\_\+\+Group\+Update\+Key\+Bundle \texorpdfstring{$\ast$}{*}group\+\_\+update\+\_\+key\+\_\+bundle, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address)
+\begin{DoxyCompactList}\small\item\em Create an outbound group session when receiving other group member\textquotesingle{}s invitation. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_a7d4b59bbcd89653b2f3f5065694dcf99}{new\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+pre\+\_\+key\+\_\+bundle}} (uint32\+\_\+t e2ee\+\_\+pack\+\_\+id, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, Skissm\+\_\+\+\_\+\+Group\+Pre\+Key\+Bundle \texorpdfstring{$\ast$}{*}group\+\_\+pre\+\_\+key\+\_\+bundle)
+\begin{DoxyCompactList}\small\item\em Create an inbound group session with group pre-\/key bundle. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_a39296bbfc862fb87cf38c7350ead7b80}{new\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+member\+\_\+id}} (uint32\+\_\+t e2ee\+\_\+pack\+\_\+id, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}group\+\_\+member\+\_\+id, Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}group\+\_\+info)
+\begin{DoxyCompactList}\small\item\em Create an inbound group session with other member\textquotesingle{}s id. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_ace661c9b0d1a198c3227d1eda4a45a56}{complete\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+pre\+\_\+key\+\_\+bundle}} (Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}inbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+Group\+Pre\+Key\+Bundle \texorpdfstring{$\ast$}{*}group\+\_\+pre\+\_\+key\+\_\+bundle)
+\begin{DoxyCompactList}\small\item\em Complete an inbound group session with group pre-\/key bundle. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_abcefe9ffa80697c04a44eef3b5e11c10}{complete\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+member\+\_\+id}} (Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}inbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}group\+\_\+member\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Complete an inbound group session with other member\textquotesingle{}s id. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_a40a400c51d82360729bfe464cf60501c}{new\+\_\+and\+\_\+complete\+\_\+inbound\+\_\+group\+\_\+session}} (Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}group\+\_\+member\+\_\+id, Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}other\+\_\+inbound\+\_\+group\+\_\+session)
+\begin{DoxyCompactList}\small\item\em Create and complete an inbound group session. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_aa30a7b399d91af7ea6ebb411d0c382ef}{new\+\_\+and\+\_\+complete\+\_\+inbound\+\_\+group\+\_\+session\+\_\+with\+\_\+chain\+\_\+key}} (Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}group\+\_\+member\+\_\+id, Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}other\+\_\+group\+\_\+session, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+chain\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Create and complete an inbound group session with other\textquotesingle{}s chain key. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_a82aeb0b321e6c833af4a1781f3dfdca0}{new\+\_\+and\+\_\+complete\+\_\+inbound\+\_\+group\+\_\+session\+\_\+with\+\_\+ratchet\+\_\+state}} (Skissm\+\_\+\+\_\+\+Group\+Update\+Key\+Bundle \texorpdfstring{$\ast$}{*}group\+\_\+update\+\_\+key\+\_\+bundle, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address)
+\begin{DoxyCompactList}\small\item\em Create and complete an inbound group session with other\textquotesingle{}s ratchet state. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_a529cdb3dd927985a73f96e5b2ab21d9f}{renew\+\_\+outbound\+\_\+group\+\_\+session\+\_\+by\+\_\+welcome\+\_\+and\+\_\+add}} (Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}sender\+\_\+chain\+\_\+key, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, size\+\_\+t n\+\_\+adding\+\_\+member\+\_\+info\+\_\+list, Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}adding\+\_\+member\+\_\+info\+\_\+list, size\+\_\+t adding\+\_\+group\+\_\+members\+\_\+num, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}adding\+\_\+group\+\_\+members)
+\begin{DoxyCompactList}\small\item\em Renew the outbound group session when someone joins the group. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_ac7c84d20114d98de1989ec9115d29f8e}{renew\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+welcome\+\_\+and\+\_\+add}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}sender\+\_\+chain\+\_\+key, Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}inbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}new\+\_\+group\+\_\+info)
+\begin{DoxyCompactList}\small\item\em Renew the inbound group session when someone joins the group. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session_8h_a51d9c28171f5dabe3d73ceddd125ca45}{renew\+\_\+group\+\_\+sessions\+\_\+with\+\_\+new\+\_\+device}} (Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}sender\+\_\+chain\+\_\+key, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}new\+\_\+device\+\_\+address, Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}adding\+\_\+member\+\_\+device\+\_\+info)
+\begin{DoxyCompactList}\small\item\em Renew group sessions when someone add a new device. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2020-\/2021 by Academia Sinica
+
+This file is part of SKISSM.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with SKISSM. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{group__session_8h_a92489a129519dfc9a8168075cc7b4c11}\index{group\_session.h@{group\_session.h}!advance\_group\_chain\_key@{advance\_group\_chain\_key}}
+\index{advance\_group\_chain\_key@{advance\_group\_chain\_key}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{advance\_group\_chain\_key()}{advance\_group\_chain\_key()}}
+{\footnotesize\ttfamily \label{group__session_8h_a92489a129519dfc9a8168075cc7b4c11} 
+void advance\+\_\+group\+\_\+chain\+\_\+key (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{cipher\+\_\+suite}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{chain\+\_\+key}{}\end{DoxyParamCaption})}
+
+
+
+Advance the chain key of group session. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cipher\+\_\+suite} & \\
+\hline
+{\em chain\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_abcefe9ffa80697c04a44eef3b5e11c10}\index{group\_session.h@{group\_session.h}!complete\_inbound\_group\_session\_by\_member\_id@{complete\_inbound\_group\_session\_by\_member\_id}}
+\index{complete\_inbound\_group\_session\_by\_member\_id@{complete\_inbound\_group\_session\_by\_member\_id}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{complete\_inbound\_group\_session\_by\_member\_id()}{complete\_inbound\_group\_session\_by\_member\_id()}}
+{\footnotesize\ttfamily \label{group__session_8h_abcefe9ffa80697c04a44eef3b5e11c10} 
+int complete\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+member\+\_\+id (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{inbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}}]{group\+\_\+member\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Complete an inbound group session with other member\textquotesingle{}s id. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inbound\+\_\+group\+\_\+session} & \\
+\hline
+{\em group\+\_\+member\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_ace661c9b0d1a198c3227d1eda4a45a56}\index{group\_session.h@{group\_session.h}!complete\_inbound\_group\_session\_by\_pre\_key\_bundle@{complete\_inbound\_group\_session\_by\_pre\_key\_bundle}}
+\index{complete\_inbound\_group\_session\_by\_pre\_key\_bundle@{complete\_inbound\_group\_session\_by\_pre\_key\_bundle}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{complete\_inbound\_group\_session\_by\_pre\_key\_bundle()}{complete\_inbound\_group\_session\_by\_pre\_key\_bundle()}}
+{\footnotesize\ttfamily \label{group__session_8h_ace661c9b0d1a198c3227d1eda4a45a56} 
+int complete\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+pre\+\_\+key\+\_\+bundle (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{inbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Pre\+Key\+Bundle \texorpdfstring{$\ast$}{*}}]{group\+\_\+pre\+\_\+key\+\_\+bundle}{}\end{DoxyParamCaption})}
+
+
+
+Complete an inbound group session with group pre-\/key bundle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inbound\+\_\+group\+\_\+session} & \\
+\hline
+{\em group\+\_\+pre\+\_\+key\+\_\+bundle} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a55c64ec1587b3e5ae847a55427abc6ae}\index{group\_session.h@{group\_session.h}!create\_group\_message\_key@{create\_group\_message\_key}}
+\index{create\_group\_message\_key@{create\_group\_message\_key}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{create\_group\_message\_key()}{create\_group\_message\_key()}}
+{\footnotesize\ttfamily \label{group__session_8h_a55c64ec1587b3e5ae847a55427abc6ae} 
+void create\+\_\+group\+\_\+message\+\_\+key (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{cipher\+\_\+suite}{, }\item[{const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{chain\+\_\+key}{, }\item[{Skissm\+\_\+\+\_\+\+Msg\+Key \texorpdfstring{$\ast$}{*}}]{message\+\_\+key}{}\end{DoxyParamCaption})}
+
+
+
+Create group message key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cipher\+\_\+suite} & \\
+\hline
+{\em chain\+\_\+key} & \\
+\hline
+{\em message\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a40a400c51d82360729bfe464cf60501c}\index{group\_session.h@{group\_session.h}!new\_and\_complete\_inbound\_group\_session@{new\_and\_complete\_inbound\_group\_session}}
+\index{new\_and\_complete\_inbound\_group\_session@{new\_and\_complete\_inbound\_group\_session}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{new\_and\_complete\_inbound\_group\_session()}{new\_and\_complete\_inbound\_group\_session()}}
+{\footnotesize\ttfamily \label{group__session_8h_a40a400c51d82360729bfe464cf60501c} 
+int new\+\_\+and\+\_\+complete\+\_\+inbound\+\_\+group\+\_\+session (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}}]{group\+\_\+member\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{other\+\_\+inbound\+\_\+group\+\_\+session}{}\end{DoxyParamCaption})}
+
+
+
+Create and complete an inbound group session. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em group\+\_\+member\+\_\+id} & \\
+\hline
+{\em other\+\_\+inbound\+\_\+group\+\_\+session} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_aa30a7b399d91af7ea6ebb411d0c382ef}\index{group\_session.h@{group\_session.h}!new\_and\_complete\_inbound\_group\_session\_with\_chain\_key@{new\_and\_complete\_inbound\_group\_session\_with\_chain\_key}}
+\index{new\_and\_complete\_inbound\_group\_session\_with\_chain\_key@{new\_and\_complete\_inbound\_group\_session\_with\_chain\_key}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{new\_and\_complete\_inbound\_group\_session\_with\_chain\_key()}{new\_and\_complete\_inbound\_group\_session\_with\_chain\_key()}}
+{\footnotesize\ttfamily \label{group__session_8h_aa30a7b399d91af7ea6ebb411d0c382ef} 
+int new\+\_\+and\+\_\+complete\+\_\+inbound\+\_\+group\+\_\+session\+\_\+with\+\_\+chain\+\_\+key (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}}]{group\+\_\+member\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{other\+\_\+group\+\_\+session}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{their\+\_\+chain\+\_\+key}{}\end{DoxyParamCaption})}
+
+
+
+Create and complete an inbound group session with other\textquotesingle{}s chain key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em group\+\_\+member\+\_\+id} & \\
+\hline
+{\em other\+\_\+group\+\_\+session} & \\
+\hline
+{\em their\+\_\+chain\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a82aeb0b321e6c833af4a1781f3dfdca0}\index{group\_session.h@{group\_session.h}!new\_and\_complete\_inbound\_group\_session\_with\_ratchet\_state@{new\_and\_complete\_inbound\_group\_session\_with\_ratchet\_state}}
+\index{new\_and\_complete\_inbound\_group\_session\_with\_ratchet\_state@{new\_and\_complete\_inbound\_group\_session\_with\_ratchet\_state}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{new\_and\_complete\_inbound\_group\_session\_with\_ratchet\_state()}{new\_and\_complete\_inbound\_group\_session\_with\_ratchet\_state()}}
+{\footnotesize\ttfamily \label{group__session_8h_a82aeb0b321e6c833af4a1781f3dfdca0} 
+int new\+\_\+and\+\_\+complete\+\_\+inbound\+\_\+group\+\_\+session\+\_\+with\+\_\+ratchet\+\_\+state (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Update\+Key\+Bundle \texorpdfstring{$\ast$}{*}}]{group\+\_\+update\+\_\+key\+\_\+bundle}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{}\end{DoxyParamCaption})}
+
+
+
+Create and complete an inbound group session with other\textquotesingle{}s ratchet state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em group\+\_\+update\+\_\+key\+\_\+bundle} & \\
+\hline
+{\em user\+\_\+address} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a39296bbfc862fb87cf38c7350ead7b80}\index{group\_session.h@{group\_session.h}!new\_inbound\_group\_session\_by\_member\_id@{new\_inbound\_group\_session\_by\_member\_id}}
+\index{new\_inbound\_group\_session\_by\_member\_id@{new\_inbound\_group\_session\_by\_member\_id}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{new\_inbound\_group\_session\_by\_member\_id()}{new\_inbound\_group\_session\_by\_member\_id()}}
+{\footnotesize\ttfamily \label{group__session_8h_a39296bbfc862fb87cf38c7350ead7b80} 
+int new\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+member\+\_\+id (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{e2ee\+\_\+pack\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}}]{group\+\_\+member\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}}]{group\+\_\+info}{}\end{DoxyParamCaption})}
+
+
+
+Create an inbound group session with other member\textquotesingle{}s id. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e2ee\+\_\+pack\+\_\+id} & \\
+\hline
+{\em user\+\_\+address} & \\
+\hline
+{\em group\+\_\+member\+\_\+id} & \\
+\hline
+{\em group\+\_\+info} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a7d4b59bbcd89653b2f3f5065694dcf99}\index{group\_session.h@{group\_session.h}!new\_inbound\_group\_session\_by\_pre\_key\_bundle@{new\_inbound\_group\_session\_by\_pre\_key\_bundle}}
+\index{new\_inbound\_group\_session\_by\_pre\_key\_bundle@{new\_inbound\_group\_session\_by\_pre\_key\_bundle}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{new\_inbound\_group\_session\_by\_pre\_key\_bundle()}{new\_inbound\_group\_session\_by\_pre\_key\_bundle()}}
+{\footnotesize\ttfamily \label{group__session_8h_a7d4b59bbcd89653b2f3f5065694dcf99} 
+int new\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+pre\+\_\+key\+\_\+bundle (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{e2ee\+\_\+pack\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Pre\+Key\+Bundle \texorpdfstring{$\ast$}{*}}]{group\+\_\+pre\+\_\+key\+\_\+bundle}{}\end{DoxyParamCaption})}
+
+
+
+Create an inbound group session with group pre-\/key bundle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e2ee\+\_\+pack\+\_\+id} & \\
+\hline
+{\em user\+\_\+address} & \\
+\hline
+{\em group\+\_\+pre\+\_\+key\+\_\+bundle} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_abda463aceed174e99b9db6d639b3f95e}\index{group\_session.h@{group\_session.h}!new\_outbound\_group\_session\_by\_receiver@{new\_outbound\_group\_session\_by\_receiver}}
+\index{new\_outbound\_group\_session\_by\_receiver@{new\_outbound\_group\_session\_by\_receiver}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{new\_outbound\_group\_session\_by\_receiver()}{new\_outbound\_group\_session\_by\_receiver()}}
+{\footnotesize\ttfamily \label{group__session_8h_abda463aceed174e99b9db6d639b3f95e} 
+int new\+\_\+outbound\+\_\+group\+\_\+session\+\_\+by\+\_\+receiver (\begin{DoxyParamCaption}\item[{const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{group\+\_\+seed}{, }\item[{uint32\+\_\+t}]{e2ee\+\_\+pack\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{session\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Create an outbound group session by a group receiver. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em group\+\_\+seed} & \\
+\hline
+{\em e2ee\+\_\+pack\+\_\+id} & \\
+\hline
+{\em user\+\_\+address} & \\
+\hline
+{\em group\+\_\+name} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em session\+\_\+id} & \\
+\hline
+{\em group\+\_\+members} & \\
+\hline
+{\em group\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a78057e7997c82d86d34ba71262d4f6e5}\index{group\_session.h@{group\_session.h}!new\_outbound\_group\_session\_by\_sender@{new\_outbound\_group\_session\_by\_sender}}
+\index{new\_outbound\_group\_session\_by\_sender@{new\_outbound\_group\_session\_by\_sender}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{new\_outbound\_group\_session\_by\_sender()}{new\_outbound\_group\_session\_by\_sender()}}
+{\footnotesize\ttfamily \label{group__session_8h_a78057e7997c82d86d34ba71262d4f6e5} 
+int new\+\_\+outbound\+\_\+group\+\_\+session\+\_\+by\+\_\+sender (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{n\+\_\+member\+\_\+info\+\_\+list}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{member\+\_\+info\+\_\+list}{, }\item[{uint32\+\_\+t}]{e2ee\+\_\+pack\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{old\+\_\+session\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Create an outbound group session by a group creator. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+\_\+member\+\_\+info\+\_\+list} & \\
+\hline
+{\em member\+\_\+info\+\_\+list} & \\
+\hline
+{\em e2ee\+\_\+pack\+\_\+id} & \\
+\hline
+{\em user\+\_\+address} & \\
+\hline
+{\em group\+\_\+name} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em group\+\_\+members} & \\
+\hline
+{\em group\+\_\+members\+\_\+num} & \\
+\hline
+{\em old\+\_\+session\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a5204ffc06de8f27a1951f008dcc1f82e}\index{group\_session.h@{group\_session.h}!new\_outbound\_group\_session\_invited@{new\_outbound\_group\_session\_invited}}
+\index{new\_outbound\_group\_session\_invited@{new\_outbound\_group\_session\_invited}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{new\_outbound\_group\_session\_invited()}{new\_outbound\_group\_session\_invited()}}
+{\footnotesize\ttfamily \label{group__session_8h_a5204ffc06de8f27a1951f008dcc1f82e} 
+int new\+\_\+outbound\+\_\+group\+\_\+session\+\_\+invited (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Update\+Key\+Bundle \texorpdfstring{$\ast$}{*}}]{group\+\_\+update\+\_\+key\+\_\+bundle}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{}\end{DoxyParamCaption})}
+
+
+
+Create an outbound group session when receiving other group member\textquotesingle{}s invitation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em group\+\_\+update\+\_\+key\+\_\+bundle} & \\
+\hline
+{\em user\+\_\+address} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a61ea17b3590ab876f7c49a3a7761d4eb}\index{group\_session.h@{group\_session.h}!pack\_group\_pre\_key\_plaintext@{pack\_group\_pre\_key\_plaintext}}
+\index{pack\_group\_pre\_key\_plaintext@{pack\_group\_pre\_key\_plaintext}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{pack\_group\_pre\_key\_plaintext()}{pack\_group\_pre\_key\_plaintext()}}
+{\footnotesize\ttfamily \label{group__session_8h_a61ea17b3590ab876f7c49a3a7761d4eb} 
+size\+\_\+t pack\+\_\+group\+\_\+pre\+\_\+key\+\_\+plaintext (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+pre\+\_\+key\+\_\+plaintext\+\_\+data}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{old\+\_\+session\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Pack the group pre-\/keys. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em outbound\+\_\+group\+\_\+session} & \\
+\hline
+{\em group\+\_\+pre\+\_\+key\+\_\+plaintext\+\_\+data} & \\
+\hline
+{\em old\+\_\+session\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a51d9c28171f5dabe3d73ceddd125ca45}\index{group\_session.h@{group\_session.h}!renew\_group\_sessions\_with\_new\_device@{renew\_group\_sessions\_with\_new\_device}}
+\index{renew\_group\_sessions\_with\_new\_device@{renew\_group\_sessions\_with\_new\_device}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{renew\_group\_sessions\_with\_new\_device()}{renew\_group\_sessions\_with\_new\_device()}}
+{\footnotesize\ttfamily \label{group__session_8h_a51d9c28171f5dabe3d73ceddd125ca45} 
+int renew\+\_\+group\+\_\+sessions\+\_\+with\+\_\+new\+\_\+device (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{sender\+\_\+chain\+\_\+key}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{new\+\_\+device\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}}]{adding\+\_\+member\+\_\+device\+\_\+info}{}\end{DoxyParamCaption})}
+
+
+
+Renew group sessions when someone add a new device. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em outbound\+\_\+group\+\_\+session} & \\
+\hline
+{\em sender\+\_\+chain\+\_\+key} & \\
+\hline
+{\em sender\+\_\+address} & \\
+\hline
+{\em new\+\_\+device\+\_\+address} & \\
+\hline
+{\em adding\+\_\+member\+\_\+device\+\_\+info} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_ac7c84d20114d98de1989ec9115d29f8e}\index{group\_session.h@{group\_session.h}!renew\_inbound\_group\_session\_by\_welcome\_and\_add@{renew\_inbound\_group\_session\_by\_welcome\_and\_add}}
+\index{renew\_inbound\_group\_session\_by\_welcome\_and\_add@{renew\_inbound\_group\_session\_by\_welcome\_and\_add}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{renew\_inbound\_group\_session\_by\_welcome\_and\_add()}{renew\_inbound\_group\_session\_by\_welcome\_and\_add()}}
+{\footnotesize\ttfamily \label{group__session_8h_ac7c84d20114d98de1989ec9115d29f8e} 
+int renew\+\_\+inbound\+\_\+group\+\_\+session\+\_\+by\+\_\+welcome\+\_\+and\+\_\+add (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{sender\+\_\+chain\+\_\+key}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{inbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}}]{new\+\_\+group\+\_\+info}{}\end{DoxyParamCaption})}
+
+
+
+Renew the inbound group session when someone joins the group. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sender\+\_\+chain\+\_\+key} & \\
+\hline
+{\em inbound\+\_\+group\+\_\+session} & \\
+\hline
+{\em new\+\_\+group\+\_\+info} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group__session_8h_a529cdb3dd927985a73f96e5b2ab21d9f}\index{group\_session.h@{group\_session.h}!renew\_outbound\_group\_session\_by\_welcome\_and\_add@{renew\_outbound\_group\_session\_by\_welcome\_and\_add}}
+\index{renew\_outbound\_group\_session\_by\_welcome\_and\_add@{renew\_outbound\_group\_session\_by\_welcome\_and\_add}!group\_session.h@{group\_session.h}}
+\doxysubsubsection{\texorpdfstring{renew\_outbound\_group\_session\_by\_welcome\_and\_add()}{renew\_outbound\_group\_session\_by\_welcome\_and\_add()}}
+{\footnotesize\ttfamily \label{group__session_8h_a529cdb3dd927985a73f96e5b2ab21d9f} 
+int renew\+\_\+outbound\+\_\+group\+\_\+session\+\_\+by\+\_\+welcome\+\_\+and\+\_\+add (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{sender\+\_\+chain\+\_\+key}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{size\+\_\+t}]{n\+\_\+adding\+\_\+member\+\_\+info\+\_\+list}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{adding\+\_\+member\+\_\+info\+\_\+list}{, }\item[{size\+\_\+t}]{adding\+\_\+group\+\_\+members\+\_\+num}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{adding\+\_\+group\+\_\+members}{}\end{DoxyParamCaption})}
+
+
+
+Renew the outbound group session when someone joins the group. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em outbound\+\_\+group\+\_\+session} & \\
+\hline
+{\em sender\+\_\+chain\+\_\+key} & \\
+\hline
+{\em sender\+\_\+address} & \\
+\hline
+{\em n\+\_\+adding\+\_\+member\+\_\+info\+\_\+list} & \\
+\hline
+{\em adding\+\_\+member\+\_\+info\+\_\+list} & \\
+\hline
+{\em adding\+\_\+group\+\_\+members\+\_\+num} & \\
+\hline
+{\em adding\+\_\+group\+\_\+members} & \\
+\hline
+\end{DoxyParams}

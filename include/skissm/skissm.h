@@ -1,4 +1,5 @@
-/*
+/**
+ * @file
  * Copyright © 2020-2021 by Academia Sinica
  *
  * This file is part of SKISSM.
@@ -103,8 +104,12 @@ extern "C" {
 #include "skissm/log_code.h"
 #include "skissm/session.h"
 
-#define E2EE_PROTOCOL_VERSION                                "E2EE_PROTOCOL_v1.0"
-#define E2EE_PLAINTEXT_VERSION                               "E2EE_PLAINTEXT_v1.0"
+#define E2EE_PROTOCOL_VERSION                                "\001"
+#define E2EE_PLAINTEXT_VERSION                               "\001"
+
+#define SKISSM_RESULT_SUCC                                   0
+#define SKISSM_RESULT_FAIL                                   -1
+
 #define UUID_LEN                                             16
 #define SIGNED_PRE_KEY_EXPIRATION_MS                         604800000       // 7 days
 #define INVITE_WAITING_TIME_MS                               60000           // 1 minute

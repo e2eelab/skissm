@@ -68,6 +68,10 @@ bool is_valid_cipher_suite(const cipher_suite_t *cipher_suite) {
                 return false;
             if (cipher_suite->symmetric_encryption_suite->get_crypto_param == NULL)
                 return false;
+        } else {
+            return false;
+        }
+        if (cipher_suite->hash_suite != NULL) {
             if (cipher_suite->hash_suite->hash == NULL)
                 return false;
             if (cipher_suite->hash_suite->hkdf == NULL)

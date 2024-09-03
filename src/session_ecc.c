@@ -120,7 +120,7 @@ Skissm__InviteResponse *crypto_curve25519_new_outbound_session(
     get_skissm_plugin()->db_handler.store_session(outbound_session);
 
     // send the invite request to the peer
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
     Skissm__InviteResponse *response = NULL;
     ret = invite_internal(&response, outbound_session);
 
@@ -228,7 +228,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
 
     /** The one who sends the accept message will be the one who received the invitation message.
      *  Thus, the "from" and "to" of acception message will be different from those in the session. */
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
     Skissm__AcceptResponse *response = NULL;
     ret = accept_internal(
         &response,

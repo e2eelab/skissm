@@ -1,0 +1,357 @@
+\doxysection{e2ee\+\_\+proto\+\_\+handler\+\_\+t Struct Reference}
+\hypertarget{structe2ee__proto__handler__t}{}\label{structe2ee__proto__handler__t}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+
+
+Type definition of protocol handler.  
+
+
+
+
+{\ttfamily \#include $<$skissm.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Skissm\+\_\+\+\_\+\+Register\+User\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_aacfe28380fcb1e3dc899c1b239c62efb}{register\+\_\+user}} )(Skissm\+\_\+\+\_\+\+Register\+User\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Register user. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_af92a0810e6c87c63fac30bd05f00ce98}{get\+\_\+pre\+\_\+key\+\_\+bundle}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Get pre-\/key bundle. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_a6e06845ce6a71514d655081de1b8e6ce}{invite}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Invite\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Invite. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Accept\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_a2138ad8a34958605bd6ee0bbe9db2620}{accept}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Accept\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Accept. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Publish\+Spk\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_a7fd75d467065ea598e99d2a84081810b}{publish\+\_\+spk}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Publish\+Spk\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Publish signed pre-\/key. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Supply\+Opks\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_a7024596b6f0e87cad8c33157494183a1}{supply\+\_\+opks}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Supply\+Opks\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Supply onetime pre-\/key. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Send\+One2one\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_ae098f8cecca34b27293d026c6de844db}{send\+\_\+one2one\+\_\+msg}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Send\+One2one\+Msg\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Send one2one message. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_a60973c0ad8369be520b512daf177f597}{create\+\_\+group}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Create\+Group\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Create group. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_a308fb7598a7f5f65b393fc8b860f662b}{add\+\_\+group\+\_\+members}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Add group members. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_accb8d2eeeab2f59c990e916dba8d1d89}{add\+\_\+group\+\_\+member\+\_\+device}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Add group member device. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_a6cbddd889fa0e4d38c307d7b9a6f7a25}{remove\+\_\+group\+\_\+members}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Remove group members. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_af6f0df98b6407ce7c1e085b4b91dd2f0}{leave\+\_\+group}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Leave\+Group\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Leave group. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_a11e84a097ee79c599bd430048b06ef10}{send\+\_\+group\+\_\+msg}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Send\+Group\+Msg\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Send group message. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ee__proto__handler__t_aa6aa3a4616b56aa6800bd9c0938d6982}{consume\+\_\+proto\+\_\+msg}} )(Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Consume a Proto\+Msg. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Type definition of protocol handler. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structe2ee__proto__handler__t_a2138ad8a34958605bd6ee0bbe9db2620}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!accept@{accept}}
+\index{accept@{accept}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{accept}{accept}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_a2138ad8a34958605bd6ee0bbe9db2620} 
+Skissm\+\_\+\+\_\+\+Accept\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::accept) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Accept\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Accept. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_accb8d2eeeab2f59c990e916dba8d1d89}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!add\_group\_member\_device@{add\_group\_member\_device}}
+\index{add\_group\_member\_device@{add\_group\_member\_device}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{add\_group\_member\_device}{add\_group\_member\_device}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_accb8d2eeeab2f59c990e916dba8d1d89} 
+Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::add\+\_\+group\+\_\+member\+\_\+device) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Add group member device. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_a308fb7598a7f5f65b393fc8b860f662b}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!add\_group\_members@{add\_group\_members}}
+\index{add\_group\_members@{add\_group\_members}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{add\_group\_members}{add\_group\_members}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_a308fb7598a7f5f65b393fc8b860f662b} 
+Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::add\+\_\+group\+\_\+members) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Add group members. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_aa6aa3a4616b56aa6800bd9c0938d6982}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!consume\_proto\_msg@{consume\_proto\_msg}}
+\index{consume\_proto\_msg@{consume\_proto\_msg}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{consume\_proto\_msg}{consume\_proto\_msg}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_aa6aa3a4616b56aa6800bd9c0938d6982} 
+Skissm\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::consume\+\_\+proto\+\_\+msg) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Consume a Proto\+Msg. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_a60973c0ad8369be520b512daf177f597}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!create\_group@{create\_group}}
+\index{create\_group@{create\_group}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{create\_group}{create\_group}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_a60973c0ad8369be520b512daf177f597} 
+Skissm\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::create\+\_\+group) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Create\+Group\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Create group. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_af92a0810e6c87c63fac30bd05f00ce98}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!get\_pre\_key\_bundle@{get\_pre\_key\_bundle}}
+\index{get\_pre\_key\_bundle@{get\_pre\_key\_bundle}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{get\_pre\_key\_bundle}{get\_pre\_key\_bundle}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_af92a0810e6c87c63fac30bd05f00ce98} 
+Skissm\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::get\+\_\+pre\+\_\+key\+\_\+bundle) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Get pre-\/key bundle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_a6e06845ce6a71514d655081de1b8e6ce}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!invite@{invite}}
+\index{invite@{invite}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{invite}{invite}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_a6e06845ce6a71514d655081de1b8e6ce} 
+Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::invite) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Invite\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Invite. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_af6f0df98b6407ce7c1e085b4b91dd2f0}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!leave\_group@{leave\_group}}
+\index{leave\_group@{leave\_group}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{leave\_group}{leave\_group}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_af6f0df98b6407ce7c1e085b4b91dd2f0} 
+Skissm\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::leave\+\_\+group) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Leave\+Group\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Leave group. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_a7fd75d467065ea598e99d2a84081810b}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!publish\_spk@{publish\_spk}}
+\index{publish\_spk@{publish\_spk}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{publish\_spk}{publish\_spk}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_a7fd75d467065ea598e99d2a84081810b} 
+Skissm\+\_\+\+\_\+\+Publish\+Spk\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::publish\+\_\+spk) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Publish\+Spk\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Publish signed pre-\/key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_aacfe28380fcb1e3dc899c1b239c62efb}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!register\_user@{register\_user}}
+\index{register\_user@{register\_user}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{register\_user}{register\_user}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_aacfe28380fcb1e3dc899c1b239c62efb} 
+Skissm\+\_\+\+\_\+\+Register\+User\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::register\+\_\+user) (Skissm\+\_\+\+\_\+\+Register\+User\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Register user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_a6cbddd889fa0e4d38c307d7b9a6f7a25}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!remove\_group\_members@{remove\_group\_members}}
+\index{remove\_group\_members@{remove\_group\_members}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{remove\_group\_members}{remove\_group\_members}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_a6cbddd889fa0e4d38c307d7b9a6f7a25} 
+Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::remove\+\_\+group\+\_\+members) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Remove group members. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_a11e84a097ee79c599bd430048b06ef10}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!send\_group\_msg@{send\_group\_msg}}
+\index{send\_group\_msg@{send\_group\_msg}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{send\_group\_msg}{send\_group\_msg}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_a11e84a097ee79c599bd430048b06ef10} 
+Skissm\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::send\+\_\+group\+\_\+msg) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Send\+Group\+Msg\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Send group message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_ae098f8cecca34b27293d026c6de844db}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!send\_one2one\_msg@{send\_one2one\_msg}}
+\index{send\_one2one\_msg@{send\_one2one\_msg}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{send\_one2one\_msg}{send\_one2one\_msg}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_ae098f8cecca34b27293d026c6de844db} 
+Skissm\+\_\+\+\_\+\+Send\+One2one\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::send\+\_\+one2one\+\_\+msg) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Send\+One2one\+Msg\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Send one2one message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ee__proto__handler__t_a7024596b6f0e87cad8c33157494183a1}\index{e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}!supply\_opks@{supply\_opks}}
+\index{supply\_opks@{supply\_opks}!e2ee\_proto\_handler\_t@{e2ee\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{supply\_opks}{supply\_opks}}
+{\footnotesize\ttfamily \label{structe2ee__proto__handler__t_a7024596b6f0e87cad8c33157494183a1} 
+Skissm\+\_\+\+\_\+\+Supply\+Opks\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ee\+\_\+proto\+\_\+handler\+\_\+t\+::supply\+\_\+opks) (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, Skissm\+\_\+\+\_\+\+Supply\+Opks\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Supply onetime pre-\/key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/skissm/\mbox{\hyperlink{skissm_8h}{skissm.\+h}}\end{DoxyCompactItemize}

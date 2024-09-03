@@ -1,6 +1,9 @@
-/*
- * Copyright © 2020-2021 by Academia Sinica
+/**
+ * @file
+ * @copyright © 2020-2021 by Academia Sinica
+ * @brief group session test
  *
+ * @page test_group_session group session documentation
  * This file is part of SKISSM.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,6 +18,166 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @section test_create_group
+ * Alice creates a group with four members in it. Everyone in the group sends a message to the group.
+ * 
+ * @section test_add_group_members
+ * Alice creates a group with three members in it. Then Alice adds a group member. Next, everyone in the group sends a message to the group.
+ * 
+ * @section test_remove_group_members
+ * Alice creates a group with four members in it. Then Alice removes a group member. Next, everyone in the group sends a message to the group.
+ * 
+ * @section test_create_add_remove
+ * Alice creates a group with two members in it. Then Alice adds a group member. Next, everyone in the group sends a message to the group. Then Alice removes a group member. Next, everyone in the group sends a message to the group.
+ * 
+ * @section test_leave_group
+ * Alice creates a group with four members in it. Then one of the group members leaves the group. Next, everyone in the group sends a message to the group.
+ * 
+ * @section test_continual
+ * Alice creates a group with three members in it. Then everyone in the group sends 1000 messages to the group.
+ * 
+ * @section test_multiple_devices
+ * Everyone in the three-member group has two devices. Everyone in the group sends a message to the group.
+ * 
+ * @section test_add_new_device
+ * One of the group members adds a new device.
+ * 
+ * @section test_medium_group
+ * 
+ * 
+ * 
+ * 
+ * @defgroup group_session_unit group session unit test
+ * @ingroup Unit
+ * This includes unit tests about group session.
+ * 
+ * @defgroup group_session_int group session integration test
+ * @ingroup Integration
+ * This includes integration tests about group session.
+ * 
+ * @defgroup group_session_test_create_group create group test
+ * @ingroup group_session_int
+ * @{
+ * @section sec1001 Test Description
+ * Alice creates a group with four members in it. Everyone in the group sends a message to the group.
+ * @section sec1002 Test Objectives
+ * @section sec1003 Test Case ID
+ * @section sec1004 Test Case Title: test_create_group
+ * @section sec1005 Preconditions
+ * @section sec1006 Test Steps
+ * @section sec1007 Expected Results
+ * @}
+ * 
+ * @defgroup group_session_test_add_group_members add group members test
+ * @ingroup group_session_int
+ * @{
+ * @section sec1101 Test Description
+ * Alice creates a group with three members in it. Then Alice adds a group member.
+ * Next, everyone in the group sends a message to the group.
+ * @section sec1102 Test Objectives
+ * @section sec1103 Test Case ID
+ * @section sec1104 Test Case Title: test_add_group_members
+ * @section sec1105 Preconditions
+ * @section sec1106 Test Steps
+ * @section sec1107 Expected Results
+ * @}
+ * 
+ * @defgroup group_session_test_remove_group_members remove group members test
+ * @ingroup group_session_int
+ * @{
+ * @section sec1201 Test Description
+ * Alice creates a group with four members in it. Then Alice removes a group member.
+ * Next, everyone in the group sends a message to the group.
+ * @section sec1202 Test Objectives
+ * @section sec1203 Test Case ID
+ * @section sec1204 Test Case Title: test_remove_group_members
+ * @section sec1205 Preconditions
+ * @section sec1206 Test Steps
+ * @section sec1207 Expected Results
+ * @}
+ * 
+ * @defgroup group_session_test_create_add_remove group test
+ * @ingroup group_session_int
+ * @{
+ * @section sec1301 Test Description
+ * Alice creates a group with two members in it. Then Alice adds a group member.
+ * Next, everyone in the group sends a message to the group. Then Alice removes a group member.
+ * Next, everyone in the group sends a message to the group.
+ * @section sec1302 Test Objectives
+ * @section sec1303 Test Case ID
+ * @section sec1304 Test Case Title: test_create_add_remove
+ * @section sec1305 Preconditions
+ * @section sec1306 Test Steps
+ * @section sec1307 Expected Results
+ * @}
+ * 
+ * @defgroup group_session_test_leave_group leave group test
+ * @ingroup group_session_int
+ * @{
+ * @section sec1401 Test Description
+ * Alice creates a group with four members in it. Then one of the group members leaves the group.
+ * Next, everyone in the group sends a message to the group.
+ * @section sec1402 Test Objectives
+ * @section sec1403 Test Case ID
+ * @section sec1404 Test Case Title: test_leave_group
+ * @section sec1405 Preconditions
+ * @section sec1406 Test Steps
+ * @section sec1407 Expected Results
+ * @}
+ * 
+ * @defgroup group_session_test_continual continual messages test
+ * @ingroup group_session_int
+ * @{
+ * @section sec1501 Test Description
+ * Alice creates a group with three members in it. Then everyone in the group sends 1000 messages to the group.
+ * @section sec1502 Test Objectives
+ * @section sec1503 Test Case ID
+ * @section sec1504 Test Case Title: test_continual
+ * @section sec1505 Preconditions
+ * @section sec1506 Test Steps
+ * @section sec1507 Expected Results
+ * @}
+ * 
+ * @defgroup group_session_test_multiple_devices multiple devices test
+ * @ingroup group_session_int
+ * @{
+ * @section sec1601 Test Description
+ * Everyone in the three-member group has two devices. Everyone in the group sends a message to the group.
+ * @section sec1602 Test Objectives
+ * @section sec1603 Test Case ID
+ * @section sec1604 Test Case Title: test_multiple_devices
+ * @section sec1605 Preconditions
+ * @section sec1606 Test Steps
+ * @section sec1607 Expected Results
+ * @}
+ * 
+ * @defgroup group_session_test_add_new_device new devices test
+ * @ingroup group_session_int
+ * @{
+ * @section sec1701 Test Description
+ * One of the group members adds a new device.
+ * @section sec1702 Test Objectives
+ * @section sec1703 Test Case ID
+ * @section sec1704 Test Case Title: test_add_new_device
+ * @section sec1705 Preconditions
+ * @section sec1706 Test Steps
+ * @section sec1707 Expected Results
+ * @}
+ * 
+ * @defgroup group_session_test_medium_group a medium group test
+ * @ingroup group_session_int
+ * @{
+ * @section sec1801 Test Description
+ * 
+ * @section sec1802 Test Objectives
+ * @section sec1803 Test Case ID
+ * @section sec1804 Test Case Title: test_medium_group
+ * @section sec1805 Preconditions
+ * @section sec1806 Test Steps
+ * @section sec1807 Expected Results
+ * @}
+ * 
  */
 #include <stdio.h>
 #include <stdlib.h>

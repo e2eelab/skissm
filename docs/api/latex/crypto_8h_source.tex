@@ -1,0 +1,580 @@
+\doxysection{crypto.\+h}
+\hypertarget{crypto_8h_source}{}\label{crypto_8h_source}\index{include/skissm/crypto.h@{include/skissm/crypto.h}}
+\mbox{\hyperlink{crypto_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#ifndef\ CRYPTO\_H\_}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ CRYPTO\_H\_}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <stdbool.h>}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00030\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{skissm_8h}{skissm/skissm.h}}"{}}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ SHA256\_OUTPUT\_LENGTH\ 32}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#define\ CURVE25519\_KEY\_LENGTH\ 32}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#define\ CURVE\_SIGNATURE\_LENGTH\ 64}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#define\ AES256\_KEY\_LENGTH\ 32}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#define\ AES256\_IV\_LENGTH\ 16}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#define\ AES256\_GCM\_TAG\_LENGTH\ 16}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#define\ AES256\_DATA\_IV\_LENGTH\ 12}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_curve25519\_sign\_param();}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_dilithium2\_param();}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_dilithium3\_param();}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_dilithium5\_param();}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_falcon512\_param();}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_falcon1024\_param();}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_sha2\_128f\_param();}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_sha2\_128s\_param();}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_sha2\_192f\_param();}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_sha2\_192s\_param();}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_sha2\_256f\_param();}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_sha2\_256s\_param();}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_shake\_128f\_param();}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_shake\_128s\_param();}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_shake\_192f\_param();}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_shake\_192s\_param();}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_shake\_256f\_param();}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ get\_sphincs\_shake\_256s\_param();}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \textcolor{keywordtype}{int}\ crypto\_dilithium2\_generate\_key\_pair(}
+\DoxyCodeLine{00093\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00094\ );}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \textcolor{keywordtype}{int}\ crypto\_dilithium3\_generate\_key\_pair(}
+\DoxyCodeLine{00097\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00098\ );}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{keywordtype}{int}\ crypto\_dilithium5\_generate\_key\_pair(}
+\DoxyCodeLine{00101\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00102\ );}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \textcolor{keywordtype}{int}\ crypto\_falcon512\_generate\_key\_pair(}
+\DoxyCodeLine{00105\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00106\ );}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \textcolor{keywordtype}{int}\ crypto\_falcon1024\_generate\_key\_pair(}
+\DoxyCodeLine{00109\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00110\ );}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_sha2\_128f\_generate\_key\_pair(}
+\DoxyCodeLine{00113\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00114\ );}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_sha2\_128s\_generate\_key\_pair(}
+\DoxyCodeLine{00117\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00118\ );}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_sha2\_192f\_generate\_key\_pair(}
+\DoxyCodeLine{00121\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00122\ );}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_sha2\_192s\_generate\_key\_pair(}
+\DoxyCodeLine{00125\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00126\ );}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_sha2\_256f\_generate\_key\_pair(}
+\DoxyCodeLine{00129\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00130\ );}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_sha2\_256s\_generate\_key\_pair(}
+\DoxyCodeLine{00133\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00134\ );}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_shake\_128f\_generate\_key\_pair(}
+\DoxyCodeLine{00137\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00138\ );}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_shake\_128s\_generate\_key\_pair(}
+\DoxyCodeLine{00141\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00142\ );}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_shake\_192f\_generate\_key\_pair(}
+\DoxyCodeLine{00145\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00146\ );}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_shake\_192s\_generate\_key\_pair(}
+\DoxyCodeLine{00149\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00150\ );}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_shake\_256f\_generate\_key\_pair(}
+\DoxyCodeLine{00153\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00154\ );}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \textcolor{keywordtype}{int}\ crypto\_sphincs\_shake\_256s\_generate\_key\_pair(}
+\DoxyCodeLine{00157\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00158\ );}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_curve25519\_ECDH\_param();}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_hqc128\_param();}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_hqc192\_param();}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_hqc256\_param();}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_kyber512\_param();}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_kyber768\_param();}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_kyber1024\_param();}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece348864\_param();}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece348864f\_param();}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece460896\_param();}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece460896f\_param();}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece6688128\_param();}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece6688128f\_param();}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece6960119\_param();}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece6960119f\_param();}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece8192128\_param();}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ get\_mceliece8192128f\_param();}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \mbox{\hyperlink{structcrypto__symmetric__encryption__param__t}{crypto\_symmetric\_encryption\_param\_t}}\ get\_aes256\_param();}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ \mbox{\hyperlink{structcrypto__hash__param__t}{crypto\_hash\_param\_t}}\ get\_sha256\_param();}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \textcolor{keywordtype}{int}\ crypto\_hqc128\_generate\_key\_pair(}
+\DoxyCodeLine{00199\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00200\ );}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \textcolor{keywordtype}{int}\ crypto\_hqc192\_generate\_key\_pair(}
+\DoxyCodeLine{00203\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00204\ );}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \textcolor{keywordtype}{int}\ crypto\_hqc256\_generate\_key\_pair(}
+\DoxyCodeLine{00207\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00208\ );}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \textcolor{keywordtype}{int}\ crypto\_kyber512\_generate\_key\_pair(}
+\DoxyCodeLine{00211\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00212\ );}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \textcolor{keywordtype}{int}\ crypto\_kyber768\_generate\_key\_pair(}
+\DoxyCodeLine{00215\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00216\ );}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \textcolor{keywordtype}{int}\ crypto\_kyber1024\_generate\_key\_pair(}
+\DoxyCodeLine{00219\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00220\ );}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \textcolor{keywordtype}{int}\ crypto\_mceliece348864\_generate\_key\_pair(}
+\DoxyCodeLine{00223\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00224\ );}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \textcolor{keywordtype}{int}\ crypto\_mceliece348864f\_generate\_key\_pair(}
+\DoxyCodeLine{00227\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00228\ );}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \textcolor{keywordtype}{int}\ crypto\_mceliece460896\_generate\_key\_pair(}
+\DoxyCodeLine{00231\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00232\ );}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \textcolor{keywordtype}{int}\ crypto\_mceliece460896f\_generate\_key\_pair(}
+\DoxyCodeLine{00235\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00236\ );}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \textcolor{keywordtype}{int}\ crypto\_mceliece6688128\_generate\_key\_pair(}
+\DoxyCodeLine{00239\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00240\ );}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00242\ \textcolor{keywordtype}{int}\ crypto\_mceliece6688128f\_generate\_key\_pair(}
+\DoxyCodeLine{00243\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00244\ );}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \textcolor{keywordtype}{int}\ crypto\_mceliece6960119\_generate\_key\_pair(}
+\DoxyCodeLine{00247\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00248\ );}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00250\ \textcolor{keywordtype}{int}\ crypto\_mceliece6960119f\_generate\_key\_pair(}
+\DoxyCodeLine{00251\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00252\ );}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \textcolor{keywordtype}{int}\ crypto\_mceliece8192128\_generate\_key\_pair(}
+\DoxyCodeLine{00255\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00256\ );}
+\DoxyCodeLine{00257\ }
+\DoxyCodeLine{00258\ \textcolor{keywordtype}{int}\ crypto\_mceliece8192128f\_generate\_key\_pair(}
+\DoxyCodeLine{00259\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00260\ );}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00262\ \textcolor{keywordtype}{int}\ crypto\_hqc128\_encaps(}
+\DoxyCodeLine{00263\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00264\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00265\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00266\ );}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \textcolor{keywordtype}{int}\ crypto\_hqc192\_encaps(}
+\DoxyCodeLine{00269\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00270\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00271\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00272\ );}
+\DoxyCodeLine{00273\ }
+\DoxyCodeLine{00274\ \textcolor{keywordtype}{int}\ crypto\_hqc256\_encaps(}
+\DoxyCodeLine{00275\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00276\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00277\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00278\ );}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00280\ \textcolor{keywordtype}{int}\ crypto\_kyber512\_encaps(}
+\DoxyCodeLine{00281\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00282\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00283\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00284\ );}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00286\ \textcolor{keywordtype}{int}\ crypto\_kyber768\_encaps(}
+\DoxyCodeLine{00287\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00288\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00289\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00290\ );}
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00292\ \textcolor{keywordtype}{int}\ crypto\_kyber1024\_encaps(}
+\DoxyCodeLine{00293\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00294\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00295\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00296\ );}
+\DoxyCodeLine{00297\ }
+\DoxyCodeLine{00298\ \textcolor{keywordtype}{int}\ crypto\_mceliece348864\_encaps(}
+\DoxyCodeLine{00299\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00300\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00301\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00302\ );}
+\DoxyCodeLine{00303\ }
+\DoxyCodeLine{00304\ \textcolor{keywordtype}{int}\ crypto\_mceliece348864f\_encaps(}
+\DoxyCodeLine{00305\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00306\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00307\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00308\ );}
+\DoxyCodeLine{00309\ }
+\DoxyCodeLine{00310\ \textcolor{keywordtype}{int}\ crypto\_mceliece460896\_encaps(}
+\DoxyCodeLine{00311\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00312\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00313\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00314\ );}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ \textcolor{keywordtype}{int}\ crypto\_mceliece460896f\_encaps(}
+\DoxyCodeLine{00317\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00318\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00319\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00320\ );}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00322\ \textcolor{keywordtype}{int}\ crypto\_mceliece6688128\_encaps(}
+\DoxyCodeLine{00323\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00324\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00325\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00326\ );}
+\DoxyCodeLine{00327\ }
+\DoxyCodeLine{00328\ \textcolor{keywordtype}{int}\ crypto\_mceliece6688128f\_encaps(}
+\DoxyCodeLine{00329\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00330\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00332\ );}
+\DoxyCodeLine{00333\ }
+\DoxyCodeLine{00334\ \textcolor{keywordtype}{int}\ crypto\_mceliece6960119\_encaps(}
+\DoxyCodeLine{00335\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00336\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00337\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00338\ );}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00340\ \textcolor{keywordtype}{int}\ crypto\_mceliece6960119f\_encaps(}
+\DoxyCodeLine{00341\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00342\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00343\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00344\ );}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00346\ \textcolor{keywordtype}{int}\ crypto\_mceliece8192128\_encaps(}
+\DoxyCodeLine{00347\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00348\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00349\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00350\ );}
+\DoxyCodeLine{00351\ }
+\DoxyCodeLine{00352\ \textcolor{keywordtype}{int}\ crypto\_mceliece8192128f\_encaps(}
+\DoxyCodeLine{00353\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00354\ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00355\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00356\ );}
+\DoxyCodeLine{00357\ }
+\DoxyCodeLine{00358\ \textcolor{keywordtype}{int}\ crypto\_hqc128\_decaps(}
+\DoxyCodeLine{00359\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00360\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00361\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00362\ );}
+\DoxyCodeLine{00363\ }
+\DoxyCodeLine{00364\ \textcolor{keywordtype}{int}\ crypto\_hqc192\_decaps(}
+\DoxyCodeLine{00365\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00366\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00367\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00368\ );}
+\DoxyCodeLine{00369\ }
+\DoxyCodeLine{00370\ \textcolor{keywordtype}{int}\ crypto\_hqc256\_decaps(}
+\DoxyCodeLine{00371\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00372\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00373\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00374\ );}
+\DoxyCodeLine{00375\ }
+\DoxyCodeLine{00376\ \textcolor{keywordtype}{int}\ crypto\_kyber512\_decaps(}
+\DoxyCodeLine{00377\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00378\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00379\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00380\ );}
+\DoxyCodeLine{00381\ }
+\DoxyCodeLine{00382\ \textcolor{keywordtype}{int}\ crypto\_kyber768\_decaps(}
+\DoxyCodeLine{00383\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00384\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00385\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00386\ );}
+\DoxyCodeLine{00387\ }
+\DoxyCodeLine{00388\ \textcolor{keywordtype}{int}\ crypto\_kyber1024\_decaps(}
+\DoxyCodeLine{00389\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00390\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00391\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00392\ );}
+\DoxyCodeLine{00393\ }
+\DoxyCodeLine{00394\ \textcolor{keywordtype}{int}\ crypto\_mceliece348864\_decaps(}
+\DoxyCodeLine{00395\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00396\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00397\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00398\ );}
+\DoxyCodeLine{00399\ }
+\DoxyCodeLine{00400\ \textcolor{keywordtype}{int}\ crypto\_mceliece348864f\_decaps(}
+\DoxyCodeLine{00401\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00402\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00403\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00404\ );}
+\DoxyCodeLine{00405\ }
+\DoxyCodeLine{00406\ \textcolor{keywordtype}{int}\ crypto\_mceliece460896\_decaps(}
+\DoxyCodeLine{00407\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00408\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00409\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00410\ );}
+\DoxyCodeLine{00411\ }
+\DoxyCodeLine{00412\ \textcolor{keywordtype}{int}\ crypto\_mceliece460896f\_decaps(}
+\DoxyCodeLine{00413\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00414\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00415\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00416\ );}
+\DoxyCodeLine{00417\ }
+\DoxyCodeLine{00418\ \textcolor{keywordtype}{int}\ crypto\_mceliece6688128\_decaps(}
+\DoxyCodeLine{00419\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00420\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00421\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00422\ );}
+\DoxyCodeLine{00423\ }
+\DoxyCodeLine{00424\ \textcolor{keywordtype}{int}\ crypto\_mceliece6688128f\_decaps(}
+\DoxyCodeLine{00425\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00426\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00427\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00428\ );}
+\DoxyCodeLine{00429\ }
+\DoxyCodeLine{00430\ \textcolor{keywordtype}{int}\ crypto\_mceliece6960119\_decaps(}
+\DoxyCodeLine{00431\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00432\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00433\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00434\ );}
+\DoxyCodeLine{00435\ }
+\DoxyCodeLine{00436\ \textcolor{keywordtype}{int}\ crypto\_mceliece6960119f\_decaps(}
+\DoxyCodeLine{00437\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00438\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00439\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00440\ );}
+\DoxyCodeLine{00441\ }
+\DoxyCodeLine{00442\ \textcolor{keywordtype}{int}\ crypto\_mceliece8192128\_decaps(}
+\DoxyCodeLine{00443\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00444\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00445\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00446\ );}
+\DoxyCodeLine{00447\ }
+\DoxyCodeLine{00448\ \textcolor{keywordtype}{int}\ crypto\_mceliece8192128f\_decaps(}
+\DoxyCodeLine{00449\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00450\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00451\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00452\ );}
+\DoxyCodeLine{00453\ }
+\DoxyCodeLine{00454\ \textcolor{keywordtype}{int}\ CURVE25519\_crypto\_sign\_keypair(ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key);}
+\DoxyCodeLine{00455\ }
+\DoxyCodeLine{00456\ \textcolor{keywordtype}{int}\ CURVE25519\_crypto\_keypair(ProtobufCBinaryData\ *pub\_key,\ ProtobufCBinaryData\ *priv\_key);}
+\DoxyCodeLine{00457\ }
+\DoxyCodeLine{00458\ \textcolor{keywordtype}{int}\ CURVE25519\_crypto\_sign\_signature(}
+\DoxyCodeLine{00459\ \ \ \ \ uint8\_t\ *signature\_out,\ \textcolor{keywordtype}{size\_t}\ *signature\_out\_len,}
+\DoxyCodeLine{00460\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00461\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *private\_key}
+\DoxyCodeLine{00462\ );}
+\DoxyCodeLine{00463\ }
+\DoxyCodeLine{00464\ \textcolor{keywordtype}{int}\ CURVE25519\_crypto\_sign\_verify(}
+\DoxyCodeLine{00465\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *signature\_in,\ \textcolor{keywordtype}{size\_t}\ signature\_in\_len,}
+\DoxyCodeLine{00466\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00467\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *public\_key}
+\DoxyCodeLine{00468\ );}
+\DoxyCodeLine{00469\ }
+\DoxyCodeLine{00470\ \textcolor{keywordtype}{int}\ crypto\_curve25519\_dh(}
+\DoxyCodeLine{00471\ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00472\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00473\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00474\ );}
+\DoxyCodeLine{00475\ }
+\DoxyCodeLine{00476\ \textcolor{keywordtype}{void}\ crypto\_curve25519\_sign(uint8\_t\ *private\_key,}
+\DoxyCodeLine{00477\ \ \ \ \ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,\ uint8\_t\ *signature\_out}
+\DoxyCodeLine{00478\ );}
+\DoxyCodeLine{00479\ }
+\DoxyCodeLine{00480\ \textcolor{keywordtype}{int}\ crypto\_curve25519\_verify(}
+\DoxyCodeLine{00481\ \ \ \ \ uint8\_t\ *signature\_in,\ uint8\_t\ *public\_key,}
+\DoxyCodeLine{00482\ \ \ \ \ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len}
+\DoxyCodeLine{00483\ );}
+\DoxyCodeLine{00484\ }
+\DoxyCodeLine{00499\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_abcefe49359b60a5ac8ff77973306d56d}{crypto\_hkdf\_sha256}}(}
+\DoxyCodeLine{00500\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
+\DoxyCodeLine{00501\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *salt,\ \textcolor{keywordtype}{size\_t}\ salt\_len,}
+\DoxyCodeLine{00502\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *info,\ \textcolor{keywordtype}{size\_t}\ info\_len,}
+\DoxyCodeLine{00503\ \ \ \ \ uint8\_t\ *output,\ \textcolor{keywordtype}{size\_t}\ output\_len}
+\DoxyCodeLine{00504\ );}
+\DoxyCodeLine{00505\ }
+\DoxyCodeLine{00518\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_adef4a9c555eb2fff679128a08a43da7d}{crypto\_hmac\_sha256}}(}
+\DoxyCodeLine{00519\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *key,\ \textcolor{keywordtype}{size\_t}\ key\_len,}
+\DoxyCodeLine{00520\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
+\DoxyCodeLine{00521\ \ \ \ \ uint8\_t\ *output}
+\DoxyCodeLine{00522\ );}
+\DoxyCodeLine{00523\ }
+\DoxyCodeLine{00534\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_abc1ba4ed4300cb5b7dd5dd9bba2491c4}{crypto\_sha256}}(}
+\DoxyCodeLine{00535\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00536\ \ \ \ \ uint8\_t\ *hash\_out}
+\DoxyCodeLine{00537\ );}
+\DoxyCodeLine{00538\ }
+\DoxyCodeLine{00550\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_a1ecbc7f2cf34bcec4b5d3853bd504bad}{crypto\_aes\_encrypt\_gcm}}(}
+\DoxyCodeLine{00551\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
+\DoxyCodeLine{00552\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *aes\_key,\ \textcolor{keyword}{const}\ uint8\_t\ *iv,}
+\DoxyCodeLine{00553\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *add,\ \textcolor{keywordtype}{size\_t}\ add\_len,}
+\DoxyCodeLine{00554\ \ \ \ \ uint8\_t\ *ciphertext\_data}
+\DoxyCodeLine{00555\ );}
+\DoxyCodeLine{00556\ }
+\DoxyCodeLine{00571\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_a0abf54c9a3f3c89e4552ea50b87afde3}{crypto\_aes\_decrypt\_gcm}}(}
+\DoxyCodeLine{00572\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *ciphertext\_data,\ \textcolor{keywordtype}{size\_t}\ ciphertext\_data\_len,}
+\DoxyCodeLine{00573\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *aes\_key,\ \textcolor{keyword}{const}\ uint8\_t\ *iv,}
+\DoxyCodeLine{00574\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *add,\ \textcolor{keywordtype}{size\_t}\ add\_len,}
+\DoxyCodeLine{00575\ \ \ \ \ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ *plaintext\_data\_len}
+\DoxyCodeLine{00576\ );}
+\DoxyCodeLine{00577\ }
+\DoxyCodeLine{00588\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{crypto_8h_afc26d7ca538bd3f7fec38b2c1959beb0}{encrypt\_aes\_data\_with\_iv}}(}
+\DoxyCodeLine{00589\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
+\DoxyCodeLine{00590\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ aes\_key[\mbox{\hyperlink{crypto_8h_af36200aa1d4d85292b027b6d811263ad}{AES256\_KEY\_LENGTH}}],}
+\DoxyCodeLine{00591\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ iv[\mbox{\hyperlink{crypto_8h_adbbbf1c1be8a7fb625cf3879c3168dc3}{AES256\_DATA\_IV\_LENGTH}}],}
+\DoxyCodeLine{00592\ \ \ \ \ uint8\_t\ **ciphertext\_data}
+\DoxyCodeLine{00593\ );}
+\DoxyCodeLine{00594\ }
+\DoxyCodeLine{00605\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{crypto_8h_a9239e4f32141c64f2ed409902253db2e}{encrypt\_aes\_data}}(}
+\DoxyCodeLine{00606\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
+\DoxyCodeLine{00607\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ aes\_key[\mbox{\hyperlink{crypto_8h_af36200aa1d4d85292b027b6d811263ad}{AES256\_KEY\_LENGTH}}],}
+\DoxyCodeLine{00608\ \ \ \ \ uint8\_t\ **ciphertext\_data}
+\DoxyCodeLine{00609\ );}
+\DoxyCodeLine{00610\ }
+\DoxyCodeLine{00621\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{crypto_8h_a831ecc64b494384eeef10f02f0c5432c}{decrypt\_aes\_data\_with\_iv}}(}
+\DoxyCodeLine{00622\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *ciphertext\_data,\ \textcolor{keywordtype}{size\_t}\ ciphertext\_data\_len,}
+\DoxyCodeLine{00623\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ aes\_key[\mbox{\hyperlink{crypto_8h_af36200aa1d4d85292b027b6d811263ad}{AES256\_KEY\_LENGTH}}],}
+\DoxyCodeLine{00624\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ iv[\mbox{\hyperlink{crypto_8h_adbbbf1c1be8a7fb625cf3879c3168dc3}{AES256\_DATA\_IV\_LENGTH}}],}
+\DoxyCodeLine{00625\ \ \ \ \ uint8\_t\ **plaintext\_data}
+\DoxyCodeLine{00626\ );}
+\DoxyCodeLine{00627\ }
+\DoxyCodeLine{00638\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{crypto_8h_a272ff8f6ce4ccfeb3fe4b94858d16ac7}{decrypt\_aes\_data}}(}
+\DoxyCodeLine{00639\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *ciphertext\_data,\ \textcolor{keywordtype}{size\_t}\ ciphertext\_data\_len,}
+\DoxyCodeLine{00640\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ aes\_key[\mbox{\hyperlink{crypto_8h_af36200aa1d4d85292b027b6d811263ad}{AES256\_KEY\_LENGTH}}],}
+\DoxyCodeLine{00641\ \ \ \ \ uint8\_t\ **plaintext\_data}
+\DoxyCodeLine{00642\ );}
+\DoxyCodeLine{00643\ }
+\DoxyCodeLine{00653\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_aa06fbcdf5dc0b8f1c2bb4ad5eb70a6b9}{encrypt\_aes\_file}}(}
+\DoxyCodeLine{00654\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *in\_file\_path,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *out\_file\_path,}
+\DoxyCodeLine{00655\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ aes\_key[\mbox{\hyperlink{crypto_8h_af36200aa1d4d85292b027b6d811263ad}{AES256\_KEY\_LENGTH}}]}
+\DoxyCodeLine{00656\ );}
+\DoxyCodeLine{00657\ }
+\DoxyCodeLine{00667\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_afc58ceff0d85193ef70700f828959123}{decrypt\_aes\_file}}(}
+\DoxyCodeLine{00668\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *in\_file\_path,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *out\_file\_path,}
+\DoxyCodeLine{00669\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ aes\_key[\mbox{\hyperlink{crypto_8h_af36200aa1d4d85292b027b6d811263ad}{AES256\_KEY\_LENGTH}}]}
+\DoxyCodeLine{00670\ );}
+\DoxyCodeLine{00671\ }
+\DoxyCodeLine{00683\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_a450cb7660c7518fa1387b4e73696b464}{encrypt\_file}}(}
+\DoxyCodeLine{00684\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *in\_file\_path,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *out\_file\_path,}
+\DoxyCodeLine{00685\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *password,}
+\DoxyCodeLine{00686\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ password\_len}
+\DoxyCodeLine{00687\ );}
+\DoxyCodeLine{00688\ }
+\DoxyCodeLine{00700\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_ac7b60f90ce2bf7b0f3ac50a837ad043a}{decrypt\_file}}(}
+\DoxyCodeLine{00701\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *in\_file\_path,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *out\_file\_path,}
+\DoxyCodeLine{00702\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *password,}
+\DoxyCodeLine{00703\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ password\_len}
+\DoxyCodeLine{00704\ );}
+\DoxyCodeLine{00705\ }
+\DoxyCodeLine{00713\ \textcolor{keywordtype}{char}\ *\mbox{\hyperlink{crypto_8h_a5fbde9fbb7fd0c6ffc949e1384b84906}{crypto\_base64\_encode}}(\textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len);}
+\DoxyCodeLine{00714\ }
+\DoxyCodeLine{00722\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{crypto_8h_a4f5e0daca1f3aca72b3e6e0c35a18de6}{crypto\_base64\_decode}}(uint8\_t\ **msg\_out,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *base64\_str);}
+\DoxyCodeLine{00723\ }
+\DoxyCodeLine{00734\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_a6267438912568b236ef3982e3738fc3a}{crypto\_hash\_by\_e2ee\_pack\_id}}(}
+\DoxyCodeLine{00735\ \ \ \ \ uint32\_t\ e2ee\_pack\_id\_raw,}
+\DoxyCodeLine{00736\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00737\ \ \ \ \ uint8\_t\ **hash\_out,\ \textcolor{keywordtype}{size\_t}\ *hash\_out\_len}
+\DoxyCodeLine{00738\ );}
+\DoxyCodeLine{00739\ }
+\DoxyCodeLine{00749\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_a1614f1ad3633e9adc223673fec666da7}{crypto\_ds\_key\_gen\_by\_e2ee\_pack\_id}}(}
+\DoxyCodeLine{00750\ \ \ \ \ uint32\_t\ e2ee\_pack\_id\_raw,}
+\DoxyCodeLine{00751\ \ \ \ \ ProtobufCBinaryData\ *pub\_key,}
+\DoxyCodeLine{00752\ \ \ \ \ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00753\ );}
+\DoxyCodeLine{00754\ }
+\DoxyCodeLine{00768\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_a69bc67c54a1fe0f704d7b979dc1446db}{crypto\_ds\_sign\_by\_e2ee\_pack\_id}}(}
+\DoxyCodeLine{00769\ \ \ \ \ uint32\_t\ e2ee\_pack\_id\_raw,}
+\DoxyCodeLine{00770\ \ \ \ \ uint8\_t\ **signature\_out,\ \textcolor{keywordtype}{size\_t}\ *signature\_out\_len,}
+\DoxyCodeLine{00771\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00772\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *private\_key,\ \textcolor{keywordtype}{size\_t}\ private\_key\_len}
+\DoxyCodeLine{00773\ );}
+\DoxyCodeLine{00774\ }
+\DoxyCodeLine{00788\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{crypto_8h_a3b0e67950893e303b3eb0f4848a79d57}{crypto\_ds\_verify\_by\_e2ee\_pack\_id}}(}
+\DoxyCodeLine{00789\ \ \ \ \ uint32\_t\ e2ee\_pack\_id\_raw,}
+\DoxyCodeLine{00790\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *signature\_in,\ \textcolor{keywordtype}{size\_t}\ signature\_in\_len,}
+\DoxyCodeLine{00791\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00792\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *public\_key,\ \textcolor{keywordtype}{size\_t}\ public\_key\_len}
+\DoxyCodeLine{00793\ );}
+\DoxyCodeLine{00794\ }
+\DoxyCodeLine{00795\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00796\ \}}
+\DoxyCodeLine{00797\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00798\ }
+\DoxyCodeLine{00799\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ CRYPTO\_H\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

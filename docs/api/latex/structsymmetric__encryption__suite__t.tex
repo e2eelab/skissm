@@ -1,0 +1,100 @@
+\doxysection{symmetric\+\_\+encryption\+\_\+suite\+\_\+t Struct Reference}
+\hypertarget{structsymmetric__encryption__suite__t}{}\label{structsymmetric__encryption__suite__t}\index{symmetric\_encryption\_suite\_t@{symmetric\_encryption\_suite\_t}}
+
+
+Type definition of symmetric encryption algorithm suite.  
+
+
+
+
+{\ttfamily \#include $<$skissm.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcrypto__symmetric__encryption__param__t}{crypto\+\_\+symmetric\+\_\+encryption\+\_\+param\+\_\+t}}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structsymmetric__encryption__suite__t_a036fb347cf59d603951e14527dada12d}{get\+\_\+crypto\+\_\+param}} )(void)
+\begin{DoxyCompactList}\small\item\em Get the parameters of this symmetric encryption suite. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structsymmetric__encryption__suite__t_aa1402a94f795355214454b6d308e24c5}{encrypt}} )(const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, size\+\_\+t \texorpdfstring{$\ast$}{*})
+\begin{DoxyCompactList}\small\item\em Encrypt a given plaintext. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structsymmetric__encryption__suite__t_ae9aaa05f6242bc99696067355639f7b0}{decrypt}} )(uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, size\+\_\+t \texorpdfstring{$\ast$}{*}, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t)
+\begin{DoxyCompactList}\small\item\em Decrypt a given ciphertext. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Type definition of symmetric encryption algorithm suite. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structsymmetric__encryption__suite__t_ae9aaa05f6242bc99696067355639f7b0}\index{symmetric\_encryption\_suite\_t@{symmetric\_encryption\_suite\_t}!decrypt@{decrypt}}
+\index{decrypt@{decrypt}!symmetric\_encryption\_suite\_t@{symmetric\_encryption\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{decrypt}{decrypt}}
+{\footnotesize\ttfamily \label{structsymmetric__encryption__suite__t_ae9aaa05f6242bc99696067355639f7b0} 
+int(\texorpdfstring{$\ast$}{*} symmetric\+\_\+encryption\+\_\+suite\+\_\+t\+::decrypt) (uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, size\+\_\+t \texorpdfstring{$\ast$}{*}, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t)}
+
+
+
+Decrypt a given ciphertext. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em decrypted\+\_\+data\+\_\+out} & The output plaintext \\
+\hline
+{\em decrypted\+\_\+data\+\_\+len\+\_\+out} & The output plaintext length \\
+\hline
+{\em ad} & The associated data \\
+\hline
+{\em key} & The secret key \\
+\hline
+{\em ciphertext\+\_\+data} & The ciphertext to decrypt \\
+\hline
+{\em ciphertext\+\_\+data\+\_\+len} & The ciphertext length \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The length of plaintext\+\_\+data or -\/1 for decryption error 
+\end{DoxyReturn}
+\Hypertarget{structsymmetric__encryption__suite__t_aa1402a94f795355214454b6d308e24c5}\index{symmetric\_encryption\_suite\_t@{symmetric\_encryption\_suite\_t}!encrypt@{encrypt}}
+\index{encrypt@{encrypt}!symmetric\_encryption\_suite\_t@{symmetric\_encryption\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{encrypt}{encrypt}}
+{\footnotesize\ttfamily \label{structsymmetric__encryption__suite__t_aa1402a94f795355214454b6d308e24c5} 
+int(\texorpdfstring{$\ast$}{*} symmetric\+\_\+encryption\+\_\+suite\+\_\+t\+::encrypt) (const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}, size\+\_\+t \texorpdfstring{$\ast$}{*})}
+
+
+
+Encrypt a given plaintext. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ad} & The associated data \\
+\hline
+{\em key} & The secret key \\
+\hline
+{\em plaintext\+\_\+data} & The plaintext to encrypt \\
+\hline
+{\em plaintext\+\_\+data\+\_\+len} & The plaintext length \\
+\hline
+{\em ciphertext\+\_\+data} & The output ciphertext \\
+\hline
+{\em ciphertext\+\_\+data\+\_\+len} & The output ciphertext length \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Success or not 
+\end{DoxyReturn}
+\Hypertarget{structsymmetric__encryption__suite__t_a036fb347cf59d603951e14527dada12d}\index{symmetric\_encryption\_suite\_t@{symmetric\_encryption\_suite\_t}!get\_crypto\_param@{get\_crypto\_param}}
+\index{get\_crypto\_param@{get\_crypto\_param}!symmetric\_encryption\_suite\_t@{symmetric\_encryption\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{get\_crypto\_param}{get\_crypto\_param}}
+{\footnotesize\ttfamily \label{structsymmetric__encryption__suite__t_a036fb347cf59d603951e14527dada12d} 
+struct \mbox{\hyperlink{structcrypto__symmetric__encryption__param__t}{crypto\+\_\+symmetric\+\_\+encryption\+\_\+param\+\_\+t}}(\texorpdfstring{$\ast$}{*} symmetric\+\_\+encryption\+\_\+suite\+\_\+t\+::get\+\_\+crypto\+\_\+param) (void)}
+
+
+
+Get the parameters of this symmetric encryption suite. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{structcrypto__symmetric__encryption__param__t}{crypto\+\_\+symmetric\+\_\+encryption\+\_\+param\+\_\+t} 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/skissm/\mbox{\hyperlink{skissm_8h}{skissm.\+h}}\end{DoxyCompactItemize}

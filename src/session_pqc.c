@@ -37,7 +37,7 @@ int pqc_new_outbound_session_v2(
     Skissm__E2eeAddress *from,
     Skissm__PreKeyBundle *their_pre_key_bundle
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     uint32_t e2ee_pack_id;
     cipher_suite_t *cipher_suite = NULL;
@@ -70,39 +70,39 @@ int pqc_new_outbound_session_v2(
                     their_spk = their_pre_key_bundle->signed_pre_key_public;
                     their_opk = their_pre_key_bundle->one_time_pre_key_public;
                 } else {
-                    ret = -1;
+                    ret = SKISSM_RESULT_FAIL;
                 }
             } else {
                 ssm_notify_log(from, BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         } else {
             ssm_notify_log(from, BAD_ACCOUNT, "pqc_new_outbound_session()");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         if (their_ik->asym_public_key.len != asym_pub_key_len) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (their_ik->sign_public_key.len != sign_pub_key_len) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (their_spk->public_key.len != asym_pub_key_len) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (their_spk->signature.len != sig_len) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (their_opk->public_key.len != asym_pub_key_len) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // verify the signature
         ret = cipher_suite->digital_signature_suite->verify(
             their_spk->signature.data, their_spk->signature.len,
@@ -115,7 +115,7 @@ int pqc_new_outbound_session_v2(
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         outbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
         initialise_session(outbound_session, e2ee_pack_id, from, to);
 
@@ -239,7 +239,7 @@ int pqc_new_outbound_session_v2(
         outbound_session = NULL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *response_out = response;
     }
 
@@ -251,7 +251,7 @@ int pqc_new_inbound_session(
     Skissm__Account *local_account,
     Skissm__InviteMsg *msg
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__Session *session = NULL;
     Skissm__AcceptResponse *accept_response = NULL;
@@ -285,7 +285,7 @@ int pqc_new_inbound_session(
         address = local_account->address;
     } else {
         ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_new_inbound_session()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (is_valid_invite_msg(msg)) {
         cipher_suite = get_e2ee_pack(msg->e2ee_pack_id)->cipher_suite;
@@ -298,10 +298,10 @@ int pqc_new_inbound_session(
         bob_one_time_pre_key_id = msg->bob_one_time_pre_key_id;
     } else {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "pqc_new_inbound_session()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // verify the signed pre-key
         if (our_spk->spk_id != bob_signed_pre_key_id) {
             get_skissm_plugin()->db_handler.load_signed_pre_key(address, bob_signed_pre_key_id, &old_spk_data);
@@ -309,24 +309,24 @@ int pqc_new_inbound_session(
                 old_spk = true;
             } else {
                 ssm_notify_log(NULL, BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // check the one-time pre-key
         if (bob_one_time_pre_key_id != 0) {
             x3dh_epoch = 4;
             our_one_time_pre_key = lookup_one_time_pre_key(local_account, bob_one_time_pre_key_id);
             if (!is_valid_one_time_pre_key(our_one_time_pre_key)) {
                 ssm_notify_log(NULL, BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // create a session
         session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
         initialise_session(session, msg->e2ee_pack_id, msg->to, msg->from);
@@ -404,13 +404,13 @@ int pqc_new_inbound_session(
         unset(secret, sizeof(secret));
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         session->ratchet = ratchet;
         // store sesson state
         get_skissm_plugin()->db_handler.store_session(session);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         /** The one who sends the acception message will be the one who received the invitation message.
          *  Thus, the "from" and "to" of acception message will be different from those in the session. */
         ret = accept_internal(
@@ -423,7 +423,7 @@ int pqc_new_inbound_session(
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *inbound_session_out = session;
     } else {
         free_proto(session);
@@ -442,7 +442,7 @@ int pqc_new_inbound_session(
 }
 
 int pqc_complete_outbound_session(Skissm__Session **outbound_session_out, Skissm__AcceptMsg *msg) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__Session *session = NULL;
     cipher_suite_t *cipher_suite = NULL;
@@ -461,19 +461,19 @@ int pqc_complete_outbound_session(Skissm__Session **outbound_session_out, Skissm
                     copy_ik_from_ik(&identity_key, account->identity_key);
                 } else {
                     ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");
-                    ret = -1;
+                    ret = SKISSM_RESULT_FAIL;
                 }
             }
         } else {
             ssm_notify_log(NULL, BAD_SESSION, "pqc_complete_outbound_session()");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
         ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "pqc_complete_outbound_session()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         cipher_suite = get_e2ee_pack(session->e2ee_pack_id)->cipher_suite;
 
         copy_protobuf_from_protobuf(&their_ratchet_key, &(session->ratchet->sender_chain->their_ratchet_public_key));
@@ -497,7 +497,7 @@ int pqc_complete_outbound_session(Skissm__Session **outbound_session_out, Skissm
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *outbound_session_out = session;
         // store sesson state
         get_skissm_plugin()->db_handler.store_session(session);

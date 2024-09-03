@@ -1,0 +1,107 @@
+\doxysection{kem\+\_\+suite\+\_\+t Struct Reference}
+\hypertarget{structkem__suite__t}{}\label{structkem__suite__t}\index{kem\_suite\_t@{kem\_suite\_t}}
+
+
+Type definition of kem algorithm suite.  
+
+
+
+
+{\ttfamily \#include $<$skissm.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structkem__suite__t_a2c102cdde7c6f66a97c1192ae845f7f6}{get\+\_\+crypto\+\_\+param}} )(void)
+\begin{DoxyCompactList}\small\item\em Get the parameters of this kem suite. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structkem__suite__t_a8cb7fafa56b33c45a717e4a2d358335f}{asym\+\_\+key\+\_\+gen}} )(Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Generate a random key pair that will be used to calculate shared secret keys. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structkem__suite__t_acb69c24dfa2b2571fcf43f3676d2c23e}{encaps}} )(uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Encapsulation. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structkem__suite__t_a275cda3e1962677ce05f492bcd6de467}{decaps}} )(uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
+\begin{DoxyCompactList}\small\item\em Decapsulation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Type definition of kem algorithm suite. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structkem__suite__t_a8cb7fafa56b33c45a717e4a2d358335f}\index{kem\_suite\_t@{kem\_suite\_t}!asym\_key\_gen@{asym\_key\_gen}}
+\index{asym\_key\_gen@{asym\_key\_gen}!kem\_suite\_t@{kem\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{asym\_key\_gen}{asym\_key\_gen}}
+{\footnotesize\ttfamily \label{structkem__suite__t_a8cb7fafa56b33c45a717e4a2d358335f} 
+int(\texorpdfstring{$\ast$}{*} kem\+\_\+suite\+\_\+t\+::asym\+\_\+key\+\_\+gen) (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)}
+
+
+
+Generate a random key pair that will be used to calculate shared secret keys. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pub\+\_\+key} & \\
+\hline
+{\em priv\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structkem__suite__t_a275cda3e1962677ce05f492bcd6de467}\index{kem\_suite\_t@{kem\_suite\_t}!decaps@{decaps}}
+\index{decaps@{decaps}!kem\_suite\_t@{kem\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{decaps}{decaps}}
+{\footnotesize\ttfamily \label{structkem__suite__t_a275cda3e1962677ce05f492bcd6de467} 
+int(\texorpdfstring{$\ast$}{*} kem\+\_\+suite\+\_\+t\+::decaps) (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)}
+
+
+
+Decapsulation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shared\+\_\+secret} & \\
+\hline
+{\em our\+\_\+key} & \\
+\hline
+{\em ciphertext} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+value \texorpdfstring{$<$}{<} 0 for error. 
+\end{DoxyReturn}
+\Hypertarget{structkem__suite__t_acb69c24dfa2b2571fcf43f3676d2c23e}\index{kem\_suite\_t@{kem\_suite\_t}!encaps@{encaps}}
+\index{encaps@{encaps}!kem\_suite\_t@{kem\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{encaps}{encaps}}
+{\footnotesize\ttfamily \label{structkem__suite__t_acb69c24dfa2b2571fcf43f3676d2c23e} 
+int(\texorpdfstring{$\ast$}{*} kem\+\_\+suite\+\_\+t\+::encaps) (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)}
+
+
+
+Encapsulation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shared\+\_\+secret} & \\
+\hline
+{\em ciphertext} & \\
+\hline
+{\em their\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+value \texorpdfstring{$<$}{<} 0 for error. 
+\end{DoxyReturn}
+\Hypertarget{structkem__suite__t_a2c102cdde7c6f66a97c1192ae845f7f6}\index{kem\_suite\_t@{kem\_suite\_t}!get\_crypto\_param@{get\_crypto\_param}}
+\index{get\_crypto\_param@{get\_crypto\_param}!kem\_suite\_t@{kem\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{get\_crypto\_param}{get\_crypto\_param}}
+{\footnotesize\ttfamily \label{structkem__suite__t_a2c102cdde7c6f66a97c1192ae845f7f6} 
+struct \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}}(\texorpdfstring{$\ast$}{*} kem\+\_\+suite\+\_\+t\+::get\+\_\+crypto\+\_\+param) (void)}
+
+
+
+Get the parameters of this kem suite. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t} 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/skissm/\mbox{\hyperlink{skissm_8h}{skissm.\+h}}\end{DoxyCompactItemize}

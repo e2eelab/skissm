@@ -1,0 +1,69 @@
+\doxysection{log\+\_\+code.\+h}
+\hypertarget{log__code_8h_source}{}\label{log__code_8h_source}\index{include/skissm/log\_code.h@{include/skissm/log\_code.h}}
+\mbox{\hyperlink{log__code_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#ifndef\ LOG\_CODE\_H\_}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ LOG\_CODE\_H\_}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00024\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{enum}\ LogCode\ \{}
+\DoxyCodeLine{00028\ \ \ DEBUG\_LOG\ =\ 0,}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ BAD\_CIPHER\_SUITE\ =\ 1001,}
+\DoxyCodeLine{00031\ \ \ BAD\_E2EE\_PACK\ =\ 1002,}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ BAD\_ACCOUNT\ =\ 2001,}
+\DoxyCodeLine{00034\ \ \ BAD\_KEY\_PAIR\ =\ 2002,}
+\DoxyCodeLine{00035\ \ \ BAD\_SIGNED\_PRE\_KEY\ =\ 2003,}
+\DoxyCodeLine{00036\ \ \ BAD\_SIGNATURE\ =\ 2004,}
+\DoxyCodeLine{00037\ \ \ BAD\_ONE\_TIME\_PRE\_KEY\ =\ 2005,}
+\DoxyCodeLine{00038\ \ \ BAD\_AUTH\ =\ 2006,}
+\DoxyCodeLine{00039\ \ \ BAD\_AUTHENTICATOR\ =\ 2007,}
+\DoxyCodeLine{00040\ \ \ BAD\_PRIVATE\_KEY\ =\ 2008,}
+\DoxyCodeLine{00041\ \ \ BAD\_PUBLIC\_KEY\ =\ 2009,}
+\DoxyCodeLine{00042\ \ \ BAD\_REMOVE\_OPK\ =\ 2010,}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ BAD\_ADDRESS\ =\ 3001,}
+\DoxyCodeLine{00045\ \ \ BAD\_USER\_ID\ =\ 3002,}
+\DoxyCodeLine{00046\ \ \ BAD\_DEVICE\_ID\ =\ 3003,}
+\DoxyCodeLine{00047\ \ \ BAD\_DOMAIN\ =\ 3004,}
+\DoxyCodeLine{00048\ \ \ BAD\_USER\_NAME\ =\ 3005,}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ BAD\_MESSAGE\_ENCRYPTION\ =\ 4001,}
+\DoxyCodeLine{00051\ \ \ BAD\_MESSAGE\_DECRYPTION\ =\ 4002,}
+\DoxyCodeLine{00052\ \ \ BAD\_FILE\_ENCRYPTION\ =\ 4003,}
+\DoxyCodeLine{00053\ \ \ BAD\_FILE\_DECRYPTION\ =\ 4004,}
+\DoxyCodeLine{00054\ \ \ BAD\_MESSAGE\_KEY\ =\ 4005,}
+\DoxyCodeLine{00055\ \ \ BAD\_MESSAGE\_SEQUENCE\ =\ 4006,}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ BAD\_SESSION\ =\ 5001,}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ BAD\_GROUP\_SESSION\ =\ 6001,}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ BAD\_PRE\_KEY\_BUNDLE\ =\ 7001,}
+\DoxyCodeLine{00062\ \ \ BAD\_MESSAGE\_FORMAT\ =\ 7002,}
+\DoxyCodeLine{00063\ \ \ BAD\_RESPONSE\ =\ 7003,}
+\DoxyCodeLine{00064\ \ \ BAD\_SERVER\_MESSAGE\ =\ 7004,}
+\DoxyCodeLine{00065\ \ \ BAD\_SERVER\_SIGNATURE\ =\ 7005,}
+\DoxyCodeLine{00066\ \ \ BAD\_INPUT\_DATA\ =\ 7006,}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ NOT\_ENOUGH\_RANDOM\ =\ 10001,}
+\DoxyCodeLine{00069\ \ \ NOT\_ENOUGH\_MEMORY\ =\ 10002,}
+\DoxyCodeLine{00070\ \ \ NOT\_ENOUGH\_SPACE\ =\ 10003}
+\DoxyCodeLine{00071\ \};}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ LogCode\ LogCode;}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00081\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *\mbox{\hyperlink{log__code_8h_a197c539ddf287bb08e9f4d3ea3a813af}{logcode\_string}}(LogCode\ log\_code);}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00084\ \}}
+\DoxyCodeLine{00085\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ LOG\_CODE\_H\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

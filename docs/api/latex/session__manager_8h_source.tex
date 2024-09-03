@@ -1,0 +1,98 @@
+\doxysection{session\+\_\+manager.\+h}
+\hypertarget{session__manager_8h_source}{}\label{session__manager_8h_source}\index{include/skissm/session\_manager.h@{include/skissm/session\_manager.h}}
+\mbox{\hyperlink{session__manager_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#ifndef\ SESSION\_MANAGER\_H\_}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ SESSION\_MANAGER\_H\_}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <stdbool.h>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00026\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{skissm_8h}{skissm/skissm.h}}"{}}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00041\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{session__manager_8h_ad349d563d74c8e50e7316161f92e85e2}{produce\_get\_pre\_key\_bundle\_request}}(}
+\DoxyCodeLine{00042\ \ \ \ \ Skissm\_\_GetPreKeyBundleRequest\ **request\_out,}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *to\_user\_id,}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *to\_domain,}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *to\_device\_id,}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{bool}\ active}
+\DoxyCodeLine{00047\ );}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00060\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{session__manager_8h_a1d3597241edbc1b07a398f53c715113e}{consume\_get\_pre\_key\_bundle\_response}}(}
+\DoxyCodeLine{00061\ \ \ \ \ Skissm\_\_InviteResponse\ ***invite\_response\_list\_out,}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ *invite\_response\_num,}
+\DoxyCodeLine{00063\ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00064\ \ \ \ \ uint8\_t\ *group\_pre\_key\_plaintext\_data,}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_pre\_key\_plaintext\_data\_len,}
+\DoxyCodeLine{00066\ \ \ \ \ Skissm\_\_GetPreKeyBundleResponse\ *get\_pre\_key\_bundle\_response}
+\DoxyCodeLine{00067\ );}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00079\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{session__manager_8h_a5543ca02871c3a22c6e46d148b43b286}{produce\_send\_one2one\_msg\_request}}(}
+\DoxyCodeLine{00080\ \ \ \ \ Skissm\_\_SendOne2oneMsgRequest\ **request\_out,}
+\DoxyCodeLine{00081\ \ \ \ \ Skissm\_\_Session\ *outbound\_session,}
+\DoxyCodeLine{00082\ \ \ \ \ uint32\_t\ notif\_level,}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len}
+\DoxyCodeLine{00084\ );}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00094\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{session__manager_8h_ad4167d8e938e32304cc02c6ef2d8d4ed}{consume\_send\_one2one\_msg\_response}}(}
+\DoxyCodeLine{00095\ \ \ \ \ Skissm\_\_Session\ *outbound\_session,}
+\DoxyCodeLine{00096\ \ \ \ \ Skissm\_\_SendOne2oneMsgResponse\ *response}
+\DoxyCodeLine{00097\ );}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00107\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{session__manager_8h_a8de221893f715f8a505f57fc22edb6f7}{consume\_one2one\_msg}}(}
+\DoxyCodeLine{00108\ \ \ \ \ Skissm\_\_E2eeAddress\ *receiver\_address,}
+\DoxyCodeLine{00109\ \ \ \ \ Skissm\_\_E2eeMsg\ *e2ee\_msg}
+\DoxyCodeLine{00110\ );}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00120\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{session__manager_8h_ae8fc1f6390daedd282eeac6882ff38f0}{consume\_add\_user\_device\_msg}}(}
+\DoxyCodeLine{00121\ \ \ \ \ Skissm\_\_E2eeAddress\ *receiver\_address,}
+\DoxyCodeLine{00122\ \ \ \ \ Skissm\_\_AddUserDeviceMsg\ *msg}
+\DoxyCodeLine{00123\ );}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00133\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{session__manager_8h_ab918c8f59d9819e5ba0d58cca6e9b62e}{consume\_remove\_user\_device\_msg}}(}
+\DoxyCodeLine{00134\ \ \ \ \ Skissm\_\_E2eeAddress\ *receiver\_address,}
+\DoxyCodeLine{00135\ \ \ \ \ Skissm\_\_RemoveUserDeviceMsg\ *msg}
+\DoxyCodeLine{00136\ );}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00145\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{session__manager_8h_aec65284b928c6ca6e7f020185754a2f0}{produce\_invite\_request}}(}
+\DoxyCodeLine{00146\ \ \ \ \ Skissm\_\_InviteRequest\ **request\_out,}
+\DoxyCodeLine{00147\ \ \ \ \ Skissm\_\_Session\ *outbound\_session}
+\DoxyCodeLine{00148\ );}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00158\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{session__manager_8h_a685ddde667df495715e6855f81ae80f0}{consume\_invite\_response}}(}
+\DoxyCodeLine{00159\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00160\ \ \ \ \ Skissm\_\_InviteResponse\ *response}
+\DoxyCodeLine{00161\ );}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00171\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{session__manager_8h_a3a1c56871506cea90ec82d9fa5ab2e62}{consume\_invite\_msg}}(}
+\DoxyCodeLine{00172\ \ \ \ \ Skissm\_\_E2eeAddress\ *receiver\_address,}
+\DoxyCodeLine{00173\ \ \ \ \ Skissm\_\_InviteMsg\ *invite\_msg}
+\DoxyCodeLine{00174\ );}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00186\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{session__manager_8h_ae75df08336b9e118bdfc667dab69f254}{produce\_accept\_request}}(}
+\DoxyCodeLine{00187\ \ \ \ \ Skissm\_\_AcceptRequest\ **request\_out,}
+\DoxyCodeLine{00188\ \ \ \ \ uint32\_t\ e2ee\_pack\_id,}
+\DoxyCodeLine{00189\ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00190\ \ \ \ \ Skissm\_\_E2eeAddress\ *to,}
+\DoxyCodeLine{00191\ \ \ \ \ ProtobufCBinaryData\ *ciphertext\_1,}
+\DoxyCodeLine{00192\ \ \ \ \ ProtobufCBinaryData\ *our\_ratchet\_key}
+\DoxyCodeLine{00193\ );}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00203\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{session__manager_8h_aa4651d48014c11bb59e3087727fe4875}{consume\_accept\_response}}(Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_AcceptResponse\ *response);}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00213\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{session__manager_8h_a78599c2c4d910a6488f45b8461e1cb4e}{consume\_accept\_msg}}(}
+\DoxyCodeLine{00214\ \ \ \ \ Skissm\_\_E2eeAddress\ *receiver\_address,}
+\DoxyCodeLine{00215\ \ \ \ \ Skissm\_\_AcceptMsg\ *accept\_msg}
+\DoxyCodeLine{00216\ );}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00219\ \}}
+\DoxyCodeLine{00220\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ SESSION\_MANAGER\_H\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

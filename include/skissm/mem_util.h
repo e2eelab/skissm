@@ -1,4 +1,5 @@
-/*
+/**
+ * @file
  * Copyright © 2020-2021 by Academia Sinica
  *
  * This file is part of SKISSM.

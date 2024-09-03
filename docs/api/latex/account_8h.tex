@@ -1,0 +1,170 @@
+\doxysection{include/skissm/account.h File Reference}
+\hypertarget{account_8h}{}\label{account_8h}\index{include/skissm/account.h@{include/skissm/account.h}}
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include "{}skissm/skissm.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{account_8h_af3e3e46c8ac717c7f1e5a76a18b45c7e}\label{account_8h_af3e3e46c8ac717c7f1e5a76a18b45c7e} 
+void {\bfseries account\+\_\+begin} ()
+\item 
+\Hypertarget{account_8h_aa679c7d54a9895b4cf567ae6ca3e6b43}\label{account_8h_aa679c7d54a9895b4cf567ae6ca3e6b43} 
+void {\bfseries account\+\_\+end} ()
+\item 
+int \mbox{\hyperlink{account_8h_acc61be04a857570ee55439f01e8f30c7}{create\+\_\+account}} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}account\+\_\+out, uint32\+\_\+t e2ee\+\_\+pack\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Create a new account object This will generate an identity key pair, a signed pre-\/key pair, a signature, and 100 one-\/time pre-\/key pairs. \end{DoxyCompactList}\item 
+\Hypertarget{account_8h_a7586b34e3cd159b3eda07f5eeb873440}\label{account_8h_a7586b34e3cd159b3eda07f5eeb873440} 
+int {\bfseries generate\+\_\+identity\+\_\+key} (Skissm\+\_\+\+\_\+\+Identity\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}identity\+\_\+key\+\_\+out, uint32\+\_\+t e2ee\+\_\+pack\+\_\+id)
+\item 
+int \mbox{\hyperlink{account_8h_aa95327406cb557a1346dcacac6686b44}{generate\+\_\+signed\+\_\+pre\+\_\+key}} (Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}signed\+\_\+pre\+\_\+key\+\_\+out, uint32\+\_\+t e2ee\+\_\+pack\+\_\+id, uint32\+\_\+t cur\+\_\+spk\+\_\+id, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}identity\+\_\+private\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Generate a new signed pre-\/key pair and a new signature. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{account_8h_a939d33806c6bb2473dfa8375f1f1766d}{lookup\+\_\+one\+\_\+time\+\_\+pre\+\_\+key}} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account, uint32\+\_\+t one\+\_\+time\+\_\+pre\+\_\+key\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Lookup an one-\/time pre-\/key with a given public key. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{account_8h_a8d009b61eeffaf429c18d163cd371c51}{generate\+\_\+opks}} (Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}one\+\_\+time\+\_\+pre\+\_\+key\+\_\+out, size\+\_\+t number\+\_\+of\+\_\+keys, uint32\+\_\+t e2ee\+\_\+pack\+\_\+id, uint32\+\_\+t cur\+\_\+opk\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Generates a number of new one-\/time pre-\/keys. \end{DoxyCompactList}\item 
+\Hypertarget{account_8h_ac117be17c1c6e859ec7de8cb4880a94e}\label{account_8h_ac117be17c1c6e859ec7de8cb4880a94e} 
+int {\bfseries insert\+\_\+opks} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account, Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}src, size\+\_\+t src\+\_\+num)
+\item 
+int \mbox{\hyperlink{account_8h_a11dd90393c9b16548bdfa107fedf4bee}{mark\+\_\+opk\+\_\+as\+\_\+used}} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account, uint32\+\_\+t id)
+\begin{DoxyCompactList}\small\item\em Mark one of the one-\/time pre-\/key pairs as used given by ID. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{account_8h_a8cb64db81c2c65f3c054880b96e28e5d}{free\+\_\+one\+\_\+time\+\_\+pre\+\_\+key}} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account)
+\begin{DoxyCompactList}\small\item\em Remove the used one-\/time pre-\/keys. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2020-\/2021 by Academia Sinica
+
+This file is part of SKISSM.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with SKISSM. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{account_8h_acc61be04a857570ee55439f01e8f30c7}\index{account.h@{account.h}!create\_account@{create\_account}}
+\index{create\_account@{create\_account}!account.h@{account.h}}
+\doxysubsubsection{\texorpdfstring{create\_account()}{create\_account()}}
+{\footnotesize\ttfamily \label{account_8h_acc61be04a857570ee55439f01e8f30c7} 
+int create\+\_\+account (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{account\+\_\+out}{, }\item[{uint32\+\_\+t}]{e2ee\+\_\+pack\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Create a new account object This will generate an identity key pair, a signed pre-\/key pair, a signature, and 100 one-\/time pre-\/key pairs. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em account\+\_\+out} & The generated account \\
+\hline
+{\em e2ee\+\_\+pack\+\_\+id} & The e2ee pack ID \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{account_8h_a8cb64db81c2c65f3c054880b96e28e5d}\index{account.h@{account.h}!free\_one\_time\_pre\_key@{free\_one\_time\_pre\_key}}
+\index{free\_one\_time\_pre\_key@{free\_one\_time\_pre\_key}!account.h@{account.h}}
+\doxysubsubsection{\texorpdfstring{free\_one\_time\_pre\_key()}{free\_one\_time\_pre\_key()}}
+{\footnotesize\ttfamily \label{account_8h_a8cb64db81c2c65f3c054880b96e28e5d} 
+void free\+\_\+one\+\_\+time\+\_\+pre\+\_\+key (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{}\end{DoxyParamCaption})}
+
+
+
+Remove the used one-\/time pre-\/keys. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em account} & The account to be processed \\
+\hline
+\end{DoxyParams}
+\Hypertarget{account_8h_a8d009b61eeffaf429c18d163cd371c51}\index{account.h@{account.h}!generate\_opks@{generate\_opks}}
+\index{generate\_opks@{generate\_opks}!account.h@{account.h}}
+\doxysubsubsection{\texorpdfstring{generate\_opks()}{generate\_opks()}}
+{\footnotesize\ttfamily \label{account_8h_a8d009b61eeffaf429c18d163cd371c51} 
+int generate\+\_\+opks (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{one\+\_\+time\+\_\+pre\+\_\+key\+\_\+out}{, }\item[{size\+\_\+t}]{number\+\_\+of\+\_\+keys}{, }\item[{uint32\+\_\+t}]{e2ee\+\_\+pack\+\_\+id}{, }\item[{uint32\+\_\+t}]{cur\+\_\+opk\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Generates a number of new one-\/time pre-\/keys. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em one\+\_\+time\+\_\+pre\+\_\+key\+\_\+out} & The generated one-\/time pre-\/key list \\
+\hline
+{\em number\+\_\+of\+\_\+keys} & The given number \\
+\hline
+{\em e2ee\+\_\+pack\+\_\+id} & The e2ee pack ID \\
+\hline
+{\em cur\+\_\+opk\+\_\+id} & The current one-\/time pre-\/key ID \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{account_8h_aa95327406cb557a1346dcacac6686b44}\index{account.h@{account.h}!generate\_signed\_pre\_key@{generate\_signed\_pre\_key}}
+\index{generate\_signed\_pre\_key@{generate\_signed\_pre\_key}!account.h@{account.h}}
+\doxysubsubsection{\texorpdfstring{generate\_signed\_pre\_key()}{generate\_signed\_pre\_key()}}
+{\footnotesize\ttfamily \label{account_8h_aa95327406cb557a1346dcacac6686b44} 
+int generate\+\_\+signed\+\_\+pre\+\_\+key (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{signed\+\_\+pre\+\_\+key\+\_\+out}{, }\item[{uint32\+\_\+t}]{e2ee\+\_\+pack\+\_\+id}{, }\item[{uint32\+\_\+t}]{cur\+\_\+spk\+\_\+id}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{identity\+\_\+private\+\_\+key}{}\end{DoxyParamCaption})}
+
+
+
+Generate a new signed pre-\/key pair and a new signature. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em signed\+\_\+pre\+\_\+key\+\_\+out} & The generated signed pre-\/key \\
+\hline
+{\em e2ee\+\_\+pack\+\_\+id} & The e2ee pack ID \\
+\hline
+{\em cur\+\_\+spk\+\_\+id} & The current signed pre-\/key ID \\
+\hline
+{\em identity\+\_\+private\+\_\+key} & The private part of the identity key \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{account_8h_a939d33806c6bb2473dfa8375f1f1766d}\index{account.h@{account.h}!lookup\_one\_time\_pre\_key@{lookup\_one\_time\_pre\_key}}
+\index{lookup\_one\_time\_pre\_key@{lookup\_one\_time\_pre\_key}!account.h@{account.h}}
+\doxysubsubsection{\texorpdfstring{lookup\_one\_time\_pre\_key()}{lookup\_one\_time\_pre\_key()}}
+{\footnotesize\ttfamily \label{account_8h_a939d33806c6bb2473dfa8375f1f1766d} 
+Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*} lookup\+\_\+one\+\_\+time\+\_\+pre\+\_\+key (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{, }\item[{uint32\+\_\+t}]{one\+\_\+time\+\_\+pre\+\_\+key\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Lookup an one-\/time pre-\/key with a given public key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em account} & The account for looking up the one-\/time pre-\/key \\
+\hline
+{\em one\+\_\+time\+\_\+pre\+\_\+key\+\_\+id} & The one-\/time pre-\/key id to be matched \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+const Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key\texorpdfstring{$\ast$}{*} The matched one-\/time pre-\/key. 
+\end{DoxyReturn}
+\Hypertarget{account_8h_a11dd90393c9b16548bdfa107fedf4bee}\index{account.h@{account.h}!mark\_opk\_as\_used@{mark\_opk\_as\_used}}
+\index{mark\_opk\_as\_used@{mark\_opk\_as\_used}!account.h@{account.h}}
+\doxysubsubsection{\texorpdfstring{mark\_opk\_as\_used()}{mark\_opk\_as\_used()}}
+{\footnotesize\ttfamily \label{account_8h_a11dd90393c9b16548bdfa107fedf4bee} 
+int mark\+\_\+opk\+\_\+as\+\_\+used (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{, }\item[{uint32\+\_\+t}]{id}{}\end{DoxyParamCaption})}
+
+
+
+Mark one of the one-\/time pre-\/key pairs as used given by ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em account} & The account to be processed \\
+\hline
+{\em id} & The id of one-\/time pre-\/key that will be marked as used. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+value \texorpdfstring{$<$}{<} 0 for error 
+\end{DoxyReturn}

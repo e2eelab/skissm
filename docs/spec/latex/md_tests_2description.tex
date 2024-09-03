@@ -1,0 +1,160 @@
+\chapter{End-\/to-\/end Test}
+\hypertarget{md_tests_2description}{}\label{md_tests_2description}\index{End-\/to-\/end Test@{End-\/to-\/end Test}}
+\label{md_tests_2description_autotoc_md0}%
+\Hypertarget{md_tests_2description_autotoc_md0}%
+\hypertarget{md_tests_2description_autotoc_md1}{}\doxysection{\texorpdfstring{Unit test}{Unit test}}\label{md_tests_2description_autotoc_md1}
+\hypertarget{md_tests_2description_autotoc_md2}{}\doxysubsection{\texorpdfstring{skissm}{skissm}}\label{md_tests_2description_autotoc_md2}
+
+\begin{DoxyItemize}
+\item {\bfseries{get\+\_\+digital\+\_\+signature\+\_\+suite}}
+\item {\bfseries{get\+\_\+kem\+\_\+suite}}
+\item {\bfseries{get\+\_\+symmetric\+\_\+encryption\+\_\+suite}}
+\item {\bfseries{get\+\_\+hash\+\_\+suite}}
+\item {\bfseries{get\+\_\+cipher\+\_\+suite}}
+\item {\bfseries{e2ee\+\_\+pack\+\_\+id\+\_\+to\+\_\+raw}}
+\item {\bfseries{raw\+\_\+to\+\_\+e2ee\+\_\+pack\+\_\+id}}
+\item {\bfseries{gen\+\_\+e2ee\+\_\+pack\+\_\+id\+\_\+raw}}
+\item {\bfseries{get\+\_\+e2ee\+\_\+pack}}
+\end{DoxyItemize}\hypertarget{md_tests_2description_autotoc_md3}{}\doxysubsection{\texorpdfstring{account}{account}}\label{md_tests_2description_autotoc_md3}
+
+\begin{DoxyItemize}
+\item {\bfseries{account\+\_\+begin}}
+\item {\bfseries{account\+\_\+end}}
+\item {\bfseries{create\+\_\+account}}
+\item {\bfseries{generate\+\_\+identity\+\_\+key}}
+\item {\bfseries{generate\+\_\+signed\+\_\+pre\+\_\+key}}
+\item {\bfseries{lookup\+\_\+one\+\_\+time\+\_\+pre\+\_\+key}}
+\item {\bfseries{generate\+\_\+opks}}
+\item {\bfseries{insert\+\_\+opks}}
+\item {\bfseries{mark\+\_\+opk\+\_\+as\+\_\+used}}
+\item {\bfseries{free\+\_\+one\+\_\+time\+\_\+pre\+\_\+key}}
+\end{DoxyItemize}\hypertarget{md_tests_2description_autotoc_md4}{}\doxysubsection{\texorpdfstring{ratchet}{ratchet}}\label{md_tests_2description_autotoc_md4}
+
+\begin{DoxyItemize}
+\item {\bfseries{initialise\+\_\+as\+\_\+alice}}
+\item {\bfseries{initialise\+\_\+as\+\_\+bob}}
+\item {\bfseries{encrypt\+\_\+ratchet}}
+\item {\bfseries{decrypt\+\_\+ratchet}}
+\end{DoxyItemize}\hypertarget{md_tests_2description_autotoc_md5}{}\doxysubsection{\texorpdfstring{account manager}{account manager}}\label{md_tests_2description_autotoc_md5}
+
+\begin{DoxyItemize}
+\item {\bfseries{produce\+\_\+register\+\_\+request}}
+\item {\bfseries{consume\+\_\+register\+\_\+response}}
+\item {\bfseries{produce\+\_\+publish\+\_\+spk\+\_\+request}}
+\item {\bfseries{consume\+\_\+publish\+\_\+spk\+\_\+response}}
+\item {\bfseries{produce\+\_\+supply\+\_\+opks\+\_\+request}}
+\item {\bfseries{consume\+\_\+supply\+\_\+opks\+\_\+response}}
+\end{DoxyItemize}\hypertarget{md_tests_2description_autotoc_md6}{}\doxysubsection{\texorpdfstring{one2one manager}{one2one manager}}\label{md_tests_2description_autotoc_md6}
+
+\begin{DoxyItemize}
+\item {\bfseries{produce\+\_\+get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+request}}
+\item {\bfseries{produce\+\_\+send\+\_\+one2one\+\_\+msg\+\_\+request}}
+\item {\bfseries{consume\+\_\+send\+\_\+one2one\+\_\+msg\+\_\+response}}
+\item {\bfseries{consume\+\_\+remove\+\_\+user\+\_\+device\+\_\+msg}}
+\item {\bfseries{produce\+\_\+invite\+\_\+request}}
+\item {\bfseries{consume\+\_\+invite\+\_\+response}}
+\item {\bfseries{produce\+\_\+accept\+\_\+request}}
+\item {\bfseries{consume\+\_\+accept\+\_\+response}}
+\end{DoxyItemize}\hypertarget{md_tests_2description_autotoc_md7}{}\doxysubsection{\texorpdfstring{group manager}{group manager}}\label{md_tests_2description_autotoc_md7}
+
+\begin{DoxyItemize}
+\item {\bfseries{produce\+\_\+create\+\_\+group\+\_\+request}}
+\item {\bfseries{produce\+\_\+add\+\_\+group\+\_\+members\+\_\+request}}
+\item {\bfseries{produce\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+request}}
+\item {\bfseries{produce\+\_\+remove\+\_\+group\+\_\+members\+\_\+request}}
+\item {\bfseries{produce\+\_\+leave\+\_\+group\+\_\+request}}
+\item {\bfseries{consume\+\_\+leave\+\_\+group\+\_\+response}}
+\item {\bfseries{produce\+\_\+send\+\_\+group\+\_\+msg\+\_\+request}}
+\item {\bfseries{consume\+\_\+send\+\_\+group\+\_\+msg\+\_\+response}}
+\item {\bfseries{consume\+\_\+group\+\_\+msg}}
+\end{DoxyItemize}\hypertarget{md_tests_2description_autotoc_md8}{}\doxysection{\texorpdfstring{Integration test}{Integration test}}\label{md_tests_2description_autotoc_md8}
+\hypertarget{md_tests_2description_autotoc_md9}{}\doxysubsection{\texorpdfstring{account}{account}}\label{md_tests_2description_autotoc_md9}
+
+\begin{DoxyItemize}
+\item {\bfseries{register\+\_\+user}}
+\item {\bfseries{publish\+\_\+spk\+\_\+internal}}
+
+If the signed pre-\/key is expired, the client should generate a new signed pre-\/key and publish it to the server.
+\item {\bfseries{supply\+\_\+opks\+\_\+internal}}
+
+The client will be notified to generate a number of one-\/time pre-\/keys if the server finds that the one-\/time pre-\/keys are used up.
+\end{DoxyItemize}\hypertarget{md_tests_2description_autotoc_md10}{}\doxysubsection{\texorpdfstring{ratchet}{ratchet}}\label{md_tests_2description_autotoc_md10}
+
+\begin{DoxyItemize}
+\item {\bfseries{test\+\_\+alice\+\_\+to\+\_\+bob}}
+
+Alice and Bob establish their ratchet. Alice encrypts a message. Bob should decrypt the message successfully.
+\item {\bfseries{test\+\_\+bob\+\_\+to\+\_\+alice}}
+
+Alice and Bob establish their ratchet. Bob encrypts a message. Alice should decrypt the message successfully.
+\item {\bfseries{test\+\_\+interaction\+\_\+alice\+\_\+first}}
+
+Alice and Bob establish their ratchet. Alice encrypts a message and Bob decrypts the message. Next, Bob encrypts a message and Alice decrypts the message.
+\item {\bfseries{test\+\_\+interaction\+\_\+bob\+\_\+first}}
+
+Alice and Bob establish their ratchet. Bob encrypts a message and Alice decrypts the message. Next, Alice encrypts a message and Bob decrypts the message.
+\item {\bfseries{test\+\_\+out\+\_\+of\+\_\+order}}
+
+Alice and Bob establish their ratchet. Alice encrypts two messages. Bob decrypts the second message first and then decrypts the first message.
+\item {\bfseries{test\+\_\+continual\+\_\+message}}
+
+Alice and Bob establish their ratchet. Alice encrypts 1000 messages. Bob decrypts these messages.
+\item {\bfseries{test\+\_\+interaction\+\_\+v2}}
+
+Alice and Bob establish their ratchet. Alice encrypts two messages and Bob decrypts the messages. Next, Bob encrypts two messages and Alice decrypts the messages.
+\item {\bfseries{test\+\_\+out\+\_\+of\+\_\+order\+\_\+v2}}
+\end{DoxyItemize}\hypertarget{md_tests_2description_autotoc_md11}{}\doxysubsection{\texorpdfstring{one2one session}{one2one session}}\label{md_tests_2description_autotoc_md11}
+
+\begin{DoxyItemize}
+\item {\bfseries{test\+\_\+basic\+\_\+session}}
+
+Alice and Bob establish their session. Alice sends a message to Bob. Bob should decrypt the message successfully.
+\item {\bfseries{test\+\_\+interaction}}
+
+Alice and Bob establish their session. Alice sends a message to Bob. Next, Bob sends a message to Alice.
+\item {\bfseries{test\+\_\+continual\+\_\+messages}}
+
+Alice sends 3000 messages to Bob.
+\item {\bfseries{test\+\_\+multiple\+\_\+devices}}
+\item {\bfseries{test\+\_\+one\+\_\+to\+\_\+many}}
+
+Alice has one device, and Bob has three devices. Alice sends a message to Bob.
+\item {\bfseries{test\+\_\+many\+\_\+to\+\_\+one}}
+
+Alice has three devices, and Bob has one device. Alice sends a message to Bob.
+\item {\bfseries{test\+\_\+many\+\_\+to\+\_\+many}}
+
+Both Alice and Bob have three devices. Alice sends a message to Bob.
+\item {\bfseries{test\+\_\+change\+\_\+devices}}
+
+Both Alice and Bob have two devices. Alice adds a new device. Then Alice sends a message to Bob. Next, Bob sends a message to Alice.
+\end{DoxyItemize}\hypertarget{md_tests_2description_autotoc_md12}{}\doxysubsection{\texorpdfstring{group session}{group session}}\label{md_tests_2description_autotoc_md12}
+
+\begin{DoxyItemize}
+\item {\bfseries{test\+\_\+create\+\_\+group}}
+
+Alice creates a group with four members in it. Everyone in the group sends a message to the group.
+\item {\bfseries{test\+\_\+add\+\_\+group\+\_\+members}}
+
+Alice creates a group with three members in it. Then Alice adds a group member. Next, everyone in the group sends a message to the group.
+\item {\bfseries{test\+\_\+remove\+\_\+group\+\_\+members}}
+
+Alice creates a group with four members in it. Then Alice removes a group member. Next, everyone in the group sends a message to the group.
+\item {\bfseries{test\+\_\+create\+\_\+add\+\_\+remove}}
+
+Alice creates a group with two members in it. Then Alice adds a group member. Next, everyone in the group sends a message to the group. Then Alice removes a group member. Next, everyone in the group sends a message to the group.
+\item {\bfseries{test\+\_\+leave\+\_\+group}}
+
+Alice creates a group with four members in it. Then one of the group members leaves the group. Next, everyone in the group sends a message to the group.
+\item {\bfseries{test\+\_\+continual}}
+
+Alice creates a group with three members in it. Then everyone in the group sends 1000 messages to the group.
+\item {\bfseries{test\+\_\+multiple\+\_\+devices}}
+
+Everyone in the three-\/member group has two devices. Everyone in the group sends a message to the group.
+\item {\bfseries{test\+\_\+add\+\_\+new\+\_\+device}}
+
+One of the group members adds a new device.
+\item {\bfseries{test\+\_\+medium\+\_\+group}}
+\item {\bfseries{test\+\_\+several\+\_\+members\+\_\+and\+\_\+groups}} 
+\end{DoxyItemize}

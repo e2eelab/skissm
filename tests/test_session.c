@@ -1,6 +1,9 @@
-/*
- * Copyright © 2020-2021 by Academia Sinica
+/**
+ * @file
+ * @copyright © 2020-2021 by Academia Sinica
+ * @brief session test
  *
+ * @page test_session session documentation
  * This file is part of SKISSM.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,6 +18,145 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @section test_basic_session
+ * Alice and Bob establish their session. Alice sends a message to Bob. Bob should decrypt the message successfully.
+ * 
+ * @section test_interaction
+ * Alice and Bob establish their session. Alice sends a message to Bob. Next, Bob sends a message to Alice.
+ * 
+ * @section test_continual_messages
+ * Alice sends 3000 messages to Bob.
+ * 
+ * @section test_multiple_devices
+ * 
+ * 
+ * @section test_one_to_many
+ * Alice has one device, and Bob has three devices. Alice sends a message to Bob.
+ * 
+ * @section test_many_to_one
+ * Alice has three devices, and Bob has one device. Alice sends a message to Bob.
+ * 
+ * @section test_many_to_many
+ * Both Alice and Bob have three devices. Alice sends a message to Bob.
+ * 
+ * @section test_change_devices
+ * Both Alice and Bob have two devices. Alice adds a new device. Then Alice sends a message to Bob. Next, Bob sends a message to Alice.
+ * 
+ * 
+ * 
+ * @defgroup session_unit session unit test
+ * @ingroup Unit
+ * This includes unit tests about session.
+ * 
+ * @defgroup session_int session integration test
+ * @ingroup Integration
+ * This includes integration tests about session.
+ * 
+ * @defgroup session_test_basic_session basic session test
+ * @ingroup session_int
+ * @{
+ * @section sec1001 Test Description
+ * Alice and Bob establish their session. Alice sends a message to Bob. Bob should decrypt the message successfully.
+ * @section sec1002 Test Objectives
+ * @section sec1003 Test Case ID
+ * @section sec1004 Test Case Title: test_basic_session
+ * @section sec1005 Preconditions
+ * @section sec1006 Test Steps
+ * @section sec1007 Expected Results
+ * @}
+ * 
+ * @defgroup session_test_interaction interaction test
+ * @ingroup session_int
+ * @{
+ * @section sec1101 Test Description
+ * Alice and Bob establish their session. Alice sends a message to Bob. Next, Bob sends a message to Alice.
+ * @section sec1102 Test Objectives
+ * @section sec1103 Test Case ID
+ * @section sec1104 Test Case Title: test_interaction
+ * @section sec1105 Preconditions
+ * @section sec1106 Test Steps
+ * @section sec1107 Expected Results
+ * @}
+ * 
+ * @defgroup session_test_continual_messages continual messages test
+ * @ingroup session_int
+ * @{
+ * @section sec1201 Test Description
+ * Alice sends 3000 messages to Bob.
+ * @section sec1202 Test Objectives
+ * @section sec1203 Test Case ID
+ * @section sec1204 Test Case Title: test_continual_messages
+ * @section sec1205 Preconditions
+ * @section sec1206 Test Steps
+ * @section sec1207 Expected Results
+ * @}
+ * 
+ * @defgroup session_test_multiple_devices multiple devices test
+ * @ingroup session_int
+ * @{
+ * @section sec1301 Test Description
+ * 
+ * @section sec1302 Test Objectives
+ * @section sec1303 Test Case ID
+ * @section sec1304 Test Case Title: test_multiple_devices
+ * @section sec1305 Preconditions
+ * @section sec1306 Test Steps
+ * @section sec1307 Expected Results
+ * @}
+ * 
+ * @defgroup session_test_one_to_many multiple devices test: one to many
+ * @ingroup session_int
+ * @{
+ * @section sec1401 Test Description
+ * Alice has one device, and Bob has three devices. Alice sends a message to Bob.
+ * @section sec1402 Test Objectives
+ * @section sec1403 Test Case ID
+ * @section sec1404 Test Case Title: test_one_to_many
+ * @section sec1405 Preconditions
+ * @section sec1406 Test Steps
+ * @section sec1407 Expected Results
+ * @}
+ * 
+ * @defgroup session_test_many_to_one multiple devices test: many to one
+ * @ingroup session_int
+ * @{
+ * @section sec1501 Test Description
+ * Alice has three devices, and Bob has one device. Alice sends a message to Bob.
+ * @section sec1502 Test Objectives
+ * @section sec1503 Test Case ID
+ * @section sec1504 Test Case Title: test_many_to_one
+ * @section sec1505 Preconditions
+ * @section sec1506 Test Steps
+ * @section sec1507 Expected Results
+ * @}
+ * 
+ * @defgroup session_test_many_to_many multiple devices test: many to many
+ * @ingroup session_int
+ * @{
+ * @section sec1601 Test Description
+ * Both Alice and Bob have three devices. Alice sends a message to Bob.
+ * @section sec1602 Test Objectives
+ * @section sec1603 Test Case ID
+ * @section sec1604 Test Case Title: test_many_to_many
+ * @section sec1605 Preconditions
+ * @section sec1606 Test Steps
+ * @section sec1607 Expected Results
+ * @}
+ * 
+ * @defgroup session_test_change_devices change devices test
+ * @ingroup session_int
+ * @{
+ * @section sec1701 Test Description
+ * Both Alice and Bob have two devices. Alice adds a new device. Then Alice sends a message to Bob. Next, Bob sends a message to Alice.
+ * @section sec1702 Test Objectives
+ * @section sec1703 Test Case ID
+ * @section sec1704 Test Case Title: test_change_devices
+ * @section sec1705 Preconditions
+ * @section sec1706 Test Steps
+ * @section sec1707 Expected Results
+ * @}
+ * 
  */
 #include <assert.h>
 #include <stdio.h>

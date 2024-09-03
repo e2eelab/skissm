@@ -21,7 +21,7 @@ int get_pre_key_bundle_internal(
     uint8_t *group_pre_key_plaintext_data,
     size_t group_pre_key_plaintext_data_len
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = NULL;
     Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = NULL;
@@ -30,36 +30,36 @@ int get_pre_key_bundle_internal(
 
     if (!is_valid_address(from)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "get_pre_key_bundle_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_string(auth)) {
         ssm_notify_log(NULL, BAD_AUTH, "get_pre_key_bundle_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_string(to_user_id)) {
         ssm_notify_log(NULL, BAD_USER_ID, "get_pre_key_bundle_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_string(to_domain)) {
         ssm_notify_log(NULL, BAD_DOMAIN, "get_pre_key_bundle_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // to_device_id can be null
         ret = produce_get_pre_key_bundle_request(&get_pre_key_bundle_request, to_user_id, to_domain, to_device_id, active);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(from, auth, get_pre_key_bundle_request);
 
         if (!is_valid_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
             ssm_notify_log(NULL, BAD_RESPONSE, "get_pre_key_bundle_internal()");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = consume_get_pre_key_bundle_response(
             &invite_response_list,
             &invite_response_num,
@@ -70,7 +70,7 @@ int get_pre_key_bundle_internal(
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         if (active == true) {
             size_t their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
             char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
@@ -140,7 +140,7 @@ int invite_internal(
     Skissm__InviteResponse **response_out,
     Skissm__Session *outbound_session
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__InviteRequest *invite_request = NULL;
     Skissm__InviteResponse *response = NULL;
@@ -152,18 +152,18 @@ int invite_internal(
         get_skissm_plugin()->db_handler.load_auth(user_address, &auth);
         if (!is_valid_string(auth)) {
             ssm_notify_log(user_address, BAD_AUTH, "invite_internal()");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
         ssm_notify_log(user_address, BAD_SESSION, "invite_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = produce_invite_request(&invite_request, outbound_session);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         response = get_skissm_plugin()->proto_handler.invite(user_address, auth, invite_request);
 
         if (is_valid_invite_response(response)) {
@@ -187,7 +187,7 @@ int invite_internal(
         free_proto(invite_request);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *response_out = response;
     }
 
@@ -203,7 +203,7 @@ int accept_internal(
     ProtobufCBinaryData *ciphertext_1,
     ProtobufCBinaryData *our_ratchet_key
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__AcceptRequest *accept_request = NULL;
     Skissm__AcceptResponse *response = NULL;
@@ -211,33 +211,33 @@ int accept_internal(
 
     if (!is_valid_e2ee_pack_id(e2ee_pack_id)) {
         ssm_notify_log(from, BAD_E2EE_PACK, "accept_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (is_valid_address(from)) {
         get_skissm_plugin()->db_handler.load_auth(from, &auth);
         if (!is_valid_string(auth)) {
             ssm_notify_log(from, BAD_AUTH, "accept_internal()");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
         ssm_notify_log(from, BAD_ADDRESS, "accept_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_address(to)) {
         ssm_notify_log(from, BAD_ADDRESS, "accept_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_protobuf(our_ratchet_key)) {
         ssm_notify_log(from, BAD_INPUT_DATA, "accept_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
     // ssm_notify_log(from, DEBUG_LOG, "accept_internal(): from [%s:%s] to [%s:%s]", from->user->user_id, from->user->device_id, to->user->user_id, to->user->device_id);
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = produce_accept_request(&accept_request, e2ee_pack_id, from, to, ciphertext_1, our_ratchet_key);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         response = get_skissm_plugin()->proto_handler.accept(from, auth, accept_request);
 
         if (is_valid_accept_response(response)) {
@@ -258,7 +258,7 @@ int accept_internal(
         free_proto(accept_request);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *response_out = response;
     }
 
@@ -270,7 +270,7 @@ int publish_spk_internal(
     Skissm__PublishSpkResponse **response_out,
     Skissm__Account *account
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__PublishSpkRequest *publish_spk_request = NULL;
     Skissm__PublishSpkResponse *response = NULL;
@@ -279,7 +279,7 @@ int publish_spk_internal(
     
     ret = produce_publish_spk_request(&publish_spk_request, account);
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         response = get_skissm_plugin()->proto_handler.publish_spk(account->address, account->auth, publish_spk_request);
 
         if (is_valid_publish_spk_response(response)) {
@@ -302,7 +302,7 @@ int publish_spk_internal(
     // release
     free_proto(publish_spk_request);
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *response_out = response;
     }
 
@@ -315,7 +315,7 @@ int supply_opks_internal(
     Skissm__Account *account,
     uint32_t opks_num
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__SupplyOpksRequest *supply_opks_request = NULL;
     Skissm__SupplyOpksResponse *response = NULL;
@@ -323,18 +323,18 @@ int supply_opks_internal(
     if (opks_num != 0) {
         if (!is_valid_registered_account(account)) {
             ssm_notify_log(account->address, BAD_ACCOUNT, "supply_opks_internal()");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
         ssm_notify_log(account->address, BAD_INPUT_DATA, "supply_opks_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = produce_supply_opks_request(&supply_opks_request, account, opks_num);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         response = get_skissm_plugin()->proto_handler.supply_opks(account->address, account->auth, supply_opks_request);
 
         if (is_valid_supply_opks_response(response)) {
@@ -353,7 +353,7 @@ int supply_opks_internal(
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *response_out = response;
     }
 
@@ -369,7 +369,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
     uint32_t notif_level,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__SendOne2oneMsgRequest *send_one2one_msg_request = NULL;
 
@@ -420,7 +420,7 @@ int add_group_member_device_internal(
     Skissm__E2eeAddress *group_address,
     Skissm__E2eeAddress *new_device_address
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__AddGroupMemberDeviceRequest *add_group_member_device_request = NULL;
     Skissm__AddGroupMemberDeviceResponse *response = NULL;
@@ -438,35 +438,35 @@ int add_group_member_device_internal(
 
                 if (outbound_group_session == NULL) {
                     ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_member_device_internal()");
-                    ret = -1;
+                    ret = SKISSM_RESULT_FAIL;
                 }
             } else {
                 ssm_notify_log(NULL, BAD_ADDRESS, "add_group_member_device_internal()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         } else {
             ssm_notify_log(sender_address, BAD_AUTH, "add_group_member_device_internal()");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
         ssm_notify_log(NULL, BAD_ADDRESS, "add_group_member_device_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_address(new_device_address)) {
         ssm_notify_log(NULL, BAD_ADDRESS, "add_group_member_device_internal()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = produce_add_group_member_device_request(&add_group_member_device_request, outbound_group_session, new_device_address);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, add_group_member_device_request);
 
         if (!is_valid_add_group_member_device_response(response)) {
             ssm_notify_log(NULL, BAD_RESPONSE, "add_group_member_device_internal()");
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
             // note that packing the pending request will be skipped in some cases
             // pack add_group_member_device_request to request_data
             size_t request_data_len = skissm__add_group_member_device_request__get_packed_size(add_group_member_device_request);
@@ -482,11 +482,11 @@ int add_group_member_device_internal(
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = consume_add_group_member_device_response(outbound_group_session, response);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *response_out = response;
     }
 
@@ -568,7 +568,7 @@ static void resend_pending_request(Skissm__Account *account) {
             user_address, &pending_request_id_list, &request_type_list, &request_data_list, &request_data_len_list
         );
     // send the pending request data
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
     bool succ = false;
     Skissm__GroupSession *group_session = NULL;
     size_t i;
@@ -588,9 +588,9 @@ static void resend_pending_request(Skissm__Account *account) {
                 size_t i;
                 // check if pre_key_bundles is empty
                 if (!is_valid_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
-                    ret = -1;
+                    ret = SKISSM_RESULT_FAIL;
                 }
-                if (ret == 0) {
+                if (ret == SKISSM_RESULT_SUCC) {
                     their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
                     Skissm__InviteResponse **invite_response_list = NULL;
                     size_t invite_response_num = 0;
@@ -620,7 +620,7 @@ static void resend_pending_request(Skissm__Account *account) {
                         free_mem((void **)&invite_response_list, sizeof(Skissm__InviteResponse *) * their_device_num);
                     }
 
-                    if (ret == 0) {
+                    if (ret == SKISSM_RESULT_SUCC) {
                         if (pending_request->request_arg_list[0].data[0] == 'T') {
                             their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
                             char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);

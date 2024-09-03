@@ -1,0 +1,48 @@
+\doxysection{account\+\_\+manager.\+h}
+\hypertarget{account__manager_8h_source}{}\label{account__manager_8h_source}\index{include/skissm/account\_manager.h@{include/skissm/account\_manager.h}}
+\mbox{\hyperlink{account__manager_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#ifndef\ ACCOUNT\_MANAGER\_H\_}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#define\ ACCOUNT\_MANAGER\_H\_}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00025\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{skissm_8h}{skissm/skissm.h}}"{}}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00037\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{account__manager_8h_a5bba5700a82724284e2915aef45fe433}{produce\_register\_request}}(}
+\DoxyCodeLine{00038\ \ \ \ \ Skissm\_\_RegisterUserRequest\ **request\_out,}
+\DoxyCodeLine{00039\ \ \ \ \ Skissm\_\_Account\ *account}
+\DoxyCodeLine{00040\ );}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00050\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{account__manager_8h_afda5986fbaa80ab8322386e131e56e78}{consume\_register\_response}}(Skissm\_\_Account\ *account,\ Skissm\_\_RegisterUserResponse\ *payload);}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00059\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{account__manager_8h_a80c4de20f4a62e074b12c835554a0532}{produce\_publish\_spk\_request}}(}
+\DoxyCodeLine{00060\ \ \ \ \ Skissm\_\_PublishSpkRequest\ **request\_out,}
+\DoxyCodeLine{00061\ \ \ \ \ Skissm\_\_Account\ *account}
+\DoxyCodeLine{00062\ );}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00071\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{account__manager_8h_a07af9d935febfe553d8a1b44d52ce7f3}{consume\_publish\_spk\_response}}(}
+\DoxyCodeLine{00072\ \ \ \ \ Skissm\_\_Account\ *account,}
+\DoxyCodeLine{00073\ \ \ \ \ Skissm\_\_PublishSpkResponse\ *response}
+\DoxyCodeLine{00074\ );}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00084\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{account__manager_8h_a16208bffc298846368e8522a76cfa9d4}{produce\_supply\_opks\_request}}(}
+\DoxyCodeLine{00085\ \ \ \ \ Skissm\_\_SupplyOpksRequest\ **request\_out,}
+\DoxyCodeLine{00086\ \ \ \ \ Skissm\_\_Account\ *account,}
+\DoxyCodeLine{00087\ \ \ \ \ uint32\_t\ opks\_num}
+\DoxyCodeLine{00088\ );}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00098\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{account__manager_8h_a4a131ad250eb68d2c609efad87f75fd9}{consume\_supply\_opks\_response}}(Skissm\_\_Account\ *account,\ uint32\_t\ opks\_num,\ Skissm\_\_SupplyOpksResponse\ *response);}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00108\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{account__manager_8h_a19b64e4e3bd56914928a0d99402255e1}{consume\_supply\_opks\_msg}}(Skissm\_\_E2eeAddress\ *receiver\_address,\ Skissm\_\_SupplyOpksMsg\ *msg);}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00111\ \}}
+\DoxyCodeLine{00112\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ ACCOUNT\_MANAGER\_H\_}}
+
+\end{DoxyCode}

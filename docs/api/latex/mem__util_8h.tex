@@ -1,0 +1,1150 @@
+\doxysection{include/skissm/mem\+\_\+util.h File Reference}
+\hypertarget{mem__util_8h}{}\label{mem__util_8h}\index{include/skissm/mem\_util.h@{include/skissm/mem\_util.h}}
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include "{}skissm/skissm.\+h"{}}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{mem__util_8h_ac09f1868695fde36561a5b8b4e75a811}{free\+\_\+proto}}(name)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{mem__util_8h_af03d39bca88b5284526c9bb13132ba89}{is\+\_\+equal}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}buffer\+\_\+a, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}buffer\+\_\+b, size\+\_\+t len)
+\item 
+char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{mem__util_8h_a07ad3b007dd747436aef28276a99ff91}{generate\+\_\+uuid\+\_\+str}} ()
+\begin{DoxyCompactList}\small\item\em Generate a UUID string. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{mem__util_8h_a5de256455bb816de7119b7c5789da2cb}{to\+\_\+hex\+\_\+str}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}buffer, size\+\_\+t buffer\+\_\+len, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}hex\+\_\+str)
+\begin{DoxyCompactList}\small\item\em Generate hex string from given uint8 array. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{mem__util_8h_abcbfe386618290e48270e097b709076a}{compare\+\_\+protobuf}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}src\+\_\+1, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}src\+\_\+2)
+\begin{DoxyCompactList}\small\item\em Compare two Protobuf\+CBinary\+Data objects. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{mem__util_8h_acaf04287564cbb5a3662c896622257d5}{safe\+\_\+strcmp}} (const char \texorpdfstring{$\ast$}{*}str\+\_\+1, const char \texorpdfstring{$\ast$}{*}str\+\_\+2)
+\begin{DoxyCompactList}\small\item\em Compare two char string that can be NULL. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{mem__util_8h_a5ef01c200e2ad9d6de7c7ca2bd116fe1}{compare\+\_\+user\+\_\+id}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}address, const char \texorpdfstring{$\ast$}{*}user\+\_\+id, const char \texorpdfstring{$\ast$}{*}domain)
+\begin{DoxyCompactList}\small\item\em Compare two user\textquotesingle{}s ids. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{mem__util_8h_aacb95aedc72866264233411ab7fc5f9c}{compare\+\_\+address}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}address\+\_\+1, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}address\+\_\+2)
+\begin{DoxyCompactList}\small\item\em Compare two Skissm\+\_\+\+\_\+\+E2ee\+Address objects. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{mem__util_8h_a30459451415ece193eb01a12cafa1a72}{compare\+\_\+group\+\_\+member}} (Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members\+\_\+1, size\+\_\+t group\+\_\+member\+\_\+num\+\_\+1, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members\+\_\+2, size\+\_\+t group\+\_\+member\+\_\+num\+\_\+2)
+\begin{DoxyCompactList}\small\item\em Compaare two Skissm\+\_\+\+\_\+\+Group\+Member arrays. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a36d44ad52211f32b13d2b6cdc672607a}{init\+\_\+protobuf}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}dest)
+\begin{DoxyCompactList}\small\item\em Initialize the Protobuf\+CBinary\+Data. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ab6035838a960c7a620c83957b4b5f1eb}{malloc\+\_\+protobuf}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}dest, size\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Malloc the Protobuf\+CBinary\+Data with given len. \end{DoxyCompactList}\item 
+\Hypertarget{mem__util_8h_a735d12d4ffcd8cea2eee9561f62f155e}\label{mem__util_8h_a735d12d4ffcd8cea2eee9561f62f155e} 
+uint8\+\_\+t \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+identity\+\_\+public\+\_\+key\+\_\+ds\+\_\+uint8\+\_\+from\+\_\+account} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}src)
+\item 
+\Hypertarget{mem__util_8h_ae650cd414e3874170c10a9efe7fdcbaf}\label{mem__util_8h_ae650cd414e3874170c10a9efe7fdcbaf} 
+Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+identity\+\_\+public\+\_\+key\+\_\+ds\+\_\+bytes\+\_\+from\+\_\+account} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}src)
+\item 
+void \mbox{\hyperlink{mem__util_8h_adf538490e6385b7e1478111e25d1029d}{copy\+\_\+protobuf\+\_\+from\+\_\+protobuf}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}dest, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Protobuf\+CBinary\+Data from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a7e3480e1a20af5f8c0ee0204134056a1}{copy\+\_\+protobuf\+\_\+from\+\_\+bool}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}dest, bool src)
+\begin{DoxyCompactList}\small\item\em Copy Protobuf\+CBinary\+Data from bool. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a49f0e0fa421e8a6884ddfc5461320972}{copy\+\_\+protobuf\+\_\+from\+\_\+array}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}dest, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}src, size\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em Copy data from byte array to Protobuf\+CBinary\+Data. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a46b071539e26197cf6045c29e7ebd8b8}{overwrite\+\_\+protobuf\+\_\+from\+\_\+array}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}dest, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Overwrite data from byte array to Protobuf\+CBinary\+Data. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a4fb4213e819b3b7fc42a2fe394810cd8}{copy\+\_\+protobuf\+\_\+list\+\_\+from\+\_\+protobuf\+\_\+list}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}dest, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}src, size\+\_\+t protobuf\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Copy Protobuf\+CBinary\+Data list from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ac1f0397393f2f0be30814a764bb4fd32}{copy\+\_\+address\+\_\+from\+\_\+address}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, const Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+E2ee\+Address from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a32d07c33cc3bdcfd95cd571f9095c10e}{copy\+\_\+key\+\_\+pair\+\_\+from\+\_\+key\+\_\+pair}} (Skissm\+\_\+\+\_\+\+Key\+Pair \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Key\+Pair \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Key\+Pair from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_acbdbf141707ff3cfb1ac8d28658d3492}{copy\+\_\+ik\+\_\+from\+\_\+ik}} (Skissm\+\_\+\+\_\+\+Identity\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Identity\+Key \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Identity\+Key from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a77730aa637919b266fb9c1dcc28669d8}{copy\+\_\+spk\+\_\+from\+\_\+spk}} (Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ae3f5ddc5932a9a884226f2406f9bf642}{copy\+\_\+opks\+\_\+from\+\_\+opks}} (Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}src, size\+\_\+t opk\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_acef1e409e01c1ee68cd4531201459523}{copy\+\_\+subject\+\_\+from\+\_\+subject}} (Skissm\+\_\+\+\_\+\+Subject \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Subject \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Subject from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a72fcf214d100cb424153b38a0dbf43ed}{copy\+\_\+cert\+\_\+from\+\_\+cert}} (Skissm\+\_\+\+\_\+\+Cert \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Cert \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Cert from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_afcd042a5b25fe5f69d469c6b9f516cbe}{copy\+\_\+certificate\+\_\+from\+\_\+certificate}} (Skissm\+\_\+\+\_\+\+Certificate \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Certificate \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Certificate from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a4d0aa5eb4d944115658b69922bdec638}{copy\+\_\+account\+\_\+from\+\_\+account}} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Account from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_afe436580d84f1fe668492a433fd2130c}{copy\+\_\+chain\+\_\+key\+\_\+from\+\_\+chain\+\_\+key}} (Skissm\+\_\+\+\_\+\+Chain\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Chain\+Key \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Chain\+Key from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a10302ce2ad7bd70cf6636b50d2561ad5}{copy\+\_\+msg\+\_\+key\+\_\+from\+\_\+msg\+\_\+key}} (Skissm\+\_\+\+\_\+\+Msg\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Msg\+Key \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Msg\+Key from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a7fc32eed107fce573728132d99a5190b}{copy\+\_\+sender\+\_\+chain\+\_\+from\+\_\+sender\+\_\+chain}} (Skissm\+\_\+\+\_\+\+Sender\+Chain\+Node \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Sender\+Chain\+Node \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Sender\+Chain\+Node from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a1c9fe8f20f23d3fe686c6935c33c0b19}{copy\+\_\+receiver\+\_\+chain\+\_\+from\+\_\+receiver\+\_\+chain}} (Skissm\+\_\+\+\_\+\+Receiver\+Chain\+Node \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Receiver\+Chain\+Node \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Receiver\+Chain\+Node from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a02b44916c5a882bc79a98058be4ee668}{copy\+\_\+skipped\+\_\+msg\+\_\+keys\+\_\+from\+\_\+skipped\+\_\+msg\+\_\+keys}} (Skissm\+\_\+\+\_\+\+Skipped\+Msg\+Key\+Node \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Skipped\+Msg\+Key\+Node \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}src, size\+\_\+t skipped\+\_\+msg\+\_\+keys\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Skipped\+Msg\+Key\+Node from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a2bc6f23c4a0a37cdc6c784550200aac1}{copy\+\_\+ratchet\+\_\+from\+\_\+ratchet}} (Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Ratchet from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_af0510055d9da808add115a74403a65fe}{copy\+\_\+session\+\_\+from\+\_\+session}} (Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Session from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a0bb100133c25d7d3d083531be1536abb}{copy\+\_\+ik\+\_\+public\+\_\+from\+\_\+ik\+\_\+public}} (Skissm\+\_\+\+\_\+\+Identity\+Key\+Public \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Identity\+Key\+Public \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Identity\+Key\+Public from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a5ca625ace75cccf4ef7a63c8f0193d1b}{copy\+\_\+spk\+\_\+public\+\_\+from\+\_\+spk\+\_\+public}} (Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key\+Public \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key\+Public \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key\+Public from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a6e980b596f65e036d445bbb975449717}{copy\+\_\+opk\+\_\+public\+\_\+from\+\_\+opk\+\_\+public}} (Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key\+Public \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key\+Public \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key\+Public from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_aeb0b86a387f139632320bb22f1ed2e12}{copy\+\_\+group\+\_\+member\+\_\+id}} (Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Group\+Member\+Info from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_af39f0903813fb614b393fc250948da9d}{copy\+\_\+group\+\_\+member\+\_\+ids}} (Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}src, size\+\_\+t to\+\_\+member\+\_\+addresses\+\_\+total\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Group\+Member\+Info array from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a4dab70dafaefe4e5a0217a820c5a8c09}{copy\+\_\+group\+\_\+member}} (Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Group\+Member from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a4fb0a33b097e82a45325e1c5ee93e25c}{copy\+\_\+group\+\_\+members}} (Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}src, size\+\_\+t group\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Group\+Member array from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a691aec59dad9f630a0fd5d31232277c7}{copy\+\_\+group\+\_\+info}} (Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Group\+Info from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ade001e7fef83f8ec85bf25d55d9ec7cc}{copy\+\_\+create\+\_\+group\+\_\+msg}} (Skissm\+\_\+\+\_\+\+Create\+Group\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Create\+Group\+Msg \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Create\+Group\+Msg from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a8fc358de42278810c7c708ad52325933}{copy\+\_\+add\+\_\+group\+\_\+members\+\_\+msg}} (Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Msg from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a03be53f60d9a88e514c38aeb6fbd3eed}{copy\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+msg}} (Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ab2c85c9581a8b9ffa936a8eb788f6cfc}{copy\+\_\+remove\+\_\+group\+\_\+members\+\_\+msg}} (Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_adc5ddafeee8df2893b9a6e349ee370f7}{copy\+\_\+leave\+\_\+group\+\_\+msg}} (Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg \texorpdfstring{$\ast$}{*}src)
+\begin{DoxyCompactList}\small\item\em Copy Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg from src to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ad213c810049364e0d1f44d01961f90ba}{add\+\_\+group\+\_\+members\+\_\+to\+\_\+group\+\_\+info}} (Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}old\+\_\+group\+\_\+info, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}adding\+\_\+members, size\+\_\+t adding\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Add new Skissm\+\_\+\+\_\+\+Group\+Member array to dest. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a6ba27d0df4c5016bf1abfa92a33f663d}{remove\+\_\+group\+\_\+members\+\_\+from\+\_\+group\+\_\+info}} (Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}old\+\_\+group\+\_\+info, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}removing\+\_\+members, size\+\_\+t removing\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Remove some Skissm\+\_\+\+\_\+\+Group\+Member from old\+\_\+group\+\_\+info. \end{DoxyCompactList}\item 
+Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{mem__util_8h_aa5bb6351db01a906ef70252c2d39c23e}{member\+\_\+info\+\_\+to\+\_\+group\+\_\+member}} (Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}member\+\_\+info)
+\begin{DoxyCompactList}\small\item\em Copy member info to group member. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{mem__util_8h_a87e5d5beabec64a4ce955668b8b8f43c}{member\+\_\+info\+\_\+to\+\_\+group\+\_\+members}} (Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}member\+\_\+info\+\_\+list, size\+\_\+t member\+\_\+info\+\_\+list\+\_\+num, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}member\+\_\+list, size\+\_\+t member\+\_\+list\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Collect unique user ID from member\+\_\+info\+\_\+list then convert and collect it into member\+\_\+list. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a4101f07085b61c37e95eb37cf75eda3d}{free\+\_\+e2ee\+\_\+addresses}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, size\+\_\+t e2ee\+\_\+addresses\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Release memory of Skissm\+\_\+\+\_\+\+E2ee\+Address array. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a20fb6f6fb0fc02291c74097c7bd6992e}{free\+\_\+invite\+\_\+response\+\_\+list}} (Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, size\+\_\+t invite\+\_\+response\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Release memory of Skissm\+\_\+\+\_\+\+Invite\+Response array. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ada50d2b0db09c3de8f055212f19a7568}{free\+\_\+group\+\_\+members}} (Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}dest, size\+\_\+t group\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Release memory of Skissm\+\_\+\+\_\+\+Group\+Member array. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ad355289d6c6909bc963d40220d32f2a4}{free\+\_\+protobuf}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}output)
+\begin{DoxyCompactList}\small\item\em Release memory of Protobuf\+CBinary\+Data. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_af538c2a1b73b49b349c3face2518be5b}{free\+\_\+protobuf\+\_\+list}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}output, size\+\_\+t protobuf\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Release memory of Protobuf\+CBinary\+Data list. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ad757cdc6a1d8462f8a6e71f5f21be004}{free\+\_\+string}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}buffer)
+\begin{DoxyCompactList}\small\item\em Release a string. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_ad52318053f6e2ff82479263171309447}{free\+\_\+mem}} (void \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}buffer, size\+\_\+t buffer\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Release a memory block. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{mem__util_8h_a7084bf913a19b0f4f621834fded3c3e6}{unset}} (void volatile \texorpdfstring{$\ast$}{*}buffer, size\+\_\+t buffer\+\_\+len)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2020-\/2021 by Academia Sinica
+
+This file is part of SKISSM.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with SKISSM. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{mem__util_8h_ac09f1868695fde36561a5b8b4e75a811}\index{mem\_util.h@{mem\_util.h}!free\_proto@{free\_proto}}
+\index{free\_proto@{free\_proto}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{free\_proto}{free\_proto}}
+{\footnotesize\ttfamily \label{mem__util_8h_ac09f1868695fde36561a5b8b4e75a811} 
+\#define free\+\_\+proto(\begin{DoxyParamCaption}\item[{}]{name}{}\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (name\ !=\ NULL)\ \{\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ skissm\_\_\#\#name\#\#\_\_free\_unpacked(name,\ NULL);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ name\ =\ NULL;\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{mem__util_8h_ad213c810049364e0d1f44d01961f90ba}\index{mem\_util.h@{mem\_util.h}!add\_group\_members\_to\_group\_info@{add\_group\_members\_to\_group\_info}}
+\index{add\_group\_members\_to\_group\_info@{add\_group\_members\_to\_group\_info}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{add\_group\_members\_to\_group\_info()}{add\_group\_members\_to\_group\_info()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ad213c810049364e0d1f44d01961f90ba} 
+void add\+\_\+group\+\_\+members\+\_\+to\+\_\+group\+\_\+info (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}}]{old\+\_\+group\+\_\+info}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{adding\+\_\+members}{, }\item[{size\+\_\+t}]{adding\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Add new Skissm\+\_\+\+\_\+\+Group\+Member array to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em old\+\_\+group\+\_\+info} & \\
+\hline
+{\em adding\+\_\+members} & \\
+\hline
+{\em adding\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_aacb95aedc72866264233411ab7fc5f9c}\index{mem\_util.h@{mem\_util.h}!compare\_address@{compare\_address}}
+\index{compare\_address@{compare\_address}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{compare\_address()}{compare\_address()}}
+{\footnotesize\ttfamily \label{mem__util_8h_aacb95aedc72866264233411ab7fc5f9c} 
+bool compare\+\_\+address (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{address\+\_\+1}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{address\+\_\+2}{}\end{DoxyParamCaption})}
+
+
+
+Compare two Skissm\+\_\+\+\_\+\+E2ee\+Address objects. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em address\+\_\+1} & \\
+\hline
+{\em address\+\_\+2} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{mem__util_8h_a30459451415ece193eb01a12cafa1a72}\index{mem\_util.h@{mem\_util.h}!compare\_group\_member@{compare\_group\_member}}
+\index{compare\_group\_member@{compare\_group\_member}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{compare\_group\_member()}{compare\_group\_member()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a30459451415ece193eb01a12cafa1a72} 
+bool compare\+\_\+group\+\_\+member (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members\+\_\+1}{, }\item[{size\+\_\+t}]{group\+\_\+member\+\_\+num\+\_\+1}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members\+\_\+2}{, }\item[{size\+\_\+t}]{group\+\_\+member\+\_\+num\+\_\+2}{}\end{DoxyParamCaption})}
+
+
+
+Compaare two Skissm\+\_\+\+\_\+\+Group\+Member arrays. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em group\+\_\+members\+\_\+1} & \\
+\hline
+{\em group\+\_\+member\+\_\+num\+\_\+1} & \\
+\hline
+{\em group\+\_\+members\+\_\+2} & \\
+\hline
+{\em group\+\_\+member\+\_\+num\+\_\+2} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{mem__util_8h_abcbfe386618290e48270e097b709076a}\index{mem\_util.h@{mem\_util.h}!compare\_protobuf@{compare\_protobuf}}
+\index{compare\_protobuf@{compare\_protobuf}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{compare\_protobuf()}{compare\_protobuf()}}
+{\footnotesize\ttfamily \label{mem__util_8h_abcbfe386618290e48270e097b709076a} 
+bool compare\+\_\+protobuf (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{src\+\_\+1}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{src\+\_\+2}{}\end{DoxyParamCaption})}
+
+
+
+Compare two Protobuf\+CBinary\+Data objects. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em src\+\_\+1} & \\
+\hline
+{\em src\+\_\+2} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{mem__util_8h_a5ef01c200e2ad9d6de7c7ca2bd116fe1}\index{mem\_util.h@{mem\_util.h}!compare\_user\_id@{compare\_user\_id}}
+\index{compare\_user\_id@{compare\_user\_id}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{compare\_user\_id()}{compare\_user\_id()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a5ef01c200e2ad9d6de7c7ca2bd116fe1} 
+bool compare\+\_\+user\+\_\+id (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{user\+\_\+id}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{domain}{}\end{DoxyParamCaption})}
+
+
+
+Compare two user\textquotesingle{}s ids. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em address} & \\
+\hline
+{\em user\+\_\+id} & \\
+\hline
+{\em domain} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{mem__util_8h_a4d0aa5eb4d944115658b69922bdec638}\index{mem\_util.h@{mem\_util.h}!copy\_account\_from\_account@{copy\_account\_from\_account}}
+\index{copy\_account\_from\_account@{copy\_account\_from\_account}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_account\_from\_account()}{copy\_account\_from\_account()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a4d0aa5eb4d944115658b69922bdec638} 
+void copy\+\_\+account\+\_\+from\+\_\+account (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Account from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a03be53f60d9a88e514c38aeb6fbd3eed}\index{mem\_util.h@{mem\_util.h}!copy\_add\_group\_member\_device\_msg@{copy\_add\_group\_member\_device\_msg}}
+\index{copy\_add\_group\_member\_device\_msg@{copy\_add\_group\_member\_device\_msg}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_add\_group\_member\_device\_msg()}{copy\_add\_group\_member\_device\_msg()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a03be53f60d9a88e514c38aeb6fbd3eed} 
+void copy\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a8fc358de42278810c7c708ad52325933}\index{mem\_util.h@{mem\_util.h}!copy\_add\_group\_members\_msg@{copy\_add\_group\_members\_msg}}
+\index{copy\_add\_group\_members\_msg@{copy\_add\_group\_members\_msg}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_add\_group\_members\_msg()}{copy\_add\_group\_members\_msg()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a8fc358de42278810c7c708ad52325933} 
+void copy\+\_\+add\+\_\+group\+\_\+members\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Msg from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_ac1f0397393f2f0be30814a764bb4fd32}\index{mem\_util.h@{mem\_util.h}!copy\_address\_from\_address@{copy\_address\_from\_address}}
+\index{copy\_address\_from\_address@{copy\_address\_from\_address}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_address\_from\_address()}{copy\_address\_from\_address()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ac1f0397393f2f0be30814a764bb4fd32} 
+void copy\+\_\+address\+\_\+from\+\_\+address (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{const Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+E2ee\+Address from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a72fcf214d100cb424153b38a0dbf43ed}\index{mem\_util.h@{mem\_util.h}!copy\_cert\_from\_cert@{copy\_cert\_from\_cert}}
+\index{copy\_cert\_from\_cert@{copy\_cert\_from\_cert}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_cert\_from\_cert()}{copy\_cert\_from\_cert()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a72fcf214d100cb424153b38a0dbf43ed} 
+void copy\+\_\+cert\+\_\+from\+\_\+cert (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Cert \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Cert \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Cert from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_afcd042a5b25fe5f69d469c6b9f516cbe}\index{mem\_util.h@{mem\_util.h}!copy\_certificate\_from\_certificate@{copy\_certificate\_from\_certificate}}
+\index{copy\_certificate\_from\_certificate@{copy\_certificate\_from\_certificate}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_certificate\_from\_certificate()}{copy\_certificate\_from\_certificate()}}
+{\footnotesize\ttfamily \label{mem__util_8h_afcd042a5b25fe5f69d469c6b9f516cbe} 
+void copy\+\_\+certificate\+\_\+from\+\_\+certificate (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Certificate \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Certificate \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Certificate from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_afe436580d84f1fe668492a433fd2130c}\index{mem\_util.h@{mem\_util.h}!copy\_chain\_key\_from\_chain\_key@{copy\_chain\_key\_from\_chain\_key}}
+\index{copy\_chain\_key\_from\_chain\_key@{copy\_chain\_key\_from\_chain\_key}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_chain\_key\_from\_chain\_key()}{copy\_chain\_key\_from\_chain\_key()}}
+{\footnotesize\ttfamily \label{mem__util_8h_afe436580d84f1fe668492a433fd2130c} 
+void copy\+\_\+chain\+\_\+key\+\_\+from\+\_\+chain\+\_\+key (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Chain\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Chain\+Key \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Chain\+Key from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_ade001e7fef83f8ec85bf25d55d9ec7cc}\index{mem\_util.h@{mem\_util.h}!copy\_create\_group\_msg@{copy\_create\_group\_msg}}
+\index{copy\_create\_group\_msg@{copy\_create\_group\_msg}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_create\_group\_msg()}{copy\_create\_group\_msg()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ade001e7fef83f8ec85bf25d55d9ec7cc} 
+void copy\+\_\+create\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Create\+Group\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Create\+Group\+Msg \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Create\+Group\+Msg from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a691aec59dad9f630a0fd5d31232277c7}\index{mem\_util.h@{mem\_util.h}!copy\_group\_info@{copy\_group\_info}}
+\index{copy\_group\_info@{copy\_group\_info}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_group\_info()}{copy\_group\_info()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a691aec59dad9f630a0fd5d31232277c7} 
+void copy\+\_\+group\+\_\+info (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Group\+Info from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a4dab70dafaefe4e5a0217a820c5a8c09}\index{mem\_util.h@{mem\_util.h}!copy\_group\_member@{copy\_group\_member}}
+\index{copy\_group\_member@{copy\_group\_member}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_group\_member()}{copy\_group\_member()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a4dab70dafaefe4e5a0217a820c5a8c09} 
+void copy\+\_\+group\+\_\+member (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Group\+Member from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_aeb0b86a387f139632320bb22f1ed2e12}\index{mem\_util.h@{mem\_util.h}!copy\_group\_member\_id@{copy\_group\_member\_id}}
+\index{copy\_group\_member\_id@{copy\_group\_member\_id}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_group\_member\_id()}{copy\_group\_member\_id()}}
+{\footnotesize\ttfamily \label{mem__util_8h_aeb0b86a387f139632320bb22f1ed2e12} 
+void copy\+\_\+group\+\_\+member\+\_\+id (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Group\+Member\+Info from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_af39f0903813fb614b393fc250948da9d}\index{mem\_util.h@{mem\_util.h}!copy\_group\_member\_ids@{copy\_group\_member\_ids}}
+\index{copy\_group\_member\_ids@{copy\_group\_member\_ids}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_group\_member\_ids()}{copy\_group\_member\_ids()}}
+{\footnotesize\ttfamily \label{mem__util_8h_af39f0903813fb614b393fc250948da9d} 
+void copy\+\_\+group\+\_\+member\+\_\+ids (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{src}{, }\item[{size\+\_\+t}]{to\+\_\+member\+\_\+addresses\+\_\+total\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Group\+Member\+Info array from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+{\em to\+\_\+member\+\_\+addresses\+\_\+total\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a4fb0a33b097e82a45325e1c5ee93e25c}\index{mem\_util.h@{mem\_util.h}!copy\_group\_members@{copy\_group\_members}}
+\index{copy\_group\_members@{copy\_group\_members}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_group\_members()}{copy\_group\_members()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a4fb0a33b097e82a45325e1c5ee93e25c} 
+void copy\+\_\+group\+\_\+members (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{src}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Group\+Member array from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+{\em group\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_acbdbf141707ff3cfb1ac8d28658d3492}\index{mem\_util.h@{mem\_util.h}!copy\_ik\_from\_ik@{copy\_ik\_from\_ik}}
+\index{copy\_ik\_from\_ik@{copy\_ik\_from\_ik}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_ik\_from\_ik()}{copy\_ik\_from\_ik()}}
+{\footnotesize\ttfamily \label{mem__util_8h_acbdbf141707ff3cfb1ac8d28658d3492} 
+void copy\+\_\+ik\+\_\+from\+\_\+ik (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Identity\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Identity\+Key \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Identity\+Key from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a0bb100133c25d7d3d083531be1536abb}\index{mem\_util.h@{mem\_util.h}!copy\_ik\_public\_from\_ik\_public@{copy\_ik\_public\_from\_ik\_public}}
+\index{copy\_ik\_public\_from\_ik\_public@{copy\_ik\_public\_from\_ik\_public}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_ik\_public\_from\_ik\_public()}{copy\_ik\_public\_from\_ik\_public()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a0bb100133c25d7d3d083531be1536abb} 
+void copy\+\_\+ik\+\_\+public\+\_\+from\+\_\+ik\+\_\+public (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Identity\+Key\+Public \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Identity\+Key\+Public \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Identity\+Key\+Public from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a32d07c33cc3bdcfd95cd571f9095c10e}\index{mem\_util.h@{mem\_util.h}!copy\_key\_pair\_from\_key\_pair@{copy\_key\_pair\_from\_key\_pair}}
+\index{copy\_key\_pair\_from\_key\_pair@{copy\_key\_pair\_from\_key\_pair}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_key\_pair\_from\_key\_pair()}{copy\_key\_pair\_from\_key\_pair()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a32d07c33cc3bdcfd95cd571f9095c10e} 
+void copy\+\_\+key\+\_\+pair\+\_\+from\+\_\+key\+\_\+pair (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Key\+Pair \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Key\+Pair \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Key\+Pair from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_adc5ddafeee8df2893b9a6e349ee370f7}\index{mem\_util.h@{mem\_util.h}!copy\_leave\_group\_msg@{copy\_leave\_group\_msg}}
+\index{copy\_leave\_group\_msg@{copy\_leave\_group\_msg}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_leave\_group\_msg()}{copy\_leave\_group\_msg()}}
+{\footnotesize\ttfamily \label{mem__util_8h_adc5ddafeee8df2893b9a6e349ee370f7} 
+void copy\+\_\+leave\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a10302ce2ad7bd70cf6636b50d2561ad5}\index{mem\_util.h@{mem\_util.h}!copy\_msg\_key\_from\_msg\_key@{copy\_msg\_key\_from\_msg\_key}}
+\index{copy\_msg\_key\_from\_msg\_key@{copy\_msg\_key\_from\_msg\_key}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_msg\_key\_from\_msg\_key()}{copy\_msg\_key\_from\_msg\_key()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a10302ce2ad7bd70cf6636b50d2561ad5} 
+void copy\+\_\+msg\+\_\+key\+\_\+from\+\_\+msg\+\_\+key (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Msg\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Msg\+Key \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Msg\+Key from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a6e980b596f65e036d445bbb975449717}\index{mem\_util.h@{mem\_util.h}!copy\_opk\_public\_from\_opk\_public@{copy\_opk\_public\_from\_opk\_public}}
+\index{copy\_opk\_public\_from\_opk\_public@{copy\_opk\_public\_from\_opk\_public}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_opk\_public\_from\_opk\_public()}{copy\_opk\_public\_from\_opk\_public()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a6e980b596f65e036d445bbb975449717} 
+void copy\+\_\+opk\+\_\+public\+\_\+from\+\_\+opk\+\_\+public (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key\+Public \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key\+Public \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key\+Public from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_ae3f5ddc5932a9a884226f2406f9bf642}\index{mem\_util.h@{mem\_util.h}!copy\_opks\_from\_opks@{copy\_opks\_from\_opks}}
+\index{copy\_opks\_from\_opks@{copy\_opks\_from\_opks}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_opks\_from\_opks()}{copy\_opks\_from\_opks()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ae3f5ddc5932a9a884226f2406f9bf642} 
+void copy\+\_\+opks\+\_\+from\+\_\+opks (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{src}{, }\item[{size\+\_\+t}]{opk\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+One\+Time\+Pre\+Key from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+{\em opk\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a49f0e0fa421e8a6884ddfc5461320972}\index{mem\_util.h@{mem\_util.h}!copy\_protobuf\_from\_array@{copy\_protobuf\_from\_array}}
+\index{copy\_protobuf\_from\_array@{copy\_protobuf\_from\_array}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_protobuf\_from\_array()}{copy\_protobuf\_from\_array()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a49f0e0fa421e8a6884ddfc5461320972} 
+void copy\+\_\+protobuf\+\_\+from\+\_\+array (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{src}{, }\item[{size\+\_\+t}]{len}{}\end{DoxyParamCaption})}
+
+
+
+Copy data from byte array to Protobuf\+CBinary\+Data. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+{\em len} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a7e3480e1a20af5f8c0ee0204134056a1}\index{mem\_util.h@{mem\_util.h}!copy\_protobuf\_from\_bool@{copy\_protobuf\_from\_bool}}
+\index{copy\_protobuf\_from\_bool@{copy\_protobuf\_from\_bool}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_protobuf\_from\_bool()}{copy\_protobuf\_from\_bool()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a7e3480e1a20af5f8c0ee0204134056a1} 
+void copy\+\_\+protobuf\+\_\+from\+\_\+bool (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{bool}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Protobuf\+CBinary\+Data from bool. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_adf538490e6385b7e1478111e25d1029d}\index{mem\_util.h@{mem\_util.h}!copy\_protobuf\_from\_protobuf@{copy\_protobuf\_from\_protobuf}}
+\index{copy\_protobuf\_from\_protobuf@{copy\_protobuf\_from\_protobuf}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_protobuf\_from\_protobuf()}{copy\_protobuf\_from\_protobuf()}}
+{\footnotesize\ttfamily \label{mem__util_8h_adf538490e6385b7e1478111e25d1029d} 
+void copy\+\_\+protobuf\+\_\+from\+\_\+protobuf (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Protobuf\+CBinary\+Data from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a4fb4213e819b3b7fc42a2fe394810cd8}\index{mem\_util.h@{mem\_util.h}!copy\_protobuf\_list\_from\_protobuf\_list@{copy\_protobuf\_list\_from\_protobuf\_list}}
+\index{copy\_protobuf\_list\_from\_protobuf\_list@{copy\_protobuf\_list\_from\_protobuf\_list}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_protobuf\_list\_from\_protobuf\_list()}{copy\_protobuf\_list\_from\_protobuf\_list()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a4fb4213e819b3b7fc42a2fe394810cd8} 
+void copy\+\_\+protobuf\+\_\+list\+\_\+from\+\_\+protobuf\+\_\+list (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{src}{, }\item[{size\+\_\+t}]{protobuf\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Copy Protobuf\+CBinary\+Data list from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+{\em protobuf\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a2bc6f23c4a0a37cdc6c784550200aac1}\index{mem\_util.h@{mem\_util.h}!copy\_ratchet\_from\_ratchet@{copy\_ratchet\_from\_ratchet}}
+\index{copy\_ratchet\_from\_ratchet@{copy\_ratchet\_from\_ratchet}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_ratchet\_from\_ratchet()}{copy\_ratchet\_from\_ratchet()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a2bc6f23c4a0a37cdc6c784550200aac1} 
+void copy\+\_\+ratchet\+\_\+from\+\_\+ratchet (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Ratchet from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a1c9fe8f20f23d3fe686c6935c33c0b19}\index{mem\_util.h@{mem\_util.h}!copy\_receiver\_chain\_from\_receiver\_chain@{copy\_receiver\_chain\_from\_receiver\_chain}}
+\index{copy\_receiver\_chain\_from\_receiver\_chain@{copy\_receiver\_chain\_from\_receiver\_chain}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_receiver\_chain\_from\_receiver\_chain()}{copy\_receiver\_chain\_from\_receiver\_chain()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a1c9fe8f20f23d3fe686c6935c33c0b19} 
+void copy\+\_\+receiver\+\_\+chain\+\_\+from\+\_\+receiver\+\_\+chain (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Receiver\+Chain\+Node \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Receiver\+Chain\+Node \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Receiver\+Chain\+Node from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_ab2c85c9581a8b9ffa936a8eb788f6cfc}\index{mem\_util.h@{mem\_util.h}!copy\_remove\_group\_members\_msg@{copy\_remove\_group\_members\_msg}}
+\index{copy\_remove\_group\_members\_msg@{copy\_remove\_group\_members\_msg}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_remove\_group\_members\_msg()}{copy\_remove\_group\_members\_msg()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ab2c85c9581a8b9ffa936a8eb788f6cfc} 
+void copy\+\_\+remove\+\_\+group\+\_\+members\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a7fc32eed107fce573728132d99a5190b}\index{mem\_util.h@{mem\_util.h}!copy\_sender\_chain\_from\_sender\_chain@{copy\_sender\_chain\_from\_sender\_chain}}
+\index{copy\_sender\_chain\_from\_sender\_chain@{copy\_sender\_chain\_from\_sender\_chain}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_sender\_chain\_from\_sender\_chain()}{copy\_sender\_chain\_from\_sender\_chain()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a7fc32eed107fce573728132d99a5190b} 
+void copy\+\_\+sender\+\_\+chain\+\_\+from\+\_\+sender\+\_\+chain (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Sender\+Chain\+Node \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Sender\+Chain\+Node \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Sender\+Chain\+Node from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_af0510055d9da808add115a74403a65fe}\index{mem\_util.h@{mem\_util.h}!copy\_session\_from\_session@{copy\_session\_from\_session}}
+\index{copy\_session\_from\_session@{copy\_session\_from\_session}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_session\_from\_session()}{copy\_session\_from\_session()}}
+{\footnotesize\ttfamily \label{mem__util_8h_af0510055d9da808add115a74403a65fe} 
+void copy\+\_\+session\+\_\+from\+\_\+session (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Session from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a02b44916c5a882bc79a98058be4ee668}\index{mem\_util.h@{mem\_util.h}!copy\_skipped\_msg\_keys\_from\_skipped\_msg\_keys@{copy\_skipped\_msg\_keys\_from\_skipped\_msg\_keys}}
+\index{copy\_skipped\_msg\_keys\_from\_skipped\_msg\_keys@{copy\_skipped\_msg\_keys\_from\_skipped\_msg\_keys}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_skipped\_msg\_keys\_from\_skipped\_msg\_keys()}{copy\_skipped\_msg\_keys\_from\_skipped\_msg\_keys()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a02b44916c5a882bc79a98058be4ee668} 
+void copy\+\_\+skipped\+\_\+msg\+\_\+keys\+\_\+from\+\_\+skipped\+\_\+msg\+\_\+keys (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Skipped\+Msg\+Key\+Node \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Skipped\+Msg\+Key\+Node \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{src}{, }\item[{size\+\_\+t}]{skipped\+\_\+msg\+\_\+keys\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Skipped\+Msg\+Key\+Node from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+{\em skipped\+\_\+msg\+\_\+keys\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a77730aa637919b266fb9c1dcc28669d8}\index{mem\_util.h@{mem\_util.h}!copy\_spk\_from\_spk@{copy\_spk\_from\_spk}}
+\index{copy\_spk\_from\_spk@{copy\_spk\_from\_spk}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_spk\_from\_spk()}{copy\_spk\_from\_spk()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a77730aa637919b266fb9c1dcc28669d8} 
+void copy\+\_\+spk\+\_\+from\+\_\+spk (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a5ca625ace75cccf4ef7a63c8f0193d1b}\index{mem\_util.h@{mem\_util.h}!copy\_spk\_public\_from\_spk\_public@{copy\_spk\_public\_from\_spk\_public}}
+\index{copy\_spk\_public\_from\_spk\_public@{copy\_spk\_public\_from\_spk\_public}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_spk\_public\_from\_spk\_public()}{copy\_spk\_public\_from\_spk\_public()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a5ca625ace75cccf4ef7a63c8f0193d1b} 
+void copy\+\_\+spk\+\_\+public\+\_\+from\+\_\+spk\+\_\+public (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key\+Public \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key\+Public \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Signed\+Pre\+Key\+Public from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_acef1e409e01c1ee68cd4531201459523}\index{mem\_util.h@{mem\_util.h}!copy\_subject\_from\_subject@{copy\_subject\_from\_subject}}
+\index{copy\_subject\_from\_subject@{copy\_subject\_from\_subject}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{copy\_subject\_from\_subject()}{copy\_subject\_from\_subject()}}
+{\footnotesize\ttfamily \label{mem__util_8h_acef1e409e01c1ee68cd4531201459523} 
+void copy\+\_\+subject\+\_\+from\+\_\+subject (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Subject \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Subject \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Copy Skissm\+\_\+\+\_\+\+Subject from src to dest. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a4101f07085b61c37e95eb37cf75eda3d}\index{mem\_util.h@{mem\_util.h}!free\_e2ee\_addresses@{free\_e2ee\_addresses}}
+\index{free\_e2ee\_addresses@{free\_e2ee\_addresses}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{free\_e2ee\_addresses()}{free\_e2ee\_addresses()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a4101f07085b61c37e95eb37cf75eda3d} 
+void free\+\_\+e2ee\+\_\+addresses (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{size\+\_\+t}]{e2ee\+\_\+addresses\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Release memory of Skissm\+\_\+\+\_\+\+E2ee\+Address array. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em e2ee\+\_\+addresses\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_ada50d2b0db09c3de8f055212f19a7568}\index{mem\_util.h@{mem\_util.h}!free\_group\_members@{free\_group\_members}}
+\index{free\_group\_members@{free\_group\_members}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{free\_group\_members()}{free\_group\_members()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ada50d2b0db09c3de8f055212f19a7568} 
+void free\+\_\+group\+\_\+members (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Release memory of Skissm\+\_\+\+\_\+\+Group\+Member array. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em group\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a20fb6f6fb0fc02291c74097c7bd6992e}\index{mem\_util.h@{mem\_util.h}!free\_invite\_response\_list@{free\_invite\_response\_list}}
+\index{free\_invite\_response\_list@{free\_invite\_response\_list}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{free\_invite\_response\_list()}{free\_invite\_response\_list()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a20fb6f6fb0fc02291c74097c7bd6992e} 
+void free\+\_\+invite\+\_\+response\+\_\+list (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{size\+\_\+t}]{invite\+\_\+response\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Release memory of Skissm\+\_\+\+\_\+\+Invite\+Response array. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em invite\+\_\+response\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_ad52318053f6e2ff82479263171309447}\index{mem\_util.h@{mem\_util.h}!free\_mem@{free\_mem}}
+\index{free\_mem@{free\_mem}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{free\_mem()}{free\_mem()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ad52318053f6e2ff82479263171309447} 
+void free\+\_\+mem (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{buffer}{, }\item[{size\+\_\+t}]{buffer\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Release a memory block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & \\
+\hline
+{\em buffer\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_ad355289d6c6909bc963d40220d32f2a4}\index{mem\_util.h@{mem\_util.h}!free\_protobuf@{free\_protobuf}}
+\index{free\_protobuf@{free\_protobuf}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{free\_protobuf()}{free\_protobuf()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ad355289d6c6909bc963d40220d32f2a4} 
+void free\+\_\+protobuf (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{output}{}\end{DoxyParamCaption})}
+
+
+
+Release memory of Protobuf\+CBinary\+Data. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_af538c2a1b73b49b349c3face2518be5b}\index{mem\_util.h@{mem\_util.h}!free\_protobuf\_list@{free\_protobuf\_list}}
+\index{free\_protobuf\_list@{free\_protobuf\_list}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{free\_protobuf\_list()}{free\_protobuf\_list()}}
+{\footnotesize\ttfamily \label{mem__util_8h_af538c2a1b73b49b349c3face2518be5b} 
+void free\+\_\+protobuf\+\_\+list (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{output}{, }\item[{size\+\_\+t}]{protobuf\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Release memory of Protobuf\+CBinary\+Data list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em output} & \\
+\hline
+{\em protobuf\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_ad757cdc6a1d8462f8a6e71f5f21be004}\index{mem\_util.h@{mem\_util.h}!free\_string@{free\_string}}
+\index{free\_string@{free\_string}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{free\_string()}{free\_string()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ad757cdc6a1d8462f8a6e71f5f21be004} 
+void free\+\_\+string (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{buffer}{}\end{DoxyParamCaption})}
+
+
+
+Release a string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a07ad3b007dd747436aef28276a99ff91}\index{mem\_util.h@{mem\_util.h}!generate\_uuid\_str@{generate\_uuid\_str}}
+\index{generate\_uuid\_str@{generate\_uuid\_str}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{generate\_uuid\_str()}{generate\_uuid\_str()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a07ad3b007dd747436aef28276a99ff91} 
+char \texorpdfstring{$\ast$}{*} generate\+\_\+uuid\+\_\+str (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Generate a UUID string. 
+
+\begin{DoxyReturn}{Returns}
+char\texorpdfstring{$\ast$}{*} 
+\end{DoxyReturn}
+\Hypertarget{mem__util_8h_a36d44ad52211f32b13d2b6cdc672607a}\index{mem\_util.h@{mem\_util.h}!init\_protobuf@{init\_protobuf}}
+\index{init\_protobuf@{init\_protobuf}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{init\_protobuf()}{init\_protobuf()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a36d44ad52211f32b13d2b6cdc672607a} 
+void init\+\_\+protobuf (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{dest}{}\end{DoxyParamCaption})}
+
+
+
+Initialize the Protobuf\+CBinary\+Data. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_af03d39bca88b5284526c9bb13132ba89}\index{mem\_util.h@{mem\_util.h}!is\_equal@{is\_equal}}
+\index{is\_equal@{is\_equal}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{is\_equal()}{is\_equal()}}
+{\footnotesize\ttfamily \label{mem__util_8h_af03d39bca88b5284526c9bb13132ba89} 
+bool is\+\_\+equal (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{buffer\+\_\+a}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{buffer\+\_\+b}{, }\item[{size\+\_\+t}]{len}{}\end{DoxyParamCaption})}
+
+Check if two buffers are equal in constant time. \Hypertarget{mem__util_8h_ab6035838a960c7a620c83957b4b5f1eb}\index{mem\_util.h@{mem\_util.h}!malloc\_protobuf@{malloc\_protobuf}}
+\index{malloc\_protobuf@{malloc\_protobuf}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{malloc\_protobuf()}{malloc\_protobuf()}}
+{\footnotesize\ttfamily \label{mem__util_8h_ab6035838a960c7a620c83957b4b5f1eb} 
+void malloc\+\_\+protobuf (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{size\+\_\+t}]{len}{}\end{DoxyParamCaption})}
+
+
+
+Malloc the Protobuf\+CBinary\+Data with given len. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em len} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_aa5bb6351db01a906ef70252c2d39c23e}\index{mem\_util.h@{mem\_util.h}!member\_info\_to\_group\_member@{member\_info\_to\_group\_member}}
+\index{member\_info\_to\_group\_member@{member\_info\_to\_group\_member}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{member\_info\_to\_group\_member()}{member\_info\_to\_group\_member()}}
+{\footnotesize\ttfamily \label{mem__util_8h_aa5bb6351db01a906ef70252c2d39c23e} 
+Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*} member\+\_\+info\+\_\+to\+\_\+group\+\_\+member (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}}]{member\+\_\+info}{}\end{DoxyParamCaption})}
+
+
+
+Copy member info to group member. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em member\+\_\+info} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{mem__util_8h_a87e5d5beabec64a4ce955668b8b8f43c}\index{mem\_util.h@{mem\_util.h}!member\_info\_to\_group\_members@{member\_info\_to\_group\_members}}
+\index{member\_info\_to\_group\_members@{member\_info\_to\_group\_members}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{member\_info\_to\_group\_members()}{member\_info\_to\_group\_members()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a87e5d5beabec64a4ce955668b8b8f43c} 
+size\+\_\+t member\+\_\+info\+\_\+to\+\_\+group\+\_\+members (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{member\+\_\+info\+\_\+list}{, }\item[{size\+\_\+t}]{member\+\_\+info\+\_\+list\+\_\+num}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{member\+\_\+list}{, }\item[{size\+\_\+t}]{member\+\_\+list\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Collect unique user ID from member\+\_\+info\+\_\+list then convert and collect it into member\+\_\+list. 
+
+\texorpdfstring{$\ast$}{*}
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em member\+\_\+info\+\_\+list} & \\
+\hline
+{\em member\+\_\+info\+\_\+list\+\_\+num} & \\
+\hline
+{\em member\+\_\+list} & \\
+\hline
+{\em member\+\_\+list\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{mem__util_8h_a46b071539e26197cf6045c29e7ebd8b8}\index{mem\_util.h@{mem\_util.h}!overwrite\_protobuf\_from\_array@{overwrite\_protobuf\_from\_array}}
+\index{overwrite\_protobuf\_from\_array@{overwrite\_protobuf\_from\_array}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{overwrite\_protobuf\_from\_array()}{overwrite\_protobuf\_from\_array()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a46b071539e26197cf6045c29e7ebd8b8} 
+void overwrite\+\_\+protobuf\+\_\+from\+\_\+array (\begin{DoxyParamCaption}\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+
+
+Overwrite data from byte array to Protobuf\+CBinary\+Data. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em src} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_a6ba27d0df4c5016bf1abfa92a33f663d}\index{mem\_util.h@{mem\_util.h}!remove\_group\_members\_from\_group\_info@{remove\_group\_members\_from\_group\_info}}
+\index{remove\_group\_members\_from\_group\_info@{remove\_group\_members\_from\_group\_info}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{remove\_group\_members\_from\_group\_info()}{remove\_group\_members\_from\_group\_info()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a6ba27d0df4c5016bf1abfa92a33f663d} 
+void remove\+\_\+group\+\_\+members\+\_\+from\+\_\+group\+\_\+info (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{dest}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Info \texorpdfstring{$\ast$}{*}}]{old\+\_\+group\+\_\+info}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{removing\+\_\+members}{, }\item[{size\+\_\+t}]{removing\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Remove some Skissm\+\_\+\+\_\+\+Group\+Member from old\+\_\+group\+\_\+info. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dest} & \\
+\hline
+{\em old\+\_\+group\+\_\+info} & \\
+\hline
+{\em removing\+\_\+members} & \\
+\hline
+{\em removing\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{mem__util_8h_acaf04287564cbb5a3662c896622257d5}\index{mem\_util.h@{mem\_util.h}!safe\_strcmp@{safe\_strcmp}}
+\index{safe\_strcmp@{safe\_strcmp}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{safe\_strcmp()}{safe\_strcmp()}}
+{\footnotesize\ttfamily \label{mem__util_8h_acaf04287564cbb5a3662c896622257d5} 
+bool safe\+\_\+strcmp (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{str\+\_\+1}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{str\+\_\+2}{}\end{DoxyParamCaption})}
+
+
+
+Compare two char string that can be NULL. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str\+\_\+1} & \\
+\hline
+{\em str\+\_\+2} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{mem__util_8h_a5de256455bb816de7119b7c5789da2cb}\index{mem\_util.h@{mem\_util.h}!to\_hex\_str@{to\_hex\_str}}
+\index{to\_hex\_str@{to\_hex\_str}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{to\_hex\_str()}{to\_hex\_str()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a5de256455bb816de7119b7c5789da2cb} 
+size\+\_\+t to\+\_\+hex\+\_\+str (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{buffer}{, }\item[{size\+\_\+t}]{buffer\+\_\+len}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{hex\+\_\+str}{}\end{DoxyParamCaption})}
+
+
+
+Generate hex string from given uint8 array. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & \\
+\hline
+{\em buffer\+\_\+len} & \\
+\hline
+{\em hex\+\_\+str} & output hex str \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the length of output hex str 
+\end{DoxyReturn}
+\Hypertarget{mem__util_8h_a7084bf913a19b0f4f621834fded3c3e6}\index{mem\_util.h@{mem\_util.h}!unset@{unset}}
+\index{unset@{unset}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{unset()}{unset()}}
+{\footnotesize\ttfamily \label{mem__util_8h_a7084bf913a19b0f4f621834fded3c3e6} 
+void unset (\begin{DoxyParamCaption}\item[{void volatile \texorpdfstring{$\ast$}{*}}]{buffer}{, }\item[{size\+\_\+t}]{buffer\+\_\+len}{}\end{DoxyParamCaption})}
+
+Clear the memory held in the buffer. This is more resilient to being optimised away than memset or bzero. 

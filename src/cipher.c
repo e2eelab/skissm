@@ -38,7 +38,7 @@ int aes256_gcm_encrypt(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     uint8_t **ciphertext_data, size_t *ciphertext_data_len
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     uint8_t *iv = (uint8_t *)aes_key + AES256_KEY_LENGTH;
     *ciphertext_data_len = aes256_gcm_ciphertext_data_len(plaintext_data_len);
@@ -53,7 +53,7 @@ int aes256_gcm_decrypt(
     const ProtobufCBinaryData *ad, const uint8_t *aes_key,
     const uint8_t *ciphertext_data, size_t ciphertext_data_len
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     uint8_t *iv = (uint8_t *)aes_key + AES256_KEY_LENGTH;
     size_t plaintext_data_len = aes256_gcm_plaintext_data_len(ciphertext_data_len);

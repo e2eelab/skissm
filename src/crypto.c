@@ -1203,7 +1203,7 @@ int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinary
             // verify failed, regenerate the key pair
             ssm_notify_log(
                 NULL,
-                BAD_SIGN_KEY,
+                BAD_SIGNATURE,
                 "CURVE25519_crypto_sign_keypair() verify failed, regenerate the key pair."
             );
         } else {
@@ -1278,7 +1278,7 @@ int crypto_aes_encrypt_gcm(
     const uint8_t *add, size_t add_len,
     uint8_t *ciphertext_data
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     mbedtls_gcm_context ctx;
     unsigned char *tag_buf = ciphertext_data + plaintext_data_len;
@@ -1287,7 +1287,7 @@ int crypto_aes_encrypt_gcm(
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = mbedtls_gcm_crypt_and_tag(
             &ctx, MBEDTLS_GCM_ENCRYPT,
             plaintext_data_len, iv,
@@ -1307,7 +1307,7 @@ int crypto_aes_decrypt_gcm(
     const uint8_t *add, size_t add_len,
     uint8_t *plaintext_data, size_t *plaintext_data_len
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     mbedtls_gcm_context ctx;
     unsigned char *input_tag_buf =
@@ -1318,7 +1318,7 @@ int crypto_aes_decrypt_gcm(
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = mbedtls_gcm_crypt_and_tag(
             &ctx, MBEDTLS_GCM_DECRYPT,
             ciphertext_data_len - AES256_GCM_TAG_LENGTH, iv,
@@ -1336,7 +1336,7 @@ int crypto_aes_decrypt_gcm(
         *plaintext_data_len = ciphertext_data_len - AES256_GCM_TAG_LENGTH;
     } else {
         *plaintext_data_len = 0;
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
     return ret;
@@ -1361,7 +1361,7 @@ size_t encrypt_aes_data_with_iv(
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = mbedtls_gcm_crypt_and_tag(
             &ctx, MBEDTLS_GCM_ENCRYPT,
             plaintext_data_len, iv,
@@ -1373,7 +1373,7 @@ size_t encrypt_aes_data_with_iv(
     mbedtls_gcm_free(&ctx);
 
     // done
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         return ciphertext_data_len;
     } else {
         free_mem((void **)ciphertext_data, ciphertext_data_len);
@@ -1412,7 +1412,7 @@ size_t decrypt_aes_data_with_iv(
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = mbedtls_gcm_crypt_and_tag(
             &ctx, MBEDTLS_GCM_DECRYPT,
             plaintext_data_len, iv,
@@ -1486,12 +1486,12 @@ int encrypt_aes_file(
     int ret;
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
         ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_DATA_IV_LENGTH, AD, AES256_FILE_AD_LEN);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         int i;
         for (i = 0; i < times; i++) {
             fread(in_buffer, sizeof(char), max_plaintext_size, infile);
@@ -1500,7 +1500,7 @@ int encrypt_aes_file(
             fwrite(out_buffer, sizeof(char), max_plaintext_size, outfile);
         }
     }
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         if (rest > 0) {
             fread(in_buffer, sizeof(char), rest, infile);
             if ((ret = mbedtls_gcm_update(&ctx, rest, in_buffer, out_buffer)) == 0) {
@@ -1509,7 +1509,7 @@ int encrypt_aes_file(
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         uint8_t tag[AES256_GCM_TAG_LENGTH];
         if ((ret = mbedtls_gcm_finish(&ctx, tag, AES256_GCM_TAG_LENGTH)) == 0) {
             fwrite(tag, sizeof(char), AES256_GCM_TAG_LENGTH, outfile);
@@ -1569,12 +1569,12 @@ int decrypt_aes_file(
     int i;
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
         ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_DATA_IV_LENGTH, AD, AES256_FILE_AD_LEN);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         for (i = 0; i < times; i++) {
             fread(in_buffer, sizeof(char), max_ciphertext_size, infile);
             if ((ret = mbedtls_gcm_update(&ctx, max_ciphertext_size, in_buffer, out_buffer)) != 0)
@@ -1582,7 +1582,7 @@ int decrypt_aes_file(
             fwrite(out_buffer, sizeof(char), max_ciphertext_size, outfile);
         }
     }
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         if (rest > 0) {
             fread(in_buffer, sizeof(char), rest, infile);
             if ((ret = mbedtls_gcm_update(&ctx, rest, in_buffer, out_buffer)) == 0) {
@@ -1591,7 +1591,7 @@ int decrypt_aes_file(
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         uint8_t tag[AES256_GCM_TAG_LENGTH];
         if ((ret = mbedtls_gcm_finish(&ctx, tag, AES256_GCM_TAG_LENGTH)) == 0) {
             // fwrite(tag, sizeof(char), AES256_GCM_TAG_LENGTH, outfile);
@@ -1604,9 +1604,9 @@ int decrypt_aes_file(
             for (i = 0; i < AES256_GCM_TAG_LENGTH; i++)
                 diff |= input_tag[i] ^ tag[i];
             if (diff == 0) {
-                ret = 0;
+                ret = SKISSM_RESULT_SUCC;
             } else {
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         }
     }
@@ -1676,7 +1676,7 @@ int crypto_hmac_sha256(
     const uint8_t *input, size_t input_len,
     uint8_t *output
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
     mbedtls_md_context_t ctx;
     mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
 
@@ -1691,7 +1691,7 @@ int crypto_hmac_sha256(
 }
 
 int crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
-    int buflen, ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
     mbedtls_sha256_context ctx;
 
     mbedtls_sha256_init(&ctx);
@@ -1773,7 +1773,7 @@ int crypto_ds_key_gen_by_e2ee_pack_id(
     if (result < 0) {
         ssm_notify_log(
             NULL,
-            BAD_SIGN_KEY,
+            BAD_KEY_PAIR,
             "crypto_ds_key_gen_by_e2ee_pack_id() gen key failed."
         );
         free_protobuf(pub_key);
@@ -1802,7 +1802,7 @@ int crypto_ds_sign_by_e2ee_pack_id(
     if (private_key == NULL || private_key_len != digital_signature_suite->get_crypto_param().sign_priv_key_len) {
         ssm_notify_log(
             NULL,
-            BAD_SIGN_KEY,
+            BAD_PRIVATE_KEY,
             "crypto_ds_sign_by_e2ee_pack_id() private_key wrong."
         );
         return -1;
@@ -1842,7 +1842,7 @@ int crypto_ds_verify_by_e2ee_pack_id(
     if (public_key == NULL || public_key_len != digital_signature_suite->get_crypto_param().sign_pub_key_len) {
         ssm_notify_log(
             NULL,
-            BAD_SIGN_KEY,
+            BAD_PUBLIC_KEY,
             "crypto_ds_sign_by_e2ee_pack_id() public_key wrong."
         );
         return -1;

@@ -1,0 +1,153 @@
+\doxysection{test\+\_\+util.\+h}
+\hypertarget{test__util_8h_source}{}\label{test__util_8h_source}\index{tests/test\_util.h@{tests/test\_util.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ ©\ 2020-\/2021\ by\ Academia\ Sinica}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ SKISSM.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ program\ is\ free\ software:\ you\ can\ redistribute\ it\ and/or\ modify}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ it\ under\ the\ terms\ of\ the\ GNU\ General\ Public\ License\ as\ published\ by}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ the\ Free\ Software\ Foundation,\ either\ version\ 3\ of\ the\ License,\ or}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ (at\ your\ option)\ any\ later\ version.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ SKISSM\ is\ distributed\ in\ the\ hope\ that\ it\ will\ be\ useful,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ but\ WITHOUT\ ANY\ WARRANTY;\ without\ even\ the\ implied\ warranty\ of}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ MERCHANTABILITY\ or\ FITNESS\ FOR\ A\ PARTICULAR\ PURPOSE.\ See\ the}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ GNU\ General\ Public\ License\ for\ more\ details.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *\ You\ should\ have\ received\ a\ copy\ of\ the\ GNU\ General\ Public\ License}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ along\ with\ SKISSM.\ \ If\ not,\ see\ <http://www.gnu.org/licenses/>.}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#ifndef\ TEST\_UTIL\_H\_}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#define\ TEST\_UTIL\_H\_}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}skissm/skissm.h"{}}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#define\ E2EELAB\_DOMAIN\ \ \ \ \ \ \ \ \ \ "{}e2eelab.org"{}}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#define\ TEST\_E2EE\_PACK\_ID\_ECC\ \ \ \ \ \ \ "{}0"{}}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#define\ TEST\_E2EE\_PACK\_ID\_PQC\ \ \ \ \ \ \ "{}1"{}}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#define\ gen\_e2ee\_pack\_id\_ecc()\ \(\backslash\)}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\ \ \ \ gen\_e2ee\_pack\_id\_raw(\ \(\backslash\)}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ 0,\ \(\backslash\)}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ E2EE\_PACK\_ALG\_DIGITAL\_SIGNATURE\_CURVE25519,\ \(\backslash\)}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ E2EE\_PACK\_ALG\_KEM\_CURVE25519,\ \(\backslash\)}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ E2EE\_PACK\_ALG\_SYMMETRIC\_KEY\_AES256GCM,\ \(\backslash\)}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ E2EE\_PACK\_ALG\_HASH\_SHA2\_256\ \(\backslash\)}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\ \ \ \ )}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#define\ gen\_e2ee\_pack\_id\_pqc()\ \(\backslash\)}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\ \ \ \ gen\_e2ee\_pack\_id\_raw(\ \(\backslash\)}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ 0,\ \(\backslash\)}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ E2EE\_PACK\_ALG\_DIGITAL\_SIGNATURE\_DILITHIUM5,\ \(\backslash\)}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ E2EE\_PACK\_ALG\_KEM\_KYBER1024,\ \(\backslash\)}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ E2EE\_PACK\_ALG\_SYMMETRIC\_KEY\_AES256GCM,\ \(\backslash\)}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ E2EE\_PACK\_ALG\_HASH\_SHA2\_256\ \(\backslash\)}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\ \ \ \ )}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#define\ malloc\_group\_members(number)\ \(\backslash\)}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\ \ \ \ group\_members\ =\ (Skissm\_\_GroupMember\ **)malloc(sizeof(Skissm\_\_GroupMember\ *)\ *\ number\ );\ \(\backslash\)}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\ \ \ \ group\_members[0]\ =\ (Skissm\_\_GroupMember\ *)malloc(sizeof(Skissm\_\_GroupMember));\ \(\backslash\)}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\ \ \ \ skissm\_\_group\_member\_\_init(group\_members[0]);\ \(\backslash\)}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\ \ \ \ group\_members[0]-\/>user\_id\ =\ strdup(user\_id\_list[0]);\ \(\backslash\)}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\ \ \ \ group\_members[0]-\/>domain\ =\ strdup(domain\_list[0]);\ \(\backslash\)}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\ \ \ \ group\_members[0]-\/>role\ =\ SKISSM\_\_GROUP\_ROLE\_\_GROUP\_ROLE\_MANAGER;\ \(\backslash\)}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\ \ \ \ for\ (i\ =\ 1;\ i\ <\ number\ ;\ i++)\ \{\ \(\backslash\)}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ group\_members[i]\ =\ (Skissm\_\_GroupMember\ *)malloc(sizeof(Skissm\_\_GroupMember));\ \(\backslash\)}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ skissm\_\_group\_member\_\_init(group\_members[i]);\ \(\backslash\)}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ group\_members[i]-\/>user\_id\ =\ strdup(user\_id\_list[i]);\ \(\backslash\)}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ group\_members[i]-\/>domain\ =\ strdup(domain\_list[i]);\ \(\backslash\)}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ group\_members[i]-\/>role\ =\ SKISSM\_\_GROUP\_ROLE\_\_GROUP\_ROLE\_MEMBER;\ \(\backslash\)}}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#define\ malloc\_new\_group\_members(number)\ \(\backslash\)}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\ \ \ \ new\_group\_members\ =\ (Skissm\_\_GroupMember\ **)malloc(sizeof(Skissm\_\_GroupMember\ *)\ *\ number\ );\ \(\backslash\)}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\ \ \ \ for\ (i\ =\ 0;\ i\ <\ number\ ;\ i++)\ \{\ \(\backslash\)}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ new\_group\_members[i]\ =\ (Skissm\_\_GroupMember\ *)malloc(sizeof(Skissm\_\_GroupMember));\ \(\backslash\)}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ skissm\_\_group\_member\_\_init(new\_group\_members[i]);\ \(\backslash\)}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ new\_group\_members[i]-\/>user\_id\ =\ strdup(new\_user\_id\_list[i]);\ \(\backslash\)}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ new\_group\_members[i]-\/>domain\ =\ strdup(new\_domain\_list[i]);\ \(\backslash\)}}
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ new\_group\_members[i]-\/>role\ =\ SKISSM\_\_GROUP\_ROLE\_\_GROUP\_ROLE\_MEMBER;\ \(\backslash\)}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#define\ malloc\_removing\_group\_members(number)\ \(\backslash\)}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\ \ \ \ removing\_group\_members\ =\ (Skissm\_\_GroupMember\ **)malloc(sizeof(Skissm\_\_GroupMember\ *)\ *\ number\ );\ \(\backslash\)}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\ \ \ \ for\ (i\ =\ 0;\ i\ <\ number\ ;\ i++)\ \{\ \(\backslash\)}}
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ removing\_group\_members[i]\ =\ (Skissm\_\_GroupMember\ *)malloc(sizeof(Skissm\_\_GroupMember));\ \(\backslash\)}}
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ skissm\_\_group\_member\_\_init(removing\_group\_members[i]);\ \(\backslash\)}}
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ removing\_group\_members[i]-\/>user\_id\ =\ strdup(removing\_user\_id\_list[i]);\ \(\backslash\)}}
+\DoxyCodeLine{00077\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ removing\_group\_members[i]-\/>domain\ =\ strdup(removing\_domain\_list[i]);\ \(\backslash\)}}
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ removing\_group\_members[i]-\/>role\ =\ SKISSM\_\_GROUP\_ROLE\_\_GROUP\_ROLE\_MEMBER;\ \(\backslash\)}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{comment}{//\ debug\ msg\ to\ console}}
+\DoxyCodeLine{00082\ \textcolor{keywordtype}{void}\ print\_hex(\textcolor{keywordtype}{char}\ *title,\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len);}
+\DoxyCodeLine{00083\ \textcolor{keywordtype}{void}\ print\_msg(\textcolor{keywordtype}{char}\ *title,\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00084\ \textcolor{keywordtype}{void}\ print\_log(\textcolor{keywordtype}{char}\ *log\_msg,\ \textcolor{keywordtype}{int}\ log\_code);}
+\DoxyCodeLine{00085\ \textcolor{keywordtype}{void}\ print\_result(\textcolor{keywordtype}{char}\ *title,\ \textcolor{keywordtype}{bool}\ success);}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{keywordtype}{bool}\ is\_null(\textcolor{keywordtype}{void}\ *pointer\_1,\ \textcolor{keywordtype}{void}\ *pointer\_2);}
+\DoxyCodeLine{00088\ \textcolor{keywordtype}{bool}\ is\_not\_null(\textcolor{keywordtype}{void}\ *pointer\_1,\ \textcolor{keywordtype}{void}\ *pointer\_2);}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{comment}{//\ is\_equal}}
+\DoxyCodeLine{00091\ \textcolor{keywordtype}{bool}\ is\_equal\_data(ProtobufCBinaryData\ *src\_1,\ ProtobufCBinaryData\ *src\_2);}
+\DoxyCodeLine{00092\ \textcolor{keywordtype}{bool}\ is\_equal\_str(\textcolor{keywordtype}{char}\ *str1,\ \textcolor{keywordtype}{char}\ *str2);}
+\DoxyCodeLine{00093\ \textcolor{keywordtype}{bool}\ is\_equal\_keypair(Skissm\_\_KeyPair\ *src\_1,\ Skissm\_\_KeyPair\ *src\_2);}
+\DoxyCodeLine{00094\ \textcolor{keywordtype}{bool}\ is\_equal\_ik(Skissm\_\_IdentityKey\ *src\_1,\ Skissm\_\_IdentityKey\ *src\_2);}
+\DoxyCodeLine{00095\ \textcolor{keywordtype}{bool}\ is\_equal\_spk(Skissm\_\_SignedPreKey\ *src\_1,\ Skissm\_\_SignedPreKey\ *src\_2);}
+\DoxyCodeLine{00096\ \textcolor{keywordtype}{bool}\ is\_equal\_opk(Skissm\_\_OneTimePreKey\ *src\_1,\ Skissm\_\_OneTimePreKey\ *src\_2);}
+\DoxyCodeLine{00097\ \textcolor{keywordtype}{bool}\ is\_equal\_opk\_list(Skissm\_\_OneTimePreKey\ **src\_1,\ Skissm\_\_OneTimePreKey\ **src\_2,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00098\ \textcolor{keywordtype}{bool}\ is\_equal\_account(Skissm\_\_Account\ *src\_1,\ Skissm\_\_Account\ *src\_2);}
+\DoxyCodeLine{00099\ \textcolor{keywordtype}{bool}\ is\_equal\_message\_key(Skissm\_\_MsgKey\ *msg\_key\_1,\ Skissm\_\_MsgKey\ *msg\_key\_2);}
+\DoxyCodeLine{00100\ \textcolor{keywordtype}{bool}\ is\_equal\_chain(Skissm\_\_ChainKey\ *chain\_key\_1,\ Skissm\_\_ChainKey\ *chain\_key\_2);}
+\DoxyCodeLine{00101\ \textcolor{keywordtype}{bool}\ is\_equal\_sender\_chain(Skissm\_\_SenderChainNode\ *sender\_chain\_1,\ Skissm\_\_SenderChainNode\ *sender\_chain\_2);}
+\DoxyCodeLine{00102\ \textcolor{keywordtype}{bool}\ is\_equal\_receiver\_chain(Skissm\_\_ReceiverChainNode\ *receiver\_chain\_node\_1,\ Skissm\_\_ReceiverChainNode\ *receiver\_chain\_node\_2);}
+\DoxyCodeLine{00103\ \textcolor{keywordtype}{bool}\ is\_equal\_skipped\_message\_key(Skissm\_\_SkippedMsgKeyNode\ *skipped\_msg\_key\_node\_1,\ Skissm\_\_SkippedMsgKeyNode\ *skipped\_msg\_key\_node\_2);}
+\DoxyCodeLine{00104\ \textcolor{keywordtype}{bool}\ is\_equal\_ratchet(Skissm\_\_Ratchet\ *ratchet\_1,\ Skissm\_\_Ratchet\ *ratchet\_2);}
+\DoxyCodeLine{00105\ \textcolor{keywordtype}{bool}\ is\_equal\_session(Skissm\_\_Session\ *session\_1,\ Skissm\_\_Session\ *session\_2);}
+\DoxyCodeLine{00106\ \textcolor{keywordtype}{bool}\ is\_equal\_sessions(Skissm\_\_Session\ **sessions\_1,\ Skissm\_\_Session\ **sessions\_2,\ \textcolor{keywordtype}{size\_t}\ session\_num);}
+\DoxyCodeLine{00107\ \textcolor{keywordtype}{bool}\ is\_equal\_group\_session(Skissm\_\_GroupSession\ *group\_session\_1,\ Skissm\_\_GroupSession\ *group\_session\_2);}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \textcolor{comment}{//\ mock}}
+\DoxyCodeLine{00110\ \textcolor{keywordtype}{void}\ mock\_data(ProtobufCBinaryData\ *to,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *from);}
+\DoxyCodeLine{00111\ \textcolor{keywordtype}{void}\ mock\_string(\textcolor{keywordtype}{char}\ **to,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *from);}
+\DoxyCodeLine{00112\ \textcolor{keywordtype}{char}\ *mock\_domain\_str();}
+\DoxyCodeLine{00113\ \textcolor{keywordtype}{void}\ mock\_address(Skissm\_\_E2eeAddress\ **address\_pp,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *user\_id,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *domain,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *device\_id);}
+\DoxyCodeLine{00114\ \textcolor{keywordtype}{void}\ mock\_random\_group\_address(Skissm\_\_E2eeAddress\ **address);}
+\DoxyCodeLine{00115\ \textcolor{keywordtype}{void}\ mock\_random\_user\_address(Skissm\_\_E2eeAddress\ **address);}
+\DoxyCodeLine{00116\ \textcolor{keywordtype}{void}\ mock\_keypair(Skissm\_\_KeyPair\ **keypair);}
+\DoxyCodeLine{00117\ \textcolor{keywordtype}{void}\ mock\_identity\_key(Skissm\_\_IdentityKey\ **identity\_keypair);}
+\DoxyCodeLine{00118\ \textcolor{keywordtype}{void}\ mock\_signed\_pre\_key(Skissm\_\_SignedPreKey\ **signed\_pre\_keypair,\ uint32\_t\ spk\_id);}
+\DoxyCodeLine{00119\ \textcolor{keywordtype}{void}\ mock\_one\_time\_pre\_key(Skissm\_\_OneTimePreKey\ **one\_time\_pre\_keypair,\ uint32\_t\ opk\_id);}
+\DoxyCodeLine{00120\ \textcolor{keywordtype}{void}\ mock\_one\_time\_pre\_key\_list(Skissm\_\_OneTimePreKey\ ***one\_time\_pre\_key\_list);}
+\DoxyCodeLine{00121\ \textcolor{keywordtype}{void}\ mock\_account(Skissm\_\_Account\ **account\_out);}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \textcolor{comment}{//\ hash}}
+\DoxyCodeLine{00124\ \textcolor{keywordtype}{void}\ pre\_key\_bundle\_hash(}
+\DoxyCodeLine{00125\ \ \ \ \ uint8\_t\ **out,}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ *out\_len,}
+\DoxyCodeLine{00127\ \ \ \ \ Skissm\_\_E2eeAddress\ *address,}
+\DoxyCodeLine{00128\ \ \ \ \ Skissm\_\_IdentityKeyPublic\ *ik,}
+\DoxyCodeLine{00129\ \ \ \ \ Skissm\_\_SignedPreKeyPublic\ *spk,}
+\DoxyCodeLine{00130\ \ \ \ \ Skissm\_\_OneTimePreKeyPublic\ *opk}
+\DoxyCodeLine{00131\ );}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \textcolor{keywordtype}{void}\ proto\_msg\_hash(}
+\DoxyCodeLine{00134\ \ \ \ \ uint8\_t\ **out,}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ *out\_len,}
+\DoxyCodeLine{00136\ \ \ \ \ Skissm\_\_ProtoMsgTag\ *tag,}
+\DoxyCodeLine{00137\ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00138\ \ \ \ \ Skissm\_\_E2eeAddress\ *to,}
+\DoxyCodeLine{00139\ \ \ \ \ Skissm\_\_ProtoMsg\_\_PayloadCase\ payload\_case,}
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{keywordtype}{void}\ *payload}
+\DoxyCodeLine{00141\ );}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \textcolor{comment}{//\ free}}
+\DoxyCodeLine{00144\ \textcolor{keywordtype}{void}\ free\_account(Skissm\_\_Account\ *account);}
+\DoxyCodeLine{00145\ \textcolor{keywordtype}{void}\ free\_address(Skissm\_\_E2eeAddress\ *address);}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ TEST\_UTIL\_H\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

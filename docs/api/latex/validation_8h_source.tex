@@ -1,0 +1,171 @@
+\doxysection{validation.\+h}
+\hypertarget{validation_8h_source}{}\label{validation_8h_source}\index{include/skissm/validation.h@{include/skissm/validation.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ VALIDATION\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ VALIDATION\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <stdbool.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <stddef.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00009\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{skissm_8h}{skissm/skissm.h}}"{}}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keywordtype}{bool}\ accurate\_key\_pair(Skissm\_\_KeyPair\ *key\_pair,\ uint32\_t\ pub\_key\_len,\ uint32\_t\ priv\_key\_len);}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keywordtype}{bool}\ is\_valid\_cipher\_suite(\textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite);}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keywordtype}{bool}\ is\_valid\_e2ee\_pack\_id(uint32\_t\ e2ee\_pack\_id);}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keywordtype}{bool}\ is\_valid\_protobuf(\textcolor{keyword}{const}\ ProtobufCBinaryData\ *src);}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keywordtype}{bool}\ is\_valid\_protobuf\_list(ProtobufCBinaryData\ *src,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keywordtype}{bool}\ is\_valid\_string(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *src);}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keywordtype}{bool}\ is\_valid\_string\_list(\textcolor{keywordtype}{char}\ **src,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keywordtype}{bool}\ is\_valid\_address(Skissm\_\_E2eeAddress\ *src);}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keywordtype}{bool}\ is\_valid\_address\_list(Skissm\_\_E2eeAddress\ **src,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keywordtype}{bool}\ is\_valid\_key\_pair(\textcolor{keyword}{const}\ Skissm\_\_KeyPair\ *src);}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keywordtype}{bool}\ is\_valid\_identity\_key(Skissm\_\_IdentityKey\ *src);}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{keywordtype}{bool}\ is\_valid\_signed\_pre\_key(Skissm\_\_SignedPreKey\ *src);}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keywordtype}{bool}\ is\_valid\_one\_time\_pre\_key(Skissm\_\_OneTimePreKey\ *src);}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keywordtype}{bool}\ is\_valid\_one\_time\_pre\_key\_list(Skissm\_\_OneTimePreKey\ **src,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{keywordtype}{bool}\ is\_valid\_unregistered\_account(Skissm\_\_Account\ *src);}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keywordtype}{bool}\ is\_valid\_registered\_account(Skissm\_\_Account\ *src);}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{keywordtype}{bool}\ is\_valid\_msg\_key(\textcolor{keyword}{const}\ Skissm\_\_MsgKey\ *msg\_key);}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keywordtype}{bool}\ is\_valid\_chain\_key(\textcolor{keyword}{const}\ Skissm\_\_ChainKey\ *chain\_key);}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{keywordtype}{bool}\ is\_valid\_sender\_chain(Skissm\_\_SenderChainNode\ *sender\_chain);}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keywordtype}{bool}\ is\_valid\_receiver\_chain(Skissm\_\_ReceiverChainNode\ *receiver\_chain);}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{keywordtype}{bool}\ is\_valid\_skipped\_msg\_key\_node(Skissm\_\_SkippedMsgKeyNode\ *skipped\_msg\_key\_node);}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{keywordtype}{bool}\ is\_valid\_skipped\_msg\_key\_list(}
+\DoxyCodeLine{00057\ \ \ \ \ Skissm\_\_SkippedMsgKeyNode\ **skipped\_msg\_key\_list,}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ skipped\_msg\_key\_list\_len}
+\DoxyCodeLine{00059\ );}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{keywordtype}{bool}\ is\_valid\_ratchet(\textcolor{keyword}{const}\ Skissm\_\_Ratchet\ *ratchet);}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{keywordtype}{bool}\ is\_valid\_uncompleted\_session(Skissm\_\_Session\ *src);}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{keywordtype}{bool}\ is\_valid\_completed\_session(Skissm\_\_Session\ *src);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \textcolor{keywordtype}{bool}\ is\_valid\_identity\_key\_public(Skissm\_\_IdentityKeyPublic\ *src);}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{keywordtype}{bool}\ is\_valid\_signed\_pre\_key\_public(Skissm\_\_SignedPreKeyPublic\ *src);}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{keywordtype}{bool}\ is\_valid\_one\_time\_pre\_key\_public(Skissm\_\_OneTimePreKeyPublic\ *src);}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{keywordtype}{bool}\ is\_valid\_pre\_key\_bundle(Skissm\_\_PreKeyBundle\ *src);}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{keywordtype}{bool}\ is\_valid\_pre\_key\_bundle\_list(Skissm\_\_PreKeyBundle\ **src,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{keywordtype}{bool}\ is\_valid\_one2one\_msg\_payload(\textcolor{keyword}{const}\ Skissm\_\_One2oneMsgPayload\ *payload);}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_member(Skissm\_\_GroupMember\ *src);}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_member\_list(Skissm\_\_GroupMember\ **src,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_info(\textcolor{keyword}{const}\ Skissm\_\_GroupInfo\ *src);}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_info\_list(\textcolor{keyword}{const}\ Skissm\_\_GroupInfo\ **src,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_member\_info(\textcolor{keyword}{const}\ Skissm\_\_GroupMemberInfo\ *src);}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_member\_info\_list(\textcolor{keyword}{const}\ Skissm\_\_GroupMemberInfo\ **src,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_session\_by\_member\_id(Skissm\_\_GroupSession\ *src);}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_session\_by\_pre\_key\_bundle(Skissm\_\_GroupSession\ *src);}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_session(Skissm\_\_GroupSession\ *src);}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_update\_key\_bundle(Skissm\_\_GroupUpdateKeyBundle\ *src);}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_pre\_key\_bundle(Skissm\_\_GroupPreKeyBundle\ *src);}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \textcolor{keywordtype}{bool}\ is\_valid\_group\_msg\_payload(\textcolor{keyword}{const}\ Skissm\_\_GroupMsgPayload\ *payload);}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{keywordtype}{bool}\ is\_valid\_register\_user\_response(Skissm\_\_RegisterUserResponse\ *src);}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \textcolor{keywordtype}{bool}\ is\_valid\_publish\_spk\_response(Skissm\_\_PublishSpkResponse\ *src);}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \textcolor{keywordtype}{bool}\ is\_valid\_supply\_opks\_response(Skissm\_\_SupplyOpksResponse\ *src);}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \textcolor{keywordtype}{bool}\ is\_valid\_get\_pre\_key\_bundle\_response(Skissm\_\_GetPreKeyBundleResponse\ *src);}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \textcolor{keywordtype}{bool}\ is\_valid\_invite\_response(Skissm\_\_InviteResponse\ *src);}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{keywordtype}{bool}\ is\_valid\_accept\_response(Skissm\_\_AcceptResponse\ *src);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{keywordtype}{bool}\ is\_valid\_create\_group\_response(Skissm\_\_CreateGroupResponse\ *src);}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \textcolor{keywordtype}{bool}\ is\_valid\_add\_group\_members\_response(Skissm\_\_AddGroupMembersResponse\ *src);}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \textcolor{keywordtype}{bool}\ is\_valid\_add\_group\_member\_device\_response(Skissm\_\_AddGroupMemberDeviceResponse\ *src);}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{keywordtype}{bool}\ is\_valid\_remove\_group\_members\_response(Skissm\_\_RemoveGroupMembersResponse\ *src);}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \textcolor{keywordtype}{bool}\ is\_valid\_leave\_group\_response(Skissm\_\_LeaveGroupResponse\ *src);}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{keywordtype}{bool}\ is\_valid\_send\_group\_msg\_response(Skissm\_\_SendGroupMsgResponse\ *src);}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \textcolor{keywordtype}{bool}\ is\_valid\_supply\_opks\_msg(Skissm\_\_SupplyOpksMsg\ *src);}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \textcolor{keywordtype}{bool}\ is\_valid\_add\_user\_device\_msg(Skissm\_\_AddUserDeviceMsg\ *src);}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \textcolor{keywordtype}{bool}\ is\_valid\_remove\_user\_device\_msg(Skissm\_\_RemoveUserDeviceMsg\ *src);}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \textcolor{keywordtype}{bool}\ is\_valid\_invite\_msg(Skissm\_\_InviteMsg\ *src);}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \textcolor{keywordtype}{bool}\ is\_valid\_accept\_msg(Skissm\_\_AcceptMsg\ *src);}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{keywordtype}{bool}\ is\_valid\_e2ee\_msg(Skissm\_\_E2eeMsg\ *src);}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \textcolor{keywordtype}{bool}\ is\_valid\_create\_group\_msg(Skissm\_\_CreateGroupMsg\ *src);}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \textcolor{keywordtype}{bool}\ is\_valid\_add\_group\_members\_msg(Skissm\_\_AddGroupMembersMsg\ *src);}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \textcolor{keywordtype}{bool}\ is\_valid\_add\_group\_member\_device\_msg(Skissm\_\_AddGroupMemberDeviceMsg\ *src);}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \textcolor{keywordtype}{bool}\ is\_valid\_remove\_group\_members\_msg(Skissm\_\_RemoveGroupMembersMsg\ *src);}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \textcolor{keywordtype}{bool}\ is\_valid\_leave\_group\_msg(Skissm\_\_LeaveGroupMsg\ *src);}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \textcolor{keywordtype}{bool}\ is\_valid\_proto\_msg(Skissm\_\_ProtoMsg\ *src);}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \textcolor{keywordtype}{bool}\ is\_valid\_subject(Skissm\_\_Subject\ *src);}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \textcolor{keywordtype}{bool}\ is\_valid\_cert(Skissm\_\_Cert\ *src);}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \textcolor{keywordtype}{bool}\ is\_valid\_certificate(Skissm\_\_Certificate\ *src);}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \textcolor{keywordtype}{bool}\ is\_valid\_server\_signed\_signature(Skissm\_\_ServerSignedSignature\ *src);}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \textcolor{keywordtype}{bool}\ is\_valid\_server\_signed\_signature\_list(Skissm\_\_ServerSignedSignature\ **src,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00162\ \}}
+\DoxyCodeLine{00163\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ VALIDATION\_H\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

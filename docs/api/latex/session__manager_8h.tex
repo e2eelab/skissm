@@ -1,0 +1,349 @@
+\doxysection{include/skissm/session\+\_\+manager.h File Reference}
+\hypertarget{session__manager_8h}{}\label{session__manager_8h}\index{include/skissm/session\_manager.h@{include/skissm/session\_manager.h}}
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include "{}skissm/skissm.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{session__manager_8h_ad349d563d74c8e50e7316161f92e85e2}{produce\+\_\+get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+request}} (Skissm\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, const char \texorpdfstring{$\ast$}{*}to\+\_\+user\+\_\+id, const char \texorpdfstring{$\ast$}{*}to\+\_\+domain, const char \texorpdfstring{$\ast$}{*}to\+\_\+device\+\_\+id, bool active)
+\begin{DoxyCompactList}\small\item\em Create a get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+request to be sent to messaging server. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{session__manager_8h_a1d3597241edbc1b07a398f53c715113e}{consume\+\_\+get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+response}} (Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}invite\+\_\+response\+\_\+list\+\_\+out, size\+\_\+t \texorpdfstring{$\ast$}{*}invite\+\_\+response\+\_\+num, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, uint8\+\_\+t \texorpdfstring{$\ast$}{*}group\+\_\+pre\+\_\+key\+\_\+plaintext\+\_\+data, size\+\_\+t group\+\_\+pre\+\_\+key\+\_\+plaintext\+\_\+data\+\_\+len, Skissm\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Response \texorpdfstring{$\ast$}{*}get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+response)
+\begin{DoxyCompactList}\small\item\em Process an incoming get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+response\+\_\+payload. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{session__manager_8h_a5543ca02871c3a22c6e46d148b43b286}{produce\+\_\+send\+\_\+one2one\+\_\+msg\+\_\+request}} (Skissm\+\_\+\+\_\+\+Send\+One2one\+Msg\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+session, uint32\+\_\+t notif\+\_\+level, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Create a send\+\_\+one2one\+\_\+msg\+\_\+request to be sent to messaging server. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{session__manager_8h_ad4167d8e938e32304cc02c6ef2d8d4ed}{consume\+\_\+send\+\_\+one2one\+\_\+msg\+\_\+response}} (Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+session, Skissm\+\_\+\+\_\+\+Send\+One2one\+Msg\+Response \texorpdfstring{$\ast$}{*}response)
+\begin{DoxyCompactList}\small\item\em Process an send\+\_\+one2one\+\_\+msg\+\_\+response with corresponding inbound session. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{session__manager_8h_a8de221893f715f8a505f57fc22edb6f7}{consume\+\_\+one2one\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+E2ee\+Msg \texorpdfstring{$\ast$}{*}e2ee\+\_\+msg)
+\begin{DoxyCompactList}\small\item\em Process a received Skissm\+\_\+\+\_\+\+E2ee\+Msg message from server. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{session__manager_8h_ae8fc1f6390daedd282eeac6882ff38f0}{consume\+\_\+add\+\_\+user\+\_\+device\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Add\+User\+Device\+Msg \texorpdfstring{$\ast$}{*}msg)
+\begin{DoxyCompactList}\small\item\em Process an incoming Add\+User\+Device\+Msg message. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{session__manager_8h_ab918c8f59d9819e5ba0d58cca6e9b62e}{consume\+\_\+remove\+\_\+user\+\_\+device\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Remove\+User\+Device\+Msg \texorpdfstring{$\ast$}{*}msg)
+\begin{DoxyCompactList}\small\item\em Process an incoming Skissm\+\_\+\+\_\+\+Remove\+User\+Device\+Msg message. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{session__manager_8h_aec65284b928c6ca6e7f020185754a2f0}{produce\+\_\+invite\+\_\+request}} (Skissm\+\_\+\+\_\+\+Invite\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+session)
+\begin{DoxyCompactList}\small\item\em Create a Skissm\+\_\+\+\_\+\+Invite\+Request message to be sent to server. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{session__manager_8h_a685ddde667df495715e6855f81ae80f0}{consume\+\_\+invite\+\_\+response}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}response)
+\begin{DoxyCompactList}\small\item\em Process an incoming Invite\+Response message. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{session__manager_8h_a3a1c56871506cea90ec82d9fa5ab2e62}{consume\+\_\+invite\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Invite\+Msg \texorpdfstring{$\ast$}{*}invite\+\_\+msg)
+\begin{DoxyCompactList}\small\item\em Process an incoming Skissm\+\_\+\+\_\+\+Invite\+Msg message. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{session__manager_8h_ae75df08336b9e118bdfc667dab69f254}{produce\+\_\+accept\+\_\+request}} (Skissm\+\_\+\+\_\+\+Accept\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, uint32\+\_\+t e2ee\+\_\+pack\+\_\+id, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}to, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext\+\_\+1, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+ratchet\+\_\+key)
+\begin{DoxyCompactList}\small\item\em Create a Skissm\+\_\+\+\_\+\+Accept\+Request message to be sent to server. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{session__manager_8h_aa4651d48014c11bb59e3087727fe4875}{consume\+\_\+accept\+\_\+response}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, Skissm\+\_\+\+\_\+\+Accept\+Response \texorpdfstring{$\ast$}{*}response)
+\begin{DoxyCompactList}\small\item\em Process an incoming Accept\+Response message. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{session__manager_8h_a78599c2c4d910a6488f45b8461e1cb4e}{consume\+\_\+accept\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Accept\+Msg \texorpdfstring{$\ast$}{*}accept\+\_\+msg)
+\begin{DoxyCompactList}\small\item\em Process an incoming Accept\+Msg message. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2020-\/2021 by Academia Sinica
+
+This file is part of SKISSM.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with SKISSM. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{session__manager_8h_a78599c2c4d910a6488f45b8461e1cb4e}\index{session\_manager.h@{session\_manager.h}!consume\_accept\_msg@{consume\_accept\_msg}}
+\index{consume\_accept\_msg@{consume\_accept\_msg}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_accept\_msg()}{consume\_accept\_msg()}}
+{\footnotesize\ttfamily \label{session__manager_8h_a78599c2c4d910a6488f45b8461e1cb4e} 
+bool consume\+\_\+accept\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Accept\+Msg \texorpdfstring{$\ast$}{*}}]{accept\+\_\+msg}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Accept\+Msg message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em receiver\+\_\+address} & \\
+\hline
+{\em accept\+\_\+msg} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_aa4651d48014c11bb59e3087727fe4875}\index{session\_manager.h@{session\_manager.h}!consume\_accept\_response@{consume\_accept\_response}}
+\index{consume\_accept\_response@{consume\_accept\_response}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_accept\_response()}{consume\_accept\_response()}}
+{\footnotesize\ttfamily \label{session__manager_8h_aa4651d48014c11bb59e3087727fe4875} 
+int consume\+\_\+accept\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Accept\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Accept\+Response message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em response} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_ae8fc1f6390daedd282eeac6882ff38f0}\index{session\_manager.h@{session\_manager.h}!consume\_add\_user\_device\_msg@{consume\_add\_user\_device\_msg}}
+\index{consume\_add\_user\_device\_msg@{consume\_add\_user\_device\_msg}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_add\_user\_device\_msg()}{consume\_add\_user\_device\_msg()}}
+{\footnotesize\ttfamily \label{session__manager_8h_ae8fc1f6390daedd282eeac6882ff38f0} 
+bool consume\+\_\+add\+\_\+user\+\_\+device\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Add\+User\+Device\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Add\+User\+Device\+Msg message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em receiver\+\_\+address} & \\
+\hline
+{\em msg} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_a1d3597241edbc1b07a398f53c715113e}\index{session\_manager.h@{session\_manager.h}!consume\_get\_pre\_key\_bundle\_response@{consume\_get\_pre\_key\_bundle\_response}}
+\index{consume\_get\_pre\_key\_bundle\_response@{consume\_get\_pre\_key\_bundle\_response}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_get\_pre\_key\_bundle\_response()}{consume\_get\_pre\_key\_bundle\_response()}}
+{\footnotesize\ttfamily \label{session__manager_8h_a1d3597241edbc1b07a398f53c715113e} 
+int consume\+\_\+get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{invite\+\_\+response\+\_\+list\+\_\+out}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{invite\+\_\+response\+\_\+num}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{group\+\_\+pre\+\_\+key\+\_\+plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{group\+\_\+pre\+\_\+key\+\_\+plaintext\+\_\+data\+\_\+len}{, }\item[{Skissm\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Response \texorpdfstring{$\ast$}{*}}]{get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+response}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+response\+\_\+payload. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em invite\+\_\+response\+\_\+list\+\_\+out} & \\
+\hline
+{\em invite\+\_\+response\+\_\+num} & \\
+\hline
+{\em from} & \\
+\hline
+{\em group\+\_\+pre\+\_\+key\+\_\+plaintext\+\_\+data} & \\
+\hline
+{\em group\+\_\+pre\+\_\+key\+\_\+plaintext\+\_\+data\+\_\+len} & \\
+\hline
+{\em get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+response} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_a3a1c56871506cea90ec82d9fa5ab2e62}\index{session\_manager.h@{session\_manager.h}!consume\_invite\_msg@{consume\_invite\_msg}}
+\index{consume\_invite\_msg@{consume\_invite\_msg}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_invite\_msg()}{consume\_invite\_msg()}}
+{\footnotesize\ttfamily \label{session__manager_8h_a3a1c56871506cea90ec82d9fa5ab2e62} 
+bool consume\+\_\+invite\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Invite\+Msg \texorpdfstring{$\ast$}{*}}]{invite\+\_\+msg}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Skissm\+\_\+\+\_\+\+Invite\+Msg message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em receiver\+\_\+address} & \\
+\hline
+{\em invite\+\_\+msg} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_a685ddde667df495715e6855f81ae80f0}\index{session\_manager.h@{session\_manager.h}!consume\_invite\_response@{consume\_invite\_response}}
+\index{consume\_invite\_response@{consume\_invite\_response}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_invite\_response()}{consume\_invite\_response()}}
+{\footnotesize\ttfamily \label{session__manager_8h_a685ddde667df495715e6855f81ae80f0} 
+int consume\+\_\+invite\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Invite\+Response message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em response} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_a8de221893f715f8a505f57fc22edb6f7}\index{session\_manager.h@{session\_manager.h}!consume\_one2one\_msg@{consume\_one2one\_msg}}
+\index{consume\_one2one\_msg@{consume\_one2one\_msg}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_one2one\_msg()}{consume\_one2one\_msg()}}
+{\footnotesize\ttfamily \label{session__manager_8h_a8de221893f715f8a505f57fc22edb6f7} 
+bool consume\+\_\+one2one\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Msg \texorpdfstring{$\ast$}{*}}]{e2ee\+\_\+msg}{}\end{DoxyParamCaption})}
+
+
+
+Process a received Skissm\+\_\+\+\_\+\+E2ee\+Msg message from server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em receiver\+\_\+address} & \\
+\hline
+{\em e2ee\+\_\+msg} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_ab918c8f59d9819e5ba0d58cca6e9b62e}\index{session\_manager.h@{session\_manager.h}!consume\_remove\_user\_device\_msg@{consume\_remove\_user\_device\_msg}}
+\index{consume\_remove\_user\_device\_msg@{consume\_remove\_user\_device\_msg}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_remove\_user\_device\_msg()}{consume\_remove\_user\_device\_msg()}}
+{\footnotesize\ttfamily \label{session__manager_8h_ab918c8f59d9819e5ba0d58cca6e9b62e} 
+bool consume\+\_\+remove\+\_\+user\+\_\+device\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Remove\+User\+Device\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Skissm\+\_\+\+\_\+\+Remove\+User\+Device\+Msg message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em receiver\+\_\+address} & \\
+\hline
+{\em msg} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_ad4167d8e938e32304cc02c6ef2d8d4ed}\index{session\_manager.h@{session\_manager.h}!consume\_send\_one2one\_msg\_response@{consume\_send\_one2one\_msg\_response}}
+\index{consume\_send\_one2one\_msg\_response@{consume\_send\_one2one\_msg\_response}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_send\_one2one\_msg\_response()}{consume\_send\_one2one\_msg\_response()}}
+{\footnotesize\ttfamily \label{session__manager_8h_ad4167d8e938e32304cc02c6ef2d8d4ed} 
+bool consume\+\_\+send\+\_\+one2one\+\_\+msg\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Send\+One2one\+Msg\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+
+
+
+Process an send\+\_\+one2one\+\_\+msg\+\_\+response with corresponding inbound session. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em outbound\+\_\+session} & \\
+\hline
+{\em response} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_ae75df08336b9e118bdfc667dab69f254}\index{session\_manager.h@{session\_manager.h}!produce\_accept\_request@{produce\_accept\_request}}
+\index{produce\_accept\_request@{produce\_accept\_request}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{produce\_accept\_request()}{produce\_accept\_request()}}
+{\footnotesize\ttfamily \label{session__manager_8h_ae75df08336b9e118bdfc667dab69f254} 
+int produce\+\_\+accept\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Accept\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{uint32\+\_\+t}]{e2ee\+\_\+pack\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{to}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{ciphertext\+\_\+1}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{our\+\_\+ratchet\+\_\+key}{}\end{DoxyParamCaption})}
+
+
+
+Create a Skissm\+\_\+\+\_\+\+Accept\+Request message to be sent to server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request\+\_\+out} & \\
+\hline
+{\em e2ee\+\_\+pack\+\_\+id} & \\
+\hline
+{\em from} & \\
+\hline
+{\em to} & \\
+\hline
+{\em ciphertext\+\_\+1} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_ad349d563d74c8e50e7316161f92e85e2}\index{session\_manager.h@{session\_manager.h}!produce\_get\_pre\_key\_bundle\_request@{produce\_get\_pre\_key\_bundle\_request}}
+\index{produce\_get\_pre\_key\_bundle\_request@{produce\_get\_pre\_key\_bundle\_request}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{produce\_get\_pre\_key\_bundle\_request()}{produce\_get\_pre\_key\_bundle\_request()}}
+{\footnotesize\ttfamily \label{session__manager_8h_ad349d563d74c8e50e7316161f92e85e2} 
+int produce\+\_\+get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+user\+\_\+id}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+domain}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+device\+\_\+id}{, }\item[{bool}]{active}{}\end{DoxyParamCaption})}
+
+
+
+Create a get\+\_\+pre\+\_\+key\+\_\+bundle\+\_\+request to be sent to messaging server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request\+\_\+out} & \\
+\hline
+{\em to\+\_\+user\+\_\+id} & \\
+\hline
+{\em to\+\_\+domain} & \\
+\hline
+{\em to\+\_\+device\+\_\+id} & \\
+\hline
+{\em active} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_aec65284b928c6ca6e7f020185754a2f0}\index{session\_manager.h@{session\_manager.h}!produce\_invite\_request@{produce\_invite\_request}}
+\index{produce\_invite\_request@{produce\_invite\_request}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{produce\_invite\_request()}{produce\_invite\_request()}}
+{\footnotesize\ttfamily \label{session__manager_8h_aec65284b928c6ca6e7f020185754a2f0} 
+int produce\+\_\+invite\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Invite\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+session}{}\end{DoxyParamCaption})}
+
+
+
+Create a Skissm\+\_\+\+\_\+\+Invite\+Request message to be sent to server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request\+\_\+out} & \\
+\hline
+{\em outbound\+\_\+session} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{session__manager_8h_a5543ca02871c3a22c6e46d148b43b286}\index{session\_manager.h@{session\_manager.h}!produce\_send\_one2one\_msg\_request@{produce\_send\_one2one\_msg\_request}}
+\index{produce\_send\_one2one\_msg\_request@{produce\_send\_one2one\_msg\_request}!session\_manager.h@{session\_manager.h}}
+\doxysubsubsection{\texorpdfstring{produce\_send\_one2one\_msg\_request()}{produce\_send\_one2one\_msg\_request()}}
+{\footnotesize\ttfamily \label{session__manager_8h_a5543ca02871c3a22c6e46d148b43b286} 
+int produce\+\_\+send\+\_\+one2one\+\_\+msg\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Send\+One2one\+Msg\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+session}{, }\item[{uint32\+\_\+t}]{notif\+\_\+level}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Create a send\+\_\+one2one\+\_\+msg\+\_\+request to be sent to messaging server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request\+\_\+out} & \\
+\hline
+{\em outbound\+\_\+session} & \\
+\hline
+{\em notif\+\_\+level} & \\
+\hline
+{\em plaintext\+\_\+data} & \\
+\hline
+{\em plaintext\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}

@@ -70,36 +70,36 @@ static int create_chain_key(
     Skissm__ChainKey *new_chain_key,
     ProtobufCBinaryData *ratchet_public_key
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     bool pqc_param;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if ((our_private_key == NULL && ratchet_public_key == NULL) || (our_private_key != NULL && ratchet_public_key != NULL)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (our_private_key != NULL) {
             if (!is_valid_protobuf(our_private_key)) {
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         }
         if (ratchet_public_key != NULL) {
             // ratchet_public_key should be {0, NULL}
             if (is_valid_protobuf(ratchet_public_key)) {
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         }
         if (!is_valid_protobuf(&(root_key))) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (!is_valid_protobuf(their_key)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
 
         int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
@@ -150,17 +150,17 @@ static int advance_chain_key(
     const cipher_suite_t *cipher_suite,
     Skissm__ChainKey *chain_key
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if (!is_valid_chain_key(chain_key)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t shared_key[shared_key_len];
         memset(shared_key, 0, shared_key_len);
@@ -182,7 +182,7 @@ static int create_msg_keys(
     const Skissm__ChainKey *chain_key,
     Skissm__MsgKey **msg_key_out
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
     Skissm__MsgKey *msg_key = NULL;
     uint8_t *output = NULL;
     int msg_key_len = 0;
@@ -190,13 +190,13 @@ static int create_msg_keys(
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if (!is_valid_chain_key(chain_key)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         msg_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_key_len
                     + cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_iv_len;
         output = (uint8_t *)malloc(sizeof(uint8_t) * msg_key_len);
@@ -211,7 +211,7 @@ static int create_msg_keys(
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         msg_key = (Skissm__MsgKey *)malloc(sizeof(Skissm__MsgKey));
         skissm__msg_key__init(msg_key);
 
@@ -235,23 +235,23 @@ static int verify_and_decrypt(
     const Skissm__MsgKey *message_key,
     const Skissm__One2oneMsgPayload *payload
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if (!is_valid_protobuf(&ad)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (!is_valid_msg_key(message_key)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (!is_valid_one2one_msg_payload(payload)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ret = cipher_suite->symmetric_encryption_suite->decrypt(
             decrypted_data_out, decrypted_data_len_out,
             &ad,
@@ -273,29 +273,29 @@ static int verify_and_decrypt_for_existing_chain(
     const Skissm__ChainKey *chain,
     const Skissm__One2oneMsgPayload *payload
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if (!is_valid_protobuf(&ad)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (!is_valid_chain_key(chain)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (!is_valid_one2one_msg_payload(payload)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
-        if (ret == 0) {
+        if (ret == SKISSM_RESULT_SUCC) {
             if (payload->sequence < chain->index) {
                 ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         Skissm__ChainKey *new_chain = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
         skissm__chain_key__init(new_chain);
         new_chain->index = chain->index;
@@ -326,7 +326,7 @@ static size_t verify_and_decrypt_for_new_chain(
     const Skissm__Ratchet *ratchet, ProtobufCBinaryData ad,
     const Skissm__One2oneMsgPayload *payload
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     bool pqc_param;
     uint32_t coming_root_sequence;
@@ -335,38 +335,38 @@ static size_t verify_and_decrypt_for_new_chain(
     if (is_valid_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
         if (!is_valid_protobuf(&ad)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (is_valid_ratchet(ratchet)) {
             our_root_sequence = ratchet->root_sequence;
         } else {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (is_valid_one2one_msg_payload(payload)) {
             coming_root_sequence = payload->root_sequence;
             // coming_root_sequence should be positive
             if (coming_root_sequence == 0) {
                 ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "verify_and_decrypt_for_new_chain()");
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
             // the length of the ratchet key should be correct
             if (pqc_param) {
                 if (payload->ratchet_key.len != cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len) {
-                    ret = -1;
+                    ret = SKISSM_RESULT_FAIL;
                 }
             } else {
                 if (payload->ratchet_key.len != cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len) {
-                    ret = -1;
+                    ret = SKISSM_RESULT_FAIL;
                 }
             }
         } else {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ProtobufCBinaryData new_root_key = {0, NULL};
         Skissm__ReceiverChainNode new_chain;
 
@@ -407,7 +407,7 @@ int initialise_as_bob(
     const uint8_t *shared_secret, size_t shared_secret_length,
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__Ratchet *ratchet = NULL;
     bool pqc_param;
@@ -420,20 +420,20 @@ int initialise_as_bob(
     if (is_valid_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (shared_secret == NULL)
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     if (shared_secret_length == 0)
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     if (!is_valid_key_pair(our_ratchet_key)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_protobuf(their_ratchet_key)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // the ssk will be 64 bytes
         shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         derived_secrets_len = shared_key_len * 2;
@@ -449,7 +449,7 @@ int initialise_as_bob(
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         int temp_shared_key_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
         uint8_t temp_secret[temp_shared_key_len];
         ret = cipher_suite->kem_suite->encaps(temp_secret, &ciphertext, their_ratchet_key);
@@ -457,7 +457,7 @@ int initialise_as_bob(
         unset(temp_secret, sizeof(temp_secret));
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
         skissm__ratchet__init(ratchet);
 
@@ -492,7 +492,7 @@ int initialise_as_bob(
         free_mem((void **)&derived_secrets, sizeof(uint8_t) * derived_secrets_len);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *ratchet_out = ratchet;
     } else {
         free_proto(ratchet);
@@ -510,7 +510,7 @@ int initialise_as_alice(
     ProtobufCBinaryData *their_ratchet_key,
     ProtobufCBinaryData *their_encaps_ciphertext
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__Ratchet *ratchet = NULL;
     bool pqc_param;
@@ -523,25 +523,25 @@ int initialise_as_alice(
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
         if (pqc_param) {
             if (!is_valid_protobuf(their_encaps_ciphertext))
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
         } else {
             if (their_encaps_ciphertext != NULL)
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (shared_secret == NULL)
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     if (shared_secret_length == 0)
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     if (!is_valid_key_pair(our_ratchet_key)) {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_protobuf(their_ratchet_key))
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // the length of derived_secrets will be 64 bytes
         shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         derived_secrets_len = shared_key_len * 2;
@@ -558,7 +558,7 @@ int initialise_as_alice(
         );
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
         skissm__ratchet__init(ratchet);
         ratchet->receiver_chain = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
@@ -613,7 +613,7 @@ int initialise_as_alice(
         free_mem((void **)&derived_secrets, sizeof(uint8_t) * derived_secrets_len);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         *ratchet_out = ratchet;
     } else {
         free_proto(ratchet);
@@ -629,29 +629,29 @@ int encrypt_ratchet(
     ProtobufCBinaryData ad,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__SenderChainNode *sender_chain = NULL;
     Skissm__ChainKey *chain_key = NULL;
 
     if (!is_valid_cipher_suite(cipher_suite)) {
         ssm_notify_log(NULL, BAD_CIPHER_SUITE, "encrypt_ratchet()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (ratchet != NULL) {
         if (is_valid_sender_chain(ratchet->sender_chain)) {
             sender_chain = ratchet->sender_chain;
             chain_key = sender_chain->chain_key;
         } else {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (plaintext_data == NULL)
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         Skissm__MsgKey *msg_key = NULL;
         create_msg_keys(cipher_suite, chain_key, &msg_key);
         advance_chain_key(cipher_suite, chain_key);
@@ -687,7 +687,7 @@ int decrypt_ratchet(
     const cipher_suite_t *cipher_suite,
     Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     bool pqc_param;
     int ratchet_key_len;
@@ -707,26 +707,26 @@ int decrypt_ratchet(
         if (is_valid_one2one_msg_payload(payload)) {
             if (payload->ratchet_key.len != ratchet_key_len) {
                 // the ratchet key length should be equal
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         } else {
             // something wrong with the payload
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (!is_valid_protobuf(&ad)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
         if (!is_valid_ratchet(ratchet)) {
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
         }
-        if (ret == 0) {
+        if (ret == SKISSM_RESULT_SUCC) {
             if (ratchet->root_sequence == 0) {
                 if (payload->sending_message_sequence < payload->sequence) {
-                    ret = -1;
+                    ret = SKISSM_RESULT_FAIL;
                 }
             }
         }
-        if (ret == 0) {
+        if (ret == SKISSM_RESULT_SUCC) {
             // compare the root sequences of each other
             coming_root_sequence = payload->root_sequence;
             our_root_sequence = ratchet->root_sequence;
@@ -741,7 +741,7 @@ int decrypt_ratchet(
                             }
                         } else {
                             ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
-                            ret = -1;
+                            ret = SKISSM_RESULT_FAIL;
                         }
                     } else {
                         // the chain before the current one
@@ -757,7 +757,7 @@ int decrypt_ratchet(
                             NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet() coming_root_sequence: %d, our_root_sequence: %d",
                             coming_root_sequence, our_root_sequence
                         );
-                        ret = -1;
+                        ret = SKISSM_RESULT_FAIL;
                     }
                 }
             } else {
@@ -766,18 +766,18 @@ int decrypt_ratchet(
                     NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet() coming_root_sequence: %d, our_root_sequence: %d",
                     coming_root_sequence, our_root_sequence
                 );
-                ret = -1;
+                ret = SKISSM_RESULT_FAIL;
             }
         }
     } else {
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         if (skipped_message == true) {
             /* receiver_chain already advanced beyond the key for this message
             * Check if the message keys are in the skipped key list. */
-            ret = -1;
+            ret = SKISSM_RESULT_FAIL;
             size_t i, j;
             for (i = 0; i < ratchet->n_skipped_msg_key_list; i++){
                 if (payload->sequence == ratchet->skipped_msg_key_list[i]->msg_key->index
@@ -792,7 +792,7 @@ int decrypt_ratchet(
                         cipher_suite, ad, ratchet->skipped_msg_key_list[i]->msg_key, payload
                     );
 
-                    if (ret == 0){
+                    if (ret == SKISSM_RESULT_SUCC){
                         Skissm__SkippedMsgKeyNode **temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **)malloc(sizeof(Skissm__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_key_list - 1));
 
                         size_t k = 0;
@@ -816,7 +816,7 @@ int decrypt_ratchet(
                         break;
                     } else {
                         // the decryption failed
-                        ssm_notify_log(NULL, BAD_MESSAGE_MAC, "verify_and_decrypt() in decrypt_ratchet()");
+                        ssm_notify_log(NULL, BAD_MESSAGE_DECRYPTION, "verify_and_decrypt() in decrypt_ratchet()");
                     }
                 }
             }
@@ -856,7 +856,7 @@ int decrypt_ratchet(
         }
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // if the decryption is success, we will update our ratchet state if neccessary
         if (corresponding_receiver_chain == NULL) {
             if (skipped_message == false) {

@@ -1,0 +1,182 @@
+\doxysection{include/skissm/account\+\_\+manager.h File Reference}
+\hypertarget{account__manager_8h}{}\label{account__manager_8h}\index{include/skissm/account\_manager.h@{include/skissm/account\_manager.h}}
+{\ttfamily \#include "{}skissm/skissm.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{account__manager_8h_a5bba5700a82724284e2915aef45fe433}{produce\+\_\+register\+\_\+request}} (Skissm\+\_\+\+\_\+\+Register\+User\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account)
+\begin{DoxyCompactList}\small\item\em Create a Register\+User\+Request message to be sent to server. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{account__manager_8h_afda5986fbaa80ab8322386e131e56e78}{consume\+\_\+register\+\_\+response}} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account, Skissm\+\_\+\+\_\+\+Register\+User\+Response \texorpdfstring{$\ast$}{*}payload)
+\begin{DoxyCompactList}\small\item\em Process an incoming Register\+User\+Response message. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{account__manager_8h_a80c4de20f4a62e074b12c835554a0532}{produce\+\_\+publish\+\_\+spk\+\_\+request}} (Skissm\+\_\+\+\_\+\+Publish\+Spk\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account)
+\begin{DoxyCompactList}\small\item\em Create a Publish\+Spk\+Request message to be sent to server. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{account__manager_8h_a07af9d935febfe553d8a1b44d52ce7f3}{consume\+\_\+publish\+\_\+spk\+\_\+response}} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account, Skissm\+\_\+\+\_\+\+Publish\+Spk\+Response \texorpdfstring{$\ast$}{*}response)
+\begin{DoxyCompactList}\small\item\em Process an incoming Publish\+Spk\+Response message. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{account__manager_8h_a16208bffc298846368e8522a76cfa9d4}{produce\+\_\+supply\+\_\+opks\+\_\+request}} (Skissm\+\_\+\+\_\+\+Supply\+Opks\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account, uint32\+\_\+t opks\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Create a Supply\+Opks\+Request message to be sent to server. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{account__manager_8h_a4a131ad250eb68d2c609efad87f75fd9}{consume\+\_\+supply\+\_\+opks\+\_\+response}} (Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account, uint32\+\_\+t opks\+\_\+num, Skissm\+\_\+\+\_\+\+Supply\+Opks\+Response \texorpdfstring{$\ast$}{*}response)
+\begin{DoxyCompactList}\small\item\em Process an incoming Supply\+Opks\+Response message. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{account__manager_8h_a19b64e4e3bd56914928a0d99402255e1}{consume\+\_\+supply\+\_\+opks\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Supply\+Opks\+Msg \texorpdfstring{$\ast$}{*}msg)
+\begin{DoxyCompactList}\small\item\em Process an incoming Supply\+Opks\+Msg message. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2020-\/2021 by Academia Sinica
+
+This file is part of SKISSM.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with SKISSM. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{account__manager_8h_a07af9d935febfe553d8a1b44d52ce7f3}\index{account\_manager.h@{account\_manager.h}!consume\_publish\_spk\_response@{consume\_publish\_spk\_response}}
+\index{consume\_publish\_spk\_response@{consume\_publish\_spk\_response}!account\_manager.h@{account\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_publish\_spk\_response()}{consume\_publish\_spk\_response()}}
+{\footnotesize\ttfamily \label{account__manager_8h_a07af9d935febfe553d8a1b44d52ce7f3} 
+int consume\+\_\+publish\+\_\+spk\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{, }\item[{Skissm\+\_\+\+\_\+\+Publish\+Spk\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Publish\+Spk\+Response message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em account} & \\
+\hline
+{\em response} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{account__manager_8h_afda5986fbaa80ab8322386e131e56e78}\index{account\_manager.h@{account\_manager.h}!consume\_register\_response@{consume\_register\_response}}
+\index{consume\_register\_response@{consume\_register\_response}!account\_manager.h@{account\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_register\_response()}{consume\_register\_response()}}
+{\footnotesize\ttfamily \label{account__manager_8h_afda5986fbaa80ab8322386e131e56e78} 
+bool consume\+\_\+register\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{, }\item[{Skissm\+\_\+\+\_\+\+Register\+User\+Response \texorpdfstring{$\ast$}{*}}]{payload}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Register\+User\+Response message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em account} & \\
+\hline
+{\em payload} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{account__manager_8h_a19b64e4e3bd56914928a0d99402255e1}\index{account\_manager.h@{account\_manager.h}!consume\_supply\_opks\_msg@{consume\_supply\_opks\_msg}}
+\index{consume\_supply\_opks\_msg@{consume\_supply\_opks\_msg}!account\_manager.h@{account\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_supply\_opks\_msg()}{consume\_supply\_opks\_msg()}}
+{\footnotesize\ttfamily \label{account__manager_8h_a19b64e4e3bd56914928a0d99402255e1} 
+bool consume\+\_\+supply\+\_\+opks\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Supply\+Opks\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Supply\+Opks\+Msg message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em receiver\+\_\+address} & \\
+\hline
+{\em msg} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true 
+
+false 
+\end{DoxyReturn}
+\Hypertarget{account__manager_8h_a4a131ad250eb68d2c609efad87f75fd9}\index{account\_manager.h@{account\_manager.h}!consume\_supply\_opks\_response@{consume\_supply\_opks\_response}}
+\index{consume\_supply\_opks\_response@{consume\_supply\_opks\_response}!account\_manager.h@{account\_manager.h}}
+\doxysubsubsection{\texorpdfstring{consume\_supply\_opks\_response()}{consume\_supply\_opks\_response()}}
+{\footnotesize\ttfamily \label{account__manager_8h_a4a131ad250eb68d2c609efad87f75fd9} 
+int consume\+\_\+supply\+\_\+opks\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{, }\item[{uint32\+\_\+t}]{opks\+\_\+num}{, }\item[{Skissm\+\_\+\+\_\+\+Supply\+Opks\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+
+
+
+Process an incoming Supply\+Opks\+Response message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em account} & \\
+\hline
+{\em opks\+\_\+num} & \\
+\hline
+{\em response} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{account__manager_8h_a80c4de20f4a62e074b12c835554a0532}\index{account\_manager.h@{account\_manager.h}!produce\_publish\_spk\_request@{produce\_publish\_spk\_request}}
+\index{produce\_publish\_spk\_request@{produce\_publish\_spk\_request}!account\_manager.h@{account\_manager.h}}
+\doxysubsubsection{\texorpdfstring{produce\_publish\_spk\_request()}{produce\_publish\_spk\_request()}}
+{\footnotesize\ttfamily \label{account__manager_8h_a80c4de20f4a62e074b12c835554a0532} 
+int produce\+\_\+publish\+\_\+spk\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Publish\+Spk\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{}\end{DoxyParamCaption})}
+
+
+
+Create a Publish\+Spk\+Request message to be sent to server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request\+\_\+out} & \\
+\hline
+{\em account} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{account__manager_8h_a5bba5700a82724284e2915aef45fe433}\index{account\_manager.h@{account\_manager.h}!produce\_register\_request@{produce\_register\_request}}
+\index{produce\_register\_request@{produce\_register\_request}!account\_manager.h@{account\_manager.h}}
+\doxysubsubsection{\texorpdfstring{produce\_register\_request()}{produce\_register\_request()}}
+{\footnotesize\ttfamily \label{account__manager_8h_a5bba5700a82724284e2915aef45fe433} 
+int produce\+\_\+register\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Register\+User\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{}\end{DoxyParamCaption})}
+
+
+
+Create a Register\+User\+Request message to be sent to server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request\+\_\+out} & \\
+\hline
+{\em account} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{account__manager_8h_a16208bffc298846368e8522a76cfa9d4}\index{account\_manager.h@{account\_manager.h}!produce\_supply\_opks\_request@{produce\_supply\_opks\_request}}
+\index{produce\_supply\_opks\_request@{produce\_supply\_opks\_request}!account\_manager.h@{account\_manager.h}}
+\doxysubsubsection{\texorpdfstring{produce\_supply\_opks\_request()}{produce\_supply\_opks\_request()}}
+{\footnotesize\ttfamily \label{account__manager_8h_a16208bffc298846368e8522a76cfa9d4} 
+int produce\+\_\+supply\+\_\+opks\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Supply\+Opks\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{, }\item[{uint32\+\_\+t}]{opks\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Create a Supply\+Opks\+Request message to be sent to server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request\+\_\+out} & \\
+\hline
+{\em account} & \\
+\hline
+{\em opks\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}

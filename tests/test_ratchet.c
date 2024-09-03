@@ -1,6 +1,9 @@
-/*
- * Copyright © 2020-2021 by Academia Sinica
+/**
+ * @file
+ * @copyright © 2020-2021 by Academia Sinica
+ * @brief ratchet test
  *
+ * @page test_ratchet ratchet documentation
  * This file is part of SKISSM.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,6 +18,162 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @section test_alice_to_bob
+ * Alice and Bob establish their ratchet. Alice encrypts a message. Bob should decrypt the message successfully.
+ * 
+ * @section test_bob_to_alice
+ * Alice and Bob establish their ratchet. Bob encrypts a message. Alice should decrypt the message successfully.
+ * 
+ * @section test_interaction_alice_first
+ * Alice and Bob establish their ratchet. Alice encrypts a message and Bob decrypts the message. Next, Bob encrypts a message and Alice decrypts the message.
+ * 
+ * @section test_interaction_bob_first
+ * Alice and Bob establish their ratchet. Bob encrypts a message and Alice decrypts the message. Next, Alice encrypts a message and Bob decrypts the message.
+ * 
+ * @section test_out_of_order
+ * Alice and Bob establish their ratchet. Alice encrypts two messages. Bob decrypts the second message first and then decrypts the first message.
+ * 
+ * @section test_continual_message
+ * Alice and Bob establish their ratchet. Alice encrypts 1000 messages. Bob decrypts these messages.
+ * 
+ * @section test_interaction_v2
+ * Alice and Bob establish their ratchet. Alice encrypts two messages and Bob decrypts the messages. Next, Bob encrypts two messages and Alice decrypts the messages.
+ * 
+ * @section test_out_of_order_v2
+ * 
+ * 
+ * 
+ * 
+ * @defgroup ratchet_unit ratchet unit test
+ * @ingroup Unit
+ * This includes unit tests about ratchet.
+ * 
+ * @defgroup initialise_as_alice initialise ratchet test: Alice
+ * @ingroup ratchet_unit
+ * 
+ * @defgroup initialise_as_bob initialise ratchet test: Bob
+ * @ingroup ratchet_unit
+ * 
+ * @defgroup encrypt_ratchet encrypt ratchet test
+ * @ingroup ratchet_unit
+ * 
+ * @defgroup decrypt_ratchet decrypt ratchet test
+ * @ingroup ratchet_unit
+ * 
+ * 
+ * @defgroup ratchet_int ratchet integration test
+ * @ingroup Integration
+ * This includes integration tests about ratchet.
+ * 
+ * @defgroup ratchet_test_alice_to_bob basic ratchet test: Alice to Bob
+ * @ingroup ratchet_int
+ * @{
+ * @section sec1001 Test Description
+ * Alice and Bob establish their ratchet. Alice encrypts a message. Bob should decrypt the message successfully.
+ * @section sec1002 Test Objectives
+ * @section sec1003 Test Case ID
+ * @section sec1004 Test Case Title: test_alice_to_bob
+ * @section sec1005 Preconditions
+ * @section sec1006 Test Steps
+ * @section sec1007 Expected Results
+ * @}
+ * 
+ * @defgroup ratchet_test_bob_to_alice basic ratchet test: Bob to Alice
+ * @ingroup ratchet_int
+ * @{
+ * @section sec1101 Test Description
+ * Alice and Bob establish their ratchet. Bob encrypts a message. Alice should decrypt the message successfully.
+ * @section sec1102 Test Objectives
+ * @section sec1103 Test Case ID
+ * @section sec1104 Test Case Title: test_bob_to_alice
+ * @section sec1105 Preconditions
+ * @section sec1106 Test Steps
+ * @section sec1107 Expected Results
+ * @}
+ * 
+ * @defgroup ratchet_test_interaction_alice_first interaction test: Alice first
+ * @ingroup ratchet_int
+ * @{
+ * @section sec1201 Test Description
+ * Alice and Bob establish their ratchet. Alice encrypts a message and Bob decrypts the message.
+ * Next, Bob encrypts a message and Alice decrypts the message.
+ * @section sec1202 Test Objectives
+ * @section sec1203 Test Case ID
+ * @section sec1204 Test Case Title: test_interaction_alice_first
+ * @section sec1205 Preconditions
+ * @section sec1206 Test Steps
+ * @section sec1207 Expected Results
+ * @}
+ * 
+ * @defgroup ratchet_test_interaction_bob_first interaction test: Bob first
+ * @ingroup ratchet_int
+ * @{
+ * @section sec1301 Test Description
+ * Alice and Bob establish their ratchet. Bob encrypts a message and Alice decrypts the message.
+ * Next, Alice encrypts a message and Bob decrypts the message.
+ * @section sec1302 Test Objectives
+ * @section sec1303 Test Case ID
+ * @section sec1304 Test Case Title: test_interaction_bob_first
+ * @section sec1305 Preconditions
+ * @section sec1306 Test Steps
+ * @section sec1307 Expected Results
+ * @}
+ * 
+ * @defgroup ratchet_test_out_of_order out of order test: simple case
+ * @ingroup ratchet_int
+ * @{
+ * @section sec1401 Test Description
+ * Alice and Bob establish their ratchet. Alice encrypts two messages.
+ * Bob decrypts the second message first and then decrypts the first message.
+ * @section sec1402 Test Objectives
+ * @section sec1403 Test Case ID
+ * @section sec1404 Test Case Title: test_out_of_order
+ * @section sec1405 Preconditions
+ * @section sec1406 Test Steps
+ * @section sec1407 Expected Results
+ * @}
+ * 
+ * @defgroup ratchet_test_continual_message continual messages test
+ * @ingroup ratchet_int
+ * @{
+ * @section sec1501 Test Description
+ * Alice and Bob establish their ratchet. Alice encrypts 1000 messages. Bob decrypts these messages.
+ * @section sec1502 Test Objectives
+ * @section sec1503 Test Case ID
+ * @section sec1504 Test Case Title: test_continual_message
+ * @section sec1505 Preconditions
+ * @section sec1506 Test Steps
+ * @section sec1507 Expected Results
+ * @}
+ * 
+ * @defgroup ratchet_test_interaction_v2 interaction test
+ * @ingroup ratchet_int
+ * @{
+ * @section sec1601 Test Description
+ * Alice and Bob establish their ratchet. Alice encrypts two messages and Bob decrypts the messages.
+ * Next, Bob encrypts two messages and Alice decrypts the messages.
+ * @section sec1602 Test Objectives
+ * @section sec1603 Test Case ID
+ * @section sec1604 Test Case Title: test_interaction_v2
+ * @section sec1605 Preconditions
+ * @section sec1606 Test Steps
+ * @section sec1607 Expected Results
+ * @}
+ * 
+ * @defgroup ratchet_test_out_of_order_v2 out of order test
+ * @ingroup ratchet_int
+ * @{
+ * @section sec1701 Test Description
+ * 
+ * @section sec1702 Test Objectives
+ * @section sec1703 Test Case ID
+ * @section sec1704 Test Case Title: test_out_of_order_v2
+ * @section sec1705 Preconditions
+ * @section sec1706 Test Steps
+ * @section sec1707 Expected Results
+ * @}
+ * 
  */
 #include <assert.h>
 #include <stdio.h>

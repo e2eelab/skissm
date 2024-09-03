@@ -28,7 +28,7 @@
 #include "skissm/validation.h"
 
 int produce_register_request(Skissm__RegisterUserRequest **request_out, Skissm__Account *account) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__IdentityKey *identity_key = NULL;
     Skissm__KeyPair *identity_key_pair_asym = NULL;
@@ -45,10 +45,10 @@ int produce_register_request(Skissm__RegisterUserRequest **request_out, Skissm__
         signed_pre_key_pair = signed_pre_key->key_pair;
     } else {
         ssm_notify_log(NULL, BAD_ACCOUNT, "produce_register_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         Skissm__RegisterUserRequest *request = (Skissm__RegisterUserRequest *)malloc(sizeof(Skissm__RegisterUserRequest));
         skissm__register_user_request__init(request);
 
@@ -87,7 +87,7 @@ int produce_register_request(Skissm__RegisterUserRequest **request_out, Skissm__
 }
 
 bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserResponse *response) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__E2eeAddress *address = NULL;
     char *auth = NULL;
@@ -99,14 +99,14 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
 
     if (!is_valid_unregistered_account(account)) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "consume_register_response()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_register_user_response(response)) {
         ssm_notify_log(NULL, BAD_RESPONSE, "consume_register_response()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // insert the address the server gave to our account
         copy_address_from_address(&(account->address), response->address);
         if (is_valid_certificate(response->server_cert)) {
@@ -144,7 +144,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                     false,
                     NULL, 0
                 );
-                if (ret == 0) {
+                if (ret == SKISSM_RESULT_SUCC) {
                     free_invite_response_list(&invite_response_list, invite_response_num);
                     invite_response_num = 0;
                 }
@@ -183,7 +183,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
                     false,
                     NULL, 0
                 );
-                if (ret == 0) {
+                if (ret == SKISSM_RESULT_SUCC) {
                     free_invite_response_list(&invite_response_list, invite_response_num);
                     invite_response_num = 0;
                 }
@@ -199,7 +199,7 @@ int produce_publish_spk_request(
     Skissm__PublishSpkRequest **request_out,
     Skissm__Account *account
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__SignedPreKey *signed_pre_key = NULL;
     Skissm__KeyPair *signed_pre_key_pair = NULL;
@@ -209,10 +209,10 @@ int produce_publish_spk_request(
         signed_pre_key_pair = signed_pre_key->key_pair;
     } else {
         ssm_notify_log(NULL, BAD_ACCOUNT, "produce_publish_spk_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         Skissm__PublishSpkRequest *request = (Skissm__PublishSpkRequest *)malloc(sizeof(Skissm__PublishSpkRequest));
         skissm__publish_spk_request__init(request);
 
@@ -236,18 +236,18 @@ int consume_publish_spk_response(
     Skissm__Account *account,
     Skissm__PublishSpkResponse *response
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     if (!is_valid_publish_spk_response(response)) {
         ssm_notify_log(NULL, BAD_RESPONSE, "consume_publish_spk_response()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_registered_account(account)) {
         ssm_notify_log(NULL, BAD_ACCOUNT, "consume_publish_spk_response()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // save to db
         if (account->saved == true) {
             Skissm__SignedPreKey *signed_pre_key = account->signed_pre_key;
@@ -263,7 +263,7 @@ int produce_supply_opks_request(
     Skissm__Account *account,
     uint32_t opks_num
 ) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     Skissm__SupplyOpksRequest *request = NULL;
     Skissm__OneTimePreKey **one_time_pre_key_list = NULL;
@@ -275,15 +275,15 @@ int produce_supply_opks_request(
         cur_opk_id = account->next_one_time_pre_key_id;
     } else {
         ssm_notify_log(NULL, BAD_ACCOUNT, "produce_supply_opks_request()");
-        ret = -1;
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         // generate a given number of new one-time pre-keys
         ret = generate_opks(&one_time_pre_key_list, opks_num, e2ee_pack_id, cur_opk_id);
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         request = (Skissm__SupplyOpksRequest *)malloc(sizeof(Skissm__SupplyOpksRequest));
         skissm__supply_opks_request__init(request);
 
@@ -309,16 +309,18 @@ int produce_supply_opks_request(
 }
 
 int consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response) {
-    int ret = 0;
+    int ret = SKISSM_RESULT_SUCC;
 
     if (!is_valid_registered_account(account)) {
-        ret = -1;
+        ssm_notify_log(NULL, BAD_ACCOUNT, "consume_supply_opks_response()");
+        ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_supply_opks_response(response)) {
-        ret = -1;
+        ssm_notify_log(NULL, BAD_RESPONSE, "consume_supply_opks_response()");
+        ret = SKISSM_RESULT_FAIL;
     }
 
-    if (ret == 0) {
+    if (ret == SKISSM_RESULT_SUCC) {
         size_t old_opks_num = account->n_one_time_pre_key_list - opks_num;
         // save to db
         size_t i;

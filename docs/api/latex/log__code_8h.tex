@@ -1,0 +1,95 @@
+\doxysection{include/skissm/log\+\_\+code.h File Reference}
+\hypertarget{log__code_8h}{}\label{log__code_8h}\index{include/skissm/log\_code.h@{include/skissm/log\_code.h}}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{log__code_8h_a19cca64717360388c5b7cf9e2d8403bb}\label{log__code_8h_a19cca64717360388c5b7cf9e2d8403bb} 
+typedef enum Log\+Code {\bfseries Log\+Code}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{log__code_8h_a97b0d0100073d0d3d22d015f430c6de7}\label{log__code_8h_a97b0d0100073d0d3d22d015f430c6de7} 
+enum {\bfseries Log\+Code} \{ \newline
+{\bfseries DEBUG\+\_\+\+LOG} = 0
+, {\bfseries BAD\+\_\+\+CIPHER\+\_\+\+SUITE} = 1001
+, {\bfseries BAD\+\_\+\+E2\+EE\+\_\+\+PACK} = 1002
+, {\bfseries BAD\+\_\+\+ACCOUNT} = 2001
+, \newline
+{\bfseries BAD\+\_\+\+KEY\+\_\+\+PAIR} = 2002
+, {\bfseries BAD\+\_\+\+SIGNED\+\_\+\+PRE\+\_\+\+KEY} = 2003
+, {\bfseries BAD\+\_\+\+SIGNATURE} = 2004
+, {\bfseries BAD\+\_\+\+ONE\+\_\+\+TIME\+\_\+\+PRE\+\_\+\+KEY} = 2005
+, \newline
+{\bfseries BAD\+\_\+\+AUTH} = 2006
+, {\bfseries BAD\+\_\+\+AUTHENTICATOR} = 2007
+, {\bfseries BAD\+\_\+\+PRIVATE\+\_\+\+KEY} = 2008
+, {\bfseries BAD\+\_\+\+PUBLIC\+\_\+\+KEY} = 2009
+, \newline
+{\bfseries BAD\+\_\+\+REMOVE\+\_\+\+OPK} = 2010
+, {\bfseries BAD\+\_\+\+ADDRESS} = 3001
+, {\bfseries BAD\+\_\+\+USER\+\_\+\+ID} = 3002
+, {\bfseries BAD\+\_\+\+DEVICE\+\_\+\+ID} = 3003
+, \newline
+{\bfseries BAD\+\_\+\+DOMAIN} = 3004
+, {\bfseries BAD\+\_\+\+USER\+\_\+\+NAME} = 3005
+, {\bfseries BAD\+\_\+\+MESSAGE\+\_\+\+ENCRYPTION} = 4001
+, {\bfseries BAD\+\_\+\+MESSAGE\+\_\+\+DECRYPTION} = 4002
+, \newline
+{\bfseries BAD\+\_\+\+FILE\+\_\+\+ENCRYPTION} = 4003
+, {\bfseries BAD\+\_\+\+FILE\+\_\+\+DECRYPTION} = 4004
+, {\bfseries BAD\+\_\+\+MESSAGE\+\_\+\+KEY} = 4005
+, {\bfseries BAD\+\_\+\+MESSAGE\+\_\+\+SEQUENCE} = 4006
+, \newline
+{\bfseries BAD\+\_\+\+SESSION} = 5001
+, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+SESSION} = 6001
+, {\bfseries BAD\+\_\+\+PRE\+\_\+\+KEY\+\_\+\+BUNDLE} = 7001
+, {\bfseries BAD\+\_\+\+MESSAGE\+\_\+\+FORMAT} = 7002
+, \newline
+{\bfseries BAD\+\_\+\+RESPONSE} = 7003
+, {\bfseries BAD\+\_\+\+SERVER\+\_\+\+MESSAGE} = 7004
+, {\bfseries BAD\+\_\+\+SERVER\+\_\+\+SIGNATURE} = 7005
+, {\bfseries BAD\+\_\+\+INPUT\+\_\+\+DATA} = 7006
+, \newline
+{\bfseries NOT\+\_\+\+ENOUGH\+\_\+\+RANDOM} = 10001
+, {\bfseries NOT\+\_\+\+ENOUGH\+\_\+\+MEMORY} = 10002
+, {\bfseries NOT\+\_\+\+ENOUGH\+\_\+\+SPACE} = 10003
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{log__code_8h_a197c539ddf287bb08e9f4d3ea3a813af}{logcode\+\_\+string}} (Log\+Code log\+\_\+code)
+\begin{DoxyCompactList}\small\item\em Get the string representation of a given log code. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2020-\/2021 by Academia Sinica
+
+This file is part of SKISSM.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with SKISSM. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{log__code_8h_a197c539ddf287bb08e9f4d3ea3a813af}\index{log\_code.h@{log\_code.h}!logcode\_string@{logcode\_string}}
+\index{logcode\_string@{logcode\_string}!log\_code.h@{log\_code.h}}
+\doxysubsubsection{\texorpdfstring{logcode\_string()}{logcode\_string()}}
+{\footnotesize\ttfamily \label{log__code_8h_a197c539ddf287bb08e9f4d3ea3a813af} 
+const char \texorpdfstring{$\ast$}{*} logcode\+\_\+string (\begin{DoxyParamCaption}\item[{Log\+Code}]{log\+\_\+code}{}\end{DoxyParamCaption})}
+
+
+
+Get the string representation of a given log code. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em log\+\_\+code} & The log code \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The log code string 
+\end{DoxyReturn}

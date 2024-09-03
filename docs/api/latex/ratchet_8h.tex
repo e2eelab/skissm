@@ -1,0 +1,99 @@
+\doxysection{include/skissm/ratchet.h File Reference}
+\hypertarget{ratchet_8h}{}\label{ratchet_8h}\index{include/skissm/ratchet.h@{include/skissm/ratchet.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+{\ttfamily \#include "{}skissm/skissm.\+h"{}}\newline
+{\ttfamily \#include "{}skissm/cipher.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{ratchet_8h_a93e3a8d946a5293e64aab9a13dae9bb3}{initialise\+\_\+as\+\_\+bob}} (Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}ratchet\+\_\+out, const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}cipher\+\_\+suite, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, size\+\_\+t shared\+\_\+secret\+\_\+length, const Skissm\+\_\+\+\_\+\+Key\+Pair \texorpdfstring{$\ast$}{*}our\+\_\+ratchet\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+ratchet\+\_\+key)
+\item 
+int \mbox{\hyperlink{ratchet_8h_aa427840800bc04660bb26749742d01fe}{initialise\+\_\+as\+\_\+alice}} (Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}ratchet\+\_\+out, const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}cipher\+\_\+suite, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, size\+\_\+t shared\+\_\+secret\+\_\+length, const Skissm\+\_\+\+\_\+\+Key\+Pair \texorpdfstring{$\ast$}{*}our\+\_\+ratchet\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+ratchet\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+encaps\+\_\+ciphertext)
+\item 
+int \mbox{\hyperlink{ratchet_8h_aff5c9f6a4669647c87fdc58cbbda2dc2}{encrypt\+\_\+ratchet}} (Skissm\+\_\+\+\_\+\+One2one\+Msg\+Payload \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}payload\+\_\+out, const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}cipher\+\_\+suite, Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}ratchet, Protobuf\+CBinary\+Data ad, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Encrypt plaintext\+\_\+data to Skissm\+\_\+\+\_\+\+One2one\+Msg\+Payload payload and keep updated ratchet states. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{ratchet_8h_a604edfa07dc4850da56d70ab10bdce7a}{decrypt\+\_\+ratchet}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}decrypted\+\_\+data\+\_\+out, size\+\_\+t \texorpdfstring{$\ast$}{*}decrypted\+\_\+data\+\_\+len\+\_\+out, const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}cipher\+\_\+suite, Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}ratchet, Protobuf\+CBinary\+Data ad, Skissm\+\_\+\+\_\+\+One2one\+Msg\+Payload \texorpdfstring{$\ast$}{*}payload)
+\begin{DoxyCompactList}\small\item\em Decrypt Skissm\+\_\+\+\_\+\+One2one\+Msg\+Payload payload to plaintext\+\_\+data and keep updated ratchet states. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2020-\/2021 by Academia Sinica
+
+This file is part of SKISSM.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with SKISSM. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{ratchet_8h_a604edfa07dc4850da56d70ab10bdce7a}\index{ratchet.h@{ratchet.h}!decrypt\_ratchet@{decrypt\_ratchet}}
+\index{decrypt\_ratchet@{decrypt\_ratchet}!ratchet.h@{ratchet.h}}
+\doxysubsubsection{\texorpdfstring{decrypt\_ratchet()}{decrypt\_ratchet()}}
+{\footnotesize\ttfamily \label{ratchet_8h_a604edfa07dc4850da56d70ab10bdce7a} 
+int decrypt\+\_\+ratchet (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{decrypted\+\_\+data\+\_\+out}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{decrypted\+\_\+data\+\_\+len\+\_\+out}{, }\item[{const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{cipher\+\_\+suite}{, }\item[{Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}}]{ratchet}{, }\item[{Protobuf\+CBinary\+Data}]{ad}{, }\item[{Skissm\+\_\+\+\_\+\+One2one\+Msg\+Payload \texorpdfstring{$\ast$}{*}}]{payload}{}\end{DoxyParamCaption})}
+
+
+
+Decrypt Skissm\+\_\+\+\_\+\+One2one\+Msg\+Payload payload to plaintext\+\_\+data and keep updated ratchet states. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em decrypted\+\_\+data\+\_\+out} & \\
+\hline
+{\em decrypted\+\_\+data\+\_\+len\+\_\+out} & \\
+\hline
+{\em cipher\+\_\+suite} & \\
+\hline
+{\em ratchet} & \\
+\hline
+{\em ad} & \\
+\hline
+{\em payload} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+length of plaintext\+\_\+data 
+
+0 for error 
+\end{DoxyReturn}
+\Hypertarget{ratchet_8h_aff5c9f6a4669647c87fdc58cbbda2dc2}\index{ratchet.h@{ratchet.h}!encrypt\_ratchet@{encrypt\_ratchet}}
+\index{encrypt\_ratchet@{encrypt\_ratchet}!ratchet.h@{ratchet.h}}
+\doxysubsubsection{\texorpdfstring{encrypt\_ratchet()}{encrypt\_ratchet()}}
+{\footnotesize\ttfamily \label{ratchet_8h_aff5c9f6a4669647c87fdc58cbbda2dc2} 
+int encrypt\+\_\+ratchet (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+One2one\+Msg\+Payload \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{payload\+\_\+out}{, }\item[{const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{cipher\+\_\+suite}{, }\item[{Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}}]{ratchet}{, }\item[{Protobuf\+CBinary\+Data}]{ad}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Encrypt plaintext\+\_\+data to Skissm\+\_\+\+\_\+\+One2one\+Msg\+Payload payload and keep updated ratchet states. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em payload\+\_\+out} & \\
+\hline
+{\em cipher\+\_\+suite} & \\
+\hline
+{\em ratchet} & \\
+\hline
+{\em ad} & \\
+\hline
+{\em plaintext\+\_\+data} & \\
+\hline
+{\em plaintext\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{ratchet_8h_aa427840800bc04660bb26749742d01fe}\index{ratchet.h@{ratchet.h}!initialise\_as\_alice@{initialise\_as\_alice}}
+\index{initialise\_as\_alice@{initialise\_as\_alice}!ratchet.h@{ratchet.h}}
+\doxysubsubsection{\texorpdfstring{initialise\_as\_alice()}{initialise\_as\_alice()}}
+{\footnotesize\ttfamily \label{ratchet_8h_aa427840800bc04660bb26749742d01fe} 
+int initialise\+\_\+as\+\_\+alice (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{ratchet\+\_\+out}{, }\item[{const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{cipher\+\_\+suite}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{shared\+\_\+secret}{, }\item[{size\+\_\+t}]{shared\+\_\+secret\+\_\+length}{, }\item[{const Skissm\+\_\+\+\_\+\+Key\+Pair \texorpdfstring{$\ast$}{*}}]{our\+\_\+ratchet\+\_\+key}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{their\+\_\+ratchet\+\_\+key}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{their\+\_\+encaps\+\_\+ciphertext}{}\end{DoxyParamCaption})}
+
+Initialise the session using a shared secret and the public/private key pair for the first ratchet key \Hypertarget{ratchet_8h_a93e3a8d946a5293e64aab9a13dae9bb3}\index{ratchet.h@{ratchet.h}!initialise\_as\_bob@{initialise\_as\_bob}}
+\index{initialise\_as\_bob@{initialise\_as\_bob}!ratchet.h@{ratchet.h}}
+\doxysubsubsection{\texorpdfstring{initialise\_as\_bob()}{initialise\_as\_bob()}}
+{\footnotesize\ttfamily \label{ratchet_8h_a93e3a8d946a5293e64aab9a13dae9bb3} 
+int initialise\+\_\+as\+\_\+bob (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Ratchet \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{ratchet\+\_\+out}{, }\item[{const \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{cipher\+\_\+suite}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{shared\+\_\+secret}{, }\item[{size\+\_\+t}]{shared\+\_\+secret\+\_\+length}{, }\item[{const Skissm\+\_\+\+\_\+\+Key\+Pair \texorpdfstring{$\ast$}{*}}]{our\+\_\+ratchet\+\_\+key}{, }\item[{Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{their\+\_\+ratchet\+\_\+key}{}\end{DoxyParamCaption})}
+
+Initialise the session using a shared secret and the public part of the remote\textquotesingle{}s first ratchet key 
