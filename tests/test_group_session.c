@@ -62,6 +62,7 @@
  * @section sec1001 Test Description
  * Alice creates a group with four members in it. Everyone in the group sends a message to the group.
  * @section sec1002 Test Objectives
+ * To verify the create group protocol.
  * @section sec1003 Test Case ID
  * @section sec1004 Test Case Title: test_create_group
  * @section sec1005 Preconditions
@@ -76,6 +77,7 @@
  * Alice creates a group with three members in it. Then Alice adds a group member.
  * Next, everyone in the group sends a message to the group.
  * @section sec1102 Test Objectives
+ * To verify the add group members protocol.
  * @section sec1103 Test Case ID
  * @section sec1104 Test Case Title: test_add_group_members
  * @section sec1105 Preconditions
@@ -90,6 +92,7 @@
  * Alice creates a group with four members in it. Then Alice removes a group member.
  * Next, everyone in the group sends a message to the group.
  * @section sec1202 Test Objectives
+ * To verify the remove group members protocol.
  * @section sec1203 Test Case ID
  * @section sec1204 Test Case Title: test_remove_group_members
  * @section sec1205 Preconditions
@@ -105,6 +108,7 @@
  * Next, everyone in the group sends a message to the group. Then Alice removes a group member.
  * Next, everyone in the group sends a message to the group.
  * @section sec1302 Test Objectives
+ * To assure that the action of creating a group, adding group members and removing group members can be processed in a small group.
  * @section sec1303 Test Case ID
  * @section sec1304 Test Case Title: test_create_add_remove
  * @section sec1305 Preconditions
@@ -119,6 +123,7 @@
  * Alice creates a group with four members in it. Then one of the group members leaves the group.
  * Next, everyone in the group sends a message to the group.
  * @section sec1402 Test Objectives
+ * To verify the leave group protocol.
  * @section sec1403 Test Case ID
  * @section sec1404 Test Case Title: test_leave_group
  * @section sec1405 Preconditions
@@ -132,6 +137,7 @@
  * @section sec1501 Test Description
  * Alice creates a group with three members in it. Then everyone in the group sends 1000 messages to the group.
  * @section sec1502 Test Objectives
+ * To assure that a large number of messages can be decrypted by every group member.
  * @section sec1503 Test Case ID
  * @section sec1504 Test Case Title: test_continual
  * @section sec1505 Preconditions
@@ -145,6 +151,7 @@
  * @section sec1601 Test Description
  * Everyone in the three-member group has two devices. Everyone in the group sends a message to the group.
  * @section sec1602 Test Objectives
+ * To assure that the group session mechanism is applicable to multiple devices.
  * @section sec1603 Test Case ID
  * @section sec1604 Test Case Title: test_multiple_devices
  * @section sec1605 Preconditions
@@ -158,6 +165,7 @@
  * @section sec1701 Test Description
  * One of the group members adds a new device.
  * @section sec1702 Test Objectives
+ * To assure that the group session can be used once one of the group members adds a new device.
  * @section sec1703 Test Case ID
  * @section sec1704 Test Case Title: test_add_new_device
  * @section sec1705 Preconditions
@@ -171,6 +179,7 @@
  * @section sec1801 Test Description
  * 
  * @section sec1802 Test Objectives
+ * To verify that a group session with twenty members or so can be used.
  * @section sec1803 Test Case ID
  * @section sec1804 Test Case Title: test_medium_group
  * @section sec1805 Preconditions

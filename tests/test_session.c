@@ -59,6 +59,7 @@
  * @section sec1001 Test Description
  * Alice and Bob establish their session. Alice sends a message to Bob. Bob should decrypt the message successfully.
  * @section sec1002 Test Objectives
+ * To assure that the invitee can decrypt the inviter's message once the session is completed.
  * @section sec1003 Test Case ID
  * @section sec1004 Test Case Title: test_basic_session
  * @section sec1005 Preconditions
@@ -72,6 +73,7 @@
  * @section sec1101 Test Description
  * Alice and Bob establish their session. Alice sends a message to Bob. Next, Bob sends a message to Alice.
  * @section sec1102 Test Objectives
+ * To assure that both of the inviter and the invitee can decrypt the other's message.
  * @section sec1103 Test Case ID
  * @section sec1104 Test Case Title: test_interaction
  * @section sec1105 Preconditions
@@ -85,6 +87,7 @@
  * @section sec1201 Test Description
  * Alice sends 3000 messages to Bob.
  * @section sec1202 Test Objectives
+ * To assure that a large number of messages can be decrypted.
  * @section sec1203 Test Case ID
  * @section sec1204 Test Case Title: test_continual_messages
  * @section sec1205 Preconditions
@@ -111,6 +114,7 @@
  * @section sec1401 Test Description
  * Alice has one device, and Bob has three devices. Alice sends a message to Bob.
  * @section sec1402 Test Objectives
+ * To assure that the session mechanism is applicable to multiple devices.
  * @section sec1403 Test Case ID
  * @section sec1404 Test Case Title: test_one_to_many
  * @section sec1405 Preconditions
@@ -124,6 +128,7 @@
  * @section sec1501 Test Description
  * Alice has three devices, and Bob has one device. Alice sends a message to Bob.
  * @section sec1502 Test Objectives
+ * To assure that the session mechanism is applicable to multiple devices.
  * @section sec1503 Test Case ID
  * @section sec1504 Test Case Title: test_many_to_one
  * @section sec1505 Preconditions
@@ -137,6 +142,7 @@
  * @section sec1601 Test Description
  * Both Alice and Bob have three devices. Alice sends a message to Bob.
  * @section sec1602 Test Objectives
+ * To assure that the session mechanism is applicable to multiple devices.
  * @section sec1603 Test Case ID
  * @section sec1604 Test Case Title: test_many_to_many
  * @section sec1605 Preconditions
@@ -150,6 +156,7 @@
  * @section sec1701 Test Description
  * Both Alice and Bob have two devices. Alice adds a new device. Then Alice sends a message to Bob. Next, Bob sends a message to Alice.
  * @section sec1702 Test Objectives
+ * To assure that the session can be used once one of the both sides adds a new device.
  * @section sec1703 Test Case ID
  * @section sec1704 Test Case Title: test_change_devices
  * @section sec1705 Preconditions

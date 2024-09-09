@@ -46,21 +46,87 @@
  * 
  * @defgroup account_begin account begin test
  * @ingroup account_unit
+ * @{
+ * @section sec0001 Test Description
+ * 
+ * @section sec0002 Test Objectives
+ * To verify the functionality of the function account_begin.
+ * @section sec0003 Test Case ID
+ * @section sec0004 Test Case Title: account_begin
+ * @section sec0005 Preconditions
+ * @section sec0006 Test Steps
+ * @section sec0007 Expected Results
+ * @}
  * 
  * @defgroup account_end account end test
  * @ingroup account_unit
+ * @{
+ * @section sec0101 Test Description
  * 
- * @defgroup create_account create account test
- * @ingroup account_unit
+ * @section sec0102 Test Objectives
+ * To verify the functionality of the function account_end.
+ * @section sec0103 Test Case ID
+ * @section sec0104 Test Case Title: account_end
+ * @section sec0105 Preconditions
+ * @section sec0106 Test Steps
+ * @section sec0107 Expected Results
+ * @}
  * 
  * @defgroup generate_identity_key generate identity key test
  * @ingroup account_unit
+ * @{
+ * @section sec0201 Test Description
+ * 
+ * @section sec0202 Test Objectives
+ * To verify the functionality of the function generate_identity_key.
+ * @section sec0203 Test Case ID
+ * @section sec0204 Test Case Title: generate_identity_key
+ * @section sec0205 Preconditions
+ * @section sec0206 Test Steps
+ * @section sec0207 Expected Results
+ * @}
  * 
  * @defgroup generate_signed_pre_key generate signed pre-key test
  * @ingroup account_unit
+ * @{
+ * @section sec0301 Test Description
+ * 
+ * @section sec0302 Test Objectives
+ * To verify the functionality of the function generate_signed_pre_key.
+ * @section sec0303 Test Case ID
+ * @section sec0304 Test Case Title: generate_signed_pre_key
+ * @section sec0305 Preconditions
+ * @section sec0306 Test Steps
+ * @section sec0307 Expected Results
+ * @}
  * 
  * @defgroup generate_opks generate one-time pre-key test
  * @ingroup account_unit
+ * @{
+ * @section sec0401 Test Description
+ * 
+ * @section sec0402 Test Objectives
+ * To verify the functionality of the function generate_opks.
+ * @section sec0403 Test Case ID
+ * @section sec0404 Test Case Title: generate_opks
+ * @section sec0405 Preconditions
+ * @section sec0406 Test Steps
+ * @section sec0407 Expected Results
+ * @}
+ * 
+ * @defgroup create_account create account test
+ * @ingroup account_unit
+ * @{
+ * @section sec0501 Test Description
+ * 
+ * @section sec0502 Test Objectives
+ * To verify the functionality of the function create_account.
+ * @section sec0503 Test Case ID
+ * @section sec0504 Test Case Title: create_account
+ * @section sec0505 Preconditions
+ * @section sec0506 Test Steps
+ * @section sec0507 Expected Results
+ * @}
  * 
  * 
  * @defgroup account_int account integration test
@@ -74,6 +140,7 @@
  * This test case generates a certain number, given by the input, of accounts.
  * These accounts will be stored into db and will be loaded to check integrity.
  * @section sec1002 Test Objectives
+ * To assure that this device can create several accounts.
  * @section sec1003 Test Case ID
  * @section sec1004 Test Case Title: test_create_accounts
  * @section sec1005 Preconditions
@@ -88,6 +155,7 @@
  * @section sec1101 Test Description
  * To call the function register_user with given inputs.
  * @section sec1102 Test Objectives
+ * To verify the functionality of the function register_user.
  * @section sec1103 Test Case ID
  * @section sec1104 Test Case Title: test_register_user
  * @section sec1105 Preconditions
@@ -101,6 +169,7 @@
  * @section sec1201 Test Description
  * A registered account will generate a new pair of signed pre-key pair and publish the public part of the key pair and the signature to the server.
  * @section sec1202 Test Objectives
+ * To verify the functionality of the function publish_spk_internal.
  * @section sec1203 Test Case ID
  * @section sec1204 Test Case Title: test_publish_spk
  * @section sec1205 Preconditions
@@ -114,6 +183,7 @@
  * @section sec1301 Test Description
  * The server notifies the client to generate a number of one-time pre-keys.
  * @section sec1302 Test Objectives
+ * To assure that the procedure of supplying one-time pre-keys is correct.
  * @section sec1303 Test Case ID
  * @section sec1304 Test Case Title: test_supply_opks
  * @section sec1305 Preconditions
