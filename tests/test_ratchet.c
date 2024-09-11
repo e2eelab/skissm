@@ -52,57 +52,57 @@
  * @defgroup initialise_as_alice initialise ratchet test: Alice
  * @ingroup ratchet_unit
  * @{
- * @section sec0001 Test Description
+ * @section sec20001 Test Description
  * 
- * @section sec0002 Test Objectives
+ * @section sec20002 Test Objectives
  * To verify the functionality of the function initialise_as_alice.
- * @section sec0003 Test Case ID
- * @section sec0004 Test Case Title: initialise_as_alice
- * @section sec0005 Preconditions
- * @section sec0006 Test Steps
- * @section sec0007 Expected Results
+ * @section sec20003 Test Case ID
+ * @section sec20004 Test Case Title: initialise_as_alice
+ * @section sec20005 Preconditions
+ * @section sec20006 Test Steps
+ * @section sec20007 Expected Results
  * @}
  * 
  * @defgroup initialise_as_bob initialise ratchet test: Bob
  * @ingroup ratchet_unit
  * @{
- * @section sec0101 Test Description
+ * @section sec20101 Test Description
  * 
- * @section sec0102 Test Objectives
+ * @section sec20102 Test Objectives
  * To verify the functionality of the function initialise_as_bob.
- * @section sec0103 Test Case ID
- * @section sec0104 Test Case Title: initialise_as_bob
- * @section sec0105 Preconditions
- * @section sec0106 Test Steps
- * @section sec0107 Expected Results
+ * @section sec20103 Test Case ID
+ * @section sec20104 Test Case Title: initialise_as_bob
+ * @section sec20105 Preconditions
+ * @section sec20106 Test Steps
+ * @section sec20107 Expected Results
  * @}
  * 
  * @defgroup encrypt_ratchet encrypt ratchet test
  * @ingroup ratchet_unit
  * @{
- * @section sec0201 Test Description
+ * @section sec20201 Test Description
  * 
- * @section sec0202 Test Objectives
+ * @section sec20202 Test Objectives
  * To verify the functionality of the function encrypt_ratchet.
- * @section sec0203 Test Case ID
- * @section sec0204 Test Case Title: encrypt_ratchet
- * @section sec0205 Preconditions
- * @section sec0206 Test Steps
- * @section sec0207 Expected Results
+ * @section sec20203 Test Case ID
+ * @section sec20204 Test Case Title: encrypt_ratchet
+ * @section sec20205 Preconditions
+ * @section sec20206 Test Steps
+ * @section sec20207 Expected Results
  * @}
  * 
  * @defgroup decrypt_ratchet decrypt ratchet test
  * @ingroup ratchet_unit
  * @{
- * @section sec0301 Test Description
+ * @section sec20301 Test Description
  * 
- * @section sec0302 Test Objectives
+ * @section sec20302 Test Objectives
  * To verify the functionality of the function decrypt_ratchet.
- * @section sec0303 Test Case ID
- * @section sec0304 Test Case Title: decrypt_ratchet
- * @section sec0305 Preconditions
- * @section sec0306 Test Steps
- * @section sec0307 Expected Results
+ * @section sec20303 Test Case ID
+ * @section sec20304 Test Case Title: decrypt_ratchet
+ * @section sec20305 Preconditions
+ * @section sec20306 Test Steps
+ * @section sec20307 Expected Results
  * @}
  * 
  * 
@@ -113,117 +113,163 @@
  * @defgroup ratchet_test_alice_to_bob basic ratchet test: Alice to Bob
  * @ingroup ratchet_int
  * @{
- * @section sec1001 Test Description
+ * @section sec21001 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts a message. Bob should decrypt the message successfully.
- * @section sec1002 Test Objectives
+ * @section sec21002 Test Objectives
  * To assure that the invitee can decrypt the inviter's message once the ratchet is completed.
- * @section sec1003 Test Case ID
- * @section sec1004 Test Case Title: test_alice_to_bob
- * @section sec1005 Preconditions
- * @section sec1006 Test Steps
- * @section sec1007 Expected Results
+ * @section sec21003 Test Case ID
+ * @section sec21004 Test Case Title: test_alice_to_bob
+ * @section sec21005 Preconditions
+ * @section sec21006 Test Steps
+ * Step 1: Initialise Alice's and Bob's ratchet.\n
+ * Step 2: Alice encrypts a message.\n
+ * Step 3: Bob decrypts the message.
+ * @section sec21007 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup ratchet_test_bob_to_alice basic ratchet test: Bob to Alice
  * @ingroup ratchet_int
  * @{
- * @section sec1101 Test Description
+ * @section sec21101 Test Description
  * Alice and Bob establish their ratchet. Bob encrypts a message. Alice should decrypt the message successfully.
- * @section sec1102 Test Objectives
+ * @section sec21102 Test Objectives
  * To assure that the inviter can decrypt the invitee's message once the ratchet is completed.
- * @section sec1103 Test Case ID
- * @section sec1104 Test Case Title: test_bob_to_alice
- * @section sec1105 Preconditions
- * @section sec1106 Test Steps
- * @section sec1107 Expected Results
+ * @section sec21103 Test Case ID
+ * @section sec21104 Test Case Title: test_bob_to_alice
+ * @section sec21105 Preconditions
+ * @section sec21106 Test Steps
+ * Step 1: Initialise Alice's and Bob's ratchet.\n
+ * Step 2: Bob encrypts a message.\n
+ * Step 3: Alice decrypts the message.
+ * @section sec21107 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup ratchet_test_interaction_alice_first interaction test: Alice first
  * @ingroup ratchet_int
  * @{
- * @section sec1201 Test Description
+ * @section sec21201 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts a message and Bob decrypts the message.
  * Next, Bob encrypts a message and Alice decrypts the message.
- * @section sec1202 Test Objectives
+ * @section sec21202 Test Objectives
  * To assure that both of the inviter and the invitee can decrypt the other's message.
- * @section sec1203 Test Case ID
- * @section sec1204 Test Case Title: test_interaction_alice_first
- * @section sec1205 Preconditions
- * @section sec1206 Test Steps
- * @section sec1207 Expected Results
+ * @section sec21203 Test Case ID
+ * @section sec21204 Test Case Title: test_interaction_alice_first
+ * @section sec21205 Preconditions
+ * @section sec21206 Test Steps
+ * Step 1: Initialise Alice's and Bob's ratchet.\n
+ * Step 2: Alice encrypts a message.\n
+ * Step 3: Bob decrypts the message.\n
+ * Step 4: Bob encrypts a message.\n
+ * Step 5: Alice decrypts the message.
+ * @section sec21207 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup ratchet_test_interaction_bob_first interaction test: Bob first
  * @ingroup ratchet_int
  * @{
- * @section sec1301 Test Description
+ * @section sec21301 Test Description
  * Alice and Bob establish their ratchet. Bob encrypts a message and Alice decrypts the message.
  * Next, Alice encrypts a message and Bob decrypts the message.
- * @section sec1302 Test Objectives
+ * @section sec21302 Test Objectives
  * To assure that both of the inviter and the invitee can decrypt the other's message.
- * @section sec1303 Test Case ID
- * @section sec1304 Test Case Title: test_interaction_bob_first
- * @section sec1305 Preconditions
- * @section sec1306 Test Steps
- * @section sec1307 Expected Results
+ * @section sec21303 Test Case ID
+ * @section sec21304 Test Case Title: test_interaction_bob_first
+ * @section sec21305 Preconditions
+ * @section sec21306 Test Steps
+ * Step 1: Initialise Alice's and Bob's ratchet.\n
+ * Step 2: Bob encrypts a message.\n
+ * Step 3: Alice decrypts the message.\n
+ * Step 4: Alice encrypts a message.\n
+ * Step 5: Bob decrypts the message.
+ * @section sec21307 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup ratchet_test_out_of_order out of order test: simple case
  * @ingroup ratchet_int
  * @{
- * @section sec1401 Test Description
+ * @section sec21401 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts two messages.
  * Bob decrypts the second message first and then decrypts the first message.
- * @section sec1402 Test Objectives
+ * @section sec21402 Test Objectives
  * To verify the out-of-order mechanism.
- * @section sec1403 Test Case ID
- * @section sec1404 Test Case Title: test_out_of_order
- * @section sec1405 Preconditions
- * @section sec1406 Test Steps
- * @section sec1407 Expected Results
+ * @section sec21403 Test Case ID
+ * @section sec21404 Test Case Title: test_out_of_order
+ * @section sec21405 Preconditions
+ * @section sec21406 Test Steps
+ * Step 1: Initialise Alice's and Bob's ratchet.\n
+ * Step 2: Alice encrypts two messages.\n
+ * Step 3: Bob decrypts the second message.\n
+ * Step 4: Bob decrypts the first message.
+ * @section sec21407 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup ratchet_test_continual_message continual messages test
  * @ingroup ratchet_int
  * @{
- * @section sec1501 Test Description
+ * @section sec21501 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts 1000 messages. Bob decrypts these messages.
- * @section sec1502 Test Objectives
+ * @section sec21502 Test Objectives
  * To assure that a large number of messages can be decrypted.
- * @section sec1503 Test Case ID
- * @section sec1504 Test Case Title: test_continual_message
- * @section sec1505 Preconditions
- * @section sec1506 Test Steps
- * @section sec1507 Expected Results
+ * @section sec21503 Test Case ID
+ * @section sec21504 Test Case Title: test_continual_message
+ * @section sec21505 Preconditions
+ * @section sec21506 Test Steps
+ * Step 1: Initialise Alice's and Bob's ratchet.\n
+ * Step 2: Alice encrypts 1000 messages.\n
+ * Step 3: Bob decrypts all of the messages.
+ * @section sec21507 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup ratchet_test_interaction_v2 interaction test
  * @ingroup ratchet_int
  * @{
- * @section sec1601 Test Description
+ * @section sec21601 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts two messages and Bob decrypts the messages.
  * Next, Bob encrypts two messages and Alice decrypts the messages.
- * @section sec1602 Test Objectives
+ * @section sec21602 Test Objectives
  * To assure that both of the inviter and the invitee can decrypt the other's message.
- * @section sec1603 Test Case ID
- * @section sec1604 Test Case Title: test_interaction_v2
- * @section sec1605 Preconditions
- * @section sec1606 Test Steps
- * @section sec1607 Expected Results
+ * @section sec21603 Test Case ID
+ * @section sec21604 Test Case Title: test_interaction_v2
+ * @section sec21605 Preconditions
+ * @section sec21606 Test Steps
+ * Step 1: Initialise Alice's and Bob's ratchet.\n
+ * Step 2: Alice encrypts a message and the Bob decrypts the message.\n
+ * Step 3: Alice encrypts a message and the Bob decrypts the message.\n
+ * Step 4: Bob encrypts a message and the Alice decrypts the message.\n
+ * Step 5: Bob encrypts a message and the Alice decrypts the message.\n
+ * Step 6: Process Step 2 - Step 5 for ten times.
+ * @section sec21607 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup ratchet_test_out_of_order_v2 out of order test
  * @ingroup ratchet_int
  * @{
- * @section sec1701 Test Description
- * 
- * @section sec1702 Test Objectives
+ * @section sec21701 Test Description
+ * Alice and Bob encrypt some messages, but they do not decrypt the others' messages in order.
+ * @section sec21702 Test Objectives
  * To verify the out-of-order mechanism.
- * @section sec1703 Test Case ID
- * @section sec1704 Test Case Title: test_out_of_order_v2
- * @section sec1705 Preconditions
- * @section sec1706 Test Steps
- * @section sec1707 Expected Results
+ * @section sec21703 Test Case ID
+ * @section sec21704 Test Case Title: test_out_of_order_v2
+ * @section sec21705 Preconditions
+ * @section sec21706 Test Steps
+ * Step 1: Initialise Alice's and Bob's ratchet.\n
+ * Step 2: Alice encrypts a message and the Bob decrypts the message.\n
+ * Step 3: Alice encrypts a message.\n
+ * Step 4: Bob encrypts three messages.\n
+ * Step 5: Alice decrypts two of Bob's messages.\n
+ * Step 6: Alice encrypts three messages.\n
+ * Step 7: Bob decrypts two of Alice's messages.\n
+ * Step 8: Bob encrypts two messages.\n
+ * Step 9: Alice and Bob decrypts the others' rest messages.
+ * @section sec21707 Expected Results
+ * No output.
  * @}
  * 
  */
@@ -712,7 +758,7 @@ static void test_interaction_v2() {
         message = NULL;
         free_mem((void **)&output, sizeof(uint8_t) * output_len);
 
-        // the third time, from Bob to Alice
+        // the fourth time, from Bob to Alice
         plaintext_len = snprintf((char *)plaintext, 64, "[%4d]This message is from Bob to Alice.", i * 4 + 3);
         encrypt_ratchet(&message, test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_len);
 

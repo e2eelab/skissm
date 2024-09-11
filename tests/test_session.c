@@ -56,112 +56,143 @@
  * @defgroup session_test_basic_session basic session test
  * @ingroup session_int
  * @{
- * @section sec1001 Test Description
+ * @section sec31001 Test Description
  * Alice and Bob establish their session. Alice sends a message to Bob. Bob should decrypt the message successfully.
- * @section sec1002 Test Objectives
+ * @section sec31002 Test Objectives
  * To assure that the invitee can decrypt the inviter's message once the session is completed.
- * @section sec1003 Test Case ID
- * @section sec1004 Test Case Title: test_basic_session
- * @section sec1005 Preconditions
- * @section sec1006 Test Steps
- * @section sec1007 Expected Results
+ * @section sec31003 Test Case ID
+ * @section sec31004 Test Case Title: test_basic_session
+ * @section sec31005 Preconditions
+ * @section sec31006 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Alice sends a message to Bob.\n
+ * Step 3: Bob decrypts the message.
+ * @section sec31007 Expected Results
+ * The output of the decrypted message.
  * @}
  * 
  * @defgroup session_test_interaction interaction test
  * @ingroup session_int
  * @{
- * @section sec1101 Test Description
+ * @section sec31101 Test Description
  * Alice and Bob establish their session. Alice sends a message to Bob. Next, Bob sends a message to Alice.
- * @section sec1102 Test Objectives
+ * @section sec31102 Test Objectives
  * To assure that both of the inviter and the invitee can decrypt the other's message.
- * @section sec1103 Test Case ID
- * @section sec1104 Test Case Title: test_interaction
- * @section sec1105 Preconditions
- * @section sec1106 Test Steps
- * @section sec1107 Expected Results
+ * @section sec31103 Test Case ID
+ * @section sec31104 Test Case Title: test_interaction
+ * @section sec31105 Preconditions
+ * @section sec31106 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Alice sends a message to Bob.\n
+ * Step 3: Bob decrypts the message.\n
+ * Step 4: Bob sends a message to Alice.\n
+ * Step 5: Alice decrypts the message.
+ * @section sec31107 Expected Results
+ * The output of the decrypted messages.
  * @}
  * 
  * @defgroup session_test_continual_messages continual messages test
  * @ingroup session_int
  * @{
- * @section sec1201 Test Description
+ * @section sec31201 Test Description
  * Alice sends 3000 messages to Bob.
- * @section sec1202 Test Objectives
+ * @section sec31202 Test Objectives
  * To assure that a large number of messages can be decrypted.
- * @section sec1203 Test Case ID
- * @section sec1204 Test Case Title: test_continual_messages
- * @section sec1205 Preconditions
- * @section sec1206 Test Steps
- * @section sec1207 Expected Results
+ * @section sec31203 Test Case ID
+ * @section sec31204 Test Case Title: test_continual_messages
+ * @section sec31205 Preconditions
+ * @section sec31206 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Alice sends 3000 messages to Bob.\n
+ * Step 3: Bob decrypts all of these messages.
+ * @section sec31207 Expected Results
+ * The output of the decrypted messages.
  * @}
  * 
  * @defgroup session_test_multiple_devices multiple devices test
  * @ingroup session_int
  * @{
- * @section sec1301 Test Description
+ * @section sec31301 Test Description
  * 
- * @section sec1302 Test Objectives
- * @section sec1303 Test Case ID
- * @section sec1304 Test Case Title: test_multiple_devices
- * @section sec1305 Preconditions
- * @section sec1306 Test Steps
- * @section sec1307 Expected Results
+ * @section sec31302 Test Objectives
+ * @section sec31303 Test Case ID
+ * @section sec31304 Test Case Title: test_multiple_devices
+ * @section sec31305 Preconditions
+ * @section sec31306 Test Steps
+ * @section sec31307 Expected Results
  * @}
  * 
  * @defgroup session_test_one_to_many multiple devices test: one to many
  * @ingroup session_int
  * @{
- * @section sec1401 Test Description
+ * @section sec31401 Test Description
  * Alice has one device, and Bob has three devices. Alice sends a message to Bob.
- * @section sec1402 Test Objectives
+ * @section sec31402 Test Objectives
  * To assure that the session mechanism is applicable to multiple devices.
- * @section sec1403 Test Case ID
- * @section sec1404 Test Case Title: test_one_to_many
- * @section sec1405 Preconditions
- * @section sec1406 Test Steps
- * @section sec1407 Expected Results
+ * @section sec31403 Test Case ID
+ * @section sec31404 Test Case Title: test_one_to_many
+ * @section sec31405 Preconditions
+ * @section sec31406 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Alice sends a message to Bob.\n
+ * Step 3: Bob decrypts the message, using all of his devices.
+ * @section sec31407 Expected Results
+ * The output of the decrypted messages.
  * @}
  * 
  * @defgroup session_test_many_to_one multiple devices test: many to one
  * @ingroup session_int
  * @{
- * @section sec1501 Test Description
+ * @section sec31501 Test Description
  * Alice has three devices, and Bob has one device. Alice sends a message to Bob.
- * @section sec1502 Test Objectives
+ * @section sec31502 Test Objectives
  * To assure that the session mechanism is applicable to multiple devices.
- * @section sec1503 Test Case ID
- * @section sec1504 Test Case Title: test_many_to_one
- * @section sec1505 Preconditions
- * @section sec1506 Test Steps
- * @section sec1507 Expected Results
+ * @section sec31503 Test Case ID
+ * @section sec31504 Test Case Title: test_many_to_one
+ * @section sec31505 Preconditions
+ * @section sec31506 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Alice sends a message to Bob with one of her devices.\n
+ * Step 3: Bob decrypts the message.
+ * @section sec31507 Expected Results
+ * The output of the decrypted messages.
  * @}
  * 
  * @defgroup session_test_many_to_many multiple devices test: many to many
  * @ingroup session_int
  * @{
- * @section sec1601 Test Description
+ * @section sec31601 Test Description
  * Both Alice and Bob have three devices. Alice sends a message to Bob.
- * @section sec1602 Test Objectives
+ * @section sec31602 Test Objectives
  * To assure that the session mechanism is applicable to multiple devices.
- * @section sec1603 Test Case ID
- * @section sec1604 Test Case Title: test_many_to_many
- * @section sec1605 Preconditions
- * @section sec1606 Test Steps
- * @section sec1607 Expected Results
+ * @section sec31603 Test Case ID
+ * @section sec31604 Test Case Title: test_many_to_many
+ * @section sec31605 Preconditions
+ * @section sec31606 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Alice sends a message to Bob with one of her devices.\n
+ * Step 3: Bob decrypts the message, using all of his devices.
+ * @section sec31607 Expected Results
+ * The output of the decrypted messages.
  * @}
  * 
  * @defgroup session_test_change_devices change devices test
  * @ingroup session_int
  * @{
- * @section sec1701 Test Description
+ * @section sec31701 Test Description
  * Both Alice and Bob have two devices. Alice adds a new device. Then Alice sends a message to Bob. Next, Bob sends a message to Alice.
- * @section sec1702 Test Objectives
+ * @section sec31702 Test Objectives
  * To assure that the session can be used once one of the both sides adds a new device.
- * @section sec1703 Test Case ID
- * @section sec1704 Test Case Title: test_change_devices
- * @section sec1705 Preconditions
- * @section sec1706 Test Steps
- * @section sec1707 Expected Results
+ * @section sec31703 Test Case ID
+ * @section sec31704 Test Case Title: test_change_devices
+ * @section sec31705 Preconditions
+ * @section sec31706 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Alice adds a new device.\n
+ * Step 3: Alice uses the old device to send a message to Bob, and then Bob decrypts the message.\n
+ * Step 4: Bob sends a message to Alice, and then Alice decrypts the message.
+ * @section sec31707 Expected Results
+ * The output of the decrypted messages.
  * @}
  * 
  */

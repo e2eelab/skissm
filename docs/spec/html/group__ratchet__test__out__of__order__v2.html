@@ -87,21 +87,32 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">out of order test<div class="ingroups"><a class="el" href="group___integration.html">Integration test</a> &raquo; <a class="el" href="group__ratchet__int.html">ratchet integration test</a></div></div></div>
 </div><!--header-->
 <div class="contents">
-<h1><a class="anchor" id="sec1701"></a>
+<h1><a class="anchor" id="sec21701"></a>
 Test Description</h1>
-<h1><a class="anchor" id="sec1702"></a>
+<p>Alice and Bob encrypt some messages, but they do not decrypt the others' messages in order. </p>
+<h1><a class="anchor" id="sec21702"></a>
 Test Objectives</h1>
 <p>To verify the out-of-order mechanism. </p>
-<h1><a class="anchor" id="sec1703"></a>
+<h1><a class="anchor" id="sec21703"></a>
 Test Case ID</h1>
-<h1><a class="anchor" id="sec1704"></a>
-Test Case Title: test_add_new_device</h1>
-<h1><a class="anchor" id="sec1705"></a>
+<h1><a class="anchor" id="sec21704"></a>
+Test Case Title: test_out_of_order_v2</h1>
+<h1><a class="anchor" id="sec21705"></a>
 Preconditions</h1>
-<h1><a class="anchor" id="sec1706"></a>
+<h1><a class="anchor" id="sec21706"></a>
 Test Steps</h1>
-<h1><a class="anchor" id="sec1707"></a>
+<p>Step 1: Initialise Alice's and Bob's ratchet.<br  />
+Step 2: Alice encrypts a message and the Bob decrypts the message.<br  />
+Step 3: Alice encrypts a message.<br  />
+Step 4: Bob encrypts three messages.<br  />
+Step 5: Alice decrypts two of Bob's messages.<br  />
+Step 6: Alice encrypts three messages.<br  />
+Step 7: Bob decrypts two of Alice's messages.<br  />
+Step 8: Bob encrypts two messages.<br  />
+Step 9: Alice and Bob decrypts the others' rest messages. </p>
+<h1><a class="anchor" id="sec21707"></a>
 Expected Results</h1>
+<p>No output. </p>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -1,9 +1,18 @@
 \doxysubsubsection{out of order test}
 \hypertarget{group__ratchet__test__out__of__order__v2}{}\label{group__ratchet__test__out__of__order__v2}\index{out of order test@{out of order test}}
-\hypertarget{group__session__test__change__devices_sec1701}{}\doxysubsubsubsection{\texorpdfstring{Test Description}{Test Description}}\label{group__session__test__change__devices_sec1701}
-\hypertarget{group__session__test__change__devices_sec1702}{}\doxysubsubsubsection{\texorpdfstring{Test Objectives}{Test Objectives}}\label{group__session__test__change__devices_sec1702}
-To verify the out-\/of-\/order mechanism. \hypertarget{group__session__test__change__devices_sec1703}{}\doxysubsubsubsection{\texorpdfstring{Test Case ID}{Test Case ID}}\label{group__session__test__change__devices_sec1703}
-\hypertarget{group__session__test__change__devices_sec1704}{}\doxysubsubsubsection{\texorpdfstring{Test Case Title\+: test\+\_\+add\+\_\+new\+\_\+device}{Test Case Title\+: test\+\_\+add\+\_\+new\+\_\+device}}\label{group__session__test__change__devices_sec1704}
-\hypertarget{group__session__test__change__devices_sec1705}{}\doxysubsubsubsection{\texorpdfstring{Preconditions}{Preconditions}}\label{group__session__test__change__devices_sec1705}
-\hypertarget{group__session__test__change__devices_sec1706}{}\doxysubsubsubsection{\texorpdfstring{Test Steps}{Test Steps}}\label{group__session__test__change__devices_sec1706}
-\hypertarget{group__session__test__change__devices_sec1707}{}\doxysubsubsubsection{\texorpdfstring{Expected Results}{Expected Results}}\label{group__session__test__change__devices_sec1707}
+\hypertarget{group__ratchet__test__out__of__order__v2_sec21701}{}\doxysubsubsubsection{\texorpdfstring{Test Description}{Test Description}}\label{group__ratchet__test__out__of__order__v2_sec21701}
+Alice and Bob encrypt some messages, but they do not decrypt the others\textquotesingle{} messages in order. \hypertarget{group__ratchet__test__out__of__order__v2_sec21702}{}\doxysubsubsubsection{\texorpdfstring{Test Objectives}{Test Objectives}}\label{group__ratchet__test__out__of__order__v2_sec21702}
+To verify the out-\/of-\/order mechanism. \hypertarget{group__ratchet__test__out__of__order__v2_sec21703}{}\doxysubsubsubsection{\texorpdfstring{Test Case ID}{Test Case ID}}\label{group__ratchet__test__out__of__order__v2_sec21703}
+\hypertarget{group__ratchet__test__out__of__order__v2_sec21704}{}\doxysubsubsubsection{\texorpdfstring{Test Case Title\+: test\+\_\+out\+\_\+of\+\_\+order\+\_\+v2}{Test Case Title\+: test\+\_\+out\+\_\+of\+\_\+order\+\_\+v2}}\label{group__ratchet__test__out__of__order__v2_sec21704}
+\hypertarget{group__ratchet__test__out__of__order__v2_sec21705}{}\doxysubsubsubsection{\texorpdfstring{Preconditions}{Preconditions}}\label{group__ratchet__test__out__of__order__v2_sec21705}
+\hypertarget{group__ratchet__test__out__of__order__v2_sec21706}{}\doxysubsubsubsection{\texorpdfstring{Test Steps}{Test Steps}}\label{group__ratchet__test__out__of__order__v2_sec21706}
+Step 1\+: Initialise Alice\textquotesingle{}s and Bob\textquotesingle{}s ratchet.~\newline
+Step 2\+: Alice encrypts a message and the Bob decrypts the message.~\newline
+Step 3\+: Alice encrypts a message.~\newline
+Step 4\+: Bob encrypts three messages.~\newline
+Step 5\+: Alice decrypts two of Bob\textquotesingle{}s messages.~\newline
+Step 6\+: Alice encrypts three messages.~\newline
+Step 7\+: Bob decrypts two of Alice\textquotesingle{}s messages.~\newline
+Step 8\+: Bob encrypts two messages.~\newline
+Step 9\+: Alice and Bob decrypts the others\textquotesingle{} rest messages. \hypertarget{group__ratchet__test__out__of__order__v2_sec21707}{}\doxysubsubsubsection{\texorpdfstring{Expected Results}{Expected Results}}\label{group__ratchet__test__out__of__order__v2_sec21707}
+No output. 
