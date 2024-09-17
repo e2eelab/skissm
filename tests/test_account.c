@@ -47,85 +47,85 @@
  * @defgroup account_begin account begin test
  * @ingroup account_unit
  * @{
- * @section sec0001 Test Description
+ * @section sec10001 Test Description
  * 
- * @section sec0002 Test Objectives
+ * @section sec10002 Test Objectives
  * To verify the functionality of the function account_begin.
- * @section sec0003 Test Case ID
- * @section sec0004 Test Case Title: account_begin
- * @section sec0005 Preconditions
- * @section sec0006 Test Steps
- * @section sec0007 Expected Results
+ * @section sec10003 Test Case ID
+ * @section sec10004 Test Case Title: account_begin
+ * @section sec10005 Preconditions
+ * @section sec10006 Test Steps
+ * @section sec10007 Expected Results
  * @}
  * 
  * @defgroup account_end account end test
  * @ingroup account_unit
  * @{
- * @section sec0101 Test Description
+ * @section sec10101 Test Description
  * 
- * @section sec0102 Test Objectives
+ * @section sec10102 Test Objectives
  * To verify the functionality of the function account_end.
- * @section sec0103 Test Case ID
- * @section sec0104 Test Case Title: account_end
- * @section sec0105 Preconditions
- * @section sec0106 Test Steps
- * @section sec0107 Expected Results
+ * @section sec10103 Test Case ID
+ * @section sec10104 Test Case Title: account_end
+ * @section sec10105 Preconditions
+ * @section sec10106 Test Steps
+ * @section sec10107 Expected Results
  * @}
  * 
  * @defgroup generate_identity_key generate identity key test
  * @ingroup account_unit
  * @{
- * @section sec0201 Test Description
+ * @section sec10201 Test Description
  * 
- * @section sec0202 Test Objectives
+ * @section sec10202 Test Objectives
  * To verify the functionality of the function generate_identity_key.
- * @section sec0203 Test Case ID
- * @section sec0204 Test Case Title: generate_identity_key
- * @section sec0205 Preconditions
- * @section sec0206 Test Steps
- * @section sec0207 Expected Results
+ * @section sec10203 Test Case ID
+ * @section sec10204 Test Case Title: generate_identity_key
+ * @section sec10205 Preconditions
+ * @section sec10206 Test Steps
+ * @section sec10207 Expected Results
  * @}
  * 
  * @defgroup generate_signed_pre_key generate signed pre-key test
  * @ingroup account_unit
  * @{
- * @section sec0301 Test Description
+ * @section sec10301 Test Description
  * 
- * @section sec0302 Test Objectives
+ * @section sec10302 Test Objectives
  * To verify the functionality of the function generate_signed_pre_key.
- * @section sec0303 Test Case ID
- * @section sec0304 Test Case Title: generate_signed_pre_key
- * @section sec0305 Preconditions
- * @section sec0306 Test Steps
- * @section sec0307 Expected Results
+ * @section sec10303 Test Case ID
+ * @section sec10304 Test Case Title: generate_signed_pre_key
+ * @section sec10305 Preconditions
+ * @section sec10306 Test Steps
+ * @section sec10307 Expected Results
  * @}
  * 
  * @defgroup generate_opks generate one-time pre-key test
  * @ingroup account_unit
  * @{
- * @section sec0401 Test Description
+ * @section sec10401 Test Description
  * 
- * @section sec0402 Test Objectives
+ * @section sec10402 Test Objectives
  * To verify the functionality of the function generate_opks.
- * @section sec0403 Test Case ID
- * @section sec0404 Test Case Title: generate_opks
- * @section sec0405 Preconditions
- * @section sec0406 Test Steps
- * @section sec0407 Expected Results
+ * @section sec10403 Test Case ID
+ * @section sec10404 Test Case Title: generate_opks
+ * @section sec10405 Preconditions
+ * @section sec10406 Test Steps
+ * @section sec10407 Expected Results
  * @}
  * 
  * @defgroup create_account create account test
  * @ingroup account_unit
  * @{
- * @section sec0501 Test Description
+ * @section sec10501 Test Description
  * 
  * @section sec0502 Test Objectives
  * To verify the functionality of the function create_account.
- * @section sec0503 Test Case ID
- * @section sec0504 Test Case Title: create_account
- * @section sec0505 Preconditions
- * @section sec0506 Test Steps
- * @section sec0507 Expected Results
+ * @section sec10503 Test Case ID
+ * @section sec10504 Test Case Title: create_account
+ * @section sec10505 Preconditions
+ * @section sec10506 Test Steps
+ * @section sec10507 Expected Results
  * @}
  * 
  * 
@@ -136,59 +136,73 @@
  * @defgroup account_test_create_accounts create account test
  * @ingroup account_int
  * @{
- * @section sec1001 Test Description
+ * @section sec11001 Test Description
  * This test case generates a certain number, given by the input, of accounts.
  * These accounts will be stored into db and will be loaded to check integrity.
- * @section sec1002 Test Objectives
+ * @section sec11002 Test Objectives
  * To assure that this device can create several accounts.
- * @section sec1003 Test Case ID
- * @section sec1004 Test Case Title: test_create_accounts
- * @section sec1005 Preconditions
+ * @section sec11003 Test Case ID
+ * @section sec11004 Test Case Title: test_create_accounts
+ * @section sec11005 Preconditions
  * The input parameter num should be inserted.
- * @section sec1006 Test Steps
- * @section sec1007 Expected Results
+ * @section sec11006 Test Steps
+ * Step 1: Input the parameter num, the number of accounts to be created.\n
+ * Step 2: Create the accounts.
+ * @section sec11007 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup account_test_register_user register user test
  * @ingroup account_int
  * @{
- * @section sec1101 Test Description
+ * @section sec11101 Test Description
  * To call the function register_user with given inputs.
- * @section sec1102 Test Objectives
+ * @section sec11102 Test Objectives
  * To verify the functionality of the function register_user.
- * @section sec1103 Test Case ID
- * @section sec1104 Test Case Title: test_register_user
- * @section sec1105 Preconditions
- * @section sec1106 Test Steps
- * @section sec1107 Expected Results
+ * @section sec11103 Test Case ID
+ * @section sec11104 Test Case Title: test_register_user
+ * @section sec11105 Preconditions
+ * @section sec11106 Test Steps
+ * Step 1: Generate the address, including the user name, user id, device id, etc.\n
+ * Step 2: Register.
+ * @section sec11107 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup account_test_publish_spk publish spk test
  * @ingroup account_int
  * @{
- * @section sec1201 Test Description
+ * @section sec11201 Test Description
  * A registered account will generate a new pair of signed pre-key pair and publish the public part of the key pair and the signature to the server.
- * @section sec1202 Test Objectives
+ * @section sec11202 Test Objectives
  * To verify the functionality of the function publish_spk_internal.
- * @section sec1203 Test Case ID
- * @section sec1204 Test Case Title: test_publish_spk
- * @section sec1205 Preconditions
- * @section sec1206 Test Steps
- * @section sec1207 Expected Results
+ * @section sec11203 Test Case ID
+ * @section sec11204 Test Case Title: test_publish_spk
+ * @section sec11205 Preconditions
+ * @section sec11206 Test Steps
+ * Step 1: Register.\n
+ * Step 2: Generate a new pair of signed pre-key.\n
+ * Step 3: Pulish the public part of signed pre-key pair to the server.
+ * @section sec11207 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup account_test_supply_opks supply opks test
  * @ingroup account_int
  * @{
- * @section sec1301 Test Description
+ * @section sec11301 Test Description
  * The server notifies the client to generate a number of one-time pre-keys.
- * @section sec1302 Test Objectives
+ * @section sec11302 Test Objectives
  * To assure that the procedure of supplying one-time pre-keys is correct.
- * @section sec1303 Test Case ID
- * @section sec1304 Test Case Title: test_supply_opks
- * @section sec1305 Preconditions
- * @section sec1306 Test Steps
- * @section sec1307 Expected Results
+ * @section sec11303 Test Case ID
+ * @section sec11304 Test Case Title: test_supply_opks
+ * @section sec11305 Preconditions
+ * @section sec11306 Test Steps
+ * Step 1: Register.\n
+ * Step 2: Server notifies this device to generate some one-time pre-key pairs.\n
+ * Step 3: Generate the one-time pre-key pairs and publish them to the server.
+ * @section sec11307 Expected Results
+ * No output.
  * @}
  * 
  */
