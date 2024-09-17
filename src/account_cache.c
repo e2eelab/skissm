@@ -23,7 +23,7 @@
 
 #include "skissm/mem_util.h"
 
-account_cacheer *account_cacheer_list = NULL;
+static account_cacheer *account_cacheer_list = NULL;
 
 void store_account_into_cache(Skissm__Account *account) {
     if (account_cacheer_list == NULL) {
@@ -37,8 +37,16 @@ void store_account_into_cache(Skissm__Account *account) {
         account_cacheer_list->next = NULL;
     } else {
         account_cacheer *cur = account_cacheer_list;
+        if (compare_address(cur->address, account->address)) {
+            // already cached, skip
+            return;
+        }
         while (cur->next != NULL) {
             cur = cur->next;
+            if (compare_address(cur->address, account->address)) {
+                // already cached, skip
+                return;
+            }
         }
         cur->next = (account_cacheer *)malloc(sizeof(account_cacheer));
         cur->next->version = strdup(account->version);
@@ -110,7 +118,7 @@ void load_server_public_key_from_cache(ProtobufCBinaryData *server_public_key, S
     }
 }
 
-void free_account_cacheer(account_cacheer *cacheer) {
+static void free_account_cacheer(account_cacheer *cacheer) {
     if (cacheer->version != NULL) {
         free(cacheer->version);
         cacheer->version = NULL;
