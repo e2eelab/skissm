@@ -33,7 +33,12 @@ void store_account_into_cache(Skissm__Account *account) {
         copy_address_from_address(&(account_cacheer_list->address), account->address);
         copy_ik_from_ik(&(account_cacheer_list->identity_key), account->identity_key);
         copy_spk_from_spk(&(account_cacheer_list->signed_pre_key), account->signed_pre_key);
-        copy_protobuf_from_protobuf(&(account_cacheer_list->server_public_key), &(account->server_cert->cert->public_key));
+
+        if (account->server_cert != NULL 
+            && account->server_cert->cert != NULL) {
+            copy_protobuf_from_protobuf(&(account_cacheer_list->server_public_key), &(account->server_cert->cert->public_key));
+        }
+        
         account_cacheer_list->next = NULL;
     } else {
         account_cacheer *cur = account_cacheer_list;
@@ -54,7 +59,12 @@ void store_account_into_cache(Skissm__Account *account) {
         copy_address_from_address(&(cur->next->address), account->address);
         copy_ik_from_ik(&(cur->next->identity_key), account->identity_key);
         copy_spk_from_spk(&(cur->next->signed_pre_key), account->signed_pre_key);
-        copy_protobuf_from_protobuf(&(cur->next->server_public_key), &(account->server_cert->cert->public_key));
+
+        if (account->server_cert != NULL 
+            && account->server_cert->cert != NULL) {
+            copy_protobuf_from_protobuf(&(cur->next->server_public_key), &(account->server_cert->cert->public_key));
+        }
+
         cur->next->next = NULL;
     }
 }
