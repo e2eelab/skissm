@@ -71,22 +71,13 @@ void account_begin() {
 
             // check if there are too many "used" one-time pre-keys
             free_one_time_pre_key(cur_account);
+            
+            // store into cache
+            store_account_into_cache(cur_account);
+
+            // resend the pending data if necessary
+            resume_connection_internal(cur_account);
         }
-
-        // check and remove signed pre-keys (keep last two)
-        get_skissm_plugin()->db_handler.remove_expired_signed_pre_key(cur_account->address);
-
-        // check if there are too many "used" one-time pre-keys
-        free_one_time_pre_key(cur_account);
-
-        // resend the pending data if necessary
-        resume_connection_internal(cur_account);
-
-        // store into cache
-        store_account_into_cache(cur_account);
-
-        // resend the pending data if necessary
-        resume_connection_internal(cur_account);
 
         // release
         if (cur_account != NULL) {
