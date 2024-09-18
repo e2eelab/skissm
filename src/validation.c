@@ -591,9 +591,10 @@ bool is_valid_pre_key_bundle(Skissm__PreKeyBundle *src) {
         if (!is_valid_signed_pre_key_public(src->signed_pre_key_public)) {
             return false;
         }
-        if (!is_valid_one_time_pre_key_public(src->one_time_pre_key_public)) {
-            return false;
-        }
+        // one_time_pre_key_public can be empty if it is out of stock
+        // if (!is_valid_one_time_pre_key_public(src->one_time_pre_key_public)) {
+        //    return false;
+        // }
     } else {
         return false;
     }
