@@ -97,8 +97,11 @@ int pqc_new_outbound_session_v2(
         if (their_spk->signature.len != sig_len) {
             ret = SKISSM_RESULT_FAIL;
         }
-        if (their_opk->public_key.len != asym_pub_key_len) {
-            ret = SKISSM_RESULT_FAIL;
+        // their_opk maybe empty
+        if (their_opk != NULL) {
+            if (their_opk->public_key.len != asym_pub_key_len) {
+                ret = SKISSM_RESULT_FAIL;
+            }
         }
     }
 
@@ -137,7 +140,7 @@ int pqc_new_outbound_session_v2(
         copy_protobuf_from_protobuf(&(outbound_session->ratchet->sender_chain->their_ratchet_public_key), &(their_spk->public_key));
 
         // server may return empty one-time pre-key(public)
-        if (their_opk) {
+        if (their_opk != NULL) {
             outbound_session->bob_one_time_pre_key_id = their_opk->opk_id;
             x3dh_epoch = 3;
         }
@@ -154,8 +157,9 @@ int pqc_new_outbound_session_v2(
         memcpy(hash_input, my_identity_key_pair->public_key.data, asym_pub_key_len);
         memcpy(hash_input + asym_pub_key_len, their_ik->asym_public_key.data, asym_pub_key_len);
         memcpy(hash_input + asym_pub_key_len + asym_pub_key_len, their_spk->public_key.data, asym_pub_key_len);
-        if (x3dh_epoch == 3)
+        if (x3dh_epoch == 3) {
             memcpy(hash_input + asym_pub_key_len + asym_pub_key_len + asym_pub_key_len, their_opk->public_key.data, asym_pub_key_len);
+        }
 
         int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t derived_secrets[2 * shared_key_len];
