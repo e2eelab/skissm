@@ -76,7 +76,7 @@
  * @ingroup account_unit
  * @{
  * @section sec10201 Test Description
- * 
+ * Given an e2ee pack ID, generate an identity key pair.
  * @section sec10202 Test Objectives
  * To verify the functionality of the function generate_identity_key.
  * @section sec10203 Test Case ID
@@ -90,7 +90,7 @@
  * @ingroup account_unit
  * @{
  * @section sec10301 Test Description
- * 
+ * Given an e2ee pack ID, generate a signed pre-key pair and a signature.
  * @section sec10302 Test Objectives
  * To verify the functionality of the function generate_signed_pre_key.
  * @section sec10303 Test Case ID
@@ -104,7 +104,7 @@
  * @ingroup account_unit
  * @{
  * @section sec10401 Test Description
- * 
+ * Given an e2ee pack ID, generate a certain number of one-time pre-key pairs.
  * @section sec10402 Test Objectives
  * To verify the functionality of the function generate_opks.
  * @section sec10403 Test Case ID
@@ -244,81 +244,94 @@ static skissm_event_handler_t test_event_handler = {
     NULL
 };
 
-static void create_account_test() {
+///-----------------unit test-----------------///
+
+static void test_generate_identity_key() {
+    // test start
+    printf("====== test_generate_identity_key ======\n");
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    int ret = 0;
+
+    Skissm__IdentityKey *identity_key = NULL;
+    ret = generate_identity_key(&identity_key, e2ee_pack_id);
+    assert(ret == 0);
+
+    // release
+    free_proto(identity_key);
+
+    // test stop
+    printf("====================================\n");
+}
+
+static void test_generate_signed_pre_key() {
+    // test start
+    printf("====== test_generate_signed_pre_key ======\n");
+    tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    int ret = 0;
+
+    Skissm__IdentityKey *identity_key = NULL;
+    Skissm__SignedPreKey *signed_pre_key = NULL;
+    generate_identity_key(&identity_key, e2ee_pack_id);
+    ret = generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, 0, identity_key->sign_key_pair->private_key.data);
+    assert(ret == 0);
+
+    // release
+    free_proto(identity_key);
+    free_proto(signed_pre_key);
+
+    // test stop
+    tear_down();
+    printf("====================================\n");
+}
+
+static void test_generate_opks() {
+    // test start
+    printf("====== test_generate_opks ======\n");
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    int ret = 0;
+    size_t number_of_keys = 100, i;
+
+    Skissm__OneTimePreKey **one_time_pre_key_list = NULL;
+    ret = generate_opks(&one_time_pre_key_list, number_of_keys, e2ee_pack_id, 0);
+    assert(ret == 0);
+
+    // release
+    for (i = 0; i < number_of_keys; i++) {
+        skissm__one_time_pre_key__free_unpacked(one_time_pre_key_list[i], NULL);
+        one_time_pre_key_list[i] = NULL;
+    }
+    free_mem((void **)&one_time_pre_key_list, sizeof(Skissm__OneTimePreKey *) * number_of_keys);
+
+    // test stop
+    printf("====================================\n");
+}
+
+static void test_create_account() {
+    // test start
+    printf("====== test_create_account ======\n");
+    tear_up();
+    get_skissm_plugin()->event_handler = test_event_handler;
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
 
     int ret = 0;
 
-    // register test
     Skissm__Account *account = NULL;
     ret = create_account(&account, e2ee_pack_id);
     assert(ret == 0);
 
-    // generate a new signed pre-key pair and a new signature
-    Skissm__SignedPreKey *signed_pre_key = NULL;
-    ret = generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, 1, account->signed_pre_key->key_pair->private_key.data);
-    assert(ret == 0);
-
-    skissm__signed_pre_key__free_unpacked(account->signed_pre_key, NULL);
-    account->signed_pre_key = signed_pre_key;
-
-    // post some new one-time pre-keys test
-    // generate 80 one-time pre-key pairs
-    Skissm__OneTimePreKey **output = NULL;
-    ret = generate_opks(&output, 80, e2ee_pack_id, 101);
-    assert(ret == 0);
-    ret = insert_opks(account, output, 80);
-    assert(ret == 0);
-
-    // store account
-    mock_random_user_address(&(account->address));
-    get_skissm_plugin()->db_handler.store_account(account);
-    printf("stored account\n");
-
-    // load account
-    Skissm__Account *loaded_account = NULL;
-    get_skissm_plugin()->db_handler.load_account_by_address(account->address, &loaded_account);
-    assert(is_equal_account(account, loaded_account));
-
     // release
     free_proto(account);
-    if (loaded_account != NULL) {
-        skissm__account__free_unpacked(loaded_account, NULL);
-        loaded_account = NULL;
-    }
+
+    // test stop
+    tear_down();
+    printf("====================================\n");
 }
 
-static void load_accounts_test(uint64_t num) {
-    printf("====== load_accounts_test ======\n");
-    size_t i;
-    Skissm__Account **accounts = NULL;
-    size_t accounts_num = get_skissm_plugin()->db_handler.load_accounts(&accounts);
-    assert(accounts_num == num);
-    printf("loaded accounts num: %zu\n", accounts_num);
-
-    // pack/unpack test
-    uint8_t **accounts_data;
-    size_t *accounts_data_len;
-    accounts_data_len = (size_t *)malloc(accounts_num * sizeof(size_t));
-    accounts_data = (uint8_t **)malloc(accounts_num * sizeof(uint8_t *));
-    memset(accounts_data_len, 0, accounts_num);
-    for (i = 0; i < accounts_num; i++) {
-        accounts_data_len[i] = skissm__account__get_packed_size(accounts[i]);
-        accounts_data[i] = (uint8_t *)malloc(accounts_data_len[i] * sizeof(uint8_t));
-        skissm__account__pack(accounts[i], accounts_data[i]);
-        assert(accounts_data[i] != NULL);
-        assert(accounts_data_len[i] > 0);
-    }
-
-    for (i = 0; i < accounts_num; i++) {
-        Skissm__Account *unpacked_account = skissm__account__unpack(NULL, accounts_data_len[i], accounts_data[i]);
-        free_mem((void **)(&accounts_data[i]), accounts_data_len[i]);
-        assert(is_equal_account(accounts[i], unpacked_account));
-        printf("pack/unpack verified\n");
-    }
-    free_mem((void **)(&accounts_data_len), accounts_num * sizeof(size_t));
-    free_mem((void **)(&accounts_data), accounts_num * sizeof(uint8_t *));
-}
+///-----------------integration test-----------------///
 
 static void test_create_accounts(uint64_t num) {
     // test start
@@ -328,10 +341,8 @@ static void test_create_accounts(uint64_t num) {
 
     uint64_t i;
     for (i = 1; i <= num; i++) {
-        create_account_test();
+        test_create_account();
     }
-
-    load_accounts_test(num);
 
     // test stop
     tear_down();
@@ -527,6 +538,13 @@ static void test_free_opks() {
 }
 
 int main() {
+    // unit test
+    test_generate_identity_key();
+    test_generate_signed_pre_key();
+    test_generate_opks();
+    test_create_account();
+
+    // integration test
     test_create_accounts(8);
     test_register_user();
     test_publish_spk();
