@@ -74,9 +74,6 @@ void account_begin() {
             
             // store into cache
             store_account_into_cache(cur_account);
-
-            // resend the pending data if necessary
-            resume_connection_internal(cur_account);
         }
 
         // release
