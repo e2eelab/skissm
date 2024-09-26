@@ -571,7 +571,7 @@ static void resend_pending_request(Skissm__Account *account) {
     int ret = SKISSM_RESULT_SUCC;
     bool succ = false;
     Skissm__GroupSession *group_session = NULL;
-    size_t i;
+    size_t i, j;
     for (i = 0; i < pending_request_data_num; i++) {
         Skissm__PendingRequest *pending_request = skissm__pending_request__unpack(NULL, request_data_len_list[i], request_data_list[i]);
         ssm_notify_log(
@@ -585,7 +585,6 @@ static void resend_pending_request(Skissm__Account *account) {
                 size_t their_device_num;
                 Skissm__GetPreKeyBundleRequest *get_pre_key_bundle_request = skissm__get_pre_key_bundle_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(user_address, auth, get_pre_key_bundle_request);
-                size_t i;
                 // check if pre_key_bundles is empty
                 if (!is_valid_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
                     ret = SKISSM_RESULT_FAIL;
@@ -612,9 +611,9 @@ static void resend_pending_request(Skissm__Account *account) {
 
                     // release
                     if (invite_response_list != NULL) {
-                        for (i = 0; i < their_device_num; i++) {
-                            if (invite_response_list[i] != NULL) {
-                                skissm__invite_response__free_unpacked(invite_response_list[i], NULL);
+                        for (j = 0; j < their_device_num; j++) {
+                            if (invite_response_list[j] != NULL) {
+                                skissm__invite_response__free_unpacked(invite_response_list[j], NULL);
                             }
                         }
                         free_mem((void **)&invite_response_list, sizeof(Skissm__InviteResponse *) * their_device_num);
@@ -625,9 +624,9 @@ static void resend_pending_request(Skissm__Account *account) {
                             their_device_num = get_pre_key_bundle_response->n_pre_key_bundles;
                             char **their_device_id = (char **)malloc(sizeof(char *) * their_device_num);
                             Skissm__PreKeyBundle *cur_pre_key_bundle = NULL;
-                            for (i = 0; i < their_device_num; i++) {
-                                cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[i];
-                                their_device_id[i] = strdup(cur_pre_key_bundle->user_address->user->device_id);
+                            for (j = 0; j < their_device_num; j++) {
+                                cur_pre_key_bundle = get_pre_key_bundle_response->pre_key_bundles[j];
+                                their_device_id[j] = strdup(cur_pre_key_bundle->user_address->user->device_id);
                             }
                             // send to other devices in order to create sessions
                             send_sync_invite_msg(
@@ -639,8 +638,8 @@ static void resend_pending_request(Skissm__Account *account) {
                             );
 
                             // release
-                            for (i = 0; i < their_device_num; i++) {
-                                free(their_device_id[i]);
+                            for (j = 0; j < their_device_num; j++) {
+                                free(their_device_id[j]);
                             }
                             free_mem((void **)&their_device_id, sizeof(char *) * their_device_num);
                         }
@@ -669,7 +668,8 @@ static void resend_pending_request(Skissm__Account *account) {
                 free_proto(get_pre_key_bundle_request);
                 free_proto(get_pre_key_bundle_response);
                 break;
-            } case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_INVITE: {
+            }
+            case SKISSM__PENDING_REQUEST_TYPE__PENDING_REQUEST_TYPE_INVITE: {
                 Skissm__InviteRequest *invite_request = skissm__invite_request__unpack(NULL, pending_request->request_data.len, pending_request->request_data.data);
                 Skissm__InviteResponse *invite_response = get_skissm_plugin()->proto_handler.invite(user_address, auth, invite_request);
                 succ = is_valid_invite_response(invite_response);
