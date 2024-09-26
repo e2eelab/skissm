@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "skissm/account.h"
+#include "skissm/account_cache.h"
 #include "skissm/e2ee_client.h"
 #include "skissm/e2ee_client_internal.h"
 #include "skissm/group_session.h"
@@ -120,10 +121,12 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
         get_skissm_plugin()->db_handler.store_account(account);
         ssm_notify_user_registered(account);
 
-        address = account->address;
-        auth = account->auth;
+        // store into cache
+        store_account_into_cache(account);
 
         // create outbound sessions to other devices
+        address = account->address;
+        auth = account->auth;
         if (response->n_other_device_address_list > 0) {
             for (i = 0; i < response->n_other_device_address_list; i++) {
                 other_device_address = (response->other_device_address_list)[i];
