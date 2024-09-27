@@ -48,10 +48,6 @@
  * 
  * 
  * 
- * @defgroup group_session_unit group session unit test
- * @ingroup Unit
- * This includes unit tests about group session.
- * 
  * @defgroup group_session_int group session integration test
  * @ingroup Integration
  * This includes integration tests about group session.
@@ -59,12 +55,14 @@
  * @defgroup group_session_test_create_group create group test
  * @ingroup group_session_int
  * @{
- * @section sec41001 Test Description
+ * @section sec41001 Test Case ID
+ * v1.0ig01
+ * @section sec41002 Test Case Title
+ * test_create_group
+ * @section sec41003 Test Description
  * Alice creates a group with four members in it. Everyone in the group sends a message to the group.
- * @section sec41002 Test Objectives
+ * @section sec41004 Test Objectives
  * To verify the create group protocol.
- * @section sec41003 Test Case ID
- * @section sec41004 Test Case Title: test_create_group
  * @section sec41005 Preconditions
  * @section sec41006 Test Steps
  * Step 1: Alice invites Bob, Claire and David to create a group.\n
@@ -76,13 +74,15 @@
  * @defgroup group_session_test_add_group_members add group members test
  * @ingroup group_session_int
  * @{
- * @section sec41101 Test Description
+ * @section sec41101 Test Case ID
+ * v1.0ig02
+ * @section sec41102 Test Case Title
+ * test_add_group_members
+ * @section sec41103 Test Description
  * Alice creates a group with three members in it. Then Alice adds a group member.
  * Next, everyone in the group sends a message to the group.
- * @section sec41102 Test Objectives
+ * @section sec41104 Test Objectives
  * To verify the add group members protocol.
- * @section sec41103 Test Case ID
- * @section sec41104 Test Case Title: test_add_group_members
  * @section sec41105 Preconditions
  * @section sec41106 Test Steps
  * Step 1: Alice invites Bob and Claire to create a group.\n
@@ -95,13 +95,15 @@
  * @defgroup group_session_test_remove_group_members remove group members test
  * @ingroup group_session_int
  * @{
- * @section sec41201 Test Description
+ * @section sec41201 Test Case ID
+ * v1.0ig03
+ * @section sec41202 Test Case Title
+ * test_remove_group_members
+ * @section sec41203 Test Description
  * Alice creates a group with four members in it. Then Alice removes a group member.
  * Next, everyone in the group sends a message to the group.
- * @section sec41202 Test Objectives
+ * @section sec41204 Test Objectives
  * To verify the remove group members protocol.
- * @section sec41203 Test Case ID
- * @section sec41204 Test Case Title: test_remove_group_members
  * @section sec41205 Preconditions
  * @section sec41206 Test Steps
  * Step 1: Alice invites Bob, Claire and David to create a group.\n
@@ -114,14 +116,16 @@
  * @defgroup group_session_test_create_add_remove group test
  * @ingroup group_session_int
  * @{
- * @section sec41301 Test Description
+ * @section sec41301 Test Case ID
+ * v1.0ig04
+ * @section sec41302 Test Case Title
+ * test_create_add_remove
+ * @section sec41303 Test Description
  * Alice creates a group with two members in it. Then Alice adds a group member.
  * Next, everyone in the group sends a message to the group. Then Alice removes a group member.
  * Next, everyone in the group sends a message to the group.
- * @section sec41302 Test Objectives
+ * @section sec41304 Test Objectives
  * To assure that the action of creating a group, adding group members and removing group members can be processed in a small group.
- * @section sec41303 Test Case ID
- * @section sec41304 Test Case Title: test_create_add_remove
  * @section sec41305 Preconditions
  * @section sec41306 Test Steps
  * Step 1: Alice invites Bob to create a group.\n
@@ -137,13 +141,15 @@
  * @defgroup group_session_test_leave_group leave group test
  * @ingroup group_session_int
  * @{
- * @section sec41401 Test Description
+ * @section sec41401 Test Case ID
+ * v1.0ig05
+ * @section sec41402 Test Case Title
+ * test_leave_group
+ * @section sec41403 Test Description
  * Alice creates a group with four members in it. Then one of the group members leaves the group.
  * Next, everyone in the group sends a message to the group.
- * @section sec41402 Test Objectives
+ * @section sec41404 Test Objectives
  * To verify the leave group protocol.
- * @section sec41403 Test Case ID
- * @section sec41404 Test Case Title: test_leave_group
  * @section sec41405 Preconditions
  * @section sec41406 Test Steps
  * Step 1: Alice invites Bob, Claire and David to create a group.\n
@@ -156,12 +162,14 @@
  * @defgroup group_session_test_continual continual messages test
  * @ingroup group_session_int
  * @{
- * @section sec41501 Test Description
+ * @section sec41501 Test Case ID
+ * v1.0ig06
+ * @section sec41502 Test Case Title
+ * test_continual
+ * @section sec41503 Test Description
  * Alice creates a group with three members in it. Then everyone in the group sends 1000 messages to the group.
- * @section sec41502 Test Objectives
+ * @section sec41504 Test Objectives
  * To assure that a large number of messages can be decrypted by every group member.
- * @section sec41503 Test Case ID
- * @section sec41504 Test Case Title: test_continual
  * @section sec41505 Preconditions
  * @section sec41506 Test Steps
  * Step 1: Alice invites Bob and Claire to create a group.\n
@@ -173,12 +181,14 @@
  * @defgroup group_session_test_multiple_devices multiple devices test
  * @ingroup group_session_int
  * @{
- * @section sec41601 Test Description
+ * @section sec41601 Test Case ID
+ * v1.0ig07
+ * @section sec41602 Test Case Title
+ * test_multiple_devices
+ * @section sec41603 Test Description
  * Everyone in the three-member group has two devices. Everyone in the group sends a message to the group.
- * @section sec41602 Test Objectives
+ * @section sec41604 Test Objectives
  * To assure that the group session mechanism is applicable to multiple devices.
- * @section sec41603 Test Case ID
- * @section sec41604 Test Case Title: test_multiple_devices
  * @section sec41605 Preconditions
  * @section sec41606 Test Steps
  * Step 1: Alice invites Bob and Claire to create a group.\n
@@ -192,12 +202,14 @@
  * @defgroup group_session_test_add_new_device new devices test
  * @ingroup group_session_int
  * @{
- * @section sec41701 Test Description
+ * @section sec41701 Test Case ID
+ * v1.0ig08
+ * @section sec41702 Test Case Title
+ * test_add_new_device
+ * @section sec41703 Test Description
  * One of the group members adds a new device.
- * @section sec41702 Test Objectives
+ * @section sec41704 Test Objectives
  * To assure that the group session can be used once one of the group members adds a new device.
- * @section sec41703 Test Case ID
- * @section sec41704 Test Case Title: test_add_new_device
  * @section sec41705 Preconditions
  * @section sec41706 Test Steps
  * Step 1: Alice invites Bob and Claire to create a group.\n
@@ -210,12 +222,15 @@
  * @defgroup group_session_test_medium_group a medium group test
  * @ingroup group_session_int
  * @{
- * @section sec41801 Test Description
- * 
- * @section sec41802 Test Objectives
+ * @section sec41801 Test Case ID
+ * v1.0ig09
+ * @section sec41802 Test Case Title
+ * test_medium_group
+ * @section sec41803 Test Description
+ * There are 14 members in the test. Some group action such as group creation, adding group members, 
+ * removing group members will be implemented.
+ * @section sec41804 Test Objectives
  * To verify that a group session with twenty members or so can be used.
- * @section sec41803 Test Case ID
- * @section sec41804 Test Case Title: test_medium_group
  * @section sec41805 Preconditions
  * @section sec41806 Test Steps
  * Step 1: Alice invites Bob, Claire, David, Emily, Frank, Grace, Harry, Ivy, Jack to create a group.\n

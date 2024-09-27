@@ -52,57 +52,41 @@
  * @defgroup initialise_as_alice initialise ratchet test: Alice
  * @ingroup ratchet_unit
  * @{
- * @section sec20001 Test Description
- * 
- * @section sec20002 Test Objectives
+ * @section sec20001 Test Case ID
+ * v1.0ur01
+ * @section sec20002 Test Case Title
+ * initialise_as_alice
+ * @section sec20003 Test Description
+ * Given an e2ee pack ID and some keys, the inviter initialises his or her ratchet.
+ * @section sec20004 Test Objectives
  * To verify the functionality of the function initialise_as_alice.
- * @section sec20003 Test Case ID
- * @section sec20004 Test Case Title: initialise_as_alice
  * @section sec20005 Preconditions
  * @section sec20006 Test Steps
+ * Step 1: Determine an e2ee pack ID.\n
+ * Step 2: Generate some keys and shared secret.\n
+ * Step 3: Initialise the ratchet.
  * @section sec20007 Expected Results
+ * No output.
  * @}
  * 
  * @defgroup initialise_as_bob initialise ratchet test: Bob
  * @ingroup ratchet_unit
  * @{
- * @section sec20101 Test Description
- * 
- * @section sec20102 Test Objectives
+ * @section sec20101 Test Case ID
+ * v1.0ur02
+ * @section sec20102 Test Case Title
+ * initialise_as_bob
+ * @section sec20103 Test Description
+ * Given an e2ee pack ID and some keys, the invitee initialises his or her ratchet.
+ * @section sec20104 Test Objectives
  * To verify the functionality of the function initialise_as_bob.
- * @section sec20103 Test Case ID
- * @section sec20104 Test Case Title: initialise_as_bob
  * @section sec20105 Preconditions
  * @section sec20106 Test Steps
+ * Step 1: Determine an e2ee pack ID.\n
+ * Step 2: Generate some keys and shared secret.\n
+ * Step 3: Initialise the ratchet.
  * @section sec20107 Expected Results
- * @}
- * 
- * @defgroup encrypt_ratchet encrypt ratchet test
- * @ingroup ratchet_unit
- * @{
- * @section sec20201 Test Description
- * 
- * @section sec20202 Test Objectives
- * To verify the functionality of the function encrypt_ratchet.
- * @section sec20203 Test Case ID
- * @section sec20204 Test Case Title: encrypt_ratchet
- * @section sec20205 Preconditions
- * @section sec20206 Test Steps
- * @section sec20207 Expected Results
- * @}
- * 
- * @defgroup decrypt_ratchet decrypt ratchet test
- * @ingroup ratchet_unit
- * @{
- * @section sec20301 Test Description
- * 
- * @section sec20302 Test Objectives
- * To verify the functionality of the function decrypt_ratchet.
- * @section sec20303 Test Case ID
- * @section sec20304 Test Case Title: decrypt_ratchet
- * @section sec20305 Preconditions
- * @section sec20306 Test Steps
- * @section sec20307 Expected Results
+ * No output.
  * @}
  * 
  * 
@@ -113,12 +97,14 @@
  * @defgroup ratchet_test_alice_to_bob basic ratchet test: Alice to Bob
  * @ingroup ratchet_int
  * @{
- * @section sec21001 Test Description
+ * @section sec21001 Test Case ID
+ * v1.0ir01
+ * @section sec21002 Test Case Title
+ * test_alice_to_bob
+ * @section sec21003 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts a message. Bob should decrypt the message successfully.
- * @section sec21002 Test Objectives
+ * @section sec21004 Test Objectives
  * To assure that the invitee can decrypt the inviter's message once the ratchet is completed.
- * @section sec21003 Test Case ID
- * @section sec21004 Test Case Title: test_alice_to_bob
  * @section sec21005 Preconditions
  * @section sec21006 Test Steps
  * Step 1: Initialise Alice's and Bob's ratchet.\n
@@ -131,12 +117,14 @@
  * @defgroup ratchet_test_bob_to_alice basic ratchet test: Bob to Alice
  * @ingroup ratchet_int
  * @{
- * @section sec21101 Test Description
+ * @section sec21101 Test Case ID
+ * v1.0ir02
+ * @section sec21102 Test Case Title
+ * test_bob_to_alice
+ * @section sec21103 Test Description
  * Alice and Bob establish their ratchet. Bob encrypts a message. Alice should decrypt the message successfully.
- * @section sec21102 Test Objectives
+ * @section sec21104 Test Objectives
  * To assure that the inviter can decrypt the invitee's message once the ratchet is completed.
- * @section sec21103 Test Case ID
- * @section sec21104 Test Case Title: test_bob_to_alice
  * @section sec21105 Preconditions
  * @section sec21106 Test Steps
  * Step 1: Initialise Alice's and Bob's ratchet.\n
@@ -149,13 +137,15 @@
  * @defgroup ratchet_test_interaction_alice_first interaction test: Alice first
  * @ingroup ratchet_int
  * @{
- * @section sec21201 Test Description
+ * @section sec21201 Test Case ID
+ * v1.0ir03
+ * @section sec21202 Test Case Title
+ * test_interaction_alice_first
+ * @section sec21203 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts a message and Bob decrypts the message.
  * Next, Bob encrypts a message and Alice decrypts the message.
- * @section sec21202 Test Objectives
+ * @section sec21204 Test Objectives
  * To assure that both of the inviter and the invitee can decrypt the other's message.
- * @section sec21203 Test Case ID
- * @section sec21204 Test Case Title: test_interaction_alice_first
  * @section sec21205 Preconditions
  * @section sec21206 Test Steps
  * Step 1: Initialise Alice's and Bob's ratchet.\n
@@ -170,13 +160,15 @@
  * @defgroup ratchet_test_interaction_bob_first interaction test: Bob first
  * @ingroup ratchet_int
  * @{
- * @section sec21301 Test Description
+ *  @section sec21301 Test Case ID
+ * v1.0ir04
+ * @section sec21302 Test Case Title
+ * test_interaction_bob_first
+ * @section sec21303 Test Description
  * Alice and Bob establish their ratchet. Bob encrypts a message and Alice decrypts the message.
  * Next, Alice encrypts a message and Bob decrypts the message.
- * @section sec21302 Test Objectives
+ * @section sec21304 Test Objectives
  * To assure that both of the inviter and the invitee can decrypt the other's message.
- * @section sec21303 Test Case ID
- * @section sec21304 Test Case Title: test_interaction_bob_first
  * @section sec21305 Preconditions
  * @section sec21306 Test Steps
  * Step 1: Initialise Alice's and Bob's ratchet.\n
@@ -191,13 +183,15 @@
  * @defgroup ratchet_test_out_of_order out of order test: simple case
  * @ingroup ratchet_int
  * @{
- * @section sec21401 Test Description
+ * @section sec21401 Test Case ID
+ * v1.0ir05
+ * @section sec21402 Test Case Title
+ * test_out_of_order
+ * @section sec21403 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts two messages.
  * Bob decrypts the second message first and then decrypts the first message.
- * @section sec21402 Test Objectives
+ * @section sec21404 Test Objectives
  * To verify the out-of-order mechanism.
- * @section sec21403 Test Case ID
- * @section sec21404 Test Case Title: test_out_of_order
  * @section sec21405 Preconditions
  * @section sec21406 Test Steps
  * Step 1: Initialise Alice's and Bob's ratchet.\n
@@ -211,12 +205,14 @@
  * @defgroup ratchet_test_continual_message continual messages test
  * @ingroup ratchet_int
  * @{
- * @section sec21501 Test Description
+ * @section sec21501 Test Case ID
+ * v1.0ir06
+ * @section sec21502 Test Case Title
+ * test_continual_message
+ * @section sec21503 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts 1000 messages. Bob decrypts these messages.
- * @section sec21502 Test Objectives
+ * @section sec21504 Test Objectives
  * To assure that a large number of messages can be decrypted.
- * @section sec21503 Test Case ID
- * @section sec21504 Test Case Title: test_continual_message
  * @section sec21505 Preconditions
  * @section sec21506 Test Steps
  * Step 1: Initialise Alice's and Bob's ratchet.\n
@@ -229,13 +225,15 @@
  * @defgroup ratchet_test_interaction_v2 interaction test
  * @ingroup ratchet_int
  * @{
- * @section sec21601 Test Description
+ * @section sec21601 Test Case ID
+ * v1.0ir07
+ * @section sec21602 Test Case Title
+ * test_interaction_v2
+ * @section sec21603 Test Description
  * Alice and Bob establish their ratchet. Alice encrypts two messages and Bob decrypts the messages.
  * Next, Bob encrypts two messages and Alice decrypts the messages.
- * @section sec21602 Test Objectives
+ * @section sec21604 Test Objectives
  * To assure that both of the inviter and the invitee can decrypt the other's message.
- * @section sec21603 Test Case ID
- * @section sec21604 Test Case Title: test_interaction_v2
  * @section sec21605 Preconditions
  * @section sec21606 Test Steps
  * Step 1: Initialise Alice's and Bob's ratchet.\n
@@ -251,12 +249,14 @@
  * @defgroup ratchet_test_out_of_order_v2 out of order test
  * @ingroup ratchet_int
  * @{
- * @section sec21701 Test Description
+ * @section sec21701 Test Case ID
+ * v1.0ir08
+ * @section sec21702 Test Case Title
+ * test_out_of_order_v2
+ * @section sec21703 Test Description
  * Alice and Bob encrypt some messages, but they do not decrypt the others' messages in order.
- * @section sec21702 Test Objectives
+ * @section sec21704 Test Objectives
  * To verify the out-of-order mechanism.
- * @section sec21703 Test Case ID
- * @section sec21704 Test Case Title: test_out_of_order_v2
  * @section sec21705 Preconditions
  * @section sec21706 Test Steps
  * Step 1: Initialise Alice's and Bob's ratchet.\n
@@ -356,6 +356,99 @@ static void initialization(
     free_protobuf(&(bob_spk.public_key));
     free_protobuf(&(bob_spk.private_key));
 }
+
+///-----------------unit test-----------------///
+
+static void test_initialise_as_alice() {
+    // test start
+    printf("test_initialise_as_alice begin!!!\n");
+    tear_up();
+
+    Skissm__Ratchet *alice_ratchet = NULL;
+
+    get_skissm_plugin()->event_handler = test_event_handler;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+
+    Skissm__KeyPair alice_ratchet_key;
+    test_cipher_suite->kem_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+
+    Skissm__KeyPair bob_spk;
+    test_cipher_suite->kem_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+
+    uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
+
+    ProtobufCBinaryData ciphertext = {0, NULL};
+    int temp_shared_key_len = test_cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
+    uint8_t temp_secret[temp_shared_key_len];
+    test_cipher_suite->kem_suite->encaps(temp_secret, &ciphertext, &(alice_ratchet_key.public_key));
+
+    int ret = initialise_as_alice(
+        &alice_ratchet,
+        test_cipher_suite,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &alice_ratchet_key,
+        &(bob_spk.public_key),
+        &ciphertext
+    );
+    assert(ret == 0);
+
+    // release
+    free_protobuf(&(alice_ratchet_key.public_key));
+    free_protobuf(&(alice_ratchet_key.private_key));
+    free_protobuf(&(bob_spk.public_key));
+    free_protobuf(&(bob_spk.private_key));
+    unset(temp_secret, sizeof(temp_secret));
+
+    // test stop
+    tear_down();
+    printf("====================================\n");
+}
+
+static void test_initialise_as_bob() {
+    // test start
+    printf("test_initialise_as_bob begin!!!\n");
+    tear_up();
+
+    Skissm__Ratchet *bob_ratchet = NULL;
+
+    get_skissm_plugin()->event_handler = test_event_handler;
+
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+
+    Skissm__KeyPair alice_ratchet_key;
+    test_cipher_suite->kem_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
+
+    Skissm__KeyPair bob_spk;
+    test_cipher_suite->kem_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
+
+    uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
+
+    int ret = initialise_as_bob(
+        &bob_ratchet,
+        test_cipher_suite,
+        shared_secret,
+        strlen((const char *)shared_secret),
+        &bob_spk,
+        &(alice_ratchet_key.public_key)
+    );
+    assert(ret == 0);
+
+    // release
+    free_protobuf(&(alice_ratchet_key.public_key));
+    free_protobuf(&(alice_ratchet_key.private_key));
+    free_protobuf(&(bob_spk.public_key));
+    free_protobuf(&(bob_spk.private_key));
+
+    // test stop
+    tear_down();
+    printf("====================================\n");
+}
+
+///-----------------integration test-----------------///
 
 static void test_alice_to_bob() {
     // test start
@@ -883,6 +976,11 @@ static void test_out_of_order_v2() {
 }
 
 int main() {
+    // unit test
+    test_initialise_as_alice();
+    test_initialise_as_bob();
+
+    // integration test
     test_alice_to_bob();
     test_bob_to_alice();
     test_interaction_alice_first();

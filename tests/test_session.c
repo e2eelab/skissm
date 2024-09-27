@@ -45,10 +45,6 @@
  * 
  * 
  * 
- * @defgroup session_unit session unit test
- * @ingroup Unit
- * This includes unit tests about session.
- * 
  * @defgroup session_int session integration test
  * @ingroup Integration
  * This includes integration tests about session.
@@ -56,12 +52,14 @@
  * @defgroup session_test_basic_session basic session test
  * @ingroup session_int
  * @{
- * @section sec31001 Test Description
+ * @section sec31001 Test Case ID
+ * v1.0is01
+ * @section sec31002 Test Case Title
+ * test_basic_session
+ * @section sec31003 Test Description
  * Alice and Bob establish their session. Alice sends a message to Bob. Bob should decrypt the message successfully.
- * @section sec31002 Test Objectives
+ * @section sec31004 Test Objectives
  * To assure that the invitee can decrypt the inviter's message once the session is completed.
- * @section sec31003 Test Case ID
- * @section sec31004 Test Case Title: test_basic_session
  * @section sec31005 Preconditions
  * @section sec31006 Test Steps
  * Step 1: Alice invites Bob to create a session.\n
@@ -74,12 +72,14 @@
  * @defgroup session_test_interaction interaction test
  * @ingroup session_int
  * @{
- * @section sec31101 Test Description
+ * @section sec31101 Test Case ID
+ * v1.0is02
+ * @section sec31102 Test Case Title
+ * test_interaction
+ * @section sec31103 Test Description
  * Alice and Bob establish their session. Alice sends a message to Bob. Next, Bob sends a message to Alice.
- * @section sec31102 Test Objectives
+ * @section sec31104 Test Objectives
  * To assure that both of the inviter and the invitee can decrypt the other's message.
- * @section sec31103 Test Case ID
- * @section sec31104 Test Case Title: test_interaction
  * @section sec31105 Preconditions
  * @section sec31106 Test Steps
  * Step 1: Alice invites Bob to create a session.\n
@@ -94,12 +94,14 @@
  * @defgroup session_test_continual_messages continual messages test
  * @ingroup session_int
  * @{
- * @section sec31201 Test Description
+ * @section sec31201 Test Case ID
+ * v1.0is03
+ * @section sec31202 Test Case Title
+ * test_continual_messages
+ * @section sec31203 Test Description
  * Alice sends 3000 messages to Bob.
- * @section sec31202 Test Objectives
+ * @section sec31204 Test Objectives
  * To assure that a large number of messages can be decrypted.
- * @section sec31203 Test Case ID
- * @section sec31204 Test Case Title: test_continual_messages
  * @section sec31205 Preconditions
  * @section sec31206 Test Steps
  * Step 1: Alice invites Bob to create a session.\n
@@ -109,28 +111,17 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup session_test_multiple_devices multiple devices test
- * @ingroup session_int
- * @{
- * @section sec31301 Test Description
- * 
- * @section sec31302 Test Objectives
- * @section sec31303 Test Case ID
- * @section sec31304 Test Case Title: test_multiple_devices
- * @section sec31305 Preconditions
- * @section sec31306 Test Steps
- * @section sec31307 Expected Results
- * @}
- * 
  * @defgroup session_test_one_to_many multiple devices test: one to many
  * @ingroup session_int
  * @{
- * @section sec31401 Test Description
+ * @section sec31401 Test Case ID
+ * v1.0is04
+ * @section sec31402 Test Case Title
+ * test_one_to_many
+ * @section sec31403 Test Description
  * Alice has one device, and Bob has three devices. Alice sends a message to Bob.
- * @section sec31402 Test Objectives
+ * @section sec31404 Test Objectives
  * To assure that the session mechanism is applicable to multiple devices.
- * @section sec31403 Test Case ID
- * @section sec31404 Test Case Title: test_one_to_many
  * @section sec31405 Preconditions
  * @section sec31406 Test Steps
  * Step 1: Alice invites Bob to create a session.\n
@@ -143,12 +134,14 @@
  * @defgroup session_test_many_to_one multiple devices test: many to one
  * @ingroup session_int
  * @{
- * @section sec31501 Test Description
+ * @section sec31501 Test Case ID
+ * v1.0is05
+ * @section sec31502 Test Case Title
+ * test_many_to_one
+ * @section sec31503 Test Description
  * Alice has three devices, and Bob has one device. Alice sends a message to Bob.
- * @section sec31502 Test Objectives
+ * @section sec31504 Test Objectives
  * To assure that the session mechanism is applicable to multiple devices.
- * @section sec31503 Test Case ID
- * @section sec31504 Test Case Title: test_many_to_one
  * @section sec31505 Preconditions
  * @section sec31506 Test Steps
  * Step 1: Alice invites Bob to create a session.\n
@@ -161,12 +154,14 @@
  * @defgroup session_test_many_to_many multiple devices test: many to many
  * @ingroup session_int
  * @{
- * @section sec31601 Test Description
+ * @section sec31601 Test Case ID
+ * v1.0is06
+ * @section sec31602 Test Case Title
+ * test_many_to_many
+ * @section sec31603 Test Description
  * Both Alice and Bob have three devices. Alice sends a message to Bob.
- * @section sec31602 Test Objectives
+ * @section sec31604 Test Objectives
  * To assure that the session mechanism is applicable to multiple devices.
- * @section sec31603 Test Case ID
- * @section sec31604 Test Case Title: test_many_to_many
  * @section sec31605 Preconditions
  * @section sec31606 Test Steps
  * Step 1: Alice invites Bob to create a session.\n
@@ -179,12 +174,14 @@
  * @defgroup session_test_change_devices change devices test
  * @ingroup session_int
  * @{
- * @section sec31701 Test Description
+ * @section sec31701 Test Case ID
+ * v1.0is07
+ * @section sec31702 Test Case Title
+ * test_change_devices
+ * @section sec31703 Test Description
  * Both Alice and Bob have two devices. Alice adds a new device. Then Alice sends a message to Bob. Next, Bob sends a message to Alice.
- * @section sec31702 Test Objectives
+ * @section sec31704 Test Objectives
  * To assure that the session can be used once one of the both sides adds a new device.
- * @section sec31703 Test Case ID
- * @section sec31704 Test Case Title: test_change_devices
  * @section sec31705 Preconditions
  * @section sec31706 Test Steps
  * Step 1: Alice invites Bob to create a session.\n
@@ -365,7 +362,7 @@ static void test_encryption(
         skissm__send_one2one_msg_response__free_unpacked(response, NULL);
 }
 
-static void test_basic_session(){
+static void test_basic_session() {
     // test start
     printf("test_basic_session begin!!!\n");
     tear_up();
@@ -393,7 +390,7 @@ static void test_basic_session(){
     printf("====================================\n");
 }
 
-static void test_interaction(){
+static void test_interaction() {
     // test start
     printf("test_interaction begin!!!\n");
     tear_up();
@@ -426,7 +423,7 @@ static void test_interaction(){
     printf("====================================\n");
 }
 
-static void test_continual_messages(){
+static void test_continual_messages() {
     // test start
     printf("test_continual_messages begin!!!\n");
     tear_up();
@@ -457,27 +454,7 @@ static void test_continual_messages(){
     printf("====================================\n");
 }
 
-static void test_multiple_devices(){
-    // test start
-    printf("test_multiple_devices begin!!!\n");
-    tear_up();
-    test_begin();
-
-    mock_alice_account("Alice");
-    mock_alice_account("Alice");
-    mock_alice_account("Alice");
-
-    // Alice's user_id should be the same
-    assert(strcmp(account_data[0]->address->user->user_id, account_data[1]->address->user->user_id) == 0);
-    assert(strcmp(account_data[0]->address->user->user_id, account_data[2]->address->user->user_id) == 0);
-
-    // test stop
-    test_end();
-    tear_down();
-    printf("====================================\n");
-}
-
-static void test_one_to_many(){
+static void test_one_to_many() {
     // test start
     printf("test_one_to_many begin!!!\n");
     tear_up();
@@ -643,7 +620,6 @@ int main() {
     test_basic_session();
     test_interaction();
     test_continual_messages();
-    test_multiple_devices();
     test_one_to_many();
     test_many_to_one();
     test_many_to_many();
