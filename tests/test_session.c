@@ -40,7 +40,7 @@
  * @section test_many_to_many
  * Both Alice and Bob have three devices. Alice sends a message to Bob.
  * 
- * @section test_change_devices
+ * @section test_add_a_device
  * Both Alice and Bob have two devices. Alice adds a new device. Then Alice sends a message to Bob. Next, Bob sends a message to Alice.
  * 
  * 
@@ -171,13 +171,13 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup session_test_change_devices change devices test
+ * @defgroup session_test_add_a_device change devices test
  * @ingroup session_int
  * @{
  * @section sec31701 Test Case ID
  * v1.0is07
  * @section sec31702 Test Case Title
- * test_change_devices
+ * test_add_a_device
  * @section sec31703 Test Description
  * Both Alice and Bob have two devices. Alice adds a new device. Then Alice sends a message to Bob. Next, Bob sends a message to Alice.
  * @section sec31704 Test Objectives
@@ -189,6 +189,26 @@
  * Step 3: Alice uses the old device to send a message to Bob, and then Bob decrypts the message.\n
  * Step 4: Bob sends a message to Alice, and then Alice decrypts the message.
  * @section sec31707 Expected Results
+ * The output of the decrypted messages.
+ * @}
+ * 
+ * @defgroup session_test_session_no_opk session test: no opk
+ * @ingroup session_int
+ * @{
+ * @section sec31801 Test Case ID
+ * v1.0is08
+ * @section sec31802 Test Case Title
+ * test_session_no_opk
+ * @section sec31803 Test Description
+ * Alice and Bob establish a session with no one-time pre-keys.
+ * @section sec31804 Test Objectives
+ * To assure that sessions can be successfully established if one-time pre-keys are not available.
+ * @section sec31805 Preconditions
+ * @section sec31806 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Alice sends a message to Bob.\n
+ * Step 3: Bob decrypts the message.
+ * @section sec31807 Expected Results
  * The output of the decrypted messages.
  * @}
  * 
@@ -226,7 +246,7 @@ static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const ch
     // print_log((char *)log_msg, log_code);
 }
 
-static void on_user_registered(Skissm__Account *account){
+static void on_user_registered(Skissm__Account *account) {
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
 }
@@ -235,7 +255,7 @@ static void on_inbound_session_invited(Skissm__E2eeAddress *user_address, Skissm
     // printf("on_inbound_session_invited\n");
 }
 
-static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *inbound_session){
+static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *inbound_session) {
     // if (inbound_session->f2f == true) {
     //     printf("the face-to-face inbound session is ready\n");
     // } else {
@@ -243,7 +263,7 @@ static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__
     // }
 }
 
-static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *outbound_session){
+static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *outbound_session) {
     // if (outbound_session->f2f == true) {
     //     printf("the face-to-face outbound session is ready\n");
     // } else {
@@ -285,7 +305,7 @@ static skissm_event_handler_t test_event_handler = {
     NULL
 };
 
-static void test_begin(){
+static void test_begin() {
     test_plaintext_len = sizeof(test_plaintext) - 1;
 
     int i;
@@ -299,7 +319,7 @@ static void test_begin(){
     start_mock_server_sending();
 }
 
-static void test_end(){
+static void test_end() {
     stop_mock_server_sending();
 
     int i;
@@ -310,6 +330,117 @@ static void test_end(){
         }
     }
     account_data_insert_pos = 0;
+}
+
+static void create_account_no_opk(Skissm__Account **account_out, uint32_t e2ee_pack_id) {
+    Skissm__Account *account = NULL;
+    Skissm__IdentityKey *identity_key = NULL;
+    Skissm__SignedPreKey *signed_pre_key = NULL;
+    uint32_t cur_spk_id = 0;
+
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+
+    generate_identity_key(&identity_key, e2ee_pack_id);
+
+    generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, cur_spk_id, identity_key->sign_key_pair->private_key.data);
+
+    account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
+    skissm__account__init(account);
+
+    account->version = strdup(E2EE_PROTOCOL_VERSION);
+    account->e2ee_pack_id = e2ee_pack_id;
+
+    account->identity_key = identity_key;
+    account->signed_pre_key = signed_pre_key;
+
+    *account_out = account;
+}
+
+static void register_no_opk(
+    Skissm__RegisterUserResponse **response_out,
+    uint32_t e2ee_pack_id,
+    const char *user_name,
+    const char *user_id,
+    const char *device_id,
+    const char *authenticator,
+    const char *auth_code
+) {
+    Skissm__Account *account = NULL;
+    Skissm__RegisterUserRequest *register_user_request = NULL;
+    Skissm__RegisterUserResponse *response = NULL;
+    Skissm__IdentityKey *identity_key = NULL;
+    Skissm__KeyPair *identity_key_pair_asym = NULL;
+    Skissm__KeyPair *identity_key_pair_sign = NULL;
+    Skissm__SignedPreKey *signed_pre_key = NULL;
+    Skissm__KeyPair *signed_pre_key_pair = NULL;
+
+    create_account_no_opk(&account, e2ee_pack_id);
+    identity_key = account->identity_key;
+    identity_key_pair_asym = identity_key->asym_key_pair;
+    identity_key_pair_sign = identity_key->sign_key_pair;
+    signed_pre_key = account->signed_pre_key;
+    signed_pre_key_pair = signed_pre_key->key_pair;
+
+    register_user_request = (Skissm__RegisterUserRequest *)malloc(sizeof(Skissm__RegisterUserRequest));
+    skissm__register_user_request__init(register_user_request);
+
+    // copy identity public key
+    register_user_request->identity_key_public = (Skissm__IdentityKeyPublic *)malloc(sizeof(Skissm__IdentityKeyPublic));
+    skissm__identity_key_public__init(register_user_request->identity_key_public);
+    copy_protobuf_from_protobuf(&(register_user_request->identity_key_public->asym_public_key), &(identity_key_pair_asym->public_key));
+    copy_protobuf_from_protobuf(&(register_user_request->identity_key_public->sign_public_key), &(identity_key_pair_sign->public_key));
+
+    // copy signed pre-key
+    register_user_request->signed_pre_key_public = (Skissm__SignedPreKeyPublic *)malloc(sizeof(Skissm__SignedPreKeyPublic));
+    skissm__signed_pre_key_public__init(register_user_request->signed_pre_key_public);
+    register_user_request->signed_pre_key_public->spk_id = account->signed_pre_key->spk_id;
+    copy_protobuf_from_protobuf(&(register_user_request->signed_pre_key_public->public_key), &(signed_pre_key_pair->public_key));
+    copy_protobuf_from_protobuf(&(register_user_request->signed_pre_key_public->signature), &(signed_pre_key->signature));
+    register_user_request->user_name = strdup(user_name);
+    register_user_request->user_id = strdup(user_id);
+    register_user_request->device_id = strdup(device_id);
+    register_user_request->authenticator = strdup(authenticator);
+    register_user_request->auth_code = strdup(auth_code);
+    register_user_request->e2ee_pack_id = e2ee_pack_id;
+
+    response = get_skissm_plugin()->proto_handler.register_user(register_user_request);
+    consume_register_response(account, response);
+
+    *response_out = response;
+
+    // release
+    free_proto(account);
+    free_proto(register_user_request);
+}
+
+static void mock_alice_account_no_opk(const char *user_name) {
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    char *device_id = generate_uuid_str();
+    const char *authenticator = "alice@domain.com.tw";
+    const char *auth_code = "111111";
+    Skissm__RegisterUserResponse *response = NULL;
+    register_no_opk(
+        &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
+    );
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
+}
+
+static void mock_bob_account_no_opk(const char *user_name) {
+    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    char *device_id = generate_uuid_str();
+    const char *authenticator = "bob@domain.com.tw";
+    const char *auth_code = "222222";
+    Skissm__RegisterUserResponse *response = NULL;
+    register_no_opk(
+        &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
+    );
+
+    // release
+    free(device_id);
+    skissm__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_alice_account(const char *user_name) {
@@ -569,9 +700,9 @@ static void test_many_to_many() {
     printf("====================================\n");
 }
 
-static void test_change_devices() {
+static void test_add_a_device() {
     // test start
-    printf("test_change_devices begin!!!\n");
+    printf("test_add_a_device begin!!!\n");
     tear_up();
     test_begin();
 
@@ -616,6 +747,34 @@ static void test_change_devices() {
     printf("====================================\n");
 }
 
+static void test_session_no_opk() {
+    // test start
+    printf("test_session_no_opk begin!!!\n");
+    tear_up();
+    test_begin();
+
+    mock_alice_account_no_opk("alice");
+    mock_bob_account_no_opk("bob");
+
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
+
+    // Alice invites Bob to create a session
+    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+
+    sleep(1);
+    // Alice sends an encrypted message to Bob, and Bob decrypts the message
+    test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
+
+    // test stop
+    skissm__invite_response__free_unpacked(response, NULL);
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
 int main() {
     test_basic_session();
     test_interaction();
@@ -623,7 +782,8 @@ int main() {
     test_one_to_many();
     test_many_to_one();
     test_many_to_many();
-    test_change_devices();
+    test_add_a_device();
+    test_session_no_opk();
 
     return 0;
 }

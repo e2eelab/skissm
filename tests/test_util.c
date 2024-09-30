@@ -636,9 +636,13 @@ void pre_key_bundle_hash(
     spk_data = (uint8_t *)malloc(sizeof(uint8_t) * spk_data_len);
     skissm__signed_pre_key_public__pack(spk, spk_data);
 
-    opk_data_len = skissm__one_time_pre_key_public__get_packed_size(opk);
-    opk_data = (uint8_t *)malloc(sizeof(uint8_t) * opk_data_len);
-    skissm__one_time_pre_key_public__pack(opk, opk_data);
+    if (opk != NULL) {
+        opk_data_len = skissm__one_time_pre_key_public__get_packed_size(opk);
+        opk_data = (uint8_t *)malloc(sizeof(uint8_t) * opk_data_len);
+        skissm__one_time_pre_key_public__pack(opk, opk_data);
+    } else {
+        opk_data_len = 0;
+    }
 
     input_len = address_data_len + ik_data_len + spk_data_len + opk_data_len;
 
@@ -646,7 +650,9 @@ void pre_key_bundle_hash(
     memcpy(input, address_data, address_data_len);
     memcpy(input + address_data_len, ik_data, ik_data_len);
     memcpy(input + address_data_len + ik_data_len, spk_data, spk_data_len);
-    memcpy(input + address_data_len + ik_data_len + spk_data_len, opk_data, opk_data_len);
+    if (opk != NULL) {
+        memcpy(input + address_data_len + ik_data_len + spk_data_len, opk_data, opk_data_len);
+    }
 
     crypto_hash_by_e2ee_pack_id(e2ee_pack_id_raw, input, input_len, out, out_len);
 
@@ -654,7 +660,9 @@ void pre_key_bundle_hash(
     free_mem((void **)&address_data, address_data_len);
     free_mem((void **)&ik_data, ik_data_len);
     free_mem((void **)&spk_data, spk_data_len);
-    free_mem((void **)&opk_data, opk_data_len);
+    if (opk != NULL) {
+        free_mem((void **)&opk_data, opk_data_len);
+    }
     free_mem((void **)&input, input_len);
 }
 
