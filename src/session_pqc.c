@@ -301,7 +301,7 @@ int pqc_new_inbound_session(
         bob_signed_pre_key_id = msg->bob_signed_pre_key_id;
         bob_one_time_pre_key_id = msg->bob_one_time_pre_key_id;
     } else {
-        ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "pqc_new_inbound_session()");
+        ssm_notify_log(NULL, BAD_INVITE_MSG, "pqc_new_inbound_session()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -473,7 +473,7 @@ int pqc_complete_outbound_session(Skissm__Session **outbound_session_out, Skissm
             ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ssm_notify_log(NULL, BAD_SERVER_MESSAGE, "pqc_complete_outbound_session()");
+        ssm_notify_log(NULL, BAD_ACCEPT_MSG, "pqc_complete_outbound_session()");
         ret = SKISSM_RESULT_FAIL;
     }
 

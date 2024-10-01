@@ -103,7 +103,7 @@ bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserRes
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_register_user_response(response)) {
-        ssm_notify_log(NULL, BAD_RESPONSE, "consume_register_response()");
+        ssm_notify_log(NULL, BAD_REGISTER_USER_RESPONSE, "consume_register_response()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -242,7 +242,7 @@ int consume_publish_spk_response(
     int ret = SKISSM_RESULT_SUCC;
 
     if (!is_valid_publish_spk_response(response)) {
-        ssm_notify_log(NULL, BAD_RESPONSE, "consume_publish_spk_response()");
+        ssm_notify_log(NULL, BAD_PUBLISH_SPK_RESPONSE, "consume_publish_spk_response()");
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_registered_account(account)) {
@@ -319,7 +319,7 @@ int consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Sk
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_supply_opks_response(response)) {
-        ssm_notify_log(NULL, BAD_RESPONSE, "consume_supply_opks_response()");
+        ssm_notify_log(NULL, BAD_SUPPLY_OPKS_RESPONSE, "consume_supply_opks_response()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -345,7 +345,7 @@ bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__Supp
     }
     if (is_valid_supply_opks_msg(msg)) {
         if (!compare_address(receiver_address, msg->user_address)){
-            ssm_notify_log(receiver_address, BAD_SERVER_MESSAGE, "consume_supply_opks_msg()");
+            ssm_notify_log(receiver_address, BAD_SUPPLY_OPKS_MSG, "consume_supply_opks_msg()");
             return false;
         }
     }

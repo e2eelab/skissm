@@ -54,7 +54,7 @@ int get_pre_key_bundle_internal(
         get_pre_key_bundle_response = get_skissm_plugin()->proto_handler.get_pre_key_bundle(from, auth, get_pre_key_bundle_request);
 
         if (!is_valid_get_pre_key_bundle_response(get_pre_key_bundle_response)) {
-            ssm_notify_log(NULL, BAD_RESPONSE, "get_pre_key_bundle_internal()");
+            ssm_notify_log(NULL, BAD_GET_PRE_KEY_BUNDLE_RESPONSE, "get_pre_key_bundle_internal()");
             ret = SKISSM_RESULT_FAIL;
         }
     }
@@ -228,7 +228,7 @@ int accept_internal(
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_protobuf(our_ratchet_key)) {
-        ssm_notify_log(from, BAD_INPUT_DATA, "accept_internal()");
+        ssm_notify_log(from, BAD_RATCHET_KEY, "accept_internal()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -326,7 +326,7 @@ int supply_opks_internal(
             ret = SKISSM_RESULT_FAIL;
         }
     } else {
-        ssm_notify_log(account->address, BAD_INPUT_DATA, "supply_opks_internal()");
+        ssm_notify_log(account->address, BAD_ADDRESS, "supply_opks_internal()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -465,7 +465,7 @@ int add_group_member_device_internal(
         response = get_skissm_plugin()->proto_handler.add_group_member_device(sender_address, auth, add_group_member_device_request);
 
         if (!is_valid_add_group_member_device_response(response)) {
-            ssm_notify_log(NULL, BAD_RESPONSE, "add_group_member_device_internal()");
+            ssm_notify_log(NULL, BAD_ADD_GROUP_MEMBER_DEVICE_RESPONSE, "add_group_member_device_internal()");
             ret = SKISSM_RESULT_FAIL;
             // note that packing the pending request will be skipped in some cases
             // pack add_group_member_device_request to request_data

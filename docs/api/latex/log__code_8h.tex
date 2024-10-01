@@ -41,18 +41,87 @@ enum {\bfseries Log\+Code} \{ \newline
 , {\bfseries BAD\+\_\+\+MESSAGE\+\_\+\+KEY} = 4005
 , {\bfseries BAD\+\_\+\+MESSAGE\+\_\+\+SEQUENCE} = 4006
 , \newline
-{\bfseries BAD\+\_\+\+SESSION} = 5001
-, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+SESSION} = 6001
-, {\bfseries BAD\+\_\+\+PRE\+\_\+\+KEY\+\_\+\+BUNDLE} = 7001
-, {\bfseries BAD\+\_\+\+MESSAGE\+\_\+\+FORMAT} = 7002
+{\bfseries BAD\+\_\+\+RATCHET\+\_\+\+KEY} = 4007
+, {\bfseries BAD\+\_\+\+SESSION} = 5001
+, {\bfseries BAD\+\_\+\+SESSION\+\_\+\+ID} = 5002
+, {\bfseries BAD\+\_\+\+PRE\+\_\+\+KEY\+\_\+\+BUNDLE} = 5101
 , \newline
-{\bfseries BAD\+\_\+\+RESPONSE} = 7003
-, {\bfseries BAD\+\_\+\+SERVER\+\_\+\+MESSAGE} = 7004
-, {\bfseries BAD\+\_\+\+SERVER\+\_\+\+SIGNATURE} = 7005
-, {\bfseries BAD\+\_\+\+INPUT\+\_\+\+DATA} = 7006
+{\bfseries BAD\+\_\+\+GROUP\+\_\+\+SESSION} = 6001
+, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+SESSION\+\_\+\+ID} = 6002
+, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+NAME} = 6003
+, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+ADDRESS} = 6004
 , \newline
-{\bfseries NOT\+\_\+\+ENOUGH\+\_\+\+RANDOM} = 10001
-, {\bfseries NOT\+\_\+\+ENOUGH\+\_\+\+MEMORY} = 10002
+{\bfseries BAD\+\_\+\+GROUP\+\_\+\+MEMBERS} = 6005
+, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+MEMBER\+\_\+\+INFO} = 6006
+, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+INFO} = 6007
+, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+SEED} = 6008
+, \newline
+{\bfseries BAD\+\_\+\+GROUP\+\_\+\+CHAIN\+\_\+\+KEY} = 6009
+, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+PRE\+\_\+\+KEY\+\_\+\+BUNDLE} = 6101
+, {\bfseries BAD\+\_\+\+GROUP\+\_\+\+UPDATE\+\_\+\+KEY\+\_\+\+BUNDLE} = 6102
+, {\bfseries BAD\+\_\+\+ACCEPT\+\_\+\+REQUEST} = 7001
+, \newline
+{\bfseries BAD\+\_\+\+ADD\+\_\+\+GROUP\+\_\+\+MEMBER\+\_\+\+DEVICE\+\_\+\+REQUEST} = 7011
+, {\bfseries BAD\+\_\+\+ADD\+\_\+\+GROUP\+\_\+\+MEMBERS\+\_\+\+REQUEST} = 7021
+, {\bfseries BAD\+\_\+\+CONSUME\+\_\+\+PROTO\+\_\+\+MSG\+\_\+\+REQUEST} = 7031
+, {\bfseries BAD\+\_\+\+CREATE\+\_\+\+GROUP\+\_\+\+REQUEST} = 7041
+, \newline
+{\bfseries BAD\+\_\+\+GET\+\_\+\+GROUP\+\_\+\+REQUEST} = 7051
+, {\bfseries BAD\+\_\+\+GET\+\_\+\+PRE\+\_\+\+KEY\+\_\+\+BUNDLE\+\_\+\+REQUEST} = 7061
+, {\bfseries BAD\+\_\+\+INVITE\+\_\+\+REQUEST} = 7071
+, {\bfseries BAD\+\_\+\+LEAVE\+\_\+\+GROUP\+\_\+\+REQUEST} = 7081
+, \newline
+{\bfseries BAD\+\_\+\+PUBLISH\+\_\+\+SPK\+\_\+\+REQUEST} = 7091
+, {\bfseries BAD\+\_\+\+REGISTER\+\_\+\+USER\+\_\+\+REQUEST} = 7101
+, {\bfseries BAD\+\_\+\+REMOVE\+\_\+\+GROUP\+\_\+\+MEMBERS\+\_\+\+REQUEST} = 7111
+, {\bfseries BAD\+\_\+\+SEND\+\_\+\+GROUP\+\_\+\+MSG\+\_\+\+REQUEST} = 7121
+, \newline
+{\bfseries BAD\+\_\+\+SEND\+\_\+\+ONE2\+ONE\+\_\+\+MSG\+\_\+\+REQUEST} = 7131
+, {\bfseries BAD\+\_\+\+SUPPLY\+\_\+\+OPKS\+\_\+\+REQUEST} = 7141
+, {\bfseries BAD\+\_\+\+UPDATE\+\_\+\+USER\+\_\+\+REQUEST} = 7151
+, {\bfseries BAD\+\_\+\+ACCEPT\+\_\+\+RESPONSE} = 7301
+, \newline
+{\bfseries BAD\+\_\+\+ADD\+\_\+\+GROUP\+\_\+\+MEMBER\+\_\+\+DEVICE\+\_\+\+RESPONSE} = 7311
+, {\bfseries BAD\+\_\+\+ADD\+\_\+\+GROUP\+\_\+\+MEMBERS\+\_\+\+RESPONSE} = 7321
+, {\bfseries BAD\+\_\+\+CONSUME\+\_\+\+PROTO\+\_\+\+MSG\+\_\+\+RESPONSE} = 7331
+, {\bfseries BAD\+\_\+\+CREATE\+\_\+\+GROUP\+\_\+\+RESPONSE} = 7341
+, \newline
+{\bfseries BAD\+\_\+\+GET\+\_\+\+GROUP\+\_\+\+RESPONSE} = 7351
+, {\bfseries BAD\+\_\+\+GET\+\_\+\+PRE\+\_\+\+KEY\+\_\+\+BUNDLE\+\_\+\+RESPONSE} = 7361
+, {\bfseries BAD\+\_\+\+INVITE\+\_\+\+RESPONSE} = 7371
+, {\bfseries BAD\+\_\+\+LEAVE\+\_\+\+GROUP\+\_\+\+RESPONSE} = 7381
+, \newline
+{\bfseries BAD\+\_\+\+PUBLISH\+\_\+\+SPK\+\_\+\+RESPONSE} = 7391
+, {\bfseries BAD\+\_\+\+REGISTER\+\_\+\+USER\+\_\+\+RESPONSE} = 7401
+, {\bfseries BAD\+\_\+\+REMOVE\+\_\+\+GROUP\+\_\+\+MEMBERS\+\_\+\+RESPONSE} = 7411
+, {\bfseries BAD\+\_\+\+SEND\+\_\+\+GROUP\+\_\+\+MSG\+\_\+\+RESPONSE} = 7421
+, \newline
+{\bfseries BAD\+\_\+\+SEND\+\_\+\+ONE2\+ONE\+\_\+\+MSG\+\_\+\+RESPONSE} = 7431
+, {\bfseries BAD\+\_\+\+SUPPLY\+\_\+\+OPKS\+\_\+\+RESPONSE} = 7441
+, {\bfseries BAD\+\_\+\+UPDATE\+\_\+\+USER\+\_\+\+RESPONSE} = 7451
+, {\bfseries BAD\+\_\+\+ACCEPT\+\_\+\+MSG} = 7601
+, \newline
+{\bfseries BAD\+\_\+\+ADD\+\_\+\+GROUP\+\_\+\+MEMBER\+\_\+\+DEVICE\+\_\+\+MSG} = 7611
+, {\bfseries BAD\+\_\+\+ADD\+\_\+\+GROUP\+\_\+\+MEMBERS\+\_\+\+MSG} = 7621
+, {\bfseries BAD\+\_\+\+ADD\+\_\+\+USER\+\_\+\+DEVICE\+\_\+\+MSG} = 7631
+, {\bfseries BAD\+\_\+\+CREATE\+\_\+\+GROUP\+\_\+\+MSG} = 7641
+, \newline
+{\bfseries BAD\+\_\+\+GET\+\_\+\+GROUP\+\_\+\+MSG} = 7651
+, {\bfseries BAD\+\_\+\+GET\+\_\+\+PRE\+\_\+\+KEY\+\_\+\+BUNDLE\+\_\+\+MSG} = 7661
+, {\bfseries BAD\+\_\+\+INVITE\+\_\+\+MSG} = 7671
+, {\bfseries BAD\+\_\+\+LEAVE\+\_\+\+GROUP\+\_\+\+MSG} = 7681
+, \newline
+{\bfseries BAD\+\_\+\+PUBLISH\+\_\+\+SPK\+\_\+\+MSG} = 7691
+, {\bfseries BAD\+\_\+\+REGISTER\+\_\+\+USER\+\_\+\+MSG} = 7701
+, {\bfseries BAD\+\_\+\+REMOVE\+\_\+\+GROUP\+\_\+\+MEMBERS\+\_\+\+MSG} = 7711
+, {\bfseries BAD\+\_\+\+SUPPLY\+\_\+\+OPKS\+\_\+\+MSG} = 7741
+, \newline
+{\bfseries BAD\+\_\+\+UPDATE\+\_\+\+USER\+\_\+\+MSG} = 7751
+, {\bfseries BAD\+\_\+\+PLAINTEXT} = 8001
+, {\bfseries BAD\+\_\+\+SERVER\+\_\+\+SIGNATURE} = 9001
+, {\bfseries NOT\+\_\+\+ENOUGH\+\_\+\+RANDOM} = 10001
+, \newline
+{\bfseries NOT\+\_\+\+ENOUGH\+\_\+\+MEMORY} = 10002
 , {\bfseries NOT\+\_\+\+ENOUGH\+\_\+\+SPACE} = 10003
  \}
 \end{DoxyCompactItemize}

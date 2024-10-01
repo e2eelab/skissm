@@ -96,7 +96,7 @@ int register_user(
         if (is_valid_register_user_response(response)) {
             bool consumed = consume_register_response(account, response);
         } else {
-            ssm_notify_log(NULL, BAD_RESPONSE, "register_user()");
+            ssm_notify_log(NULL, BAD_REGISTER_USER_RESPONSE, "register_user()");
             ret = SKISSM_RESULT_FAIL;
         }
     }
@@ -512,11 +512,11 @@ int create_group(
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_string(group_name)) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "create_group()");
+        ssm_notify_log(NULL, BAD_GROUP_NAME, "create_group()");
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(group_members, group_members_num)) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "create_group()");
+        ssm_notify_log(NULL, BAD_GROUP_MEMBERS, "create_group()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -545,7 +545,7 @@ int create_group(
         response = get_skissm_plugin()->proto_handler.create_group(sender_address, auth, create_group_request);
 
         if (!is_valid_create_group_response(response)) {
-            ssm_notify_log(sender_address, BAD_RESPONSE, "create_group()");
+            ssm_notify_log(sender_address, BAD_CREATE_GROUP_RESPONSE, "create_group()");
             ret = SKISSM_RESULT_FAIL;
             // pack reuest to request_data
             size_t request_data_len = skissm__create_group_request__get_packed_size(create_group_request);
@@ -618,7 +618,7 @@ int add_group_members(
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(adding_members, adding_members_num)) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "add_group_members()");
+        ssm_notify_log(NULL, BAD_GROUP_MEMBERS, "add_group_members()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -631,7 +631,7 @@ int add_group_members(
         // TODO: replace adding_members, adding_members_num by using response->added_group_member_list
 
         if (!is_valid_add_group_members_response(response)) {
-            ssm_notify_log(NULL, BAD_RESPONSE, "add_group_members()");
+            ssm_notify_log(NULL, BAD_ADD_GROUP_MEMBERS_RESPONSE, "add_group_members()");
             ret = SKISSM_RESULT_FAIL;
             // pack reuest to request_data
             size_t request_data_len = skissm__add_group_members_request__get_packed_size(add_group_members_request);
@@ -707,7 +707,7 @@ int remove_group_members(
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(removing_members, removing_members_num)) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "remove_group_members()");
+        ssm_notify_log(NULL, BAD_GROUP_MEMBERS, "remove_group_members()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -719,7 +719,7 @@ int remove_group_members(
         response = get_skissm_plugin()->proto_handler.remove_group_members(sender_address, auth, remove_group_members_request);
 
         if (!is_valid_remove_group_members_response(response)) {
-            ssm_notify_log(NULL, BAD_RESPONSE, "remove_group_members()");
+            ssm_notify_log(NULL, BAD_REMOVE_GROUP_MEMBERS_RESPONSE, "remove_group_members()");
             ret = SKISSM_RESULT_FAIL;
             // pack request to request_data
             size_t request_data_len = skissm__remove_group_members_request__get_packed_size(remove_group_members_request);
@@ -786,7 +786,7 @@ int leave_group(
         response = get_skissm_plugin()->proto_handler.leave_group(sender_address, auth, leave_group_request);
 
         if (!is_valid_leave_group_response(response)) {
-            ssm_notify_log(NULL, BAD_RESPONSE, "leave_group()");
+            ssm_notify_log(NULL, BAD_LEAVE_GROUP_RESPONSE, "leave_group()");
             ret = SKISSM_RESULT_FAIL;
             // pack request to request_data
             size_t request_data_len = skissm__leave_group_request__get_packed_size(leave_group_request);
@@ -861,11 +861,11 @@ int send_group_msg_with_filter(
         ret = SKISSM_RESULT_FAIL;
     }
     if (plaintext_data == NULL) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "send_group_msg()");
+        ssm_notify_log(NULL, BAD_PLAINTEXT, "send_group_msg()");
         ret = SKISSM_RESULT_FAIL;
     }
     if (plaintext_data_len == 0) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "send_group_msg()");
+        ssm_notify_log(NULL, BAD_PLAINTEXT, "send_group_msg()");
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_address_list(allow_list, allow_list_len)) {
@@ -895,7 +895,7 @@ int send_group_msg_with_filter(
         response = get_skissm_plugin()->proto_handler.send_group_msg(sender_address, auth, send_group_msg_request);
 
         if (!is_valid_send_group_msg_response(response)) {
-            ssm_notify_log(NULL, BAD_RESPONSE, "send_group_msg()");
+            ssm_notify_log(NULL, BAD_SEND_GROUP_MSG_RESPONSE, "send_group_msg()");
             ret = SKISSM_RESULT_FAIL;
             // pack request to request_data
             size_t request_data_len = skissm__send_group_msg_request__get_packed_size(send_group_msg_request);

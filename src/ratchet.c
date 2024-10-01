@@ -346,7 +346,7 @@ static size_t verify_and_decrypt_for_new_chain(
             coming_root_sequence = payload->root_sequence;
             // coming_root_sequence should be positive
             if (coming_root_sequence == 0) {
-                ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "verify_and_decrypt_for_new_chain()");
+                ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
                 ret = SKISSM_RESULT_FAIL;
             }
             // the length of the ratchet key should be correct
@@ -740,7 +740,7 @@ int decrypt_ratchet(
                                 skipped_message = true;
                             }
                         } else {
-                            ssm_notify_log(NULL, BAD_MESSAGE_FORMAT, "decrypt_ratchet()");
+                            ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet()");
                             ret = SKISSM_RESULT_FAIL;
                         }
                     } else {

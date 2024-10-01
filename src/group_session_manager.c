@@ -47,15 +47,15 @@ int produce_create_group_request(
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_string(group_name)) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_create_group_request()");
+        ssm_notify_log(NULL, BAD_GROUP_NAME, "produce_create_group_request()");
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(group_member_list, group_members_num)) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_create_group_request()");
+        ssm_notify_log(NULL, BAD_GROUP_MEMBERS, "produce_create_group_request()");
         ret = SKISSM_RESULT_FAIL;
     }
     if (group_members_num == 0) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_create_group_request()");
+        ssm_notify_log(NULL, BAD_GROUP_MEMBERS, "produce_create_group_request()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -288,7 +288,7 @@ int produce_add_group_members_request(
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(adding_member_list, adding_members_num)) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_add_group_members_request()");
+        ssm_notify_log(NULL, BAD_GROUP_MEMBERS, "produce_add_group_members_request()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -424,7 +424,7 @@ bool consume_add_group_members_msg(Skissm__E2eeAddress *receiver_address, Skissm
             msg->sender_address, receiver_address, outbound_group_session->session_id, &inbound_group_session
         );
         if (inbound_group_session == NULL) {
-            ssm_notify_log(receiver_address, BAD_MESSAGE_FORMAT, "consume_add_group_members_msg()");
+            ssm_notify_log(receiver_address, BAD_GROUP_SESSION, "consume_add_group_members_msg()");
             skissm__group_session__free_unpacked(outbound_group_session, NULL);
             return false;
         }
@@ -611,7 +611,7 @@ bool consume_add_group_member_device_msg(
             msg->sender_address, receiver_address, outbound_group_session->session_id, &inbound_group_session
         );
         if (inbound_group_session == NULL) {
-            ssm_notify_log(receiver_address, BAD_MESSAGE_FORMAT, "consume_add_group_member_device_msg()");
+            ssm_notify_log(receiver_address, BAD_GROUP_SESSION, "consume_add_group_member_device_msg()");
             // release
             skissm__group_session__free_unpacked(outbound_group_session, NULL);
             return false;
@@ -666,7 +666,7 @@ int produce_remove_group_members_request(
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_group_member_list(removing_group_members, removing_group_members_num)) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_remove_group_members_request()");
+        ssm_notify_log(NULL, BAD_GROUP_MEMBERS, "produce_remove_group_members_request()");
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -1037,11 +1037,11 @@ int produce_send_group_msg_request(
         ret = SKISSM_RESULT_FAIL;
     }
     if (plaintext_data == NULL) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_send_group_msg_request()");
+        ssm_notify_log(NULL, BAD_PLAINTEXT, "produce_send_group_msg_request()");
         ret = SKISSM_RESULT_FAIL;
     }
     if (plaintext_data_len == 0) {
-        ssm_notify_log(NULL, BAD_INPUT_DATA, "produce_send_group_msg_request()");
+        ssm_notify_log(NULL, BAD_PLAINTEXT, "produce_send_group_msg_request()");
         ret = SKISSM_RESULT_FAIL;
     }
     if (!is_valid_address_list(allow_list, allow_list_len)) {

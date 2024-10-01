@@ -171,7 +171,7 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup session_test_add_a_device change devices test
+ * @defgroup session_test_add_a_device add a device test
  * @ingroup session_int
  * @{
  * @section sec31701 Test Case ID
