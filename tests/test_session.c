@@ -66,7 +66,7 @@
  * Step 2: Alice sends a message to Bob.\n
  * Step 3: Bob decrypts the message.
  * @section sec31007 Expected Results
- * The output of the decrypted message.
+ * No output.
  * @}
  * 
  * @defgroup session_test_interaction interaction test
@@ -88,7 +88,7 @@
  * Step 4: Bob sends a message to Alice.\n
  * Step 5: Alice decrypts the message.
  * @section sec31107 Expected Results
- * The output of the decrypted messages.
+ * No output.
  * @}
  * 
  * @defgroup session_test_continual_messages continual messages test
@@ -108,7 +108,7 @@
  * Step 2: Alice sends 3000 messages to Bob.\n
  * Step 3: Bob decrypts all of these messages.
  * @section sec31207 Expected Results
- * The output of the decrypted messages.
+ * No output.
  * @}
  * 
  * @defgroup session_test_one_to_many multiple devices test: one to many
@@ -128,7 +128,7 @@
  * Step 2: Alice sends a message to Bob.\n
  * Step 3: Bob decrypts the message, using all of his devices.
  * @section sec31407 Expected Results
- * The output of the decrypted messages.
+ * No output.
  * @}
  * 
  * @defgroup session_test_many_to_one multiple devices test: many to one
@@ -148,7 +148,7 @@
  * Step 2: Alice sends a message to Bob with one of her devices.\n
  * Step 3: Bob decrypts the message.
  * @section sec31507 Expected Results
- * The output of the decrypted messages.
+ * No output.
  * @}
  * 
  * @defgroup session_test_many_to_many multiple devices test: many to many
@@ -168,7 +168,7 @@
  * Step 2: Alice sends a message to Bob with one of her devices.\n
  * Step 3: Bob decrypts the message, using all of his devices.
  * @section sec31607 Expected Results
- * The output of the decrypted messages.
+ * No output.
  * @}
  * 
  * @defgroup session_test_add_a_device add a device test
@@ -189,7 +189,7 @@
  * Step 3: Alice uses the old device to send a message to Bob, and then Bob decrypts the message.\n
  * Step 4: Bob sends a message to Alice, and then Alice decrypts the message.
  * @section sec31707 Expected Results
- * The output of the decrypted messages.
+ * No output.
  * @}
  * 
  * @defgroup session_test_session_no_opk session test: no opk
@@ -209,7 +209,47 @@
  * Step 2: Alice sends a message to Bob.\n
  * Step 3: Bob decrypts the message.
  * @section sec31807 Expected Results
- * The output of the decrypted messages.
+ * No output.
+ * @}
+ * 
+ * @defgroup test_invite_twice invite twice test
+ * @ingroup session_int
+ * @{
+ * @section sec31801 Test Case ID
+ * v1.0is09
+ * @section sec31802 Test Case Title
+ * test_invite_twice
+ * @section sec31803 Test Description
+ * Alice invites Bob two times.
+ * @section sec31804 Test Objectives
+ * To assure that sessions can be successfully established after two times of invitation.
+ * @section sec31805 Preconditions
+ * @section sec31806 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Alice invites Bob again.\n
+ * Step 3: Alice sends a message to Bob and then Bob decrypts the message.
+ * @section sec31807 Expected Results
+ * No output.
+ * @}
+ * 
+ * @defgroup test_invite_interaction invite interaction test
+ * @ingroup session_int
+ * @{
+ * @section sec31801 Test Case ID
+ * v1.0is10
+ * @section sec31802 Test Case Title
+ * test_invite_interaction
+ * @section sec31803 Test Description
+ * Alice invites Bob and Bob invites Alice.
+ * @section sec31804 Test Objectives
+ * To assure that sessions can be successfully established after some invitation.
+ * @section sec31805 Preconditions
+ * @section sec31806 Test Steps
+ * Step 1: Alice invites Bob to create a session.\n
+ * Step 2: Bob invites Alice.\n
+ * Step 3: Alice sends a message to Bob and then Bob decrypts the message.
+ * @section sec31807 Expected Results
+ * No output.
  * @}
  * 
  */
@@ -775,6 +815,74 @@ static void test_session_no_opk() {
     printf("====================================\n");
 }
 
+static void test_invite_twice() {
+    // test start
+    printf("test_invite_twice begin!!!\n");
+    tear_up();
+    test_begin();
+
+    mock_alice_account("alice");
+    mock_bob_account("bob");
+
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
+
+    // Alice invites Bob to create a session
+    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    skissm__invite_response__free_unpacked(response, NULL);
+    sleep(1);
+
+    // Alice invites Bob again
+    response = invite(alice_address, bob_user_id, bob_domain);
+    sleep(1);
+
+    // Alice sends an encrypted message to Bob, and Bob decrypts the message
+    test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
+
+    // test stop
+    skissm__invite_response__free_unpacked(response, NULL);
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
+static void test_invite_interaction() {
+    // test start
+    printf("test_invite_interaction begin!!!\n");
+    tear_up();
+    test_begin();
+
+    mock_alice_account("alice");
+    mock_bob_account("bob");
+
+    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    char *alice_user_id = alice_address->user->user_id;
+    char *alice_domain = alice_address->domain;
+    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    char *bob_user_id = bob_address->user->user_id;
+    char *bob_domain = bob_address->domain;
+
+    // Alice invites Bob to create a session
+    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    skissm__invite_response__free_unpacked(response, NULL);
+    sleep(1);
+
+    // Bob invites Alice
+    response = invite(bob_address, alice_user_id, alice_domain);
+    sleep(1);
+
+    // Alice sends an encrypted message to Bob, and Bob decrypts the message
+    test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
+
+    // test stop
+    skissm__invite_response__free_unpacked(response, NULL);
+    test_end();
+    tear_down();
+    printf("====================================\n");
+}
+
 int main() {
     test_basic_session();
     test_interaction();
@@ -784,6 +892,8 @@ int main() {
     test_many_to_many();
     test_add_a_device();
     test_session_no_opk();
+    test_invite_twice();
+    test_invite_interaction();
 
     return 0;
 }

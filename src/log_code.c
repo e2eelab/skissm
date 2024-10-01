@@ -21,9 +21,11 @@
 static const char * LOG_CODE_STRINGS[] = {
     "DEBUG_LOG",
 
+    // cipher suite
     "BAD_CIPHER_SUITE",
     "BAD_E2EE_PACK",
 
+    // account
     "BAD_ACCOUNT",
     "BAD_KEY_PAIR",
     "BAD_SIGNED_PRE_KEY",
@@ -35,12 +37,14 @@ static const char * LOG_CODE_STRINGS[] = {
     "BAD_PUBLIC_KEY",
     "BAD_REMOVE_OPK",
 
+    // address
     "BAD_ADDRESS",
     "BAD_USER_ID",
     "BAD_DEVICE_ID",
     "BAD_DOMAIN",
     "BAD_USER_NAME",
 
+    // ratchet
     "BAD_MESSAGE_ENCRYPTION",
     "BAD_MESSAGE_DECRYPTION",
     "BAD_FILE_ENCRYPTION",
@@ -49,10 +53,12 @@ static const char * LOG_CODE_STRINGS[] = {
     "BAD_MESSAGE_SEQUENCE",
     "BAD_RATCHET_KEY",
 
+    // session
     "BAD_SESSION",
     "BAD_SESSION_ID",
     "BAD_PRE_KEY_BUNDLE",
 
+    // group session
     "BAD_GROUP_SESSION",
     "BAD_GROUP_SESSION_ID",
     "BAD_GROUP_NAME",
@@ -65,6 +71,7 @@ static const char * LOG_CODE_STRINGS[] = {
     "BAD_GROUP_PRE_KEY_BUNDLE",
     "BAD_GROUP_UPDATE_KEY_BUNDLE",
 
+    // request
     "BAD_ACCEPT_REQUEST",
     "BAD_ADD_GROUP_MEMBER_DEVICE_REQUEST",
     "BAD_ADD_GROUP_MEMBERS_REQUEST",
@@ -81,6 +88,7 @@ static const char * LOG_CODE_STRINGS[] = {
     "BAD_SEND_ONE2ONE_MSG_REQUEST",
     "BAD_SUPPLY_OPKS_REQUEST",
     "BAD_UPDATE_USER_REQUEST",
+    // response
     "BAD_ACCEPT_RESPONSE",
     "BAD_ADD_GROUP_MEMBER_DEVICE_RESPONSE",
     "BAD_ADD_GROUP_MEMBERS_RESPONSE",
@@ -97,6 +105,7 @@ static const char * LOG_CODE_STRINGS[] = {
     "BAD_SEND_ONE2ONE_MSG_RESPONSE",
     "BAD_SUPPLY_OPKS_RESPONSE",
     "BAD_UPDATE_USER_RESPONSE",
+    // msg
     "BAD_ACCEPT_MSG",
     "BAD_ADD_GROUP_MEMBER_DEVICE_MSG",
     "BAD_ADD_GROUP_MEMBERS_MSG",

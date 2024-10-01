@@ -71,7 +71,7 @@ void account_begin() {
 
             // check if there are too many "used" one-time pre-keys
             free_one_time_pre_key(cur_account);
-            
+
             // store into cache
             store_account_into_cache(cur_account);
         }
