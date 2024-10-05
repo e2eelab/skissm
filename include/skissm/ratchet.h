@@ -35,7 +35,7 @@ extern "C" {
 int initialise_as_bob(
     Skissm__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
-    const uint8_t *shared_secret, size_t shared_secret_length,
+    const uint8_t *shared_secret, size_t shared_secret_len,
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 );
 
@@ -45,7 +45,7 @@ int initialise_as_alice(
     Skissm__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
     const uint8_t *shared_secret,
-    size_t shared_secret_length,
+    size_t shared_secret_len,
     const Skissm__KeyPair *our_ratchet_key,
     ProtobufCBinaryData *their_ratchet_key,
     ProtobufCBinaryData *their_encaps_ciphertext

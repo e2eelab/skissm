@@ -658,7 +658,7 @@ static void resend_pending_request(Skissm__Account *account) {
                     }
                 }
                 
-                if (ret == 0 || succ) {
+                if (ret == SKISSM_RESULT_SUCC || succ) {
                     get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
                 } else {
                     ssm_notify_log(user_address, DEBUG_LOG, "handle pending get_pre_key_bundle_request failed");

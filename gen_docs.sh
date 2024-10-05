@@ -2,12 +2,14 @@
 export api_ver=$(git describe --tags --abbrev=0)
 export ts_ver="v1.0"
 
-mkdir -p docs/api
+# gen spec doc
 mkdir -p docs/spec
-# doxygen -g docs/skissm-doxygen.cfg
-# doxygen -g docs/skissm-tests-doxygen.cfg
-doxygen docs/skissm-doxygen.cfg
+find docs/spec/* -delete
+# generate default cfg: doxygen -g docs/skissm-tests-doxygen.cfg
 doxygen docs/skissm-tests-doxygen.cfg
 
-# another way:
-# docker run --rm -v $(pwd)/docs:/tmp/docs tsgkadot/docker-doxygen doxygen /tmp/docs
+# gen api doc
+mkdir -p docs/api
+find docs/api/* -delete
+# generate default cfg: doxygen -g docs/skissm-doxygen.cfg
+doxygen docs/skissm-doxygen.cfg

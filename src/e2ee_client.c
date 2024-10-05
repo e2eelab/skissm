@@ -523,7 +523,7 @@ int create_group(
     if (ret == SKISSM_RESULT_SUCC) {
         load_e2ee_pack_id_from_cache(&e2ee_pack_id, sender_address);
 
-        if (e2ee_pack_id == 0) {
+        if (e2ee_pack_id == E2EE_PACK_ID_UNSPECIFIED) {
             get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
             if (account == NULL) {
                 ssm_notify_log(sender_address, BAD_ACCOUNT, "create_group()");

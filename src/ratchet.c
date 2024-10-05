@@ -404,7 +404,7 @@ static size_t verify_and_decrypt_for_new_chain(
 int initialise_as_bob(
     Skissm__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
-    const uint8_t *shared_secret, size_t shared_secret_length,
+    const uint8_t *shared_secret, size_t shared_secret_len,
     const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 ) {
     int ret = SKISSM_RESULT_SUCC;
@@ -424,7 +424,7 @@ int initialise_as_bob(
     }
     if (shared_secret == NULL)
         ret = SKISSM_RESULT_FAIL;
-    if (shared_secret_length == 0)
+    if (shared_secret_len == 0)
         ret = SKISSM_RESULT_FAIL;
     if (!is_valid_key_pair(our_ratchet_key)) {
         ret = SKISSM_RESULT_FAIL;
@@ -442,7 +442,7 @@ int initialise_as_bob(
         uint8_t salt[hash_len];
         memset(salt, 0, hash_len);
         ret = cipher_suite->hash_suite->hkdf(
-            shared_secret, shared_secret_length,
+            shared_secret, shared_secret_len,
             salt, sizeof(salt),
             (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
             derived_secrets, derived_secrets_len
@@ -505,7 +505,7 @@ int initialise_as_alice(
     Skissm__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
     const uint8_t *shared_secret,
-    size_t shared_secret_length,
+    size_t shared_secret_len,
     const Skissm__KeyPair *our_ratchet_key,
     ProtobufCBinaryData *their_ratchet_key,
     ProtobufCBinaryData *their_encaps_ciphertext
@@ -533,7 +533,7 @@ int initialise_as_alice(
     }
     if (shared_secret == NULL)
         ret = SKISSM_RESULT_FAIL;
-    if (shared_secret_length == 0)
+    if (shared_secret_len == 0)
         ret = SKISSM_RESULT_FAIL;
     if (!is_valid_key_pair(our_ratchet_key)) {
         ret = SKISSM_RESULT_FAIL;
@@ -549,9 +549,9 @@ int initialise_as_alice(
         hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t salt[hash_len];
         memset(salt, 0, hash_len);
-        // shared_secret_length may be 128 or 96
+        // shared_secret_len may be 128 or 96
         ret = cipher_suite->hash_suite->hkdf(
-            shared_secret, shared_secret_length,
+            shared_secret, shared_secret_len,
             salt, sizeof(salt),
             (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
             derived_secrets, derived_secrets_len

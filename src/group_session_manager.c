@@ -62,7 +62,7 @@ int produce_create_group_request(
     if (ret == SKISSM_RESULT_SUCC) {
         load_e2ee_pack_id_from_cache(&e2ee_pack_id, sender_address);
 
-        if (e2ee_pack_id == 0) {
+        if (e2ee_pack_id == E2EE_PACK_ID_UNSPECIFIED) {
             get_skissm_plugin()->db_handler.load_account_by_address(sender_address, &account);
             if (account == NULL) {
                 ssm_notify_log(sender_address, BAD_ACCOUNT, "produce_create_group_request()");
@@ -295,7 +295,7 @@ int produce_add_group_members_request(
     if (ret == SKISSM_RESULT_SUCC) {
         load_e2ee_pack_id_from_cache(&e2ee_pack_id, outbound_group_session->session_owner);
 
-        if (e2ee_pack_id == 0) {
+        if (e2ee_pack_id == E2EE_PACK_ID_UNSPECIFIED) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
             if (account == NULL) {
                 ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_add_group_members_request()");
@@ -487,7 +487,7 @@ int produce_add_group_member_device_request(
     if (ret == SKISSM_RESULT_SUCC) {
         load_e2ee_pack_id_from_cache(&e2ee_pack_id, outbound_group_session->session_owner);
 
-        if (e2ee_pack_id == 0) {
+        if (e2ee_pack_id == E2EE_PACK_ID_UNSPECIFIED) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
             if (account == NULL) {
                 ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_add_group_member_device_request()");
@@ -673,7 +673,7 @@ int produce_remove_group_members_request(
     if (ret == SKISSM_RESULT_SUCC) {
         load_e2ee_pack_id_from_cache(&e2ee_pack_id, outbound_group_session->session_owner);
 
-        if (e2ee_pack_id == 0) {
+        if (e2ee_pack_id == E2EE_PACK_ID_UNSPECIFIED) {
             get_skissm_plugin()->db_handler.load_account_by_address(outbound_group_session->session_owner, &account);
             if (account == NULL) {
                 ssm_notify_log(outbound_group_session->session_owner, BAD_ACCOUNT, "produce_remove_group_members_request()");

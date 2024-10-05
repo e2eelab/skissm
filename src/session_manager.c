@@ -798,11 +798,11 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     // create a new inbound session
     int result = session_suite->new_inbound_session(&inbound_session, account, invite_msg);
 
-    if (result != 0
+    if (result != SKISSM_RESULT_SUCC
         || safe_strcmp(inbound_session->session_id, invite_msg->session_id) == false
     ) {
         ssm_notify_log(receiver_address, BAD_GROUP_SESSION, "consume_invite_msg()");
-        result = -1;
+        result = SKISSM_RESULT_FAIL;
     } else {
         // notify
         ssm_notify_inbound_session_ready(receiver_address, inbound_session);
@@ -812,7 +812,7 @@ bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg
     skissm__session__free_unpacked(inbound_session, NULL);
 
     // done
-    return result == 0;
+    return result == SKISSM_RESULT_SUCC;
 }
 
 int produce_accept_request(
@@ -919,7 +919,7 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
     const session_suite_t *session_suite = get_e2ee_pack(accept_msg->e2ee_pack_id)->session_suite;
     int result = session_suite->complete_outbound_session(&outbound_session, accept_msg);
 
-    if (result == 0) {
+    if (result == SKISSM_RESULT_SUCC) {
         // notify
         ssm_notify_outbound_session_ready(receiver_address, outbound_session);
 
@@ -927,5 +927,5 @@ bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg
         send_pending_plaintext_data(outbound_session);
     }
 
-    return result >= 0;
+    return result == SKISSM_RESULT_SUCC;
 }

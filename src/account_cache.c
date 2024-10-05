@@ -90,7 +90,7 @@ void load_e2ee_pack_id_from_cache(uint32_t *e2ee_pack_id_out, Skissm__E2eeAddres
         }
         cur = cur->next;
     }
-    *e2ee_pack_id_out = 0;
+    *e2ee_pack_id_out = E2EE_PACK_ID_UNSPECIFIED;
 }
 
 void load_identity_key_from_cache(Skissm__IdentityKey **identity_key_out, Skissm__E2eeAddress *address) {

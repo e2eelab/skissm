@@ -150,514 +150,517 @@
 \DoxyCodeLine{00164\ \textcolor{preprocessor}{\#define\ E2EE\_PACK\_ALG\_HASH\_SHAKE\_128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 12}}
 \DoxyCodeLine{00165\ \textcolor{preprocessor}{\#define\ E2EE\_PACK\_ALG\_HASH\_SHAKE\_256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 13}}
 \DoxyCodeLine{00166\ }
-\DoxyCodeLine{00167\ \textcolor{preprocessor}{\#define\ CIPHER\_SUITE\_PART\_LEN\_IN\_BITS\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 8}}
-\DoxyCodeLine{00168\ \textcolor{preprocessor}{\#define\ CIPHER\_SUITE\_PART\_HALF\_LEN\_IN\_BITS\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 4}}
+\DoxyCodeLine{00167\ \textcolor{preprocessor}{\#define\ E2EE\_PACK\_ID\_UNSPECIFIED\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0}}
+\DoxyCodeLine{00168\ \textcolor{preprocessor}{\#define\ E2EE\_PACK\_ID\_V\_0\_DEFAULT\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0x113101}}
 \DoxyCodeLine{00169\ }
-\DoxyCodeLine{00173\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ee__pack__id__t}{e2ee\_pack\_id\_t}}\ \{}
-\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ ver:CIPHER\_SUITE\_PART\_LEN\_IN\_BITS;}
-\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ digital\_signature:CIPHER\_SUITE\_PART\_LEN\_IN\_BITS;}
-\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ kem:CIPHER\_SUITE\_PART\_LEN\_IN\_BITS;}
-\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ symmetric\_encryption:CIPHER\_SUITE\_PART\_HALF\_LEN\_IN\_BITS;}
-\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ hash:CIPHER\_SUITE\_PART\_HALF\_LEN\_IN\_BITS;}
-\DoxyCodeLine{00179\ \}\ \mbox{\hyperlink{skissm_8h_ad783d8bce5c8f34053118babb45d82d6}{e2ee\_pack\_id\_t}};}
-\DoxyCodeLine{00180\ }
-\DoxyCodeLine{00185\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ee__pack__t}{e2ee\_pack\_t}}\ \{}
-\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite;}
-\DoxyCodeLine{00187\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsession__suite__t}{session\_suite\_t}}\ *session\_suite;}
-\DoxyCodeLine{00188\ \}\ \mbox{\hyperlink{skissm_8h_a08f19ae877215f234cfa4813a959b54b}{e2ee\_pack\_t}};}
-\DoxyCodeLine{00189\ }
-\DoxyCodeLine{00193\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ \{}
-\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keywordtype}{bool}\ pqc\_param;}
-\DoxyCodeLine{00195\ \ \ \ \ uint32\_t\ sign\_pub\_key\_len;}
-\DoxyCodeLine{00196\ \ \ \ \ uint32\_t\ sign\_priv\_key\_len;}
-\DoxyCodeLine{00197\ \ \ \ \ uint32\_t\ sig\_len;}
-\DoxyCodeLine{00198\ \}\ \mbox{\hyperlink{skissm_8h_ad899fbdeeefd5f62fd89c93371cfb174}{crypto\_digital\_signature\_param\_t}};}
-\DoxyCodeLine{00199\ }
-\DoxyCodeLine{00203\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ \{}
-\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keywordtype}{bool}\ pqc\_param;}
-\DoxyCodeLine{00205\ \ \ \ \ uint32\_t\ asym\_pub\_key\_len;}
-\DoxyCodeLine{00206\ \ \ \ \ uint32\_t\ asym\_priv\_key\_len;}
-\DoxyCodeLine{00207\ \ \ \ \ uint32\_t\ kem\_ciphertext\_len;}
-\DoxyCodeLine{00208\ \ \ \ \ uint32\_t\ shared\_secret\_len;}
-\DoxyCodeLine{00209\ \}\ \mbox{\hyperlink{skissm_8h_ae20eb84b8db760dff90fb80506043872}{crypto\_kem\_param\_t}};}
-\DoxyCodeLine{00210\ }
-\DoxyCodeLine{00214\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__symmetric__encryption__param__t}{crypto\_symmetric\_encryption\_param\_t}}\ \{}
-\DoxyCodeLine{00215\ \ \ \ \ uint32\_t\ aead\_key\_len;}
-\DoxyCodeLine{00216\ \ \ \ \ uint32\_t\ aead\_iv\_len;}
-\DoxyCodeLine{00217\ \ \ \ \ uint32\_t\ aead\_tag\_len;}
-\DoxyCodeLine{00218\ \}\ \mbox{\hyperlink{skissm_8h_a01e4dc27434b25a3202258677ee5a8aa}{crypto\_symmetric\_encryption\_param\_t}};}
-\DoxyCodeLine{00219\ }
-\DoxyCodeLine{00223\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__hash__param__t}{crypto\_hash\_param\_t}}\ \{}
-\DoxyCodeLine{00224\ \ \ \ \ uint32\_t\ hash\_len;}
-\DoxyCodeLine{00225\ \}\ \mbox{\hyperlink{skissm_8h_a4e32bf3a288f430cdca74c840b479f9e}{crypto\_hash\_param\_t}};}
-\DoxyCodeLine{00226\ }
-\DoxyCodeLine{00230\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structdigital__signature__suite__t}{digital\_signature\_suite\_t}}\ \{}
-\DoxyCodeLine{00235\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ (*\mbox{\hyperlink{structdigital__signature__suite__t_a14e4326278f81c25614702b71baadcb1}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
-\DoxyCodeLine{00236\ }
-\DoxyCodeLine{00244\ \ \ \ \ int\ (*\mbox{\hyperlink{structdigital__signature__suite__t_a24a07d8a7e1e3ac3772ab2e672794b5c}{sign\_key\_gen}})(}
-\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *pub\_key,}
-\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *priv\_key}
-\DoxyCodeLine{00247\ \ \ \ \ );}
-\DoxyCodeLine{00248\ }
-\DoxyCodeLine{00259\ \ \ \ \ int\ (*\mbox{\hyperlink{structdigital__signature__suite__t_a80ff5d983335660199b68cdcfca478ed}{sign}})(}
-\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ uint8\_t\ *signature\_out,\ \textcolor{keywordtype}{size\_t}\ *signature\_out\_len,}
-\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
-\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *private\_key}
-\DoxyCodeLine{00263\ \ \ \ \ );}
-\DoxyCodeLine{00264\ }
-\DoxyCodeLine{00275\ \ \ \ \ int\ (*\mbox{\hyperlink{structdigital__signature__suite__t_ae0ee14e17294bfe9029fc1c839afeb71}{verify}})(}
-\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *signature\_in,\ \textcolor{keywordtype}{size\_t}\ signature\_in\_len,}
-\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
-\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *public\_key}
-\DoxyCodeLine{00279\ \ \ \ \ );}
-\DoxyCodeLine{00280\ \}\ \mbox{\hyperlink{skissm_8h_ac55fe4ffa01a8449d8aa73e6d6a2931a}{digital\_signature\_suite\_t}};}
-\DoxyCodeLine{00281\ }
-\DoxyCodeLine{00285\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ \{}
-\DoxyCodeLine{00290\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ (*\mbox{\hyperlink{structkem__suite__t_a2c102cdde7c6f66a97c1192ae845f7f6}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
-\DoxyCodeLine{00291\ }
-\DoxyCodeLine{00298\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_a8cb7fafa56b33c45a717e4a2d358335f}{asym\_key\_gen}})(}
-\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *pub\_key,}
-\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *priv\_key}
-\DoxyCodeLine{00301\ \ \ \ \ );}
-\DoxyCodeLine{00302\ }
-\DoxyCodeLine{00311\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_acb69c24dfa2b2571fcf43f3676d2c23e}{encaps}})(}
-\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ uint8\_t\ *shared\_secret,}
-\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
-\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
-\DoxyCodeLine{00315\ \ \ \ \ );}
-\DoxyCodeLine{00316\ }
-\DoxyCodeLine{00325\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_a275cda3e1962677ce05f492bcd6de467}{decaps}})(}
-\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ uint8\_t\ *shared\_secret,}
-\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
-\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
-\DoxyCodeLine{00329\ \ \ \ \ );}
-\DoxyCodeLine{00330\ \}\ \mbox{\hyperlink{skissm_8h_a7f99b84ece115e05e0f2385ecd9d35e4}{kem\_suite\_t}};}
-\DoxyCodeLine{00331\ }
-\DoxyCodeLine{00335\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsymmetric__encryption__suite__t}{symmetric\_encryption\_suite\_t}}\ \{}
-\DoxyCodeLine{00340\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__symmetric__encryption__param__t}{crypto\_symmetric\_encryption\_param\_t}}\ (*\mbox{\hyperlink{structsymmetric__encryption__suite__t_a036fb347cf59d603951e14527dada12d}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
-\DoxyCodeLine{00341\ }
-\DoxyCodeLine{00353\ \ \ \ \ int\ (*\mbox{\hyperlink{structsymmetric__encryption__suite__t_aa1402a94f795355214454b6d308e24c5}{encrypt}})(}
-\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *,}
-\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,}
-\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,\ size\_t,}
-\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ uint8\_t\ **,\ \textcolor{keywordtype}{size\_t}\ *}
-\DoxyCodeLine{00358\ \ \ \ \ );}
-\DoxyCodeLine{00359\ }
-\DoxyCodeLine{00371\ \ \ \ \ int\ (*\mbox{\hyperlink{structsymmetric__encryption__suite__t_ae9aaa05f6242bc99696067355639f7b0}{decrypt}})(}
-\DoxyCodeLine{00372\ \ \ \ \ \ \ \ \ uint8\_t\ **,\ \textcolor{keywordtype}{size\_t}\ *,}
-\DoxyCodeLine{00373\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *,}
-\DoxyCodeLine{00374\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,}
-\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,\ size\_t}
-\DoxyCodeLine{00376\ \ \ \ \ );}
-\DoxyCodeLine{00377\ \}\ \mbox{\hyperlink{skissm_8h_a539c3812b8ec180e2e6ebc3802c6fd59}{symmetric\_encryption\_suite\_t}};}
-\DoxyCodeLine{00378\ }
-\DoxyCodeLine{00382\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structhash__suite__t}{hash\_suite\_t}}\ \{}
-\DoxyCodeLine{00387\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__hash__param__t}{crypto\_hash\_param\_t}}\ (*\mbox{\hyperlink{structhash__suite__t_ad03f8e1623c09090ed1760ee4d2c0d1f}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
-\DoxyCodeLine{00388\ }
-\DoxyCodeLine{00402\ \ \ \ \ int\ (*\mbox{\hyperlink{structhash__suite__t_a24a93c49162231ce34b5cb34c611b51b}{hkdf}})(}
-\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
-\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *salt,\ \textcolor{keywordtype}{size\_t}\ salt\_len,}
-\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *info,\ \textcolor{keywordtype}{size\_t}\ info\_len,}
-\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ uint8\_t\ *output,\ \textcolor{keywordtype}{size\_t}\ output\_len}
-\DoxyCodeLine{00407\ \ \ \ \ );}
-\DoxyCodeLine{00408\ }
-\DoxyCodeLine{00419\ \ \ \ \ int\ (*\mbox{\hyperlink{structhash__suite__t_a3e7b75b9bd093d20599c3e276a18e0c7}{hmac}})(}
-\DoxyCodeLine{00420\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *key,\ \textcolor{keywordtype}{size\_t}\ key\_len,}
-\DoxyCodeLine{00421\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
-\DoxyCodeLine{00422\ \ \ \ \ \ \ \ \ uint8\_t\ *output}
-\DoxyCodeLine{00423\ \ \ \ \ );}
-\DoxyCodeLine{00424\ }
-\DoxyCodeLine{00433\ \ \ \ \ int\ (*\mbox{\hyperlink{structhash__suite__t_a07b0734eaccf837ac46b0dd1d4cb1b22}{hash}})(}
-\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,}
-\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ msg\_len,}
-\DoxyCodeLine{00436\ \ \ \ \ \ \ \ \ uint8\_t\ *hash\_out}
-\DoxyCodeLine{00437\ \ \ \ \ );}
-\DoxyCodeLine{00438\ \}\ \mbox{\hyperlink{skissm_8h_a929c38c678a77d7993ba05573aa44aba}{hash\_suite\_t}};}
-\DoxyCodeLine{00439\ }
-\DoxyCodeLine{00443\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ \{}
-\DoxyCodeLine{00444\ \ \ \ \ \mbox{\hyperlink{structdigital__signature__suite__t}{digital\_signature\_suite\_t}}\ *digital\_signature\_suite;}
-\DoxyCodeLine{00445\ \ \ \ \ \mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ *kem\_suite;}
-\DoxyCodeLine{00446\ \ \ \ \ \mbox{\hyperlink{structsymmetric__encryption__suite__t}{symmetric\_encryption\_suite\_t}}\ *symmetric\_encryption\_suite;}
-\DoxyCodeLine{00447\ \ \ \ \ \mbox{\hyperlink{structhash__suite__t}{hash\_suite\_t}}\ *hash\_suite;}
-\DoxyCodeLine{00448\ \}\ \mbox{\hyperlink{skissm_8h_a764f131fe1cf3e866758cf3e45028de8}{cipher\_suite\_t}};}
-\DoxyCodeLine{00449\ }
-\DoxyCodeLine{00453\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structskissm__common__handler__t}{skissm\_common\_handler\_t}}\ \{}
-\DoxyCodeLine{00458\ \ \ \ \ int64\_t\ (*\mbox{\hyperlink{structskissm__common__handler__t_a0989450ad2fea80cd2b962aa41c1ee7c}{gen\_ts}})();}
-\DoxyCodeLine{00459\ }
-\DoxyCodeLine{00465\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__common__handler__t_a4352cd6ca7c367aa966659e6f16b0e14}{gen\_rand}})(uint8\_t\ *rand\_data,\ \textcolor{keywordtype}{size\_t}\ rand\_data\_len);}
-\DoxyCodeLine{00466\ \ \ \ \ void\ (*gen\_uuid)(uint8\_t\ uuid[UUID\_LEN]);}
-\DoxyCodeLine{00467\ \}\ \mbox{\hyperlink{skissm_8h_ab6163a095daab0e01317f02e88d60de1}{skissm\_common\_handler\_t}};}
-\DoxyCodeLine{00468\ }
-\DoxyCodeLine{00472\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structskissm__db__handler__t}{skissm\_db\_handler\_t}}\ \{}
-\DoxyCodeLine{00473\ \ \ \ \ \textcolor{comment}{//\ account\ related\ handlers}}
-\DoxyCodeLine{00478\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a2a8dce343a34da3e9ff061a78440f1a3}{store\_account}})(}
-\DoxyCodeLine{00479\ \ \ \ \ \ \ \ \ Skissm\_\_Account\ *account}
-\DoxyCodeLine{00480\ \ \ \ \ );}
-\DoxyCodeLine{00486\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a437a79d3934a491651468771de5f08e4}{load\_account\_by\_address}})(}
-\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ Skissm\_\_Account\ **account}
-\DoxyCodeLine{00489\ \ \ \ \ );}
-\DoxyCodeLine{00495\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_abc913a8d746f02d1ed713402fca411a6}{load\_accounts}})(}
-\DoxyCodeLine{00496\ \ \ \ \ \ \ \ \ Skissm\_\_Account\ ***accounts}
-\DoxyCodeLine{00497\ \ \ \ \ );}
-\DoxyCodeLine{00503\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_a74f4a7db7930960ac18ac2d62e143b54}{update\_signed\_pre\_key}})(}
-\DoxyCodeLine{00504\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00505\ \ \ \ \ \ \ \ \ Skissm\_\_SignedPreKey\ *signed\_pre\_key}
-\DoxyCodeLine{00506\ \ \ \ \ );}
-\DoxyCodeLine{00513\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a25c711d630cc671ff47568e543a75253}{load\_signed\_pre\_key}})(}
-\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00515\ \ \ \ \ \ \ \ \ uint32\_t\ spk\_id,}
-\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ Skissm\_\_SignedPreKey\ **signed\_pre\_key}
-\DoxyCodeLine{00517\ \ \ \ \ );}
-\DoxyCodeLine{00522\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_a8e704c4b5e6fa33e5795bccee280404e}{remove\_expired\_signed\_pre\_key}})(}
-\DoxyCodeLine{00523\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address}
-\DoxyCodeLine{00524\ \ \ \ \ );}
-\DoxyCodeLine{00530\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_a5291e1e93a4da1112c5b0860aa1d86f0}{add\_one\_time\_pre\_key}})(}
-\DoxyCodeLine{00531\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00532\ \ \ \ \ \ \ \ \ Skissm\_\_OneTimePreKey\ *one\_time\_pre\_key}
-\DoxyCodeLine{00533\ \ \ \ \ );}
-\DoxyCodeLine{00539\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_abcde7a93409638eae7cd9667951bdce2}{remove\_one\_time\_pre\_key}})(}
-\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ uint32\_t\ one\_time\_pre\_key\_id}
-\DoxyCodeLine{00542\ \ \ \ \ );}
-\DoxyCodeLine{00548\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_af0dd99dfa9dd9a150d9e2650c44fa2d6}{update\_one\_time\_pre\_key}})(}
-\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ uint32\_t\ one\_time\_pre\_key\_id}
-\DoxyCodeLine{00551\ \ \ \ \ );}
-\DoxyCodeLine{00557\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_aed4bcfd293bc04f71799021dbbed698c}{load\_auth}})(}
-\DoxyCodeLine{00558\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00559\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ **auth}
-\DoxyCodeLine{00560\ \ \ \ \ );}
-\DoxyCodeLine{00561\ \ \ \ \ \textcolor{comment}{//\ session\ related\ handlers}}
-\DoxyCodeLine{00568\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a076746d3353ed129e3265db4471848dd}{load\_inbound\_session}})(}
-\DoxyCodeLine{00569\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *session\_id,}
-\DoxyCodeLine{00570\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
-\DoxyCodeLine{00571\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ **inbound\_session}
-\DoxyCodeLine{00572\ \ \ \ \ );}
-\DoxyCodeLine{00579\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a0a218214d1bb0e264d041894bee334c0}{load\_outbound\_session}})(}
-\DoxyCodeLine{00580\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
-\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *their\_address,}
-\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ **outbound\_session}
-\DoxyCodeLine{00583\ \ \ \ \ );}
-\DoxyCodeLine{00584\ }
-\DoxyCodeLine{00592\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_a6afbaecc13754abbbd93990a825cb8f6}{load\_outbound\_sessions}})(}
-\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
-\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *their\_user\_id,}
-\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *their\_domain,}
-\DoxyCodeLine{00596\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ ***outbound\_sessions}
-\DoxyCodeLine{00597\ \ \ \ \ );}
-\DoxyCodeLine{00598\ }
-\DoxyCodeLine{00603\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a4b90eb77358cf806b6b1a8377d2697ce}{store\_session}})(}
-\DoxyCodeLine{00604\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ *session}
-\DoxyCodeLine{00605\ \ \ \ \ );}
-\DoxyCodeLine{00611\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a466557723169fec75c2847ccdede83f7}{unload\_session}})(}
-\DoxyCodeLine{00612\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
-\DoxyCodeLine{00613\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *their\_address}
-\DoxyCodeLine{00614\ \ \ \ \ );}
-\DoxyCodeLine{00621\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a6935c5207573d204870cb8d59b1ea5e0}{unload\_old\_session}})(}
-\DoxyCodeLine{00622\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
-\DoxyCodeLine{00623\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *their\_address,}
-\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ int64\_t\ invite\_t}
-\DoxyCodeLine{00625\ \ \ \ \ );}
-\DoxyCodeLine{00626\ }
-\DoxyCodeLine{00627\ \ \ \ \ \textcolor{comment}{//\ group\ session\ related\ handlers}}
-\DoxyCodeLine{00635\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a724789cdfd426e5df5b5bbab03c22262}{load\_group\_session\_by\_address}})(}
-\DoxyCodeLine{00636\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *sender\_address,}
-\DoxyCodeLine{00637\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
-\DoxyCodeLine{00638\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
-\DoxyCodeLine{00639\ \ \ \ \ \ \ \ \ Skissm\_\_GroupSession\ **group\_session}
-\DoxyCodeLine{00640\ \ \ \ \ );}
-\DoxyCodeLine{00648\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a7474571050301871488bab382b01f100}{load\_group\_session\_by\_id}})(}
-\DoxyCodeLine{00649\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *sender\_address,}
-\DoxyCodeLine{00650\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
-\DoxyCodeLine{00651\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *group\_session\_id,}
-\DoxyCodeLine{00652\ \ \ \ \ \ \ \ \ Skissm\_\_GroupSession\ **group\_session}
-\DoxyCodeLine{00653\ \ \ \ \ );}
-\DoxyCodeLine{00660\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_adae997489902728f50d357f550891224}{load\_group\_sessions}})(}
-\DoxyCodeLine{00661\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
-\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
-\DoxyCodeLine{00663\ \ \ \ \ \ \ \ \ Skissm\_\_GroupSession\ ***group\_sessions}
-\DoxyCodeLine{00664\ \ \ \ \ );}
-\DoxyCodeLine{00671\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_ada412e9d0e8f1fd77205bccef94f6359}{load\_group\_addresses}})(}
-\DoxyCodeLine{00672\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *sender\_address,}
-\DoxyCodeLine{00673\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
-\DoxyCodeLine{00674\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ ***group\_addresses}
-\DoxyCodeLine{00675\ \ \ \ \ );}
-\DoxyCodeLine{00680\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_aa92398b896e36d0009e09fd2579ee392}{store\_group\_session}})(}
-\DoxyCodeLine{00681\ \ \ \ \ \ \ \ \ Skissm\_\_GroupSession\ *group\_session}
-\DoxyCodeLine{00682\ \ \ \ \ );}
-\DoxyCodeLine{00688\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_ae68b22cf48f26ac0761e07bfa7980f24}{unload\_group\_session\_by\_address}})(}
-\DoxyCodeLine{00689\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
-\DoxyCodeLine{00690\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address}
-\DoxyCodeLine{00691\ \ \ \ \ );}
-\DoxyCodeLine{00697\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a0fb6d21d30b74c5d2a08f118eca00a8a}{unload\_group\_session\_by\_id}})(}
-\DoxyCodeLine{00698\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
-\DoxyCodeLine{00699\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *group\_session\_id}
-\DoxyCodeLine{00700\ \ \ \ \ );}
-\DoxyCodeLine{00701\ }
-\DoxyCodeLine{00702\ \ \ \ \ \textcolor{comment}{//\ pending\ plaintext\ related\ handlers}}
-\DoxyCodeLine{00712\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a0527751f9d48bcbfce972974d647facf}{store\_pending\_plaintext\_data}})(}
-\DoxyCodeLine{00713\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
-\DoxyCodeLine{00714\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
-\DoxyCodeLine{00715\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *plaintext\_id,}
-\DoxyCodeLine{00716\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext\_data,}
-\DoxyCodeLine{00717\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
-\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ Skissm\_\_NotifLevel\ notif\_level}
-\DoxyCodeLine{00719\ \ \ \ \ );}
-\DoxyCodeLine{00730\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_a6fcc4ff9be770cbe738fb5870f9b886d}{load\_pending\_plaintext\_data}})(}
-\DoxyCodeLine{00731\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
-\DoxyCodeLine{00732\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
-\DoxyCodeLine{00733\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ ***plaintext\_id\_list,}
-\DoxyCodeLine{00734\ \ \ \ \ \ \ \ \ uint8\_t\ ***plaintext\_data\_list,}
-\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ **plaintext\_data\_len\_list,}
-\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ Skissm\_\_NotifLevel\ **notif\_level\_list}
-\DoxyCodeLine{00737\ \ \ \ \ );}
-\DoxyCodeLine{00744\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_ae8f9bb8aba4f0678b3edd16db32569a1}{unload\_pending\_plaintext\_data}})(}
-\DoxyCodeLine{00745\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
-\DoxyCodeLine{00746\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
-\DoxyCodeLine{00747\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *plaintext\_id}
-\DoxyCodeLine{00748\ \ \ \ \ );}
-\DoxyCodeLine{00757\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a394add2d86a24e7b5cd1822924b4c465}{store\_pending\_request\_data}})(}
-\DoxyCodeLine{00758\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *request\_id,}
-\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ uint8\_t\ request\_type,}
-\DoxyCodeLine{00761\ \ \ \ \ \ \ \ \ uint8\_t\ *request\_data,}
-\DoxyCodeLine{00762\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ request\_data\_len}
-\DoxyCodeLine{00763\ \ \ \ \ );}
-\DoxyCodeLine{00773\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_ae41e7698d83588fc1c4939b2168a8d8c}{load\_pending\_request\_data}})(}
-\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *\ user\_address,}
-\DoxyCodeLine{00775\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ ***request\_id\_list,}
-\DoxyCodeLine{00776\ \ \ \ \ \ \ \ \ uint8\_t\ **request\_type\_list,}
-\DoxyCodeLine{00777\ \ \ \ \ \ \ \ \ uint8\_t\ ***request\_data\_list,}
-\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ **request\_data\_len\_list}
-\DoxyCodeLine{00779\ \ \ \ \ );}
-\DoxyCodeLine{00785\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a428448f37d58354f447c136be8f31f98}{unload\_pending\_request\_data}})(}
-\DoxyCodeLine{00786\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00787\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *request\_id}
-\DoxyCodeLine{00788\ \ \ \ \ );}
-\DoxyCodeLine{00789\ \}\ \mbox{\hyperlink{skissm_8h_a7b4e22ddb4edaa3ab58ab40259edb958}{skissm\_db\_handler\_t}};}
-\DoxyCodeLine{00790\ }
-\DoxyCodeLine{00794\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ee__proto__handler__t}{e2ee\_proto\_handler\_t}}\ \{}
-\DoxyCodeLine{00800\ \ \ \ \ Skissm\_\_RegisterUserResponse\ *(*register\_user)(}
-\DoxyCodeLine{00801\ \ \ \ \ \ \ \ \ Skissm\_\_RegisterUserRequest\ *request}
-\DoxyCodeLine{00802\ \ \ \ \ );}
-\DoxyCodeLine{00810\ \ \ \ \ Skissm\_\_GetPreKeyBundleResponse\ *(*get\_pre\_key\_bundle)(}
-\DoxyCodeLine{00811\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00812\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00813\ \ \ \ \ \ \ \ \ Skissm\_\_GetPreKeyBundleRequest\ *request}
-\DoxyCodeLine{00814\ \ \ \ \ );}
-\DoxyCodeLine{00822\ \ \ \ \ Skissm\_\_InviteResponse\ *(*invite)(}
-\DoxyCodeLine{00823\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00824\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00825\ \ \ \ \ \ \ \ \ Skissm\_\_InviteRequest\ *request}
-\DoxyCodeLine{00826\ \ \ \ \ );}
-\DoxyCodeLine{00834\ \ \ \ \ Skissm\_\_AcceptResponse\ *(*accept)(}
-\DoxyCodeLine{00835\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00836\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00837\ \ \ \ \ \ \ \ \ Skissm\_\_AcceptRequest\ *request}
-\DoxyCodeLine{00838\ \ \ \ \ );}
-\DoxyCodeLine{00846\ \ \ \ \ Skissm\_\_PublishSpkResponse\ *(*publish\_spk)(}
-\DoxyCodeLine{00847\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00848\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00849\ \ \ \ \ \ \ \ \ Skissm\_\_PublishSpkRequest\ *request}
-\DoxyCodeLine{00850\ \ \ \ \ );}
-\DoxyCodeLine{00858\ \ \ \ \ Skissm\_\_SupplyOpksResponse\ *(*supply\_opks)(}
-\DoxyCodeLine{00859\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00860\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00861\ \ \ \ \ \ \ \ \ Skissm\_\_SupplyOpksRequest\ *request}
-\DoxyCodeLine{00862\ \ \ \ \ );}
-\DoxyCodeLine{00870\ \ \ \ \ Skissm\_\_SendOne2oneMsgResponse\ *(*send\_one2one\_msg)(}
-\DoxyCodeLine{00871\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00872\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00873\ \ \ \ \ \ \ \ \ Skissm\_\_SendOne2oneMsgRequest\ *request}
-\DoxyCodeLine{00874\ \ \ \ \ );}
-\DoxyCodeLine{00882\ \ \ \ \ Skissm\_\_CreateGroupResponse\ *(*create\_group)(}
-\DoxyCodeLine{00883\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00884\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00885\ \ \ \ \ \ \ \ \ Skissm\_\_CreateGroupRequest\ *request}
-\DoxyCodeLine{00886\ \ \ \ \ );}
-\DoxyCodeLine{00894\ \ \ \ \ Skissm\_\_AddGroupMembersResponse\ *(*add\_group\_members)(}
-\DoxyCodeLine{00895\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00896\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00897\ \ \ \ \ \ \ \ \ Skissm\_\_AddGroupMembersRequest\ *request}
-\DoxyCodeLine{00898\ \ \ \ \ );}
-\DoxyCodeLine{00906\ \ \ \ \ Skissm\_\_AddGroupMemberDeviceResponse\ *(*add\_group\_member\_device)(}
-\DoxyCodeLine{00907\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00908\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00909\ \ \ \ \ \ \ \ \ Skissm\_\_AddGroupMemberDeviceRequest\ *request}
-\DoxyCodeLine{00910\ \ \ \ \ );}
-\DoxyCodeLine{00918\ \ \ \ \ Skissm\_\_RemoveGroupMembersResponse\ *(*remove\_group\_members)(}
-\DoxyCodeLine{00919\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00920\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00921\ \ \ \ \ \ \ \ \ Skissm\_\_RemoveGroupMembersRequest\ *request}
-\DoxyCodeLine{00922\ \ \ \ \ );}
-\DoxyCodeLine{00930\ \ \ \ \ Skissm\_\_LeaveGroupResponse\ *(*leave\_group)(}
-\DoxyCodeLine{00931\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00932\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00933\ \ \ \ \ \ \ \ \ Skissm\_\_LeaveGroupRequest\ *request}
-\DoxyCodeLine{00934\ \ \ \ \ );}
-\DoxyCodeLine{00942\ \ \ \ \ Skissm\_\_SendGroupMsgResponse\ *(*send\_group\_msg)(}
-\DoxyCodeLine{00943\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00944\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00945\ \ \ \ \ \ \ \ \ Skissm\_\_SendGroupMsgRequest\ *request}
-\DoxyCodeLine{00946\ \ \ \ \ );}
-\DoxyCodeLine{00954\ \ \ \ \ Skissm\_\_ConsumeProtoMsgResponse\ *(*consume\_proto\_msg)(}
-\DoxyCodeLine{00955\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00956\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
-\DoxyCodeLine{00957\ \ \ \ \ \ \ \ \ Skissm\_\_ConsumeProtoMsgRequest\ *request}
-\DoxyCodeLine{00958\ \ \ \ \ );}
-\DoxyCodeLine{00959\ \}\ \mbox{\hyperlink{skissm_8h_aa327ae35b8efe826fc038f2f52c57867}{e2ee\_proto\_handler\_t}};}
-\DoxyCodeLine{00960\ }
-\DoxyCodeLine{00961\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structskissm__event__handler__t}{skissm\_event\_handler\_t}}\ \{}
-\DoxyCodeLine{00968\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_acb21d9ebae1f280fcefc0b59f9a16703}{on\_log}})(}
-\DoxyCodeLine{00969\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00970\ \ \ \ \ \ \ \ \ LogCode\ log\_code,}
-\DoxyCodeLine{00971\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *log\_msg}
-\DoxyCodeLine{00972\ \ \ \ \ );}
-\DoxyCodeLine{00977\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_adb08c1b3e35b9d705232b1ee1f1086e3}{on\_user\_registered}})(}
-\DoxyCodeLine{00978\ \ \ \ \ \ \ \ \ Skissm\_\_Account\ *account}
-\DoxyCodeLine{00979\ \ \ \ \ );}
-\DoxyCodeLine{00985\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a390d943e3c3d108d657b934727cfbbf6}{on\_inbound\_session\_invited}})(}
-\DoxyCodeLine{00986\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00987\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from}
-\DoxyCodeLine{00988\ \ \ \ \ );}
-\DoxyCodeLine{00994\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_ab890fb99fb241ef863614e49d5daaa5a}{on\_inbound\_session\_ready}})(}
-\DoxyCodeLine{00995\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00996\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ *inbound\_session}
-\DoxyCodeLine{00997\ \ \ \ \ );}
-\DoxyCodeLine{01003\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a92f048bdcef4bc7b9e77ea16d1e85a70}{on\_outbound\_session\_ready}})(}
-\DoxyCodeLine{01004\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{01005\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ *outbound\_session}
-\DoxyCodeLine{01006\ \ \ \ \ );}
-\DoxyCodeLine{01015\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a5281d19e9727f558326cd65b14860f88}{on\_one2one\_msg\_received}})(}
-\DoxyCodeLine{01016\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{01017\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
-\DoxyCodeLine{01018\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
-\DoxyCodeLine{01019\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext,}
-\DoxyCodeLine{01020\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
-\DoxyCodeLine{01021\ \ \ \ \ );}
-\DoxyCodeLine{01022\ }
-\DoxyCodeLine{01031\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_afcb6763e185383d696b3ec53af4a08ac}{on\_other\_device\_msg\_received}})(}
-\DoxyCodeLine{01032\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{01033\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
-\DoxyCodeLine{01034\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
-\DoxyCodeLine{01035\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext,}
-\DoxyCodeLine{01036\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
-\DoxyCodeLine{01037\ \ \ \ \ );}
-\DoxyCodeLine{01038\ }
-\DoxyCodeLine{01047\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a1468ea66a74de7c2862eb00151918cd8}{on\_group\_msg\_received}})(}
-\DoxyCodeLine{01048\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{01049\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
-\DoxyCodeLine{01050\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
-\DoxyCodeLine{01051\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext,}
-\DoxyCodeLine{01052\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
-\DoxyCodeLine{01053\ \ \ \ \ );}
-\DoxyCodeLine{01054\ }
-\DoxyCodeLine{01063\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a82ff78814b564d907fce0e9d10738dad}{on\_group\_created}})(}
-\DoxyCodeLine{01064\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{01065\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
-\DoxyCodeLine{01066\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
-\DoxyCodeLine{01067\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,}
-\DoxyCodeLine{01068\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num}
-\DoxyCodeLine{01069\ \ \ \ \ );}
-\DoxyCodeLine{01070\ }
-\DoxyCodeLine{01081\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a0966d397de13cfe51766d1edab634598}{on\_group\_members\_added}})(}
-\DoxyCodeLine{01082\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{01083\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
-\DoxyCodeLine{01084\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
-\DoxyCodeLine{01085\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,}
-\DoxyCodeLine{01086\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
-\DoxyCodeLine{01087\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **added\_group\_members,}
-\DoxyCodeLine{01088\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ added\_group\_members\_num}
-\DoxyCodeLine{01089\ \ \ \ \ );}
-\DoxyCodeLine{01090\ }
-\DoxyCodeLine{01101\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a6eeba3aa1759d827591176aa99276418}{on\_group\_members\_removed}})(}
-\DoxyCodeLine{01102\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{01103\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
-\DoxyCodeLine{01104\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
-\DoxyCodeLine{01105\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,}
-\DoxyCodeLine{01106\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
-\DoxyCodeLine{01107\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **removed\_group\_members,}
-\DoxyCodeLine{01108\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ removed\_group\_members\_num}
-\DoxyCodeLine{01109\ \ \ \ \ );}
-\DoxyCodeLine{01110\ \}\ \mbox{\hyperlink{structskissm__event__handler__t}{skissm\_event\_handler\_t}};}
-\DoxyCodeLine{01111\ }
-\DoxyCodeLine{01115\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structskissm__plugin__t}{skissm\_plugin\_t}}\ \{}
-\DoxyCodeLine{01116\ \ \ \ \ \mbox{\hyperlink{structskissm__common__handler__t}{skissm\_common\_handler\_t}}\ common\_handler;}
-\DoxyCodeLine{01117\ \ \ \ \ \mbox{\hyperlink{structskissm__db__handler__t}{skissm\_db\_handler\_t}}\ db\_handler;}
-\DoxyCodeLine{01118\ \ \ \ \ \mbox{\hyperlink{structe2ee__proto__handler__t}{e2ee\_proto\_handler\_t}}\ proto\_handler;}
-\DoxyCodeLine{01119\ \ \ \ \ \mbox{\hyperlink{structskissm__event__handler__t}{skissm\_event\_handler\_t}}\ event\_handler;}
-\DoxyCodeLine{01120\ \}\ \mbox{\hyperlink{skissm_8h_acc4c93ff094c34f82e9299e14ffa50b2}{skissm\_plugin\_t}};}
-\DoxyCodeLine{01121\ }
-\DoxyCodeLine{01128\ \mbox{\hyperlink{structdigital__signature__suite__t}{digital\_signature\_suite\_t}}\ *\mbox{\hyperlink{skissm_8h_a48c55cca58cba63802f6cbc3638e0aad}{get\_digital\_signature\_suite}}(\textcolor{keywordtype}{unsigned}\ digital\_signature\_id);}
-\DoxyCodeLine{01129\ }
-\DoxyCodeLine{01136\ \mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ *\mbox{\hyperlink{skissm_8h_a462243e4ae976b459ae16bd508245267}{get\_kem\_suite}}(\textcolor{keywordtype}{unsigned}\ kem\_id);}
-\DoxyCodeLine{01137\ }
-\DoxyCodeLine{01144\ \mbox{\hyperlink{structsymmetric__encryption__suite__t}{symmetric\_encryption\_suite\_t}}\ *\mbox{\hyperlink{skissm_8h_a225f73da86f93f63db061c453b89927e}{get\_symmetric\_encryption\_suite}}(\textcolor{keywordtype}{unsigned}\ symmetric\_encryption\_id);}
-\DoxyCodeLine{01145\ }
-\DoxyCodeLine{01151\ \mbox{\hyperlink{structhash__suite__t}{hash\_suite\_t}}\ *\mbox{\hyperlink{skissm_8h_aabcd2fc78c62a8cf7080d0da3c4521df}{get\_hash\_suite}}(\textcolor{keywordtype}{unsigned}\ hash\_id);}
-\DoxyCodeLine{01152\ }
-\DoxyCodeLine{01161\ uint32\_t\ \mbox{\hyperlink{skissm_8h_aeae1a842d63fc0676568a0f238418e23}{gen\_e2ee\_pack\_id\_raw}}(}
-\DoxyCodeLine{01162\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ ver,\ \textcolor{keywordtype}{unsigned}\ digital\_signature,\ \textcolor{keywordtype}{unsigned}\ kem,\ \textcolor{keywordtype}{unsigned}\ symmetric\_encryption,\ \textcolor{keywordtype}{unsigned}\ hash);}
-\DoxyCodeLine{01163\ }
-\DoxyCodeLine{01168\ \mbox{\hyperlink{structe2ee__pack__t}{e2ee\_pack\_t}}\ *\mbox{\hyperlink{skissm_8h_afcf233d5fb6927fab423750e59591bec}{get\_e2ee\_pack}}(uint32\_t\ e2ee\_pack\_id\_raw);}
-\DoxyCodeLine{01169\ }
-\DoxyCodeLine{01174\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a8379b82416aa1421c7dea3365b34fbff}{skissm\_begin}}(\mbox{\hyperlink{structskissm__plugin__t}{skissm\_plugin\_t}}\ *ssm\_plugin);}
-\DoxyCodeLine{01175\ }
-\DoxyCodeLine{01179\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_aefbc5a989b2e19d7a31afbe66cad7bf3}{skissm\_end}}();}
-\DoxyCodeLine{01180\ }
-\DoxyCodeLine{01184\ \mbox{\hyperlink{structskissm__plugin__t}{skissm\_plugin\_t}}\ *\mbox{\hyperlink{skissm_8h_ab9afb3c7f631dd1d0ec9ddab3b0fab48}{get\_skissm\_plugin}}();}
-\DoxyCodeLine{01185\ }
-\DoxyCodeLine{01189\ uint32\_t\ \mbox{\hyperlink{skissm_8h_a3de1a0d2e19ad4df42cf59c225ea3e9a}{e2ee\_pack\_id\_to\_raw}}(\mbox{\hyperlink{structe2ee__pack__id__t}{e2ee\_pack\_id\_t}}\ e2ee\_pack\_id);}
-\DoxyCodeLine{01190\ }
-\DoxyCodeLine{01194\ \mbox{\hyperlink{structe2ee__pack__id__t}{e2ee\_pack\_id\_t}}\ \mbox{\hyperlink{skissm_8h_a867221c1f645753d77e969bb86dc1836}{raw\_to\_e2ee\_pack\_id}}(uint32\_t\ e2ee\_pack\_id\_raw);}
-\DoxyCodeLine{01195\ }
-\DoxyCodeLine{01202\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a788aeb88824cd0b0f8a9642fc4cdad49}{ssm\_notify\_log}}(Skissm\_\_E2eeAddress\ *user\_address,\ LogCode\ log\_code,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *log\_msg,\ ...);}
-\DoxyCodeLine{01203\ }
-\DoxyCodeLine{01208\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_acaa10126d26b3073553c67ba97adcab3}{ssm\_notify\_user\_registered}}(Skissm\_\_Account\ *account);}
-\DoxyCodeLine{01209\ }
-\DoxyCodeLine{01215\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a74b2e6553ea99bf2d04206252f01c12c}{ssm\_notify\_inbound\_session\_invited}}(Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *from);}
-\DoxyCodeLine{01216\ }
-\DoxyCodeLine{01222\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a3dbef872ef43bd557e690e8292674bf4}{ssm\_notify\_inbound\_session\_ready}}(Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_Session\ *inbound\_session);}
-\DoxyCodeLine{01223\ }
-\DoxyCodeLine{01229\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a0134c3c4ee6841103eb85644cef1efb3}{ssm\_notify\_outbound\_session\_ready}}(Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_Session\ *outbound\_session);}
-\DoxyCodeLine{01230\ }
-\DoxyCodeLine{01239\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a93abdeb967126dfc6745b7181855075e}{ssm\_notify\_one2one\_msg}}(}
-\DoxyCodeLine{01240\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,}
-\DoxyCodeLine{01241\ \ \ \ \ uint8\_t\ *plaintext,\ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
-\DoxyCodeLine{01242\ );}
-\DoxyCodeLine{01243\ }
-\DoxyCodeLine{01252\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_abaaeb53fde9338164cef6108c3c898cf}{ssm\_notify\_other\_device\_msg}}(}
-\DoxyCodeLine{01253\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,}
-\DoxyCodeLine{01254\ \ \ \ \ uint8\_t\ *plaintext,\ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
-\DoxyCodeLine{01255\ );}
-\DoxyCodeLine{01256\ }
-\DoxyCodeLine{01265\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_ab8564409120cd6f8765368fd01fe19c8}{ssm\_notify\_group\_msg}}(}
-\DoxyCodeLine{01266\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *group\_address,}
-\DoxyCodeLine{01267\ \ \ \ \ uint8\_t\ *plaintext,\ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
-\DoxyCodeLine{01268\ );}
-\DoxyCodeLine{01269\ }
-\DoxyCodeLine{01278\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a09a166d345e69133c44822f1814a22b8}{ssm\_notify\_group\_created}}(}
-\DoxyCodeLine{01279\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *group\_address,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
-\DoxyCodeLine{01280\ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,\ \textcolor{keywordtype}{size\_t}\ group\_members\_num}
-\DoxyCodeLine{01281\ );}
-\DoxyCodeLine{01282\ }
-\DoxyCodeLine{01293\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a1d5a0a066488cc004cf96b7fbb5e282c}{ssm\_notify\_group\_members\_added}}(}
-\DoxyCodeLine{01294\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *group\_address,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
-\DoxyCodeLine{01295\ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,\ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
-\DoxyCodeLine{01296\ \ \ \ \ Skissm\_\_GroupMember\ **added\_group\_members,\ \textcolor{keywordtype}{size\_t}\ added\_group\_members\_num}
-\DoxyCodeLine{01297\ );}
-\DoxyCodeLine{01298\ }
-\DoxyCodeLine{01309\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_affe1240e1f26f8d2b1f995f3402e9bf5}{ssm\_notify\_group\_members\_removed}}(}
-\DoxyCodeLine{01310\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *group\_address,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
-\DoxyCodeLine{01311\ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,\ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
-\DoxyCodeLine{01312\ \ \ \ \ Skissm\_\_GroupMember\ **removed\_group\_members,\ \textcolor{keywordtype}{size\_t}\ removed\_group\_members\_num}
-\DoxyCodeLine{01313\ );}
-\DoxyCodeLine{01314\ }
-\DoxyCodeLine{01315\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
-\DoxyCodeLine{01316\ \}}
-\DoxyCodeLine{01317\ \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{01318\ }
-\DoxyCodeLine{01319\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ SKISSM\_H\_\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00170\ \textcolor{preprocessor}{\#define\ CIPHER\_SUITE\_PART\_LEN\_IN\_BITS\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 8}}
+\DoxyCodeLine{00171\ \textcolor{preprocessor}{\#define\ CIPHER\_SUITE\_PART\_HALF\_LEN\_IN\_BITS\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 4}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00176\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ee__pack__id__t}{e2ee\_pack\_id\_t}}\ \{}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ ver:CIPHER\_SUITE\_PART\_LEN\_IN\_BITS;}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ digital\_signature:CIPHER\_SUITE\_PART\_LEN\_IN\_BITS;}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ kem:CIPHER\_SUITE\_PART\_LEN\_IN\_BITS;}
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ symmetric\_encryption:CIPHER\_SUITE\_PART\_HALF\_LEN\_IN\_BITS;}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ hash:CIPHER\_SUITE\_PART\_HALF\_LEN\_IN\_BITS;}
+\DoxyCodeLine{00182\ \}\ \mbox{\hyperlink{skissm_8h_ad783d8bce5c8f34053118babb45d82d6}{e2ee\_pack\_id\_t}};}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00188\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ee__pack__t}{e2ee\_pack\_t}}\ \{}
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite;}
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsession__suite__t}{session\_suite\_t}}\ *session\_suite;}
+\DoxyCodeLine{00191\ \}\ \mbox{\hyperlink{skissm_8h_a08f19ae877215f234cfa4813a959b54b}{e2ee\_pack\_t}};}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00196\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ \{}
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keywordtype}{bool}\ pqc\_param;}
+\DoxyCodeLine{00198\ \ \ \ \ uint32\_t\ sign\_pub\_key\_len;}
+\DoxyCodeLine{00199\ \ \ \ \ uint32\_t\ sign\_priv\_key\_len;}
+\DoxyCodeLine{00200\ \ \ \ \ uint32\_t\ sig\_len;}
+\DoxyCodeLine{00201\ \}\ \mbox{\hyperlink{skissm_8h_ad899fbdeeefd5f62fd89c93371cfb174}{crypto\_digital\_signature\_param\_t}};}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00206\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ \{}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keywordtype}{bool}\ pqc\_param;}
+\DoxyCodeLine{00208\ \ \ \ \ uint32\_t\ asym\_pub\_key\_len;}
+\DoxyCodeLine{00209\ \ \ \ \ uint32\_t\ asym\_priv\_key\_len;}
+\DoxyCodeLine{00210\ \ \ \ \ uint32\_t\ kem\_ciphertext\_len;}
+\DoxyCodeLine{00211\ \ \ \ \ uint32\_t\ shared\_secret\_len;}
+\DoxyCodeLine{00212\ \}\ \mbox{\hyperlink{skissm_8h_ae20eb84b8db760dff90fb80506043872}{crypto\_kem\_param\_t}};}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00217\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__symmetric__encryption__param__t}{crypto\_symmetric\_encryption\_param\_t}}\ \{}
+\DoxyCodeLine{00218\ \ \ \ \ uint32\_t\ aead\_key\_len;}
+\DoxyCodeLine{00219\ \ \ \ \ uint32\_t\ aead\_iv\_len;}
+\DoxyCodeLine{00220\ \ \ \ \ uint32\_t\ aead\_tag\_len;}
+\DoxyCodeLine{00221\ \}\ \mbox{\hyperlink{skissm_8h_a01e4dc27434b25a3202258677ee5a8aa}{crypto\_symmetric\_encryption\_param\_t}};}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00226\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__hash__param__t}{crypto\_hash\_param\_t}}\ \{}
+\DoxyCodeLine{00227\ \ \ \ \ uint32\_t\ hash\_len;}
+\DoxyCodeLine{00228\ \}\ \mbox{\hyperlink{skissm_8h_a4e32bf3a288f430cdca74c840b479f9e}{crypto\_hash\_param\_t}};}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00233\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structdigital__signature__suite__t}{digital\_signature\_suite\_t}}\ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__digital__signature__param__t}{crypto\_digital\_signature\_param\_t}}\ (*\mbox{\hyperlink{structdigital__signature__suite__t_a14e4326278f81c25614702b71baadcb1}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00247\ \ \ \ \ int\ (*\mbox{\hyperlink{structdigital__signature__suite__t_a24a07d8a7e1e3ac3772ab2e672794b5c}{sign\_key\_gen}})(}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *pub\_key,}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00250\ \ \ \ \ );}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00262\ \ \ \ \ int\ (*\mbox{\hyperlink{structdigital__signature__suite__t_a80ff5d983335660199b68cdcfca478ed}{sign}})(}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ uint8\_t\ *signature\_out,\ \textcolor{keywordtype}{size\_t}\ *signature\_out\_len,}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *private\_key}
+\DoxyCodeLine{00266\ \ \ \ \ );}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00278\ \ \ \ \ int\ (*\mbox{\hyperlink{structdigital__signature__suite__t_ae0ee14e17294bfe9029fc1c839afeb71}{verify}})(}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *signature\_in,\ \textcolor{keywordtype}{size\_t}\ signature\_in\_len,}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *public\_key}
+\DoxyCodeLine{00282\ \ \ \ \ );}
+\DoxyCodeLine{00283\ \}\ \mbox{\hyperlink{skissm_8h_ac55fe4ffa01a8449d8aa73e6d6a2931a}{digital\_signature\_suite\_t}};}
+\DoxyCodeLine{00284\ }
+\DoxyCodeLine{00288\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ \{}
+\DoxyCodeLine{00293\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ (*\mbox{\hyperlink{structkem__suite__t_a2c102cdde7c6f66a97c1192ae845f7f6}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00301\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_a8cb7fafa56b33c45a717e4a2d358335f}{asym\_key\_gen}})(}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *pub\_key,}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00304\ \ \ \ \ );}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00314\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_acb69c24dfa2b2571fcf43f3676d2c23e}{encaps}})(}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00318\ \ \ \ \ );}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00328\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_a275cda3e1962677ce05f492bcd6de467}{decaps}})(}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00332\ \ \ \ \ );}
+\DoxyCodeLine{00333\ \}\ \mbox{\hyperlink{skissm_8h_a7f99b84ece115e05e0f2385ecd9d35e4}{kem\_suite\_t}};}
+\DoxyCodeLine{00334\ }
+\DoxyCodeLine{00338\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsymmetric__encryption__suite__t}{symmetric\_encryption\_suite\_t}}\ \{}
+\DoxyCodeLine{00343\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__symmetric__encryption__param__t}{crypto\_symmetric\_encryption\_param\_t}}\ (*\mbox{\hyperlink{structsymmetric__encryption__suite__t_a036fb347cf59d603951e14527dada12d}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00356\ \ \ \ \ int\ (*\mbox{\hyperlink{structsymmetric__encryption__suite__t_aa1402a94f795355214454b6d308e24c5}{encrypt}})(}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *,}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,\ size\_t,}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ uint8\_t\ **,\ \textcolor{keywordtype}{size\_t}\ *}
+\DoxyCodeLine{00361\ \ \ \ \ );}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00374\ \ \ \ \ int\ (*\mbox{\hyperlink{structsymmetric__encryption__suite__t_ae9aaa05f6242bc99696067355639f7b0}{decrypt}})(}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ uint8\_t\ **,\ \textcolor{keywordtype}{size\_t}\ *,}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *,}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,\ size\_t}
+\DoxyCodeLine{00379\ \ \ \ \ );}
+\DoxyCodeLine{00380\ \}\ \mbox{\hyperlink{skissm_8h_a539c3812b8ec180e2e6ebc3802c6fd59}{symmetric\_encryption\_suite\_t}};}
+\DoxyCodeLine{00381\ }
+\DoxyCodeLine{00385\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structhash__suite__t}{hash\_suite\_t}}\ \{}
+\DoxyCodeLine{00390\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__hash__param__t}{crypto\_hash\_param\_t}}\ (*\mbox{\hyperlink{structhash__suite__t_ad03f8e1623c09090ed1760ee4d2c0d1f}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00405\ \ \ \ \ int\ (*\mbox{\hyperlink{structhash__suite__t_a24a93c49162231ce34b5cb34c611b51b}{hkdf}})(}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *salt,\ \textcolor{keywordtype}{size\_t}\ salt\_len,}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *info,\ \textcolor{keywordtype}{size\_t}\ info\_len,}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ uint8\_t\ *output,\ \textcolor{keywordtype}{size\_t}\ output\_len}
+\DoxyCodeLine{00410\ \ \ \ \ );}
+\DoxyCodeLine{00411\ }
+\DoxyCodeLine{00422\ \ \ \ \ int\ (*\mbox{\hyperlink{structhash__suite__t_a3e7b75b9bd093d20599c3e276a18e0c7}{hmac}})(}
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *key,\ \textcolor{keywordtype}{size\_t}\ key\_len,}
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \ \ uint8\_t\ *output}
+\DoxyCodeLine{00426\ \ \ \ \ );}
+\DoxyCodeLine{00427\ }
+\DoxyCodeLine{00436\ \ \ \ \ int\ (*\mbox{\hyperlink{structhash__suite__t_a07b0734eaccf837ac46b0dd1d4cb1b22}{hash}})(}
+\DoxyCodeLine{00437\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,}
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ uint8\_t\ *hash\_out}
+\DoxyCodeLine{00440\ \ \ \ \ );}
+\DoxyCodeLine{00441\ \}\ \mbox{\hyperlink{skissm_8h_a929c38c678a77d7993ba05573aa44aba}{hash\_suite\_t}};}
+\DoxyCodeLine{00442\ }
+\DoxyCodeLine{00446\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ \{}
+\DoxyCodeLine{00447\ \ \ \ \ \mbox{\hyperlink{structdigital__signature__suite__t}{digital\_signature\_suite\_t}}\ *digital\_signature\_suite;}
+\DoxyCodeLine{00448\ \ \ \ \ \mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ *kem\_suite;}
+\DoxyCodeLine{00449\ \ \ \ \ \mbox{\hyperlink{structsymmetric__encryption__suite__t}{symmetric\_encryption\_suite\_t}}\ *symmetric\_encryption\_suite;}
+\DoxyCodeLine{00450\ \ \ \ \ \mbox{\hyperlink{structhash__suite__t}{hash\_suite\_t}}\ *hash\_suite;}
+\DoxyCodeLine{00451\ \}\ \mbox{\hyperlink{skissm_8h_a764f131fe1cf3e866758cf3e45028de8}{cipher\_suite\_t}};}
+\DoxyCodeLine{00452\ }
+\DoxyCodeLine{00456\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structskissm__common__handler__t}{skissm\_common\_handler\_t}}\ \{}
+\DoxyCodeLine{00461\ \ \ \ \ int64\_t\ (*\mbox{\hyperlink{structskissm__common__handler__t_a0989450ad2fea80cd2b962aa41c1ee7c}{gen\_ts}})();}
+\DoxyCodeLine{00462\ }
+\DoxyCodeLine{00468\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__common__handler__t_a4352cd6ca7c367aa966659e6f16b0e14}{gen\_rand}})(uint8\_t\ *rand\_data,\ \textcolor{keywordtype}{size\_t}\ rand\_data\_len);}
+\DoxyCodeLine{00469\ \ \ \ \ void\ (*gen\_uuid)(uint8\_t\ uuid[UUID\_LEN]);}
+\DoxyCodeLine{00470\ \}\ \mbox{\hyperlink{skissm_8h_ab6163a095daab0e01317f02e88d60de1}{skissm\_common\_handler\_t}};}
+\DoxyCodeLine{00471\ }
+\DoxyCodeLine{00475\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structskissm__db__handler__t}{skissm\_db\_handler\_t}}\ \{}
+\DoxyCodeLine{00476\ \ \ \ \ \textcolor{comment}{//\ account\ related\ handlers}}
+\DoxyCodeLine{00481\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a2a8dce343a34da3e9ff061a78440f1a3}{store\_account}})(}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ Skissm\_\_Account\ *account}
+\DoxyCodeLine{00483\ \ \ \ \ );}
+\DoxyCodeLine{00489\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a437a79d3934a491651468771de5f08e4}{load\_account\_by\_address}})(}
+\DoxyCodeLine{00490\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ Skissm\_\_Account\ **account}
+\DoxyCodeLine{00492\ \ \ \ \ );}
+\DoxyCodeLine{00498\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_abc913a8d746f02d1ed713402fca411a6}{load\_accounts}})(}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ Skissm\_\_Account\ ***accounts}
+\DoxyCodeLine{00500\ \ \ \ \ );}
+\DoxyCodeLine{00506\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_a74f4a7db7930960ac18ac2d62e143b54}{update\_signed\_pre\_key}})(}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ Skissm\_\_SignedPreKey\ *signed\_pre\_key}
+\DoxyCodeLine{00509\ \ \ \ \ );}
+\DoxyCodeLine{00516\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a25c711d630cc671ff47568e543a75253}{load\_signed\_pre\_key}})(}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ uint32\_t\ spk\_id,}
+\DoxyCodeLine{00519\ \ \ \ \ \ \ \ \ Skissm\_\_SignedPreKey\ **signed\_pre\_key}
+\DoxyCodeLine{00520\ \ \ \ \ );}
+\DoxyCodeLine{00525\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_a8e704c4b5e6fa33e5795bccee280404e}{remove\_expired\_signed\_pre\_key}})(}
+\DoxyCodeLine{00526\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address}
+\DoxyCodeLine{00527\ \ \ \ \ );}
+\DoxyCodeLine{00533\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_a5291e1e93a4da1112c5b0860aa1d86f0}{add\_one\_time\_pre\_key}})(}
+\DoxyCodeLine{00534\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00535\ \ \ \ \ \ \ \ \ Skissm\_\_OneTimePreKey\ *one\_time\_pre\_key}
+\DoxyCodeLine{00536\ \ \ \ \ );}
+\DoxyCodeLine{00542\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_abcde7a93409638eae7cd9667951bdce2}{remove\_one\_time\_pre\_key}})(}
+\DoxyCodeLine{00543\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ uint32\_t\ one\_time\_pre\_key\_id}
+\DoxyCodeLine{00545\ \ \ \ \ );}
+\DoxyCodeLine{00551\ \ \ \ \ bool\ (*\mbox{\hyperlink{structskissm__db__handler__t_af0dd99dfa9dd9a150d9e2650c44fa2d6}{update\_one\_time\_pre\_key}})(}
+\DoxyCodeLine{00552\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00553\ \ \ \ \ \ \ \ \ uint32\_t\ one\_time\_pre\_key\_id}
+\DoxyCodeLine{00554\ \ \ \ \ );}
+\DoxyCodeLine{00560\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_aed4bcfd293bc04f71799021dbbed698c}{load\_auth}})(}
+\DoxyCodeLine{00561\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ **auth}
+\DoxyCodeLine{00563\ \ \ \ \ );}
+\DoxyCodeLine{00564\ \ \ \ \ \textcolor{comment}{//\ session\ related\ handlers}}
+\DoxyCodeLine{00571\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a076746d3353ed129e3265db4471848dd}{load\_inbound\_session}})(}
+\DoxyCodeLine{00572\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *session\_id,}
+\DoxyCodeLine{00573\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ **inbound\_session}
+\DoxyCodeLine{00575\ \ \ \ \ );}
+\DoxyCodeLine{00582\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a0a218214d1bb0e264d041894bee334c0}{load\_outbound\_session}})(}
+\DoxyCodeLine{00583\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *their\_address,}
+\DoxyCodeLine{00585\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ **outbound\_session}
+\DoxyCodeLine{00586\ \ \ \ \ );}
+\DoxyCodeLine{00587\ }
+\DoxyCodeLine{00595\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_a6afbaecc13754abbbd93990a825cb8f6}{load\_outbound\_sessions}})(}
+\DoxyCodeLine{00596\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *their\_user\_id,}
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *their\_domain,}
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ ***outbound\_sessions}
+\DoxyCodeLine{00600\ \ \ \ \ );}
+\DoxyCodeLine{00601\ }
+\DoxyCodeLine{00606\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a4b90eb77358cf806b6b1a8377d2697ce}{store\_session}})(}
+\DoxyCodeLine{00607\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ *session}
+\DoxyCodeLine{00608\ \ \ \ \ );}
+\DoxyCodeLine{00614\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a466557723169fec75c2847ccdede83f7}{unload\_session}})(}
+\DoxyCodeLine{00615\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *their\_address}
+\DoxyCodeLine{00617\ \ \ \ \ );}
+\DoxyCodeLine{00624\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a6935c5207573d204870cb8d59b1ea5e0}{unload\_old\_session}})(}
+\DoxyCodeLine{00625\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *their\_address,}
+\DoxyCodeLine{00627\ \ \ \ \ \ \ \ \ int64\_t\ invite\_t}
+\DoxyCodeLine{00628\ \ \ \ \ );}
+\DoxyCodeLine{00629\ }
+\DoxyCodeLine{00630\ \ \ \ \ \textcolor{comment}{//\ group\ session\ related\ handlers}}
+\DoxyCodeLine{00638\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a724789cdfd426e5df5b5bbab03c22262}{load\_group\_session\_by\_address}})(}
+\DoxyCodeLine{00639\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *sender\_address,}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ Skissm\_\_GroupSession\ **group\_session}
+\DoxyCodeLine{00643\ \ \ \ \ );}
+\DoxyCodeLine{00651\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a7474571050301871488bab382b01f100}{load\_group\_session\_by\_id}})(}
+\DoxyCodeLine{00652\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *sender\_address,}
+\DoxyCodeLine{00653\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *group\_session\_id,}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \ \ Skissm\_\_GroupSession\ **group\_session}
+\DoxyCodeLine{00656\ \ \ \ \ );}
+\DoxyCodeLine{00663\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_adae997489902728f50d357f550891224}{load\_group\_sessions}})(}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ Skissm\_\_GroupSession\ ***group\_sessions}
+\DoxyCodeLine{00667\ \ \ \ \ );}
+\DoxyCodeLine{00674\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_ada412e9d0e8f1fd77205bccef94f6359}{load\_group\_addresses}})(}
+\DoxyCodeLine{00675\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *sender\_address,}
+\DoxyCodeLine{00676\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ ***group\_addresses}
+\DoxyCodeLine{00678\ \ \ \ \ );}
+\DoxyCodeLine{00683\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_aa92398b896e36d0009e09fd2579ee392}{store\_group\_session}})(}
+\DoxyCodeLine{00684\ \ \ \ \ \ \ \ \ Skissm\_\_GroupSession\ *group\_session}
+\DoxyCodeLine{00685\ \ \ \ \ );}
+\DoxyCodeLine{00691\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_ae68b22cf48f26ac0761e07bfa7980f24}{unload\_group\_session\_by\_address}})(}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00693\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address}
+\DoxyCodeLine{00694\ \ \ \ \ );}
+\DoxyCodeLine{00700\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a0fb6d21d30b74c5d2a08f118eca00a8a}{unload\_group\_session\_by\_id}})(}
+\DoxyCodeLine{00701\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00702\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *group\_session\_id}
+\DoxyCodeLine{00703\ \ \ \ \ );}
+\DoxyCodeLine{00704\ }
+\DoxyCodeLine{00705\ \ \ \ \ \textcolor{comment}{//\ pending\ plaintext\ related\ handlers}}
+\DoxyCodeLine{00715\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a0527751f9d48bcbfce972974d647facf}{store\_pending\_plaintext\_data}})(}
+\DoxyCodeLine{00716\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{00717\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *plaintext\_id,}
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext\_data,}
+\DoxyCodeLine{00720\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
+\DoxyCodeLine{00721\ \ \ \ \ \ \ \ \ Skissm\_\_NotifLevel\ notif\_level}
+\DoxyCodeLine{00722\ \ \ \ \ );}
+\DoxyCodeLine{00733\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_a6fcc4ff9be770cbe738fb5870f9b886d}{load\_pending\_plaintext\_data}})(}
+\DoxyCodeLine{00734\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ ***plaintext\_id\_list,}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ uint8\_t\ ***plaintext\_data\_list,}
+\DoxyCodeLine{00738\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ **plaintext\_data\_len\_list,}
+\DoxyCodeLine{00739\ \ \ \ \ \ \ \ \ Skissm\_\_NotifLevel\ **notif\_level\_list}
+\DoxyCodeLine{00740\ \ \ \ \ );}
+\DoxyCodeLine{00747\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_ae8f9bb8aba4f0678b3edd16db32569a1}{unload\_pending\_plaintext\_data}})(}
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{00749\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{00750\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *plaintext\_id}
+\DoxyCodeLine{00751\ \ \ \ \ );}
+\DoxyCodeLine{00760\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a394add2d86a24e7b5cd1822924b4c465}{store\_pending\_request\_data}})(}
+\DoxyCodeLine{00761\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00762\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *request\_id,}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \ \ uint8\_t\ request\_type,}
+\DoxyCodeLine{00764\ \ \ \ \ \ \ \ \ uint8\_t\ *request\_data,}
+\DoxyCodeLine{00765\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ request\_data\_len}
+\DoxyCodeLine{00766\ \ \ \ \ );}
+\DoxyCodeLine{00776\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structskissm__db__handler__t_ae41e7698d83588fc1c4939b2168a8d8c}{load\_pending\_request\_data}})(}
+\DoxyCodeLine{00777\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *\ user\_address,}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ ***request\_id\_list,}
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \ \ uint8\_t\ **request\_type\_list,}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ \ \ uint8\_t\ ***request\_data\_list,}
+\DoxyCodeLine{00781\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ **request\_data\_len\_list}
+\DoxyCodeLine{00782\ \ \ \ \ );}
+\DoxyCodeLine{00788\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__db__handler__t_a428448f37d58354f447c136be8f31f98}{unload\_pending\_request\_data}})(}
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *request\_id}
+\DoxyCodeLine{00791\ \ \ \ \ );}
+\DoxyCodeLine{00792\ \}\ \mbox{\hyperlink{skissm_8h_a7b4e22ddb4edaa3ab58ab40259edb958}{skissm\_db\_handler\_t}};}
+\DoxyCodeLine{00793\ }
+\DoxyCodeLine{00797\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ee__proto__handler__t}{e2ee\_proto\_handler\_t}}\ \{}
+\DoxyCodeLine{00803\ \ \ \ \ Skissm\_\_RegisterUserResponse\ *(*register\_user)(}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ Skissm\_\_RegisterUserRequest\ *request}
+\DoxyCodeLine{00805\ \ \ \ \ );}
+\DoxyCodeLine{00813\ \ \ \ \ Skissm\_\_GetPreKeyBundleResponse\ *(*get\_pre\_key\_bundle)(}
+\DoxyCodeLine{00814\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00815\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00816\ \ \ \ \ \ \ \ \ Skissm\_\_GetPreKeyBundleRequest\ *request}
+\DoxyCodeLine{00817\ \ \ \ \ );}
+\DoxyCodeLine{00825\ \ \ \ \ Skissm\_\_InviteResponse\ *(*invite)(}
+\DoxyCodeLine{00826\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00827\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00828\ \ \ \ \ \ \ \ \ Skissm\_\_InviteRequest\ *request}
+\DoxyCodeLine{00829\ \ \ \ \ );}
+\DoxyCodeLine{00837\ \ \ \ \ Skissm\_\_AcceptResponse\ *(*accept)(}
+\DoxyCodeLine{00838\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00839\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00840\ \ \ \ \ \ \ \ \ Skissm\_\_AcceptRequest\ *request}
+\DoxyCodeLine{00841\ \ \ \ \ );}
+\DoxyCodeLine{00849\ \ \ \ \ Skissm\_\_PublishSpkResponse\ *(*publish\_spk)(}
+\DoxyCodeLine{00850\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00851\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00852\ \ \ \ \ \ \ \ \ Skissm\_\_PublishSpkRequest\ *request}
+\DoxyCodeLine{00853\ \ \ \ \ );}
+\DoxyCodeLine{00861\ \ \ \ \ Skissm\_\_SupplyOpksResponse\ *(*supply\_opks)(}
+\DoxyCodeLine{00862\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00863\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00864\ \ \ \ \ \ \ \ \ Skissm\_\_SupplyOpksRequest\ *request}
+\DoxyCodeLine{00865\ \ \ \ \ );}
+\DoxyCodeLine{00873\ \ \ \ \ Skissm\_\_SendOne2oneMsgResponse\ *(*send\_one2one\_msg)(}
+\DoxyCodeLine{00874\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00875\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00876\ \ \ \ \ \ \ \ \ Skissm\_\_SendOne2oneMsgRequest\ *request}
+\DoxyCodeLine{00877\ \ \ \ \ );}
+\DoxyCodeLine{00885\ \ \ \ \ Skissm\_\_CreateGroupResponse\ *(*create\_group)(}
+\DoxyCodeLine{00886\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00888\ \ \ \ \ \ \ \ \ Skissm\_\_CreateGroupRequest\ *request}
+\DoxyCodeLine{00889\ \ \ \ \ );}
+\DoxyCodeLine{00897\ \ \ \ \ Skissm\_\_AddGroupMembersResponse\ *(*add\_group\_members)(}
+\DoxyCodeLine{00898\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00899\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00900\ \ \ \ \ \ \ \ \ Skissm\_\_AddGroupMembersRequest\ *request}
+\DoxyCodeLine{00901\ \ \ \ \ );}
+\DoxyCodeLine{00909\ \ \ \ \ Skissm\_\_AddGroupMemberDeviceResponse\ *(*add\_group\_member\_device)(}
+\DoxyCodeLine{00910\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00912\ \ \ \ \ \ \ \ \ Skissm\_\_AddGroupMemberDeviceRequest\ *request}
+\DoxyCodeLine{00913\ \ \ \ \ );}
+\DoxyCodeLine{00921\ \ \ \ \ Skissm\_\_RemoveGroupMembersResponse\ *(*remove\_group\_members)(}
+\DoxyCodeLine{00922\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00924\ \ \ \ \ \ \ \ \ Skissm\_\_RemoveGroupMembersRequest\ *request}
+\DoxyCodeLine{00925\ \ \ \ \ );}
+\DoxyCodeLine{00933\ \ \ \ \ Skissm\_\_LeaveGroupResponse\ *(*leave\_group)(}
+\DoxyCodeLine{00934\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00935\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00936\ \ \ \ \ \ \ \ \ Skissm\_\_LeaveGroupRequest\ *request}
+\DoxyCodeLine{00937\ \ \ \ \ );}
+\DoxyCodeLine{00945\ \ \ \ \ Skissm\_\_SendGroupMsgResponse\ *(*send\_group\_msg)(}
+\DoxyCodeLine{00946\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00947\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00948\ \ \ \ \ \ \ \ \ Skissm\_\_SendGroupMsgRequest\ *request}
+\DoxyCodeLine{00949\ \ \ \ \ );}
+\DoxyCodeLine{00957\ \ \ \ \ Skissm\_\_ConsumeProtoMsgResponse\ *(*consume\_proto\_msg)(}
+\DoxyCodeLine{00958\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00959\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00960\ \ \ \ \ \ \ \ \ Skissm\_\_ConsumeProtoMsgRequest\ *request}
+\DoxyCodeLine{00961\ \ \ \ \ );}
+\DoxyCodeLine{00962\ \}\ \mbox{\hyperlink{skissm_8h_aa327ae35b8efe826fc038f2f52c57867}{e2ee\_proto\_handler\_t}};}
+\DoxyCodeLine{00963\ }
+\DoxyCodeLine{00964\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structskissm__event__handler__t}{skissm\_event\_handler\_t}}\ \{}
+\DoxyCodeLine{00971\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_acb21d9ebae1f280fcefc0b59f9a16703}{on\_log}})(}
+\DoxyCodeLine{00972\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00973\ \ \ \ \ \ \ \ \ LogCode\ log\_code,}
+\DoxyCodeLine{00974\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *log\_msg}
+\DoxyCodeLine{00975\ \ \ \ \ );}
+\DoxyCodeLine{00980\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_adb08c1b3e35b9d705232b1ee1f1086e3}{on\_user\_registered}})(}
+\DoxyCodeLine{00981\ \ \ \ \ \ \ \ \ Skissm\_\_Account\ *account}
+\DoxyCodeLine{00982\ \ \ \ \ );}
+\DoxyCodeLine{00988\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a390d943e3c3d108d657b934727cfbbf6}{on\_inbound\_session\_invited}})(}
+\DoxyCodeLine{00989\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00990\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from}
+\DoxyCodeLine{00991\ \ \ \ \ );}
+\DoxyCodeLine{00997\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_ab890fb99fb241ef863614e49d5daaa5a}{on\_inbound\_session\_ready}})(}
+\DoxyCodeLine{00998\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00999\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ *inbound\_session}
+\DoxyCodeLine{01000\ \ \ \ \ );}
+\DoxyCodeLine{01006\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a92f048bdcef4bc7b9e77ea16d1e85a70}{on\_outbound\_session\_ready}})(}
+\DoxyCodeLine{01007\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01008\ \ \ \ \ \ \ \ \ Skissm\_\_Session\ *outbound\_session}
+\DoxyCodeLine{01009\ \ \ \ \ );}
+\DoxyCodeLine{01018\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a5281d19e9727f558326cd65b14860f88}{on\_one2one\_msg\_received}})(}
+\DoxyCodeLine{01019\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01020\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{01021\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{01022\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext,}
+\DoxyCodeLine{01023\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01024\ \ \ \ \ );}
+\DoxyCodeLine{01025\ }
+\DoxyCodeLine{01034\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_afcb6763e185383d696b3ec53af4a08ac}{on\_other\_device\_msg\_received}})(}
+\DoxyCodeLine{01035\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01036\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{01037\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{01038\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext,}
+\DoxyCodeLine{01039\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01040\ \ \ \ \ );}
+\DoxyCodeLine{01041\ }
+\DoxyCodeLine{01050\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a1468ea66a74de7c2862eb00151918cd8}{on\_group\_msg\_received}})(}
+\DoxyCodeLine{01051\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01052\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{01053\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01054\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext,}
+\DoxyCodeLine{01055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01056\ \ \ \ \ );}
+\DoxyCodeLine{01057\ }
+\DoxyCodeLine{01066\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a82ff78814b564d907fce0e9d10738dad}{on\_group\_created}})(}
+\DoxyCodeLine{01067\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01068\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01069\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01070\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,}
+\DoxyCodeLine{01071\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num}
+\DoxyCodeLine{01072\ \ \ \ \ );}
+\DoxyCodeLine{01073\ }
+\DoxyCodeLine{01084\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a0966d397de13cfe51766d1edab634598}{on\_group\_members\_added}})(}
+\DoxyCodeLine{01085\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01086\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01087\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01088\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,}
+\DoxyCodeLine{01089\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
+\DoxyCodeLine{01090\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **added\_group\_members,}
+\DoxyCodeLine{01091\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ added\_group\_members\_num}
+\DoxyCodeLine{01092\ \ \ \ \ );}
+\DoxyCodeLine{01093\ }
+\DoxyCodeLine{01104\ \ \ \ \ void\ (*\mbox{\hyperlink{structskissm__event__handler__t_a6eeba3aa1759d827591176aa99276418}{on\_group\_members\_removed}})(}
+\DoxyCodeLine{01105\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01106\ \ \ \ \ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01107\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01108\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,}
+\DoxyCodeLine{01109\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
+\DoxyCodeLine{01110\ \ \ \ \ \ \ \ \ Skissm\_\_GroupMember\ **removed\_group\_members,}
+\DoxyCodeLine{01111\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ removed\_group\_members\_num}
+\DoxyCodeLine{01112\ \ \ \ \ );}
+\DoxyCodeLine{01113\ \}\ \mbox{\hyperlink{structskissm__event__handler__t}{skissm\_event\_handler\_t}};}
+\DoxyCodeLine{01114\ }
+\DoxyCodeLine{01118\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structskissm__plugin__t}{skissm\_plugin\_t}}\ \{}
+\DoxyCodeLine{01119\ \ \ \ \ \mbox{\hyperlink{structskissm__common__handler__t}{skissm\_common\_handler\_t}}\ common\_handler;}
+\DoxyCodeLine{01120\ \ \ \ \ \mbox{\hyperlink{structskissm__db__handler__t}{skissm\_db\_handler\_t}}\ db\_handler;}
+\DoxyCodeLine{01121\ \ \ \ \ \mbox{\hyperlink{structe2ee__proto__handler__t}{e2ee\_proto\_handler\_t}}\ proto\_handler;}
+\DoxyCodeLine{01122\ \ \ \ \ \mbox{\hyperlink{structskissm__event__handler__t}{skissm\_event\_handler\_t}}\ event\_handler;}
+\DoxyCodeLine{01123\ \}\ \mbox{\hyperlink{skissm_8h_acc4c93ff094c34f82e9299e14ffa50b2}{skissm\_plugin\_t}};}
+\DoxyCodeLine{01124\ }
+\DoxyCodeLine{01131\ \mbox{\hyperlink{structdigital__signature__suite__t}{digital\_signature\_suite\_t}}\ *\mbox{\hyperlink{skissm_8h_a48c55cca58cba63802f6cbc3638e0aad}{get\_digital\_signature\_suite}}(\textcolor{keywordtype}{unsigned}\ digital\_signature\_id);}
+\DoxyCodeLine{01132\ }
+\DoxyCodeLine{01139\ \mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ *\mbox{\hyperlink{skissm_8h_a462243e4ae976b459ae16bd508245267}{get\_kem\_suite}}(\textcolor{keywordtype}{unsigned}\ kem\_id);}
+\DoxyCodeLine{01140\ }
+\DoxyCodeLine{01147\ \mbox{\hyperlink{structsymmetric__encryption__suite__t}{symmetric\_encryption\_suite\_t}}\ *\mbox{\hyperlink{skissm_8h_a225f73da86f93f63db061c453b89927e}{get\_symmetric\_encryption\_suite}}(\textcolor{keywordtype}{unsigned}\ symmetric\_encryption\_id);}
+\DoxyCodeLine{01148\ }
+\DoxyCodeLine{01154\ \mbox{\hyperlink{structhash__suite__t}{hash\_suite\_t}}\ *\mbox{\hyperlink{skissm_8h_aabcd2fc78c62a8cf7080d0da3c4521df}{get\_hash\_suite}}(\textcolor{keywordtype}{unsigned}\ hash\_id);}
+\DoxyCodeLine{01155\ }
+\DoxyCodeLine{01164\ uint32\_t\ \mbox{\hyperlink{skissm_8h_aeae1a842d63fc0676568a0f238418e23}{gen\_e2ee\_pack\_id\_raw}}(}
+\DoxyCodeLine{01165\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ ver,\ \textcolor{keywordtype}{unsigned}\ digital\_signature,\ \textcolor{keywordtype}{unsigned}\ kem,\ \textcolor{keywordtype}{unsigned}\ symmetric\_encryption,\ \textcolor{keywordtype}{unsigned}\ hash);}
+\DoxyCodeLine{01166\ }
+\DoxyCodeLine{01171\ \mbox{\hyperlink{structe2ee__pack__t}{e2ee\_pack\_t}}\ *\mbox{\hyperlink{skissm_8h_afcf233d5fb6927fab423750e59591bec}{get\_e2ee\_pack}}(uint32\_t\ e2ee\_pack\_id\_raw);}
+\DoxyCodeLine{01172\ }
+\DoxyCodeLine{01177\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a8379b82416aa1421c7dea3365b34fbff}{skissm\_begin}}(\mbox{\hyperlink{structskissm__plugin__t}{skissm\_plugin\_t}}\ *ssm\_plugin);}
+\DoxyCodeLine{01178\ }
+\DoxyCodeLine{01182\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_aefbc5a989b2e19d7a31afbe66cad7bf3}{skissm\_end}}();}
+\DoxyCodeLine{01183\ }
+\DoxyCodeLine{01187\ \mbox{\hyperlink{structskissm__plugin__t}{skissm\_plugin\_t}}\ *\mbox{\hyperlink{skissm_8h_ab9afb3c7f631dd1d0ec9ddab3b0fab48}{get\_skissm\_plugin}}();}
+\DoxyCodeLine{01188\ }
+\DoxyCodeLine{01192\ uint32\_t\ \mbox{\hyperlink{skissm_8h_a3de1a0d2e19ad4df42cf59c225ea3e9a}{e2ee\_pack\_id\_to\_raw}}(\mbox{\hyperlink{structe2ee__pack__id__t}{e2ee\_pack\_id\_t}}\ e2ee\_pack\_id);}
+\DoxyCodeLine{01193\ }
+\DoxyCodeLine{01197\ \mbox{\hyperlink{structe2ee__pack__id__t}{e2ee\_pack\_id\_t}}\ \mbox{\hyperlink{skissm_8h_a867221c1f645753d77e969bb86dc1836}{raw\_to\_e2ee\_pack\_id}}(uint32\_t\ e2ee\_pack\_id\_raw);}
+\DoxyCodeLine{01198\ }
+\DoxyCodeLine{01205\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a788aeb88824cd0b0f8a9642fc4cdad49}{ssm\_notify\_log}}(Skissm\_\_E2eeAddress\ *user\_address,\ LogCode\ log\_code,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *log\_msg,\ ...);}
+\DoxyCodeLine{01206\ }
+\DoxyCodeLine{01211\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_acaa10126d26b3073553c67ba97adcab3}{ssm\_notify\_user\_registered}}(Skissm\_\_Account\ *account);}
+\DoxyCodeLine{01212\ }
+\DoxyCodeLine{01218\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a74b2e6553ea99bf2d04206252f01c12c}{ssm\_notify\_inbound\_session\_invited}}(Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *from);}
+\DoxyCodeLine{01219\ }
+\DoxyCodeLine{01225\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a3dbef872ef43bd557e690e8292674bf4}{ssm\_notify\_inbound\_session\_ready}}(Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_Session\ *inbound\_session);}
+\DoxyCodeLine{01226\ }
+\DoxyCodeLine{01232\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a0134c3c4ee6841103eb85644cef1efb3}{ssm\_notify\_outbound\_session\_ready}}(Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_Session\ *outbound\_session);}
+\DoxyCodeLine{01233\ }
+\DoxyCodeLine{01242\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a93abdeb967126dfc6745b7181855075e}{ssm\_notify\_one2one\_msg}}(}
+\DoxyCodeLine{01243\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{01244\ \ \ \ \ uint8\_t\ *plaintext,\ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01245\ );}
+\DoxyCodeLine{01246\ }
+\DoxyCodeLine{01255\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_abaaeb53fde9338164cef6108c3c898cf}{ssm\_notify\_other\_device\_msg}}(}
+\DoxyCodeLine{01256\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{01257\ \ \ \ \ uint8\_t\ *plaintext,\ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01258\ );}
+\DoxyCodeLine{01259\ }
+\DoxyCodeLine{01268\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_ab8564409120cd6f8765368fd01fe19c8}{ssm\_notify\_group\_msg}}(}
+\DoxyCodeLine{01269\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01270\ \ \ \ \ uint8\_t\ *plaintext,\ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01271\ );}
+\DoxyCodeLine{01272\ }
+\DoxyCodeLine{01281\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a09a166d345e69133c44822f1814a22b8}{ssm\_notify\_group\_created}}(}
+\DoxyCodeLine{01282\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *group\_address,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01283\ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,\ \textcolor{keywordtype}{size\_t}\ group\_members\_num}
+\DoxyCodeLine{01284\ );}
+\DoxyCodeLine{01285\ }
+\DoxyCodeLine{01296\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_a1d5a0a066488cc004cf96b7fbb5e282c}{ssm\_notify\_group\_members\_added}}(}
+\DoxyCodeLine{01297\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *group\_address,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01298\ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,\ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
+\DoxyCodeLine{01299\ \ \ \ \ Skissm\_\_GroupMember\ **added\_group\_members,\ \textcolor{keywordtype}{size\_t}\ added\_group\_members\_num}
+\DoxyCodeLine{01300\ );}
+\DoxyCodeLine{01301\ }
+\DoxyCodeLine{01312\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{skissm_8h_affe1240e1f26f8d2b1f995f3402e9bf5}{ssm\_notify\_group\_members\_removed}}(}
+\DoxyCodeLine{01313\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,\ Skissm\_\_E2eeAddress\ *group\_address,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01314\ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,\ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
+\DoxyCodeLine{01315\ \ \ \ \ Skissm\_\_GroupMember\ **removed\_group\_members,\ \textcolor{keywordtype}{size\_t}\ removed\_group\_members\_num}
+\DoxyCodeLine{01316\ );}
+\DoxyCodeLine{01317\ }
+\DoxyCodeLine{01318\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{01319\ \}}
+\DoxyCodeLine{01320\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01321\ }
+\DoxyCodeLine{01322\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ SKISSM\_H\_\ */}\textcolor{preprocessor}{}}
 
 \end{DoxyCode}

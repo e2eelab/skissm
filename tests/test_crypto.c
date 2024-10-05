@@ -238,7 +238,7 @@ static void test_encryption(
 static void test_e2ee_pack_id() {
     // test start
     printf("test_e2ee_pack_id begin!!!\n");
-    uint32_t default_2ee_pack_id_raw = 0x113101;
+    uint32_t default_2ee_pack_id_raw = E2EE_PACK_ID_V_0_DEFAULT;
     uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_pqc();
 
     assert(e2ee_pack_id_raw == default_2ee_pack_id_raw);

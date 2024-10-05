@@ -141,15 +141,15 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
     const cipher_suite_t *cipher_suite = get_e2ee_pack(inbound_session->e2ee_pack_id)->cipher_suite;
 
     // verify the signed pre-key
-    bool old_spk = 0;
+    bool old_spk = false;
     Skissm__SignedPreKey *old_spk_data = NULL;
     if (local_account->signed_pre_key->spk_id != msg->bob_signed_pre_key_id) {
         get_skissm_plugin()->db_handler.load_signed_pre_key(local_account->address, msg->bob_signed_pre_key_id, &old_spk_data);
         if (old_spk_data == NULL) {
             ssm_notify_log(inbound_session->our_address, BAD_SIGNED_PRE_KEY, "crypto_curve25519_new_inbound_session()");
-            return -1;
+            return SKISSM_RESULT_FAIL;
         } else {
-            old_spk = 1;
+            old_spk = true;
         }
     }
 
@@ -188,7 +188,7 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
 
     const Skissm__KeyPair *bob_identity_key = local_account->identity_key->asym_key_pair;
     Skissm__KeyPair *bob_signed_pre_key = NULL;
-    if (old_spk == 0) {
+    if (old_spk == false) {
         bob_signed_pre_key = local_account->signed_pre_key->key_pair;
     } else {
         bob_signed_pre_key = old_spk_data->key_pair;
@@ -245,14 +245,14 @@ int crypto_curve25519_new_inbound_session(Skissm__Session *inbound_session, Skis
     skissm__accept_response__free_unpacked(response, NULL);
 
     // done
-    return 0;
+    return SKISSM_RESULT_SUCC;
 }
 
 int crypto_curve25519_complete_outbound_session(Skissm__Session *outbound_session, Skissm__AcceptMsg *msg) {
     outbound_session->responded = true;
 
     // done
-    return 0;
+    return SKISSM_RESULT_SUCC;
 }
 
 session_suite_t E2EE_SESSION_ECC = {
