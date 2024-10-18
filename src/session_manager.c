@@ -121,8 +121,8 @@ int consume_get_pre_key_bundle_response(
     Skissm__E2eeAddress *to_address = NULL;
     uint32_t e2ee_pack_id;
     Skissm__InviteResponse **invite_response_list = NULL;
-    int invite_response_ret = 0;    // this parameter may be useful
-    int server_check = 0;
+    int invite_response_ret = SKISSM_RESULT_SUCC;    // this parameter may be useful
+    int server_check = SKISSM_RESULT_SUCC;
     ProtobufCBinaryData server_public_key = {0, NULL};
     bool is_self = false;
     char *from_user_id = NULL;
@@ -185,7 +185,7 @@ int consume_get_pre_key_bundle_response(
                     server_public_key.data
                 );
 
-                if (server_check < 0) {
+                if (server_check < SKISSM_RESULT_SUCC) {
                     ssm_notify_log(NULL, BAD_SERVER_SIGNATURE, "consume_get_pre_key_bundle_response()");
                 }
             } else {
@@ -413,7 +413,7 @@ bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg 
                     }
 
                     // release
-                    free_string(&auth);
+                    free_string(auth);
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_COMMON_SYNC_MSG) {
                     ssm_notify_other_device_msg(receiver_address, e2ee_msg->from, e2ee_msg->to, plaintext->common_sync_msg.data, plaintext->common_sync_msg.len);
                 } else if (plaintext->payload_case == SKISSM__PLAINTEXT__PAYLOAD_GROUP_PRE_KEY_BUNDLE) {

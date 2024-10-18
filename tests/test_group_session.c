@@ -598,8 +598,8 @@ static void test_add_group_members() {
 
     int i;
     Skissm__E2eeAddress *address_list[4];
-    char *user_id_list[3];
-    char *domain_list[3];
+    char *user_id_list[4];
+    char *domain_list[4];
     char *new_user_id_list[1];
     char *new_domain_list[1];
     for (i = 0; i < 4; i++) {
@@ -673,10 +673,12 @@ static void test_remove_group_members() {
     mock_user_pqc_account("Claire", "claire@domain.com.tw", "345678");
     mock_user_pqc_account("David", "david@domain.com.tw", "456789");
 
+    sleep(5);
+    
     int i;
     Skissm__E2eeAddress *address_list[4];
-    char *user_id_list[3];
-    char *domain_list[3];
+    char *user_id_list[4];
+    char *domain_list[4];
     char *removing_user_id_list[1];
     char *removing_domain_list[1];
     for (i = 0; i < 4; i++) {
@@ -687,7 +689,6 @@ static void test_remove_group_members() {
     removing_user_id_list[0] = account_data[2]->address->user->user_id;
     removing_domain_list[0] = account_data[2]->address->domain;
 
-    sleep(2);
     Skissm__GroupMember **group_members = NULL;
     malloc_group_members(4);
 
@@ -746,8 +747,8 @@ static void test_create_add_remove() {
 
     int i;
     Skissm__E2eeAddress *address_list[3];
-    char *user_id_list[2];
-    char *domain_list[2];
+    char *user_id_list[3];
+    char *domain_list[3];
     char *new_user_id_list[1];
     char *new_domain_list[1];
     char *removing_user_id_list[1];
@@ -1079,8 +1080,8 @@ static void test_medium_group() {
 
     int i;
     Skissm__E2eeAddress *address_list[14];
-    char *user_id_list[10];
-    char *domain_list[10];
+    char *user_id_list[14];
+    char *domain_list[14];
     char *new_user_id_list[4];
     char *new_domain_list[4];
     char *removing_user_id_list[4];

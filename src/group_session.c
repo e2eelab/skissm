@@ -491,7 +491,7 @@ int new_outbound_group_session_by_sender(
 
     // release
     free_proto(account);
-    free_string(&auth);
+    free_string(auth);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
     free_mem((void **)&group_pre_key_plaintext_data, sizeof(uint8_t) * group_pre_key_plaintext_data_len);
 
@@ -1305,7 +1305,7 @@ int renew_outbound_group_session_by_welcome_and_add(
 
         // release
         free_proto(account);
-        free_string(&auth);
+        free_string(auth);
         free_mem((void **)&group_ratchet_state_plaintext_data, sizeof(uint8_t) * group_ratchet_state_plaintext_data_len);
         for (i = 0; i < n_adding_member_info_list; i++) {
             free_protobuf(their_chain_keys[i]);
@@ -1588,7 +1588,7 @@ int renew_group_sessions_with_new_device(
 
         // release
         free_proto(account);
-        free_string(&auth);
+        free_string(auth);
         free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
     }
 

@@ -1007,6 +1007,11 @@ bool is_valid_accept_response(Skissm__AcceptResponse *src) {
 
 bool is_valid_create_group_response(Skissm__CreateGroupResponse *src) {
     if (src != NULL) {
+        if (src->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+            // At least one member with group manager role,
+            // or some error happened on creating group.
+            return true;
+        }
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             return false;
         }
