@@ -21,6 +21,11 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "mock_server_sending.h"
 #include "skissm/crypto.h"
@@ -32,6 +37,8 @@
 #define user_data_max 205
 #define group_data_max 8
 
+#define SERV_PORT 5134
+
 static Skissm__Certificate *central_certificate = NULL;
 
 static Skissm__Certificate *server_certificate = NULL;
@@ -39,6 +46,21 @@ static Skissm__Certificate *server_certificate = NULL;
 static Skissm__KeyPair *central_key_pair = NULL;
 
 static Skissm__KeyPair *server_key_pair = NULL;
+
+int socket_fd;   // file description into transport
+int socket_fd_client;
+
+int recfd; // file descriptor to accept
+
+int length;      // length of address structure
+
+int nbytes;      // the number of read
+
+char buf[BUFSIZ];
+
+struct sockaddr_in servaddr; // address of the server
+
+struct sockaddr_in client_addr; // address of client
 
 typedef struct user_data {
     char *authenticator;
@@ -397,6 +419,51 @@ void mock_server_begin() {
         }
     }
     // mock_certificate();
+
+    // Get a socket into TCP/IP
+    if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("socket failed");
+        exit(1);
+    }
+    // Set up the server address
+    bzero((char *)&servaddr, sizeof(servaddr)); /* 清除位址內容 */
+    servaddr.sin_family = AF_INET;    /* 設定協定格式 */
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY); /* IP次序轉換 */
+    servaddr.sin_port = htons(SERV_PORT);  /* 埠口位元次序轉換 */
+    // Bind to the address to which the service will be offered
+    if (bind(socket_fd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
+        perror("bind failed");
+        exit(1);
+    }
+    // Set up the socket for listening, with a queue length of 20
+    if (listen(socket_fd, 20) < 0) {
+        perror("listen failed");
+        exit(1);
+    }
+    // Loop continuously, waiting for connection requests and performing the service
+    length = sizeof(client_addr);
+    printf("Server is ready to receive !!\n");
+    printf("Can strike Cntrl-c to stop Server >>\n");
+    while (1) {
+        if ((recfd = accept(socket_fd, (struct sockaddr_in *)&client_addr, &length)) < 0) {
+            perror("could not accept call");
+            exit(1);
+        }
+        if ((nbytes = read(recfd, &buf, BUFSIZ)) < 0) {
+            perror("read of data error nbytes !");
+            exit(1);
+        }
+        printf("Create socket #%d form %s : %d\n", recfd, inet_ntoa(client_addr.sin_addr), htons(client_addr.sin_port));
+        printf("%s\n", &buf);
+
+        /* return messages to client */
+        if (write(recfd, &buf, nbytes) == -1) {
+            perror("write to client error");
+            exit(1);
+        }
+        close(recfd);
+        printf("Can Strike Crtl-c to stop Server >>\n");
+    }
 }
 
 void mock_server_end() {
@@ -462,6 +529,23 @@ void mock_server_end() {
     if (server_key_pair != NULL) {
         skissm__key_pair__free_unpacked(server_key_pair, NULL);
         server_key_pair = NULL;
+    }
+}
+
+void connect_to_server() {
+    struct sockaddr_in our_addr;
+    if ((socket_fd_client = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("socket failed");
+        exit(1);
+    }
+    bzero((char *)&our_addr, sizeof(our_addr));
+    our_addr.sin_family = AF_INET;
+    our_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    our_addr.sin_port = htons(SERV_PORT);
+
+    if (connect(socket_fd_client, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
+        perror("connect failed!");
+        exit(1);
     }
 }
 
