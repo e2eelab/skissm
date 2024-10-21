@@ -264,7 +264,7 @@ void mock_certificate() {
     size_t decoded_data_len = 0;
 
     // central private key
-    if ((fptr = fopen("../cert/central_private.txt", "r")) == NULL){
+    if ((fptr = fopen("./cert/central_private.txt", "r")) == NULL){
         printf("Error! Opening file in the data folder failed!\n");
         printf("errorno: %d\n", errno);
         // program exits if the file pointer returns NULL.
@@ -279,7 +279,12 @@ void mock_certificate() {
 
         data[data_len] = '\0';
         decoded_data_len = crypto_base64_decode(&decoded_data, data);
-        central_key_pair = skissm__key_pair__unpack(NULL, decoded_data_len, decoded_data);
+        // the decoded_data is the private key
+        if (decoded_data_len > 0) {
+            central_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
+            skissm__key_pair__init(central_key_pair);
+            copy_protobuf_from_array(&(central_key_pair->private_key), decoded_data, decoded_data_len);
+        }
 
         // release
         free_mem((void **)&data, data_len + 1);
@@ -287,7 +292,7 @@ void mock_certificate() {
     }
 
     // central certificate
-    if ((fptr = fopen("../cert/central_certificate.txt", "r")) == NULL){
+    if ((fptr = fopen("./cert/central_certificate.txt", "r")) == NULL){
         printf("Error! Opening file in the data folder failed!\n");
         // program exits if the file pointer returns NULL.
         exit(1);
@@ -312,7 +317,7 @@ void mock_certificate() {
     }
 
     // server private key
-    if ((fptr = fopen("../cert/test_private.txt", "r")) == NULL){
+    if ((fptr = fopen("./cert/test_private.txt", "r")) == NULL){
         printf("Error! Opening file in the data folder failed!\n");
         // program exits if the file pointer returns NULL.
         exit(1);
@@ -326,7 +331,12 @@ void mock_certificate() {
 
         data[data_len] = '\0';
         decoded_data_len = crypto_base64_decode(&decoded_data, data);
-        server_key_pair = skissm__key_pair__unpack(NULL, decoded_data_len, decoded_data);
+        // the decoded_data is the private key
+        if (decoded_data_len > 0) {
+            server_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
+            skissm__key_pair__init(server_key_pair);
+            copy_protobuf_from_array(&(server_key_pair->private_key), decoded_data, decoded_data_len);
+        }
 
         // release
         free_mem((void **)&data, data_len + 1);
@@ -334,7 +344,7 @@ void mock_certificate() {
     }
 
     // server certificate
-    if ((fptr = fopen("../cert/test_certificate.txt", "r")) == NULL){
+    if ((fptr = fopen("./cert/test_certificate.txt", "r")) == NULL){
         printf("Error! Opening file in the data folder failed!\n");
         // program exits if the file pointer returns NULL.
         exit(1);
@@ -362,27 +372,27 @@ void mock_certificate() {
 void mock_server_signed_signature(
     Skissm__ServerSignedSignature **out, uint8_t *msg, size_t msg_len
 ) {
-    // uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_pqc();
-    // const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id_raw)->cipher_suite;
-    // int sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
+    uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_pqc();
+    const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id_raw)->cipher_suite;
+    int sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
 
-    // *out = (Skissm__ServerSignedSignature *)malloc(sizeof(Skissm__ServerSignedSignature));
-    // skissm__server_signed_signature__init(*out);
+    *out = (Skissm__ServerSignedSignature *)malloc(sizeof(Skissm__ServerSignedSignature));
+    skissm__server_signed_signature__init(*out);
 
-    // (*out)->version = server_certificate->version;
-    // (*out)->hash_alg = server_certificate->hash_alg;
-    // (*out)->signing_alg = server_certificate->signing_alg;
-    // copy_subject_from_subject(&((*out)->signer), server_certificate->cert->issuee);
-    // copy_protobuf_from_protobuf(&((*out)->signing_public_key_fingerprint), &(server_certificate->signing_public_key_fingerprint));
-    // copy_protobuf_from_array(&((*out)->msg_fingerprint), msg, msg_len);
-    // // sign
-    // size_t signature_out_len;
-    // malloc_protobuf(&((*out)->signature), sig_len);
-    // cipher_suite->digital_signature_suite->sign(
-    //     (*out)->signature.data, &signature_out_len,
-    //     msg, msg_len,
-    //     server_key_pair->private_key.data
-    // );
+    (*out)->version = server_certificate->version;
+    (*out)->hash_alg = server_certificate->hash_alg;
+    (*out)->signing_alg = server_certificate->signing_alg;
+    copy_subject_from_subject(&((*out)->signer), server_certificate->cert->issuee);
+    copy_protobuf_from_protobuf(&((*out)->signing_public_key_fingerprint), &(server_certificate->signing_public_key_fingerprint));
+    copy_protobuf_from_array(&((*out)->msg_fingerprint), msg, msg_len);
+    // sign
+    size_t signature_out_len;
+    malloc_protobuf(&((*out)->signature), sig_len);
+    cipher_suite->digital_signature_suite->sign(
+        (*out)->signature.data, &signature_out_len,
+        msg, msg_len,
+        server_key_pair->private_key.data
+    );
 }
 
 void mock_server_begin() {
@@ -396,7 +406,7 @@ void mock_server_begin() {
             device_invited_record[i][j] = 0;
         }
     }
-    // mock_certificate();
+    mock_certificate();
 }
 
 void mock_server_end() {
