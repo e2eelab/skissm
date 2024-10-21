@@ -36,7 +36,7 @@ uint32_t load_e2ee_pack_id(uint64_t address_id);
 void load_identity_key_pair(uint64_t address_id, Skissm__IdentityKey **identity_key_pair);
 void load_signed_pre_key_pair(uint64_t address_id, Skissm__SignedPreKey **signed_pre_key);
 int load_n_one_time_pre_keys(uint64_t address_id);
-uint32_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_time_pre_keys);
+size_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_time_pre_keys);
 uint32_t load_next_one_time_pre_key_id(uint64_t address_id);
 bool load_address_id(Skissm__E2eeAddress *address, sqlite_int64 *address_id);
 sqlite_int64 insert_address(Skissm__E2eeAddress *address);
