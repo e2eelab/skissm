@@ -1012,6 +1012,7 @@ Skissm__ConsumeProtoMsgResponse *process_proto_msg(uint8_t *proto_msg_data, size
             );
             if (server_check < 0) {
                 ssm_notify_log(NULL, BAD_SERVER_SIGNATURE, "process_proto_msg()");
+                ret = SKISSM_RESULT_FAIL;
             }
         }
     } else {

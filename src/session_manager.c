@@ -126,6 +126,7 @@ int consume_get_pre_key_bundle_response(
     ProtobufCBinaryData server_public_key = {0, NULL};
     bool is_self = false;
     char *from_user_id = NULL;
+    size_t i;
 
     if (is_valid_address(from)) {
         from_user_id = from->user->user_id;
@@ -162,8 +163,6 @@ int consume_get_pre_key_bundle_response(
     }
 
     if (ret == SKISSM_RESULT_SUCC) {
-        size_t i;
-        int insert_pos = 0;
         for (i = 0; i < n_pre_key_bundles; i++) {
             cur_pre_key_bundle = their_pre_key_bundles[i];
             e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
@@ -187,11 +186,27 @@ int consume_get_pre_key_bundle_response(
 
                 if (server_check < SKISSM_RESULT_SUCC) {
                     ssm_notify_log(NULL, BAD_SERVER_SIGNATURE, "consume_get_pre_key_bundle_response()");
+                    ret = SKISSM_RESULT_FAIL;
                 }
             } else {
                 ssm_notify_log(NULL, BAD_SERVER_SIGNATURE, "consume_get_pre_key_bundle_response()");
+                ret = SKISSM_RESULT_FAIL;
             }
+        }
+    }
 
+    if (ret == SKISSM_RESULT_SUCC) {
+        int insert_pos = 0;
+        for (i = 0; i < n_pre_key_bundles; i++) {
+            cur_pre_key_bundle = their_pre_key_bundles[i];
+            e2ee_pack_id = cur_pre_key_bundle->e2ee_pack_id;
+            to_address = cur_pre_key_bundle->user_address;
+            // skip if the pre-key bundle is from this device
+            if (is_self) {
+                if (compare_address(from, to_address)) {
+                    continue;
+                }
+            }
             // store the group pre-keys if necessary
             if (group_pre_key_plaintext_data != NULL) {
                 ssm_notify_log(from, DEBUG_LOG, "consume_get_pre_key_bundle_response() store the group pre-keys");
@@ -208,13 +223,11 @@ int consume_get_pre_key_bundle_response(
                 free(pending_plaintext_id);
                 pending_plaintext_id = NULL;
             }
-
             // create an outbound session
             const session_suite_t *session_suite = get_e2ee_pack(e2ee_pack_id)->session_suite;
             invite_response_ret = session_suite->new_outbound_session(&(invite_response_list[insert_pos]), from, cur_pre_key_bundle);
             insert_pos++;
         }
-
         *invite_response_list_out = invite_response_list;
         *invite_response_num = n_pre_key_bundles;
     }

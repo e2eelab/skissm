@@ -822,6 +822,36 @@ bool is_valid_group_session(Skissm__GroupSession *src) {
     return true;
 }
 
+bool is_valid_group_session_no_chain_key(Skissm__GroupSession *src) {
+    if (src != NULL) {
+        if (!is_valid_string(src->version)) {
+            return false;
+        }
+        if (!is_valid_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!is_valid_string(src->session_id)) {
+            return false;
+        }
+        if (!is_valid_address(src->sender)) {
+            return false;
+        }
+        if (!is_valid_address(src->session_owner)) {
+            return false;
+        }
+        if (!is_valid_group_info(src->group_info)) {
+            return false;
+        }
+        if (!is_valid_protobuf(&(src->associated_data))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 bool is_valid_group_update_key_bundle(Skissm__GroupUpdateKeyBundle *src) {
     if (src != NULL) {
         if (!is_valid_string(src->version)) {
@@ -1007,11 +1037,6 @@ bool is_valid_accept_response(Skissm__AcceptResponse *src) {
 
 bool is_valid_create_group_response(Skissm__CreateGroupResponse *src) {
     if (src != NULL) {
-        if (src->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
-            // At least one member with group manager role,
-            // or some error happened on creating group.
-            return true;
-        }
         if (src->code != SKISSM__RESPONSE_CODE__RESPONSE_CODE_OK) {
             return false;
         }

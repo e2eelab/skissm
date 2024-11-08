@@ -127,13 +127,11 @@ enum LogCode {
   BAD_SUPPLY_OPKS_MSG = 7741,
   BAD_UPDATE_USER_MSG = 7751,
 
+  // plaintext
   BAD_PLAINTEXT = 8001,
 
+  // server signature
   BAD_SERVER_SIGNATURE = 9001,
-
-  NOT_ENOUGH_RANDOM = 10001,
-  NOT_ENOUGH_MEMORY = 10002,
-  NOT_ENOUGH_SPACE = 10003
 };
 
 typedef enum LogCode LogCode;

@@ -238,6 +238,15 @@ static const char *GROUP_SESSION_DELETE_DATA_BY_ID = "DELETE FROM GROUP_SESSION 
                                                      "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?)) "
                                                      "AND ID is (?);";
 
+static const char *GROUP_SESSION_DELETE_DATA_WITH_NO_ID = "DELETE FROM GROUP_SESSION "
+                                                          "WHERE SENDER IN "
+                                                          "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?)) "
+                                                          "AND OWNER IN "
+                                                          "(SELECT ID FROM ADDRESS WHERE DOMAIN is (?) AND USER_ID is (?) AND DEVICE_ID is (?)) "
+                                                          "AND ADDRESS IN "
+                                                          "(SELECT ID FROM ADDRESS WHERE GROUP_ID is (?)) "
+                                                          "AND ID is (?);";
+
 // pending data related
 static const char *PENDING_PLAINTEXT_DATA_DROP_TABLE = "DROP TABLE IF EXISTS PENDING_PLAINTEXT_DATA;";
 static const char *PENDING_PLAINTEXT_DATA_CREATE_TABLE = "CREATE TABLE PENDING_PLAINTEXT_DATA( "
@@ -1624,7 +1633,9 @@ size_t load_accounts(Skissm__Account ***accounts) {
 }
 
 // session related handlers
-void load_inbound_session(char *session_id, Skissm__E2eeAddress *our_address, Skissm__Session **session) {
+void load_inbound_session(
+    char *session_id, Skissm__E2eeAddress *our_address, Skissm__Session **session
+) {
     // prepare
     sqlite3_stmt *stmt;
     if (!sqlite_prepare(SESSION_LOAD_DATA_BY_ADDRESS_AND_ID, &stmt)) {
@@ -1666,7 +1677,9 @@ void load_inbound_session(char *session_id, Skissm__E2eeAddress *our_address, Sk
 }
 
 // return the lastest updated session
-void load_outbound_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address, Skissm__Session **session) {
+void load_outbound_session(
+    Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address, Skissm__Session **session
+) {
     // prepare
     sqlite3_stmt *stmt;
     if (!sqlite_prepare(SESSION_LOAD_DATA_BY_ADDRESSES, &stmt)) {
@@ -1707,7 +1720,9 @@ void load_outbound_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress
     return;
 }
 
-int load_n_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their_user_id) {
+int load_n_outbound_sessions(
+    Skissm__E2eeAddress *our_address, const char *their_user_id
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SESSION_LOAD_N_OUTBOUND_SESSION, &stmt);
@@ -1728,7 +1743,11 @@ int load_n_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their
     return n_outbound_sessions;
 }
 
-size_t load_outbound_sessions(Skissm__E2eeAddress *our_address, const char *their_user_id, const char *their_domain, Skissm__Session ***outbound_sessions) {
+size_t load_outbound_sessions(
+    Skissm__E2eeAddress *our_address,
+    const char *their_user_id, const char *their_domain,
+    Skissm__Session ***outbound_sessions
+) {
     // allocate memory
     size_t n_outbound_sessions = load_n_outbound_sessions(our_address, their_user_id);
     (*outbound_sessions) = (Skissm__Session **)malloc(n_outbound_sessions * sizeof(Skissm__Session *));
@@ -1826,7 +1845,13 @@ void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *t
     sqlite_finalize(stmt);
 }
 
-void load_group_session_by_address(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress *group_address, Skissm__GroupSession **group_session) {
+// group session
+void load_group_session_by_address(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *owner_address,
+    Skissm__E2eeAddress *group_address,
+    Skissm__GroupSession **group_session
+) {
     // prepare
     sqlite3_stmt *stmt;
     if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_ADDRESS, &stmt)) {
@@ -1870,7 +1895,12 @@ void load_group_session_by_address(Skissm__E2eeAddress *sender_address, Skissm__
     return;
 }
 
-void load_group_session_by_id(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, char *session_id, Skissm__GroupSession **group_session) {
+void load_group_session_by_id(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *owner_address,
+    char *session_id,
+    Skissm__GroupSession **group_session
+) {
     // prepare
     sqlite3_stmt *stmt;
     if (!sqlite_prepare(GROUP_SESSION_LOAD_DATA_BY_ID, &stmt)) {
@@ -1914,7 +1944,10 @@ void load_group_session_by_id(Skissm__E2eeAddress *sender_address, Skissm__E2eeA
     return;
 }
 
-int load_n_group_sessions(Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress *group_address) {
+int load_n_group_sessions(
+    Skissm__E2eeAddress *owner_address,
+    Skissm__E2eeAddress *group_address
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(N_GROUP_SESSION_LOAD, &stmt);
@@ -1935,7 +1968,11 @@ int load_n_group_sessions(Skissm__E2eeAddress *owner_address, Skissm__E2eeAddres
     return n_group_sessions;
 }
 
-size_t load_group_sessions(Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress *group_address, Skissm__GroupSession ***group_sessions) {
+size_t load_group_sessions(
+    Skissm__E2eeAddress *owner_address,
+    Skissm__E2eeAddress *group_address,
+    Skissm__GroupSession ***group_sessions
+) {
     // allocate memory
     size_t n_group_sessions = load_n_group_sessions(owner_address, group_address);
     (*group_sessions) = (Skissm__GroupSession **)malloc(n_group_sessions * sizeof(Skissm__GroupSession *));
@@ -1966,7 +2003,10 @@ size_t load_group_sessions(Skissm__E2eeAddress *owner_address, Skissm__E2eeAddre
     return n_group_sessions;
 }
 
-int load_n_group_addresses(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address) {
+int load_n_group_addresses(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *owner_address
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(N_GROUP_ADDRESS_LOAD, &stmt);
@@ -1989,7 +2029,11 @@ int load_n_group_addresses(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddr
     return n_group_addresses;
 }
 
-size_t load_group_addresses(Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *owner_address, Skissm__E2eeAddress ***group_addresses) {
+size_t load_group_addresses(
+    Skissm__E2eeAddress *sender_address,
+    Skissm__E2eeAddress *owner_address,
+    Skissm__E2eeAddress ***group_addresses
+) {
     // allocate memory
     size_t n_group_addresses = load_n_group_addresses(sender_address, owner_address);
     (*group_addresses) = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * n_group_addresses);
@@ -2030,12 +2074,21 @@ void store_group_session(Skissm__GroupSession *group_session) {
     sqlite_int64 owner_id = insert_address(group_session->session_owner);
     sqlite_int64 address_id = insert_address(group_session->group_info->group_address);
 
+    char *session_id = group_session->session_id;
+
+    // unload the group session with no session id in it if necessary
+    if (session_id[0] != '\0') {
+        unload_group_session_with_no_session_id(
+            group_session->sender, group_session->session_owner, group_session->group_info->group_address
+        );
+    }
+
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(GROUP_SESSION_INSERT_OR_REPLACE, &stmt);
 
     // bind
-    sqlite3_bind_text(stmt, 1, group_session->session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, session_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_int64(stmt, 2, sender_id);
     sqlite3_bind_int64(stmt, 3, owner_id);
     sqlite3_bind_int64(stmt, 4, address_id);
@@ -2049,7 +2102,10 @@ void store_group_session(Skissm__GroupSession *group_session) {
     free_mem((void **)&group_session_data, group_session_data_len);
 }
 
-void unload_group_session_by_address(Skissm__E2eeAddress *session_owner, Skissm__E2eeAddress *group_address) {
+void unload_group_session_by_address(
+    Skissm__E2eeAddress *session_owner,
+    Skissm__E2eeAddress *group_address
+) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(GROUP_SESSION_DELETE_DATA_BY_ADDRESS, &stmt);
@@ -2067,7 +2123,10 @@ void unload_group_session_by_address(Skissm__E2eeAddress *session_owner, Skissm_
     sqlite_finalize(stmt);
 }
 
-void unload_group_session_by_id(Skissm__E2eeAddress *session_owner, char *session_id) {
+void unload_group_session_by_id(
+    Skissm__E2eeAddress *session_owner,
+    char *session_id
+) {
     if (session_id == NULL) {
         return;
     }
@@ -2080,6 +2139,32 @@ void unload_group_session_by_id(Skissm__E2eeAddress *session_owner, char *sessio
     sqlite3_bind_text(stmt, 2, session_owner->user->user_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 3, session_owner->user->device_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 4, session_id, -1, SQLITE_TRANSIENT);
+
+    // step
+    sqlite_step(stmt, SQLITE_DONE);
+
+    // release
+    sqlite_finalize(stmt);
+}
+
+void unload_group_session_with_no_session_id(
+    Skissm__E2eeAddress *sender,
+    Skissm__E2eeAddress *session_owner,
+    Skissm__E2eeAddress *group_address
+) {
+    // prepare
+    sqlite3_stmt *stmt;
+    sqlite_prepare(GROUP_SESSION_DELETE_DATA_WITH_NO_ID, &stmt);
+
+    // bind
+    sqlite3_bind_text(stmt, 1, sender->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, sender->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, sender->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, session_owner->domain, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, session_owner->user->user_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 6, session_owner->user->device_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 7, group_address->group->group_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 8, "", -1, SQLITE_TRANSIENT);
 
     // step
     sqlite_step(stmt, SQLITE_DONE);
