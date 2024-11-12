@@ -183,7 +183,7 @@ int invite_internal(
         }
 
         // release
-        free_string(&auth);
+        free_string(auth);
         free_proto(invite_request);
     }
 
@@ -254,7 +254,7 @@ int accept_internal(
         }
 
         // release
-        free_string(&auth);
+        free_string(auth);
         free_proto(accept_request);
     }
 
@@ -407,7 +407,7 @@ Skissm__SendOne2oneMsgResponse *send_one2one_msg_internal(
     }
 
     // release
-    free_string(&auth);
+    free_string(auth);
     free_proto(send_one2one_msg_request);
 
     // done
@@ -436,9 +436,13 @@ int add_group_member_device_internal(
                     sender_address, sender_address, group_address, &outbound_group_session
                 );
 
+                // group session might not exist:
                 if (outbound_group_session == NULL) {
                     ssm_notify_log(sender_address, BAD_GROUP_SESSION, "add_group_member_device_internal()");
-                    ret = SKISSM_RESULT_FAIL;
+                    // skip:
+                    // release
+                    free_string(auth);
+                    return ret;
                 }
             } else {
                 ssm_notify_log(NULL, BAD_ADDRESS, "add_group_member_device_internal()");
@@ -491,7 +495,7 @@ int add_group_member_device_internal(
     }
 
     // release
-    free_string(&auth);
+    free_string(auth);
     free_proto(add_group_member_device_request);
     if (outbound_group_session) {
         skissm__group_session__free_unpacked(outbound_group_session, NULL);
@@ -763,8 +767,15 @@ static void resend_pending_request(Skissm__Account *account) {
                         create_group_request->msg->group_info->n_group_member_list,
                         create_group_response
                     );
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                pending_request_id_list[i]);
                 } else {
+                    if (create_group_response != NULL && create_group_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+                        // At least one member with group manager role,
+                        // or some error happened on creating group.
+                        get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                    pending_request_id_list[i]);
+                    }
                     ssm_notify_log(user_address, DEBUG_LOG, "handle pending create_group_request failed");
                 }
 
@@ -786,8 +797,15 @@ static void resend_pending_request(Skissm__Account *account) {
                         group_session, add_group_members_response,
                         add_group_members_msg->adding_member_list, add_group_members_msg->n_adding_member_list
                     );
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                pending_request_id_list[i]);
                 } else {
+                    if (add_group_members_response != NULL && add_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+                        // Only the group member with GROUP_ROLE_MANAGER role can add group members,
+                        // or member inexists.
+                        get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                    pending_request_id_list[i]);
+                    }
                     ssm_notify_log(user_address, DEBUG_LOG, "handle pending add_group_members_request failed");
                 }
 
@@ -808,8 +826,14 @@ static void resend_pending_request(Skissm__Account *account) {
                     ret = consume_add_group_member_device_response(
                         group_session, add_group_member_device_response
                     );
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                pending_request_id_list[i]);
                 } else {
+                    if (add_group_member_device_response != NULL && add_group_member_device_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+                        // Can not collect group member info, or member device already added.
+                        get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                    pending_request_id_list[i]);
+                    }
                     ssm_notify_log(user_address, DEBUG_LOG, "handle pending add_group_member_device_request failed");
                 }
 
@@ -833,8 +857,15 @@ static void resend_pending_request(Skissm__Account *account) {
                         group_session, remove_group_members_response,
                         remove_group_members_msg->removing_member_list, remove_group_members_msg->n_removing_member_list
                     );
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                pending_request_id_list[i]);
                 } else {
+                    if (remove_group_members_response != NULL && remove_group_members_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+                        // Only the group member with GROUP_ROLE_MANAGER role can remove group members,
+                        // user can not remove himself, or member is not in removing member list.
+                        get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                    pending_request_id_list[i]);
+                    }
                     ssm_notify_log(user_address, DEBUG_LOG, "handle pending remove_group_members_request failed");
                 }
 
@@ -850,8 +881,14 @@ static void resend_pending_request(Skissm__Account *account) {
                 succ = is_valid_leave_group_response(leave_group_response);
                 if (succ) {
                     ret = consume_leave_group_response(user_address, leave_group_response);
-                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address, pending_request_id_list[i]);
+                    get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                pending_request_id_list[i]);
                 } else {
+                    if (leave_group_response != NULL && leave_group_response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+                        // Only the group member can leave the group.
+                        get_skissm_plugin()->db_handler.unload_pending_request_data(user_address,
+                                                                                    pending_request_id_list[i]);
+                    }
                     ssm_notify_log(user_address, DEBUG_LOG, "handle pending leave_group_request failed");
                 }
 

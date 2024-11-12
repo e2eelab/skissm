@@ -29,8 +29,8 @@
 #include "test_plugin.h"
 #include "test_util.h"
 
-static void free_opks(Skissm__OneTimePreKey ***opks, uint32_t opk_num) {
-    uint32_t i;
+static void free_opks(Skissm__OneTimePreKey ***opks, size_t opk_num) {
+    size_t i;
     for (i = 0; i < opk_num; i++){
         skissm__one_time_pre_key__free_unpacked((*opks)[i], NULL);
         (*opks)[i] = NULL;
@@ -59,7 +59,7 @@ void test_update_one_time_pre_key() {
 
     // load the one-time pre-keys
     Skissm__OneTimePreKey **opk_copy = NULL;
-    uint32_t opk_num = load_one_time_pre_keys(address_id, &opk_copy);
+    size_t opk_num = load_one_time_pre_keys(address_id, &opk_copy);
 
     // assert the opk is used
     assert(opk_copy[used_opk]->used == true);
@@ -94,7 +94,7 @@ void test_remove_one_time_pre_key() {
 
     // load the one-time pre-keys
     Skissm__OneTimePreKey **opk_copy = NULL;
-    uint32_t opk_num = load_one_time_pre_keys(address_id, &opk_copy);
+    size_t opk_num = load_one_time_pre_keys(address_id, &opk_copy);
 
     // check if the opks are deleted
     assert(opk_num == origin_opk_num - used_opk_num);

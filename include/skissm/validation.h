@@ -94,6 +94,8 @@ bool is_valid_group_session_by_pre_key_bundle(Skissm__GroupSession *src);
 
 bool is_valid_group_session(Skissm__GroupSession *src);
 
+bool is_valid_group_session_no_chain_key(Skissm__GroupSession *src);
+
 bool is_valid_group_update_key_bundle(Skissm__GroupUpdateKeyBundle *src);
 
 bool is_valid_group_pre_key_bundle(Skissm__GroupPreKeyBundle *src);

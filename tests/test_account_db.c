@@ -121,7 +121,7 @@ void test_store_and_load_account() {
     assert(is_equal_account(account, account_copy));
 
     // release
-    free_string(&version);
+    free_string(version);
     free_proto(identity_key);
     free_proto(signed_pre_key);
     for (i = 0; i < n_one_time_pre_key_list; i++) {

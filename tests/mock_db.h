@@ -36,7 +36,7 @@ uint32_t load_e2ee_pack_id(uint64_t address_id);
 void load_identity_key_pair(uint64_t address_id, Skissm__IdentityKey **identity_key_pair);
 void load_signed_pre_key_pair(uint64_t address_id, Skissm__SignedPreKey **signed_pre_key);
 int load_n_one_time_pre_keys(uint64_t address_id);
-uint32_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_time_pre_keys);
+size_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_time_pre_keys);
 uint32_t load_next_one_time_pre_key_id(uint64_t address_id);
 bool load_address_id(Skissm__E2eeAddress *address, sqlite_int64 *address_id);
 sqlite_int64 insert_address(Skissm__E2eeAddress *address);
@@ -79,6 +79,11 @@ size_t load_group_addresses(Skissm__E2eeAddress *sender_address, Skissm__E2eeAdd
 void store_group_session(Skissm__GroupSession *group_session);
 void unload_group_session_by_address(Skissm__E2eeAddress *session_owner, Skissm__E2eeAddress *group_address);
 void unload_group_session_by_id(Skissm__E2eeAddress *session_owner, char *session_id);
+void unload_group_session_with_no_session_id(
+    Skissm__E2eeAddress *sender,
+    Skissm__E2eeAddress *session_owner,
+    Skissm__E2eeAddress *group_address
+);
 void store_pending_plaintext_data(
     Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, char *pending_plaintext_id,
     uint8_t *group_pre_key_plaintext, size_t group_pre_key_plaintext_len, Skissm__NotifLevel notif_level

@@ -822,6 +822,36 @@ bool is_valid_group_session(Skissm__GroupSession *src) {
     return true;
 }
 
+bool is_valid_group_session_no_chain_key(Skissm__GroupSession *src) {
+    if (src != NULL) {
+        if (!is_valid_string(src->version)) {
+            return false;
+        }
+        if (!is_valid_e2ee_pack_id(src->e2ee_pack_id)) {
+            return false;
+        }
+        if (!is_valid_string(src->session_id)) {
+            return false;
+        }
+        if (!is_valid_address(src->sender)) {
+            return false;
+        }
+        if (!is_valid_address(src->session_owner)) {
+            return false;
+        }
+        if (!is_valid_group_info(src->group_info)) {
+            return false;
+        }
+        if (!is_valid_protobuf(&(src->associated_data))) {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 bool is_valid_group_update_key_bundle(Skissm__GroupUpdateKeyBundle *src) {
     if (src != NULL) {
         if (!is_valid_string(src->version)) {

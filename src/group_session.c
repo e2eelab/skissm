@@ -491,7 +491,7 @@ int new_outbound_group_session_by_sender(
 
     // release
     free_proto(account);
-    free_string(&auth);
+    free_string(auth);
     skissm__group_session__free_unpacked(outbound_group_session, NULL);
     free_mem((void **)&group_pre_key_plaintext_data, sizeof(uint8_t) * group_pre_key_plaintext_data_len);
 
@@ -638,6 +638,12 @@ int new_outbound_group_session_invited(
 
         copy_group_info(&(outbound_group_session->group_info), group_update_key_bundle->group_info);
 
+        int ad_len = 2 * sign_key_len;
+        outbound_group_session->associated_data.len = ad_len;
+        outbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
+        memcpy(outbound_group_session->associated_data.data, identity_public_key, sign_key_len);
+        memcpy((outbound_group_session->associated_data.data) + sign_key_len, identity_public_key, sign_key_len);
+
         size_t i;
         size_t n_adding_member_info_list = group_update_key_bundle->n_adding_member_info_list;
         ProtobufCBinaryData *sender_chain_key = &(group_update_key_bundle->chain_key);
@@ -648,7 +654,7 @@ int new_outbound_group_session_invited(
             advance_group_chain_key_by_add(cipher_suite, adding_members_chain_key[i], sender_chain_key);
 
             if (compare_address(group_update_key_bundle->adding_member_info_list[i]->member_address, user_address)) {
-                // create an outbound group session
+                // insert the chain key
                 copy_protobuf_from_protobuf(&(outbound_group_session->chain_key), adding_members_chain_key[i]);
                 outbound_group_session->sequence = 0;
             } else {
@@ -660,12 +666,6 @@ int new_outbound_group_session_invited(
                 );
             }
         }
-
-        int ad_len = 2 * sign_key_len;
-        outbound_group_session->associated_data.len = ad_len;
-        outbound_group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
-        memcpy(outbound_group_session->associated_data.data, identity_public_key, sign_key_len);
-        memcpy((outbound_group_session->associated_data.data) + sign_key_len, identity_public_key, sign_key_len);
 
         // store
         get_skissm_plugin()->db_handler.store_group_session(outbound_group_session);
@@ -990,7 +990,7 @@ int new_and_complete_inbound_group_session_with_chain_key(
         ssm_notify_log(NULL, BAD_GROUP_MEMBER_INFO, "new_and_complete_inbound_group_session_with_chain_key()");
         ret = SKISSM_RESULT_FAIL;
     }
-    if (!is_valid_group_session(other_group_session)) {
+    if (!is_valid_group_session_no_chain_key(other_group_session)) {
         ssm_notify_log(NULL, BAD_GROUP_SESSION, "new_and_complete_inbound_group_session_with_chain_key()");
         ret = SKISSM_RESULT_FAIL;
     }
@@ -1305,7 +1305,7 @@ int renew_outbound_group_session_by_welcome_and_add(
 
         // release
         free_proto(account);
-        free_string(&auth);
+        free_string(auth);
         free_mem((void **)&group_ratchet_state_plaintext_data, sizeof(uint8_t) * group_ratchet_state_plaintext_data_len);
         for (i = 0; i < n_adding_member_info_list; i++) {
             free_protobuf(their_chain_keys[i]);
@@ -1588,7 +1588,7 @@ int renew_group_sessions_with_new_device(
 
         // release
         free_proto(account);
-        free_string(&auth);
+        free_string(auth);
         free_mem((void **)&their_chain_keys, sizeof(ProtobufCBinaryData));
     }
 

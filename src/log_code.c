@@ -121,13 +121,11 @@ static const char * LOG_CODE_STRINGS[] = {
     "BAD_SUPPLY_OPKS_MSG",
     "BAD_UPDATE_USER_MSG",
 
+    // plaintext
     "BAD_PLAINTEXT",
 
-    "BAD_SERVER_SIGNATURE",
-
-    "NOT_ENOUGH_RANDOM",
-    "NOT_ENOUGH_MEMORY",
-    "NOT_ENOUGH_SPACE"
+    // server signature
+    "BAD_SERVER_SIGNATURE"
 };
 
 const char *logcode_string(LogCode log_code){

@@ -552,6 +552,10 @@ int consume_add_group_member_device_response(
         adding_member_device_info = response->adding_member_device_info;
         new_device_address = adding_member_device_info->member_address;
     } else {
+        if (response != NULL && response->code == SKISSM__RESPONSE_CODE__RESPONSE_CODE_NOT_FOUND) {
+            // Can not collect group member info, or member device already added
+            return true;
+        }
         ret = SKISSM_RESULT_FAIL;
     }
 
@@ -573,7 +577,7 @@ int consume_add_group_member_device_response(
             group_address->domain
         );
     } else {
-        ssm_notify_log(session_owner, DEBUG_LOG, "group member device adding failed");
+        ssm_notify_log(session_owner, DEBUG_LOG, "consume_add_group_member_device_response() failed");
     }
 
     return ret;

@@ -30,10 +30,16 @@ extern "C" {
 
 #include "skissm/skissm.h"
 
-#define free_proto(name) \
-    if (name != NULL) { \
-        skissm__##name##__free_unpacked(name, NULL); \
-        name = NULL; \
+#define free_string(arg) \
+    if (arg != NULL) { \
+        free(arg); \
+        arg = NULL; \
+    }
+
+#define free_proto(arg) \
+    if (arg != NULL) { \
+        skissm__##arg##__free_unpacked(arg, NULL); \
+        arg = NULL; \
     }
 
 /** Check if two buffers are equal in constant time. */
@@ -509,13 +515,6 @@ void free_protobuf(ProtobufCBinaryData *output);
  * @param protobuf_num
  */
 void free_protobuf_list(ProtobufCBinaryData **output, size_t protobuf_num);
-
-/**
- * @brief Release a string.
- *
- * @param buffer
- */
-void free_string(char **buffer);
 
 /**
  * @brief Release a memory block.

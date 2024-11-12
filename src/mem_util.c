@@ -757,13 +757,6 @@ void free_protobuf_list(ProtobufCBinaryData **output, size_t protobuf_num) {
     *output = NULL;
 }
 
-void free_string(char **buffer) {
-    if (*buffer != NULL) {
-        free(*buffer);
-        *buffer = NULL;
-    }
-}
-
 void free_mem(void **buffer, size_t buffer_len) {
     if (buffer_len == 0) {
         // skip
