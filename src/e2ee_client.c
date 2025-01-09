@@ -64,10 +64,11 @@ int register_user(
         ssm_notify_log(NULL, BAD_DEVICE_ID, "register_user(): no device_id");
         ret = SKISSM_RESULT_FAIL;
     }
-    if (!is_valid_string(authenticator)) {
-        ssm_notify_log(NULL, BAD_AUTHENTICATOR, "register_user(): no authenticator");
-        ret = SKISSM_RESULT_FAIL;
-    }
+    // authenticator can be empty
+    // if (!is_valid_string(authenticator)) {
+    //    ssm_notify_log(NULL, BAD_AUTHENTICATOR, "register_user(): no authenticator");
+    //    ret = SKISSM_RESULT_FAIL;
+    // }
     if (!is_valid_string(auth_code)) {
         ssm_notify_log(NULL, BAD_AUTH, "register_user(): no auth_code");
         ret = SKISSM_RESULT_FAIL;
