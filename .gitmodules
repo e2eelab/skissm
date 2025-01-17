@@ -13,5 +13,5 @@
 [submodule "lib/PQClean/src"]
 	path = lib/PQClean/src
 	url = https://github.com/PQClean/PQClean
-	branch = master
-	# commit = 0c5bb143456333cd6ac85435d344b08b351b27a8
+	# branch = master
+	commit = 0c5bb143456333cd6ac85435d344b08b351b27a8
