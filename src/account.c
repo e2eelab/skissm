@@ -101,7 +101,7 @@ int create_account(Skissm__Account **account_out, uint32_t e2ee_pack_id) {
     Skissm__SignedPreKey *signed_pre_key = NULL;
     uint32_t cur_spk_id = 0;
     Skissm__OneTimePreKey **one_time_pre_key_list = NULL;
-    size_t number_of_keys = 100;
+    size_t number_of_keys = ONE_TIME_PRE_KEY_INITIAL_NUM;
     uint32_t cur_opk_id = 1;
 
     // get the cipher suite

@@ -112,6 +112,7 @@ extern "C" {
 
 #define UUID_LEN                                             16
 #define SIGNED_PRE_KEY_EXPIRATION_MS                         604800000       // 7 days
+#define ONE_TIME_PRE_KEY_INITIAL_NUM                         100
 #define INVITE_WAITING_TIME_MS                               60000           // 1 minute
 
 #define E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519           0

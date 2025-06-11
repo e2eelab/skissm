@@ -293,7 +293,7 @@ static void test_generate_opks() {
     printf("====== test_generate_opks ======\n");
     uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
     int ret = 0;
-    size_t number_of_keys = 100, i;
+    size_t number_of_keys = ONE_TIME_PRE_KEY_INITIAL_NUM, i;
 
     Skissm__OneTimePreKey **one_time_pre_key_list = NULL;
     ret = generate_opks(&one_time_pre_key_list, number_of_keys, e2ee_pack_id, 0);
@@ -471,7 +471,7 @@ static void test_supply_opks() {
     // assert
     Skissm__Account *account_new = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(register_user_response->address, &account_new);
-    assert(account_new->n_one_time_pre_key_list == (100 + supply_opks_num));
+    assert(account_new->n_one_time_pre_key_list == (ONE_TIME_PRE_KEY_INITIAL_NUM + supply_opks_num));
 
     // release
     free_proto(register_user_response);
@@ -521,8 +521,11 @@ static void test_free_opks() {
     // load account
     Skissm__Account *account_new = NULL;
     get_skissm_plugin()->db_handler.load_account_by_address(register_user_response->address, &account_new);
-    assert(account_new->n_one_time_pre_key_list == (100 - used_opks));
-    assert(account_new->one_time_pre_key_list[100 - used_opks] == NULL);
+    size_t unused_opks = ONE_TIME_PRE_KEY_INITIAL_NUM - used_opks;
+    assert(account_new->n_one_time_pre_key_list == unused_opks);
+    for (i = 0; i < unused_opks; i++) {
+        assert(account_new->one_time_pre_key_list[i]->used == false);
+    }
 
     // release
     free_proto(register_user_response);

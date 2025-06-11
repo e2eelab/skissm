@@ -28,7 +28,7 @@
 // global variable
 // db in memory
 // static const char *db_name = (char *)"file:test.db?mode=memory&cache=shared";
-static const char *db_name = (char *)"test.db";
+static const char *db_name = (char *)":memory:"; // test.db";
 static sqlite3 *db;
 
 // util function

@@ -1,7 +1,7 @@
 [submodule "lib/protobuf-c"]
 	path = lib/protobuf-c
 	url = https://github.com/protobuf-c/protobuf-c.git
-	branch = edmonds/google-protobuf-26-fixes
+	tag = v1.5.2
 [submodule "lib/protobuf"]
 	path = lib/protobuf
 	url = https://github.com/protocolbuffers/protobuf.git
