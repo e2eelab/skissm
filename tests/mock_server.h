@@ -21,6 +21,10 @@
 
 #include "skissm/skissm.h"
 
+void mock_server_recv_data();
+
+void mock_server_recv_short_data();
+
 void mock_server_begin();
 
 /**

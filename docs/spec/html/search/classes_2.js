@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['store_5fgroup_0',['store_group',['../structstore__group.html',1,'']]]
+  ['proto_5fmsg_5fpackage_0',['proto_msg_package',['../structproto__msg__package.html',1,'']]]
 ];

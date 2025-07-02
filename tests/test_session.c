@@ -49,11 +49,11 @@
  * @ingroup Integration
  * This includes integration tests about session.
  * 
- * @defgroup session_test_basic_session basic session test
+ * @defgroup session_test_basic_session [v1.0is01] basic session test
  * @ingroup session_int
  * @{
  * @section sec31001 Test Case ID
- * v1.0is01
+ * v1.0_is01
  * @section sec31002 Test Case Title
  * test_basic_session
  * @section sec31003 Test Description
@@ -69,11 +69,11 @@
  * No output.
  * @}
  * 
- * @defgroup session_test_interaction interaction test
+ * @defgroup session_test_interaction [v1.0is02] interaction test
  * @ingroup session_int
  * @{
  * @section sec31101 Test Case ID
- * v1.0is02
+ * v1.0_is02
  * @section sec31102 Test Case Title
  * test_interaction
  * @section sec31103 Test Description
@@ -91,11 +91,11 @@
  * No output.
  * @}
  * 
- * @defgroup session_test_continual_messages continual messages test
+ * @defgroup session_test_continual_messages [v1.0is03] continual messages test
  * @ingroup session_int
  * @{
  * @section sec31201 Test Case ID
- * v1.0is03
+ * v1.0_is03
  * @section sec31202 Test Case Title
  * test_continual_messages
  * @section sec31203 Test Description
@@ -111,11 +111,11 @@
  * No output.
  * @}
  * 
- * @defgroup session_test_one_to_many multiple devices test: one to many
+ * @defgroup session_test_one_to_many [v1.0is04] multiple devices test: one to many
  * @ingroup session_int
  * @{
  * @section sec31401 Test Case ID
- * v1.0is04
+ * v1.0_is04
  * @section sec31402 Test Case Title
  * test_one_to_many
  * @section sec31403 Test Description
@@ -131,11 +131,11 @@
  * No output.
  * @}
  * 
- * @defgroup session_test_many_to_one multiple devices test: many to one
+ * @defgroup session_test_many_to_one [v1.0is05] multiple devices test: many to one
  * @ingroup session_int
  * @{
  * @section sec31501 Test Case ID
- * v1.0is05
+ * v1.0_is05
  * @section sec31502 Test Case Title
  * test_many_to_one
  * @section sec31503 Test Description
@@ -151,11 +151,11 @@
  * No output.
  * @}
  * 
- * @defgroup session_test_many_to_many multiple devices test: many to many
+ * @defgroup session_test_many_to_many [v1.0is06] multiple devices test: many to many
  * @ingroup session_int
  * @{
  * @section sec31601 Test Case ID
- * v1.0is06
+ * v1.0_is06
  * @section sec31602 Test Case Title
  * test_many_to_many
  * @section sec31603 Test Description
@@ -171,11 +171,11 @@
  * No output.
  * @}
  * 
- * @defgroup session_test_add_a_device add a device test
+ * @defgroup session_test_add_a_device [v1.0is07] add a device test
  * @ingroup session_int
  * @{
  * @section sec31701 Test Case ID
- * v1.0is07
+ * v1.0_is07
  * @section sec31702 Test Case Title
  * test_add_a_device
  * @section sec31703 Test Description
@@ -192,11 +192,11 @@
  * No output.
  * @}
  * 
- * @defgroup session_test_session_no_opk session test: no opk
+ * @defgroup session_test_session_no_opk [v1.0is08] session test: no opk
  * @ingroup session_int
  * @{
  * @section sec31801 Test Case ID
- * v1.0is08
+ * v1.0_is08
  * @section sec31802 Test Case Title
  * test_session_no_opk
  * @section sec31803 Test Description
@@ -212,43 +212,43 @@
  * No output.
  * @}
  * 
- * @defgroup test_invite_twice invite twice test
+ * @defgroup test_invite_twice [v1.0is09] invite twice test
  * @ingroup session_int
  * @{
- * @section sec31801 Test Case ID
- * v1.0is09
- * @section sec31802 Test Case Title
+ * @section sec31901 Test Case ID
+ * v1.0_is09
+ * @section sec31902 Test Case Title
  * test_invite_twice
- * @section sec31803 Test Description
+ * @section sec31903 Test Description
  * Alice invites Bob two times.
- * @section sec31804 Test Objectives
+ * @section sec31904 Test Objectives
  * To assure that sessions can be successfully established after two times of invitation.
- * @section sec31805 Preconditions
- * @section sec31806 Test Steps
+ * @section sec31905 Preconditions
+ * @section sec31906 Test Steps
  * Step 1: Alice invites Bob to create a session.\n
  * Step 2: Alice invites Bob again.\n
  * Step 3: Alice sends a message to Bob and then Bob decrypts the message.
- * @section sec31807 Expected Results
+ * @section sec31907 Expected Results
  * No output.
  * @}
  * 
- * @defgroup test_invite_interaction invite interaction test
+ * @defgroup test_invite_interaction [v1.0is10] invite interaction test
  * @ingroup session_int
  * @{
- * @section sec31801 Test Case ID
- * v1.0is10
- * @section sec31802 Test Case Title
+ * @section sec32001 Test Case ID
+ * v1.0_is10
+ * @section sec32002 Test Case Title
  * test_invite_interaction
- * @section sec31803 Test Description
+ * @section sec32003 Test Description
  * Alice invites Bob and Bob invites Alice.
- * @section sec31804 Test Objectives
+ * @section sec32004 Test Objectives
  * To assure that sessions can be successfully established after some invitation.
- * @section sec31805 Preconditions
- * @section sec31806 Test Steps
+ * @section sec32005 Preconditions
+ * @section sec32006 Test Steps
  * Step 1: Alice invites Bob to create a session.\n
  * Step 2: Bob invites Alice.\n
  * Step 3: Alice sends a message to Bob and then Bob decrypts the message.
- * @section sec31807 Expected Results
+ * @section sec32007 Expected Results
  * No output.
  * @}
  * 

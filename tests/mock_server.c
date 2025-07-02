@@ -26,6 +26,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <pthread.h>
 
 #include "mock_server_sending.h"
 #include "skissm/crypto.h"
@@ -39,6 +40,9 @@
 
 #define SERV_PORT 5134
 
+#define BUF_LEN 8192
+#define SHORT_BUF_LEN 26
+
 static Skissm__Certificate *central_certificate = NULL;
 
 static Skissm__Certificate *server_certificate = NULL;
@@ -51,6 +55,7 @@ int socket_fd;   // file description into transport
 int socket_fd_client;
 
 int recfd; // file descriptor to accept
+int *conn_fd;
 
 int length;      // length of address structure
 
@@ -417,6 +422,168 @@ void mock_server_signed_signature(
     );
 }
 
+void *recv_data(void *fd) {
+    int connfd;
+    int recv_len;
+    unsigned char recv_buf[BUF_LEN];
+
+    connfd = *((int *)fd);
+    for (;;) {
+        memset(recv_buf, 0, BUF_LEN);
+        recv_len = recv(connfd, recv_buf, BUF_LEN, 0);
+
+        if (recv_len == -1) {
+            perror("recv");
+            exit(1);
+        }
+        recv_buf[recv_len] = '\0';
+
+        if (strncmp(recv_buf, "exit", 4) == 0) {
+            printf("%s\n", recv_buf);
+            break;
+        }
+
+        printf("Receive data:%s\n", recv_buf);
+    }
+
+    // write
+
+    free(fd);
+    close(connfd);
+    pthread_exit(NULL);
+}
+
+void *recv_short_data(void *fd) {
+    int connfd;
+    int recv_len;
+    unsigned char recv_buf[SHORT_BUF_LEN];
+
+    connfd = *((int *)fd);
+    for (;;) {
+        memset(recv_buf, 0, SHORT_BUF_LEN);
+        recv_len = recv(connfd, recv_buf, SHORT_BUF_LEN, 0);
+
+        if (recv_len == -1) {
+            perror("recv");
+            exit(1);
+        }
+        recv_buf[recv_len] = '\0';
+
+        printf("Receive data:%s\n", recv_buf);
+    }
+
+    free(fd);
+    close(connfd);
+    pthread_exit(NULL);
+}
+
+void *process_data(void *fd) {
+    int connfd;
+    int recv_len;
+    unsigned char recv_buf[BUF_LEN];
+
+    connfd = *((int *)fd);
+    for (;;) {
+        memset(recv_buf, 0, BUF_LEN);
+        recv_len = recv(connfd, recv_buf, BUF_LEN, 0);
+
+        if (recv_len == -1) {
+            perror("recv");
+            exit(1);
+        }
+        recv_buf[recv_len] = '\0';
+
+        if (strncmp(recv_buf, "exit", 4) == 0) {
+            printf("%s\n", recv_buf);
+            break;
+        }
+
+        printf("Receive data:%s\n", recv_buf);
+    }
+
+    // write
+
+    free(fd);
+    close(connfd);
+    pthread_exit(NULL);
+}
+
+void mock_server_recv_data() {
+    // Get a socket into TCP/IP
+    if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("socket failed");
+        exit(1);
+    }
+    // Set up the server address
+    bzero((char *)&servaddr, sizeof(servaddr)); /* 清除位址內容 */
+    servaddr.sin_family = AF_INET;    /* 設定協定格式 */
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY); /* IP次序轉換 */
+    servaddr.sin_port = htons(SERV_PORT);  /* 埠口位元次序轉換 */
+    // Bind to the address to which the service will be offered
+    if (bind(socket_fd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
+        perror("bind failed");
+        exit(1);
+    }
+    // Set up the socket for listening, with a queue length of 20
+    if (listen(socket_fd, 20) < 0) {
+        perror("listen failed");
+        exit(1);
+    }
+    // Loop continuously, waiting for connection requests and performing the service
+    length = sizeof(servaddr);
+    printf("Server is ready to receive !!\n");
+    while (1) {
+        pthread_t thread;
+        conn_fd = (int *)malloc(sizeof(int));
+        if (-1 == (*conn_fd = accept(socket_fd, (struct sockaddr *)&servaddr, (socklen_t *)&length))) {
+            perror("accept");
+            continue;
+        }
+        if (0 != pthread_create(&thread, NULL, recv_data, conn_fd)) {
+            perror("pthread_create");
+            break;
+        }
+    }
+}
+
+void mock_server_recv_short_data() {
+    // Get a socket into TCP/IP
+    if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("socket failed");
+        exit(1);
+    }
+    // Set up the server address
+    bzero((char *)&servaddr, sizeof(servaddr)); /* 清除位址內容 */
+    servaddr.sin_family = AF_INET;    /* 設定協定格式 */
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY); /* IP次序轉換 */
+    servaddr.sin_port = htons(SERV_PORT);  /* 埠口位元次序轉換 */
+    // Bind to the address to which the service will be offered
+    if (bind(socket_fd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
+        perror("bind failed");
+        exit(1);
+    }
+    // Set up the socket for listening, with a queue length of 20
+    if (listen(socket_fd, 20) < 0) {
+        perror("listen failed");
+        exit(1);
+    }
+    // Loop continuously, waiting for connection requests and performing the service
+    length = sizeof(servaddr);
+    printf("Server is ready to receive !!\n");
+    while (1) {
+        pthread_t thread;
+        conn_fd = (int *)malloc(sizeof(int));
+        if (-1 == (*conn_fd = accept(socket_fd, (struct sockaddr *)&servaddr, (socklen_t *)&length))) {
+            perror("accept");
+            continue;
+        }
+        if (0 != pthread_create(&thread, NULL, recv_short_data, conn_fd)) {
+            perror("pthread_create");
+            break;
+        }
+    }
+}
+
 void mock_server_begin() {
     uint8_t i, j;
     for (i = 0; i < user_data_max; i++) {
@@ -450,29 +617,40 @@ void mock_server_begin() {
         exit(1);
     }
     // Loop continuously, waiting for connection requests and performing the service
-    length = sizeof(client_addr);
+    length = sizeof(servaddr);
     printf("Server is ready to receive !!\n");
-    printf("Can strike Cntrl-c to stop Server >>\n");
     while (1) {
-        if ((recfd = accept(socket_fd, (struct sockaddr_in *)&client_addr, &length)) < 0) {
-            perror("could not accept call");
-            exit(1);
+        pthread_t thread;
+        conn_fd = (int *)malloc(sizeof(int));
+        if (-1 == (*conn_fd = accept(socket_fd, (struct sockaddr *)&servaddr, (socklen_t *)&length))) {
+            perror("accept");
+            continue;
         }
-        if ((nbytes = read(recfd, &buf, BUFSIZ)) < 0) {
-            perror("read of data error nbytes !");
-            exit(1);
+        if (0 != pthread_create(&thread, NULL, recv_data, conn_fd)) {
+            perror("pthread_create");
+            break;
         }
-        printf("Create socket #%d form %s : %d\n", recfd, inet_ntoa(client_addr.sin_addr), htons(client_addr.sin_port));
-        printf("%s\n", &buf);
 
-        /* return messages to client */
-        if (write(recfd, &buf, nbytes) == -1) {
-            perror("write to client error");
-            exit(1);
-        }
-        close(recfd);
-        printf("Can Strike Crtl-c to stop Server >>\n");
+        // if ((recfd = accept(socket_fd, (struct sockaddr_in *)&client_addr, &length)) < 0) {
+        //     perror("could not accept call");
+        //     exit(1);
+        // }
+        // if ((nbytes = read(recfd, &buf, BUFSIZ)) < 0) {
+        //     perror("read of data error nbytes !");
+        //     exit(1);
+        // }
+        // printf("Create socket #%d form %s : %d\n", recfd, inet_ntoa(client_addr.sin_addr), htons(client_addr.sin_port));
+        // printf("%s\n", &buf);
+
+        // /* return messages to client */
+        // if (write(recfd, &buf, nbytes) == -1) {
+        //     perror("write to client error");
+        //     exit(1);
+        // }
+        // close(recfd);
+        // printf("Can Strike Crtl-c to stop Server >>\n");
     }
+
     mock_certificate();
 }
 
@@ -539,23 +717,6 @@ void mock_server_end() {
     if (server_key_pair != NULL) {
         skissm__key_pair__free_unpacked(server_key_pair, NULL);
         server_key_pair = NULL;
-    }
-}
-
-void connect_to_server() {
-    struct sockaddr_in our_addr;
-    if ((socket_fd_client = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("socket failed");
-        exit(1);
-    }
-    bzero((char *)&our_addr, sizeof(our_addr));
-    our_addr.sin_family = AF_INET;
-    our_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    our_addr.sin_port = htons(SERV_PORT);
-
-    if (connect(socket_fd_client, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
-        perror("connect failed!");
-        exit(1);
     }
 }
 

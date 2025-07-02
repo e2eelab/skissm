@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['user_5fdata_0',['user_data',['../structuser__data.html',1,'']]]
+  ['store_5fgroup_0',['store_group',['../structstore__group.html',1,'']]]
 ];

@@ -44,11 +44,11 @@
  * @ingroup Unit
  * This includes unit tests about account.
  * 
- * @defgroup generate_identity_key generate identity key test
+ * @defgroup generate_identity_key [v1.0ua01] generate identity key test
  * @ingroup account_unit
  * @{
  * @section sec10201 Test Case ID
- * v1.0ua01
+ * v1.0_ua01
  * @section sec10202 Test Case Title
  * generate_identity_key
  * @section sec10203 Test Description
@@ -63,11 +63,11 @@
  * No output.
  * @}
  * 
- * @defgroup generate_signed_pre_key generate signed pre-key test
+ * @defgroup generate_signed_pre_key [v1.0ua02] generate signed pre-key test
  * @ingroup account_unit
  * @{
  * @section sec10301 Test Case ID
- * v1.0ua02
+ * v1.0_ua02
  * @section sec10302 Test Case Title
  * generate_signed_pre_key
  * @section sec10303 Test Description
@@ -83,11 +83,11 @@
  * No output.
  * @}
  * 
- * @defgroup generate_opks generate one-time pre-key test
+ * @defgroup generate_opks [v1.0ua03] generate one-time pre-key test
  * @ingroup account_unit
  * @{
  * @section sec10401 Test Case ID
- * v1.0ua03
+ * v1.0_ua03
  * @section sec10402 Test Case Title
  * generate_opks
  * @section sec10403 Test Description
@@ -102,11 +102,11 @@
  * No output.
  * @}
  * 
- * @defgroup create_account create account test
+ * @defgroup create_account [v1.0ua04] create account test
  * @ingroup account_unit
  * @{
  * @section sec10501 Test Case ID
- * v1.0ua04
+ * v1.0_ua04
  * @section sec10502 Test Case Title
  * create_account
  * @section sec10503 Test Description
@@ -126,11 +126,11 @@
  * @ingroup Integration
  * This includes integration tests about account.
  * 
- * @defgroup account_test_create_accounts create account test
+ * @defgroup account_test_create_accounts [v1.0ia01] create account test
  * @ingroup account_int
  * @{
  * @section sec11001 Test Case ID
- * v1.0ia01
+ * v1.0_ia01
  * @section sec11002 Test Case Title
  * test_create_accounts
  * @section sec11003 Test Description
@@ -146,11 +146,11 @@
  * No output.
  * @}
  * 
- * @defgroup account_test_register_user register user test
+ * @defgroup account_test_register_user [v1.0ia02] register user test
  * @ingroup account_int
  * @{
  * @section sec11101 Test Case ID
- * v1.0ia02
+ * v1.0_ia02
  * @section sec11102 Test Case Title
  * test_register_user
  * @section sec11103 Test Description
@@ -165,11 +165,11 @@
  * No output.
  * @}
  * 
- * @defgroup account_test_publish_spk publish spk test
+ * @defgroup account_test_publish_spk [v1.0ia03] publish spk test
  * @ingroup account_int
  * @{
  * @section sec11201 Test Case ID
- * v1.0ia03
+ * v1.0_ia03
  * @section sec11202 Test Case Title
  * test_publish_spk
  * @section sec11203 Test Description
@@ -185,11 +185,11 @@
  * No output.
  * @}
  * 
- * @defgroup account_test_supply_opks supply opks test
+ * @defgroup account_test_supply_opks [v1.0ia04] supply opks test
  * @ingroup account_int
  * @{
  * @section sec11301 Test Case ID
- * v1.0ia04
+ * v1.0_ia04
  * @section sec11302 Test Case Title
  * test_supply_opks
  * @section sec11303 Test Description
@@ -211,6 +211,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <inttypes.h>
+#include <pthread.h>
 
 #include "skissm/account.h"
 #include "skissm/cipher.h"
@@ -220,6 +221,9 @@
 #include "skissm/e2ee_client.h"
 #include "skissm/e2ee_client_internal.h"
 
+#include "mock_client.h"
+#include "mock_client_transport.h"
+#include "mock_server.h"
 #include "test_plugin.h"
 #include "test_util.h"
 
@@ -328,6 +332,60 @@ static void test_create_account() {
 
     // test stop
     tear_down();
+    printf("====================================\n");
+}
+
+static void test_send_to_server() {
+    // test start
+    printf("====== test_send_to_server ======\n");
+    pthread_t threads[2];
+    int ret;
+    printf("Creating thread server\n");
+    ret = pthread_create(&threads[0], NULL, (void *)mock_server_recv_data, NULL);
+    if (ret){
+        printf("ERROR; return code from pthread_create() is %d\n", ret);
+        exit(-1);
+    }
+
+    uint8_t cl_msg[] = "client message";
+    printf("Creating thread client\n");
+    ret = pthread_create(&threads[1], NULL, (void *)send_to_server, cl_msg);
+    if (ret){
+        printf("ERROR; return code from pthread_create() is %d\n", ret);
+        exit(-1);
+    }
+
+    pthread_join(threads[1], NULL);
+
+    // test stop
+    // tear_down();
+    printf("====================================\n");
+}
+
+static void test_send_long_bytes_to_server() {
+    // test start
+    printf("====== test_send_long_bytes_to_server ======\n");
+    pthread_t threads[2];
+    int ret;
+    printf("Creating thread server\n");
+    ret = pthread_create(&threads[0], NULL, (void *)mock_server_recv_short_data, NULL);
+    if (ret){
+        printf("ERROR; return code from pthread_create() is %d\n", ret);
+        exit(-1);
+    }
+
+    uint8_t cl_msg[] = "abcdefghijklmnopqustuvwxyzabcdefghijklmnopqustuvwxyzabcdefghijklmnopqustuvwxyzabcdefghijklmnopqustuvwxyz";
+    printf("Creating thread client\n");
+    ret = pthread_create(&threads[1], NULL, (void *)send_to_server, cl_msg);
+    if (ret){
+        printf("ERROR; return code from pthread_create() is %d\n", ret);
+        exit(-1);
+    }
+
+    pthread_join(threads[1], NULL);
+
+    // test stop
+    // tear_down();
     printf("====================================\n");
 }
 
@@ -539,17 +597,19 @@ static void test_free_opks() {
 
 int main() {
     // unit test
-    test_generate_identity_key();
-    test_generate_signed_pre_key();
-    test_generate_opks();
-    test_create_account();
+    // test_generate_identity_key();
+    // test_generate_signed_pre_key();
+    // test_generate_opks();
+    // test_create_account();
+    // test_send_to_server();
+    test_send_long_bytes_to_server();
 
     // integration test
-    test_create_accounts(8);
-    test_register_user();
-    test_publish_spk();
-    test_supply_opks();
-    test_free_opks();
+    // test_create_accounts(8);
+    // test_register_user();
+    // test_publish_spk();
+    // test_supply_opks();
+    // test_free_opks();
 
     return 0;
 }

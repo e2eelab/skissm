@@ -25,40 +25,44 @@
 \DoxyCodeLine{00021\ }
 \DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}skissm/skissm.h"{}}}
 \DoxyCodeLine{00023\ }
-\DoxyCodeLine{00024\ \textcolor{keywordtype}{void}\ mock\_server\_begin();}
+\DoxyCodeLine{00024\ \textcolor{keywordtype}{void}\ mock\_server\_recv\_data();}
 \DoxyCodeLine{00025\ }
-\DoxyCodeLine{00030\ \textcolor{keywordtype}{void}\ mock\_server\_end();}
-\DoxyCodeLine{00031\ }
-\DoxyCodeLine{00038\ Skissm\_\_RegisterUserResponse\ *mock\_register\_user(Skissm\_\_RegisterUserRequest\ *request);}
-\DoxyCodeLine{00039\ }
-\DoxyCodeLine{00048\ Skissm\_\_GetPreKeyBundleResponse\ *mock\_get\_pre\_key\_bundle(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_GetPreKeyBundleRequest\ *request);}
-\DoxyCodeLine{00049\ }
-\DoxyCodeLine{00056\ Skissm\_\_InviteResponse\ *mock\_invite(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_InviteRequest\ *request);}
-\DoxyCodeLine{00057\ }
-\DoxyCodeLine{00066\ Skissm\_\_AcceptResponse\ *mock\_accept(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_AcceptRequest\ *request);}
-\DoxyCodeLine{00067\ }
-\DoxyCodeLine{00076\ Skissm\_\_PublishSpkResponse\ *mock\_publish\_spk(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_PublishSpkRequest\ *request);}
-\DoxyCodeLine{00077\ }
-\DoxyCodeLine{00086\ Skissm\_\_SupplyOpksResponse\ *mock\_supply\_opks(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_SupplyOpksRequest\ *request);}
-\DoxyCodeLine{00087\ }
-\DoxyCodeLine{00096\ Skissm\_\_SendOne2oneMsgResponse\ *mock\_send\_one2one\_msg(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_SendOne2oneMsgRequest\ *request);}
-\DoxyCodeLine{00097\ }
-\DoxyCodeLine{00106\ Skissm\_\_CreateGroupResponse\ *mock\_create\_group(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_CreateGroupRequest\ *request);}
-\DoxyCodeLine{00107\ }
-\DoxyCodeLine{00116\ Skissm\_\_AddGroupMembersResponse\ *mock\_add\_group\_members(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_AddGroupMembersRequest\ *request);}
-\DoxyCodeLine{00117\ }
-\DoxyCodeLine{00126\ Skissm\_\_AddGroupMemberDeviceResponse\ *mock\_add\_group\_member\_device(}
-\DoxyCodeLine{00127\ \ \ \ \ Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_AddGroupMemberDeviceRequest\ *request}
-\DoxyCodeLine{00128\ );}
-\DoxyCodeLine{00129\ }
-\DoxyCodeLine{00138\ Skissm\_\_RemoveGroupMembersResponse\ *mock\_remove\_group\_members(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_RemoveGroupMembersRequest\ *request);}
-\DoxyCodeLine{00139\ }
-\DoxyCodeLine{00148\ Skissm\_\_LeaveGroupResponse\ *mock\_leave\_group(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_LeaveGroupRequest\ *request);}
-\DoxyCodeLine{00149\ }
-\DoxyCodeLine{00158\ Skissm\_\_SendGroupMsgResponse\ *mock\_send\_group\_msg(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_SendGroupMsgRequest\ *request);}
-\DoxyCodeLine{00159\ }
-\DoxyCodeLine{00168\ Skissm\_\_ConsumeProtoMsgResponse\ *mock\_consume\_proto\_msg(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_ConsumeProtoMsgRequest\ *request);}
-\DoxyCodeLine{00169\ }
-\DoxyCodeLine{00170\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ MOCK\_SERVER\_H\_\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00026\ \textcolor{keywordtype}{void}\ mock\_server\_recv\_short\_data();}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keywordtype}{void}\ mock\_server\_begin();}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00034\ \textcolor{keywordtype}{void}\ mock\_server\_end();}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00042\ Skissm\_\_RegisterUserResponse\ *mock\_register\_user(Skissm\_\_RegisterUserRequest\ *request);}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00052\ Skissm\_\_GetPreKeyBundleResponse\ *mock\_get\_pre\_key\_bundle(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_GetPreKeyBundleRequest\ *request);}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00060\ Skissm\_\_InviteResponse\ *mock\_invite(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_InviteRequest\ *request);}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00070\ Skissm\_\_AcceptResponse\ *mock\_accept(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_AcceptRequest\ *request);}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00080\ Skissm\_\_PublishSpkResponse\ *mock\_publish\_spk(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_PublishSpkRequest\ *request);}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00090\ Skissm\_\_SupplyOpksResponse\ *mock\_supply\_opks(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_SupplyOpksRequest\ *request);}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00100\ Skissm\_\_SendOne2oneMsgResponse\ *mock\_send\_one2one\_msg(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_SendOne2oneMsgRequest\ *request);}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00110\ Skissm\_\_CreateGroupResponse\ *mock\_create\_group(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_CreateGroupRequest\ *request);}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00120\ Skissm\_\_AddGroupMembersResponse\ *mock\_add\_group\_members(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_AddGroupMembersRequest\ *request);}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00130\ Skissm\_\_AddGroupMemberDeviceResponse\ *mock\_add\_group\_member\_device(}
+\DoxyCodeLine{00131\ \ \ \ \ Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_AddGroupMemberDeviceRequest\ *request}
+\DoxyCodeLine{00132\ );}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00142\ Skissm\_\_RemoveGroupMembersResponse\ *mock\_remove\_group\_members(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_RemoveGroupMembersRequest\ *request);}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00152\ Skissm\_\_LeaveGroupResponse\ *mock\_leave\_group(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_LeaveGroupRequest\ *request);}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00162\ Skissm\_\_SendGroupMsgResponse\ *mock\_send\_group\_msg(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_SendGroupMsgRequest\ *request);}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00172\ Skissm\_\_ConsumeProtoMsgResponse\ *mock\_consume\_proto\_msg(Skissm\_\_E2eeAddress\ *from,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,\ Skissm\_\_ConsumeProtoMsgRequest\ *request);}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ MOCK\_SERVER\_H\_\ */}\textcolor{preprocessor}{}}
 
 \end{DoxyCode}

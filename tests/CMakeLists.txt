@@ -39,6 +39,8 @@ target_include_directories(db
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
 add_library(test_env STATIC
+    mock_client.c
+    mock_client_transport.c
     mock_server.c
     mock_server_sending.c
     test_plugin.c

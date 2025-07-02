@@ -52,11 +52,11 @@
  * @ingroup Integration
  * This includes integration tests about group session.
  * 
- * @defgroup group_session_test_create_group create group test
+ * @defgroup group_session_test_create_group [v1.0ig01] create group test
  * @ingroup group_session_int
  * @{
  * @section sec41001 Test Case ID
- * v1.0ig01
+ * v1.0_ig01
  * @section sec41002 Test Case Title
  * test_create_group
  * @section sec41003 Test Description
@@ -71,11 +71,11 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup group_session_test_add_group_members add group members test
+ * @defgroup group_session_test_add_group_members [v1.0ig02] add group members test
  * @ingroup group_session_int
  * @{
  * @section sec41101 Test Case ID
- * v1.0ig02
+ * v1.0_ig02
  * @section sec41102 Test Case Title
  * test_add_group_members
  * @section sec41103 Test Description
@@ -92,11 +92,11 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup group_session_test_remove_group_members remove group members test
+ * @defgroup group_session_test_remove_group_members [v1.0ig03] remove group members test
  * @ingroup group_session_int
  * @{
  * @section sec41201 Test Case ID
- * v1.0ig03
+ * v1.0_ig03
  * @section sec41202 Test Case Title
  * test_remove_group_members
  * @section sec41203 Test Description
@@ -113,11 +113,11 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup group_session_test_create_add_remove group test
+ * @defgroup group_session_test_create_add_remove [v1.0ig04] group test
  * @ingroup group_session_int
  * @{
  * @section sec41301 Test Case ID
- * v1.0ig04
+ * v1.0_ig04
  * @section sec41302 Test Case Title
  * test_create_add_remove
  * @section sec41303 Test Description
@@ -138,11 +138,11 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup group_session_test_leave_group leave group test
+ * @defgroup group_session_test_leave_group [v1.0ig05] leave group test
  * @ingroup group_session_int
  * @{
  * @section sec41401 Test Case ID
- * v1.0ig05
+ * v1.0_ig05
  * @section sec41402 Test Case Title
  * test_leave_group
  * @section sec41403 Test Description
@@ -159,11 +159,11 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup group_session_test_continual continual messages test
+ * @defgroup group_session_test_continual [v1.0ig06] continual messages test
  * @ingroup group_session_int
  * @{
  * @section sec41501 Test Case ID
- * v1.0ig06
+ * v1.0_ig06
  * @section sec41502 Test Case Title
  * test_continual
  * @section sec41503 Test Description
@@ -178,11 +178,11 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup group_session_test_multiple_devices multiple devices test
+ * @defgroup group_session_test_multiple_devices [v1.0ig07] multiple devices test
  * @ingroup group_session_int
  * @{
  * @section sec41601 Test Case ID
- * v1.0ig07
+ * v1.0_ig07
  * @section sec41602 Test Case Title
  * test_multiple_devices
  * @section sec41603 Test Description
@@ -199,11 +199,11 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup group_session_test_add_new_device new devices test
+ * @defgroup group_session_test_add_new_device [v1.0ig08] new devices test
  * @ingroup group_session_int
  * @{
  * @section sec41701 Test Case ID
- * v1.0ig08
+ * v1.0_ig08
  * @section sec41702 Test Case Title
  * test_add_new_device
  * @section sec41703 Test Description
@@ -219,11 +219,11 @@
  * The output of the decrypted messages.
  * @}
  * 
- * @defgroup group_session_test_medium_group a medium group test
+ * @defgroup group_session_test_medium_group [v1.0ig09] a medium group test
  * @ingroup group_session_int
  * @{
  * @section sec41801 Test Case ID
- * v1.0ig09
+ * v1.0_ig09
  * @section sec41802 Test Case Title
  * test_medium_group
  * @section sec41803 Test Description

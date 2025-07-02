@@ -40,7 +40,7 @@
 \DoxyCodeLine{00036\ \textcolor{keywordtype}{void}\ load\_identity\_key\_pair(uint64\_t\ address\_id,\ Skissm\_\_IdentityKey\ **identity\_key\_pair);}
 \DoxyCodeLine{00037\ \textcolor{keywordtype}{void}\ load\_signed\_pre\_key\_pair(uint64\_t\ address\_id,\ Skissm\_\_SignedPreKey\ **signed\_pre\_key);}
 \DoxyCodeLine{00038\ \textcolor{keywordtype}{int}\ load\_n\_one\_time\_pre\_keys(uint64\_t\ address\_id);}
-\DoxyCodeLine{00039\ uint32\_t\ load\_one\_time\_pre\_keys(uint64\_t\ address\_id,\ Skissm\_\_OneTimePreKey\ ***one\_time\_pre\_keys);}
+\DoxyCodeLine{00039\ \textcolor{keywordtype}{size\_t}\ load\_one\_time\_pre\_keys(uint64\_t\ address\_id,\ Skissm\_\_OneTimePreKey\ ***one\_time\_pre\_keys);}
 \DoxyCodeLine{00040\ uint32\_t\ load\_next\_one\_time\_pre\_key\_id(uint64\_t\ address\_id);}
 \DoxyCodeLine{00041\ \textcolor{keywordtype}{bool}\ load\_address\_id(Skissm\_\_E2eeAddress\ *address,\ sqlite\_int64\ *address\_id);}
 \DoxyCodeLine{00042\ sqlite\_int64\ insert\_address(Skissm\_\_E2eeAddress\ *address);}
@@ -83,19 +83,24 @@
 \DoxyCodeLine{00079\ \textcolor{keywordtype}{void}\ store\_group\_session(Skissm\_\_GroupSession\ *group\_session);}
 \DoxyCodeLine{00080\ \textcolor{keywordtype}{void}\ unload\_group\_session\_by\_address(Skissm\_\_E2eeAddress\ *session\_owner,\ Skissm\_\_E2eeAddress\ *group\_address);}
 \DoxyCodeLine{00081\ \textcolor{keywordtype}{void}\ unload\_group\_session\_by\_id(Skissm\_\_E2eeAddress\ *session\_owner,\ \textcolor{keywordtype}{char}\ *session\_id);}
-\DoxyCodeLine{00082\ \textcolor{keywordtype}{void}\ store\_pending\_plaintext\_data(}
-\DoxyCodeLine{00083\ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,\ \textcolor{keywordtype}{char}\ *pending\_plaintext\_id,}
-\DoxyCodeLine{00084\ \ \ \ \ uint8\_t\ *group\_pre\_key\_plaintext,\ \textcolor{keywordtype}{size\_t}\ group\_pre\_key\_plaintext\_len,\ Skissm\_\_NotifLevel\ notif\_level}
-\DoxyCodeLine{00085\ );}
-\DoxyCodeLine{00086\ \textcolor{keywordtype}{size\_t}\ load\_pending\_plaintext\_data(}
-\DoxyCodeLine{00087\ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,\ \textcolor{keywordtype}{char}\ ***pending\_plaintext\_id\_list,}
-\DoxyCodeLine{00088\ \ \ \ \ uint8\_t\ ***e2ee\_plaintext\_data\_list,\ \textcolor{keywordtype}{size\_t}\ **e2ee\_plaintext\_data\_len\_list,\ Skissm\_\_NotifLevel\ **notif\_level\_list}
-\DoxyCodeLine{00089\ );}
-\DoxyCodeLine{00090\ \textcolor{keywordtype}{void}\ unload\_pending\_plaintext\_data(Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,\ \textcolor{keywordtype}{char}\ *pending\_plaintext\_id);}
-\DoxyCodeLine{00091\ \textcolor{keywordtype}{void}\ store\_pending\_request\_data(Skissm\_\_E2eeAddress\ *user\_address,\ \textcolor{keywordtype}{char}\ *request\_id,\ uint8\_t\ request\_type,\ uint8\_t\ *request\_data,\ \textcolor{keywordtype}{size\_t}\ request\_data\_len);}
-\DoxyCodeLine{00092\ \textcolor{keywordtype}{size\_t}\ load\_pending\_request\_data(Skissm\_\_E2eeAddress\ *user\_address,\ \textcolor{keywordtype}{char}\ ***request\_id\_list,\ uint8\_t\ **request\_type,\ uint8\_t\ ***request\_data\_list,\ \textcolor{keywordtype}{size\_t}\ **request\_data\_len\_list);}
-\DoxyCodeLine{00093\ \textcolor{keywordtype}{void}\ unload\_pending\_request\_data(Skissm\_\_E2eeAddress\ *user\_address,\ \textcolor{keywordtype}{char}\ *request\_id);}
-\DoxyCodeLine{00094\ }
-\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ MOCK\_DB\_H\_\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00082\ \textcolor{keywordtype}{void}\ unload\_group\_session\_with\_no\_session\_id(}
+\DoxyCodeLine{00083\ \ \ \ \ Skissm\_\_E2eeAddress\ *sender,}
+\DoxyCodeLine{00084\ \ \ \ \ Skissm\_\_E2eeAddress\ *session\_owner,}
+\DoxyCodeLine{00085\ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address}
+\DoxyCodeLine{00086\ );}
+\DoxyCodeLine{00087\ \textcolor{keywordtype}{void}\ store\_pending\_plaintext\_data(}
+\DoxyCodeLine{00088\ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,\ \textcolor{keywordtype}{char}\ *pending\_plaintext\_id,}
+\DoxyCodeLine{00089\ \ \ \ \ uint8\_t\ *group\_pre\_key\_plaintext,\ \textcolor{keywordtype}{size\_t}\ group\_pre\_key\_plaintext\_len,\ Skissm\_\_NotifLevel\ notif\_level}
+\DoxyCodeLine{00090\ );}
+\DoxyCodeLine{00091\ \textcolor{keywordtype}{size\_t}\ load\_pending\_plaintext\_data(}
+\DoxyCodeLine{00092\ \ \ \ \ Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,\ \textcolor{keywordtype}{char}\ ***pending\_plaintext\_id\_list,}
+\DoxyCodeLine{00093\ \ \ \ \ uint8\_t\ ***e2ee\_plaintext\_data\_list,\ \textcolor{keywordtype}{size\_t}\ **e2ee\_plaintext\_data\_len\_list,\ Skissm\_\_NotifLevel\ **notif\_level\_list}
+\DoxyCodeLine{00094\ );}
+\DoxyCodeLine{00095\ \textcolor{keywordtype}{void}\ unload\_pending\_plaintext\_data(Skissm\_\_E2eeAddress\ *from\_address,\ Skissm\_\_E2eeAddress\ *to\_address,\ \textcolor{keywordtype}{char}\ *pending\_plaintext\_id);}
+\DoxyCodeLine{00096\ \textcolor{keywordtype}{void}\ store\_pending\_request\_data(Skissm\_\_E2eeAddress\ *user\_address,\ \textcolor{keywordtype}{char}\ *request\_id,\ uint8\_t\ request\_type,\ uint8\_t\ *request\_data,\ \textcolor{keywordtype}{size\_t}\ request\_data\_len);}
+\DoxyCodeLine{00097\ \textcolor{keywordtype}{size\_t}\ load\_pending\_request\_data(Skissm\_\_E2eeAddress\ *user\_address,\ \textcolor{keywordtype}{char}\ ***request\_id\_list,\ uint8\_t\ **request\_type,\ uint8\_t\ ***request\_data\_list,\ \textcolor{keywordtype}{size\_t}\ **request\_data\_len\_list);}
+\DoxyCodeLine{00098\ \textcolor{keywordtype}{void}\ unload\_pending\_request\_data(Skissm\_\_E2eeAddress\ *user\_address,\ \textcolor{keywordtype}{char}\ *request\_id);}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ MOCK\_DB\_H\_\ */}\textcolor{preprocessor}{}}
 
 \end{DoxyCode}

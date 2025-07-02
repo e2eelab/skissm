@@ -1,0 +1,56 @@
+\doxysection{rr\+\_\+type.\+h}
+\hypertarget{rr__type_8h_source}{}\label{rr__type_8h_source}\index{tests/rr\_type.h@{tests/rr\_type.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ ©\ 2020-\/2021\ by\ Academia\ Sinica}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ SKISSM.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ program\ is\ free\ software:\ you\ can\ redistribute\ it\ and/or\ modify}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ it\ under\ the\ terms\ of\ the\ GNU\ General\ Public\ License\ as\ published\ by}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ the\ Free\ Software\ Foundation,\ either\ version\ 3\ of\ the\ License,\ or}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ (at\ your\ option)\ any\ later\ version.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ SKISSM\ is\ distributed\ in\ the\ hope\ that\ it\ will\ be\ useful,}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ but\ WITHOUT\ ANY\ WARRANTY;\ without\ even\ the\ implied\ warranty\ of}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ MERCHANTABILITY\ or\ FITNESS\ FOR\ A\ PARTICULAR\ PURPOSE.\ See\ the}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ GNU\ General\ Public\ License\ for\ more\ details.}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *\ You\ should\ have\ received\ a\ copy\ of\ the\ GNU\ General\ Public\ License}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ along\ with\ SKISSM.\ \ If\ not,\ see\ <http://www.gnu.org/licenses/>.}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#ifndef\ RR\_TYPE\_H\_}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#define\ RR\_TYPE\_H\_}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}skissm/skissm.h"{}}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structproto__msg__package}{proto\_msg\_package}}\ \{}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{int}\ type;}
+\DoxyCodeLine{00026\ \ \ \ \ Skissm\_\_E2eeAddress\ *address\_data;}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ proto\_msg\_len;}
+\DoxyCodeLine{00028\ \ \ \ \ uint8\_t\ *proto\_msg\_data;}
+\DoxyCodeLine{00029\ \}\ \mbox{\hyperlink{structproto__msg__package}{proto\_msg\_package}};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{enum}\ Resquest\_Response\_type\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ DEBUG\ =\ 0,}
+\DoxyCodeLine{00034\ \ \ \ \ REGISTER\_USER\ =\ 1,}
+\DoxyCodeLine{00035\ \ \ \ \ GET\_PRE\_KEY\_BUNDLE\ =\ 2,}
+\DoxyCodeLine{00036\ \ \ \ \ INVITE\ =\ 3,}
+\DoxyCodeLine{00037\ \ \ \ \ ACCEPT\ =\ 4,}
+\DoxyCodeLine{00038\ \ \ \ \ PUBLISH\_SPK\ =\ 5,}
+\DoxyCodeLine{00039\ \ \ \ \ SUPPLY\_OPKS\ =\ 6,}
+\DoxyCodeLine{00040\ \ \ \ \ SEND\_ONE2ONE\_MSG\ =\ 7,}
+\DoxyCodeLine{00041\ \ \ \ \ CREATE\_GROUP\ =\ 8,}
+\DoxyCodeLine{00042\ \ \ \ \ ADD\_GROUP\_MEMBERS\ =\ 9,}
+\DoxyCodeLine{00043\ \ \ \ \ ADD\_GROUP\_MEMBER\_DEVICE\ =\ 10,}
+\DoxyCodeLine{00044\ \ \ \ \ REMOVE\_GROUP\_MEMBERS\ =\ 11,}
+\DoxyCodeLine{00045\ \ \ \ \ LEAVE\_GROUP\ =\ 12,}
+\DoxyCodeLine{00046\ \ \ \ \ SEND\_GROUP\_MSG\ =\ 13,}
+\DoxyCodeLine{00047\ \ \ \ \ CONSUME\_PROTO\_MSG\ =\ 14,}
+\DoxyCodeLine{00048\ \};}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ RR\_TYPE\_H\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

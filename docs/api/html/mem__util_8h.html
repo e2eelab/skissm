@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.12</span>
    </div>
    <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
@@ -104,8 +104,10 @@ $(function(){ initResizable(false); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ac09f1868695fde36561a5b8b4e75a811" id="r_ac09f1868695fde36561a5b8b4e75a811"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac09f1868695fde36561a5b8b4e75a811">free_proto</a>(name)</td></tr>
-<tr class="separator:ac09f1868695fde36561a5b8b4e75a811"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93e42f3f52063148fbf1ff5fcf4ace74" id="r_a93e42f3f52063148fbf1ff5fcf4ace74"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93e42f3f52063148fbf1ff5fcf4ace74">free_string</a>(arg)</td></tr>
+<tr class="separator:a93e42f3f52063148fbf1ff5fcf4ace74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af45986259d8da02d4a59be7b902c4c3f" id="r_af45986259d8da02d4a59be7b902c4c3f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af45986259d8da02d4a59be7b902c4c3f">free_proto</a>(arg)</td></tr>
+<tr class="separator:af45986259d8da02d4a59be7b902c4c3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -273,9 +275,6 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
 <tr class="memitem:af538c2a1b73b49b349c3face2518be5b" id="r_af538c2a1b73b49b349c3face2518be5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af538c2a1b73b49b349c3face2518be5b">free_protobuf_list</a> (ProtobufCBinaryData **output, size_t protobuf_num)</td></tr>
 <tr class="memdesc:af538c2a1b73b49b349c3face2518be5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release memory of ProtobufCBinaryData list.  <br /></td></tr>
 <tr class="separator:af538c2a1b73b49b349c3face2518be5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad757cdc6a1d8462f8a6e71f5f21be004" id="r_ad757cdc6a1d8462f8a6e71f5f21be004"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad757cdc6a1d8462f8a6e71f5f21be004">free_string</a> (char **buffer)</td></tr>
-<tr class="memdesc:ad757cdc6a1d8462f8a6e71f5f21be004"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release a string.  <br /></td></tr>
-<tr class="separator:ad757cdc6a1d8462f8a6e71f5f21be004"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad52318053f6e2ff82479263171309447" id="r_ad52318053f6e2ff82479263171309447"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad52318053f6e2ff82479263171309447">free_mem</a> (void **buffer, size_t buffer_len)</td></tr>
 <tr class="memdesc:ad52318053f6e2ff82479263171309447"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release a memory block.  <br /></td></tr>
 <tr class="separator:ad52318053f6e2ff82479263171309447"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -289,8 +288,8 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
 <p>SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
 <p>You should have received a copy of the GNU General Public License along with SKISSM. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ac09f1868695fde36561a5b8b4e75a811" name="ac09f1868695fde36561a5b8b4e75a811"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac09f1868695fde36561a5b8b4e75a811">&#9670;&#160;</a></span>free_proto</h2>
+<a id="af45986259d8da02d4a59be7b902c4c3f" name="af45986259d8da02d4a59be7b902c4c3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af45986259d8da02d4a59be7b902c4c3f">&#9670;&#160;</a></span>free_proto</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -298,14 +297,35 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
         <tr>
           <td class="memname">#define free_proto</td>
           <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>name</em></span></td><td>)</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>arg</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> (name != NULL) { \</div>
-<div class="line">        skissm__##name##__free_unpacked(name, NULL); \</div>
-<div class="line">        name = NULL; \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> (arg != NULL) { \</div>
+<div class="line">        skissm__##arg##__free_unpacked(arg, NULL); \</div>
+<div class="line">        arg = NULL; \</div>
+<div class="line">    }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a93e42f3f52063148fbf1ff5fcf4ace74" name="a93e42f3f52063148fbf1ff5fcf4ace74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93e42f3f52063148fbf1ff5fcf4ace74">&#9670;&#160;</a></span>free_string</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define free_string</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>arg</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> (arg != NULL) { \</div>
+<div class="line">        free(arg); \</div>
+<div class="line">        arg = NULL; \</div>
 <div class="line">    }</div>
 </div><!-- fragment -->
 </div>
@@ -1698,31 +1718,6 @@ false </dd></dl>
   <table class="params">
     <tr><td class="paramname">output</td><td></td></tr>
     <tr><td class="paramname">protobuf_num</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ad757cdc6a1d8462f8a6e71f5f21be004" name="ad757cdc6a1d8462f8a6e71f5f21be004"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad757cdc6a1d8462f8a6e71f5f21be004">&#9670;&#160;</a></span>free_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void free_string </td>
-          <td>(</td>
-          <td class="paramtype">char **</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Release a string. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">buffer</td><td></td></tr>
   </table>
   </dd>
 </dl>

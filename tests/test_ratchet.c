@@ -49,11 +49,11 @@
  * @ingroup Unit
  * This includes unit tests about ratchet.
  * 
- * @defgroup initialise_as_alice initialise ratchet test: Alice
+ * @defgroup initialise_as_alice [v1.0ur01] initialise ratchet test: Alice
  * @ingroup ratchet_unit
  * @{
  * @section sec20001 Test Case ID
- * v1.0ur01
+ * v1.0_ur01
  * @section sec20002 Test Case Title
  * initialise_as_alice
  * @section sec20003 Test Description
@@ -69,11 +69,11 @@
  * No output.
  * @}
  * 
- * @defgroup initialise_as_bob initialise ratchet test: Bob
+ * @defgroup initialise_as_bob [v1.0ur02] initialise ratchet test: Bob
  * @ingroup ratchet_unit
  * @{
  * @section sec20101 Test Case ID
- * v1.0ur02
+ * v1.0_ur02
  * @section sec20102 Test Case Title
  * initialise_as_bob
  * @section sec20103 Test Description
@@ -94,11 +94,11 @@
  * @ingroup Integration
  * This includes integration tests about ratchet.
  * 
- * @defgroup ratchet_test_alice_to_bob basic ratchet test: Alice to Bob
+ * @defgroup ratchet_test_alice_to_bob [v1.0ir01] basic ratchet test: Alice to Bob
  * @ingroup ratchet_int
  * @{
  * @section sec21001 Test Case ID
- * v1.0ir01
+ * v1.0_ir01
  * @section sec21002 Test Case Title
  * test_alice_to_bob
  * @section sec21003 Test Description
@@ -114,11 +114,11 @@
  * No output.
  * @}
  * 
- * @defgroup ratchet_test_bob_to_alice basic ratchet test: Bob to Alice
+ * @defgroup ratchet_test_bob_to_alice [v1.0ir02] basic ratchet test: Bob to Alice
  * @ingroup ratchet_int
  * @{
  * @section sec21101 Test Case ID
- * v1.0ir02
+ * v1.0_ir02
  * @section sec21102 Test Case Title
  * test_bob_to_alice
  * @section sec21103 Test Description
@@ -134,11 +134,11 @@
  * No output.
  * @}
  * 
- * @defgroup ratchet_test_interaction_alice_first interaction test: Alice first
+ * @defgroup ratchet_test_interaction_alice_first [v1.0ir03] interaction test: Alice first
  * @ingroup ratchet_int
  * @{
  * @section sec21201 Test Case ID
- * v1.0ir03
+ * v1.0_ir03
  * @section sec21202 Test Case Title
  * test_interaction_alice_first
  * @section sec21203 Test Description
@@ -157,11 +157,11 @@
  * No output.
  * @}
  * 
- * @defgroup ratchet_test_interaction_bob_first interaction test: Bob first
+ * @defgroup ratchet_test_interaction_bob_first [v1.0ir04] interaction test: Bob first
  * @ingroup ratchet_int
  * @{
  *  @section sec21301 Test Case ID
- * v1.0ir04
+ * v1.0_ir04
  * @section sec21302 Test Case Title
  * test_interaction_bob_first
  * @section sec21303 Test Description
@@ -180,11 +180,11 @@
  * No output.
  * @}
  * 
- * @defgroup ratchet_test_out_of_order out of order test: simple case
+ * @defgroup ratchet_test_out_of_order [v1.0ir05] out of order test: simple case
  * @ingroup ratchet_int
  * @{
  * @section sec21401 Test Case ID
- * v1.0ir05
+ * v1.0_ir05
  * @section sec21402 Test Case Title
  * test_out_of_order
  * @section sec21403 Test Description
@@ -202,11 +202,11 @@
  * No output.
  * @}
  * 
- * @defgroup ratchet_test_continual_message continual messages test
+ * @defgroup ratchet_test_continual_message [v1.0ir06] continual messages test
  * @ingroup ratchet_int
  * @{
  * @section sec21501 Test Case ID
- * v1.0ir06
+ * v1.0_ir06
  * @section sec21502 Test Case Title
  * test_continual_message
  * @section sec21503 Test Description
@@ -222,11 +222,11 @@
  * No output.
  * @}
  * 
- * @defgroup ratchet_test_interaction_v2 interaction test
+ * @defgroup ratchet_test_interaction_v2 [v1.0ir07] interaction test
  * @ingroup ratchet_int
  * @{
  * @section sec21601 Test Case ID
- * v1.0ir07
+ * v1.0_ir07
  * @section sec21602 Test Case Title
  * test_interaction_v2
  * @section sec21603 Test Description
@@ -246,11 +246,11 @@
  * No output.
  * @}
  * 
- * @defgroup ratchet_test_out_of_order_v2 out of order test
+ * @defgroup ratchet_test_out_of_order_v2 [v1.0ir08] out of order test
  * @ingroup ratchet_int
  * @{
  * @section sec21701 Test Case ID
- * v1.0ir08
+ * v1.0_ir08
  * @section sec21702 Test Case Title
  * test_out_of_order_v2
  * @section sec21703 Test Description

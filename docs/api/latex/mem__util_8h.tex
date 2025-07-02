@@ -7,7 +7,9 @@
 \doxysubsubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{mem__util_8h_ac09f1868695fde36561a5b8b4e75a811}{free\+\_\+proto}}(name)
+\#define \mbox{\hyperlink{mem__util_8h_a93e42f3f52063148fbf1ff5fcf4ace74}{free\+\_\+string}}(arg)
+\item 
+\#define \mbox{\hyperlink{mem__util_8h_af45986259d8da02d4a59be7b902c4c3f}{free\+\_\+proto}}(arg)
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Functions}
 \begin{DoxyCompactItemize}
@@ -124,8 +126,6 @@ void \mbox{\hyperlink{mem__util_8h_ad355289d6c6909bc963d40220d32f2a4}{free\+\_\+
 \begin{DoxyCompactList}\small\item\em Release memory of Protobuf\+CBinary\+Data. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mem__util_8h_af538c2a1b73b49b349c3face2518be5b}{free\+\_\+protobuf\+\_\+list}} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}output, size\+\_\+t protobuf\+\_\+num)
 \begin{DoxyCompactList}\small\item\em Release memory of Protobuf\+CBinary\+Data list. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{mem__util_8h_ad757cdc6a1d8462f8a6e71f5f21be004}{free\+\_\+string}} (char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}buffer)
-\begin{DoxyCompactList}\small\item\em Release a string. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mem__util_8h_ad52318053f6e2ff82479263171309447}{free\+\_\+mem}} (void \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}buffer, size\+\_\+t buffer\+\_\+len)
 \begin{DoxyCompactList}\small\item\em Release a memory block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{mem__util_8h_a7084bf913a19b0f4f621834fded3c3e6}{unset}} (void volatile \texorpdfstring{$\ast$}{*}buffer, size\+\_\+t buffer\+\_\+len)
@@ -144,17 +144,31 @@ SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRAN
 You should have received a copy of the GNU General Public License along with SKISSM. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
 
 \doxysubsection{Macro Definition Documentation}
-\Hypertarget{mem__util_8h_ac09f1868695fde36561a5b8b4e75a811}\index{mem\_util.h@{mem\_util.h}!free\_proto@{free\_proto}}
+\Hypertarget{mem__util_8h_af45986259d8da02d4a59be7b902c4c3f}\index{mem\_util.h@{mem\_util.h}!free\_proto@{free\_proto}}
 \index{free\_proto@{free\_proto}!mem\_util.h@{mem\_util.h}}
 \doxysubsubsection{\texorpdfstring{free\_proto}{free\_proto}}
-{\footnotesize\ttfamily \label{mem__util_8h_ac09f1868695fde36561a5b8b4e75a811} 
-\#define free\+\_\+proto(\begin{DoxyParamCaption}\item[{}]{name}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{mem__util_8h_af45986259d8da02d4a59be7b902c4c3f} 
+\#define free\+\_\+proto(\begin{DoxyParamCaption}\item[{}]{arg}{}\end{DoxyParamCaption})}
 
 {\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (name\ !=\ NULL)\ \{\ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ skissm\_\_\#\#name\#\#\_\_free\_unpacked(name,\ NULL);\ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ name\ =\ NULL;\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (arg\ !=\ NULL)\ \{\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ skissm\_\_\#\#arg\#\#\_\_free\_unpacked(arg,\ NULL);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ arg\ =\ NULL;\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{mem__util_8h_a93e42f3f52063148fbf1ff5fcf4ace74}\index{mem\_util.h@{mem\_util.h}!free\_string@{free\_string}}
+\index{free\_string@{free\_string}!mem\_util.h@{mem\_util.h}}
+\doxysubsubsection{\texorpdfstring{free\_string}{free\_string}}
+{\footnotesize\ttfamily \label{mem__util_8h_a93e42f3f52063148fbf1ff5fcf4ace74} 
+\#define free\+\_\+string(\begin{DoxyParamCaption}\item[{}]{arg}{}\end{DoxyParamCaption})}
+
+{\bfseries Value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (arg\ !=\ NULL)\ \{\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ free(arg);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ arg\ =\ NULL;\ \(\backslash\)}
 \DoxyCodeLine{\ \ \ \ \}}
 
 \end{DoxyCode}
@@ -947,21 +961,6 @@ Release memory of Protobuf\+CBinary\+Data list.
 {\em output} & \\
 \hline
 {\em protobuf\+\_\+num} & \\
-\hline
-\end{DoxyParams}
-\Hypertarget{mem__util_8h_ad757cdc6a1d8462f8a6e71f5f21be004}\index{mem\_util.h@{mem\_util.h}!free\_string@{free\_string}}
-\index{free\_string@{free\_string}!mem\_util.h@{mem\_util.h}}
-\doxysubsubsection{\texorpdfstring{free\_string()}{free\_string()}}
-{\footnotesize\ttfamily \label{mem__util_8h_ad757cdc6a1d8462f8a6e71f5f21be004} 
-void free\+\_\+string (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{buffer}{}\end{DoxyParamCaption})}
-
-
-
-Release a string. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em buffer} & \\
 \hline
 \end{DoxyParams}
 \Hypertarget{mem__util_8h_a07ad3b007dd747436aef28276a99ff91}\index{mem\_util.h@{mem\_util.h}!generate\_uuid\_str@{generate\_uuid\_str}}

@@ -138,6 +138,37 @@ set_target_properties(
 target_link_libraries(skissm_static PUBLIC mbedcrypto curve25519 pqclean
                                             protobuf::libprotobuf protobuf-c)
 
+# Target: skissm_shared
+add_library(skissm_shared SHARED ${skissm_src} ${src_headers}
+                                  ${proto_gen_src} ${proto_gen_header})
+
+add_dependencies(skissm_shared curve25519 mbedcrypto protobuf::libprotobuf
+                  protobuf-c)
+
+target_include_directories(
+  skissm_shared
+  PUBLIC $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+          $<BUILD_INTERFACE:${protobuf-c_DIR}>
+          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  PRIVATE ${lib_DIR} ${lib_DIR}/curve25519 ${lib_DIR}/curve25519/ed25519
+          ${lib_DIR}/curve25519/ed25519/additions
+          ${lib_DIR}/curve25519/ed25519/nacl_includes)
+
+set_target_properties(
+  skissm_shared
+  PROPERTIES OUTPUT_NAME "skissm"
+              WINDOWS_EXPORT_ALL_SYMBOLS ON
+              ARCHIVE_OUTPUT_DIRECTORY
+              ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
+              LIBRARY_OUTPUT_DIRECTORY
+              ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+              RUNTIME_OUTPUT_DIRECTORY
+              ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+
+target_link_libraries(skissm_shared PUBLIC mbedcrypto curve25519 pqclean
+                                            protobuf::libprotobuf protobuf-c)
+
 # Install
 install(TARGETS skissm_static
   EXPORT skissm-targets

@@ -129,7 +129,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keywordtype">void</span> load_identity_key_pair(uint64_t address_id, Skissm__IdentityKey **identity_key_pair);</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="keywordtype">void</span> load_signed_pre_key_pair(uint64_t address_id, Skissm__SignedPreKey **signed_pre_key);</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keywordtype">int</span> load_n_one_time_pre_keys(uint64_t address_id);</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>uint32_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_time_pre_keys);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="keywordtype">size_t</span> load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_time_pre_keys);</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>uint32_t load_next_one_time_pre_key_id(uint64_t address_id);</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keywordtype">bool</span> load_address_id(Skissm__E2eeAddress *address, sqlite_int64 *address_id);</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>sqlite_int64 insert_address(Skissm__E2eeAddress *address);</div>
@@ -172,20 +172,25 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="keywordtype">void</span> store_group_session(Skissm__GroupSession *group_session);</div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="keywordtype">void</span> unload_group_session_by_address(Skissm__E2eeAddress *session_owner, Skissm__E2eeAddress *group_address);</div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="keywordtype">void</span> unload_group_session_by_id(Skissm__E2eeAddress *session_owner, <span class="keywordtype">char</span> *session_id);</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="keywordtype">void</span> store_pending_plaintext_data(</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, <span class="keywordtype">char</span> *pending_plaintext_id,</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    uint8_t *group_pre_key_plaintext, <span class="keywordtype">size_t</span> group_pre_key_plaintext_len, Skissm__NotifLevel notif_level</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>);</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="keywordtype">size_t</span> load_pending_plaintext_data(</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, <span class="keywordtype">char</span> ***pending_plaintext_id_list,</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    uint8_t ***e2ee_plaintext_data_list, <span class="keywordtype">size_t</span> **e2ee_plaintext_data_len_list, Skissm__NotifLevel **notif_level_list</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>);</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="keywordtype">void</span> unload_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, <span class="keywordtype">char</span> *pending_plaintext_id);</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="keywordtype">void</span> store_pending_request_data(Skissm__E2eeAddress *user_address, <span class="keywordtype">char</span> *request_id, uint8_t request_type, uint8_t *request_data, <span class="keywordtype">size_t</span> request_data_len);</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="keywordtype">size_t</span> load_pending_request_data(Skissm__E2eeAddress *user_address, <span class="keywordtype">char</span> ***request_id_list, uint8_t **request_type, uint8_t ***request_data_list, <span class="keywordtype">size_t</span> **request_data_len_list);</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keywordtype">void</span> unload_pending_request_data(Skissm__E2eeAddress *user_address, <span class="keywordtype">char</span> *request_id);</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="preprocessor">#endif </span><span class="comment">/* MOCK_DB_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="keywordtype">void</span> unload_group_session_with_no_session_id(</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    Skissm__E2eeAddress *sender,</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    Skissm__E2eeAddress *session_owner,</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    Skissm__E2eeAddress *group_address</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="keywordtype">void</span> store_pending_plaintext_data(</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, <span class="keywordtype">char</span> *pending_plaintext_id,</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    uint8_t *group_pre_key_plaintext, <span class="keywordtype">size_t</span> group_pre_key_plaintext_len, Skissm__NotifLevel notif_level</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="keywordtype">size_t</span> load_pending_plaintext_data(</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, <span class="keywordtype">char</span> ***pending_plaintext_id_list,</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    uint8_t ***e2ee_plaintext_data_list, <span class="keywordtype">size_t</span> **e2ee_plaintext_data_len_list, Skissm__NotifLevel **notif_level_list</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="keywordtype">void</span> unload_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, <span class="keywordtype">char</span> *pending_plaintext_id);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="keywordtype">void</span> store_pending_request_data(Skissm__E2eeAddress *user_address, <span class="keywordtype">char</span> *request_id, uint8_t request_type, uint8_t *request_data, <span class="keywordtype">size_t</span> request_data_len);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="keywordtype">size_t</span> load_pending_request_data(Skissm__E2eeAddress *user_address, <span class="keywordtype">char</span> ***request_id_list, uint8_t **request_type, uint8_t ***request_data_list, <span class="keywordtype">size_t</span> **request_data_len_list);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="keywordtype">void</span> unload_pending_request_data(Skissm__E2eeAddress *user_address, <span class="keywordtype">char</span> *request_id);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="preprocessor">#endif </span><span class="comment">/* MOCK_DB_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
