@@ -55,11 +55,11 @@ extern "C" {
 
 crypto_digital_signature_param_t get_curve25519_sign_param();
 
-crypto_digital_signature_param_t get_dilithium2_param();
+crypto_digital_signature_param_t get_mldsa44_param();
 
-crypto_digital_signature_param_t get_dilithium3_param();
+crypto_digital_signature_param_t get_mldsa65_param();
 
-crypto_digital_signature_param_t get_dilithium5_param();
+crypto_digital_signature_param_t get_mldsa87_param();
 
 crypto_digital_signature_param_t get_falcon512_param();
 
@@ -89,15 +89,15 @@ crypto_digital_signature_param_t get_sphincs_shake_256f_param();
 
 crypto_digital_signature_param_t get_sphincs_shake_256s_param();
 
-int crypto_dilithium2_generate_key_pair(
+int crypto_mldsa44_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-int crypto_dilithium3_generate_key_pair(
+int crypto_mldsa65_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-int crypto_dilithium5_generate_key_pair(
+int crypto_mldsa87_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
@@ -165,11 +165,11 @@ crypto_kem_param_t get_hqc192_param();
 
 crypto_kem_param_t get_hqc256_param();
 
-crypto_kem_param_t get_kyber512_param();
+crypto_kem_param_t get_mlkem512_param();
 
-crypto_kem_param_t get_kyber768_param();
+crypto_kem_param_t get_mlkem768_param();
 
-crypto_kem_param_t get_kyber1024_param();
+crypto_kem_param_t get_mlkem1024_param();
 
 crypto_kem_param_t get_mceliece348864_param();
 
@@ -207,15 +207,15 @@ int crypto_hqc256_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-int crypto_kyber512_generate_key_pair(
+int crypto_mlkem512_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-int crypto_kyber768_generate_key_pair(
+int crypto_mlkem768_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
-int crypto_kyber1024_generate_key_pair(
+int crypto_mlkem1024_generate_key_pair(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 );
 
@@ -277,19 +277,19 @@ int crypto_hqc256_encaps(
     const ProtobufCBinaryData *their_key
 );
 
-int crypto_kyber512_encaps(
+int crypto_mlkem512_encaps(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
 );
 
-int crypto_kyber768_encaps(
+int crypto_mlkem768_encaps(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
 );
 
-int crypto_kyber1024_encaps(
+int crypto_mlkem1024_encaps(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -373,19 +373,19 @@ int crypto_hqc256_decaps(
     const ProtobufCBinaryData *ciphertext
 );
 
-int crypto_kyber512_decaps(
+int crypto_mlkem512_decaps(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
 );
 
-int crypto_kyber768_decaps(
+int crypto_mlkem768_decaps(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
 );
 
-int crypto_kyber1024_decaps(
+int crypto_mlkem1024_decaps(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext

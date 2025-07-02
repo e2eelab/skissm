@@ -116,9 +116,9 @@ extern "C" {
 #define INVITE_WAITING_TIME_MS                               60000           // 1 minute
 
 #define E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519           0
-#define E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM2           1
-#define E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM3           9
-#define E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5           17
+#define E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA44              1
+#define E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA65              9
+#define E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA87              17
 #define E2EE_PACK_ALG_DIGITAL_SIGNATURE_FALCON512            33
 #define E2EE_PACK_ALG_DIGITAL_SIGNATURE_FALCON1024           41
 #define E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_128F    65
@@ -138,9 +138,9 @@ extern "C" {
 #define E2EE_PACK_ALG_KEM_HQC128                             1
 #define E2EE_PACK_ALG_KEM_HQC192                             9
 #define E2EE_PACK_ALG_KEM_HQC256                             17
-#define E2EE_PACK_ALG_KEM_KYBER512                           33
-#define E2EE_PACK_ALG_KEM_KYBER768                           41
-#define E2EE_PACK_ALG_KEM_KYBER1024                          49
+#define E2EE_PACK_ALG_KEM_MLKEM512                           33
+#define E2EE_PACK_ALG_KEM_MLKEM768                           41
+#define E2EE_PACK_ALG_KEM_MLKEM1024                          49
 #define E2EE_PACK_ALG_KEM_MCELIECE348864                     65
 #define E2EE_PACK_ALG_KEM_MCELIECE348864F                    69
 #define E2EE_PACK_ALG_KEM_MCELIECE460896                     73

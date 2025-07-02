@@ -618,8 +618,8 @@ void pre_key_bundle_hash(
 
     uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
-        E2EE_PACK_ALG_KEM_KYBER1024,
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA87,
+        E2EE_PACK_ALG_KEM_MLKEM1024,
         E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );
@@ -684,8 +684,8 @@ void proto_msg_hash(
 
     uint32_t e2ee_pack_id_raw = gen_e2ee_pack_id_raw(
         0,
-        E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
-        E2EE_PACK_ALG_KEM_KYBER1024,
+        E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA87,
+        E2EE_PACK_ALG_KEM_MLKEM1024,
         E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM,
         E2EE_PACK_ALG_HASH_SHA2_256
     );

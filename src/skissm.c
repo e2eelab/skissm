@@ -25,9 +25,9 @@
 #include "skissm/mem_util.h"
 
 extern struct digital_signature_suite_t E2EE_CURVE25519_SIGN;
-extern struct digital_signature_suite_t E2EE_DILITHIUM2;
-extern struct digital_signature_suite_t E2EE_DILITHIUM3;
-extern struct digital_signature_suite_t E2EE_DILITHIUM5;
+extern struct digital_signature_suite_t E2EE_MLDSA44;
+extern struct digital_signature_suite_t E2EE_MLDSA65;
+extern struct digital_signature_suite_t E2EE_MLDSA87;
 extern struct digital_signature_suite_t E2EE_FALCON512;
 extern struct digital_signature_suite_t E2EE_FALCON1024;
 extern struct digital_signature_suite_t E2EE_SPHINCS_SHA2_128F;
@@ -46,9 +46,9 @@ extern struct kem_suite_t E2EE_CURVE25519_ECDH;
 extern struct kem_suite_t E2EE_HQC128;
 extern struct kem_suite_t E2EE_HQC192;
 extern struct kem_suite_t E2EE_HQC256;
-extern struct kem_suite_t E2EE_KYBER512;
-extern struct kem_suite_t E2EE_KYBER768;
-extern struct kem_suite_t E2EE_KYBER1024;
+extern struct kem_suite_t E2EE_MLKEM512;
+extern struct kem_suite_t E2EE_MLKEM768;
+extern struct kem_suite_t E2EE_MLKEM1024;
 extern struct kem_suite_t E2EE_MCELIECE348864;
 extern struct kem_suite_t E2EE_MCELIECE348864F;
 extern struct kem_suite_t E2EE_MCELIECE460896;
@@ -86,12 +86,12 @@ skissm_plugin_t *get_skissm_plugin() { return skissm_plugin; }
 digital_signature_suite_t *get_digital_signature_suite(unsigned digital_signature_id) {
     if (digital_signature_id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_CURVE25519) {
         return &E2EE_CURVE25519_SIGN;
-    } else if (digital_signature_id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM2) {
-        return &E2EE_DILITHIUM2;
-    } else if (digital_signature_id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM3) {
-        return &E2EE_DILITHIUM3;
-    } else if (digital_signature_id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5) {
-        return &E2EE_DILITHIUM5;
+    } else if (digital_signature_id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA44) {
+        return &E2EE_MLDSA44;
+    } else if (digital_signature_id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA65) {
+        return &E2EE_MLDSA65;
+    } else if (digital_signature_id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA87) {
+        return &E2EE_MLDSA87;
     } else if (digital_signature_id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_FALCON512) {
         return &E2EE_FALCON512;
     } else if (digital_signature_id == E2EE_PACK_ALG_DIGITAL_SIGNATURE_FALCON1024) {
@@ -134,12 +134,12 @@ kem_suite_t *get_kem_suite(unsigned kem_id) {
         return &E2EE_HQC192;
     } else if (kem_id == E2EE_PACK_ALG_KEM_HQC256) {
         return &E2EE_HQC256;
-    } else if (kem_id == E2EE_PACK_ALG_KEM_KYBER512) {
-        return &E2EE_KYBER512;
-    } else if (kem_id == E2EE_PACK_ALG_KEM_KYBER768) {
-        return &E2EE_KYBER768;
-    } else if (kem_id == E2EE_PACK_ALG_KEM_KYBER1024) {
-        return &E2EE_KYBER1024;
+    } else if (kem_id == E2EE_PACK_ALG_KEM_MLKEM512) {
+        return &E2EE_MLKEM512;
+    } else if (kem_id == E2EE_PACK_ALG_KEM_MLKEM768) {
+        return &E2EE_MLKEM768;
+    } else if (kem_id == E2EE_PACK_ALG_KEM_MLKEM1024) {
+        return &E2EE_MLKEM1024;
     } else if (kem_id == E2EE_PACK_ALG_KEM_MCELIECE348864) {
         return &E2EE_MCELIECE348864;
     } else if (kem_id == E2EE_PACK_ALG_KEM_MCELIECE348864F) {

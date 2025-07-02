@@ -26,9 +26,9 @@
 #include "PQClean/src/crypto_kem/hqc-128/clean/api.h"
 #include "PQClean/src/crypto_kem/hqc-192/clean/api.h"
 #include "PQClean/src/crypto_kem/hqc-256/clean/api.h"
-#include "PQClean/src/crypto_kem/kyber512/clean/api.h"
-#include "PQClean/src/crypto_kem/kyber768/clean/api.h"
-#include "PQClean/src/crypto_kem/kyber1024/clean/api.h"
+#include "PQClean/src/crypto_kem/ml-kem-512/clean/api.h"
+#include "PQClean/src/crypto_kem/ml-kem-768/clean/api.h"
+#include "PQClean/src/crypto_kem/ml-kem-1024/clean/api.h"
 #include "PQClean/src/crypto_kem/mceliece348864/clean/api.h"
 #include "PQClean/src/crypto_kem/mceliece348864f/clean/api.h"
 #include "PQClean/src/crypto_kem/mceliece460896/clean/api.h"
@@ -39,9 +39,9 @@
 #include "PQClean/src/crypto_kem/mceliece6960119f/clean/api.h"
 #include "PQClean/src/crypto_kem/mceliece8192128/clean/api.h"
 #include "PQClean/src/crypto_kem/mceliece8192128f/clean/api.h"
-#include "PQClean/src/crypto_sign/dilithium2/clean/api.h"
-#include "PQClean/src/crypto_sign/dilithium3/clean/api.h"
-#include "PQClean/src/crypto_sign/dilithium5/clean/api.h"
+#include "PQClean/src/crypto_sign/ml-dsa-44/clean/api.h"
+#include "PQClean/src/crypto_sign/ml-dsa-65/clean/api.h"
+#include "PQClean/src/crypto_sign/ml-dsa-87/clean/api.h"
 #include "PQClean/src/crypto_sign/falcon-512/clean/api.h"
 #include "PQClean/src/crypto_sign/falcon-1024/clean/api.h"
 #include "PQClean/src/crypto_sign/sphincs-sha2-128f-simple/clean/api.h"
@@ -60,25 +60,25 @@
 
 // digital signature
 
-struct digital_signature_suite_t E2EE_DILITHIUM2 = {
-    get_dilithium2_param,
-    crypto_dilithium2_generate_key_pair,
-    PQCLEAN_DILITHIUM2_CLEAN_crypto_sign_signature,
-    PQCLEAN_DILITHIUM2_CLEAN_crypto_sign_verify
+struct digital_signature_suite_t E2EE_MLDSA44 = {
+    get_mldsa44_param,
+    crypto_mldsa44_generate_key_pair,
+    PQCLEAN_MLDSA44_CLEAN_crypto_sign_signature,
+    PQCLEAN_MLDSA44_CLEAN_crypto_sign_verify
 };
 
-struct digital_signature_suite_t E2EE_DILITHIUM3 = {
-    get_dilithium3_param,
-    crypto_dilithium3_generate_key_pair,
-    PQCLEAN_DILITHIUM3_CLEAN_crypto_sign_signature,
-    PQCLEAN_DILITHIUM3_CLEAN_crypto_sign_verify
+struct digital_signature_suite_t E2EE_MLDSA65 = {
+    get_mldsa65_param,
+    crypto_mldsa65_generate_key_pair,
+    PQCLEAN_MLDSA65_CLEAN_crypto_sign_signature,
+    PQCLEAN_MLDSA65_CLEAN_crypto_sign_verify
 };
 
-struct digital_signature_suite_t E2EE_DILITHIUM5 = {
-    get_dilithium5_param,
-    crypto_dilithium5_generate_key_pair,
-    PQCLEAN_DILITHIUM5_CLEAN_crypto_sign_signature,
-    PQCLEAN_DILITHIUM5_CLEAN_crypto_sign_verify
+struct digital_signature_suite_t E2EE_MLDSA87 = {
+    get_mldsa87_param,
+    crypto_mldsa87_generate_key_pair,
+    PQCLEAN_MLDSA87_CLEAN_crypto_sign_signature,
+    PQCLEAN_MLDSA87_CLEAN_crypto_sign_verify
 };
 
 struct digital_signature_suite_t E2EE_FALCON512 = {
@@ -203,25 +203,25 @@ struct kem_suite_t E2EE_HQC256 = {
     crypto_hqc256_decaps
 };
 
-struct kem_suite_t E2EE_KYBER512 = {
-    get_kyber512_param,
-    crypto_kyber512_generate_key_pair,
-    crypto_kyber512_encaps,
-    crypto_kyber512_decaps
+struct kem_suite_t E2EE_MLKEM512 = {
+    get_mlkem512_param,
+    crypto_mlkem512_generate_key_pair,
+    crypto_mlkem512_encaps,
+    crypto_mlkem512_decaps
 };
 
-struct kem_suite_t E2EE_KYBER768 = {
-    get_kyber768_param,
-    crypto_kyber768_generate_key_pair,
-    crypto_kyber768_encaps,
-    crypto_kyber768_decaps
+struct kem_suite_t E2EE_MLKEM768 = {
+    get_mlkem768_param,
+    crypto_mlkem768_generate_key_pair,
+    crypto_mlkem768_encaps,
+    crypto_mlkem768_decaps
 };
 
-struct kem_suite_t E2EE_KYBER1024 = {
-    get_kyber1024_param,
-    crypto_kyber1024_generate_key_pair,
-    crypto_kyber1024_encaps,
-    crypto_kyber1024_decaps
+struct kem_suite_t E2EE_MLKEM1024 = {
+    get_mlkem1024_param,
+    crypto_mlkem1024_generate_key_pair,
+    crypto_mlkem1024_encaps,
+    crypto_mlkem1024_decaps
 };
 
 struct kem_suite_t E2EE_MCELIECE348864 = {

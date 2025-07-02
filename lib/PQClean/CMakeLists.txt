@@ -54,40 +54,40 @@ set(HQC_256_SRCS
     src/crypto_kem/hqc-256/clean/vector.c
 )
 
-set(KYBER512_SRCS
-    src/crypto_kem/kyber512/clean/cbd.c
-    src/crypto_kem/kyber512/clean/indcpa.c
-    src/crypto_kem/kyber512/clean/kem.c
-    src/crypto_kem/kyber512/clean/ntt.c
-    src/crypto_kem/kyber512/clean/poly.c
-    src/crypto_kem/kyber512/clean/polyvec.c
-    src/crypto_kem/kyber512/clean/reduce.c
-    src/crypto_kem/kyber512/clean/symmetric-shake.c
-    src/crypto_kem/kyber512/clean/verify.c
+set(MLKEM512_SRCS
+    src/crypto_kem/ml-kem-512/clean/cbd.c
+    src/crypto_kem/ml-kem-512/clean/indcpa.c
+    src/crypto_kem/ml-kem-512/clean/kem.c
+    src/crypto_kem/ml-kem-512/clean/ntt.c
+    src/crypto_kem/ml-kem-512/clean/poly.c
+    src/crypto_kem/ml-kem-512/clean/polyvec.c
+    src/crypto_kem/ml-kem-512/clean/reduce.c
+    src/crypto_kem/ml-kem-512/clean/symmetric-shake.c
+    src/crypto_kem/ml-kem-512/clean/verify.c
 )
 
-set(KYBER768_SRCS
-    src/crypto_kem/kyber768/clean/cbd.c
-    src/crypto_kem/kyber768/clean/indcpa.c
-    src/crypto_kem/kyber768/clean/kem.c
-    src/crypto_kem/kyber768/clean/ntt.c
-    src/crypto_kem/kyber768/clean/poly.c
-    src/crypto_kem/kyber768/clean/polyvec.c
-    src/crypto_kem/kyber768/clean/reduce.c
-    src/crypto_kem/kyber768/clean/symmetric-shake.c
-    src/crypto_kem/kyber768/clean/verify.c
+set(MLKEM768_SRCS
+    src/crypto_kem/ml-kem-768/clean/cbd.c
+    src/crypto_kem/ml-kem-768/clean/indcpa.c
+    src/crypto_kem/ml-kem-768/clean/kem.c
+    src/crypto_kem/ml-kem-768/clean/ntt.c
+    src/crypto_kem/ml-kem-768/clean/poly.c
+    src/crypto_kem/ml-kem-768/clean/polyvec.c
+    src/crypto_kem/ml-kem-768/clean/reduce.c
+    src/crypto_kem/ml-kem-768/clean/symmetric-shake.c
+    src/crypto_kem/ml-kem-768/clean/verify.c
 )
 
-set(KYBER1024_SRCS
-    src/crypto_kem/kyber1024/clean/cbd.c
-    src/crypto_kem/kyber1024/clean/indcpa.c
-    src/crypto_kem/kyber1024/clean/kem.c
-    src/crypto_kem/kyber1024/clean/ntt.c
-    src/crypto_kem/kyber1024/clean/poly.c
-    src/crypto_kem/kyber1024/clean/polyvec.c
-    src/crypto_kem/kyber1024/clean/reduce.c
-    src/crypto_kem/kyber1024/clean/symmetric-shake.c
-    src/crypto_kem/kyber1024/clean/verify.c
+set(MLKEM1024_SRCS
+    src/crypto_kem/ml-kem-1024/clean/cbd.c
+    src/crypto_kem/ml-kem-1024/clean/indcpa.c
+    src/crypto_kem/ml-kem-1024/clean/kem.c
+    src/crypto_kem/ml-kem-1024/clean/ntt.c
+    src/crypto_kem/ml-kem-1024/clean/poly.c
+    src/crypto_kem/ml-kem-1024/clean/polyvec.c
+    src/crypto_kem/ml-kem-1024/clean/reduce.c
+    src/crypto_kem/ml-kem-1024/clean/symmetric-shake.c
+    src/crypto_kem/ml-kem-1024/clean/verify.c
 )
 
 set(MCELIECE348864_SRCS
@@ -310,37 +310,37 @@ set(MCELIECE8192128F_SRCS
     src/crypto_kem/mceliece8192128f/clean/util.c
 )
 
-set(DILITHIUM2_SRCS
-    src/crypto_sign/dilithium2/clean/ntt.c
-    src/crypto_sign/dilithium2/clean/packing.c
-    src/crypto_sign/dilithium2/clean/poly.c
-    src/crypto_sign/dilithium2/clean/polyvec.c
-    src/crypto_sign/dilithium2/clean/reduce.c
-    src/crypto_sign/dilithium2/clean/rounding.c
-    src/crypto_sign/dilithium2/clean/sign.c
-    src/crypto_sign/dilithium2/clean/symmetric-shake.c
+set(MLDSA44_SRCS
+    src/crypto_sign/ml-dsa-44/clean/ntt.c
+    src/crypto_sign/ml-dsa-44/clean/packing.c
+    src/crypto_sign/ml-dsa-44/clean/poly.c
+    src/crypto_sign/ml-dsa-44/clean/polyvec.c
+    src/crypto_sign/ml-dsa-44/clean/reduce.c
+    src/crypto_sign/ml-dsa-44/clean/rounding.c
+    src/crypto_sign/ml-dsa-44/clean/sign.c
+    src/crypto_sign/ml-dsa-44/clean/symmetric-shake.c
 )
 
-set(DILITHIUM3_SRCS
-    src/crypto_sign/dilithium3/clean/ntt.c
-    src/crypto_sign/dilithium3/clean/packing.c
-    src/crypto_sign/dilithium3/clean/poly.c
-    src/crypto_sign/dilithium3/clean/polyvec.c
-    src/crypto_sign/dilithium3/clean/reduce.c
-    src/crypto_sign/dilithium3/clean/rounding.c
-    src/crypto_sign/dilithium3/clean/sign.c
-    src/crypto_sign/dilithium3/clean/symmetric-shake.c
+set(MLDSA65_SRCS
+    src/crypto_sign/ml-dsa-65/clean/ntt.c
+    src/crypto_sign/ml-dsa-65/clean/packing.c
+    src/crypto_sign/ml-dsa-65/clean/poly.c
+    src/crypto_sign/ml-dsa-65/clean/polyvec.c
+    src/crypto_sign/ml-dsa-65/clean/reduce.c
+    src/crypto_sign/ml-dsa-65/clean/rounding.c
+    src/crypto_sign/ml-dsa-65/clean/sign.c
+    src/crypto_sign/ml-dsa-65/clean/symmetric-shake.c
 )
 
-set(DILITHIUM5_SRCS
-    src/crypto_sign/dilithium5/clean/ntt.c
-    src/crypto_sign/dilithium5/clean/packing.c
-    src/crypto_sign/dilithium5/clean/poly.c
-    src/crypto_sign/dilithium5/clean/polyvec.c
-    src/crypto_sign/dilithium5/clean/reduce.c
-    src/crypto_sign/dilithium5/clean/rounding.c
-    src/crypto_sign/dilithium5/clean/sign.c
-    src/crypto_sign/dilithium5/clean/symmetric-shake.c
+set(MLDSA87_SRCS
+    src/crypto_sign/ml-dsa-87/clean/ntt.c
+    src/crypto_sign/ml-dsa-87/clean/packing.c
+    src/crypto_sign/ml-dsa-87/clean/poly.c
+    src/crypto_sign/ml-dsa-87/clean/polyvec.c
+    src/crypto_sign/ml-dsa-87/clean/reduce.c
+    src/crypto_sign/ml-dsa-87/clean/rounding.c
+    src/crypto_sign/ml-dsa-87/clean/sign.c
+    src/crypto_sign/ml-dsa-87/clean/symmetric-shake.c
 )
 
 set(FALCON_512_SRCS
@@ -540,9 +540,9 @@ add_library(
     ${HQC_128_SRCS}
     ${HQC_192_SRCS}
     ${HQC_256_SRCS}
-    ${KYBER512_SRCS}
-    ${KYBER768_SRCS}
-    ${KYBER1024_SRCS}
+    ${MLKEM512_SRCS}
+    ${MLKEM768_SRCS}
+    ${MLKEM1024_SRCS}
     ${MCELIECE348864_SRCS}
     ${MCELIECE348864F_SRCS}
     ${MCELIECE460896_SRCS}
@@ -553,9 +553,9 @@ add_library(
     ${MCELIECE6960119F_SRCS}
     ${MCELIECE8192128_SRCS}
     ${MCELIECE8192128F_SRCS}
-    ${DILITHIUM2_SRCS}
-    ${DILITHIUM3_SRCS}
-    ${DILITHIUM5_SRCS}
+    ${MLDSA44_SRCS}
+    ${MLDSA65_SRCS}
+    ${MLDSA87_SRCS}
     ${FALCON_512_SRCS}
     ${FALCON_1024_SRCS}
     ${SPHINCS_SHA2_128F_SRCS}
@@ -578,9 +578,9 @@ target_include_directories(
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/hqc-128/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/hqc-192/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/hqc-256/clean>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/kyber512/clean>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/kyber768/clean>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/kyber1024/clean>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/ml-kem-512/clean>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/ml-kem-768/clean>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/ml-kem-1024/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/mceliece348864/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/mceliece348864f/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/mceliece460896/clean>
@@ -591,9 +591,9 @@ target_include_directories(
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/mceliece6960119f/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/mceliece8192128/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_kem/mceliece8192128f/clean>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_sign/dilithium2/clean>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_sign/dilithium3/clean>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_sign/dilithium5/clean>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_sign/ml-dsa-44/clean>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_sign/ml-dsa-65/clean>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_sign/ml-dsa-87/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_sign/falcon-512/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_sign/falcon-1024/clean>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_sign/sphincs-sha2-128f-simple/clean>

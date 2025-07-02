@@ -35,7 +35,7 @@
 static uint8_t test_plaintext[] = "Crypto test!!!";
 
 static unsigned digital_signature_data_selected[] = {
-    E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
+    E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA87,
     E2EE_PACK_ALG_DIGITAL_SIGNATURE_FALCON1024,
     E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_256S,
     E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHAKE_256F
@@ -43,13 +43,13 @@ static unsigned digital_signature_data_selected[] = {
 
 static unsigned kem_data_selected[] = {
     E2EE_PACK_ALG_KEM_HQC256,
-    E2EE_PACK_ALG_KEM_KYBER1024
+    E2EE_PACK_ALG_KEM_MLKEM1024
 };
 
 static unsigned digital_signature_data_all[] = {
-    E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM2,
-    E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM3,
-    E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5,
+    E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA44,
+    E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA65,
+    E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA87,
     E2EE_PACK_ALG_DIGITAL_SIGNATURE_FALCON512,
     E2EE_PACK_ALG_DIGITAL_SIGNATURE_FALCON1024,
     E2EE_PACK_ALG_DIGITAL_SIGNATURE_SPHINCS_SHA2_128F,
@@ -70,9 +70,9 @@ static unsigned kem_data_all[] = {
     E2EE_PACK_ALG_KEM_HQC128,
     E2EE_PACK_ALG_KEM_HQC192,
     E2EE_PACK_ALG_KEM_HQC256,
-    E2EE_PACK_ALG_KEM_KYBER512,
-    E2EE_PACK_ALG_KEM_KYBER768,
-    E2EE_PACK_ALG_KEM_KYBER1024,
+    E2EE_PACK_ALG_KEM_MLKEM512,
+    E2EE_PACK_ALG_KEM_MLKEM768,
+    E2EE_PACK_ALG_KEM_MLKEM1024,
     // E2EE_PACK_ALG_KEM_MCELIECE348864,
     // E2EE_PACK_ALG_KEM_MCELIECE348864F,
     // E2EE_PACK_ALG_KEM_MCELIECE460896,
@@ -245,8 +245,8 @@ static void test_e2ee_pack_id() {
     printf("default_2ee_pack_id_raw test ok: 0x%x\n", default_2ee_pack_id_raw);
 
     e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(default_2ee_pack_id_raw);
-    assert(e2ee_pack_id.digital_signature == E2EE_PACK_ALG_DIGITAL_SIGNATURE_DILITHIUM5);
-    assert(e2ee_pack_id.kem == E2EE_PACK_ALG_KEM_KYBER1024);
+    assert(e2ee_pack_id.digital_signature == E2EE_PACK_ALG_DIGITAL_SIGNATURE_MLDSA87);
+    assert(e2ee_pack_id.kem == E2EE_PACK_ALG_KEM_MLKEM1024);
     assert(e2ee_pack_id.symmetric_encryption == E2EE_PACK_ALG_SYMMETRIC_KEY_AES256GCM);
     assert(e2ee_pack_id.hash == E2EE_PACK_ALG_HASH_SHA2_256);
     printf("default_2ee_pack_id_raw to e2ee_pack_id test ok\n");
