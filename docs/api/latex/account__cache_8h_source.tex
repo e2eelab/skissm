@@ -1,24 +1,24 @@
 \doxysection{account\+\_\+cache.\+h}
-\hypertarget{account__cache_8h_source}{}\label{account__cache_8h_source}\index{include/skissm/account\_cache.h@{include/skissm/account\_cache.h}}
+\hypertarget{account__cache_8h_source}{}\label{account__cache_8h_source}\index{include/e2ees/account\_cache.h@{include/e2ees/account\_cache.h}}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ \textcolor{comment}{/*}}
-\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ ©\ 2020-\/2021\ by\ Academia\ Sinica}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ ©\ 2021\ Academia\ Sinica.\ All\ Rights\ Reserved.}}
 \DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
-\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ SKISSM.}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ E2EE\ Security.}}
 \DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
 \DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ program\ is\ free\ software:\ you\ can\ redistribute\ it\ and/or\ modify}}
 \DoxyCodeLine{00007\ \textcolor{comment}{\ *\ it\ under\ the\ terms\ of\ the\ GNU\ General\ Public\ License\ as\ published\ by}}
 \DoxyCodeLine{00008\ \textcolor{comment}{\ *\ the\ Free\ Software\ Foundation,\ either\ version\ 3\ of\ the\ License,\ or}}
 \DoxyCodeLine{00009\ \textcolor{comment}{\ *\ (at\ your\ option)\ any\ later\ version.}}
 \DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
-\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ SKISSM\ is\ distributed\ in\ the\ hope\ that\ it\ will\ be\ useful,}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ E2EE\ Security\ is\ distributed\ in\ the\ hope\ that\ it\ will\ be\ useful,}}
 \DoxyCodeLine{00012\ \textcolor{comment}{\ *\ but\ WITHOUT\ ANY\ WARRANTY;\ without\ even\ the\ implied\ warranty\ of}}
 \DoxyCodeLine{00013\ \textcolor{comment}{\ *\ MERCHANTABILITY\ or\ FITNESS\ FOR\ A\ PARTICULAR\ PURPOSE.\ See\ the}}
 \DoxyCodeLine{00014\ \textcolor{comment}{\ *\ GNU\ General\ Public\ License\ for\ more\ details.}}
 \DoxyCodeLine{00015\ \textcolor{comment}{\ *}}
 \DoxyCodeLine{00016\ \textcolor{comment}{\ *\ You\ should\ have\ received\ a\ copy\ of\ the\ GNU\ General\ Public\ License}}
-\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ along\ with\ SKISSM.\ \ If\ not,\ see\ <http://www.gnu.org/licenses/>.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ along\ with\ E2EE\ Security.\ \ If\ not,\ see\ <http://www.gnu.org/licenses/>.}}
 \DoxyCodeLine{00018\ \textcolor{comment}{\ */}}
 \DoxyCodeLine{00019\ \textcolor{preprocessor}{\#ifndef\ ACCOUNT\_CACHE\_H\_}}
 \DoxyCodeLine{00020\ \textcolor{preprocessor}{\#define\ ACCOUNT\_CACHE\_H\_}}
@@ -31,29 +31,29 @@
 \DoxyCodeLine{00027\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
 \DoxyCodeLine{00028\ \textcolor{preprocessor}{\#endif}}
 \DoxyCodeLine{00029\ }
-\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{skissm_8h}{skissm/skissm.h}}"{}}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{e2ees_8h}{e2ees/e2ees.h}}"{}}}
 \DoxyCodeLine{00031\ }
 \DoxyCodeLine{00032\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structaccount__cacheer}{account\_cacheer}}\ \{}
 \DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{char}\ *version;}
-\DoxyCodeLine{00034\ \ \ \ \ uint32\_t\ e2ee\_pack\_id;}
-\DoxyCodeLine{00035\ \ \ \ \ Skissm\_\_E2eeAddress\ *address;}
-\DoxyCodeLine{00036\ \ \ \ \ Skissm\_\_IdentityKey\ *identity\_key;}
-\DoxyCodeLine{00037\ \ \ \ \ Skissm\_\_SignedPreKey\ *signed\_pre\_key;}
+\DoxyCodeLine{00034\ \ \ \ \ uint32\_t\ e2ees\_pack\_id;}
+\DoxyCodeLine{00035\ \ \ \ \ E2ees\_\_E2eeAddress\ *address;}
+\DoxyCodeLine{00036\ \ \ \ \ E2ees\_\_IdentityKey\ *identity\_key;}
+\DoxyCodeLine{00037\ \ \ \ \ E2ees\_\_SignedPreKey\ *signed\_pre\_key;}
 \DoxyCodeLine{00038\ \ \ \ \ ProtobufCBinaryData\ server\_public\_key;}
 \DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structaccount__cacheer}{account\_cacheer}}\ *next;}
 \DoxyCodeLine{00040\ \}\ \mbox{\hyperlink{structaccount__cacheer}{account\_cacheer}};}
 \DoxyCodeLine{00041\ }
-\DoxyCodeLine{00042\ \textcolor{keywordtype}{void}\ store\_account\_into\_cache(Skissm\_\_Account\ *account);}
+\DoxyCodeLine{00042\ \textcolor{keywordtype}{void}\ store\_account\_into\_cache(E2ees\_\_Account\ *account);}
 \DoxyCodeLine{00043\ }
-\DoxyCodeLine{00044\ \textcolor{keywordtype}{void}\ load\_version\_from\_cache(\textcolor{keywordtype}{char}\ **version\_out,\ Skissm\_\_E2eeAddress\ *address);}
+\DoxyCodeLine{00044\ \textcolor{keywordtype}{void}\ load\_version\_from\_cache(\textcolor{keywordtype}{char}\ **version\_out,\ E2ees\_\_E2eeAddress\ *address);}
 \DoxyCodeLine{00045\ }
-\DoxyCodeLine{00046\ \textcolor{keywordtype}{void}\ load\_e2ee\_pack\_id\_from\_cache(uint32\_t\ *e2ee\_pack\_id\_out,\ Skissm\_\_E2eeAddress\ *address);}
+\DoxyCodeLine{00046\ \textcolor{keywordtype}{void}\ load\_e2ees\_pack\_id\_from\_cache(uint32\_t\ *e2ees\_pack\_id\_out,\ E2ees\_\_E2eeAddress\ *address);}
 \DoxyCodeLine{00047\ }
-\DoxyCodeLine{00048\ \textcolor{keywordtype}{void}\ load\_identity\_key\_from\_cache(Skissm\_\_IdentityKey\ **identity\_key\_out,\ Skissm\_\_E2eeAddress\ *address);}
+\DoxyCodeLine{00048\ \textcolor{keywordtype}{void}\ load\_identity\_key\_from\_cache(E2ees\_\_IdentityKey\ **identity\_key\_out,\ E2ees\_\_E2eeAddress\ *address);}
 \DoxyCodeLine{00049\ }
-\DoxyCodeLine{00050\ \textcolor{keywordtype}{void}\ load\_signed\_pre\_key\_from\_cache(Skissm\_\_SignedPreKey\ **signed\_pre\_key\_out,\ Skissm\_\_E2eeAddress\ *address);}
+\DoxyCodeLine{00050\ \textcolor{keywordtype}{void}\ load\_signed\_pre\_key\_from\_cache(E2ees\_\_SignedPreKey\ **signed\_pre\_key\_out,\ E2ees\_\_E2eeAddress\ *address);}
 \DoxyCodeLine{00051\ }
-\DoxyCodeLine{00052\ \textcolor{keywordtype}{void}\ load\_server\_public\_key\_from\_cache(ProtobufCBinaryData\ *server\_public\_key,\ Skissm\_\_E2eeAddress\ *address);}
+\DoxyCodeLine{00052\ \textcolor{keywordtype}{void}\ load\_server\_public\_key\_from\_cache(ProtobufCBinaryData\ *server\_public\_key,\ E2ees\_\_E2eeAddress\ *address);}
 \DoxyCodeLine{00053\ }
 \DoxyCodeLine{00054\ \textcolor{keywordtype}{void}\ free\_account\_cacheer\_list();}
 \DoxyCodeLine{00055\ }

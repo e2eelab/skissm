@@ -1,0 +1,763 @@
+\doxysection{include/e2ees/e2ees.h File Reference}
+\hypertarget{e2ees_8h}{}\label{e2ees_8h}\index{include/e2ees/e2ees.h@{include/e2ees/e2ees.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include "{}e2ees/\+Accept\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Accept\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Accept\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Account.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Add\+Group\+Member\+Device\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Add\+Group\+Member\+Device\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Add\+Group\+Member\+Device\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Add\+Group\+Members\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Add\+Group\+Members\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Add\+Group\+Members\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Add\+User\+Device\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Chain\+Key.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Consume\+Proto\+Msg\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Consume\+Proto\+Msg\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Create\+Group\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Create\+Group\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Create\+Group\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+E2ee\+Address.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+E2ee\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Get\+Group\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Get\+Group\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Get\+Pre\+Key\+Bundle\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Get\+Pre\+Key\+Bundle\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Group\+Member.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Group\+Member\+Info.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Group\+Msg\+Payload.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Group\+Pre\+Key\+Bundle.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Group\+Update\+Key\+Bundle.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Group\+Session.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Identity\+Key.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Identity\+Key\+Public.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Invite\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Invite\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Invite\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Key\+Pair.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Leave\+Group\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Leave\+Group\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Leave\+Group\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Msg\+Key.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Notif\+Level.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+One2one\+Msg\+Payload.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+One\+Time\+Pre\+Key.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+One\+Time\+Pre\+Key\+Public.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Pending\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Plaintext.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Pre\+Key\+Bundle.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Proto\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Proto\+Msg\+Tag.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Publish\+Spk\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Publish\+Spk\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Ratchet.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Receiver\+Chain\+Node.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Register\+User\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Register\+User\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Remove\+Group\+Members\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Remove\+Group\+Members\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Remove\+Group\+Members\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Remove\+User\+Device\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Response\+Code.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Send\+Group\+Msg\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Send\+Group\+Msg\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Send\+One2one\+Msg\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Send\+One2one\+Msg\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Sender\+Chain\+Node.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Session.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Signed\+Pre\+Key.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Signed\+Pre\+Key\+Public.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Skipped\+Msg\+Key\+Node.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Supply\+Opks\+Msg.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Supply\+Opks\+Request.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+Supply\+Opks\+Response.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/\+User\+Devices\+Bundle.\+pb-\/c.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/cipher.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/log\+\_\+code.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/session.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structe2ees__pack__id__t}{e2ees\+\_\+pack\+\_\+id\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of E2\+EE Security pack id. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structe2ees__pack__t}{e2ees\+\_\+pack\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of E2\+EE Security pack. An \doxylink{structe2ees__pack__t}{e2ees\+\_\+pack\+\_\+t} consists of cipher suite and session suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcrypto__se__param__t}{crypto\+\_\+se\+\_\+param\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcrypto__hash__param__t}{crypto\+\_\+hash\+\_\+param\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of hash algorithm parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structds__suite__t}{ds\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structkem__suite__t}{kem\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structse__suite__t}{se\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structhash__suite__t}{hash\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of hash algorithm suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of cipher suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structe2ees__common__handler__t}{e2ees\+\_\+common\+\_\+handler\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of common handler. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structe2ees__db__handler__t}{e2ees\+\_\+db\+\_\+handler\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of database handler. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structe2ees__proto__handler__t}{e2ees\+\_\+proto\+\_\+handler\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of protocol handler. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structe2ees__event__handler__t}{e2ees\+\_\+event\+\_\+handler\+\_\+t}}
+\item 
+struct \mbox{\hyperlink{structe2ees__plugin__t}{e2ees\+\_\+plugin\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of E2\+EE Security plugin. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{e2ees_8h_ae5905aafbf8a9367b58f876fceec4e22}\label{e2ees_8h_ae5905aafbf8a9367b58f876fceec4e22} 
+\#define {\bfseries E2\+EES\+\_\+\+PROTOCOL\+\_\+\+VERSION}~"{}\textbackslash{}001"{}
+\item 
+\Hypertarget{e2ees_8h_a88264c6306e882667f3d260bf677c462}\label{e2ees_8h_a88264c6306e882667f3d260bf677c462} 
+\#define {\bfseries E2\+EES\+\_\+\+PLAINTEXT\+\_\+\+VERSION}~"{}\textbackslash{}001"{}
+\item 
+\Hypertarget{e2ees_8h_a4694b1a2ac7a0d0f5b037183a0637756}\label{e2ees_8h_a4694b1a2ac7a0d0f5b037183a0637756} 
+\#define {\bfseries E2\+EES\+\_\+\+RESULT\+\_\+\+SUCC}~0
+\item 
+\Hypertarget{e2ees_8h_acdefab2af4802b69c4639127d9f7a490}\label{e2ees_8h_acdefab2af4802b69c4639127d9f7a490} 
+\#define {\bfseries E2\+EES\+\_\+\+RESULT\+\_\+\+FAIL}~-\/1
+\item 
+\Hypertarget{e2ees_8h_ae82a1c68e721569781b044a59668a9c3}\label{e2ees_8h_ae82a1c68e721569781b044a59668a9c3} 
+\#define {\bfseries E2\+EES\+\_\+\+UUID\+\_\+\+LEN}~16
+\item 
+\Hypertarget{e2ees_8h_adcd4c2adbe506078a5f4a00b74edb2bb}\label{e2ees_8h_adcd4c2adbe506078a5f4a00b74edb2bb} 
+\#define {\bfseries E2\+EES\+\_\+\+SIGNED\+\_\+\+PRE\+\_\+\+KEY\+\_\+\+EXPIRATION\+\_\+\+MS}~604800000
+\item 
+\Hypertarget{e2ees_8h_a8d4e1ba07871dc049c61dcd0abd3e911}\label{e2ees_8h_a8d4e1ba07871dc049c61dcd0abd3e911} 
+\#define {\bfseries E2\+EES\+\_\+\+ONE\+\_\+\+TIME\+\_\+\+PRE\+\_\+\+KEY\+\_\+\+INITIAL\+\_\+\+NUM}~100
+\item 
+\Hypertarget{e2ees_8h_a5da5635d11e978b0dde940fdfe374089}\label{e2ees_8h_a5da5635d11e978b0dde940fdfe374089} 
+\#define {\bfseries E2\+EES\+\_\+\+INVITE\+\_\+\+WAITING\+\_\+\+TIME\+\_\+\+MS}~60000
+\item 
+\Hypertarget{e2ees_8h_a103107a791e11a09ae8294db337db5a6}\label{e2ees_8h_a103107a791e11a09ae8294db337db5a6} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+CURVE25519}~0
+\item 
+\Hypertarget{e2ees_8h_a521184e026c9b73060bb4f5d64e2ac6a}\label{e2ees_8h_a521184e026c9b73060bb4f5d64e2ac6a} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+MLDSA44}~1
+\item 
+\Hypertarget{e2ees_8h_a1b36358632f7223043dad55053518b1b}\label{e2ees_8h_a1b36358632f7223043dad55053518b1b} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+MLDSA65}~9
+\item 
+\Hypertarget{e2ees_8h_ac965667ff7634b27453ce4971ffaecfd}\label{e2ees_8h_ac965667ff7634b27453ce4971ffaecfd} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+MLDSA87}~17
+\item 
+\Hypertarget{e2ees_8h_a86cec7508bf4656f912241ae7dd8a5b7}\label{e2ees_8h_a86cec7508bf4656f912241ae7dd8a5b7} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+FALCON512}~33
+\item 
+\Hypertarget{e2ees_8h_a8838875138cf8af0e9473239852a0abb}\label{e2ees_8h_a8838875138cf8af0e9473239852a0abb} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+FALCON1024}~41
+\item 
+\Hypertarget{e2ees_8h_a82005c86d09c6d50770b129af88f80ac}\label{e2ees_8h_a82005c86d09c6d50770b129af88f80ac} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHA2\+\_\+128F}~65
+\item 
+\Hypertarget{e2ees_8h_a3f0625b4d727b455d39f9bcb3b5173b9}\label{e2ees_8h_a3f0625b4d727b455d39f9bcb3b5173b9} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHA2\+\_\+128S}~69
+\item 
+\Hypertarget{e2ees_8h_a3c6639b7411d11507c1c736a3c359c3e}\label{e2ees_8h_a3c6639b7411d11507c1c736a3c359c3e} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHA2\+\_\+192F}~73
+\item 
+\Hypertarget{e2ees_8h_ae5ed7039d886fc7cb4f537d276bf2cee}\label{e2ees_8h_ae5ed7039d886fc7cb4f537d276bf2cee} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHA2\+\_\+192S}~77
+\item 
+\Hypertarget{e2ees_8h_a8d7ec0a8bb76a11b24dd9c66ae1aad6f}\label{e2ees_8h_a8d7ec0a8bb76a11b24dd9c66ae1aad6f} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHA2\+\_\+256F}~81
+\item 
+\Hypertarget{e2ees_8h_a0fe35098a3f93ace0f66f87d50d609c7}\label{e2ees_8h_a0fe35098a3f93ace0f66f87d50d609c7} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHA2\+\_\+256S}~85
+\item 
+\Hypertarget{e2ees_8h_adaf7bc86cfc2d7497dd51e6c57f9682f}\label{e2ees_8h_adaf7bc86cfc2d7497dd51e6c57f9682f} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHAKE\+\_\+128F}~89
+\item 
+\Hypertarget{e2ees_8h_a9ab9bd1e98dee6b4dadbf4ce3fa152cb}\label{e2ees_8h_a9ab9bd1e98dee6b4dadbf4ce3fa152cb} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHAKE\+\_\+128S}~93
+\item 
+\Hypertarget{e2ees_8h_aa98144c3c1b259c7a1dec02d6aa305e9}\label{e2ees_8h_aa98144c3c1b259c7a1dec02d6aa305e9} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHAKE\+\_\+192F}~97
+\item 
+\Hypertarget{e2ees_8h_ae372a3d1566ed67cdbc99d3d6ff9fe9d}\label{e2ees_8h_ae372a3d1566ed67cdbc99d3d6ff9fe9d} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHAKE\+\_\+192S}~101
+\item 
+\Hypertarget{e2ees_8h_ae8c069936dabe8bf1a529cbd139f905d}\label{e2ees_8h_ae8c069936dabe8bf1a529cbd139f905d} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHAKE\+\_\+256F}~105
+\item 
+\Hypertarget{e2ees_8h_abebe44c3ba271f0ad00ace772948e5f0}\label{e2ees_8h_abebe44c3ba271f0ad00ace772948e5f0} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+DS\+\_\+\+SPHINCS\+\_\+\+SHAKE\+\_\+256S}~109
+\item 
+\Hypertarget{e2ees_8h_ac8f5baeac5deb7eb6a121131e5653c7a}\label{e2ees_8h_ac8f5baeac5deb7eb6a121131e5653c7a} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+CURVE25519}~0
+\item 
+\Hypertarget{e2ees_8h_a38380274673afc140975b064803da68f}\label{e2ees_8h_a38380274673afc140975b064803da68f} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+HQC128}~1
+\item 
+\Hypertarget{e2ees_8h_a87152c8fecab1749973ffd8bbb207df1}\label{e2ees_8h_a87152c8fecab1749973ffd8bbb207df1} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+HQC192}~9
+\item 
+\Hypertarget{e2ees_8h_a6f9347dccd3e4e6b85a54f7507ce4297}\label{e2ees_8h_a6f9347dccd3e4e6b85a54f7507ce4297} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+HQC256}~17
+\item 
+\Hypertarget{e2ees_8h_a6f25fd27b9787af08e15fa2ebd3f1891}\label{e2ees_8h_a6f25fd27b9787af08e15fa2ebd3f1891} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MLKEM512}~33
+\item 
+\Hypertarget{e2ees_8h_aa99140206c1723289b8b68d263f8858f}\label{e2ees_8h_aa99140206c1723289b8b68d263f8858f} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MLKEM768}~41
+\item 
+\Hypertarget{e2ees_8h_ac67934a026ac87966f218188e58bc3c2}\label{e2ees_8h_ac67934a026ac87966f218188e58bc3c2} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MLKEM1024}~49
+\item 
+\Hypertarget{e2ees_8h_a184960ef54c608d7140f11730e28834b}\label{e2ees_8h_a184960ef54c608d7140f11730e28834b} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE348864}~65
+\item 
+\Hypertarget{e2ees_8h_a3b445fb6cd1f4e2fd921fbc2d8c9c76d}\label{e2ees_8h_a3b445fb6cd1f4e2fd921fbc2d8c9c76d} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE348864F}~69
+\item 
+\Hypertarget{e2ees_8h_aa9636b7bc2afe5cee0990f930b0379f0}\label{e2ees_8h_aa9636b7bc2afe5cee0990f930b0379f0} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE460896}~73
+\item 
+\Hypertarget{e2ees_8h_af5958e2aca5f003e2b23c88216a4d39d}\label{e2ees_8h_af5958e2aca5f003e2b23c88216a4d39d} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE460896F}~77
+\item 
+\Hypertarget{e2ees_8h_a647a8c03ec6ee7681718b63c193c78a5}\label{e2ees_8h_a647a8c03ec6ee7681718b63c193c78a5} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE6688128}~81
+\item 
+\Hypertarget{e2ees_8h_a5ae797550a98568da23ddb4e043ff03f}\label{e2ees_8h_a5ae797550a98568da23ddb4e043ff03f} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE6688128F}~85
+\item 
+\Hypertarget{e2ees_8h_a4fc666c37050f4b76f690c7c7cedbf42}\label{e2ees_8h_a4fc666c37050f4b76f690c7c7cedbf42} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE6960119}~89
+\item 
+\Hypertarget{e2ees_8h_a15b749c2ad8a0ee46fe3a266ca5a5941}\label{e2ees_8h_a15b749c2ad8a0ee46fe3a266ca5a5941} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE6960119F}~93
+\item 
+\Hypertarget{e2ees_8h_ac2b0b910ef1357485cf1d385256b8da7}\label{e2ees_8h_ac2b0b910ef1357485cf1d385256b8da7} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE8192128}~97
+\item 
+\Hypertarget{e2ees_8h_ab0b656e3690f4479f1c349f19f1635cd}\label{e2ees_8h_ab0b656e3690f4479f1c349f19f1635cd} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+KEM\+\_\+\+MCELIECE8192128F}~101
+\item 
+\Hypertarget{e2ees_8h_a6f5b1a6801178135f260ea39b5efcf32}\label{e2ees_8h_a6f5b1a6801178135f260ea39b5efcf32} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+SE\+\_\+\+AES256\+GCM}~0
+\item 
+\Hypertarget{e2ees_8h_a935d04dbff327bbeff18b01a986ee523}\label{e2ees_8h_a935d04dbff327bbeff18b01a986ee523} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHA2\+\_\+224}~0
+\item 
+\Hypertarget{e2ees_8h_a83062d5e8fa489b60c2197a3db9f30e9}\label{e2ees_8h_a83062d5e8fa489b60c2197a3db9f30e9} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHA2\+\_\+256}~1
+\item 
+\Hypertarget{e2ees_8h_a7a735d5be5422518d3c64fef34419649}\label{e2ees_8h_a7a735d5be5422518d3c64fef34419649} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHA2\+\_\+384}~2
+\item 
+\Hypertarget{e2ees_8h_ab278e551e147797b75403a026c73dff7}\label{e2ees_8h_ab278e551e147797b75403a026c73dff7} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHA2\+\_\+512}~3
+\item 
+\Hypertarget{e2ees_8h_a92959029b5e6cfc7974b4b0cc275fa6d}\label{e2ees_8h_a92959029b5e6cfc7974b4b0cc275fa6d} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHA3\+\_\+224}~8
+\item 
+\Hypertarget{e2ees_8h_a02b5ae1fe2580e340d5b7c64c1e6b8d3}\label{e2ees_8h_a02b5ae1fe2580e340d5b7c64c1e6b8d3} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHA3\+\_\+256}~9
+\item 
+\Hypertarget{e2ees_8h_afdcc1ca4bdcaeaf35e555bc5b92c4893}\label{e2ees_8h_afdcc1ca4bdcaeaf35e555bc5b92c4893} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHA3\+\_\+384}~10
+\item 
+\Hypertarget{e2ees_8h_a090bb9b5582ae69ac1ab6f2e7d94ff78}\label{e2ees_8h_a090bb9b5582ae69ac1ab6f2e7d94ff78} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHA3\+\_\+512}~11
+\item 
+\Hypertarget{e2ees_8h_a7e57b9987841a53b36fd4d678ab12703}\label{e2ees_8h_a7e57b9987841a53b36fd4d678ab12703} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHAKE\+\_\+128}~12
+\item 
+\Hypertarget{e2ees_8h_a47258eef2e9bb026996aa0d326d704ee}\label{e2ees_8h_a47258eef2e9bb026996aa0d326d704ee} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ALG\+\_\+\+HASH\+\_\+\+SHAKE\+\_\+256}~13
+\item 
+\Hypertarget{e2ees_8h_afe6a5064e2da3283352d46d8be1c4525}\label{e2ees_8h_afe6a5064e2da3283352d46d8be1c4525} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ID\+\_\+\+UNSPECIFIED}~0
+\item 
+\Hypertarget{e2ees_8h_a56c0b165ba482104fe96bac3bd845557}\label{e2ees_8h_a56c0b165ba482104fe96bac3bd845557} 
+\#define {\bfseries E2\+EES\+\_\+\+PACK\+\_\+\+ID\+\_\+\+V\+\_\+0\+\_\+\+DEFAULT}~0x113101
+\item 
+\Hypertarget{e2ees_8h_a3d92942c52099ca101aa4c88882ea721}\label{e2ees_8h_a3d92942c52099ca101aa4c88882ea721} 
+\#define {\bfseries E2\+EES\+\_\+\+CIPHER\+\_\+\+SUITE\+\_\+\+PART\+\_\+\+LEN\+\_\+\+IN\+\_\+\+BITS}~8
+\item 
+\Hypertarget{e2ees_8h_a1daf3695db9052dedc0251b80ee0b2f0}\label{e2ees_8h_a1daf3695db9052dedc0251b80ee0b2f0} 
+\#define {\bfseries E2\+EES\+\_\+\+CIPHER\+\_\+\+SUITE\+\_\+\+PART\+\_\+\+HALF\+\_\+\+LEN\+\_\+\+IN\+\_\+\+BITS}~4
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{e2ees_8h_a16bb591375ca8a0b0dec257afc7c75d7}\label{e2ees_8h_a16bb591375ca8a0b0dec257afc7c75d7} 
+typedef struct e2ees\+\_\+pack\+\_\+id\+\_\+t {\bfseries e2ees\+\_\+pack\+\_\+id\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of E2\+EE Security pack id. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_ab337bf7181becbca083426814a1d3ad0}\label{e2ees_8h_ab337bf7181becbca083426814a1d3ad0} 
+typedef struct e2ees\+\_\+pack\+\_\+t {\bfseries e2ees\+\_\+pack\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of E2\+EE Security pack. An \doxylink{structe2ees__pack__t}{e2ees\+\_\+pack\+\_\+t} consists of cipher suite and session suite. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a3a5946bb59ef37e260551ccd156dda5e}\label{e2ees_8h_a3a5946bb59ef37e260551ccd156dda5e} 
+typedef struct crypto\+\_\+ds\+\_\+param\+\_\+t {\bfseries crypto\+\_\+ds\+\_\+param\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm parameters. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_ae20eb84b8db760dff90fb80506043872}\label{e2ees_8h_ae20eb84b8db760dff90fb80506043872} 
+typedef struct crypto\+\_\+kem\+\_\+param\+\_\+t {\bfseries crypto\+\_\+kem\+\_\+param\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm parameters. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a72627fa90ca017b9a58e32122e1492ef}\label{e2ees_8h_a72627fa90ca017b9a58e32122e1492ef} 
+typedef struct crypto\+\_\+se\+\_\+param\+\_\+t {\bfseries crypto\+\_\+se\+\_\+param\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm parameters. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a4e32bf3a288f430cdca74c840b479f9e}\label{e2ees_8h_a4e32bf3a288f430cdca74c840b479f9e} 
+typedef struct crypto\+\_\+hash\+\_\+param\+\_\+t {\bfseries crypto\+\_\+hash\+\_\+param\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of hash algorithm parameters. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a5680b1715e4077238b3c979284d1c8ba}\label{e2ees_8h_a5680b1715e4077238b3c979284d1c8ba} 
+typedef struct ds\+\_\+suite\+\_\+t {\bfseries ds\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm suite. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a7f99b84ece115e05e0f2385ecd9d35e4}\label{e2ees_8h_a7f99b84ece115e05e0f2385ecd9d35e4} 
+typedef struct kem\+\_\+suite\+\_\+t {\bfseries kem\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm suite. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_ad12fee6d7f201a4525a795f1f56c3211}\label{e2ees_8h_ad12fee6d7f201a4525a795f1f56c3211} 
+typedef struct se\+\_\+suite\+\_\+t {\bfseries se\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm suite. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a929c38c678a77d7993ba05573aa44aba}\label{e2ees_8h_a929c38c678a77d7993ba05573aa44aba} 
+typedef struct hash\+\_\+suite\+\_\+t {\bfseries hash\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of hash algorithm suite. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a764f131fe1cf3e866758cf3e45028de8}\label{e2ees_8h_a764f131fe1cf3e866758cf3e45028de8} 
+typedef struct cipher\+\_\+suite\+\_\+t {\bfseries cipher\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of cipher suite. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_ac08ac7e2b47eea66b717187e64aa8c3e}\label{e2ees_8h_ac08ac7e2b47eea66b717187e64aa8c3e} 
+typedef struct e2ees\+\_\+common\+\_\+handler\+\_\+t {\bfseries e2ees\+\_\+common\+\_\+handler\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of common handler. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_ae51e1cc40ef04c61cec44905d9eb65ae}\label{e2ees_8h_ae51e1cc40ef04c61cec44905d9eb65ae} 
+typedef struct e2ees\+\_\+db\+\_\+handler\+\_\+t {\bfseries e2ees\+\_\+db\+\_\+handler\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of database handler. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a8f0b12b962a164c3124303c72544cfc8}\label{e2ees_8h_a8f0b12b962a164c3124303c72544cfc8} 
+typedef struct e2ees\+\_\+proto\+\_\+handler\+\_\+t {\bfseries e2ees\+\_\+proto\+\_\+handler\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of protocol handler. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_add3e60841d7c07bedeeb1589958e9b84}\label{e2ees_8h_add3e60841d7c07bedeeb1589958e9b84} 
+typedef struct e2ees\+\_\+event\+\_\+handler\+\_\+t {\bfseries e2ees\+\_\+event\+\_\+handler\+\_\+t}
+\item 
+\Hypertarget{e2ees_8h_a9fa57576a129ca90c912d2950d2f020e}\label{e2ees_8h_a9fa57576a129ca90c912d2950d2f020e} 
+typedef struct e2ees\+\_\+plugin\+\_\+t {\bfseries e2ees\+\_\+plugin\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of E2\+EE Security plugin. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structds__suite__t}{ds\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_a3b539d90daae8a9b65e6812aa3338e4b}{get\+\_\+ds\+\_\+suite}} (unsigned digital\+\_\+signature\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get digital signature suit by ID. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structkem__suite__t}{kem\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_a462243e4ae976b459ae16bd508245267}{get\+\_\+kem\+\_\+suite}} (unsigned kem\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get kem suite by ID. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structse__suite__t}{se\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_a79f59b7d0c5be411361c55d0796a218f}{get\+\_\+se\+\_\+suite}} (unsigned symmetric\+\_\+encryption\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get symmetric encryption suite by ID. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structhash__suite__t}{hash\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_aabcd2fc78c62a8cf7080d0da3c4521df}{get\+\_\+hash\+\_\+suite}} (unsigned hash\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get hash suite by ID. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{e2ees_8h_a10508002144034d1aeabaca872ca5589}{gen\+\_\+e2ees\+\_\+pack\+\_\+id\+\_\+raw}} (unsigned ver, unsigned ds, unsigned kem, unsigned se, unsigned hash)
+\begin{DoxyCompactList}\small\item\em Generate the E2\+EE Security pack ID raw number. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structe2ees__pack__t}{e2ees\+\_\+pack\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_a3a25b0ef11a49a303ab7cf29ec6941a2}{get\+\_\+e2ees\+\_\+pack}} (uint32\+\_\+t e2ees\+\_\+pack\+\_\+id\+\_\+raw)
+\begin{DoxyCompactList}\small\item\em Get the E2\+EE Security pack by given e2ees\+\_\+pack\+\_\+id raw number. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_a8ec7027a251714c836c62bdf4bc2ded0}{e2ees\+\_\+begin}} (\mbox{\hyperlink{structe2ees__plugin__t}{e2ees\+\_\+plugin\+\_\+t}} \texorpdfstring{$\ast$}{*}ssm\+\_\+plugin)
+\begin{DoxyCompactList}\small\item\em The begining function for starting E2\+EE Security. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_ac007d4de2c49628872b83b4840daeaac}\label{e2ees_8h_ac007d4de2c49628872b83b4840daeaac} 
+void {\bfseries e2ees\+\_\+end} ()
+\begin{DoxyCompactList}\small\item\em The ending function for terminating E2\+EE Security. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_ad34f3a12c5f4a33136a879d9f90ba4a3}\label{e2ees_8h_ad34f3a12c5f4a33136a879d9f90ba4a3} 
+\mbox{\hyperlink{structe2ees__plugin__t}{e2ees\+\_\+plugin\+\_\+t}} \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+e2ees\+\_\+plugin} ()
+\begin{DoxyCompactList}\small\item\em Get the current plugin of E2\+EE Security. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a582ff99ead0f4a8801806c1390395f33}\label{e2ees_8h_a582ff99ead0f4a8801806c1390395f33} 
+uint32\+\_\+t {\bfseries e2ees\+\_\+pack\+\_\+id\+\_\+to\+\_\+raw} (\mbox{\hyperlink{structe2ees__pack__id__t}{e2ees\+\_\+pack\+\_\+id\+\_\+t}} e2ees\+\_\+pack\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Convert \doxylink{structe2ees__pack__id__t}{e2ees\+\_\+pack\+\_\+id\+\_\+t} to raw number. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees_8h_a2e96dc208ad14bb697227160ef5cf64e}\label{e2ees_8h_a2e96dc208ad14bb697227160ef5cf64e} 
+\mbox{\hyperlink{structe2ees__pack__id__t}{e2ees\+\_\+pack\+\_\+id\+\_\+t}} {\bfseries raw\+\_\+to\+\_\+e2ees\+\_\+pack\+\_\+id} (uint32\+\_\+t e2ees\+\_\+pack\+\_\+id\+\_\+raw)
+\begin{DoxyCompactList}\small\item\em Convert raw number to \doxylink{structe2ees__pack__id__t}{e2ees\+\_\+pack\+\_\+id\+\_\+t}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_af2e416dd499204d6116336d67397ea25}{e2ees\+\_\+notify\+\_\+log}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, Log\+Code log\+\_\+code, const char \texorpdfstring{$\ast$}{*}log\+\_\+msg,...)
+\begin{DoxyCompactList}\small\item\em Log function with additional arguments. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_a1e6d50f9cd4fe8271a3a36403787b69f}{e2ees\+\_\+notify\+\_\+user\+\_\+registered}} (E2ees\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account)
+\begin{DoxyCompactList}\small\item\em Event for notifying that user is registered. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_ae345cee3a24a96260c41e2b1b039694f}{e2ees\+\_\+notify\+\_\+inbound\+\_\+session\+\_\+invited}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from)
+\begin{DoxyCompactList}\small\item\em Event for notifying that an inbound session is invited. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_a5916f2ef7c640191fc8009d701a74098}{e2ees\+\_\+notify\+\_\+inbound\+\_\+session\+\_\+ready}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}inbound\+\_\+session)
+\begin{DoxyCompactList}\small\item\em Event for notifying that an inbound session is ready. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_ab9f1c2e947303eaeaa39f9c99eccace3}{e2ees\+\_\+notify\+\_\+outbound\+\_\+session\+\_\+ready}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+session)
+\begin{DoxyCompactList}\small\item\em Event for notifying that an outbound session is ready. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_a7eaaa505d688b0f34835ec70b43c1f22}{e2ees\+\_\+notify\+\_\+one2one\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}to\+\_\+address, uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext, size\+\_\+t plaintext\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Event for notifying that an one2one msg is received. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_a672d82427765985c2d5d7daf932638b3}{e2ees\+\_\+notify\+\_\+other\+\_\+device\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}to\+\_\+address, uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext, size\+\_\+t plaintext\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Event for notifying that a msg from user of other device is received. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_af6390c87f5d0a4d486e157c8eb9ca093}{e2ees\+\_\+notify\+\_\+group\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext, size\+\_\+t plaintext\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Event for notifying that a group is received. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_ad547c26d5ff85b53eac67181ed4e3fff}{e2ees\+\_\+notify\+\_\+group\+\_\+created}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members, size\+\_\+t group\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Event for notifying that a group is created. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_acbb5ed8001c022c3fb8f65297f95b3d9}{e2ees\+\_\+notify\+\_\+group\+\_\+members\+\_\+added}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members, size\+\_\+t group\+\_\+members\+\_\+num, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}added\+\_\+group\+\_\+members, size\+\_\+t added\+\_\+group\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Event for notifying that some group members are added. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees_8h_a15723a560d8fe944c731a7a8c4bdf673}{e2ees\+\_\+notify\+\_\+group\+\_\+members\+\_\+removed}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members, size\+\_\+t group\+\_\+members\+\_\+num, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}removed\+\_\+group\+\_\+members, size\+\_\+t removed\+\_\+group\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Event for notifying that some group members are removed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2021 Academia Sinica. All Rights Reserved.
+
+This file is part of E2\+EE Security.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+E2\+EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with E2\+EE Security. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{e2ees_8h_a8ec7027a251714c836c62bdf4bc2ded0}\index{e2ees.h@{e2ees.h}!e2ees\_begin@{e2ees\_begin}}
+\index{e2ees\_begin@{e2ees\_begin}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_begin()}{e2ees\_begin()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a8ec7027a251714c836c62bdf4bc2ded0} 
+void e2ees\+\_\+begin (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structe2ees__plugin__t}{e2ees\+\_\+plugin\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{ssm\+\_\+plugin}{}\end{DoxyParamCaption})}
+
+
+
+The begining function for starting E2\+EE Security. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ssm\+\_\+plugin} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_ad547c26d5ff85b53eac67181ed4e3fff}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_group\_created@{e2ees\_notify\_group\_created}}
+\index{e2ees\_notify\_group\_created@{e2ees\_notify\_group\_created}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_group\_created()}{e2ees\_notify\_group\_created()}}
+{\footnotesize\ttfamily \label{e2ees_8h_ad547c26d5ff85b53eac67181ed4e3fff} 
+void e2ees\+\_\+notify\+\_\+group\+\_\+created (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that a group is created. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em group\+\_\+name} & \\
+\hline
+{\em group\+\_\+members} & \\
+\hline
+{\em group\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_acbb5ed8001c022c3fb8f65297f95b3d9}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_group\_members\_added@{e2ees\_notify\_group\_members\_added}}
+\index{e2ees\_notify\_group\_members\_added@{e2ees\_notify\_group\_members\_added}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_group\_members\_added()}{e2ees\_notify\_group\_members\_added()}}
+{\footnotesize\ttfamily \label{e2ees_8h_acbb5ed8001c022c3fb8f65297f95b3d9} 
+void e2ees\+\_\+notify\+\_\+group\+\_\+members\+\_\+added (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{added\+\_\+group\+\_\+members}{, }\item[{size\+\_\+t}]{added\+\_\+group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that some group members are added. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em group\+\_\+name} & \\
+\hline
+{\em group\+\_\+members} & \\
+\hline
+{\em group\+\_\+members\+\_\+num} & \\
+\hline
+{\em added\+\_\+group\+\_\+members} & \\
+\hline
+{\em added\+\_\+group\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_a15723a560d8fe944c731a7a8c4bdf673}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_group\_members\_removed@{e2ees\_notify\_group\_members\_removed}}
+\index{e2ees\_notify\_group\_members\_removed@{e2ees\_notify\_group\_members\_removed}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_group\_members\_removed()}{e2ees\_notify\_group\_members\_removed()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a15723a560d8fe944c731a7a8c4bdf673} 
+void e2ees\+\_\+notify\+\_\+group\+\_\+members\+\_\+removed (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{removed\+\_\+group\+\_\+members}{, }\item[{size\+\_\+t}]{removed\+\_\+group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that some group members are removed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em group\+\_\+name} & \\
+\hline
+{\em group\+\_\+members} & \\
+\hline
+{\em group\+\_\+members\+\_\+num} & \\
+\hline
+{\em removed\+\_\+group\+\_\+members} & \\
+\hline
+{\em removed\+\_\+group\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_af6390c87f5d0a4d486e157c8eb9ca093}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_group\_msg@{e2ees\_notify\_group\_msg}}
+\index{e2ees\_notify\_group\_msg@{e2ees\_notify\_group\_msg}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_group\_msg()}{e2ees\_notify\_group\_msg()}}
+{\footnotesize\ttfamily \label{e2ees_8h_af6390c87f5d0a4d486e157c8eb9ca093} 
+void e2ees\+\_\+notify\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext}{, }\item[{size\+\_\+t}]{plaintext\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that a group is received. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em from\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em plaintext} & \\
+\hline
+{\em plaintext\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_ae345cee3a24a96260c41e2b1b039694f}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_inbound\_session\_invited@{e2ees\_notify\_inbound\_session\_invited}}
+\index{e2ees\_notify\_inbound\_session\_invited@{e2ees\_notify\_inbound\_session\_invited}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_inbound\_session\_invited()}{e2ees\_notify\_inbound\_session\_invited()}}
+{\footnotesize\ttfamily \label{e2ees_8h_ae345cee3a24a96260c41e2b1b039694f} 
+void e2ees\+\_\+notify\+\_\+inbound\+\_\+session\+\_\+invited (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that an inbound session is invited. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em from} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_a5916f2ef7c640191fc8009d701a74098}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_inbound\_session\_ready@{e2ees\_notify\_inbound\_session\_ready}}
+\index{e2ees\_notify\_inbound\_session\_ready@{e2ees\_notify\_inbound\_session\_ready}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_inbound\_session\_ready()}{e2ees\_notify\_inbound\_session\_ready()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a5916f2ef7c640191fc8009d701a74098} 
+void e2ees\+\_\+notify\+\_\+inbound\+\_\+session\+\_\+ready (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}}]{inbound\+\_\+session}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that an inbound session is ready. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em inbound\+\_\+session} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_af2e416dd499204d6116336d67397ea25}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_log@{e2ees\_notify\_log}}
+\index{e2ees\_notify\_log@{e2ees\_notify\_log}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_log()}{e2ees\_notify\_log()}}
+{\footnotesize\ttfamily \label{e2ees_8h_af2e416dd499204d6116336d67397ea25} 
+void e2ees\+\_\+notify\+\_\+log (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{Log\+Code}]{log\+\_\+code}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{log\+\_\+msg}{, }\item[{}]{...}{}\end{DoxyParamCaption})}
+
+
+
+Log function with additional arguments. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em log\+\_\+code} & \\
+\hline
+{\em log\+\_\+msg} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_a7eaaa505d688b0f34835ec70b43c1f22}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_one2one\_msg@{e2ees\_notify\_one2one\_msg}}
+\index{e2ees\_notify\_one2one\_msg@{e2ees\_notify\_one2one\_msg}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_one2one\_msg()}{e2ees\_notify\_one2one\_msg()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a7eaaa505d688b0f34835ec70b43c1f22} 
+void e2ees\+\_\+notify\+\_\+one2one\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{to\+\_\+address}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext}{, }\item[{size\+\_\+t}]{plaintext\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that an one2one msg is received. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em from\+\_\+address} & \\
+\hline
+{\em to\+\_\+address} & \\
+\hline
+{\em plaintext} & \\
+\hline
+{\em plaintext\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_a672d82427765985c2d5d7daf932638b3}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_other\_device\_msg@{e2ees\_notify\_other\_device\_msg}}
+\index{e2ees\_notify\_other\_device\_msg@{e2ees\_notify\_other\_device\_msg}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_other\_device\_msg()}{e2ees\_notify\_other\_device\_msg()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a672d82427765985c2d5d7daf932638b3} 
+void e2ees\+\_\+notify\+\_\+other\+\_\+device\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{to\+\_\+address}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext}{, }\item[{size\+\_\+t}]{plaintext\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that a msg from user of other device is received. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em from\+\_\+address} & \\
+\hline
+{\em to\+\_\+address} & \\
+\hline
+{\em plaintext} & \\
+\hline
+{\em plaintext\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_ab9f1c2e947303eaeaa39f9c99eccace3}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_outbound\_session\_ready@{e2ees\_notify\_outbound\_session\_ready}}
+\index{e2ees\_notify\_outbound\_session\_ready@{e2ees\_notify\_outbound\_session\_ready}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_outbound\_session\_ready()}{e2ees\_notify\_outbound\_session\_ready()}}
+{\footnotesize\ttfamily \label{e2ees_8h_ab9f1c2e947303eaeaa39f9c99eccace3} 
+void e2ees\+\_\+notify\+\_\+outbound\+\_\+session\+\_\+ready (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+session}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that an outbound session is ready. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em outbound\+\_\+session} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_a1e6d50f9cd4fe8271a3a36403787b69f}\index{e2ees.h@{e2ees.h}!e2ees\_notify\_user\_registered@{e2ees\_notify\_user\_registered}}
+\index{e2ees\_notify\_user\_registered@{e2ees\_notify\_user\_registered}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{e2ees\_notify\_user\_registered()}{e2ees\_notify\_user\_registered()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a1e6d50f9cd4fe8271a3a36403787b69f} 
+void e2ees\+\_\+notify\+\_\+user\+\_\+registered (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}}]{account}{}\end{DoxyParamCaption})}
+
+
+
+Event for notifying that user is registered. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em account} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_a10508002144034d1aeabaca872ca5589}\index{e2ees.h@{e2ees.h}!gen\_e2ees\_pack\_id\_raw@{gen\_e2ees\_pack\_id\_raw}}
+\index{gen\_e2ees\_pack\_id\_raw@{gen\_e2ees\_pack\_id\_raw}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{gen\_e2ees\_pack\_id\_raw()}{gen\_e2ees\_pack\_id\_raw()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a10508002144034d1aeabaca872ca5589} 
+uint32\+\_\+t gen\+\_\+e2ees\+\_\+pack\+\_\+id\+\_\+raw (\begin{DoxyParamCaption}\item[{unsigned}]{ver}{, }\item[{unsigned}]{ds}{, }\item[{unsigned}]{kem}{, }\item[{unsigned}]{se}{, }\item[{unsigned}]{hash}{}\end{DoxyParamCaption})}
+
+
+
+Generate the E2\+EE Security pack ID raw number. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ver} & Version \\
+\hline
+{\em ds} & Digital signature algorithm \\
+\hline
+{\em kem} & key encapsulation mechanism algorithm \\
+\hline
+{\em se} & Symmetric encryption algorithm \\
+\hline
+{\em hash} & hash function algorithm \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_a3b539d90daae8a9b65e6812aa3338e4b}\index{e2ees.h@{e2ees.h}!get\_ds\_suite@{get\_ds\_suite}}
+\index{get\_ds\_suite@{get\_ds\_suite}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{get\_ds\_suite()}{get\_ds\_suite()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a3b539d90daae8a9b65e6812aa3338e4b} 
+\mbox{\hyperlink{structds__suite__t}{ds\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} get\+\_\+ds\+\_\+suite (\begin{DoxyParamCaption}\item[{unsigned}]{digital\+\_\+signature\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Get digital signature suit by ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em digital\+\_\+signature\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{e2ees_8h_a3a25b0ef11a49a303ab7cf29ec6941a2}\index{e2ees.h@{e2ees.h}!get\_e2ees\_pack@{get\_e2ees\_pack}}
+\index{get\_e2ees\_pack@{get\_e2ees\_pack}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{get\_e2ees\_pack()}{get\_e2ees\_pack()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a3a25b0ef11a49a303ab7cf29ec6941a2} 
+\mbox{\hyperlink{structe2ees__pack__t}{e2ees\+\_\+pack\+\_\+t}} \texorpdfstring{$\ast$}{*} get\+\_\+e2ees\+\_\+pack (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{e2ees\+\_\+pack\+\_\+id\+\_\+raw}{}\end{DoxyParamCaption})}
+
+
+
+Get the E2\+EE Security pack by given e2ees\+\_\+pack\+\_\+id raw number. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e2ees\+\_\+pack\+\_\+id\+\_\+raw} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees_8h_aabcd2fc78c62a8cf7080d0da3c4521df}\index{e2ees.h@{e2ees.h}!get\_hash\_suite@{get\_hash\_suite}}
+\index{get\_hash\_suite@{get\_hash\_suite}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{get\_hash\_suite()}{get\_hash\_suite()}}
+{\footnotesize\ttfamily \label{e2ees_8h_aabcd2fc78c62a8cf7080d0da3c4521df} 
+\mbox{\hyperlink{structhash__suite__t}{hash\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} get\+\_\+hash\+\_\+suite (\begin{DoxyParamCaption}\item[{unsigned}]{hash\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Get hash suite by ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em hash\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{e2ees_8h_a462243e4ae976b459ae16bd508245267}\index{e2ees.h@{e2ees.h}!get\_kem\_suite@{get\_kem\_suite}}
+\index{get\_kem\_suite@{get\_kem\_suite}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{get\_kem\_suite()}{get\_kem\_suite()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a462243e4ae976b459ae16bd508245267} 
+\mbox{\hyperlink{structkem__suite__t}{kem\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} get\+\_\+kem\+\_\+suite (\begin{DoxyParamCaption}\item[{unsigned}]{kem\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Get kem suite by ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em kem\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\Hypertarget{e2ees_8h_a79f59b7d0c5be411361c55d0796a218f}\index{e2ees.h@{e2ees.h}!get\_se\_suite@{get\_se\_suite}}
+\index{get\_se\_suite@{get\_se\_suite}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{get\_se\_suite()}{get\_se\_suite()}}
+{\footnotesize\ttfamily \label{e2ees_8h_a79f59b7d0c5be411361c55d0796a218f} 
+\mbox{\hyperlink{structse__suite__t}{se\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} get\+\_\+se\+\_\+suite (\begin{DoxyParamCaption}\item[{unsigned}]{symmetric\+\_\+encryption\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Get symmetric encryption suite by ID. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em symmetric\+\_\+encryption\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/group_session.h File Reference</title>
+<title>E2EES: include/e2ees/group_session.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -96,7 +96,7 @@ $(function(){ initResizable(false); });
 <div class="contents">
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stddef.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="skissm_8h_source.html">skissm/skissm.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="e2ees_8h_source.html">e2ees/e2ees.h</a>&quot;</code><br />
 </div>
 <p><a href="group__session_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -105,58 +105,58 @@ Functions</h2></td></tr>
 <tr class="memitem:a92489a129519dfc9a8168075cc7b4c11" id="r_a92489a129519dfc9a8168075cc7b4c11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92489a129519dfc9a8168075cc7b4c11">advance_group_chain_key</a> (const <a class="el" href="structcipher__suite__t.html">cipher_suite_t</a> *cipher_suite, ProtobufCBinaryData *chain_key)</td></tr>
 <tr class="memdesc:a92489a129519dfc9a8168075cc7b4c11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advance the chain key of group session.  <br /></td></tr>
 <tr class="separator:a92489a129519dfc9a8168075cc7b4c11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55c64ec1587b3e5ae847a55427abc6ae" id="r_a55c64ec1587b3e5ae847a55427abc6ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a55c64ec1587b3e5ae847a55427abc6ae">create_group_message_key</a> (const <a class="el" href="structcipher__suite__t.html">cipher_suite_t</a> *cipher_suite, const ProtobufCBinaryData *chain_key, Skissm__MsgKey *message_key)</td></tr>
-<tr class="memdesc:a55c64ec1587b3e5ae847a55427abc6ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create group message key.  <br /></td></tr>
-<tr class="separator:a55c64ec1587b3e5ae847a55427abc6ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61ea17b3590ab876f7c49a3a7761d4eb" id="r_a61ea17b3590ab876f7c49a3a7761d4eb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61ea17b3590ab876f7c49a3a7761d4eb">pack_group_pre_key_plaintext</a> (Skissm__GroupSession *outbound_group_session, uint8_t **group_pre_key_plaintext_data, char *old_session_id)</td></tr>
-<tr class="memdesc:a61ea17b3590ab876f7c49a3a7761d4eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pack the group pre-keys.  <br /></td></tr>
-<tr class="separator:a61ea17b3590ab876f7c49a3a7761d4eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78057e7997c82d86d34ba71262d4f6e5" id="r_a78057e7997c82d86d34ba71262d4f6e5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78057e7997c82d86d34ba71262d4f6e5">new_outbound_group_session_by_sender</a> (size_t n_member_info_list, Skissm__GroupMemberInfo **member_info_list, uint32_t e2ee_pack_id, Skissm__E2eeAddress *user_address, const char *group_name, Skissm__E2eeAddress *group_address, Skissm__GroupMember **group_members, size_t group_members_num, char *old_session_id)</td></tr>
-<tr class="memdesc:a78057e7997c82d86d34ba71262d4f6e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an outbound group session by a group creator.  <br /></td></tr>
-<tr class="separator:a78057e7997c82d86d34ba71262d4f6e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abda463aceed174e99b9db6d639b3f95e" id="r_abda463aceed174e99b9db6d639b3f95e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abda463aceed174e99b9db6d639b3f95e">new_outbound_group_session_by_receiver</a> (const ProtobufCBinaryData *group_seed, uint32_t e2ee_pack_id, Skissm__E2eeAddress *user_address, const char *group_name, Skissm__E2eeAddress *group_address, const char *session_id, Skissm__GroupMember **group_members, size_t group_members_num)</td></tr>
-<tr class="memdesc:abda463aceed174e99b9db6d639b3f95e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an outbound group session by a group receiver.  <br /></td></tr>
-<tr class="separator:abda463aceed174e99b9db6d639b3f95e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5204ffc06de8f27a1951f008dcc1f82e" id="r_a5204ffc06de8f27a1951f008dcc1f82e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5204ffc06de8f27a1951f008dcc1f82e">new_outbound_group_session_invited</a> (Skissm__GroupUpdateKeyBundle *group_update_key_bundle, Skissm__E2eeAddress *user_address)</td></tr>
-<tr class="memdesc:a5204ffc06de8f27a1951f008dcc1f82e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an outbound group session when receiving other group member's invitation.  <br /></td></tr>
-<tr class="separator:a5204ffc06de8f27a1951f008dcc1f82e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d4b59bbcd89653b2f3f5065694dcf99" id="r_a7d4b59bbcd89653b2f3f5065694dcf99"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7d4b59bbcd89653b2f3f5065694dcf99">new_inbound_group_session_by_pre_key_bundle</a> (uint32_t e2ee_pack_id, Skissm__E2eeAddress *user_address, Skissm__GroupPreKeyBundle *group_pre_key_bundle)</td></tr>
-<tr class="memdesc:a7d4b59bbcd89653b2f3f5065694dcf99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an inbound group session with group pre-key bundle.  <br /></td></tr>
-<tr class="separator:a7d4b59bbcd89653b2f3f5065694dcf99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39296bbfc862fb87cf38c7350ead7b80" id="r_a39296bbfc862fb87cf38c7350ead7b80"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a39296bbfc862fb87cf38c7350ead7b80">new_inbound_group_session_by_member_id</a> (uint32_t e2ee_pack_id, Skissm__E2eeAddress *user_address, Skissm__GroupMemberInfo *group_member_id, Skissm__GroupInfo *group_info)</td></tr>
-<tr class="memdesc:a39296bbfc862fb87cf38c7350ead7b80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an inbound group session with other member's id.  <br /></td></tr>
-<tr class="separator:a39296bbfc862fb87cf38c7350ead7b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace661c9b0d1a198c3227d1eda4a45a56" id="r_ace661c9b0d1a198c3227d1eda4a45a56"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace661c9b0d1a198c3227d1eda4a45a56">complete_inbound_group_session_by_pre_key_bundle</a> (Skissm__GroupSession *inbound_group_session, Skissm__GroupPreKeyBundle *group_pre_key_bundle)</td></tr>
-<tr class="memdesc:ace661c9b0d1a198c3227d1eda4a45a56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Complete an inbound group session with group pre-key bundle.  <br /></td></tr>
-<tr class="separator:ace661c9b0d1a198c3227d1eda4a45a56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcefe9ffa80697c04a44eef3b5e11c10" id="r_abcefe9ffa80697c04a44eef3b5e11c10"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abcefe9ffa80697c04a44eef3b5e11c10">complete_inbound_group_session_by_member_id</a> (Skissm__GroupSession *inbound_group_session, Skissm__GroupMemberInfo *group_member_id)</td></tr>
-<tr class="memdesc:abcefe9ffa80697c04a44eef3b5e11c10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Complete an inbound group session with other member's id.  <br /></td></tr>
-<tr class="separator:abcefe9ffa80697c04a44eef3b5e11c10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40a400c51d82360729bfe464cf60501c" id="r_a40a400c51d82360729bfe464cf60501c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40a400c51d82360729bfe464cf60501c">new_and_complete_inbound_group_session</a> (Skissm__GroupMemberInfo *group_member_id, Skissm__GroupSession *other_inbound_group_session)</td></tr>
-<tr class="memdesc:a40a400c51d82360729bfe464cf60501c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create and complete an inbound group session.  <br /></td></tr>
-<tr class="separator:a40a400c51d82360729bfe464cf60501c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa30a7b399d91af7ea6ebb411d0c382ef" id="r_aa30a7b399d91af7ea6ebb411d0c382ef"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa30a7b399d91af7ea6ebb411d0c382ef">new_and_complete_inbound_group_session_with_chain_key</a> (Skissm__GroupMemberInfo *group_member_id, Skissm__GroupSession *other_group_session, ProtobufCBinaryData *their_chain_key)</td></tr>
-<tr class="memdesc:aa30a7b399d91af7ea6ebb411d0c382ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create and complete an inbound group session with other's chain key.  <br /></td></tr>
-<tr class="separator:aa30a7b399d91af7ea6ebb411d0c382ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82aeb0b321e6c833af4a1781f3dfdca0" id="r_a82aeb0b321e6c833af4a1781f3dfdca0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82aeb0b321e6c833af4a1781f3dfdca0">new_and_complete_inbound_group_session_with_ratchet_state</a> (Skissm__GroupUpdateKeyBundle *group_update_key_bundle, Skissm__E2eeAddress *user_address)</td></tr>
-<tr class="memdesc:a82aeb0b321e6c833af4a1781f3dfdca0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create and complete an inbound group session with other's ratchet state.  <br /></td></tr>
-<tr class="separator:a82aeb0b321e6c833af4a1781f3dfdca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a529cdb3dd927985a73f96e5b2ab21d9f" id="r_a529cdb3dd927985a73f96e5b2ab21d9f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a529cdb3dd927985a73f96e5b2ab21d9f">renew_outbound_group_session_by_welcome_and_add</a> (Skissm__GroupSession *outbound_group_session, ProtobufCBinaryData *sender_chain_key, Skissm__E2eeAddress *sender_address, size_t n_adding_member_info_list, Skissm__GroupMemberInfo **adding_member_info_list, size_t adding_group_members_num, Skissm__GroupMember **adding_group_members)</td></tr>
-<tr class="memdesc:a529cdb3dd927985a73f96e5b2ab21d9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renew the outbound group session when someone joins the group.  <br /></td></tr>
-<tr class="separator:a529cdb3dd927985a73f96e5b2ab21d9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7c84d20114d98de1989ec9115d29f8e" id="r_ac7c84d20114d98de1989ec9115d29f8e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7c84d20114d98de1989ec9115d29f8e">renew_inbound_group_session_by_welcome_and_add</a> (ProtobufCBinaryData *sender_chain_key, Skissm__GroupSession *inbound_group_session, Skissm__GroupInfo *new_group_info)</td></tr>
-<tr class="memdesc:ac7c84d20114d98de1989ec9115d29f8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renew the inbound group session when someone joins the group.  <br /></td></tr>
-<tr class="separator:ac7c84d20114d98de1989ec9115d29f8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51d9c28171f5dabe3d73ceddd125ca45" id="r_a51d9c28171f5dabe3d73ceddd125ca45"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a51d9c28171f5dabe3d73ceddd125ca45">renew_group_sessions_with_new_device</a> (Skissm__GroupSession *outbound_group_session, ProtobufCBinaryData *sender_chain_key, Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *new_device_address, Skissm__GroupMemberInfo *adding_member_device_info)</td></tr>
-<tr class="memdesc:a51d9c28171f5dabe3d73ceddd125ca45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renew group sessions when someone add a new device.  <br /></td></tr>
-<tr class="separator:a51d9c28171f5dabe3d73ceddd125ca45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7d9c8115657c99a78962c9a4b3eafdc" id="r_af7d9c8115657c99a78962c9a4b3eafdc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af7d9c8115657c99a78962c9a4b3eafdc">create_group_message_key</a> (const <a class="el" href="structcipher__suite__t.html">cipher_suite_t</a> *cipher_suite, const ProtobufCBinaryData *chain_key, E2ees__MsgKey *message_key)</td></tr>
+<tr class="memdesc:af7d9c8115657c99a78962c9a4b3eafdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create group message key.  <br /></td></tr>
+<tr class="separator:af7d9c8115657c99a78962c9a4b3eafdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ddad1b784b55a2444b0b3904954c935" id="r_a5ddad1b784b55a2444b0b3904954c935"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ddad1b784b55a2444b0b3904954c935">pack_group_pre_key_plaintext</a> (E2ees__GroupSession *outbound_group_session, uint8_t **group_pre_key_plaintext_data, char *old_session_id)</td></tr>
+<tr class="memdesc:a5ddad1b784b55a2444b0b3904954c935"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pack the group pre-keys.  <br /></td></tr>
+<tr class="separator:a5ddad1b784b55a2444b0b3904954c935"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13dd56c7952ea55aee22a0ccd5b2cd34" id="r_a13dd56c7952ea55aee22a0ccd5b2cd34"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a13dd56c7952ea55aee22a0ccd5b2cd34">new_outbound_group_session_by_sender</a> (size_t n_member_info_list, E2ees__GroupMemberInfo **member_info_list, uint32_t e2ees_pack_id, E2ees__E2eeAddress *user_address, const char *group_name, E2ees__E2eeAddress *group_address, E2ees__GroupMember **group_members, size_t group_members_num, char *old_session_id)</td></tr>
+<tr class="memdesc:a13dd56c7952ea55aee22a0ccd5b2cd34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an outbound group session by a group creator.  <br /></td></tr>
+<tr class="separator:a13dd56c7952ea55aee22a0ccd5b2cd34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae895a2bf853536cb24252e7ee73c950d" id="r_ae895a2bf853536cb24252e7ee73c950d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae895a2bf853536cb24252e7ee73c950d">new_outbound_group_session_by_receiver</a> (const ProtobufCBinaryData *group_seed, uint32_t e2ees_pack_id, E2ees__E2eeAddress *user_address, const char *group_name, E2ees__E2eeAddress *group_address, const char *session_id, E2ees__GroupMember **group_members, size_t group_members_num)</td></tr>
+<tr class="memdesc:ae895a2bf853536cb24252e7ee73c950d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an outbound group session by a group receiver.  <br /></td></tr>
+<tr class="separator:ae895a2bf853536cb24252e7ee73c950d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23ccd36a24b97803048fe13a4ae0e86d" id="r_a23ccd36a24b97803048fe13a4ae0e86d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23ccd36a24b97803048fe13a4ae0e86d">new_outbound_group_session_invited</a> (E2ees__GroupUpdateKeyBundle *group_update_key_bundle, E2ees__E2eeAddress *user_address)</td></tr>
+<tr class="memdesc:a23ccd36a24b97803048fe13a4ae0e86d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an outbound group session when receiving other group member's invitation.  <br /></td></tr>
+<tr class="separator:a23ccd36a24b97803048fe13a4ae0e86d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8365af7a9a658a7aad7476638428d388" id="r_a8365af7a9a658a7aad7476638428d388"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8365af7a9a658a7aad7476638428d388">new_inbound_group_session_by_pre_key_bundle</a> (uint32_t e2ees_pack_id, E2ees__E2eeAddress *user_address, E2ees__GroupPreKeyBundle *group_pre_key_bundle)</td></tr>
+<tr class="memdesc:a8365af7a9a658a7aad7476638428d388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an inbound group session with group pre-key bundle.  <br /></td></tr>
+<tr class="separator:a8365af7a9a658a7aad7476638428d388"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afef6c0735d164bcfda418397babdcacd" id="r_afef6c0735d164bcfda418397babdcacd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afef6c0735d164bcfda418397babdcacd">new_inbound_group_session_by_member_id</a> (uint32_t e2ees_pack_id, E2ees__E2eeAddress *user_address, E2ees__GroupMemberInfo *group_member_id, E2ees__GroupInfo *group_info)</td></tr>
+<tr class="memdesc:afef6c0735d164bcfda418397babdcacd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create an inbound group session with other member's id.  <br /></td></tr>
+<tr class="separator:afef6c0735d164bcfda418397babdcacd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad919233241fc16cc882d96960a134f2" id="r_aad919233241fc16cc882d96960a134f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aad919233241fc16cc882d96960a134f2">complete_inbound_group_session_by_pre_key_bundle</a> (E2ees__GroupSession *inbound_group_session, E2ees__GroupPreKeyBundle *group_pre_key_bundle)</td></tr>
+<tr class="memdesc:aad919233241fc16cc882d96960a134f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Complete an inbound group session with group pre-key bundle.  <br /></td></tr>
+<tr class="separator:aad919233241fc16cc882d96960a134f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb6c7cf7100e659f069937c794bca849" id="r_adb6c7cf7100e659f069937c794bca849"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb6c7cf7100e659f069937c794bca849">complete_inbound_group_session_by_member_id</a> (E2ees__GroupSession *inbound_group_session, E2ees__GroupMemberInfo *group_member_id)</td></tr>
+<tr class="memdesc:adb6c7cf7100e659f069937c794bca849"><td class="mdescLeft">&#160;</td><td class="mdescRight">Complete an inbound group session with other member's id.  <br /></td></tr>
+<tr class="separator:adb6c7cf7100e659f069937c794bca849"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad749d90e0347fe4b5f44d16d9cc33140" id="r_ad749d90e0347fe4b5f44d16d9cc33140"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad749d90e0347fe4b5f44d16d9cc33140">new_and_complete_inbound_group_session</a> (E2ees__GroupMemberInfo *group_member_id, E2ees__GroupSession *other_inbound_group_session)</td></tr>
+<tr class="memdesc:ad749d90e0347fe4b5f44d16d9cc33140"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create and complete an inbound group session.  <br /></td></tr>
+<tr class="separator:ad749d90e0347fe4b5f44d16d9cc33140"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a504a0cb3af07ea4c5e355e1ac6dd984a" id="r_a504a0cb3af07ea4c5e355e1ac6dd984a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a504a0cb3af07ea4c5e355e1ac6dd984a">new_and_complete_inbound_group_session_with_chain_key</a> (E2ees__GroupMemberInfo *group_member_id, E2ees__GroupSession *other_group_session, ProtobufCBinaryData *their_chain_key)</td></tr>
+<tr class="memdesc:a504a0cb3af07ea4c5e355e1ac6dd984a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create and complete an inbound group session with other's chain key.  <br /></td></tr>
+<tr class="separator:a504a0cb3af07ea4c5e355e1ac6dd984a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7854d5071873cfe41048c3a6308496c" id="r_ac7854d5071873cfe41048c3a6308496c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7854d5071873cfe41048c3a6308496c">new_and_complete_inbound_group_session_with_ratchet_state</a> (E2ees__GroupUpdateKeyBundle *group_update_key_bundle, E2ees__E2eeAddress *user_address)</td></tr>
+<tr class="memdesc:ac7854d5071873cfe41048c3a6308496c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create and complete an inbound group session with other's ratchet state.  <br /></td></tr>
+<tr class="separator:ac7854d5071873cfe41048c3a6308496c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69591252bb8ffb10a35af0463a6f859a" id="r_a69591252bb8ffb10a35af0463a6f859a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69591252bb8ffb10a35af0463a6f859a">renew_outbound_group_session_by_welcome_and_add</a> (E2ees__GroupSession *outbound_group_session, ProtobufCBinaryData *sender_chain_key, E2ees__E2eeAddress *sender_address, size_t n_adding_member_info_list, E2ees__GroupMemberInfo **adding_member_info_list, size_t adding_group_members_num, E2ees__GroupMember **adding_group_members)</td></tr>
+<tr class="memdesc:a69591252bb8ffb10a35af0463a6f859a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renew the outbound group session when someone joins the group.  <br /></td></tr>
+<tr class="separator:a69591252bb8ffb10a35af0463a6f859a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef6b3892002de80ca49029c24cd7aeca" id="r_aef6b3892002de80ca49029c24cd7aeca"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef6b3892002de80ca49029c24cd7aeca">renew_inbound_group_session_by_welcome_and_add</a> (ProtobufCBinaryData *sender_chain_key, E2ees__GroupSession *inbound_group_session, E2ees__GroupInfo *new_group_info)</td></tr>
+<tr class="memdesc:aef6b3892002de80ca49029c24cd7aeca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renew the inbound group session when someone joins the group.  <br /></td></tr>
+<tr class="separator:aef6b3892002de80ca49029c24cd7aeca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1ebb87acbad25ce5a732603f84ff02d" id="r_af1ebb87acbad25ce5a732603f84ff02d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1ebb87acbad25ce5a732603f84ff02d">renew_group_sessions_with_new_device</a> (E2ees__GroupSession *outbound_group_session, ProtobufCBinaryData *sender_chain_key, E2ees__E2eeAddress *sender_address, E2ees__E2eeAddress *new_device_address, E2ees__GroupMemberInfo *adding_member_device_info)</td></tr>
+<tr class="memdesc:af1ebb87acbad25ce5a732603f84ff02d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renew group sessions when someone add a new device.  <br /></td></tr>
+<tr class="separator:af1ebb87acbad25ce5a732603f84ff02d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Copyright © 2020-2021 by Academia Sinica</p>
-<p>This file is part of SKISSM.</p>
+<div class="textblock"><p>Copyright © 2021 Academia Sinica. All Rights Reserved.</p>
+<p>This file is part of E2EE Security.</p>
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-<p>SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License along with SKISSM. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
+<p>E2EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with E2EE Security. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a92489a129519dfc9a8168075cc7b4c11" name="a92489a129519dfc9a8168075cc7b4c11"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a92489a129519dfc9a8168075cc7b4c11">&#9670;&#160;</a></span>advance_group_chain_key()</h2>
@@ -188,8 +188,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abcefe9ffa80697c04a44eef3b5e11c10" name="abcefe9ffa80697c04a44eef3b5e11c10"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abcefe9ffa80697c04a44eef3b5e11c10">&#9670;&#160;</a></span>complete_inbound_group_session_by_member_id()</h2>
+<a id="adb6c7cf7100e659f069937c794bca849" name="adb6c7cf7100e659f069937c794bca849"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb6c7cf7100e659f069937c794bca849">&#9670;&#160;</a></span>complete_inbound_group_session_by_member_id()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -197,12 +197,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int complete_inbound_group_session_by_member_id </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>inbound_group_session</em></span>, </td>
+          <td class="paramtype">E2ees__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>inbound_group_session</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>group_member_id</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>group_member_id</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -218,8 +218,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ace661c9b0d1a198c3227d1eda4a45a56" name="ace661c9b0d1a198c3227d1eda4a45a56"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace661c9b0d1a198c3227d1eda4a45a56">&#9670;&#160;</a></span>complete_inbound_group_session_by_pre_key_bundle()</h2>
+<a id="aad919233241fc16cc882d96960a134f2" name="aad919233241fc16cc882d96960a134f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad919233241fc16cc882d96960a134f2">&#9670;&#160;</a></span>complete_inbound_group_session_by_pre_key_bundle()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -227,12 +227,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int complete_inbound_group_session_by_pre_key_bundle </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>inbound_group_session</em></span>, </td>
+          <td class="paramtype">E2ees__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>inbound_group_session</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupPreKeyBundle *</td>          <td class="paramname"><span class="paramname"><em>group_pre_key_bundle</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupPreKeyBundle *</td>          <td class="paramname"><span class="paramname"><em>group_pre_key_bundle</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -248,8 +248,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a55c64ec1587b3e5ae847a55427abc6ae" name="a55c64ec1587b3e5ae847a55427abc6ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55c64ec1587b3e5ae847a55427abc6ae">&#9670;&#160;</a></span>create_group_message_key()</h2>
+<a id="af7d9c8115657c99a78962c9a4b3eafdc" name="af7d9c8115657c99a78962c9a4b3eafdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7d9c8115657c99a78962c9a4b3eafdc">&#9670;&#160;</a></span>create_group_message_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -267,7 +267,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__MsgKey *</td>          <td class="paramname"><span class="paramname"><em>message_key</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__MsgKey *</td>          <td class="paramname"><span class="paramname"><em>message_key</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -284,8 +284,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a40a400c51d82360729bfe464cf60501c" name="a40a400c51d82360729bfe464cf60501c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40a400c51d82360729bfe464cf60501c">&#9670;&#160;</a></span>new_and_complete_inbound_group_session()</h2>
+<a id="ad749d90e0347fe4b5f44d16d9cc33140" name="ad749d90e0347fe4b5f44d16d9cc33140"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad749d90e0347fe4b5f44d16d9cc33140">&#9670;&#160;</a></span>new_and_complete_inbound_group_session()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -293,12 +293,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int new_and_complete_inbound_group_session </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>group_member_id</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>group_member_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>other_inbound_group_session</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>other_inbound_group_session</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -314,8 +314,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa30a7b399d91af7ea6ebb411d0c382ef" name="aa30a7b399d91af7ea6ebb411d0c382ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa30a7b399d91af7ea6ebb411d0c382ef">&#9670;&#160;</a></span>new_and_complete_inbound_group_session_with_chain_key()</h2>
+<a id="a504a0cb3af07ea4c5e355e1ac6dd984a" name="a504a0cb3af07ea4c5e355e1ac6dd984a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a504a0cb3af07ea4c5e355e1ac6dd984a">&#9670;&#160;</a></span>new_and_complete_inbound_group_session_with_chain_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -323,12 +323,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int new_and_complete_inbound_group_session_with_chain_key </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>group_member_id</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>group_member_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>other_group_session</em></span>, </td>
+          <td class="paramtype">E2ees__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>other_group_session</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -350,8 +350,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a82aeb0b321e6c833af4a1781f3dfdca0" name="a82aeb0b321e6c833af4a1781f3dfdca0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a82aeb0b321e6c833af4a1781f3dfdca0">&#9670;&#160;</a></span>new_and_complete_inbound_group_session_with_ratchet_state()</h2>
+<a id="ac7854d5071873cfe41048c3a6308496c" name="ac7854d5071873cfe41048c3a6308496c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7854d5071873cfe41048c3a6308496c">&#9670;&#160;</a></span>new_and_complete_inbound_group_session_with_ratchet_state()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -359,12 +359,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int new_and_complete_inbound_group_session_with_ratchet_state </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupUpdateKeyBundle *</td>          <td class="paramname"><span class="paramname"><em>group_update_key_bundle</em></span>, </td>
+          <td class="paramtype">E2ees__GroupUpdateKeyBundle *</td>          <td class="paramname"><span class="paramname"><em>group_update_key_bundle</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -380,8 +380,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a39296bbfc862fb87cf38c7350ead7b80" name="a39296bbfc862fb87cf38c7350ead7b80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39296bbfc862fb87cf38c7350ead7b80">&#9670;&#160;</a></span>new_inbound_group_session_by_member_id()</h2>
+<a id="afef6c0735d164bcfda418397babdcacd" name="afef6c0735d164bcfda418397babdcacd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afef6c0735d164bcfda418397babdcacd">&#9670;&#160;</a></span>new_inbound_group_session_by_member_id()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -389,22 +389,22 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int new_inbound_group_session_by_member_id </td>
           <td>(</td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>group_member_id</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>group_member_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>group_info</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>group_info</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -412,7 +412,7 @@ Functions</h2></td></tr>
 <p>Create an inbound group session with other member's id. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">e2ee_pack_id</td><td></td></tr>
+    <tr><td class="paramname">e2ees_pack_id</td><td></td></tr>
     <tr><td class="paramname">user_address</td><td></td></tr>
     <tr><td class="paramname">group_member_id</td><td></td></tr>
     <tr><td class="paramname">group_info</td><td></td></tr>
@@ -422,8 +422,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7d4b59bbcd89653b2f3f5065694dcf99" name="a7d4b59bbcd89653b2f3f5065694dcf99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d4b59bbcd89653b2f3f5065694dcf99">&#9670;&#160;</a></span>new_inbound_group_session_by_pre_key_bundle()</h2>
+<a id="a8365af7a9a658a7aad7476638428d388" name="a8365af7a9a658a7aad7476638428d388"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8365af7a9a658a7aad7476638428d388">&#9670;&#160;</a></span>new_inbound_group_session_by_pre_key_bundle()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -431,17 +431,17 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int new_inbound_group_session_by_pre_key_bundle </td>
           <td>(</td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupPreKeyBundle *</td>          <td class="paramname"><span class="paramname"><em>group_pre_key_bundle</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupPreKeyBundle *</td>          <td class="paramname"><span class="paramname"><em>group_pre_key_bundle</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -449,7 +449,7 @@ Functions</h2></td></tr>
 <p>Create an inbound group session with group pre-key bundle. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">e2ee_pack_id</td><td></td></tr>
+    <tr><td class="paramname">e2ees_pack_id</td><td></td></tr>
     <tr><td class="paramname">user_address</td><td></td></tr>
     <tr><td class="paramname">group_pre_key_bundle</td><td></td></tr>
   </table>
@@ -458,8 +458,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abda463aceed174e99b9db6d639b3f95e" name="abda463aceed174e99b9db6d639b3f95e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abda463aceed174e99b9db6d639b3f95e">&#9670;&#160;</a></span>new_outbound_group_session_by_receiver()</h2>
+<a id="ae895a2bf853536cb24252e7ee73c950d" name="ae895a2bf853536cb24252e7ee73c950d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae895a2bf853536cb24252e7ee73c950d">&#9670;&#160;</a></span>new_outbound_group_session_by_receiver()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -472,12 +472,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -487,7 +487,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>group_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>group_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -497,7 +497,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>group_members</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>group_members</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -511,7 +511,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">group_seed</td><td></td></tr>
-    <tr><td class="paramname">e2ee_pack_id</td><td></td></tr>
+    <tr><td class="paramname">e2ees_pack_id</td><td></td></tr>
     <tr><td class="paramname">user_address</td><td></td></tr>
     <tr><td class="paramname">group_name</td><td></td></tr>
     <tr><td class="paramname">group_address</td><td></td></tr>
@@ -524,8 +524,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a78057e7997c82d86d34ba71262d4f6e5" name="a78057e7997c82d86d34ba71262d4f6e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78057e7997c82d86d34ba71262d4f6e5">&#9670;&#160;</a></span>new_outbound_group_session_by_sender()</h2>
+<a id="a13dd56c7952ea55aee22a0ccd5b2cd34" name="a13dd56c7952ea55aee22a0ccd5b2cd34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13dd56c7952ea55aee22a0ccd5b2cd34">&#9670;&#160;</a></span>new_outbound_group_session_by_sender()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -538,17 +538,17 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>member_info_list</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>member_info_list</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -558,12 +558,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>group_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>group_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>group_members</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>group_members</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -583,7 +583,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">n_member_info_list</td><td></td></tr>
     <tr><td class="paramname">member_info_list</td><td></td></tr>
-    <tr><td class="paramname">e2ee_pack_id</td><td></td></tr>
+    <tr><td class="paramname">e2ees_pack_id</td><td></td></tr>
     <tr><td class="paramname">user_address</td><td></td></tr>
     <tr><td class="paramname">group_name</td><td></td></tr>
     <tr><td class="paramname">group_address</td><td></td></tr>
@@ -596,8 +596,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5204ffc06de8f27a1951f008dcc1f82e" name="a5204ffc06de8f27a1951f008dcc1f82e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5204ffc06de8f27a1951f008dcc1f82e">&#9670;&#160;</a></span>new_outbound_group_session_invited()</h2>
+<a id="a23ccd36a24b97803048fe13a4ae0e86d" name="a23ccd36a24b97803048fe13a4ae0e86d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23ccd36a24b97803048fe13a4ae0e86d">&#9670;&#160;</a></span>new_outbound_group_session_invited()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -605,12 +605,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int new_outbound_group_session_invited </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupUpdateKeyBundle *</td>          <td class="paramname"><span class="paramname"><em>group_update_key_bundle</em></span>, </td>
+          <td class="paramtype">E2ees__GroupUpdateKeyBundle *</td>          <td class="paramname"><span class="paramname"><em>group_update_key_bundle</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -626,8 +626,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a61ea17b3590ab876f7c49a3a7761d4eb" name="a61ea17b3590ab876f7c49a3a7761d4eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61ea17b3590ab876f7c49a3a7761d4eb">&#9670;&#160;</a></span>pack_group_pre_key_plaintext()</h2>
+<a id="a5ddad1b784b55a2444b0b3904954c935" name="a5ddad1b784b55a2444b0b3904954c935"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ddad1b784b55a2444b0b3904954c935">&#9670;&#160;</a></span>pack_group_pre_key_plaintext()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -635,7 +635,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">size_t pack_group_pre_key_plaintext </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>outbound_group_session</em></span>, </td>
+          <td class="paramtype">E2ees__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>outbound_group_session</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -662,8 +662,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a51d9c28171f5dabe3d73ceddd125ca45" name="a51d9c28171f5dabe3d73ceddd125ca45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a51d9c28171f5dabe3d73ceddd125ca45">&#9670;&#160;</a></span>renew_group_sessions_with_new_device()</h2>
+<a id="af1ebb87acbad25ce5a732603f84ff02d" name="af1ebb87acbad25ce5a732603f84ff02d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1ebb87acbad25ce5a732603f84ff02d">&#9670;&#160;</a></span>renew_group_sessions_with_new_device()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -671,7 +671,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int renew_group_sessions_with_new_device </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>outbound_group_session</em></span>, </td>
+          <td class="paramtype">E2ees__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>outbound_group_session</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -681,17 +681,17 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>sender_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>sender_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>new_device_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>new_device_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>adding_member_device_info</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>adding_member_device_info</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -710,8 +710,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac7c84d20114d98de1989ec9115d29f8e" name="ac7c84d20114d98de1989ec9115d29f8e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7c84d20114d98de1989ec9115d29f8e">&#9670;&#160;</a></span>renew_inbound_group_session_by_welcome_and_add()</h2>
+<a id="aef6b3892002de80ca49029c24cd7aeca" name="aef6b3892002de80ca49029c24cd7aeca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef6b3892002de80ca49029c24cd7aeca">&#9670;&#160;</a></span>renew_inbound_group_session_by_welcome_and_add()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -724,12 +724,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>inbound_group_session</em></span>, </td>
+          <td class="paramtype">E2ees__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>inbound_group_session</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>new_group_info</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>new_group_info</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -746,8 +746,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a529cdb3dd927985a73f96e5b2ab21d9f" name="a529cdb3dd927985a73f96e5b2ab21d9f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a529cdb3dd927985a73f96e5b2ab21d9f">&#9670;&#160;</a></span>renew_outbound_group_session_by_welcome_and_add()</h2>
+<a id="a69591252bb8ffb10a35af0463a6f859a" name="a69591252bb8ffb10a35af0463a6f859a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69591252bb8ffb10a35af0463a6f859a">&#9670;&#160;</a></span>renew_outbound_group_session_by_welcome_and_add()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -755,7 +755,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int renew_outbound_group_session_by_welcome_and_add </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>outbound_group_session</em></span>, </td>
+          <td class="paramtype">E2ees__GroupSession *</td>          <td class="paramname"><span class="paramname"><em>outbound_group_session</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -765,7 +765,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>sender_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>sender_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -775,7 +775,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>adding_member_info_list</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>adding_member_info_list</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -785,7 +785,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>adding_group_members</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>adding_group_members</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">

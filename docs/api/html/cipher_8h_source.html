@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/cipher.h Source File</title>
+<title>E2EES: include/e2ees/cipher.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -103,7 +103,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="skissm_8h.html">skissm/skissm.h</a>&quot;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="e2ees_8h.html">e2ees/e2ees.h</a>&quot;</span></div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="cipher_8h.html#a124359a86abbd0fb65fb6aa6b4ffeee9">   36</a></span><span class="preprocessor">#define KDF_INFO_ROOT &quot;ROOT&quot;</span></div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#define KDF_INFO_RATCHET &quot;RATCHET&quot;</span></div>
@@ -133,7 +133,7 @@ $(function(){ initResizable(false); });
 <div class="ttc" id="acipher_8h_html_a1bff7c10814e8a777dd1a106f436406a"><div class="ttname"><a href="cipher_8h.html#a1bff7c10814e8a777dd1a106f436406a">aes256_gcm_encrypt</a></div><div class="ttdeci">int aes256_gcm_encrypt(const ProtobufCBinaryData *ad, const uint8_t *aes_key, const uint8_t *plaintext_data, size_t plaintext_data_len, uint8_t **ciphertext_data, size_t *ciphertext_data_len)</div><div class="ttdoc">Encrypt plaintext with AES GCM.</div></div>
 <div class="ttc" id="acipher_8h_html_ad449cbcd6449c8cff0b8de22bcc9baa0"><div class="ttname"><a href="cipher_8h.html#ad449cbcd6449c8cff0b8de22bcc9baa0">aes256_gcm_ciphertext_data_len</a></div><div class="ttdeci">size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length)</div><div class="ttdoc">Calculate ciphertext data len for AES GCM.</div></div>
 <div class="ttc" id="acipher_8h_html_ade62c4239668838b57e54a5169028bdd"><div class="ttname"><a href="cipher_8h.html#ade62c4239668838b57e54a5169028bdd">aes256_gcm_decrypt</a></div><div class="ttdeci">int aes256_gcm_decrypt(uint8_t **decrypted_data_out, size_t *decrypted_data_len_out, const ProtobufCBinaryData *ad, const uint8_t *aes_key, const uint8_t *ciphertext_data, size_t ciphertext_data_len)</div><div class="ttdoc">Decrypt a ciphertext with AES GCM.</div></div>
-<div class="ttc" id="askissm_8h_html"><div class="ttname"><a href="skissm_8h.html">skissm.h</a></div></div>
+<div class="ttc" id="ae2ees_8h_html"><div class="ttname"><a href="e2ees_8h.html">e2ees.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -3,25 +3,25 @@
 
 ## Unit test
 
-### skissm
+### e2ees
 
 *   **get_digital_signature_suite**
 
 *   **get_kem_suite**
 
-*   **get_symmetric_encryption_suite**
+*   **get_se_suite**
 
 *   **get_hash_suite**
 
 *   **get_cipher_suite**
 
-*   **e2ee_pack_id_to_raw**
+*   **e2ees_pack_id_to_raw**
 
-*   **raw_to_e2ee_pack_id**
+*   **raw_to_e2ees_pack_id**
 
-*   **gen_e2ee_pack_id_raw**
+*   **gen_e2ees_pack_id_raw**
 
-*   **get_e2ee_pack**
+*   **get_e2ees_pack**
 
 ### account
 

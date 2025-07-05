@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Skissm Tests Spec: tests/mock_server.h Source File</title>
+<title>E2EES Tests Spec: tests/mock_server.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Skissm Tests Spec<span id="projectnumber">&#160;v1.0</span>
+   <div id="projectname">E2EES Tests Spec<span id="projectnumber">&#160;v1.0</span>
    </div>
   </td>
  </tr>
@@ -92,61 +92,61 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Copyright © 2020-2021 by Academia Sinica</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Copyright © 2021 Academia Sinica. All Rights Reserved.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> *</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * This file is part of SKISSM.</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * This file is part of E2EE Security.</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> * This program is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment"> * it under the terms of the GNU General Public License as published by</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment"> * the Free Software Foundation, either version 3 of the License, or</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment"> * (at your option) any later version.</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment"> *</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> * SKISSM is distributed in the hope that it will be useful,</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> * E2EE Security is distributed in the hope that it will be useful,</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment"> * GNU General Public License for more details.</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment"> * You should have received a copy of the GNU General Public License</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment"> * along with SKISSM.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment"> * along with E2EE Security.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment"> */</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#ifndef MOCK_SERVER_H_</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#define MOCK_SERVER_H_</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &quot;skissm/skissm.h&quot;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &quot;e2ees/e2ees.h&quot;</span></div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keywordtype">void</span> mock_server_begin();</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keywordtype">void</span> mock_server_end();</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>E2ees__RegisterUserResponse *mock_register_user(E2ees__RegisterUserRequest *request);</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__GetPreKeyBundleRequest *request);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>E2ees__GetPreKeyBundleResponse *mock_get_pre_key_bundle(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__GetPreKeyBundleRequest *request);</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__InviteRequest *request);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>E2ees__InviteResponse *mock_invite(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__InviteRequest *request);</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__AcceptRequest *request);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>E2ees__AcceptResponse *mock_accept(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__AcceptRequest *request);</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>Skissm__PublishSpkResponse *mock_publish_spk(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__PublishSpkRequest *request);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>E2ees__PublishSpkResponse *mock_publish_spk(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__PublishSpkRequest *request);</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__SupplyOpksRequest *request);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>E2ees__SupplyOpksResponse *mock_supply_opks(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__SupplyOpksRequest *request);</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__SendOne2oneMsgRequest *request);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>E2ees__SendOne2oneMsgResponse *mock_send_one2one_msg(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__SendOne2oneMsgRequest *request);</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__CreateGroupRequest *request);</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>E2ees__CreateGroupResponse *mock_create_group(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__CreateGroupRequest *request);</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__AddGroupMembersRequest *request);</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>E2ees__AddGroupMembersResponse *mock_add_group_members(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__AddGroupMembersRequest *request);</div>
 <div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__AddGroupMemberDeviceRequest *request</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>E2ees__AddGroupMemberDeviceResponse *mock_add_group_member_device(</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__AddGroupMemberDeviceRequest *request</div>
 <div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>);</div>
 <div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__RemoveGroupMembersRequest *request);</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>E2ees__RemoveGroupMembersResponse *mock_remove_group_members(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__RemoveGroupMembersRequest *request);</div>
 <div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span> </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__LeaveGroupRequest *request);</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>E2ees__LeaveGroupResponse *mock_leave_group(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__LeaveGroupRequest *request);</div>
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__SendGroupMsgRequest *request);</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>E2ees__SendGroupMsgResponse *mock_send_group_msg(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__SendGroupMsgRequest *request);</div>
 <div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, Skissm__ConsumeProtoMsgRequest *request);</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>E2ees__ConsumeProtoMsgResponse *mock_consume_proto_msg(E2ees__E2eeAddress *from, <span class="keyword">const</span> <span class="keywordtype">char</span> *auth, E2ees__ConsumeProtoMsgRequest *request);</div>
 <div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span> </div>
 <div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="preprocessor">#endif </span><span class="comment">/* MOCK_SERVER_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->

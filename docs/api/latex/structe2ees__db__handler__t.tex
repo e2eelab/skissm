@@ -1,0 +1,629 @@
+\doxysection{e2ees\+\_\+db\+\_\+handler\+\_\+t Struct Reference}
+\hypertarget{structe2ees__db__handler__t}{}\label{structe2ees__db__handler__t}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+
+
+Type definition of database handler.  
+
+
+
+
+{\ttfamily \#include $<$e2ees.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a20d0c78cf05163df22b63d20bdf07f42}{store\+\_\+account}} )(E2ees\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account)
+\begin{DoxyCompactList}\small\item\em store account to db \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a474d3ff24f36b6ac3b0ab0faed2717cf}{load\+\_\+account\+\_\+by\+\_\+address}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}account)
+\begin{DoxyCompactList}\small\item\em load account from db by giving user address \end{DoxyCompactList}\item 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_af2d34ab3492572676d5f644659a6974d}{load\+\_\+accounts}} )(E2ees\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}accounts)
+\begin{DoxyCompactList}\small\item\em load all accounts from db \end{DoxyCompactList}\item 
+bool(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a37ee5b82ca60cd76640597233ad76546}{update\+\_\+signed\+\_\+pre\+\_\+key}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}signed\+\_\+pre\+\_\+key)
+\begin{DoxyCompactList}\small\item\em update signed pre-\/key of account to db \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a7b3bbeca5e4ee584d86d9352f94973f9}{load\+\_\+signed\+\_\+pre\+\_\+key}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, uint32\+\_\+t spk\+\_\+id, E2ees\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}signed\+\_\+pre\+\_\+key)
+\begin{DoxyCompactList}\small\item\em load old signed pre-\/key by spk\+\_\+id \end{DoxyCompactList}\item 
+bool(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a127cb95523581c29ae1a9291e66a3118}{remove\+\_\+expired\+\_\+signed\+\_\+pre\+\_\+key}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address)
+\begin{DoxyCompactList}\small\item\em remove expired signed pre-\/key (keep last two) of account from db \end{DoxyCompactList}\item 
+bool(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_ac66b7ba5a6b6cd3c898bbd854cd1b229}{add\+\_\+one\+\_\+time\+\_\+pre\+\_\+key}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*}one\+\_\+time\+\_\+pre\+\_\+key)
+\begin{DoxyCompactList}\small\item\em add an one time pre-\/key of account to db \end{DoxyCompactList}\item 
+bool(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a6e5edb3b3e4ef345319a773b4a969bd0}{remove\+\_\+one\+\_\+time\+\_\+pre\+\_\+key}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, uint32\+\_\+t one\+\_\+time\+\_\+pre\+\_\+key\+\_\+id)
+\begin{DoxyCompactList}\small\item\em remove an one time pre-\/key of account to db \end{DoxyCompactList}\item 
+bool(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a3a806bf2317089a6f6d53f8774b7b363}{update\+\_\+one\+\_\+time\+\_\+pre\+\_\+key}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, uint32\+\_\+t one\+\_\+time\+\_\+pre\+\_\+key\+\_\+id)
+\begin{DoxyCompactList}\small\item\em update an one time pre-\/key of acount from db \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a129a04ed272f21e7cfa91d3769eeabf6}{load\+\_\+auth}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}auth)
+\begin{DoxyCompactList}\small\item\em load auth from the account given by the user address \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a3377d516fe86d53f2f16fc48efed55d6}{load\+\_\+inbound\+\_\+session}} )(char \texorpdfstring{$\ast$}{*}session\+\_\+id, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}inbound\+\_\+session)
+\begin{DoxyCompactList}\small\item\em find inbound session \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a99795726002a1917610af63531c62b36}{load\+\_\+outbound\+\_\+session}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}their\+\_\+address, E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}outbound\+\_\+session)
+\begin{DoxyCompactList}\small\item\em find the lastest outbound session \end{DoxyCompactList}\item 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a0a3c048a2f81a47af4b5345e92e7a470}{load\+\_\+outbound\+\_\+sessions}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, const char \texorpdfstring{$\ast$}{*}their\+\_\+user\+\_\+id, const char \texorpdfstring{$\ast$}{*}their\+\_\+domain, E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}outbound\+\_\+sessions)
+\begin{DoxyCompactList}\small\item\em find the list of outbound sessions that are related to their\+\_\+user\+\_\+id and their\+\_\+domain \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a15a43bb25c97ef5a59fe92ad6510c8ff}{store\+\_\+session}} )(E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}session)
+\begin{DoxyCompactList}\small\item\em store session \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a5c0c3d50d6290c6df0d043711884d592}{unload\+\_\+session}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}their\+\_\+address)
+\begin{DoxyCompactList}\small\item\em delete all sessions \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a66ff3a3862a818a88beedfc181ef6612}{unload\+\_\+old\+\_\+session}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}their\+\_\+address, int64\+\_\+t invite\+\_\+t)
+\begin{DoxyCompactList}\small\item\em delete old sessions that are older than 1 day after invite\+\_\+t \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a05bca2a2767b6266128663d381171b91}{load\+\_\+group\+\_\+session\+\_\+by\+\_\+address}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+session)
+\begin{DoxyCompactList}\small\item\em find a group session by address \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_acda5dd9769a1fde5b940032fb79b14f4}{load\+\_\+group\+\_\+session\+\_\+by\+\_\+id}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, char \texorpdfstring{$\ast$}{*}group\+\_\+session\+\_\+id, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+session)
+\begin{DoxyCompactList}\small\item\em find a group session by id \end{DoxyCompactList}\item 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a4916e90fd483a765a7f60b45941c5b30}{load\+\_\+group\+\_\+sessions}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+sessions)
+\begin{DoxyCompactList}\small\item\em load group sessions \end{DoxyCompactList}\item 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_abd1262bc8cbb77ad469b848995f15125}{load\+\_\+group\+\_\+addresses}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+addresses)
+\begin{DoxyCompactList}\small\item\em load group addresses \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_aa115d5399c46deab9ad2f337eef56fb6}{store\+\_\+group\+\_\+session}} )(E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}group\+\_\+session)
+\begin{DoxyCompactList}\small\item\em store group session \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a2e94635d175e4eaca96638fea1a46f17}{unload\+\_\+group\+\_\+session\+\_\+by\+\_\+address}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address)
+\begin{DoxyCompactList}\small\item\em delete group sessions by address \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a1ba930675eaef1c8c0991a9a9b144134}{unload\+\_\+group\+\_\+session\+\_\+by\+\_\+id}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, char \texorpdfstring{$\ast$}{*}group\+\_\+session\+\_\+id)
+\begin{DoxyCompactList}\small\item\em delete group sessions by session id \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a73a467804013eae0eec2154ce63d38ee}{store\+\_\+pending\+\_\+plaintext\+\_\+data}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}to\+\_\+address, char \texorpdfstring{$\ast$}{*}plaintext\+\_\+id, uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len, E2ees\+\_\+\+\_\+\+Notif\+Level notif\+\_\+level)
+\begin{DoxyCompactList}\small\item\em store pending plaintext data \end{DoxyCompactList}\item 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_af40284269198938a68cee0ab0f014402}{load\+\_\+pending\+\_\+plaintext\+\_\+data}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}to\+\_\+address, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}plaintext\+\_\+id\+\_\+list, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}plaintext\+\_\+data\+\_\+list, size\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}plaintext\+\_\+data\+\_\+len\+\_\+list, E2ees\+\_\+\+\_\+\+Notif\+Level \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}notif\+\_\+level\+\_\+list)
+\begin{DoxyCompactList}\small\item\em load pending plaintext data \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a8e31e32d54e6d1c294812e8f1c0d7740}{unload\+\_\+pending\+\_\+plaintext\+\_\+data}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}to\+\_\+address, char \texorpdfstring{$\ast$}{*}plaintext\+\_\+id)
+\begin{DoxyCompactList}\small\item\em delete pending plaintext data \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a748c44f4efe2d255f1763fe442af9d43}{store\+\_\+pending\+\_\+request\+\_\+data}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, char \texorpdfstring{$\ast$}{*}request\+\_\+id, uint8\+\_\+t request\+\_\+type, uint8\+\_\+t \texorpdfstring{$\ast$}{*}request\+\_\+data, size\+\_\+t request\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em store pending request data \end{DoxyCompactList}\item 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_a90be51cb62e65cf270d9a98166e46477}{load\+\_\+pending\+\_\+request\+\_\+data}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+id\+\_\+list, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+type\+\_\+list, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+data\+\_\+list, size\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+data\+\_\+len\+\_\+list)
+\begin{DoxyCompactList}\small\item\em load pending request data \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__db__handler__t_ab13552554f3e56995758d0984b6a3259}{unload\+\_\+pending\+\_\+request\+\_\+data}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, char \texorpdfstring{$\ast$}{*}request\+\_\+id)
+\begin{DoxyCompactList}\small\item\em delete pending request data \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Type definition of database handler. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structe2ees__db__handler__t_ac66b7ba5a6b6cd3c898bbd854cd1b229}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!add\_one\_time\_pre\_key@{add\_one\_time\_pre\_key}}
+\index{add\_one\_time\_pre\_key@{add\_one\_time\_pre\_key}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{add\_one\_time\_pre\_key}{add\_one\_time\_pre\_key}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_ac66b7ba5a6b6cd3c898bbd854cd1b229} 
+bool(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::add\+\_\+one\+\_\+time\+\_\+pre\+\_\+key) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+One\+Time\+Pre\+Key \texorpdfstring{$\ast$}{*}one\+\_\+time\+\_\+pre\+\_\+key)}
+
+
+
+add an one time pre-\/key of account to db 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em one\+\_\+time\+\_\+pre\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a474d3ff24f36b6ac3b0ab0faed2717cf}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_account\_by\_address@{load\_account\_by\_address}}
+\index{load\_account\_by\_address@{load\_account\_by\_address}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_account\_by\_address}{load\_account\_by\_address}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a474d3ff24f36b6ac3b0ab0faed2717cf} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+account\+\_\+by\+\_\+address) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}account)}
+
+
+
+load account from db by giving user address 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em account} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_af2d34ab3492572676d5f644659a6974d}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_accounts@{load\_accounts}}
+\index{load\_accounts@{load\_accounts}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_accounts}{load\_accounts}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_af2d34ab3492572676d5f644659a6974d} 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+accounts) (E2ees\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}accounts)}
+
+
+
+load all accounts from db 
+
+
+\begin{DoxyParams}{Parameters}
+{\em accounts} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+number of loaded accounts 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__db__handler__t_a129a04ed272f21e7cfa91d3769eeabf6}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_auth@{load\_auth}}
+\index{load\_auth@{load\_auth}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_auth}{load\_auth}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a129a04ed272f21e7cfa91d3769eeabf6} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+auth) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}auth)}
+
+
+
+load auth from the account given by the user address 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em auth} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_abd1262bc8cbb77ad469b848995f15125}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_group\_addresses@{load\_group\_addresses}}
+\index{load\_group\_addresses@{load\_group\_addresses}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_group\_addresses}{load\_group\_addresses}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_abd1262bc8cbb77ad469b848995f15125} 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+group\+\_\+addresses) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+addresses)}
+
+
+
+load group addresses 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sender\+\_\+address} & \\
+\hline
+{\em session\+\_\+owner\+\_\+address} & \\
+\hline
+{\em group\+\_\+addresses} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a05bca2a2767b6266128663d381171b91}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_group\_session\_by\_address@{load\_group\_session\_by\_address}}
+\index{load\_group\_session\_by\_address@{load\_group\_session\_by\_address}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_group\_session\_by\_address}{load\_group\_session\_by\_address}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a05bca2a2767b6266128663d381171b91} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+group\+\_\+session\+\_\+by\+\_\+address) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+session)}
+
+
+
+find a group session by address 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sender\+\_\+address} & \\
+\hline
+{\em session\+\_\+owner\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em group\+\_\+session} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_acda5dd9769a1fde5b940032fb79b14f4}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_group\_session\_by\_id@{load\_group\_session\_by\_id}}
+\index{load\_group\_session\_by\_id@{load\_group\_session\_by\_id}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_group\_session\_by\_id}{load\_group\_session\_by\_id}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_acda5dd9769a1fde5b940032fb79b14f4} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+group\+\_\+session\+\_\+by\+\_\+id) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, char \texorpdfstring{$\ast$}{*}group\+\_\+session\+\_\+id, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+session)}
+
+
+
+find a group session by id 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sender\+\_\+address} & \\
+\hline
+{\em session\+\_\+owner\+\_\+address} & \\
+\hline
+{\em group\+\_\+session\+\_\+id} & \\
+\hline
+{\em group\+\_\+session} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a4916e90fd483a765a7f60b45941c5b30}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_group\_sessions@{load\_group\_sessions}}
+\index{load\_group\_sessions@{load\_group\_sessions}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_group\_sessions}{load\_group\_sessions}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a4916e90fd483a765a7f60b45941c5b30} 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+group\+\_\+sessions) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+sessions)}
+
+
+
+load group sessions 
+
+
+\begin{DoxyParams}{Parameters}
+{\em session\+\_\+owner\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em group\+\_\+sessions} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a3377d516fe86d53f2f16fc48efed55d6}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_inbound\_session@{load\_inbound\_session}}
+\index{load\_inbound\_session@{load\_inbound\_session}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_inbound\_session}{load\_inbound\_session}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a3377d516fe86d53f2f16fc48efed55d6} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+inbound\+\_\+session) (char \texorpdfstring{$\ast$}{*}session\+\_\+id, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}inbound\+\_\+session)}
+
+
+
+find inbound session 
+
+
+\begin{DoxyParams}{Parameters}
+{\em session\+\_\+id} & \\
+\hline
+{\em our\+\_\+address} & \\
+\hline
+{\em inbound\+\_\+session} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a99795726002a1917610af63531c62b36}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_outbound\_session@{load\_outbound\_session}}
+\index{load\_outbound\_session@{load\_outbound\_session}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_outbound\_session}{load\_outbound\_session}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a99795726002a1917610af63531c62b36} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+outbound\+\_\+session) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}their\+\_\+address, E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}outbound\+\_\+session)}
+
+
+
+find the lastest outbound session 
+
+
+\begin{DoxyParams}{Parameters}
+{\em our\+\_\+address} & \\
+\hline
+{\em their\+\_\+address} & \\
+\hline
+{\em outbound\+\_\+session} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a0a3c048a2f81a47af4b5345e92e7a470}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_outbound\_sessions@{load\_outbound\_sessions}}
+\index{load\_outbound\_sessions@{load\_outbound\_sessions}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_outbound\_sessions}{load\_outbound\_sessions}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a0a3c048a2f81a47af4b5345e92e7a470} 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+outbound\+\_\+sessions) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, const char \texorpdfstring{$\ast$}{*}their\+\_\+user\+\_\+id, const char \texorpdfstring{$\ast$}{*}their\+\_\+domain, E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}outbound\+\_\+sessions)}
+
+
+
+find the list of outbound sessions that are related to their\+\_\+user\+\_\+id and their\+\_\+domain 
+
+
+\begin{DoxyParams}{Parameters}
+{\em our\+\_\+address} & \\
+\hline
+{\em their\+\_\+user\+\_\+id} & \\
+\hline
+{\em their\+\_\+domain} & \\
+\hline
+{\em outbound\+\_\+sessions} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_af40284269198938a68cee0ab0f014402}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_pending\_plaintext\_data@{load\_pending\_plaintext\_data}}
+\index{load\_pending\_plaintext\_data@{load\_pending\_plaintext\_data}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_pending\_plaintext\_data}{load\_pending\_plaintext\_data}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_af40284269198938a68cee0ab0f014402} 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+pending\+\_\+plaintext\+\_\+data) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}to\+\_\+address, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}plaintext\+\_\+id\+\_\+list, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}plaintext\+\_\+data\+\_\+list, size\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}plaintext\+\_\+data\+\_\+len\+\_\+list, E2ees\+\_\+\+\_\+\+Notif\+Level \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}notif\+\_\+level\+\_\+list)}
+
+
+
+load pending plaintext data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from\+\_\+address} & \\
+\hline
+{\em to\+\_\+address} & \\
+\hline
+{\em plaintext\+\_\+id\+\_\+list} & \\
+\hline
+{\em plaintext\+\_\+data\+\_\+list} & \\
+\hline
+{\em plaintext\+\_\+data\+\_\+len\+\_\+list} & \\
+\hline
+{\em notif\+\_\+level\+\_\+list} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+number of loaded plaintext\+\_\+data list 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__db__handler__t_a90be51cb62e65cf270d9a98166e46477}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_pending\_request\_data@{load\_pending\_request\_data}}
+\index{load\_pending\_request\_data@{load\_pending\_request\_data}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_pending\_request\_data}{load\_pending\_request\_data}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a90be51cb62e65cf270d9a98166e46477} 
+size\+\_\+t(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+pending\+\_\+request\+\_\+data) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+id\+\_\+list, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+type\+\_\+list, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+data\+\_\+list, size\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+data\+\_\+len\+\_\+list)}
+
+
+
+load pending request data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em request\+\_\+id\+\_\+list} & \\
+\hline
+{\em request\+\_\+type\+\_\+list} & \\
+\hline
+{\em request\+\_\+data\+\_\+list} & \\
+\hline
+{\em request\+\_\+data\+\_\+len\+\_\+list} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+number of loaded request\+\_\+data list 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__db__handler__t_a7b3bbeca5e4ee584d86d9352f94973f9}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!load\_signed\_pre\_key@{load\_signed\_pre\_key}}
+\index{load\_signed\_pre\_key@{load\_signed\_pre\_key}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{load\_signed\_pre\_key}{load\_signed\_pre\_key}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a7b3bbeca5e4ee584d86d9352f94973f9} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::load\+\_\+signed\+\_\+pre\+\_\+key) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, uint32\+\_\+t spk\+\_\+id, E2ees\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}signed\+\_\+pre\+\_\+key)}
+
+
+
+load old signed pre-\/key by spk\+\_\+id 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em spk\+\_\+id} & \\
+\hline
+{\em signed\+\_\+pre\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a127cb95523581c29ae1a9291e66a3118}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!remove\_expired\_signed\_pre\_key@{remove\_expired\_signed\_pre\_key}}
+\index{remove\_expired\_signed\_pre\_key@{remove\_expired\_signed\_pre\_key}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{remove\_expired\_signed\_pre\_key}{remove\_expired\_signed\_pre\_key}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a127cb95523581c29ae1a9291e66a3118} 
+bool(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::remove\+\_\+expired\+\_\+signed\+\_\+pre\+\_\+key) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address)}
+
+
+
+remove expired signed pre-\/key (keep last two) of account from db 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a6e5edb3b3e4ef345319a773b4a969bd0}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!remove\_one\_time\_pre\_key@{remove\_one\_time\_pre\_key}}
+\index{remove\_one\_time\_pre\_key@{remove\_one\_time\_pre\_key}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{remove\_one\_time\_pre\_key}{remove\_one\_time\_pre\_key}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a6e5edb3b3e4ef345319a773b4a969bd0} 
+bool(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::remove\+\_\+one\+\_\+time\+\_\+pre\+\_\+key) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, uint32\+\_\+t one\+\_\+time\+\_\+pre\+\_\+key\+\_\+id)}
+
+
+
+remove an one time pre-\/key of account to db 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em one\+\_\+time\+\_\+pre\+\_\+key\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a20d0c78cf05163df22b63d20bdf07f42}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!store\_account@{store\_account}}
+\index{store\_account@{store\_account}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{store\_account}{store\_account}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a20d0c78cf05163df22b63d20bdf07f42} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::store\+\_\+account) (E2ees\+\_\+\+\_\+\+Account \texorpdfstring{$\ast$}{*}account)}
+
+
+
+store account to db 
+
+
+\begin{DoxyParams}{Parameters}
+{\em account} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_aa115d5399c46deab9ad2f337eef56fb6}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!store\_group\_session@{store\_group\_session}}
+\index{store\_group\_session@{store\_group\_session}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{store\_group\_session}{store\_group\_session}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_aa115d5399c46deab9ad2f337eef56fb6} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::store\+\_\+group\+\_\+session) (E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}group\+\_\+session)}
+
+
+
+store group session 
+
+
+\begin{DoxyParams}{Parameters}
+{\em group\+\_\+session} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a73a467804013eae0eec2154ce63d38ee}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!store\_pending\_plaintext\_data@{store\_pending\_plaintext\_data}}
+\index{store\_pending\_plaintext\_data@{store\_pending\_plaintext\_data}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{store\_pending\_plaintext\_data}{store\_pending\_plaintext\_data}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a73a467804013eae0eec2154ce63d38ee} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::store\+\_\+pending\+\_\+plaintext\+\_\+data) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}to\+\_\+address, char \texorpdfstring{$\ast$}{*}plaintext\+\_\+id, uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len, E2ees\+\_\+\+\_\+\+Notif\+Level notif\+\_\+level)}
+
+
+
+store pending plaintext data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from\+\_\+address} & \\
+\hline
+{\em to\+\_\+address} & \\
+\hline
+{\em plaintext\+\_\+id} & \\
+\hline
+{\em plaintext\+\_\+data} & \\
+\hline
+{\em plaintext\+\_\+data\+\_\+len} & \\
+\hline
+{\em notif\+\_\+level} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a748c44f4efe2d255f1763fe442af9d43}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!store\_pending\_request\_data@{store\_pending\_request\_data}}
+\index{store\_pending\_request\_data@{store\_pending\_request\_data}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{store\_pending\_request\_data}{store\_pending\_request\_data}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a748c44f4efe2d255f1763fe442af9d43} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::store\+\_\+pending\+\_\+request\+\_\+data) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, char \texorpdfstring{$\ast$}{*}request\+\_\+id, uint8\+\_\+t request\+\_\+type, uint8\+\_\+t \texorpdfstring{$\ast$}{*}request\+\_\+data, size\+\_\+t request\+\_\+data\+\_\+len)}
+
+
+
+store pending request data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em request\+\_\+id} & \\
+\hline
+{\em request\+\_\+type} & \\
+\hline
+{\em request\+\_\+data} & \\
+\hline
+{\em request\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a15a43bb25c97ef5a59fe92ad6510c8ff}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!store\_session@{store\_session}}
+\index{store\_session@{store\_session}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{store\_session}{store\_session}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a15a43bb25c97ef5a59fe92ad6510c8ff} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::store\+\_\+session) (E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}session)}
+
+
+
+store session 
+
+
+\begin{DoxyParams}{Parameters}
+{\em session} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a2e94635d175e4eaca96638fea1a46f17}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!unload\_group\_session\_by\_address@{unload\_group\_session\_by\_address}}
+\index{unload\_group\_session\_by\_address@{unload\_group\_session\_by\_address}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{unload\_group\_session\_by\_address}{unload\_group\_session\_by\_address}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a2e94635d175e4eaca96638fea1a46f17} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::unload\+\_\+group\+\_\+session\+\_\+by\+\_\+address) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address)}
+
+
+
+delete group sessions by address 
+
+
+\begin{DoxyParams}{Parameters}
+{\em session\+\_\+owner\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a1ba930675eaef1c8c0991a9a9b144134}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!unload\_group\_session\_by\_id@{unload\_group\_session\_by\_id}}
+\index{unload\_group\_session\_by\_id@{unload\_group\_session\_by\_id}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{unload\_group\_session\_by\_id}{unload\_group\_session\_by\_id}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a1ba930675eaef1c8c0991a9a9b144134} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::unload\+\_\+group\+\_\+session\+\_\+by\+\_\+id) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}session\+\_\+owner\+\_\+address, char \texorpdfstring{$\ast$}{*}group\+\_\+session\+\_\+id)}
+
+
+
+delete group sessions by session id 
+
+
+\begin{DoxyParams}{Parameters}
+{\em session\+\_\+owner\+\_\+address} & \\
+\hline
+{\em group\+\_\+session\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a66ff3a3862a818a88beedfc181ef6612}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!unload\_old\_session@{unload\_old\_session}}
+\index{unload\_old\_session@{unload\_old\_session}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{unload\_old\_session}{unload\_old\_session}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a66ff3a3862a818a88beedfc181ef6612} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::unload\+\_\+old\+\_\+session) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}their\+\_\+address, int64\+\_\+t invite\+\_\+t)}
+
+
+
+delete old sessions that are older than 1 day after invite\+\_\+t 
+
+
+\begin{DoxyParams}{Parameters}
+{\em our\+\_\+address} & \\
+\hline
+{\em their\+\_\+address} & \\
+\hline
+{\em invite\+\_\+t} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a8e31e32d54e6d1c294812e8f1c0d7740}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!unload\_pending\_plaintext\_data@{unload\_pending\_plaintext\_data}}
+\index{unload\_pending\_plaintext\_data@{unload\_pending\_plaintext\_data}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{unload\_pending\_plaintext\_data}{unload\_pending\_plaintext\_data}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a8e31e32d54e6d1c294812e8f1c0d7740} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::unload\+\_\+pending\+\_\+plaintext\+\_\+data) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}to\+\_\+address, char \texorpdfstring{$\ast$}{*}plaintext\+\_\+id)}
+
+
+
+delete pending plaintext data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from\+\_\+address} & \\
+\hline
+{\em to\+\_\+address} & \\
+\hline
+{\em plaintext\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_ab13552554f3e56995758d0984b6a3259}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!unload\_pending\_request\_data@{unload\_pending\_request\_data}}
+\index{unload\_pending\_request\_data@{unload\_pending\_request\_data}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{unload\_pending\_request\_data}{unload\_pending\_request\_data}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_ab13552554f3e56995758d0984b6a3259} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::unload\+\_\+pending\+\_\+request\+\_\+data) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, char \texorpdfstring{$\ast$}{*}request\+\_\+id)}
+
+
+
+delete pending request data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em request\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a5c0c3d50d6290c6df0d043711884d592}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!unload\_session@{unload\_session}}
+\index{unload\_session@{unload\_session}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{unload\_session}{unload\_session}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a5c0c3d50d6290c6df0d043711884d592} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::unload\+\_\+session) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}our\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}their\+\_\+address)}
+
+
+
+delete all sessions 
+
+
+\begin{DoxyParams}{Parameters}
+{\em our\+\_\+address} & \\
+\hline
+{\em their\+\_\+address} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a3a806bf2317089a6f6d53f8774b7b363}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!update\_one\_time\_pre\_key@{update\_one\_time\_pre\_key}}
+\index{update\_one\_time\_pre\_key@{update\_one\_time\_pre\_key}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{update\_one\_time\_pre\_key}{update\_one\_time\_pre\_key}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a3a806bf2317089a6f6d53f8774b7b363} 
+bool(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::update\+\_\+one\+\_\+time\+\_\+pre\+\_\+key) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, uint32\+\_\+t one\+\_\+time\+\_\+pre\+\_\+key\+\_\+id)}
+
+
+
+update an one time pre-\/key of acount from db 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em one\+\_\+time\+\_\+pre\+\_\+key\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__db__handler__t_a37ee5b82ca60cd76640597233ad76546}\index{e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}!update\_signed\_pre\_key@{update\_signed\_pre\_key}}
+\index{update\_signed\_pre\_key@{update\_signed\_pre\_key}!e2ees\_db\_handler\_t@{e2ees\_db\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{update\_signed\_pre\_key}{update\_signed\_pre\_key}}
+{\footnotesize\ttfamily \label{structe2ees__db__handler__t_a37ee5b82ca60cd76640597233ad76546} 
+bool(\texorpdfstring{$\ast$}{*} e2ees\+\_\+db\+\_\+handler\+\_\+t\+::update\+\_\+signed\+\_\+pre\+\_\+key) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+Signed\+Pre\+Key \texorpdfstring{$\ast$}{*}signed\+\_\+pre\+\_\+key)}
+
+
+
+update signed pre-\/key of account to db 
+
+
+\begin{DoxyParams}{Parameters}
+{\em user\+\_\+address} & \\
+\hline
+{\em signed\+\_\+pre\+\_\+key} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/e2ees/\mbox{\hyperlink{e2ees_8h}{e2ees.\+h}}\end{DoxyCompactItemize}

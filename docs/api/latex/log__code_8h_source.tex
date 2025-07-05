@@ -1,5 +1,5 @@
 \doxysection{log\+\_\+code.\+h}
-\hypertarget{log__code_8h_source}{}\label{log__code_8h_source}\index{include/skissm/log\_code.h@{include/skissm/log\_code.h}}
+\hypertarget{log__code_8h_source}{}\label{log__code_8h_source}\index{include/e2ees/log\_code.h@{include/e2ees/log\_code.h}}
 \mbox{\hyperlink{log__code_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ }
@@ -15,7 +15,7 @@
 \DoxyCodeLine{00029\ }
 \DoxyCodeLine{00030\ \ \ \textcolor{comment}{//\ cipher\ suite}}
 \DoxyCodeLine{00031\ \ \ BAD\_CIPHER\_SUITE\ =\ 1001,}
-\DoxyCodeLine{00032\ \ \ BAD\_E2EE\_PACK\ =\ 1002,}
+\DoxyCodeLine{00032\ \ \ BAD\_E2EES\_PACK\ =\ 1002,}
 \DoxyCodeLine{00033\ }
 \DoxyCodeLine{00034\ \ \ \textcolor{comment}{//\ account}}
 \DoxyCodeLine{00035\ \ \ BAD\_ACCOUNT\ =\ 2001,}
@@ -113,23 +113,21 @@
 \DoxyCodeLine{00127\ \ \ BAD\_SUPPLY\_OPKS\_MSG\ =\ 7741,}
 \DoxyCodeLine{00128\ \ \ BAD\_UPDATE\_USER\_MSG\ =\ 7751,}
 \DoxyCodeLine{00129\ }
-\DoxyCodeLine{00130\ \ \ BAD\_PLAINTEXT\ =\ 8001,}
-\DoxyCodeLine{00131\ }
-\DoxyCodeLine{00132\ \ \ BAD\_SERVER\_SIGNATURE\ =\ 9001,}
-\DoxyCodeLine{00133\ }
-\DoxyCodeLine{00134\ \ \ NOT\_ENOUGH\_RANDOM\ =\ 10001,}
-\DoxyCodeLine{00135\ \ \ NOT\_ENOUGH\_MEMORY\ =\ 10002,}
-\DoxyCodeLine{00136\ \ \ NOT\_ENOUGH\_SPACE\ =\ 10003}
-\DoxyCodeLine{00137\ \};}
+\DoxyCodeLine{00130\ \ \ \textcolor{comment}{//\ plaintext}}
+\DoxyCodeLine{00131\ \ \ BAD\_PLAINTEXT\ =\ 8001,}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \ \ \textcolor{comment}{//\ server\ signature}}
+\DoxyCodeLine{00134\ \ \ BAD\_SERVER\_SIGNATURE\ =\ 9001,}
+\DoxyCodeLine{00135\ \};}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ LogCode\ LogCode;}
 \DoxyCodeLine{00138\ }
-\DoxyCodeLine{00139\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ LogCode\ LogCode;}
-\DoxyCodeLine{00140\ }
-\DoxyCodeLine{00147\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *\mbox{\hyperlink{log__code_8h_a197c539ddf287bb08e9f4d3ea3a813af}{logcode\_string}}(LogCode\ log\_code);}
-\DoxyCodeLine{00148\ }
-\DoxyCodeLine{00149\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
-\DoxyCodeLine{00150\ \}}
-\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00152\ }
-\DoxyCodeLine{00153\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ LOG\_CODE\_H\_\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00145\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *\mbox{\hyperlink{log__code_8h_a197c539ddf287bb08e9f4d3ea3a813af}{logcode\_string}}(LogCode\ log\_code);}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00148\ \}}
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ LOG\_CODE\_H\_\ */}\textcolor{preprocessor}{}}
 
 \end{DoxyCode}

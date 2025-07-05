@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/account.h Source File</title>
+<title>E2EES: include/e2ees/account.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -104,56 +104,56 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;<a class="code" href="skissm_8h.html">skissm/skissm.h</a>&quot;</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;<a class="code" href="e2ees_8h.html">e2ees/e2ees.h</a>&quot;</span></div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keywordtype">void</span> account_begin();</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keywordtype">void</span> account_end();</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="account_8h.html#acc61be04a857570ee55439f01e8f30c7">   45</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account_8h.html#acc61be04a857570ee55439f01e8f30c7">create_account</a>(Skissm__Account **account_out, uint32_t e2ee_pack_id);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="account_8h.html#af9a31a508531bb1a2398c3c47c7899f1">   45</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account_8h.html#af9a31a508531bb1a2398c3c47c7899f1">create_account</a>(E2ees__Account **account_out, uint32_t e2ees_pack_id);</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keywordtype">int</span> generate_identity_key(</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    Skissm__IdentityKey **identity_key_out,</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    uint32_t e2ee_pack_id</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    E2ees__IdentityKey **identity_key_out,</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    uint32_t e2ees_pack_id</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>);</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="account_8h.html#aa95327406cb557a1346dcacac6686b44">   61</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account_8h.html#aa95327406cb557a1346dcacac6686b44">generate_signed_pre_key</a>(</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    Skissm__SignedPreKey **signed_pre_key_out,</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    uint32_t e2ee_pack_id, uint32_t cur_spk_id,</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="account_8h.html#aa5a52fa83c3a303875fd26b36318d216">   61</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account_8h.html#aa5a52fa83c3a303875fd26b36318d216">generate_signed_pre_key</a>(</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    E2ees__SignedPreKey **signed_pre_key_out,</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    uint32_t e2ees_pack_id, uint32_t cur_spk_id,</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keyword">const</span> uint8_t *identity_private_key</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>);</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="account_8h.html#a939d33806c6bb2473dfa8375f1f1766d">   74</a></span>Skissm__OneTimePreKey *<a class="code hl_function" href="account_8h.html#a939d33806c6bb2473dfa8375f1f1766d">lookup_one_time_pre_key</a>(</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    Skissm__Account *account,</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="account_8h.html#a6cd32f5b34f60113ea1b1e082047f32d">   74</a></span>E2ees__OneTimePreKey *<a class="code hl_function" href="account_8h.html#a6cd32f5b34f60113ea1b1e082047f32d">lookup_one_time_pre_key</a>(</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    E2ees__Account *account,</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    uint32_t one_time_pre_key_id</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>);</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="account_8h.html#a8d009b61eeffaf429c18d163cd371c51">   88</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account_8h.html#a8d009b61eeffaf429c18d163cd371c51">generate_opks</a>(</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    Skissm__OneTimePreKey ***one_time_pre_key_out, <span class="keywordtype">size_t</span> number_of_keys,</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    uint32_t e2ee_pack_id, uint32_t cur_opk_id</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="account_8h.html#af243882bcb723e64d761d72dad1615d6">   88</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account_8h.html#af243882bcb723e64d761d72dad1615d6">generate_opks</a>(</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    E2ees__OneTimePreKey ***one_time_pre_key_out, <span class="keywordtype">size_t</span> number_of_keys,</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    uint32_t e2ees_pack_id, uint32_t cur_opk_id</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>);</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keywordtype">int</span> insert_opks(Skissm__Account *account, Skissm__OneTimePreKey **src, <span class="keywordtype">size_t</span> src_num);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keywordtype">int</span> insert_opks(E2ees__Account *account, E2ees__OneTimePreKey **src, <span class="keywordtype">size_t</span> src_num);</div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="account_8h.html#a11dd90393c9b16548bdfa107fedf4bee">  102</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account_8h.html#a11dd90393c9b16548bdfa107fedf4bee">mark_opk_as_used</a>(</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    Skissm__Account *account,</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="account_8h.html#a958df954462ae995997474f920fabb9e">  102</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account_8h.html#a958df954462ae995997474f920fabb9e">mark_opk_as_used</a>(</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    E2ees__Account *account,</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    uint32_t <span class="keywordtype">id</span></div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>);</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="account_8h.html#a8cb64db81c2c65f3c054880b96e28e5d">  112</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="account_8h.html#a8cb64db81c2c65f3c054880b96e28e5d">free_one_time_pre_key</a>(Skissm__Account *account);</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="account_8h.html#abf989d4cd475fc37d5b35b747e2ccdd4">  112</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="account_8h.html#abf989d4cd475fc37d5b35b747e2ccdd4">free_one_time_pre_key</a>(E2ees__Account *account);</div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="preprocessor">#ifdef __cplusplus</span></div>
 <div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>}</div>
 <div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
 <div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="preprocessor">#endif </span><span class="comment">/* ACCOUNT_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="aaccount_8h_html_a11dd90393c9b16548bdfa107fedf4bee"><div class="ttname"><a href="account_8h.html#a11dd90393c9b16548bdfa107fedf4bee">mark_opk_as_used</a></div><div class="ttdeci">int mark_opk_as_used(Skissm__Account *account, uint32_t id)</div><div class="ttdoc">Mark one of the one-time pre-key pairs as used given by ID.</div></div>
-<div class="ttc" id="aaccount_8h_html_a8cb64db81c2c65f3c054880b96e28e5d"><div class="ttname"><a href="account_8h.html#a8cb64db81c2c65f3c054880b96e28e5d">free_one_time_pre_key</a></div><div class="ttdeci">void free_one_time_pre_key(Skissm__Account *account)</div><div class="ttdoc">Remove the used one-time pre-keys.</div></div>
-<div class="ttc" id="aaccount_8h_html_a8d009b61eeffaf429c18d163cd371c51"><div class="ttname"><a href="account_8h.html#a8d009b61eeffaf429c18d163cd371c51">generate_opks</a></div><div class="ttdeci">int generate_opks(Skissm__OneTimePreKey ***one_time_pre_key_out, size_t number_of_keys, uint32_t e2ee_pack_id, uint32_t cur_opk_id)</div><div class="ttdoc">Generates a number of new one-time pre-keys.</div></div>
-<div class="ttc" id="aaccount_8h_html_a939d33806c6bb2473dfa8375f1f1766d"><div class="ttname"><a href="account_8h.html#a939d33806c6bb2473dfa8375f1f1766d">lookup_one_time_pre_key</a></div><div class="ttdeci">Skissm__OneTimePreKey * lookup_one_time_pre_key(Skissm__Account *account, uint32_t one_time_pre_key_id)</div><div class="ttdoc">Lookup an one-time pre-key with a given public key.</div></div>
-<div class="ttc" id="aaccount_8h_html_aa95327406cb557a1346dcacac6686b44"><div class="ttname"><a href="account_8h.html#aa95327406cb557a1346dcacac6686b44">generate_signed_pre_key</a></div><div class="ttdeci">int generate_signed_pre_key(Skissm__SignedPreKey **signed_pre_key_out, uint32_t e2ee_pack_id, uint32_t cur_spk_id, const uint8_t *identity_private_key)</div><div class="ttdoc">Generate a new signed pre-key pair and a new signature.</div></div>
-<div class="ttc" id="aaccount_8h_html_acc61be04a857570ee55439f01e8f30c7"><div class="ttname"><a href="account_8h.html#acc61be04a857570ee55439f01e8f30c7">create_account</a></div><div class="ttdeci">int create_account(Skissm__Account **account_out, uint32_t e2ee_pack_id)</div><div class="ttdoc">Create a new account object This will generate an identity key pair, a signed pre-key pair,...</div></div>
-<div class="ttc" id="askissm_8h_html"><div class="ttname"><a href="skissm_8h.html">skissm.h</a></div></div>
+<div class="ttc" id="aaccount_8h_html_a6cd32f5b34f60113ea1b1e082047f32d"><div class="ttname"><a href="account_8h.html#a6cd32f5b34f60113ea1b1e082047f32d">lookup_one_time_pre_key</a></div><div class="ttdeci">E2ees__OneTimePreKey * lookup_one_time_pre_key(E2ees__Account *account, uint32_t one_time_pre_key_id)</div><div class="ttdoc">Lookup an one-time pre-key with a given public key.</div></div>
+<div class="ttc" id="aaccount_8h_html_a958df954462ae995997474f920fabb9e"><div class="ttname"><a href="account_8h.html#a958df954462ae995997474f920fabb9e">mark_opk_as_used</a></div><div class="ttdeci">int mark_opk_as_used(E2ees__Account *account, uint32_t id)</div><div class="ttdoc">Mark one of the one-time pre-key pairs as used given by ID.</div></div>
+<div class="ttc" id="aaccount_8h_html_aa5a52fa83c3a303875fd26b36318d216"><div class="ttname"><a href="account_8h.html#aa5a52fa83c3a303875fd26b36318d216">generate_signed_pre_key</a></div><div class="ttdeci">int generate_signed_pre_key(E2ees__SignedPreKey **signed_pre_key_out, uint32_t e2ees_pack_id, uint32_t cur_spk_id, const uint8_t *identity_private_key)</div><div class="ttdoc">Generate a new signed pre-key pair and a new signature.</div></div>
+<div class="ttc" id="aaccount_8h_html_abf989d4cd475fc37d5b35b747e2ccdd4"><div class="ttname"><a href="account_8h.html#abf989d4cd475fc37d5b35b747e2ccdd4">free_one_time_pre_key</a></div><div class="ttdeci">void free_one_time_pre_key(E2ees__Account *account)</div><div class="ttdoc">Remove the used one-time pre-keys.</div></div>
+<div class="ttc" id="aaccount_8h_html_af243882bcb723e64d761d72dad1615d6"><div class="ttname"><a href="account_8h.html#af243882bcb723e64d761d72dad1615d6">generate_opks</a></div><div class="ttdeci">int generate_opks(E2ees__OneTimePreKey ***one_time_pre_key_out, size_t number_of_keys, uint32_t e2ees_pack_id, uint32_t cur_opk_id)</div><div class="ttdoc">Generates a number of new one-time pre-keys.</div></div>
+<div class="ttc" id="aaccount_8h_html_af9a31a508531bb1a2398c3c47c7899f1"><div class="ttname"><a href="account_8h.html#af9a31a508531bb1a2398c3c47c7899f1">create_account</a></div><div class="ttdeci">int create_account(E2ees__Account **account_out, uint32_t e2ees_pack_id)</div><div class="ttdoc">Create a new account object This will generate an identity key pair, a signed pre-key pair,...</div></div>
+<div class="ttc" id="ae2ees_8h_html"><div class="ttname"><a href="e2ees_8h.html">e2ees.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

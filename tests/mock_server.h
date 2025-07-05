@@ -1,25 +1,25 @@
 /*
- * Copyright © 2020-2021 by Academia Sinica
+ * Copyright © 2021 Academia Sinica. All Rights Reserved.
  *
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef MOCK_SERVER_H_
 #define MOCK_SERVER_H_
 
-#include "skissm/skissm.h"
+#include "e2ees/e2ees.h"
 
 void mock_server_begin();
 
@@ -33,9 +33,9 @@ void mock_server_end();
  * @brief 
  * 
  * @param request 
- * @return Skissm__RegisterUserResponse* 
+ * @return E2ees__RegisterUserResponse* 
  */
-Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *request);
+E2ees__RegisterUserResponse *mock_register_user(E2ees__RegisterUserRequest *request);
 
 /**
  * @brief Get the pre-key bundle object
@@ -43,27 +43,17 @@ Skissm__RegisterUserResponse *mock_register_user(Skissm__RegisterUserRequest *re
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__GetPreKeyBundleResponse* 
+ * @return E2ees__GetPreKeyBundleResponse* 
  */
-Skissm__GetPreKeyBundleResponse *mock_get_pre_key_bundle(Skissm__E2eeAddress *from, const char *auth, Skissm__GetPreKeyBundleRequest *request);
+E2ees__GetPreKeyBundleResponse *mock_get_pre_key_bundle(E2ees__E2eeAddress *from, const char *auth, E2ees__GetPreKeyBundleRequest *request);
 
 /**
  * @brief 
  * 
  * @param request 
- * @return Skissm__InviteResponse* 
+ * @return E2ees__InviteResponse* 
  */
-Skissm__InviteResponse *mock_invite(Skissm__E2eeAddress *from, const char *auth, Skissm__InviteRequest *request);
-
-/**
- * @brief 
- * 
- * @param from 
- * @param auth 
- * @param request 
- * @return Skissm__AcceptResponse* 
- */
-Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth, Skissm__AcceptRequest *request);
+E2ees__InviteResponse *mock_invite(E2ees__E2eeAddress *from, const char *auth, E2ees__InviteRequest *request);
 
 /**
  * @brief 
@@ -71,9 +61,9 @@ Skissm__AcceptResponse *mock_accept(Skissm__E2eeAddress *from, const char *auth,
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__PublishSpkResponse* 
+ * @return E2ees__AcceptResponse* 
  */
-Skissm__PublishSpkResponse *mock_publish_spk(Skissm__E2eeAddress *from, const char *auth, Skissm__PublishSpkRequest *request);
+E2ees__AcceptResponse *mock_accept(E2ees__E2eeAddress *from, const char *auth, E2ees__AcceptRequest *request);
 
 /**
  * @brief 
@@ -81,9 +71,9 @@ Skissm__PublishSpkResponse *mock_publish_spk(Skissm__E2eeAddress *from, const ch
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__SupplyOpksResponse* 
+ * @return E2ees__PublishSpkResponse* 
  */
-Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__E2eeAddress *from, const char *auth, Skissm__SupplyOpksRequest *request);
+E2ees__PublishSpkResponse *mock_publish_spk(E2ees__E2eeAddress *from, const char *auth, E2ees__PublishSpkRequest *request);
 
 /**
  * @brief 
@@ -91,9 +81,19 @@ Skissm__SupplyOpksResponse *mock_supply_opks(Skissm__E2eeAddress *from, const ch
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__SendOne2oneMsgResponse* 
+ * @return E2ees__SupplyOpksResponse* 
  */
-Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendOne2oneMsgRequest *request);
+E2ees__SupplyOpksResponse *mock_supply_opks(E2ees__E2eeAddress *from, const char *auth, E2ees__SupplyOpksRequest *request);
+
+/**
+ * @brief 
+ * 
+ * @param from 
+ * @param auth 
+ * @param request 
+ * @return E2ees__SendOne2oneMsgResponse* 
+ */
+E2ees__SendOne2oneMsgResponse *mock_send_one2one_msg(E2ees__E2eeAddress *from, const char *auth, E2ees__SendOne2oneMsgRequest *request);
 
 /**
  * @brief Create a group object
@@ -101,9 +101,9 @@ Skissm__SendOne2oneMsgResponse *mock_send_one2one_msg(Skissm__E2eeAddress *from,
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__CreateGroupResponse* 
+ * @return E2ees__CreateGroupResponse* 
  */
-Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const char *auth, Skissm__CreateGroupRequest *request);
+E2ees__CreateGroupResponse *mock_create_group(E2ees__E2eeAddress *from, const char *auth, E2ees__CreateGroupRequest *request);
 
 /**
  * @brief 
@@ -111,9 +111,9 @@ Skissm__CreateGroupResponse *mock_create_group(Skissm__E2eeAddress *from, const 
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__AddGroupMembersResponse* 
+ * @return E2ees__AddGroupMembersResponse* 
  */
-Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMembersRequest *request);
+E2ees__AddGroupMembersResponse *mock_add_group_members(E2ees__E2eeAddress *from, const char *auth, E2ees__AddGroupMembersRequest *request);
 
 /**
  * @brief 
@@ -121,10 +121,10 @@ Skissm__AddGroupMembersResponse *mock_add_group_members(Skissm__E2eeAddress *fro
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__AddGroupMemberDeviceResponse* 
+ * @return E2ees__AddGroupMemberDeviceResponse* 
  */
-Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
-    Skissm__E2eeAddress *from, const char *auth, Skissm__AddGroupMemberDeviceRequest *request
+E2ees__AddGroupMemberDeviceResponse *mock_add_group_member_device(
+    E2ees__E2eeAddress *from, const char *auth, E2ees__AddGroupMemberDeviceRequest *request
 );
 
 /**
@@ -133,9 +133,9 @@ Skissm__AddGroupMemberDeviceResponse *mock_add_group_member_device(
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__RemoveGroupMembersResponse* 
+ * @return E2ees__RemoveGroupMembersResponse* 
  */
-Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddress *from, const char *auth, Skissm__RemoveGroupMembersRequest *request);
+E2ees__RemoveGroupMembersResponse *mock_remove_group_members(E2ees__E2eeAddress *from, const char *auth, E2ees__RemoveGroupMembersRequest *request);
 
 /**
  * @brief 
@@ -143,9 +143,9 @@ Skissm__RemoveGroupMembersResponse *mock_remove_group_members(Skissm__E2eeAddres
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__LeaveGroupResponse* 
+ * @return E2ees__LeaveGroupResponse* 
  */
-Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, const char *auth, Skissm__LeaveGroupRequest *request);
+E2ees__LeaveGroupResponse *mock_leave_group(E2ees__E2eeAddress *from, const char *auth, E2ees__LeaveGroupRequest *request);
 
 /**
  * @brief 
@@ -153,9 +153,9 @@ Skissm__LeaveGroupResponse *mock_leave_group(Skissm__E2eeAddress *from, const ch
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__SendGroupMsgResponse* 
+ * @return E2ees__SendGroupMsgResponse* 
  */
-Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__SendGroupMsgRequest *request);
+E2ees__SendGroupMsgResponse *mock_send_group_msg(E2ees__E2eeAddress *from, const char *auth, E2ees__SendGroupMsgRequest *request);
 
 /**
  * @brief 
@@ -163,8 +163,8 @@ Skissm__SendGroupMsgResponse *mock_send_group_msg(Skissm__E2eeAddress *from, con
  * @param from 
  * @param auth 
  * @param request 
- * @return Skissm__ConsumeProtoMsgResponse* 
+ * @return E2ees__ConsumeProtoMsgResponse* 
  */
-Skissm__ConsumeProtoMsgResponse *mock_consume_proto_msg(Skissm__E2eeAddress *from, const char *auth, Skissm__ConsumeProtoMsgRequest *request);
+E2ees__ConsumeProtoMsgResponse *mock_consume_proto_msg(E2ees__E2eeAddress *from, const char *auth, E2ees__ConsumeProtoMsgRequest *request);
 
 #endif /* MOCK_SERVER_H_ */

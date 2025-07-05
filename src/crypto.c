@@ -1,22 +1,22 @@
 /*
- * Copyright © 2020-2021 by Academia Sinica
+ * Copyright © 2021 Academia Sinica. All Rights Reserved.
  *
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "skissm/crypto.h"
+#include "e2ees/crypto.h"
 
 #include <errno.h>
 #include <string.h>
@@ -65,18 +65,18 @@
 #include "PQClean/src/crypto_sign/sphincs-shake-256f-simple/clean/api.h"
 #include "PQClean/src/crypto_sign/sphincs-shake-256s-simple/clean/api.h"
 
-#include "skissm/account.h"
-#include "skissm/cipher.h"
-#include "skissm/mem_util.h"
+#include "e2ees/account.h"
+#include "e2ees/cipher.h"
+#include "e2ees/mem_util.h"
 
 /** amount of random data required to create a Curve25519 keypair */
 #define CURVE25519_RANDOM_LENGTH CURVE25519_KEY_LENGTH
 
-#define AES256_FILE_AD "SKISSM ---> file encryption with AES256/GCM/Nopadding algorithm"
+#define AES256_FILE_AD "E2EES ---> file encryption with AES256/GCM/Nopadding algorithm"
 #define AES256_FILE_AD_LEN 64
 #define AES256_FILE_KDF_INFO "FILE"
 
-#define AES256_DATA_AD "SKISSM ---> data encryption with AES256/GCM/Nopadding algorithm"
+#define AES256_DATA_AD "E2EES ---> data encryption with AES256/GCM/Nopadding algorithm"
 #define AES256_DATA_AD_LEN 64
 
 /** buffer length for file encryption/decryption */
@@ -87,126 +87,126 @@ static const uint8_t CURVE25519_BASEPOINT[32] = {9};
 
 // digital signature
 
-static crypto_digital_signature_param_t curve25519_sign_param = {
+static crypto_ds_param_t curve25519_sign_param = {
     false,
     CURVE25519_KEY_LENGTH,
     CURVE25519_KEY_LENGTH,
     CURVE_SIGNATURE_LENGTH
 };
 
-static crypto_digital_signature_param_t mldsa44_param = {
+static crypto_ds_param_t mldsa44_param = {
     true,
     PQCLEAN_MLDSA44_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_MLDSA44_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_MLDSA44_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t mldsa65_param = {
+static crypto_ds_param_t mldsa65_param = {
     true,
     PQCLEAN_MLDSA65_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_MLDSA65_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_MLDSA65_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t mldsa87_param = {
+static crypto_ds_param_t mldsa87_param = {
     true,
     PQCLEAN_MLDSA87_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_MLDSA87_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_MLDSA87_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t falcon512_param = {
+static crypto_ds_param_t falcon512_param = {
     true,
     PQCLEAN_FALCON512_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_FALCON512_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_FALCON512_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t falcon1024_param = {
+static crypto_ds_param_t falcon1024_param = {
     true,
     PQCLEAN_FALCON1024_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_FALCON1024_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_FALCON1024_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_sha2_128f_param = {
+static crypto_ds_param_t sphincs_sha2_128f_param = {
     true,
     PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHA2128FSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_sha2_128s_param = {
+static crypto_ds_param_t sphincs_sha2_128s_param = {
     true,
     PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHA2128SSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_sha2_192f_param = {
+static crypto_ds_param_t sphincs_sha2_192f_param = {
     true,
     PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHA2192FSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_sha2_192s_param = {
+static crypto_ds_param_t sphincs_sha2_192s_param = {
     true,
     PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHA2192SSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_sha2_256f_param = {
+static crypto_ds_param_t sphincs_sha2_256f_param = {
     true,
     PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHA2256FSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_sha2_256s_param = {
+static crypto_ds_param_t sphincs_sha2_256s_param = {
     true,
     PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHA2256SSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_shake_128f_param = {
+static crypto_ds_param_t sphincs_shake_128f_param = {
     true,
     PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHAKE128FSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_shake_128s_param = {
+static crypto_ds_param_t sphincs_shake_128s_param = {
     true,
     PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHAKE128SSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_shake_192f_param = {
+static crypto_ds_param_t sphincs_shake_192f_param = {
     true,
     PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHAKE192FSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_shake_192s_param = {
+static crypto_ds_param_t sphincs_shake_192s_param = {
     true,
     PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHAKE192SSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_shake_256f_param = {
+static crypto_ds_param_t sphincs_shake_256f_param = {
     true,
     PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
     PQCLEAN_SPHINCSSHAKE256FSIMPLE_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_digital_signature_param_t sphincs_shake_256s_param = {
+static crypto_ds_param_t sphincs_shake_256s_param = {
     true,
     PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_PUBLICKEYBYTES,
     PQCLEAN_SPHINCSSHAKE256SSIMPLE_CLEAN_CRYPTO_SECRETKEYBYTES,
@@ -355,7 +355,7 @@ static crypto_kem_param_t mceliece8192128f_param = {
 
 // symmetric encryption
 
-static crypto_symmetric_encryption_param_t aes256_param = {
+static crypto_se_param_t aes256_param = {
     AES256_KEY_LENGTH,
     AES256_IV_LENGTH,
     AES256_GCM_TAG_LENGTH
@@ -368,75 +368,75 @@ static crypto_hash_param_t sha256_param = {
 
 // ditigal signature
 
-crypto_digital_signature_param_t get_curve25519_sign_param() {
+crypto_ds_param_t get_curve25519_sign_param() {
     return curve25519_sign_param;
 }
 
-crypto_digital_signature_param_t get_mldsa44_param() {
+crypto_ds_param_t get_mldsa44_param() {
     return mldsa44_param;
 }
 
-crypto_digital_signature_param_t get_mldsa65_param() {
+crypto_ds_param_t get_mldsa65_param() {
     return mldsa65_param;
 }
 
-crypto_digital_signature_param_t get_mldsa87_param() {
+crypto_ds_param_t get_mldsa87_param() {
     return mldsa87_param;
 }
 
-crypto_digital_signature_param_t get_falcon512_param() {
+crypto_ds_param_t get_falcon512_param() {
     return falcon512_param;
 }
 
-crypto_digital_signature_param_t get_falcon1024_param() {
+crypto_ds_param_t get_falcon1024_param() {
     return falcon1024_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_sha2_128f_param() {
+crypto_ds_param_t get_sphincs_sha2_128f_param() {
     return sphincs_sha2_128f_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_sha2_128s_param() {
+crypto_ds_param_t get_sphincs_sha2_128s_param() {
     return sphincs_sha2_128s_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_sha2_192f_param() {
+crypto_ds_param_t get_sphincs_sha2_192f_param() {
     return sphincs_sha2_192f_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_sha2_192s_param() {
+crypto_ds_param_t get_sphincs_sha2_192s_param() {
     return sphincs_sha2_192s_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_sha2_256f_param() {
+crypto_ds_param_t get_sphincs_sha2_256f_param() {
     return sphincs_sha2_256f_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_sha2_256s_param() {
+crypto_ds_param_t get_sphincs_sha2_256s_param() {
     return sphincs_sha2_256s_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_shake_128f_param() {
+crypto_ds_param_t get_sphincs_shake_128f_param() {
     return sphincs_shake_128f_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_shake_128s_param() {
+crypto_ds_param_t get_sphincs_shake_128s_param() {
     return sphincs_shake_128s_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_shake_192f_param() {
+crypto_ds_param_t get_sphincs_shake_192f_param() {
     return sphincs_shake_192f_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_shake_192s_param() {
+crypto_ds_param_t get_sphincs_shake_192s_param() {
     return sphincs_shake_192s_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_shake_256f_param() {
+crypto_ds_param_t get_sphincs_shake_256f_param() {
     return sphincs_shake_256f_param;
 }
 
-crypto_digital_signature_param_t get_sphincs_shake_256s_param() {
+crypto_ds_param_t get_sphincs_shake_256s_param() {
     return sphincs_shake_256s_param;
 }
 
@@ -682,7 +682,7 @@ crypto_kem_param_t get_mceliece8192128f_param() {
     return mceliece8192128f_param;
 }
 
-crypto_symmetric_encryption_param_t get_aes256_param() {
+crypto_se_param_t get_aes256_param() {
     return aes256_param;
 }
 
@@ -1172,7 +1172,7 @@ int crypto_mceliece8192128f_decaps(
 
 static void crypto_curve25519_generate_private_key(uint8_t *private_key) {
     uint8_t random[CURVE25519_RANDOM_LENGTH];
-    get_skissm_plugin()->common_handler.gen_rand(random, sizeof(random));
+    get_e2ees_plugin()->common_handler.gen_rand(random, sizeof(random));
 
     random[0] &= 248;
     random[31] &= 127;
@@ -1201,7 +1201,7 @@ int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinary
         result = crypto_curve25519_verify(signature, pub_key->data, msg, 10);
         if (result != 0) {
             // verify failed, regenerate the key pair
-            ssm_notify_log(
+            e2ees_notify_log(
                 NULL,
                 BAD_SIGNATURE,
                 "CURVE25519_crypto_sign_keypair() verify failed, regenerate the key pair."
@@ -1235,7 +1235,7 @@ int CURVE25519_crypto_sign_signature(
 ) {
     *signature_out_len = CURVE_SIGNATURE_LENGTH;
     uint8_t nonce[*signature_out_len];
-    get_skissm_plugin()->common_handler.gen_rand(nonce, sizeof(nonce));
+    get_e2ees_plugin()->common_handler.gen_rand(nonce, sizeof(nonce));
     return curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
 }
 
@@ -1261,7 +1261,7 @@ void crypto_curve25519_sign(
     uint8_t *signature_out
 ) {
     uint8_t nonce[CURVE_SIGNATURE_LENGTH];
-    get_skissm_plugin()->common_handler.gen_rand(nonce, sizeof(nonce));
+    get_e2ees_plugin()->common_handler.gen_rand(nonce, sizeof(nonce));
     curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
 }
 
@@ -1278,7 +1278,7 @@ int crypto_aes_encrypt_gcm(
     const uint8_t *add, size_t add_len,
     uint8_t *ciphertext_data
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
     mbedtls_gcm_context ctx;
     unsigned char *tag_buf = ciphertext_data + plaintext_data_len;
@@ -1287,7 +1287,7 @@ int crypto_aes_encrypt_gcm(
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         ret = mbedtls_gcm_crypt_and_tag(
             &ctx, MBEDTLS_GCM_ENCRYPT,
             plaintext_data_len, iv,
@@ -1307,7 +1307,7 @@ int crypto_aes_decrypt_gcm(
     const uint8_t *add, size_t add_len,
     uint8_t *plaintext_data, size_t *plaintext_data_len
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
     mbedtls_gcm_context ctx;
     unsigned char *input_tag_buf =
@@ -1318,7 +1318,7 @@ int crypto_aes_decrypt_gcm(
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         ret = mbedtls_gcm_crypt_and_tag(
             &ctx, MBEDTLS_GCM_DECRYPT,
             ciphertext_data_len - AES256_GCM_TAG_LENGTH, iv,
@@ -1336,7 +1336,7 @@ int crypto_aes_decrypt_gcm(
         *plaintext_data_len = ciphertext_data_len - AES256_GCM_TAG_LENGTH;
     } else {
         *plaintext_data_len = 0;
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
     return ret;
@@ -1361,7 +1361,7 @@ size_t encrypt_aes_data_with_iv(
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         ret = mbedtls_gcm_crypt_and_tag(
             &ctx, MBEDTLS_GCM_ENCRYPT,
             plaintext_data_len, iv,
@@ -1373,7 +1373,7 @@ size_t encrypt_aes_data_with_iv(
     mbedtls_gcm_free(&ctx);
 
     // done
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         return ciphertext_data_len;
     } else {
         free_mem((void **)ciphertext_data, ciphertext_data_len);
@@ -1412,7 +1412,7 @@ size_t decrypt_aes_data_with_iv(
 
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         ret = mbedtls_gcm_crypt_and_tag(
             &ctx, MBEDTLS_GCM_DECRYPT,
             plaintext_data_len, iv,
@@ -1449,7 +1449,7 @@ int encrypt_aes_file(
     FILE *infile, *outfile;
     infile = fopen(in_file_path, "r");
     if (infile == NULL) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
             BAD_FILE_ENCRYPTION,
             "encrypt_aes_file() in_file_path: %s, with errorno: %d.", in_file_path, errno);
@@ -1458,7 +1458,7 @@ int encrypt_aes_file(
 
     outfile = fopen(out_file_path, "w");
     if (outfile == NULL) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
             BAD_FILE_ENCRYPTION,
             "encrypt_aes_file() out_file_path: %s, with errorno: %d.", out_file_path, errno);
@@ -1486,12 +1486,12 @@ int encrypt_aes_file(
     int ret;
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
         ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_ENCRYPT, iv, AES256_DATA_IV_LENGTH, AD, AES256_FILE_AD_LEN);
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         int i;
         for (i = 0; i < times; i++) {
             fread(in_buffer, sizeof(char), max_plaintext_size, infile);
@@ -1500,7 +1500,7 @@ int encrypt_aes_file(
             fwrite(out_buffer, sizeof(char), max_plaintext_size, outfile);
         }
     }
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         if (rest > 0) {
             fread(in_buffer, sizeof(char), rest, infile);
             if ((ret = mbedtls_gcm_update(&ctx, rest, in_buffer, out_buffer)) == 0) {
@@ -1509,7 +1509,7 @@ int encrypt_aes_file(
         }
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         uint8_t tag[AES256_GCM_TAG_LENGTH];
         if ((ret = mbedtls_gcm_finish(&ctx, tag, AES256_GCM_TAG_LENGTH)) == 0) {
             fwrite(tag, sizeof(char), AES256_GCM_TAG_LENGTH, outfile);
@@ -1531,7 +1531,7 @@ int decrypt_aes_file(
     FILE *infile, *outfile;
     infile = fopen(in_file_path, "r+");
     if (infile == NULL) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
             BAD_FILE_DECRYPTION,
             "decrypt_aes_file() in_file_path: %s, with errorno: %d.", in_file_path, errno);
@@ -1540,7 +1540,7 @@ int decrypt_aes_file(
 
     outfile = fopen(out_file_path, "w");
     if (outfile == NULL) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
             BAD_FILE_DECRYPTION,
             "decrypt_aes_file() out_file_path: %s, with errorno: %d.", out_file_path, errno);
@@ -1569,12 +1569,12 @@ int decrypt_aes_file(
     int i;
     mbedtls_gcm_init(&ctx);
     ret = mbedtls_gcm_setkey(&ctx, cipher, aes_key, key_len);
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
         ret = mbedtls_gcm_starts(&ctx, MBEDTLS_GCM_DECRYPT, iv, AES256_DATA_IV_LENGTH, AD, AES256_FILE_AD_LEN);
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         for (i = 0; i < times; i++) {
             fread(in_buffer, sizeof(char), max_ciphertext_size, infile);
             if ((ret = mbedtls_gcm_update(&ctx, max_ciphertext_size, in_buffer, out_buffer)) != 0)
@@ -1582,7 +1582,7 @@ int decrypt_aes_file(
             fwrite(out_buffer, sizeof(char), max_ciphertext_size, outfile);
         }
     }
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         if (rest > 0) {
             fread(in_buffer, sizeof(char), rest, infile);
             if ((ret = mbedtls_gcm_update(&ctx, rest, in_buffer, out_buffer)) == 0) {
@@ -1591,7 +1591,7 @@ int decrypt_aes_file(
         }
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         uint8_t tag[AES256_GCM_TAG_LENGTH];
         if ((ret = mbedtls_gcm_finish(&ctx, tag, AES256_GCM_TAG_LENGTH)) == 0) {
             // fwrite(tag, sizeof(char), AES256_GCM_TAG_LENGTH, outfile);
@@ -1604,9 +1604,9 @@ int decrypt_aes_file(
             for (i = 0; i < AES256_GCM_TAG_LENGTH; i++)
                 diff |= input_tag[i] ^ tag[i];
             if (diff == 0) {
-                ret = SKISSM_RESULT_SUCC;
+                ret = E2EES_RESULT_SUCC;
             } else {
-                ret = SKISSM_RESULT_FAIL;
+                ret = E2EES_RESULT_FAIL;
             }
         }
     }
@@ -1676,7 +1676,7 @@ int crypto_hmac_sha256(
     const uint8_t *input, size_t input_len,
     uint8_t *output
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
     mbedtls_md_context_t ctx;
     mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
 
@@ -1691,7 +1691,7 @@ int crypto_hmac_sha256(
 }
 
 int crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
     mbedtls_sha256_context ctx;
 
     mbedtls_sha256_init(&ctx);
@@ -1730,18 +1730,18 @@ size_t crypto_base64_decode(uint8_t **msg_out, const unsigned char *base64_str) 
     return msg_out_len;
 }
 
-int crypto_hash_by_e2ee_pack_id(
-    uint32_t e2ee_pack_id_raw,
+int crypto_hash_by_e2ees_pack_id(
+    uint32_t e2ees_pack_id_raw,
     const uint8_t *msg, size_t msg_len,
     uint8_t **hash_out, size_t *hash_out_len
 ) {
-    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
-    hash_suite_t *hash_suite = get_hash_suite(e2ee_pack_id.hash);
+    e2ees_pack_id_t e2ees_pack_id = raw_to_e2ees_pack_id(e2ees_pack_id_raw);
+    hash_suite_t *hash_suite = get_hash_suite(e2ees_pack_id.hash);
     if (hash_suite == NULL) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
-            BAD_E2EE_PACK,
-            "crypto_hash_by_e2ee_pack_id() hash_suite not found: %d.", e2ee_pack_id_raw
+            BAD_E2EES_PACK,
+            "crypto_hash_by_e2ees_pack_id() hash_suite not found: %d.", e2ees_pack_id_raw
         );
         return -1;
     }
@@ -1753,28 +1753,28 @@ int crypto_hash_by_e2ee_pack_id(
     return 0;
 }
 
-int crypto_ds_key_gen_by_e2ee_pack_id(
-    uint32_t e2ee_pack_id_raw,
+int crypto_ds_key_gen_by_e2ees_pack_id(
+    uint32_t e2ees_pack_id_raw,
     ProtobufCBinaryData *pub_key,
     ProtobufCBinaryData *priv_key
 ) {
-    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
-    digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
+    e2ees_pack_id_t e2ees_pack_id = raw_to_e2ees_pack_id(e2ees_pack_id_raw);
+    ds_suite_t *digital_signature_suite = get_ds_suite(e2ees_pack_id.ds);
     if (digital_signature_suite == NULL) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
-            BAD_E2EE_PACK,
-            "crypto_ds_key_gen_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
+            BAD_E2EES_PACK,
+            "crypto_ds_key_gen_by_e2ees_pack_id() digital_signature_suite not found: %d.", e2ees_pack_id_raw
         );
         return -1;
     }
 
     int result = digital_signature_suite->sign_key_gen(pub_key, priv_key);
     if (result < 0) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
             BAD_KEY_PAIR,
-            "crypto_ds_key_gen_by_e2ee_pack_id() gen key failed."
+            "crypto_ds_key_gen_by_e2ees_pack_id() gen key failed."
         );
         free_protobuf(pub_key);
         free_protobuf(priv_key);
@@ -1783,27 +1783,27 @@ int crypto_ds_key_gen_by_e2ee_pack_id(
     return result;
 }
 
-int crypto_ds_sign_by_e2ee_pack_id(
-    uint32_t e2ee_pack_id_raw,
+int crypto_ds_sign_by_e2ees_pack_id(
+    uint32_t e2ees_pack_id_raw,
     uint8_t **signature_out, size_t *signature_out_len,
     const uint8_t *msg, size_t msg_len,
     const uint8_t *private_key, size_t private_key_len
 ) {
-    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
-    digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
+    e2ees_pack_id_t e2ees_pack_id = raw_to_e2ees_pack_id(e2ees_pack_id_raw);
+    ds_suite_t *digital_signature_suite = get_ds_suite(e2ees_pack_id.ds);
     if (digital_signature_suite == NULL) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
-            BAD_E2EE_PACK,
-            "crypto_ds_sign_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
+            BAD_E2EES_PACK,
+            "crypto_ds_sign_by_e2ees_pack_id() digital_signature_suite not found: %d.", e2ees_pack_id_raw
         );
         return -1;
     }
     if (private_key == NULL || private_key_len != digital_signature_suite->get_crypto_param().sign_priv_key_len) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
             BAD_PRIVATE_KEY,
-            "crypto_ds_sign_by_e2ee_pack_id() private_key wrong."
+            "crypto_ds_sign_by_e2ees_pack_id() private_key wrong."
         );
         return -1;
     }
@@ -1812,10 +1812,10 @@ int crypto_ds_sign_by_e2ee_pack_id(
     *signature_out = (uint8_t *)malloc(sizeof(uint8_t) * sig_len);
     int result = digital_signature_suite->sign(*signature_out, signature_out_len, msg, msg_len, private_key);
     if (result < 0) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
             BAD_SIGNATURE,
-            "crypto_ds_sign_by_e2ee_pack_id() sign failed."
+            "crypto_ds_sign_by_e2ees_pack_id() sign failed."
         );
         free_mem((void **)signature_out, sig_len);
     }
@@ -1823,37 +1823,37 @@ int crypto_ds_sign_by_e2ee_pack_id(
     return result;
 }
 
-int crypto_ds_verify_by_e2ee_pack_id(
-    uint32_t e2ee_pack_id_raw,
+int crypto_ds_verify_by_e2ees_pack_id(
+    uint32_t e2ees_pack_id_raw,
     const uint8_t *signature_in, size_t signature_in_len,
     const uint8_t *msg, size_t msg_len,
     const uint8_t *public_key, size_t public_key_len
 ) {
-    e2ee_pack_id_t e2ee_pack_id = raw_to_e2ee_pack_id(e2ee_pack_id_raw);
-    digital_signature_suite_t *digital_signature_suite = get_digital_signature_suite(e2ee_pack_id.digital_signature);
+    e2ees_pack_id_t e2ees_pack_id = raw_to_e2ees_pack_id(e2ees_pack_id_raw);
+    ds_suite_t *digital_signature_suite = get_ds_suite(e2ees_pack_id.ds);
     if (digital_signature_suite == NULL) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
-            BAD_E2EE_PACK,
-            "crypto_ds_verify_by_e2ee_pack_id() digital_signature_suite not found: %d.", e2ee_pack_id_raw
+            BAD_E2EES_PACK,
+            "crypto_ds_verify_by_e2ees_pack_id() digital_signature_suite not found: %d.", e2ees_pack_id_raw
         );
         return -1;
     }
     if (public_key == NULL || public_key_len != digital_signature_suite->get_crypto_param().sign_pub_key_len) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
             BAD_PUBLIC_KEY,
-            "crypto_ds_sign_by_e2ee_pack_id() public_key wrong."
+            "crypto_ds_sign_by_e2ees_pack_id() public_key wrong."
         );
         return -1;
     }
 
     int result = digital_signature_suite->verify(signature_in, signature_in_len, msg, msg_len, public_key);
     if (result < 0) {
-        ssm_notify_log(
+        e2ees_notify_log(
             NULL,
             BAD_SIGNATURE,
-            "crypto_ds_verify_by_e2ee_pack_id() verify failed."
+            "crypto_ds_verify_by_e2ees_pack_id() verify failed."
         );
     }
 

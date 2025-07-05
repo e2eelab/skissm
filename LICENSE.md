@@ -2,7 +2,7 @@
 
 This project is available under two different licenses:
 
-- The SKISSM Commercial License
+- The E2EE Security Commercial License
 
     See also the [Licensing FAQ](README.md#licensing)
 

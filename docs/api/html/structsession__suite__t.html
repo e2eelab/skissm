@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: session_suite_t Struct Reference</title>
+<title>E2EES: session_suite_t Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -94,25 +94,25 @@ $(function(){ initResizable(false); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab5f6c96cee99efe9ebd43be570e4f670" id="r_ab5f6c96cee99efe9ebd43be570e4f670"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5f6c96cee99efe9ebd43be570e4f670">new_outbound_session</a> )(Skissm__InviteResponse **, Skissm__E2eeAddress *, Skissm__PreKeyBundle *)</td></tr>
-<tr class="memdesc:ab5f6c96cee99efe9ebd43be570e4f670"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new outbound session.  <br /></td></tr>
-<tr class="separator:ab5f6c96cee99efe9ebd43be570e4f670"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a583c9f2475ecae467fdb79815e5d21b4" id="r_a583c9f2475ecae467fdb79815e5d21b4"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a583c9f2475ecae467fdb79815e5d21b4">new_inbound_session</a> )(Skissm__Session **, Skissm__Account *, Skissm__InviteMsg *)</td></tr>
-<tr class="memdesc:a583c9f2475ecae467fdb79815e5d21b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new inbound session.  <br /></td></tr>
-<tr class="separator:a583c9f2475ecae467fdb79815e5d21b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50767fed0b4b136fa01212b05bed1940" id="r_a50767fed0b4b136fa01212b05bed1940"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a50767fed0b4b136fa01212b05bed1940">complete_outbound_session</a> )(Skissm__Session **, Skissm__AcceptMsg *)</td></tr>
-<tr class="memdesc:a50767fed0b4b136fa01212b05bed1940"><td class="mdescLeft">&#160;</td><td class="mdescRight">Complete an outbound session.  <br /></td></tr>
-<tr class="separator:a50767fed0b4b136fa01212b05bed1940"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fe96befc268f81c56d464036f25b770" id="r_a5fe96befc268f81c56d464036f25b770"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5fe96befc268f81c56d464036f25b770">new_outbound_session</a> )(E2ees__InviteResponse **, E2ees__E2eeAddress *, E2ees__PreKeyBundle *)</td></tr>
+<tr class="memdesc:a5fe96befc268f81c56d464036f25b770"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new outbound session.  <br /></td></tr>
+<tr class="separator:a5fe96befc268f81c56d464036f25b770"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0ecab49689623541909004ecaf7fae0" id="r_ad0ecab49689623541909004ecaf7fae0"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad0ecab49689623541909004ecaf7fae0">new_inbound_session</a> )(E2ees__Session **, E2ees__Account *, E2ees__InviteMsg *)</td></tr>
+<tr class="memdesc:ad0ecab49689623541909004ecaf7fae0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new inbound session.  <br /></td></tr>
+<tr class="separator:ad0ecab49689623541909004ecaf7fae0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af84df092de5f86cd19382eca10b9703e" id="r_af84df092de5f86cd19382eca10b9703e"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af84df092de5f86cd19382eca10b9703e">complete_outbound_session</a> )(E2ees__Session **, E2ees__AcceptMsg *)</td></tr>
+<tr class="memdesc:af84df092de5f86cd19382eca10b9703e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Complete an outbound session.  <br /></td></tr>
+<tr class="separator:af84df092de5f86cd19382eca10b9703e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a50767fed0b4b136fa01212b05bed1940" name="a50767fed0b4b136fa01212b05bed1940"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50767fed0b4b136fa01212b05bed1940">&#9670;&#160;</a></span>complete_outbound_session</h2>
+<a id="af84df092de5f86cd19382eca10b9703e" name="af84df092de5f86cd19382eca10b9703e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af84df092de5f86cd19382eca10b9703e">&#9670;&#160;</a></span>complete_outbound_session</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* session_suite_t::complete_outbound_session) (Skissm__Session **, Skissm__AcceptMsg *)</td>
+          <td class="memname">int(* session_suite_t::complete_outbound_session) (E2ees__Session **, E2ees__AcceptMsg *)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -129,14 +129,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a583c9f2475ecae467fdb79815e5d21b4" name="a583c9f2475ecae467fdb79815e5d21b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a583c9f2475ecae467fdb79815e5d21b4">&#9670;&#160;</a></span>new_inbound_session</h2>
+<a id="ad0ecab49689623541909004ecaf7fae0" name="ad0ecab49689623541909004ecaf7fae0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0ecab49689623541909004ecaf7fae0">&#9670;&#160;</a></span>new_inbound_session</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* session_suite_t::new_inbound_session) (Skissm__Session **, Skissm__Account *, Skissm__InviteMsg *)</td>
+          <td class="memname">int(* session_suite_t::new_inbound_session) (E2ees__Session **, E2ees__Account *, E2ees__InviteMsg *)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -154,14 +154,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab5f6c96cee99efe9ebd43be570e4f670" name="ab5f6c96cee99efe9ebd43be570e4f670"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5f6c96cee99efe9ebd43be570e4f670">&#9670;&#160;</a></span>new_outbound_session</h2>
+<a id="a5fe96befc268f81c56d464036f25b770" name="a5fe96befc268f81c56d464036f25b770"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fe96befc268f81c56d464036f25b770">&#9670;&#160;</a></span>new_outbound_session</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* session_suite_t::new_outbound_session) (Skissm__InviteResponse **, Skissm__E2eeAddress *, Skissm__PreKeyBundle *)</td>
+          <td class="memname">int(* session_suite_t::new_outbound_session) (E2ees__InviteResponse **, E2ees__E2eeAddress *, E2ees__PreKeyBundle *)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -180,7 +180,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/skissm/<a class="el" href="session_8h_source.html">session.h</a></li>
+<li>include/e2ees/<a class="el" href="session_8h_source.html">session.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -4,20 +4,20 @@
  * @brief ratchet test
  *
  * @page test_ratchet ratchet documentation
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @section test_alice_to_bob
  * Alice and Bob establish their ratchet. Alice encrypts a message. Bob should decrypt the message successfully.
@@ -277,20 +277,20 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "skissm/cipher.h"
-#include "skissm/mem_util.h"
-#include "skissm/ratchet.h"
+#include "e2ees/cipher.h"
+#include "e2ees/mem_util.h"
+#include "e2ees/ratchet.h"
 
 #include "test_util.h"
 #include "test_plugin.h"
 
 static const cipher_suite_t *test_cipher_suite;
 
-static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
+static void on_log(E2ees__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
     print_log((char *)log_msg, log_code);
 }
 
-static skissm_event_handler_t test_event_handler = {
+static e2ees_event_handler_t test_event_handler = {
     on_log,
     NULL,
     NULL,
@@ -305,19 +305,19 @@ static skissm_event_handler_t test_event_handler = {
 };
 
 static void initialization(
-    Skissm__Ratchet **alice_ratchet,
-    Skissm__Ratchet **bob_ratchet,
+    E2ees__Ratchet **alice_ratchet,
+    E2ees__Ratchet **bob_ratchet,
     ProtobufCBinaryData *ad
 ) {
-    get_skissm_plugin()->event_handler = test_event_handler;
+    get_e2ees_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
+    test_cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
 
-    Skissm__KeyPair alice_ratchet_key;
+    E2ees__KeyPair alice_ratchet_key;
     test_cipher_suite->kem_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
 
-    Skissm__KeyPair bob_spk;
+    E2ees__KeyPair bob_spk;
     test_cipher_suite->kem_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
 
     int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
@@ -364,17 +364,17 @@ static void test_initialise_as_alice() {
     printf("test_initialise_as_alice begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *alice_ratchet = NULL;
+    E2ees__Ratchet *alice_ratchet = NULL;
 
-    get_skissm_plugin()->event_handler = test_event_handler;
+    get_e2ees_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
+    test_cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
 
-    Skissm__KeyPair alice_ratchet_key;
+    E2ees__KeyPair alice_ratchet_key;
     test_cipher_suite->kem_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
 
-    Skissm__KeyPair bob_spk;
+    E2ees__KeyPair bob_spk;
     test_cipher_suite->kem_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
 
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
@@ -412,17 +412,17 @@ static void test_initialise_as_bob() {
     printf("test_initialise_as_bob begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *bob_ratchet = NULL;
+    E2ees__Ratchet *bob_ratchet = NULL;
 
-    get_skissm_plugin()->event_handler = test_event_handler;
+    get_e2ees_plugin()->event_handler = test_event_handler;
 
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
-    test_cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
+    test_cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
 
-    Skissm__KeyPair alice_ratchet_key;
+    E2ees__KeyPair alice_ratchet_key;
     test_cipher_suite->kem_suite->asym_key_gen(&(alice_ratchet_key.public_key), &(alice_ratchet_key.private_key));
 
-    Skissm__KeyPair bob_spk;
+    E2ees__KeyPair bob_spk;
     test_cipher_suite->kem_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
 
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
@@ -455,7 +455,7 @@ static void test_alice_to_bob() {
     printf("test_alice_to_bob begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    E2ees__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     ProtobufCBinaryData ad;
 
     initialization(&alice_ratchet, &bob_ratchet, &ad);
@@ -466,7 +466,7 @@ static void test_alice_to_bob() {
     size_t decrypt_length;
 
     // Alice sends Bob a message
-    Skissm__One2oneMsgPayload *message = NULL;
+    E2ees__One2oneMsgPayload *message = NULL;
 
     encrypt_ratchet(&message, test_cipher_suite, alice_ratchet, ad, plaintext, plaintext_length);
 
@@ -483,10 +483,10 @@ static void test_alice_to_bob() {
     }
 
     free_protobuf(&ad);
-    skissm__one2one_msg_payload__free_unpacked(message, NULL);
+    e2ees__one2one_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
-    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(alice_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(bob_ratchet, NULL);
 
     // test stop
     tear_down();
@@ -498,7 +498,7 @@ static void test_bob_to_alice() {
     printf("test_bob_to_alice begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    E2ees__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     ProtobufCBinaryData ad;
 
     initialization(&alice_ratchet, &bob_ratchet, &ad);
@@ -509,7 +509,7 @@ static void test_bob_to_alice() {
     size_t decrypt_length;
 
     /* Bob sends Alice a message */
-    Skissm__One2oneMsgPayload *message = NULL;
+    E2ees__One2oneMsgPayload *message = NULL;
 
     encrypt_ratchet(&message, test_cipher_suite, bob_ratchet, ad, plaintext, plaintext_length);
 
@@ -526,10 +526,10 @@ static void test_bob_to_alice() {
     }
 
     free_protobuf(&ad);
-    skissm__one2one_msg_payload__free_unpacked(message, NULL);
+    e2ees__one2one_msg_payload__free_unpacked(message, NULL);
     free_mem((void **)&output, decrypt_length);
-    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(alice_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(bob_ratchet, NULL);
 
     // test stop
     tear_down();
@@ -541,7 +541,7 @@ static void test_interaction_alice_first() {
     printf("test_interaction_alice_first begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    E2ees__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     ProtobufCBinaryData ad;
 
     initialization(&alice_ratchet, &bob_ratchet, &ad);
@@ -552,7 +552,7 @@ static void test_interaction_alice_first() {
     uint8_t plaintext_1[] = "Alice's Message";
     size_t plaintext_1_length = sizeof(plaintext_1) - 1;
 
-    Skissm__One2oneMsgPayload *message_1 = NULL;
+    E2ees__One2oneMsgPayload *message_1 = NULL;
 
     encrypt_ratchet(&message_1, test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length);
 
@@ -573,7 +573,7 @@ static void test_interaction_alice_first() {
     uint8_t plaintext_2[] = "Bob's Message";
     size_t plaintext_2_length = sizeof(plaintext_2) - 1;
 
-    Skissm__One2oneMsgPayload *message_2 = NULL;
+    E2ees__One2oneMsgPayload *message_2 = NULL;
 
     encrypt_ratchet(&message_2, test_cipher_suite, bob_ratchet, ad, plaintext_2, plaintext_2_length);
 
@@ -591,12 +591,12 @@ static void test_interaction_alice_first() {
     }
 
     free_protobuf(&ad);
-    skissm__one2one_msg_payload__free_unpacked(message_1, NULL);
-    skissm__one2one_msg_payload__free_unpacked(message_2, NULL);
+    e2ees__one2one_msg_payload__free_unpacked(message_1, NULL);
+    e2ees__one2one_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, decrypt_length_1);
     free_mem((void **)&output_2, decrypt_length_2);
-    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(alice_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(bob_ratchet, NULL);
 
     // test stop
     tear_down();
@@ -608,7 +608,7 @@ static void test_interaction_bob_first() {
     printf("test_interaction_bob_first begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    E2ees__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     ProtobufCBinaryData ad;
 
     initialization(&alice_ratchet, &bob_ratchet, &ad);
@@ -619,7 +619,7 @@ static void test_interaction_bob_first() {
     uint8_t plaintext_1[] = "Bob's Message";
     size_t plaintext_1_length = sizeof(plaintext_1) - 1;
 
-    Skissm__One2oneMsgPayload *message_1 = NULL;
+    E2ees__One2oneMsgPayload *message_1 = NULL;
 
     encrypt_ratchet(&message_1, test_cipher_suite, bob_ratchet, ad, plaintext_1, plaintext_1_length);
 
@@ -640,7 +640,7 @@ static void test_interaction_bob_first() {
     uint8_t plaintext_2[] = "Alice's Message";
     size_t plaintext_2_length = sizeof(plaintext_2) - 1;
 
-    Skissm__One2oneMsgPayload *message_2 = NULL;
+    E2ees__One2oneMsgPayload *message_2 = NULL;
 
     encrypt_ratchet(&message_2, test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length);
 
@@ -658,12 +658,12 @@ static void test_interaction_bob_first() {
     }
 
     free_protobuf(&ad);
-    skissm__one2one_msg_payload__free_unpacked(message_1, NULL);
-    skissm__one2one_msg_payload__free_unpacked(message_2, NULL);
+    e2ees__one2one_msg_payload__free_unpacked(message_1, NULL);
+    e2ees__one2one_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, decrypt_length_1);
     free_mem((void **)&output_2, decrypt_length_2);
-    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(alice_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(bob_ratchet, NULL);
 
     // test stop
     tear_down();
@@ -675,7 +675,7 @@ static void test_out_of_order() {
     printf("test_out_of_order begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    E2ees__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     ProtobufCBinaryData ad;
 
     initialization(&alice_ratchet, &bob_ratchet, &ad);
@@ -686,14 +686,14 @@ static void test_out_of_order() {
     uint8_t plaintext_1[] = "Alice's first Message";
     size_t plaintext_1_length = sizeof(plaintext_1) - 1;
 
-    Skissm__One2oneMsgPayload *message_1 = NULL;
+    E2ees__One2oneMsgPayload *message_1 = NULL;
 
     encrypt_ratchet(&message_1, test_cipher_suite, alice_ratchet, ad, plaintext_1, plaintext_1_length);
 
     uint8_t plaintext_2[] = "Alice's second Message";
     size_t plaintext_2_length = sizeof(plaintext_2) - 1;
 
-    Skissm__One2oneMsgPayload *message_2 = NULL;
+    E2ees__One2oneMsgPayload *message_2 = NULL;
 
     encrypt_ratchet(&message_2, test_cipher_suite, alice_ratchet, ad, plaintext_2, plaintext_2_length);
 
@@ -725,12 +725,12 @@ static void test_out_of_order() {
     }
 
     free_protobuf(&ad);
-    skissm__one2one_msg_payload__free_unpacked(message_1, NULL);
-    skissm__one2one_msg_payload__free_unpacked(message_2, NULL);
+    e2ees__one2one_msg_payload__free_unpacked(message_1, NULL);
+    e2ees__one2one_msg_payload__free_unpacked(message_2, NULL);
     free_mem((void **)&output_1, decrypt_length_1);
     free_mem((void **)&output_2, decrypt_length_2);
-    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(alice_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(bob_ratchet, NULL);
 
     // test stop
     tear_down();
@@ -742,7 +742,7 @@ static void test_continual_message() {
     printf("test_continual_message begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    E2ees__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     ProtobufCBinaryData ad;
 
     initialization(&alice_ratchet, &bob_ratchet, &ad);
@@ -753,7 +753,7 @@ static void test_continual_message() {
 
     uint8_t **plaintext = (uint8_t **)malloc(sizeof(uint8_t *) * message_num);
     size_t *plaintext_len = (size_t *)malloc(sizeof(size_t) * message_num);
-    Skissm__One2oneMsgPayload **message = (Skissm__One2oneMsgPayload **)malloc(sizeof(Skissm__One2oneMsgPayload *) * message_num);
+    E2ees__One2oneMsgPayload **message = (E2ees__One2oneMsgPayload **)malloc(sizeof(E2ees__One2oneMsgPayload *) * message_num);
 
     for (i = 0; i < message_num; i++) {
         plaintext[i] = (uint8_t *)malloc(sizeof(uint8_t) * 64);
@@ -777,14 +777,14 @@ static void test_continual_message() {
     for (i = 0; i < message_num; i++) {
         free_mem((void **)&plaintext[i], sizeof(uint8_t) * 64);
         free_mem((void **)&output[i], output_len[i]);
-        skissm__one2one_msg_payload__free_unpacked(message[i], NULL);
+        e2ees__one2one_msg_payload__free_unpacked(message[i], NULL);
     }
     free_mem((void **)&plaintext, sizeof(uint8_t *) * message_num);
     free_mem((void **)&plaintext_len, sizeof(size_t) * message_num);
     free_mem((void **)&output, sizeof(uint8_t *) * message_num);
     free_mem((void **)&output_len, sizeof(size_t) * message_num);
-    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(alice_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(bob_ratchet, NULL);
 
     // test stop
     tear_down();
@@ -796,7 +796,7 @@ static void test_interaction_v2() {
     printf("test_interaction_v2 begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    E2ees__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     ProtobufCBinaryData ad;
 
     initialization(&alice_ratchet, &bob_ratchet, &ad);
@@ -806,7 +806,7 @@ static void test_interaction_v2() {
 
     uint8_t *plaintext = (uint8_t *)malloc(sizeof(uint8_t) * 64);
     size_t plaintext_len;
-    Skissm__One2oneMsgPayload *message = NULL;
+    E2ees__One2oneMsgPayload *message = NULL;
     uint8_t *output = NULL;
     size_t output_len;
     bool result;
@@ -821,7 +821,7 @@ static void test_interaction_v2() {
         result = is_equal(plaintext, output, plaintext_len);
         assert(result);
 
-        skissm__one2one_msg_payload__free_unpacked(message, NULL);
+        e2ees__one2one_msg_payload__free_unpacked(message, NULL);
         message = NULL;
         free_mem((void **)&output, sizeof(uint8_t) * output_len);
 
@@ -834,7 +834,7 @@ static void test_interaction_v2() {
         result = is_equal(plaintext, output, plaintext_len);
         assert(result);
 
-        skissm__one2one_msg_payload__free_unpacked(message, NULL);
+        e2ees__one2one_msg_payload__free_unpacked(message, NULL);
         message = NULL;
         free_mem((void **)&output, sizeof(uint8_t) * output_len);
 
@@ -847,7 +847,7 @@ static void test_interaction_v2() {
         result = is_equal(plaintext, output, plaintext_len);
         assert(result);
 
-        skissm__one2one_msg_payload__free_unpacked(message, NULL);
+        e2ees__one2one_msg_payload__free_unpacked(message, NULL);
         message = NULL;
         free_mem((void **)&output, sizeof(uint8_t) * output_len);
 
@@ -860,15 +860,15 @@ static void test_interaction_v2() {
         result = is_equal(plaintext, output, plaintext_len);
         assert(result);
 
-        skissm__one2one_msg_payload__free_unpacked(message, NULL);
+        e2ees__one2one_msg_payload__free_unpacked(message, NULL);
         message = NULL;
         free_mem((void **)&output, sizeof(uint8_t) * output_len);
     }
 
     free_protobuf(&ad);
     free_mem((void **)&plaintext, sizeof(uint8_t) * 64);
-    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(alice_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(bob_ratchet, NULL);
 
     // test stop
     tear_down();
@@ -880,7 +880,7 @@ static void test_out_of_order_v2() {
     printf("test_out_of_order_v2 begin!!!\n");
     tear_up();
 
-    Skissm__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
+    E2ees__Ratchet *alice_ratchet = NULL, *bob_ratchet = NULL;
     ProtobufCBinaryData ad;
 
     initialization(&alice_ratchet, &bob_ratchet, &ad);
@@ -889,7 +889,7 @@ static void test_out_of_order_v2() {
     int i;
     uint8_t **plaintext = (uint8_t **)malloc(sizeof(uint8_t *) * msg_num);
     size_t *plaintext_len = (size_t *)malloc(sizeof(size_t) * msg_num);
-    Skissm__One2oneMsgPayload **message = (Skissm__One2oneMsgPayload **)malloc(sizeof(Skissm__One2oneMsgPayload *) * msg_num);
+    E2ees__One2oneMsgPayload **message = (E2ees__One2oneMsgPayload **)malloc(sizeof(E2ees__One2oneMsgPayload *) * msg_num);
     uint8_t **output = (uint8_t **)malloc(sizeof(uint8_t *) * msg_num);
     size_t *output_len = (size_t *)malloc(sizeof(size_t) * msg_num);
     bool result;
@@ -961,14 +961,14 @@ static void test_out_of_order_v2() {
     for (i = 0; i < msg_num; i++) {
         free_mem((void **)&plaintext[i], sizeof(uint8_t) * 64);
         free_mem((void **)&output[i], output_len[i]);
-        skissm__one2one_msg_payload__free_unpacked(message[i], NULL);
+        e2ees__one2one_msg_payload__free_unpacked(message[i], NULL);
     }
     free_mem((void **)&plaintext, sizeof(uint8_t *) * msg_num);
     free_mem((void **)&plaintext_len, sizeof(size_t) * msg_num);
     free_mem((void **)&output, sizeof(uint8_t *) * msg_num);
     free_mem((void **)&output_len, sizeof(size_t) * msg_num);
-    skissm__ratchet__free_unpacked(alice_ratchet, NULL);
-    skissm__ratchet__free_unpacked(bob_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(alice_ratchet, NULL);
+    e2ees__ratchet__free_unpacked(bob_ratchet, NULL);
 
     // test stop
     tear_down();

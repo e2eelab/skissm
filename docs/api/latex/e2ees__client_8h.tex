@@ -1,0 +1,421 @@
+\doxysection{include/e2ees/e2ees\+\_\+client.h File Reference}
+\hypertarget{e2ees__client_8h}{}\label{e2ees__client_8h}\index{include/e2ees/e2ees\_client.h@{include/e2ees/e2ees\_client.h}}
+{\ttfamily \#include "{}e2ees/e2ees.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{e2ees__client_8h_a80f628b8d75642c2020742b3ffffd579}{register\+\_\+user}} (E2ees\+\_\+\+\_\+\+Register\+User\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}response\+\_\+out, uint32\+\_\+t e2ees\+\_\+pack\+\_\+id, const char \texorpdfstring{$\ast$}{*}user\+\_\+name, const char \texorpdfstring{$\ast$}{*}user\+\_\+id, const char \texorpdfstring{$\ast$}{*}device\+\_\+id, const char \texorpdfstring{$\ast$}{*}authenticator, const char \texorpdfstring{$\ast$}{*}auth\+\_\+code)
+\begin{DoxyCompactList}\small\item\em Register a new account. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees__client_8h_a042bf1f9630f108cc552a3097f5f99ae}{reinvite}} (E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+session)
+\begin{DoxyCompactList}\small\item\em Send invite request again if the outbound session has not been responded. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees__client_8h_a467089222c43b685273667817f670993}{invite}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}to\+\_\+user\+\_\+id, const char \texorpdfstring{$\ast$}{*}to\+\_\+domain)
+\begin{DoxyCompactList}\small\item\em Send invite request and create a new outbound session that needs to be responded before it can be used to send encryption message. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees__client_8h_a91c477f966b5db86ebec28d165259cdb}{new\+\_\+invite}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}to\+\_\+user\+\_\+id, const char \texorpdfstring{$\ast$}{*}to\+\_\+domain)
+\begin{DoxyCompactList}\small\item\em Send invite request to create a new outbound session and delete the old outbound session. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Send\+One2one\+Msg\+Response \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees__client_8h_ac2019c93bd20f5b65431e9bc5b50cde8}{send\+\_\+one2one\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}to\+\_\+user\+\_\+id, const char \texorpdfstring{$\ast$}{*}to\+\_\+domain, uint32\+\_\+t notif\+\_\+level, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Send one2one msg. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees__client_8h_a2c7b96306e74c6088c32921722c56fa2}{send\+\_\+sync\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Send sync msg to other devices. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{e2ees__client_8h_a934df6bf30202390c1f736581f79da06}{send\+\_\+sync\+\_\+invite\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}to\+\_\+user\+\_\+id, const char \texorpdfstring{$\ast$}{*}to\+\_\+domain, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}to\+\_\+device\+\_\+id\+\_\+list, size\+\_\+t to\+\_\+device\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Send sync invite msg to other devices. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{e2ees__client_8h_a1b4fa82bbf3dc84129fadc02029c5b08}{create\+\_\+group}} (E2ees\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}response\+\_\+out, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members, size\+\_\+t group\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Create a group. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{e2ees__client_8h_a2abcc41f0c8e2b63c32bbfa63c3dd988}{add\+\_\+group\+\_\+members}} (E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}response\+\_\+out, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}adding\+\_\+members, size\+\_\+t adding\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Add group members. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{e2ees__client_8h_ae3ee532a22ccc57426e8b35305ebc37c}{remove\+\_\+group\+\_\+members}} (E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}response\+\_\+out, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}removing\+\_\+members, size\+\_\+t removing\+\_\+members\+\_\+num)
+\begin{DoxyCompactList}\small\item\em Remove group members. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{e2ees__client_8h_aaff467552ec00747d308cc6984656d59}{leave\+\_\+group}} (E2ees\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}response\+\_\+out, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address)
+\begin{DoxyCompactList}\small\item\em Leave group. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{e2ees__client_8h_a60ee15d990bdfc9790c544399994d41e}{send\+\_\+group\+\_\+msg}} (E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}response\+\_\+out, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, uint32\+\_\+t notif\+\_\+level, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Send group msg. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{e2ees__client_8h_aa8b4af8849fc2dcb98c84932b4461800}{send\+\_\+group\+\_\+msg\+\_\+with\+\_\+filter}} (E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}response\+\_\+out, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address, uint32\+\_\+t notif\+\_\+level, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}allow\+\_\+list, size\+\_\+t allow\+\_\+list\+\_\+len, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}deny\+\_\+list, size\+\_\+t deny\+\_\+list\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Send group msg with filter. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees__client_8h_a8f29e878cdf05ccb7a16dc70542c6b8a}{consume\+\_\+proto\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, const char \texorpdfstring{$\ast$}{*}proto\+\_\+msg\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Send consume\+\_\+proto\+\_\+msg request to server. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees__client_8h_a8d9510a1a577f1adbb2b7c73151a98ef}{process\+\_\+proto\+\_\+msg}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}proto\+\_\+msg\+\_\+data, size\+\_\+t proto\+\_\+msg\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Process incoming protocol messages. \end{DoxyCompactList}\item 
+\Hypertarget{e2ees__client_8h_acb4bc7ff4f105126fcd9363d9ae8032d}\label{e2ees__client_8h_acb4bc7ff4f105126fcd9363d9ae8032d} 
+void {\bfseries resume\+\_\+connection} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2021 Academia Sinica. All Rights Reserved.
+
+This file is part of E2\+EE Security.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+E2\+EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with E2\+EE Security. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{e2ees__client_8h_a2abcc41f0c8e2b63c32bbfa63c3dd988}\index{e2ees\_client.h@{e2ees\_client.h}!add\_group\_members@{add\_group\_members}}
+\index{add\_group\_members@{add\_group\_members}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{add\_group\_members()}{add\_group\_members()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a2abcc41f0c8e2b63c32bbfa63c3dd988} 
+int add\+\_\+group\+\_\+members (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{response\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{adding\+\_\+members}{, }\item[{size\+\_\+t}]{adding\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Add group members. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response\+\_\+out} & \\
+\hline
+{\em sender\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em adding\+\_\+members} & \\
+\hline
+{\em adding\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_a8f29e878cdf05ccb7a16dc70542c6b8a}\index{e2ees\_client.h@{e2ees\_client.h}!consume\_proto\_msg@{consume\_proto\_msg}}
+\index{consume\_proto\_msg@{consume\_proto\_msg}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{consume\_proto\_msg()}{consume\_proto\_msg()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a8f29e878cdf05ccb7a16dc70542c6b8a} 
+E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*} consume\+\_\+proto\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{proto\+\_\+msg\+\_\+id}{}\end{DoxyParamCaption})}
+
+
+
+Send consume\+\_\+proto\+\_\+msg request to server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sender\+\_\+address} & \\
+\hline
+{\em proto\+\_\+msg\+\_\+id} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*} 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_a1b4fa82bbf3dc84129fadc02029c5b08}\index{e2ees\_client.h@{e2ees\_client.h}!create\_group@{create\_group}}
+\index{create\_group@{create\_group}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{create\_group()}{create\_group()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a1b4fa82bbf3dc84129fadc02029c5b08} 
+int create\+\_\+group (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{response\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Create a group. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response\+\_\+out} & \\
+\hline
+{\em sender\+\_\+address} & \\
+\hline
+{\em group\+\_\+name} & \\
+\hline
+{\em group\+\_\+members} & \\
+\hline
+{\em group\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_a467089222c43b685273667817f670993}\index{e2ees\_client.h@{e2ees\_client.h}!invite@{invite}}
+\index{invite@{invite}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{invite()}{invite()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a467089222c43b685273667817f670993} 
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*} invite (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+user\+\_\+id}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+domain}{}\end{DoxyParamCaption})}
+
+
+
+Send invite request and create a new outbound session that needs to be responded before it can be used to send encryption message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & From address \\
+\hline
+{\em to\+\_\+user\+\_\+id} & The receiver\textquotesingle{}s user\+\_\+id \\
+\hline
+{\em to\+\_\+domain} & The receiver\textquotesingle{}s domain \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*} 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_aaff467552ec00747d308cc6984656d59}\index{e2ees\_client.h@{e2ees\_client.h}!leave\_group@{leave\_group}}
+\index{leave\_group@{leave\_group}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{leave\_group()}{leave\_group()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_aaff467552ec00747d308cc6984656d59} 
+int leave\+\_\+group (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{response\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{}\end{DoxyParamCaption})}
+
+
+
+Leave group. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response\+\_\+out} & \\
+\hline
+{\em sender\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_a91c477f966b5db86ebec28d165259cdb}\index{e2ees\_client.h@{e2ees\_client.h}!new\_invite@{new\_invite}}
+\index{new\_invite@{new\_invite}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{new\_invite()}{new\_invite()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a91c477f966b5db86ebec28d165259cdb} 
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*} new\+\_\+invite (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+user\+\_\+id}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+domain}{}\end{DoxyParamCaption})}
+
+
+
+Send invite request to create a new outbound session and delete the old outbound session. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & From address \\
+\hline
+{\em to\+\_\+user\+\_\+id} & The receiver\textquotesingle{}s user\+\_\+id \\
+\hline
+{\em to\+\_\+domain} & The receiver\textquotesingle{}s domain \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*} 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_a8d9510a1a577f1adbb2b7c73151a98ef}\index{e2ees\_client.h@{e2ees\_client.h}!process\_proto\_msg@{process\_proto\_msg}}
+\index{process\_proto\_msg@{process\_proto\_msg}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{process\_proto\_msg()}{process\_proto\_msg()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a8d9510a1a577f1adbb2b7c73151a98ef} 
+E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*} process\+\_\+proto\+\_\+msg (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{proto\+\_\+msg\+\_\+data}{, }\item[{size\+\_\+t}]{proto\+\_\+msg\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Process incoming protocol messages. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em proto\+\_\+msg\+\_\+data} & \\
+\hline
+{\em proto\+\_\+msg\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*} 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_a80f628b8d75642c2020742b3ffffd579}\index{e2ees\_client.h@{e2ees\_client.h}!register\_user@{register\_user}}
+\index{register\_user@{register\_user}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{register\_user()}{register\_user()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a80f628b8d75642c2020742b3ffffd579} 
+int register\+\_\+user (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Register\+User\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{response\+\_\+out}{, }\item[{uint32\+\_\+t}]{e2ees\+\_\+pack\+\_\+id}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{user\+\_\+name}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{user\+\_\+id}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{device\+\_\+id}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{authenticator}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{auth\+\_\+code}{}\end{DoxyParamCaption})}
+
+
+
+Register a new account. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response\+\_\+out} & The output \\
+\hline
+{\em e2ees\+\_\+pack\+\_\+id} & The e2ee package id to be used. \\
+\hline
+{\em user\+\_\+name} & The user name that is creating the new account. \\
+\hline
+{\em user\+\_\+id} & The unique user id that will be binded to the new account. \\
+\hline
+{\em device\+\_\+id} & The device id that will be binded to the new account. \\
+\hline
+{\em authenticator} & The authenticator (email and etc.) is used to receive an register auth code. \\
+\hline
+{\em auth\+\_\+code} & The auth code that is received by the authenticator. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_a042bf1f9630f108cc552a3097f5f99ae}\index{e2ees\_client.h@{e2ees\_client.h}!reinvite@{reinvite}}
+\index{reinvite@{reinvite}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{reinvite()}{reinvite()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a042bf1f9630f108cc552a3097f5f99ae} 
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*} reinvite (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+session}{}\end{DoxyParamCaption})}
+
+
+
+Send invite request again if the outbound session has not been responded. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em outbound\+\_\+session} & The outbound session \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*} 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_ae3ee532a22ccc57426e8b35305ebc37c}\index{e2ees\_client.h@{e2ees\_client.h}!remove\_group\_members@{remove\_group\_members}}
+\index{remove\_group\_members@{remove\_group\_members}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{remove\_group\_members()}{remove\_group\_members()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_ae3ee532a22ccc57426e8b35305ebc37c} 
+int remove\+\_\+group\+\_\+members (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{response\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{removing\+\_\+members}{, }\item[{size\+\_\+t}]{removing\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Remove group members. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response\+\_\+out} & \\
+\hline
+{\em sender\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em removing\+\_\+members} & \\
+\hline
+{\em removing\+\_\+members\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_a60ee15d990bdfc9790c544399994d41e}\index{e2ees\_client.h@{e2ees\_client.h}!send\_group\_msg@{send\_group\_msg}}
+\index{send\_group\_msg@{send\_group\_msg}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{send\_group\_msg()}{send\_group\_msg()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a60ee15d990bdfc9790c544399994d41e} 
+int send\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{response\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{uint32\+\_\+t}]{notif\+\_\+level}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Send group msg. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response\+\_\+out} & \\
+\hline
+{\em sender\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em notif\+\_\+level} & \\
+\hline
+\end{DoxyParams}
+param plaintext\+\_\+data 
+\begin{DoxyParams}{Parameters}
+{\em plaintext\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_aa8b4af8849fc2dcb98c84932b4461800}\index{e2ees\_client.h@{e2ees\_client.h}!send\_group\_msg\_with\_filter@{send\_group\_msg\_with\_filter}}
+\index{send\_group\_msg\_with\_filter@{send\_group\_msg\_with\_filter}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{send\_group\_msg\_with\_filter()}{send\_group\_msg\_with\_filter()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_aa8b4af8849fc2dcb98c84932b4461800} 
+int send\+\_\+group\+\_\+msg\+\_\+with\+\_\+filter (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{response\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{, }\item[{uint32\+\_\+t}]{notif\+\_\+level}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{allow\+\_\+list}{, }\item[{size\+\_\+t}]{allow\+\_\+list\+\_\+len}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{deny\+\_\+list}{, }\item[{size\+\_\+t}]{deny\+\_\+list\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Send group msg with filter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em response\+\_\+out} & \\
+\hline
+{\em sender\+\_\+address} & \\
+\hline
+{\em group\+\_\+address} & \\
+\hline
+{\em notif\+\_\+level} & \\
+\hline
+\end{DoxyParams}
+param plaintext\+\_\+data 
+\begin{DoxyParams}{Parameters}
+{\em plaintext\+\_\+data\+\_\+len} & \\
+\hline
+{\em allow\+\_\+list} & optional allow list with type E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}. \\
+\hline
+{\em allow\+\_\+list\+\_\+len} & optional allow list len with type size\+\_\+t. \\
+\hline
+{\em deny\+\_\+list} & optional deny list with type E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}. \\
+\hline
+{\em deny\+\_\+list\+\_\+len} & optional deny list len with type size\+\_\+t. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_ac2019c93bd20f5b65431e9bc5b50cde8}\index{e2ees\_client.h@{e2ees\_client.h}!send\_one2one\_msg@{send\_one2one\_msg}}
+\index{send\_one2one\_msg@{send\_one2one\_msg}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{send\_one2one\_msg()}{send\_one2one\_msg()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_ac2019c93bd20f5b65431e9bc5b50cde8} 
+E2ees\+\_\+\+\_\+\+Send\+One2one\+Msg\+Response \texorpdfstring{$\ast$}{*} send\+\_\+one2one\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+user\+\_\+id}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+domain}{, }\item[{uint32\+\_\+t}]{notif\+\_\+level}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Send one2one msg. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em to\+\_\+user\+\_\+id} & \\
+\hline
+{\em to\+\_\+domain} & \\
+\hline
+{\em notif\+\_\+level} & \\
+\hline
+{\em plaintext\+\_\+data} & \\
+\hline
+{\em plaintext\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+E2ees\+\_\+\+\_\+\+Send\+One2one\+Msg\+Response \texorpdfstring{$\ast$}{*} 
+\end{DoxyReturn}
+\Hypertarget{e2ees__client_8h_a934df6bf30202390c1f736581f79da06}\index{e2ees\_client.h@{e2ees\_client.h}!send\_sync\_invite\_msg@{send\_sync\_invite\_msg}}
+\index{send\_sync\_invite\_msg@{send\_sync\_invite\_msg}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{send\_sync\_invite\_msg()}{send\_sync\_invite\_msg()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a934df6bf30202390c1f736581f79da06} 
+void send\+\_\+sync\+\_\+invite\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+user\+\_\+id}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{to\+\_\+domain}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{to\+\_\+device\+\_\+id\+\_\+list}{, }\item[{size\+\_\+t}]{to\+\_\+device\+\_\+num}{}\end{DoxyParamCaption})}
+
+
+
+Send sync invite msg to other devices. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em to\+\_\+user\+\_\+id} & \\
+\hline
+{\em to\+\_\+domain} & \\
+\hline
+{\em to\+\_\+device\+\_\+id\+\_\+list} & \\
+\hline
+{\em to\+\_\+device\+\_\+num} & \\
+\hline
+\end{DoxyParams}
+\Hypertarget{e2ees__client_8h_a2c7b96306e74c6088c32921722c56fa2}\index{e2ees\_client.h@{e2ees\_client.h}!send\_sync\_msg@{send\_sync\_msg}}
+\index{send\_sync\_msg@{send\_sync\_msg}!e2ees\_client.h@{e2ees\_client.h}}
+\doxysubsubsection{\texorpdfstring{send\_sync\_msg()}{send\_sync\_msg()}}
+{\footnotesize\ttfamily \label{e2ees__client_8h_a2c7b96306e74c6088c32921722c56fa2} 
+void send\+\_\+sync\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{from}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Send sync msg to other devices. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em plaintext\+\_\+data} & \\
+\hline
+{\em plaintext\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}

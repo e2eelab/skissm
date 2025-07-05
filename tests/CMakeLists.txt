@@ -1,21 +1,21 @@
 ################################################################################
 #
-#  Copyright © 2020-2021 by Academia Sinica
+#  Copyright © 2021 Academia Sinica. All Rights Reserved.
 #
-#  This file is part of SKISSM.
+#  This file is part of E2EE Security.
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  SKISSM is distributed in the hope that it will be useful,
+#  E2EE Security is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+#  along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
 enable_testing()
@@ -61,7 +61,7 @@ target_include_directories(test_util
         $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
 
-set(TEST_SKISSM
+set(test_e2ees
     test_aes
     test_gcm
     test_file_gcm
@@ -85,11 +85,11 @@ if(NOT (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND BUILD_SHARED_LIBS))
   # to use internal symbols, so only enable it if we're not on Windows, or if
   # we're building statically
 
-  # set(TEST_SKISSM ${TEST_SKISSM} test_ratchet)
+  # set(test_e2ees ${test_e2ees} test_ratchet)
   # add_test(Ratchet test_ratchet)
 endif()
 
-foreach(test IN ITEMS ${TEST_SKISSM})
+foreach(test IN ITEMS ${test_e2ees})
   add_executable(${test} ${test}.c)
   target_include_directories(${test}
     PRIVATE
@@ -99,9 +99,9 @@ foreach(test IN ITEMS ${TEST_SKISSM})
         $<BUILD_INTERFACE:${PROTO_DIS_DIR}>
         ${mbedtls_DIR})
   if(CMAKE_SYSTEM_NAME MATCHES iOS)
-    target_link_libraries(${test} db test_util test_env sqlite3 skissm_static)
+    target_link_libraries(${test} db test_util test_env sqlite3 e2ees_static)
   else()
-    target_link_libraries(${test} db test_util test_env sqlite3 skissm_static ${CMAKE_DL_LIBS})
+    target_link_libraries(${test} db test_util test_env sqlite3 e2ees_static ${CMAKE_DL_LIBS})
   endif()
 endforeach(test)
 

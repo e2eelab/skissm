@@ -6,12 +6,11 @@
 	path = lib/protobuf
 	url = https://github.com/protocolbuffers/protobuf.git
     tag = v24.3
-[submodule "protos/src/skissm"]
-	path = protos/src/skissm
-	url = https://github.com/e2eelab/skissm-protos
-	branch = master
 [submodule "lib/PQClean/src"]
 	path = lib/PQClean/src
 	url = https://github.com/PQClean/PQClean
-	# branch = master
-	commit = 0c5bb143456333cd6ac85435d344b08b351b27a8
+	commit = 2cc64716044832eea747234ddbffc06746ab815d
+[submodule "protos/src/e2ees"]
+	path = protos/src/e2ees
+	url = https://github.com/e2eelab/e2ee-security-protos.git
+	branch = master

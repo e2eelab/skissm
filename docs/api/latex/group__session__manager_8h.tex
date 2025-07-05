@@ -1,68 +1,68 @@
-\doxysection{include/skissm/group\+\_\+session\+\_\+manager.h File Reference}
-\hypertarget{group__session__manager_8h}{}\label{group__session__manager_8h}\index{include/skissm/group\_session\_manager.h@{include/skissm/group\_session\_manager.h}}
+\doxysection{include/e2ees/group\+\_\+session\+\_\+manager.h File Reference}
+\hypertarget{group__session__manager_8h}{}\label{group__session__manager_8h}\index{include/e2ees/group\_session\_manager.h@{include/e2ees/group\_session\_manager.h}}
 {\ttfamily \#include $<$stddef.\+h$>$}\newline
 {\ttfamily \#include $<$stdint.\+h$>$}\newline
-{\ttfamily \#include "{}skissm/skissm.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/e2ees.\+h"{}}\newline
 \doxysubsubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-int \mbox{\hyperlink{group__session__manager_8h_a4a94d2fe0d98ef4eb45042342b6bb120}{produce\+\_\+create\+\_\+group\+\_\+request}} (Skissm\+\_\+\+\_\+\+Create\+Group\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+member\+\_\+list, size\+\_\+t group\+\_\+members\+\_\+num)
+int \mbox{\hyperlink{group__session__manager_8h_aaf686aaa8519f011640edf06d4513f34}{produce\+\_\+create\+\_\+group\+\_\+request}} (E2ees\+\_\+\+\_\+\+Create\+Group\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+member\+\_\+list, size\+\_\+t group\+\_\+members\+\_\+num)
 \begin{DoxyCompactList}\small\item\em Create a Create\+Group\+Request message to be sent to server. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_ab3bec4c8d11491dd17e41f668b194439}{consume\+\_\+create\+\_\+group\+\_\+response}} (uint32\+\_\+t e2ee\+\_\+pack\+\_\+id, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members, size\+\_\+t group\+\_\+members\+\_\+num, Skissm\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}response)
+int \mbox{\hyperlink{group__session__manager_8h_a18aca1ea67c6142e32d8cd167e23fb3a}{consume\+\_\+create\+\_\+group\+\_\+response}} (uint32\+\_\+t e2ees\+\_\+pack\+\_\+id, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}sender\+\_\+address, const char \texorpdfstring{$\ast$}{*}group\+\_\+name, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}group\+\_\+members, size\+\_\+t group\+\_\+members\+\_\+num, E2ees\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}response)
 \begin{DoxyCompactList}\small\item\em Process an incoming Create\+Group\+Response message. \end{DoxyCompactList}\item 
-bool \mbox{\hyperlink{group__session__manager_8h_a238ddf4188b8958a2d7ad2e2ea245014}{consume\+\_\+create\+\_\+group\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Create\+Group\+Msg \texorpdfstring{$\ast$}{*}msg)
+bool \mbox{\hyperlink{group__session__manager_8h_abd0402d26ebf703120814f50e0f4f9f8}{consume\+\_\+create\+\_\+group\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, E2ees\+\_\+\+\_\+\+Create\+Group\+Msg \texorpdfstring{$\ast$}{*}msg)
 \begin{DoxyCompactList}\small\item\em Create a Create\+Group\+Msg message to be sent to server. \end{DoxyCompactList}\item 
-bool \mbox{\hyperlink{group__session__manager_8h_a6422050736039024f17f46b93845fb38}{consume\+\_\+get\+\_\+group\+\_\+response}} (Skissm\+\_\+\+\_\+\+Get\+Group\+Response \texorpdfstring{$\ast$}{*}response)
+bool \mbox{\hyperlink{group__session__manager_8h_a84eff04625822d825eb909795fa417e7}{consume\+\_\+get\+\_\+group\+\_\+response}} (E2ees\+\_\+\+\_\+\+Get\+Group\+Response \texorpdfstring{$\ast$}{*}response)
 \begin{DoxyCompactList}\small\item\em Process an incoming Get\+Group\+Response message. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_af4c59e87ad9f0ce1ad26de91828bcd22}{produce\+\_\+add\+\_\+group\+\_\+members\+\_\+request}} (Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}adding\+\_\+member\+\_\+list, size\+\_\+t adding\+\_\+members\+\_\+num)
+int \mbox{\hyperlink{group__session__manager_8h_a0dd6ab160e317aa11d4823e49bcc8003}{produce\+\_\+add\+\_\+group\+\_\+members\+\_\+request}} (E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}adding\+\_\+member\+\_\+list, size\+\_\+t adding\+\_\+members\+\_\+num)
 \begin{DoxyCompactList}\small\item\em Create a Add\+Group\+Members\+Request message to be sent to server. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_a9fa9b6281df82a9348435346473e14c5}{consume\+\_\+add\+\_\+group\+\_\+members\+\_\+response}} (Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}response, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}adding\+\_\+members, size\+\_\+t adding\+\_\+members\+\_\+num)
+int \mbox{\hyperlink{group__session__manager_8h_a85e87759d2dda9f838dbcfd458903f60}{consume\+\_\+add\+\_\+group\+\_\+members\+\_\+response}} (E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}response, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}adding\+\_\+members, size\+\_\+t adding\+\_\+members\+\_\+num)
 \begin{DoxyCompactList}\small\item\em Process an incoming Add\+Group\+Members\+Response message. \end{DoxyCompactList}\item 
-bool \mbox{\hyperlink{group__session__manager_8h_ab60988d640853e77164707fa71de155f}{consume\+\_\+add\+\_\+group\+\_\+members\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}msg)
+bool \mbox{\hyperlink{group__session__manager_8h_a0da342c5e02701fb664d8cdc1655aa7c}{consume\+\_\+add\+\_\+group\+\_\+members\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}msg)
 \begin{DoxyCompactList}\small\item\em Process an incoming Add\+Group\+Members\+Msg message. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_a6ed2610ccee8b175ada456ef3e55210b}{produce\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+request}} (Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}new\+\_\+device\+\_\+address)
+int \mbox{\hyperlink{group__session__manager_8h_a494617f36a13ac16096a53ecbe0dca56}{produce\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+request}} (E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}new\+\_\+device\+\_\+address)
 \begin{DoxyCompactList}\small\item\em Create a Add\+Group\+Member\+Device\+Request message to be sent to server. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_a7fe72dd239601b2a71b73944d349bf9a}{consume\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+response}} (Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Response \texorpdfstring{$\ast$}{*}response)
+int \mbox{\hyperlink{group__session__manager_8h_a05f912c6955d23410e9d1b8010eaae6f}{consume\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+response}} (E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Response \texorpdfstring{$\ast$}{*}response)
 \begin{DoxyCompactList}\small\item\em Process an incoming Add\+Group\+Member\+Device\+Response message. \end{DoxyCompactList}\item 
-bool \mbox{\hyperlink{group__session__manager_8h_a1b7a8085d18aa8b21b77dfd9d066d38f}{consume\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg \texorpdfstring{$\ast$}{*}msg)
+bool \mbox{\hyperlink{group__session__manager_8h_aacf9ee9a1de8b8dbeed592842688e45a}{consume\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg \texorpdfstring{$\ast$}{*}msg)
 \begin{DoxyCompactList}\small\item\em Process an incoming Add\+Group\+Member\+Device\+Msg message. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_a85b2fbb2e4f3d2266dbfa043f793e9f2}{produce\+\_\+remove\+\_\+group\+\_\+members\+\_\+request}} (Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}removing\+\_\+group\+\_\+members, size\+\_\+t removing\+\_\+group\+\_\+members\+\_\+num)
+int \mbox{\hyperlink{group__session__manager_8h_aeaead45e83565f30d0851395f89e659e}{produce\+\_\+remove\+\_\+group\+\_\+members\+\_\+request}} (E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}removing\+\_\+group\+\_\+members, size\+\_\+t removing\+\_\+group\+\_\+members\+\_\+num)
 \begin{DoxyCompactList}\small\item\em Create a Remove\+Group\+Members\+Request message to be sent to server. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_a6502940c3f21d036c48080964748a8ef}{consume\+\_\+remove\+\_\+group\+\_\+members\+\_\+response}} (Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}response, Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}removing\+\_\+members, size\+\_\+t removing\+\_\+members\+\_\+num)
+int \mbox{\hyperlink{group__session__manager_8h_a816a4936d8711c5ad0740fb0864eaf59}{consume\+\_\+remove\+\_\+group\+\_\+members\+\_\+response}} (E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}response, E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}removing\+\_\+members, size\+\_\+t removing\+\_\+members\+\_\+num)
 \begin{DoxyCompactList}\small\item\em Process an incoming Remove\+Group\+Members\+Response message. \end{DoxyCompactList}\item 
-bool \mbox{\hyperlink{group__session__manager_8h_a0c91c1814ac39c2340737c3c8fd8007f}{consume\+\_\+remove\+\_\+group\+\_\+members\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}msg)
+bool \mbox{\hyperlink{group__session__manager_8h_a4b79c0e016cb1e635a850a4fca98913e}{consume\+\_\+remove\+\_\+group\+\_\+members\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}msg)
 \begin{DoxyCompactList}\small\item\em Process an incoming Remove\+Group\+Members\+Msg message. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_ad0145ac3748160d9b0700f55cce5252b}{produce\+\_\+leave\+\_\+group\+\_\+request}} (Skissm\+\_\+\+\_\+\+Leave\+Group\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address)
-\begin{DoxyCompactList}\small\item\em Create a Skissm\+\_\+\+\_\+\+Leave\+Group\+Request message to be sent to server. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_ad605824cd4b59c48fba0236bd6c2757f}{consume\+\_\+leave\+\_\+group\+\_\+response}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, Skissm\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}response)
-\begin{DoxyCompactList}\small\item\em Process an incoming Skissm\+\_\+\+\_\+\+Leave\+Group\+Response message. \end{DoxyCompactList}\item 
-bool \mbox{\hyperlink{group__session__manager_8h_ae97bddf4a394767d5b51482db8128bc2}{consume\+\_\+leave\+\_\+group\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg \texorpdfstring{$\ast$}{*}msg)
-\begin{DoxyCompactList}\small\item\em Process an incoming Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg message. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_a3915da39e94fe5aabb79d95c8b382776}{produce\+\_\+send\+\_\+group\+\_\+msg\+\_\+request}} (Skissm\+\_\+\+\_\+\+Send\+Group\+Msg\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, uint32\+\_\+t notif\+\_\+level, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}allow\+\_\+list, size\+\_\+t allow\+\_\+list\+\_\+len, Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}deny\+\_\+list, size\+\_\+t deny\+\_\+list\+\_\+len)
+int \mbox{\hyperlink{group__session__manager_8h_a2ffb780206b94dce86a33f2d9edf341e}{produce\+\_\+leave\+\_\+group\+\_\+request}} (E2ees\+\_\+\+\_\+\+Leave\+Group\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}group\+\_\+address)
+\begin{DoxyCompactList}\small\item\em Create a E2ees\+\_\+\+\_\+\+Leave\+Group\+Request message to be sent to server. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session__manager_8h_a1cb729acdce6da215aa03ecdf508769a}{consume\+\_\+leave\+\_\+group\+\_\+response}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}user\+\_\+address, E2ees\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}response)
+\begin{DoxyCompactList}\small\item\em Process an incoming E2ees\+\_\+\+\_\+\+Leave\+Group\+Response message. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{group__session__manager_8h_a71c8b1178a2bf7533d7a9448159de00a}{consume\+\_\+leave\+\_\+group\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, E2ees\+\_\+\+\_\+\+Leave\+Group\+Msg \texorpdfstring{$\ast$}{*}msg)
+\begin{DoxyCompactList}\small\item\em Process an incoming E2ees\+\_\+\+\_\+\+Leave\+Group\+Msg message. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{group__session__manager_8h_ab6753b221a6f76500881c200bebc5921}{produce\+\_\+send\+\_\+group\+\_\+msg\+\_\+request}} (E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+out, E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, uint32\+\_\+t notif\+\_\+level, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}allow\+\_\+list, size\+\_\+t allow\+\_\+list\+\_\+len, E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}deny\+\_\+list, size\+\_\+t deny\+\_\+list\+\_\+len)
 \begin{DoxyCompactList}\small\item\em Create a Send\+Group\+Msg\+Request message to be sent to server. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{group__session__manager_8h_aaeaba2dadad426963a719b2887ff5df2}{consume\+\_\+send\+\_\+group\+\_\+msg\+\_\+response}} (Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, Skissm\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}response)
+int \mbox{\hyperlink{group__session__manager_8h_a02e42059ac52ddbad69468a29a1e3889}{consume\+\_\+send\+\_\+group\+\_\+msg\+\_\+response}} (E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}outbound\+\_\+group\+\_\+session, E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}response)
 \begin{DoxyCompactList}\small\item\em Process an incoming Send\+Group\+Msg\+Response message. \end{DoxyCompactList}\item 
-bool \mbox{\hyperlink{group__session__manager_8h_ac33102e03ae91177db893967cf43c180}{consume\+\_\+group\+\_\+msg}} (Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, Skissm\+\_\+\+\_\+\+E2ee\+Msg \texorpdfstring{$\ast$}{*}e2ee\+\_\+msg)
+bool \mbox{\hyperlink{group__session__manager_8h_adacab13c9f6e6e0f55da7901080562fb}{consume\+\_\+group\+\_\+msg}} (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}receiver\+\_\+address, E2ees\+\_\+\+\_\+\+E2ee\+Msg \texorpdfstring{$\ast$}{*}e2ee\+\_\+msg)
 \begin{DoxyCompactList}\small\item\em Process an incoming E2ee\+Msg message. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-Copyright © 2020-\/2021 by Academia Sinica
+Copyright © 2021 Academia Sinica. All Rights Reserved.
 
-This file is part of SKISSM.
+This file is part of E2\+EE Security.
 
 This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+E2\+EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with SKISSM. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+You should have received a copy of the GNU General Public License along with E2\+EE Security. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
 
 \doxysubsection{Function Documentation}
-\Hypertarget{group__session__manager_8h_a1b7a8085d18aa8b21b77dfd9d066d38f}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_add\_group\_member\_device\_msg@{consume\_add\_group\_member\_device\_msg}}
+\Hypertarget{group__session__manager_8h_aacf9ee9a1de8b8dbeed592842688e45a}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_add\_group\_member\_device\_msg@{consume\_add\_group\_member\_device\_msg}}
 \index{consume\_add\_group\_member\_device\_msg@{consume\_add\_group\_member\_device\_msg}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_add\_group\_member\_device\_msg()}{consume\_add\_group\_member\_device\_msg()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a1b7a8085d18aa8b21b77dfd9d066d38f} 
-bool consume\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_aacf9ee9a1de8b8dbeed592842688e45a} 
+bool consume\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
 
 
 
@@ -78,11 +78,11 @@ Process an incoming Add\+Group\+Member\+Device\+Msg message.
 \begin{DoxyReturn}{Returns}
 true for success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a7fe72dd239601b2a71b73944d349bf9a}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_add\_group\_member\_device\_response@{consume\_add\_group\_member\_device\_response}}
+\Hypertarget{group__session__manager_8h_a05f912c6955d23410e9d1b8010eaae6f}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_add\_group\_member\_device\_response@{consume\_add\_group\_member\_device\_response}}
 \index{consume\_add\_group\_member\_device\_response@{consume\_add\_group\_member\_device\_response}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_add\_group\_member\_device\_response()}{consume\_add\_group\_member\_device\_response()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a7fe72dd239601b2a71b73944d349bf9a} 
-int consume\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a05f912c6955d23410e9d1b8010eaae6f} 
+int consume\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+response (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
 
 
 
@@ -98,11 +98,11 @@ Process an incoming Add\+Group\+Member\+Device\+Response message.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_ab60988d640853e77164707fa71de155f}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_add\_group\_members\_msg@{consume\_add\_group\_members\_msg}}
+\Hypertarget{group__session__manager_8h_a0da342c5e02701fb664d8cdc1655aa7c}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_add\_group\_members\_msg@{consume\_add\_group\_members\_msg}}
 \index{consume\_add\_group\_members\_msg@{consume\_add\_group\_members\_msg}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_add\_group\_members\_msg()}{consume\_add\_group\_members\_msg()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_ab60988d640853e77164707fa71de155f} 
-bool consume\+\_\+add\+\_\+group\+\_\+members\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a0da342c5e02701fb664d8cdc1655aa7c} 
+bool consume\+\_\+add\+\_\+group\+\_\+members\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
 
 
 
@@ -118,11 +118,11 @@ Process an incoming Add\+Group\+Members\+Msg message.
 \begin{DoxyReturn}{Returns}
 true for success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a9fa9b6281df82a9348435346473e14c5}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_add\_group\_members\_response@{consume\_add\_group\_members\_response}}
+\Hypertarget{group__session__manager_8h_a85e87759d2dda9f838dbcfd458903f60}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_add\_group\_members\_response@{consume\_add\_group\_members\_response}}
 \index{consume\_add\_group\_members\_response@{consume\_add\_group\_members\_response}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_add\_group\_members\_response()}{consume\_add\_group\_members\_response()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a9fa9b6281df82a9348435346473e14c5} 
-int consume\+\_\+add\+\_\+group\+\_\+members\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}}]{response}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{adding\+\_\+members}{, }\item[{size\+\_\+t}]{adding\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a85e87759d2dda9f838dbcfd458903f60} 
+int consume\+\_\+add\+\_\+group\+\_\+members\+\_\+response (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}}]{response}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{adding\+\_\+members}{, }\item[{size\+\_\+t}]{adding\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
 
 
 
@@ -142,11 +142,11 @@ Process an incoming Add\+Group\+Members\+Response message.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a238ddf4188b8958a2d7ad2e2ea245014}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_create\_group\_msg@{consume\_create\_group\_msg}}
+\Hypertarget{group__session__manager_8h_abd0402d26ebf703120814f50e0f4f9f8}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_create\_group\_msg@{consume\_create\_group\_msg}}
 \index{consume\_create\_group\_msg@{consume\_create\_group\_msg}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_create\_group\_msg()}{consume\_create\_group\_msg()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a238ddf4188b8958a2d7ad2e2ea245014} 
-bool consume\+\_\+create\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Create\+Group\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_abd0402d26ebf703120814f50e0f4f9f8} 
+bool consume\+\_\+create\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Create\+Group\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
 
 
 
@@ -162,11 +162,11 @@ Create a Create\+Group\+Msg message to be sent to server.
 \begin{DoxyReturn}{Returns}
 true for success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_ab3bec4c8d11491dd17e41f668b194439}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_create\_group\_response@{consume\_create\_group\_response}}
+\Hypertarget{group__session__manager_8h_a18aca1ea67c6142e32d8cd167e23fb3a}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_create\_group\_response@{consume\_create\_group\_response}}
 \index{consume\_create\_group\_response@{consume\_create\_group\_response}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_create\_group\_response()}{consume\_create\_group\_response()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_ab3bec4c8d11491dd17e41f668b194439} 
-int consume\+\_\+create\+\_\+group\+\_\+response (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{e2ee\+\_\+pack\+\_\+id}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{, }\item[{Skissm\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a18aca1ea67c6142e32d8cd167e23fb3a} 
+int consume\+\_\+create\+\_\+group\+\_\+response (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{e2ees\+\_\+pack\+\_\+id}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+members}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{, }\item[{E2ees\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
 
 
 
@@ -174,7 +174,7 @@ Process an incoming Create\+Group\+Response message.
 
 
 \begin{DoxyParams}{Parameters}
-{\em e2ee\+\_\+pack\+\_\+id} & \\
+{\em e2ees\+\_\+pack\+\_\+id} & \\
 \hline
 {\em sender\+\_\+address} & \\
 \hline
@@ -190,11 +190,11 @@ Process an incoming Create\+Group\+Response message.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a6422050736039024f17f46b93845fb38}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_get\_group\_response@{consume\_get\_group\_response}}
+\Hypertarget{group__session__manager_8h_a84eff04625822d825eb909795fa417e7}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_get\_group\_response@{consume\_get\_group\_response}}
 \index{consume\_get\_group\_response@{consume\_get\_group\_response}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_get\_group\_response()}{consume\_get\_group\_response()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a6422050736039024f17f46b93845fb38} 
-bool consume\+\_\+get\+\_\+group\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Get\+Group\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a84eff04625822d825eb909795fa417e7} 
+bool consume\+\_\+get\+\_\+group\+\_\+response (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Get\+Group\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
 
 
 
@@ -205,11 +205,11 @@ Process an incoming Get\+Group\+Response message.
 {\em response} & \\
 \hline
 \end{DoxyParams}
-\Hypertarget{group__session__manager_8h_ac33102e03ae91177db893967cf43c180}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_group\_msg@{consume\_group\_msg}}
+\Hypertarget{group__session__manager_8h_adacab13c9f6e6e0f55da7901080562fb}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_group\_msg@{consume\_group\_msg}}
 \index{consume\_group\_msg@{consume\_group\_msg}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_group\_msg()}{consume\_group\_msg()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_ac33102e03ae91177db893967cf43c180} 
-bool consume\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Msg \texorpdfstring{$\ast$}{*}}]{e2ee\+\_\+msg}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_adacab13c9f6e6e0f55da7901080562fb} 
+bool consume\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Msg \texorpdfstring{$\ast$}{*}}]{e2ee\+\_\+msg}{}\end{DoxyParamCaption})}
 
 
 
@@ -225,15 +225,15 @@ Process an incoming E2ee\+Msg message.
 \begin{DoxyReturn}{Returns}
 true for success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_ae97bddf4a394767d5b51482db8128bc2}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_leave\_group\_msg@{consume\_leave\_group\_msg}}
+\Hypertarget{group__session__manager_8h_a71c8b1178a2bf7533d7a9448159de00a}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_leave\_group\_msg@{consume\_leave\_group\_msg}}
 \index{consume\_leave\_group\_msg@{consume\_leave\_group\_msg}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_leave\_group\_msg()}{consume\_leave\_group\_msg()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_ae97bddf4a394767d5b51482db8128bc2} 
-bool consume\+\_\+leave\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a71c8b1178a2bf7533d7a9448159de00a} 
+bool consume\+\_\+leave\+\_\+group\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Leave\+Group\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
 
 
 
-Process an incoming Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg message. 
+Process an incoming E2ees\+\_\+\+\_\+\+Leave\+Group\+Msg message. 
 
 
 \begin{DoxyParams}{Parameters}
@@ -245,15 +245,15 @@ Process an incoming Skissm\+\_\+\+\_\+\+Leave\+Group\+Msg message.
 \begin{DoxyReturn}{Returns}
 true for success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_ad605824cd4b59c48fba0236bd6c2757f}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_leave\_group\_response@{consume\_leave\_group\_response}}
+\Hypertarget{group__session__manager_8h_a1cb729acdce6da215aa03ecdf508769a}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_leave\_group\_response@{consume\_leave\_group\_response}}
 \index{consume\_leave\_group\_response@{consume\_leave\_group\_response}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_leave\_group\_response()}{consume\_leave\_group\_response()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_ad605824cd4b59c48fba0236bd6c2757f} 
-int consume\+\_\+leave\+\_\+group\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a1cb729acdce6da215aa03ecdf508769a} 
+int consume\+\_\+leave\+\_\+group\+\_\+response (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
 
 
 
-Process an incoming Skissm\+\_\+\+\_\+\+Leave\+Group\+Response message. 
+Process an incoming E2ees\+\_\+\+\_\+\+Leave\+Group\+Response message. 
 
 
 \begin{DoxyParams}{Parameters}
@@ -265,11 +265,11 @@ Process an incoming Skissm\+\_\+\+\_\+\+Leave\+Group\+Response message.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a0c91c1814ac39c2340737c3c8fd8007f}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_remove\_group\_members\_msg@{consume\_remove\_group\_members\_msg}}
+\Hypertarget{group__session__manager_8h_a4b79c0e016cb1e635a850a4fca98913e}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_remove\_group\_members\_msg@{consume\_remove\_group\_members\_msg}}
 \index{consume\_remove\_group\_members\_msg@{consume\_remove\_group\_members\_msg}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_remove\_group\_members\_msg()}{consume\_remove\_group\_members\_msg()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a0c91c1814ac39c2340737c3c8fd8007f} 
-bool consume\+\_\+remove\+\_\+group\+\_\+members\+\_\+msg (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a4b79c0e016cb1e635a850a4fca98913e} 
+bool consume\+\_\+remove\+\_\+group\+\_\+members\+\_\+msg (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{receiver\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Msg \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
 
 
 
@@ -285,11 +285,11 @@ Process an incoming Remove\+Group\+Members\+Msg message.
 \begin{DoxyReturn}{Returns}
 true for success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a6502940c3f21d036c48080964748a8ef}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_remove\_group\_members\_response@{consume\_remove\_group\_members\_response}}
+\Hypertarget{group__session__manager_8h_a816a4936d8711c5ad0740fb0864eaf59}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_remove\_group\_members\_response@{consume\_remove\_group\_members\_response}}
 \index{consume\_remove\_group\_members\_response@{consume\_remove\_group\_members\_response}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_remove\_group\_members\_response()}{consume\_remove\_group\_members\_response()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a6502940c3f21d036c48080964748a8ef} 
-int consume\+\_\+remove\+\_\+group\+\_\+members\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}}]{response}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{removing\+\_\+members}{, }\item[{size\+\_\+t}]{removing\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a816a4936d8711c5ad0740fb0864eaf59} 
+int consume\+\_\+remove\+\_\+group\+\_\+members\+\_\+response (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}}]{response}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{removing\+\_\+members}{, }\item[{size\+\_\+t}]{removing\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
 
 
 
@@ -309,11 +309,11 @@ Process an incoming Remove\+Group\+Members\+Response message.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_aaeaba2dadad426963a719b2887ff5df2}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_send\_group\_msg\_response@{consume\_send\_group\_msg\_response}}
+\Hypertarget{group__session__manager_8h_a02e42059ac52ddbad69468a29a1e3889}\index{group\_session\_manager.h@{group\_session\_manager.h}!consume\_send\_group\_msg\_response@{consume\_send\_group\_msg\_response}}
 \index{consume\_send\_group\_msg\_response@{consume\_send\_group\_msg\_response}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{consume\_send\_group\_msg\_response()}{consume\_send\_group\_msg\_response()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_aaeaba2dadad426963a719b2887ff5df2} 
-int consume\+\_\+send\+\_\+group\+\_\+msg\+\_\+response (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a02e42059ac52ddbad69468a29a1e3889} 
+int consume\+\_\+send\+\_\+group\+\_\+msg\+\_\+response (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}}]{response}{}\end{DoxyParamCaption})}
 
 
 
@@ -329,11 +329,11 @@ Process an incoming Send\+Group\+Msg\+Response message.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a6ed2610ccee8b175ada456ef3e55210b}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_add\_group\_member\_device\_request@{produce\_add\_group\_member\_device\_request}}
+\Hypertarget{group__session__manager_8h_a494617f36a13ac16096a53ecbe0dca56}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_add\_group\_member\_device\_request@{produce\_add\_group\_member\_device\_request}}
 \index{produce\_add\_group\_member\_device\_request@{produce\_add\_group\_member\_device\_request}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{produce\_add\_group\_member\_device\_request()}{produce\_add\_group\_member\_device\_request()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a6ed2610ccee8b175ada456ef3e55210b} 
-int produce\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{new\+\_\+device\+\_\+address}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a494617f36a13ac16096a53ecbe0dca56} 
+int produce\+\_\+add\+\_\+group\+\_\+member\+\_\+device\+\_\+request (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{new\+\_\+device\+\_\+address}{}\end{DoxyParamCaption})}
 
 
 
@@ -351,11 +351,11 @@ Create a Add\+Group\+Member\+Device\+Request message to be sent to server.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_af4c59e87ad9f0ce1ad26de91828bcd22}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_add\_group\_members\_request@{produce\_add\_group\_members\_request}}
+\Hypertarget{group__session__manager_8h_a0dd6ab160e317aa11d4823e49bcc8003}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_add\_group\_members\_request@{produce\_add\_group\_members\_request}}
 \index{produce\_add\_group\_members\_request@{produce\_add\_group\_members\_request}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{produce\_add\_group\_members\_request()}{produce\_add\_group\_members\_request()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_af4c59e87ad9f0ce1ad26de91828bcd22} 
-int produce\+\_\+add\+\_\+group\+\_\+members\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Add\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{adding\+\_\+member\+\_\+list}{, }\item[{size\+\_\+t}]{adding\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a0dd6ab160e317aa11d4823e49bcc8003} 
+int produce\+\_\+add\+\_\+group\+\_\+members\+\_\+request (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{adding\+\_\+member\+\_\+list}{, }\item[{size\+\_\+t}]{adding\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
 
 
 
@@ -375,11 +375,11 @@ Create a Add\+Group\+Members\+Request message to be sent to server.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a4a94d2fe0d98ef4eb45042342b6bb120}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_create\_group\_request@{produce\_create\_group\_request}}
+\Hypertarget{group__session__manager_8h_aaf686aaa8519f011640edf06d4513f34}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_create\_group\_request@{produce\_create\_group\_request}}
 \index{produce\_create\_group\_request@{produce\_create\_group\_request}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{produce\_create\_group\_request()}{produce\_create\_group\_request()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a4a94d2fe0d98ef4eb45042342b6bb120} 
-int produce\+\_\+create\+\_\+group\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Create\+Group\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+member\+\_\+list}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_aaf686aaa8519f011640edf06d4513f34} 
+int produce\+\_\+create\+\_\+group\+\_\+request (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Create\+Group\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{sender\+\_\+address}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{group\+\_\+name}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{group\+\_\+member\+\_\+list}{, }\item[{size\+\_\+t}]{group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
 
 
 
@@ -401,15 +401,15 @@ Create a Create\+Group\+Request message to be sent to server.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_ad0145ac3748160d9b0700f55cce5252b}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_leave\_group\_request@{produce\_leave\_group\_request}}
+\Hypertarget{group__session__manager_8h_a2ffb780206b94dce86a33f2d9edf341e}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_leave\_group\_request@{produce\_leave\_group\_request}}
 \index{produce\_leave\_group\_request@{produce\_leave\_group\_request}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{produce\_leave\_group\_request()}{produce\_leave\_group\_request()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_ad0145ac3748160d9b0700f55cce5252b} 
-int produce\+\_\+leave\+\_\+group\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Leave\+Group\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_a2ffb780206b94dce86a33f2d9edf341e} 
+int produce\+\_\+leave\+\_\+group\+\_\+request (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Leave\+Group\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{user\+\_\+address}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}}]{group\+\_\+address}{}\end{DoxyParamCaption})}
 
 
 
-Create a Skissm\+\_\+\+\_\+\+Leave\+Group\+Request message to be sent to server. 
+Create a E2ees\+\_\+\+\_\+\+Leave\+Group\+Request message to be sent to server. 
 
 
 \begin{DoxyParams}{Parameters}
@@ -423,11 +423,11 @@ Create a Skissm\+\_\+\+\_\+\+Leave\+Group\+Request message to be sent to server.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a85b2fbb2e4f3d2266dbfa043f793e9f2}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_remove\_group\_members\_request@{produce\_remove\_group\_members\_request}}
+\Hypertarget{group__session__manager_8h_aeaead45e83565f30d0851395f89e659e}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_remove\_group\_members\_request@{produce\_remove\_group\_members\_request}}
 \index{produce\_remove\_group\_members\_request@{produce\_remove\_group\_members\_request}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{produce\_remove\_group\_members\_request()}{produce\_remove\_group\_members\_request()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a85b2fbb2e4f3d2266dbfa043f793e9f2} 
-int produce\+\_\+remove\+\_\+group\+\_\+members\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Remove\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{removing\+\_\+group\+\_\+members}{, }\item[{size\+\_\+t}]{removing\+\_\+group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_aeaead45e83565f30d0851395f89e659e} 
+int produce\+\_\+remove\+\_\+group\+\_\+members\+\_\+request (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Member \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{removing\+\_\+group\+\_\+members}{, }\item[{size\+\_\+t}]{removing\+\_\+group\+\_\+members\+\_\+num}{}\end{DoxyParamCaption})}
 
 
 
@@ -447,11 +447,11 @@ Create a Remove\+Group\+Members\+Request message to be sent to server.
 \begin{DoxyReturn}{Returns}
 0 if success 
 \end{DoxyReturn}
-\Hypertarget{group__session__manager_8h_a3915da39e94fe5aabb79d95c8b382776}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_send\_group\_msg\_request@{produce\_send\_group\_msg\_request}}
+\Hypertarget{group__session__manager_8h_ab6753b221a6f76500881c200bebc5921}\index{group\_session\_manager.h@{group\_session\_manager.h}!produce\_send\_group\_msg\_request@{produce\_send\_group\_msg\_request}}
 \index{produce\_send\_group\_msg\_request@{produce\_send\_group\_msg\_request}!group\_session\_manager.h@{group\_session\_manager.h}}
 \doxysubsubsection{\texorpdfstring{produce\_send\_group\_msg\_request()}{produce\_send\_group\_msg\_request()}}
-{\footnotesize\ttfamily \label{group__session__manager_8h_a3915da39e94fe5aabb79d95c8b382776} 
-int produce\+\_\+send\+\_\+group\+\_\+msg\+\_\+request (\begin{DoxyParamCaption}\item[{Skissm\+\_\+\+\_\+\+Send\+Group\+Msg\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{Skissm\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{uint32\+\_\+t}]{notif\+\_\+level}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{allow\+\_\+list}{, }\item[{size\+\_\+t}]{allow\+\_\+list\+\_\+len}{, }\item[{Skissm\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{deny\+\_\+list}{, }\item[{size\+\_\+t}]{deny\+\_\+list\+\_\+len}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{group__session__manager_8h_ab6753b221a6f76500881c200bebc5921} 
+int produce\+\_\+send\+\_\+group\+\_\+msg\+\_\+request (\begin{DoxyParamCaption}\item[{E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+out}{, }\item[{E2ees\+\_\+\+\_\+\+Group\+Session \texorpdfstring{$\ast$}{*}}]{outbound\+\_\+group\+\_\+session}{, }\item[{uint32\+\_\+t}]{notif\+\_\+level}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{allow\+\_\+list}{, }\item[{size\+\_\+t}]{allow\+\_\+list\+\_\+len}{, }\item[{E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{deny\+\_\+list}{, }\item[{size\+\_\+t}]{deny\+\_\+list\+\_\+len}{}\end{DoxyParamCaption})}
 
 
 

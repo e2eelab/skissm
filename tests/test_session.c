@@ -4,20 +4,20 @@
  * @brief session test
  *
  * @page test_session session documentation
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @section test_basic_session
  * Alice and Bob establish their session. Alice sends a message to Bob. Bob should decrypt the message successfully.
@@ -260,14 +260,14 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#include "skissm/account.h"
-#include "skissm/account_manager.h"
-#include "skissm/e2ee_client.h"
-#include "skissm/mem_util.h"
-#include "skissm/ratchet.h"
-#include "skissm/session.h"
-#include "skissm/session_manager.h"
-#include "skissm/skissm.h"
+#include "e2ees/account.h"
+#include "e2ees/account_manager.h"
+#include "e2ees/e2ees_client.h"
+#include "e2ees/mem_util.h"
+#include "e2ees/ratchet.h"
+#include "e2ees/session.h"
+#include "e2ees/session_manager.h"
+#include "e2ees/e2ees.h"
 
 #include "mock_server_sending.h"
 #include "test_plugin.h"
@@ -275,27 +275,27 @@
 
 #define account_data_max 10
 
-static Skissm__Account *account_data[account_data_max];
+static E2ees__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
 static uint8_t test_plaintext[] = "Session test!!!";
 static size_t test_plaintext_len;
 
-static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
+static void on_log(E2ees__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
     // print_log((char *)log_msg, log_code);
 }
 
-static void on_user_registered(Skissm__Account *account) {
+static void on_user_registered(E2ees__Account *account) {
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
 }
 
-static void on_inbound_session_invited(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from) {
+static void on_inbound_session_invited(E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from) {
     // printf("on_inbound_session_invited\n");
 }
 
-static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *inbound_session) {
+static void on_inbound_session_ready(E2ees__E2eeAddress *user_address, E2ees__Session *inbound_session) {
     // if (inbound_session->f2f == true) {
     //     printf("the face-to-face inbound session is ready\n");
     // } else {
@@ -303,7 +303,7 @@ static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__
     // }
 }
 
-static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *outbound_session) {
+static void on_outbound_session_ready(E2ees__E2eeAddress *user_address, E2ees__Session *outbound_session) {
     // if (outbound_session->f2f == true) {
     //     printf("the face-to-face outbound session is ready\n");
     // } else {
@@ -312,9 +312,9 @@ static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm_
 }
 
 static void on_one2one_msg_received(
-    Skissm__E2eeAddress *user_address, 
-    Skissm__E2eeAddress *from_address,
-    Skissm__E2eeAddress *to_address,
+    E2ees__E2eeAddress *user_address, 
+    E2ees__E2eeAddress *from_address,
+    E2ees__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     assert(memcmp(plaintext, test_plaintext, plaintext_len) == 0);
@@ -322,16 +322,16 @@ static void on_one2one_msg_received(
 }
 
 static void on_other_device_msg_received(
-    Skissm__E2eeAddress *user_address, 
-    Skissm__E2eeAddress *from_address,
-    Skissm__E2eeAddress *to_address,
+    E2ees__E2eeAddress *user_address, 
+    E2ees__E2eeAddress *from_address,
+    E2ees__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     assert(memcmp(plaintext, test_plaintext, plaintext_len) == 0);
     // print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-static skissm_event_handler_t test_event_handler = {
+static e2ees_event_handler_t test_event_handler = {
     on_log,
     on_user_registered,
     on_inbound_session_invited,
@@ -354,7 +354,7 @@ static void test_begin() {
     }
     account_data_insert_pos = 0;
 
-    get_skissm_plugin()->event_handler = test_event_handler;
+    get_e2ees_plugin()->event_handler = test_event_handler;
 
     start_mock_server_sending();
 }
@@ -365,30 +365,30 @@ static void test_end() {
     int i;
     for (i = 0; i < account_data_max; i++) {
         if (account_data[i] != NULL) {
-            skissm__account__free_unpacked(account_data[i], NULL);
+            e2ees__account__free_unpacked(account_data[i], NULL);
             account_data[i] = NULL;
         }
     }
     account_data_insert_pos = 0;
 }
 
-static void create_account_no_opk(Skissm__Account **account_out, uint32_t e2ee_pack_id) {
-    Skissm__Account *account = NULL;
-    Skissm__IdentityKey *identity_key = NULL;
-    Skissm__SignedPreKey *signed_pre_key = NULL;
+static void create_account_no_opk(E2ees__Account **account_out, uint32_t e2ees_pack_id) {
+    E2ees__Account *account = NULL;
+    E2ees__IdentityKey *identity_key = NULL;
+    E2ees__SignedPreKey *signed_pre_key = NULL;
     uint32_t cur_spk_id = 0;
 
-    const cipher_suite_t *cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+    const cipher_suite_t *cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
 
-    generate_identity_key(&identity_key, e2ee_pack_id);
+    generate_identity_key(&identity_key, e2ees_pack_id);
 
-    generate_signed_pre_key(&signed_pre_key, e2ee_pack_id, cur_spk_id, identity_key->sign_key_pair->private_key.data);
+    generate_signed_pre_key(&signed_pre_key, e2ees_pack_id, cur_spk_id, identity_key->sign_key_pair->private_key.data);
 
-    account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
-    skissm__account__init(account);
+    account = (E2ees__Account *)malloc(sizeof(E2ees__Account));
+    e2ees__account__init(account);
 
-    account->version = strdup(E2EE_PROTOCOL_VERSION);
-    account->e2ee_pack_id = e2ee_pack_id;
+    account->version = strdup(E2EES_PROTOCOL_VERSION);
+    account->e2ees_pack_id = e2ees_pack_id;
 
     account->identity_key = identity_key;
     account->signed_pre_key = signed_pre_key;
@@ -397,42 +397,42 @@ static void create_account_no_opk(Skissm__Account **account_out, uint32_t e2ee_p
 }
 
 static void register_no_opk(
-    Skissm__RegisterUserResponse **response_out,
-    uint32_t e2ee_pack_id,
+    E2ees__RegisterUserResponse **response_out,
+    uint32_t e2ees_pack_id,
     const char *user_name,
     const char *user_id,
     const char *device_id,
     const char *authenticator,
     const char *auth_code
 ) {
-    Skissm__Account *account = NULL;
-    Skissm__RegisterUserRequest *register_user_request = NULL;
-    Skissm__RegisterUserResponse *response = NULL;
-    Skissm__IdentityKey *identity_key = NULL;
-    Skissm__KeyPair *identity_key_pair_asym = NULL;
-    Skissm__KeyPair *identity_key_pair_sign = NULL;
-    Skissm__SignedPreKey *signed_pre_key = NULL;
-    Skissm__KeyPair *signed_pre_key_pair = NULL;
+    E2ees__Account *account = NULL;
+    E2ees__RegisterUserRequest *register_user_request = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
+    E2ees__IdentityKey *identity_key = NULL;
+    E2ees__KeyPair *identity_key_pair_asym = NULL;
+    E2ees__KeyPair *identity_key_pair_sign = NULL;
+    E2ees__SignedPreKey *signed_pre_key = NULL;
+    E2ees__KeyPair *signed_pre_key_pair = NULL;
 
-    create_account_no_opk(&account, e2ee_pack_id);
+    create_account_no_opk(&account, e2ees_pack_id);
     identity_key = account->identity_key;
     identity_key_pair_asym = identity_key->asym_key_pair;
     identity_key_pair_sign = identity_key->sign_key_pair;
     signed_pre_key = account->signed_pre_key;
     signed_pre_key_pair = signed_pre_key->key_pair;
 
-    register_user_request = (Skissm__RegisterUserRequest *)malloc(sizeof(Skissm__RegisterUserRequest));
-    skissm__register_user_request__init(register_user_request);
+    register_user_request = (E2ees__RegisterUserRequest *)malloc(sizeof(E2ees__RegisterUserRequest));
+    e2ees__register_user_request__init(register_user_request);
 
     // copy identity public key
-    register_user_request->identity_key_public = (Skissm__IdentityKeyPublic *)malloc(sizeof(Skissm__IdentityKeyPublic));
-    skissm__identity_key_public__init(register_user_request->identity_key_public);
+    register_user_request->identity_key_public = (E2ees__IdentityKeyPublic *)malloc(sizeof(E2ees__IdentityKeyPublic));
+    e2ees__identity_key_public__init(register_user_request->identity_key_public);
     copy_protobuf_from_protobuf(&(register_user_request->identity_key_public->asym_public_key), &(identity_key_pair_asym->public_key));
     copy_protobuf_from_protobuf(&(register_user_request->identity_key_public->sign_public_key), &(identity_key_pair_sign->public_key));
 
     // copy signed pre-key
-    register_user_request->signed_pre_key_public = (Skissm__SignedPreKeyPublic *)malloc(sizeof(Skissm__SignedPreKeyPublic));
-    skissm__signed_pre_key_public__init(register_user_request->signed_pre_key_public);
+    register_user_request->signed_pre_key_public = (E2ees__SignedPreKeyPublic *)malloc(sizeof(E2ees__SignedPreKeyPublic));
+    e2ees__signed_pre_key_public__init(register_user_request->signed_pre_key_public);
     register_user_request->signed_pre_key_public->spk_id = account->signed_pre_key->spk_id;
     copy_protobuf_from_protobuf(&(register_user_request->signed_pre_key_public->public_key), &(signed_pre_key_pair->public_key));
     copy_protobuf_from_protobuf(&(register_user_request->signed_pre_key_public->signature), &(signed_pre_key->signature));
@@ -441,9 +441,9 @@ static void register_no_opk(
     register_user_request->device_id = strdup(device_id);
     register_user_request->authenticator = strdup(authenticator);
     register_user_request->auth_code = strdup(auth_code);
-    register_user_request->e2ee_pack_id = e2ee_pack_id;
+    register_user_request->e2ees_pack_id = e2ees_pack_id;
 
-    response = get_skissm_plugin()->proto_handler.register_user(register_user_request);
+    response = get_e2ees_plugin()->proto_handler.register_user(register_user_request);
     consume_register_response(account, response);
 
     *response_out = response;
@@ -454,83 +454,83 @@ static void register_no_opk(
 }
 
 static void mock_alice_account_no_opk(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "111111";
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     register_no_opk(
-        &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
+        &response, e2ees_pack_id, user_name, user_name, device_id, authenticator, auth_code
     );
 
     // release
     free(device_id);
-    skissm__register_user_response__free_unpacked(response, NULL);
+    e2ees__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_bob_account_no_opk(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "222222";
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     register_no_opk(
-        &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
+        &response, e2ees_pack_id, user_name, user_name, device_id, authenticator, auth_code
     );
 
     // release
     free(device_id);
-    skissm__register_user_response__free_unpacked(response, NULL);
+    e2ees__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_alice_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     int ret = register_user(
-        &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
+        &response, e2ees_pack_id, user_name, user_name, device_id, authenticator, auth_code
     );
     assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
     free(device_id);
-    skissm__register_user_response__free_unpacked(response, NULL);
+    e2ees__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_bob_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     int ret = register_user(
-        &response, e2ee_pack_id, user_name, user_name, device_id, authenticator, auth_code
+        &response, e2ees_pack_id, user_name, user_name, device_id, authenticator, auth_code
     );
     assert(ret == 0);
     printf("Test user registered: \"%s@%s\"\n", response->address->user->user_id, response->address->domain);
 
     // release
     free(device_id);
-    skissm__register_user_response__free_unpacked(response, NULL);
+    e2ees__register_user_response__free_unpacked(response, NULL);
 }
 
 static void test_encryption(
-    Skissm__E2eeAddress *from_address, const char *to_user_id, const char *to_domain,
+    E2ees__E2eeAddress *from_address, const char *to_user_id, const char *to_domain,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     // send encrypted msg
-    Skissm__SendOne2oneMsgResponse *response = NULL;
+    E2ees__SendOne2oneMsgResponse *response = NULL;
     response = send_one2one_msg(from_address, to_user_id, to_domain,
-        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
+        E2EES__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
         plaintext, plaintext_len
     );
 
     // release
     if (response != NULL)
-        skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+        e2ees__send_one2one_msg_response__free_unpacked(response, NULL);
 }
 
 static void test_basic_session() {
@@ -542,20 +542,20 @@ static void test_basic_session() {
     mock_alice_account("alice");
     mock_bob_account("bob");
 
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
-    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    E2ees__E2eeAddress *alice_address = account_data[0]->address;
+    E2ees__E2eeAddress *bob_address = account_data[1]->address;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    E2ees__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
 
     sleep(1);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -570,15 +570,15 @@ static void test_interaction() {
     mock_alice_account("alice");
     mock_bob_account("bob");
 
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
-    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    E2ees__E2eeAddress *alice_address = account_data[0]->address;
+    E2ees__E2eeAddress *bob_address = account_data[1]->address;
     char *alice_user_id = alice_address->user->user_id;
     char *alice_domain = alice_address->domain;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    E2ees__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
 
     sleep(1);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
@@ -588,7 +588,7 @@ static void test_interaction() {
     test_encryption(bob_address, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -603,13 +603,13 @@ static void test_continual_messages() {
     mock_alice_account("alice");
     mock_bob_account("bob");
 
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
-    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    E2ees__E2eeAddress *alice_address = account_data[0]->address;
+    E2ees__E2eeAddress *bob_address = account_data[1]->address;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    E2ees__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
 
     sleep(1);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
@@ -619,7 +619,7 @@ static void test_continual_messages() {
     }
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -642,19 +642,19 @@ static void test_one_to_many() {
     assert(strcmp(account_data[1]->address->user->user_id, account_data[2]->address->user->user_id) == 0);
     assert(strcmp(account_data[1]->address->user->user_id, account_data[3]->address->user->user_id) == 0);
 
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    E2ees__E2eeAddress *alice_address = account_data[0]->address;
     char *bob_user_id = account_data[1]->address->user->user_id;
     char *bob_domain = account_data[1]->address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    E2ees__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
 
     sleep(3);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -671,25 +671,25 @@ static void test_many_to_one() {
     mock_alice_account("Alice");
     mock_bob_account("Bob");
 
-    Skissm__E2eeAddress *device_1 = account_data[0]->address;
-    Skissm__E2eeAddress *device_2 = account_data[1]->address;
-    Skissm__E2eeAddress *device_3 = account_data[2]->address;
+    E2ees__E2eeAddress *device_1 = account_data[0]->address;
+    E2ees__E2eeAddress *device_2 = account_data[1]->address;
+    E2ees__E2eeAddress *device_3 = account_data[2]->address;
 
-    Skissm__E2eeAddress *bob_address = account_data[3]->address;
+    E2ees__E2eeAddress *bob_address = account_data[3]->address;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
-    Skissm__Session **outbound_sessions = (Skissm__Session **)malloc(sizeof(Skissm__Session *) * 3);
+    E2ees__Session **outbound_sessions = (E2ees__Session **)malloc(sizeof(E2ees__Session *) * 3);
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(device_1, bob_user_id, bob_domain);
+    E2ees__InviteResponse *response = invite(device_1, bob_user_id, bob_domain);
 
     sleep(1);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     test_encryption(device_1, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -710,20 +710,20 @@ static void test_many_to_many() {
 
     sleep(2);
 
-    Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
-    Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
-    Skissm__E2eeAddress *alice_address_3 = account_data[2]->address;
+    E2ees__E2eeAddress *alice_address_1 = account_data[0]->address;
+    E2ees__E2eeAddress *alice_address_2 = account_data[1]->address;
+    E2ees__E2eeAddress *alice_address_3 = account_data[2]->address;
     char *alice_user_id = alice_address_1->user->user_id;
     char *alice_domain = alice_address_1->domain;
-    Skissm__E2eeAddress *bob_address_1 = account_data[3]->address;
-    Skissm__E2eeAddress *bob_address_2 = account_data[4]->address;
-    Skissm__E2eeAddress *bob_address_3 = account_data[5]->address;
+    E2ees__E2eeAddress *bob_address_1 = account_data[3]->address;
+    E2ees__E2eeAddress *bob_address_2 = account_data[4]->address;
+    E2ees__E2eeAddress *bob_address_3 = account_data[5]->address;
     char *bob_user_id = bob_address_1->user->user_id;
     char *bob_domain = bob_address_1->domain;
 
     sleep(2);
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address_1, bob_user_id, bob_domain);
+    E2ees__InviteResponse *response = invite(alice_address_1, bob_user_id, bob_domain);
 
     sleep(1);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
@@ -734,7 +734,7 @@ static void test_many_to_many() {
     test_encryption(bob_address_1, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -753,18 +753,18 @@ static void test_add_a_device() {
 
     sleep(2);
 
-    Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
-    Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
+    E2ees__E2eeAddress *alice_address_1 = account_data[0]->address;
+    E2ees__E2eeAddress *alice_address_2 = account_data[1]->address;
     char *alice_user_id = alice_address_1->user->user_id;
     char *alice_domain = alice_address_1->domain;
-    Skissm__E2eeAddress *bob_address_1 = account_data[2]->address;
-    Skissm__E2eeAddress *bob_address_2 = account_data[3]->address;
+    E2ees__E2eeAddress *bob_address_1 = account_data[2]->address;
+    E2ees__E2eeAddress *bob_address_2 = account_data[3]->address;
     char *bob_user_id = bob_address_1->user->user_id;
     char *bob_domain = bob_address_1->domain;
 
     sleep(2);
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address_1, bob_user_id, bob_domain);
+    E2ees__InviteResponse *response = invite(alice_address_1, bob_user_id, bob_domain);
 
     sleep(2);
 
@@ -781,7 +781,7 @@ static void test_add_a_device() {
     test_encryption(bob_address_1, alice_user_id, alice_domain, test_plaintext, test_plaintext_len);
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -796,20 +796,20 @@ static void test_session_no_opk() {
     mock_alice_account_no_opk("alice");
     mock_bob_account_no_opk("bob");
 
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
-    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    E2ees__E2eeAddress *alice_address = account_data[0]->address;
+    E2ees__E2eeAddress *bob_address = account_data[1]->address;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    E2ees__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
 
     sleep(1);
     // Alice sends an encrypted message to Bob, and Bob decrypts the message
     test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -824,14 +824,14 @@ static void test_invite_twice() {
     mock_alice_account("alice");
     mock_bob_account("bob");
 
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
-    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    E2ees__E2eeAddress *alice_address = account_data[0]->address;
+    E2ees__E2eeAddress *bob_address = account_data[1]->address;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
-    skissm__invite_response__free_unpacked(response, NULL);
+    E2ees__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    e2ees__invite_response__free_unpacked(response, NULL);
     sleep(1);
 
     // Alice invites Bob again
@@ -842,7 +842,7 @@ static void test_invite_twice() {
     test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");
@@ -857,16 +857,16 @@ static void test_invite_interaction() {
     mock_alice_account("alice");
     mock_bob_account("bob");
 
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    E2ees__E2eeAddress *alice_address = account_data[0]->address;
     char *alice_user_id = alice_address->user->user_id;
     char *alice_domain = alice_address->domain;
-    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    E2ees__E2eeAddress *bob_address = account_data[1]->address;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
-    skissm__invite_response__free_unpacked(response, NULL);
+    E2ees__InviteResponse *response = invite(alice_address, bob_user_id, bob_domain);
+    e2ees__invite_response__free_unpacked(response, NULL);
     sleep(1);
 
     // Bob invites Alice
@@ -877,7 +877,7 @@ static void test_invite_interaction() {
     test_encryption(alice_address, bob_user_id, bob_domain, test_plaintext, test_plaintext_len);
 
     // test stop
-    skissm__invite_response__free_unpacked(response, NULL);
+    e2ees__invite_response__free_unpacked(response, NULL);
     test_end();
     tear_down();
     printf("====================================\n");

@@ -1,0 +1,62 @@
+\doxysection{e2ees\+\_\+common\+\_\+handler\+\_\+t Struct Reference}
+\hypertarget{structe2ees__common__handler__t}{}\label{structe2ees__common__handler__t}\index{e2ees\_common\_handler\_t@{e2ees\_common\_handler\_t}}
+
+
+Type definition of common handler.  
+
+
+
+
+{\ttfamily \#include $<$e2ees.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int64\+\_\+t(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__common__handler__t_af28dc729e62dbc679d0e45971e8ec445}{gen\+\_\+ts}} )()
+\begin{DoxyCompactList}\small\item\em generate time stamp \end{DoxyCompactList}\item 
+void(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__common__handler__t_a817cb99fc9aaae98100a4d241e6d5e44}{gen\+\_\+rand}} )(uint8\+\_\+t \texorpdfstring{$\ast$}{*}rand\+\_\+data, size\+\_\+t rand\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em generate random number \end{DoxyCompactList}\item 
+\Hypertarget{structe2ees__common__handler__t_aee76132bc47788bfa57c860e1ca0fab2}\label{structe2ees__common__handler__t_aee76132bc47788bfa57c860e1ca0fab2} 
+void(\texorpdfstring{$\ast$}{*} {\bfseries gen\+\_\+uuid} )(uint8\+\_\+t uuid\mbox{[}E2\+EES\+\_\+\+UUID\+\_\+\+LEN\mbox{]})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Type definition of common handler. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structe2ees__common__handler__t_a817cb99fc9aaae98100a4d241e6d5e44}\index{e2ees\_common\_handler\_t@{e2ees\_common\_handler\_t}!gen\_rand@{gen\_rand}}
+\index{gen\_rand@{gen\_rand}!e2ees\_common\_handler\_t@{e2ees\_common\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{gen\_rand}{gen\_rand}}
+{\footnotesize\ttfamily \label{structe2ees__common__handler__t_a817cb99fc9aaae98100a4d241e6d5e44} 
+void(\texorpdfstring{$\ast$}{*} e2ees\+\_\+common\+\_\+handler\+\_\+t\+::gen\+\_\+rand) (uint8\+\_\+t \texorpdfstring{$\ast$}{*}rand\+\_\+data, size\+\_\+t rand\+\_\+data\+\_\+len)}
+
+
+
+generate random number 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rand\+\_\+data} & pre-\/allocated memory to be filled with random data \\
+\hline
+{\em rand\+\_\+data\+\_\+len} & length of random data \\
+\hline
+\end{DoxyParams}
+\Hypertarget{structe2ees__common__handler__t_af28dc729e62dbc679d0e45971e8ec445}\index{e2ees\_common\_handler\_t@{e2ees\_common\_handler\_t}!gen\_ts@{gen\_ts}}
+\index{gen\_ts@{gen\_ts}!e2ees\_common\_handler\_t@{e2ees\_common\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{gen\_ts}{gen\_ts}}
+{\footnotesize\ttfamily \label{structe2ees__common__handler__t_af28dc729e62dbc679d0e45971e8ec445} 
+int64\+\_\+t(\texorpdfstring{$\ast$}{*} e2ees\+\_\+common\+\_\+handler\+\_\+t\+::gen\+\_\+ts) ()}
+
+
+
+generate time stamp 
+
+\begin{DoxyReturn}{Returns}
+current timestamp in milliseconds since 1970 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/e2ees/\mbox{\hyperlink{e2ees_8h}{e2ees.\+h}}\end{DoxyCompactItemize}

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/account_manager.h File Reference</title>
+<title>E2EES: include/e2ees/account_manager.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -94,43 +94,43 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">account_manager.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="skissm_8h_source.html">skissm/skissm.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="e2ees_8h_source.html">e2ees/e2ees.h</a>&quot;</code><br />
 </div>
 <p><a href="account__manager_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5bba5700a82724284e2915aef45fe433" id="r_a5bba5700a82724284e2915aef45fe433"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5bba5700a82724284e2915aef45fe433">produce_register_request</a> (Skissm__RegisterUserRequest **request_out, Skissm__Account *account)</td></tr>
-<tr class="memdesc:a5bba5700a82724284e2915aef45fe433"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a RegisterUserRequest message to be sent to server.  <br /></td></tr>
-<tr class="separator:a5bba5700a82724284e2915aef45fe433"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afda5986fbaa80ab8322386e131e56e78" id="r_afda5986fbaa80ab8322386e131e56e78"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afda5986fbaa80ab8322386e131e56e78">consume_register_response</a> (Skissm__Account *account, Skissm__RegisterUserResponse *payload)</td></tr>
-<tr class="memdesc:afda5986fbaa80ab8322386e131e56e78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming RegisterUserResponse message.  <br /></td></tr>
-<tr class="separator:afda5986fbaa80ab8322386e131e56e78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80c4de20f4a62e074b12c835554a0532" id="r_a80c4de20f4a62e074b12c835554a0532"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80c4de20f4a62e074b12c835554a0532">produce_publish_spk_request</a> (Skissm__PublishSpkRequest **request_out, Skissm__Account *account)</td></tr>
-<tr class="memdesc:a80c4de20f4a62e074b12c835554a0532"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a PublishSpkRequest message to be sent to server.  <br /></td></tr>
-<tr class="separator:a80c4de20f4a62e074b12c835554a0532"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07af9d935febfe553d8a1b44d52ce7f3" id="r_a07af9d935febfe553d8a1b44d52ce7f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07af9d935febfe553d8a1b44d52ce7f3">consume_publish_spk_response</a> (Skissm__Account *account, Skissm__PublishSpkResponse *response)</td></tr>
-<tr class="memdesc:a07af9d935febfe553d8a1b44d52ce7f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming PublishSpkResponse message.  <br /></td></tr>
-<tr class="separator:a07af9d935febfe553d8a1b44d52ce7f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16208bffc298846368e8522a76cfa9d4" id="r_a16208bffc298846368e8522a76cfa9d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16208bffc298846368e8522a76cfa9d4">produce_supply_opks_request</a> (Skissm__SupplyOpksRequest **request_out, Skissm__Account *account, uint32_t opks_num)</td></tr>
-<tr class="memdesc:a16208bffc298846368e8522a76cfa9d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a SupplyOpksRequest message to be sent to server.  <br /></td></tr>
-<tr class="separator:a16208bffc298846368e8522a76cfa9d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a131ad250eb68d2c609efad87f75fd9" id="r_a4a131ad250eb68d2c609efad87f75fd9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a131ad250eb68d2c609efad87f75fd9">consume_supply_opks_response</a> (Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response)</td></tr>
-<tr class="memdesc:a4a131ad250eb68d2c609efad87f75fd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming SupplyOpksResponse message.  <br /></td></tr>
-<tr class="separator:a4a131ad250eb68d2c609efad87f75fd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19b64e4e3bd56914928a0d99402255e1" id="r_a19b64e4e3bd56914928a0d99402255e1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19b64e4e3bd56914928a0d99402255e1">consume_supply_opks_msg</a> (Skissm__E2eeAddress *receiver_address, Skissm__SupplyOpksMsg *msg)</td></tr>
-<tr class="memdesc:a19b64e4e3bd56914928a0d99402255e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming SupplyOpksMsg message.  <br /></td></tr>
-<tr class="separator:a19b64e4e3bd56914928a0d99402255e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc28e8dbb44d4b655a38376850197efe" id="r_acc28e8dbb44d4b655a38376850197efe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc28e8dbb44d4b655a38376850197efe">produce_register_request</a> (E2ees__RegisterUserRequest **request_out, E2ees__Account *account)</td></tr>
+<tr class="memdesc:acc28e8dbb44d4b655a38376850197efe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a RegisterUserRequest message to be sent to server.  <br /></td></tr>
+<tr class="separator:acc28e8dbb44d4b655a38376850197efe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8b2297e68b8b39545b72181ceabcbb4" id="r_aa8b2297e68b8b39545b72181ceabcbb4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa8b2297e68b8b39545b72181ceabcbb4">consume_register_response</a> (E2ees__Account *account, E2ees__RegisterUserResponse *payload)</td></tr>
+<tr class="memdesc:aa8b2297e68b8b39545b72181ceabcbb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming RegisterUserResponse message.  <br /></td></tr>
+<tr class="separator:aa8b2297e68b8b39545b72181ceabcbb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71017e163c3f8eea92b73a0314c5a9ea" id="r_a71017e163c3f8eea92b73a0314c5a9ea"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71017e163c3f8eea92b73a0314c5a9ea">produce_publish_spk_request</a> (E2ees__PublishSpkRequest **request_out, E2ees__Account *account)</td></tr>
+<tr class="memdesc:a71017e163c3f8eea92b73a0314c5a9ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a PublishSpkRequest message to be sent to server.  <br /></td></tr>
+<tr class="separator:a71017e163c3f8eea92b73a0314c5a9ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91b6d6b7915cf09edaa4279d42bc0e21" id="r_a91b6d6b7915cf09edaa4279d42bc0e21"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91b6d6b7915cf09edaa4279d42bc0e21">consume_publish_spk_response</a> (E2ees__Account *account, E2ees__PublishSpkResponse *response)</td></tr>
+<tr class="memdesc:a91b6d6b7915cf09edaa4279d42bc0e21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming PublishSpkResponse message.  <br /></td></tr>
+<tr class="separator:a91b6d6b7915cf09edaa4279d42bc0e21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75cc15d31e43ea2fcf77fb22461e87d9" id="r_a75cc15d31e43ea2fcf77fb22461e87d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a75cc15d31e43ea2fcf77fb22461e87d9">produce_supply_opks_request</a> (E2ees__SupplyOpksRequest **request_out, E2ees__Account *account, uint32_t opks_num)</td></tr>
+<tr class="memdesc:a75cc15d31e43ea2fcf77fb22461e87d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a SupplyOpksRequest message to be sent to server.  <br /></td></tr>
+<tr class="separator:a75cc15d31e43ea2fcf77fb22461e87d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a512e1107d35ed9da79bece0126c5e601" id="r_a512e1107d35ed9da79bece0126c5e601"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a512e1107d35ed9da79bece0126c5e601">consume_supply_opks_response</a> (E2ees__Account *account, uint32_t opks_num, E2ees__SupplyOpksResponse *response)</td></tr>
+<tr class="memdesc:a512e1107d35ed9da79bece0126c5e601"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming SupplyOpksResponse message.  <br /></td></tr>
+<tr class="separator:a512e1107d35ed9da79bece0126c5e601"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee6d38f1417029686db5725f526e2d1d" id="r_aee6d38f1417029686db5725f526e2d1d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aee6d38f1417029686db5725f526e2d1d">consume_supply_opks_msg</a> (E2ees__E2eeAddress *receiver_address, E2ees__SupplyOpksMsg *msg)</td></tr>
+<tr class="memdesc:aee6d38f1417029686db5725f526e2d1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming SupplyOpksMsg message.  <br /></td></tr>
+<tr class="separator:aee6d38f1417029686db5725f526e2d1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Copyright © 2020-2021 by Academia Sinica</p>
-<p>This file is part of SKISSM.</p>
+<div class="textblock"><p>Copyright © 2021 Academia Sinica. All Rights Reserved.</p>
+<p>This file is part of E2EE Security.</p>
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-<p>SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License along with SKISSM. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
+<p>E2EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with E2EE Security. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a07af9d935febfe553d8a1b44d52ce7f3" name="a07af9d935febfe553d8a1b44d52ce7f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07af9d935febfe553d8a1b44d52ce7f3">&#9670;&#160;</a></span>consume_publish_spk_response()</h2>
+<a id="a91b6d6b7915cf09edaa4279d42bc0e21" name="a91b6d6b7915cf09edaa4279d42bc0e21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91b6d6b7915cf09edaa4279d42bc0e21">&#9670;&#160;</a></span>consume_publish_spk_response()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -138,12 +138,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int consume_publish_spk_response </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__PublishSpkResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__PublishSpkResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -160,8 +160,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="afda5986fbaa80ab8322386e131e56e78" name="afda5986fbaa80ab8322386e131e56e78"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afda5986fbaa80ab8322386e131e56e78">&#9670;&#160;</a></span>consume_register_response()</h2>
+<a id="aa8b2297e68b8b39545b72181ceabcbb4" name="aa8b2297e68b8b39545b72181ceabcbb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8b2297e68b8b39545b72181ceabcbb4">&#9670;&#160;</a></span>consume_register_response()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -169,12 +169,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">bool consume_register_response </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__RegisterUserResponse *</td>          <td class="paramname"><span class="paramname"><em>payload</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__RegisterUserResponse *</td>          <td class="paramname"><span class="paramname"><em>payload</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -193,8 +193,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a19b64e4e3bd56914928a0d99402255e1" name="a19b64e4e3bd56914928a0d99402255e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19b64e4e3bd56914928a0d99402255e1">&#9670;&#160;</a></span>consume_supply_opks_msg()</h2>
+<a id="aee6d38f1417029686db5725f526e2d1d" name="aee6d38f1417029686db5725f526e2d1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee6d38f1417029686db5725f526e2d1d">&#9670;&#160;</a></span>consume_supply_opks_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -202,12 +202,12 @@ false </dd></dl>
         <tr>
           <td class="memname">bool consume_supply_opks_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__SupplyOpksMsg *</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__SupplyOpksMsg *</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -226,8 +226,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a4a131ad250eb68d2c609efad87f75fd9" name="a4a131ad250eb68d2c609efad87f75fd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a131ad250eb68d2c609efad87f75fd9">&#9670;&#160;</a></span>consume_supply_opks_response()</h2>
+<a id="a512e1107d35ed9da79bece0126c5e601" name="a512e1107d35ed9da79bece0126c5e601"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a512e1107d35ed9da79bece0126c5e601">&#9670;&#160;</a></span>consume_supply_opks_response()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -235,7 +235,7 @@ false </dd></dl>
         <tr>
           <td class="memname">int consume_supply_opks_response </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -245,7 +245,7 @@ false </dd></dl>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__SupplyOpksResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__SupplyOpksResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -263,8 +263,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a80c4de20f4a62e074b12c835554a0532" name="a80c4de20f4a62e074b12c835554a0532"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80c4de20f4a62e074b12c835554a0532">&#9670;&#160;</a></span>produce_publish_spk_request()</h2>
+<a id="a71017e163c3f8eea92b73a0314c5a9ea" name="a71017e163c3f8eea92b73a0314c5a9ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71017e163c3f8eea92b73a0314c5a9ea">&#9670;&#160;</a></span>produce_publish_spk_request()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -272,12 +272,12 @@ false </dd></dl>
         <tr>
           <td class="memname">int produce_publish_spk_request </td>
           <td>(</td>
-          <td class="paramtype">Skissm__PublishSpkRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
+          <td class="paramtype">E2ees__PublishSpkRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -294,8 +294,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a5bba5700a82724284e2915aef45fe433" name="a5bba5700a82724284e2915aef45fe433"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5bba5700a82724284e2915aef45fe433">&#9670;&#160;</a></span>produce_register_request()</h2>
+<a id="acc28e8dbb44d4b655a38376850197efe" name="acc28e8dbb44d4b655a38376850197efe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc28e8dbb44d4b655a38376850197efe">&#9670;&#160;</a></span>produce_register_request()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -303,12 +303,12 @@ false </dd></dl>
         <tr>
           <td class="memname">int produce_register_request </td>
           <td>(</td>
-          <td class="paramtype">Skissm__RegisterUserRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
+          <td class="paramtype">E2ees__RegisterUserRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -325,8 +325,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a16208bffc298846368e8522a76cfa9d4" name="a16208bffc298846368e8522a76cfa9d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a16208bffc298846368e8522a76cfa9d4">&#9670;&#160;</a></span>produce_supply_opks_request()</h2>
+<a id="a75cc15d31e43ea2fcf77fb22461e87d9" name="a75cc15d31e43ea2fcf77fb22461e87d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75cc15d31e43ea2fcf77fb22461e87d9">&#9670;&#160;</a></span>produce_supply_opks_request()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -334,12 +334,12 @@ false </dd></dl>
         <tr>
           <td class="memname">int produce_supply_opks_request </td>
           <td>(</td>
-          <td class="paramtype">Skissm__SupplyOpksRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
+          <td class="paramtype">E2ees__SupplyOpksRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

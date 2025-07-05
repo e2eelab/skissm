@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/account.h File Reference</title>
+<title>E2EES: include/e2ees/account.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -97,7 +97,7 @@ $(function(){ initResizable(false); });
 <div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="skissm_8h_source.html">skissm/skissm.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="e2ees_8h_source.html">e2ees/e2ees.h</a>&quot;</code><br />
 </div>
 <p><a href="account_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -109,40 +109,40 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>account_begin</b> ()<
 <tr class="memitem:aa679c7d54a9895b4cf567ae6ca3e6b43" id="r_aa679c7d54a9895b4cf567ae6ca3e6b43"><td class="memItemLeft" align="right" valign="top"><a id="aa679c7d54a9895b4cf567ae6ca3e6b43" name="aa679c7d54a9895b4cf567ae6ca3e6b43"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>account_end</b> ()</td></tr>
 <tr class="separator:aa679c7d54a9895b4cf567ae6ca3e6b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc61be04a857570ee55439f01e8f30c7" id="r_acc61be04a857570ee55439f01e8f30c7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc61be04a857570ee55439f01e8f30c7">create_account</a> (Skissm__Account **account_out, uint32_t e2ee_pack_id)</td></tr>
-<tr class="memdesc:acc61be04a857570ee55439f01e8f30c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new account object This will generate an identity key pair, a signed pre-key pair, a signature, and 100 one-time pre-key pairs.  <br /></td></tr>
-<tr class="separator:acc61be04a857570ee55439f01e8f30c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7586b34e3cd159b3eda07f5eeb873440" id="r_a7586b34e3cd159b3eda07f5eeb873440"><td class="memItemLeft" align="right" valign="top"><a id="a7586b34e3cd159b3eda07f5eeb873440" name="a7586b34e3cd159b3eda07f5eeb873440"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>generate_identity_key</b> (Skissm__IdentityKey **identity_key_out, uint32_t e2ee_pack_id)</td></tr>
-<tr class="separator:a7586b34e3cd159b3eda07f5eeb873440"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa95327406cb557a1346dcacac6686b44" id="r_aa95327406cb557a1346dcacac6686b44"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa95327406cb557a1346dcacac6686b44">generate_signed_pre_key</a> (Skissm__SignedPreKey **signed_pre_key_out, uint32_t e2ee_pack_id, uint32_t cur_spk_id, const uint8_t *identity_private_key)</td></tr>
-<tr class="memdesc:aa95327406cb557a1346dcacac6686b44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a new signed pre-key pair and a new signature.  <br /></td></tr>
-<tr class="separator:aa95327406cb557a1346dcacac6686b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a939d33806c6bb2473dfa8375f1f1766d" id="r_a939d33806c6bb2473dfa8375f1f1766d"><td class="memItemLeft" align="right" valign="top">Skissm__OneTimePreKey *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a939d33806c6bb2473dfa8375f1f1766d">lookup_one_time_pre_key</a> (Skissm__Account *account, uint32_t one_time_pre_key_id)</td></tr>
-<tr class="memdesc:a939d33806c6bb2473dfa8375f1f1766d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lookup an one-time pre-key with a given public key.  <br /></td></tr>
-<tr class="separator:a939d33806c6bb2473dfa8375f1f1766d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d009b61eeffaf429c18d163cd371c51" id="r_a8d009b61eeffaf429c18d163cd371c51"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d009b61eeffaf429c18d163cd371c51">generate_opks</a> (Skissm__OneTimePreKey ***one_time_pre_key_out, size_t number_of_keys, uint32_t e2ee_pack_id, uint32_t cur_opk_id)</td></tr>
-<tr class="memdesc:a8d009b61eeffaf429c18d163cd371c51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a number of new one-time pre-keys.  <br /></td></tr>
-<tr class="separator:a8d009b61eeffaf429c18d163cd371c51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac117be17c1c6e859ec7de8cb4880a94e" id="r_ac117be17c1c6e859ec7de8cb4880a94e"><td class="memItemLeft" align="right" valign="top"><a id="ac117be17c1c6e859ec7de8cb4880a94e" name="ac117be17c1c6e859ec7de8cb4880a94e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skissm__Account *account, Skissm__OneTimePreKey **src, size_t src_num)</td></tr>
-<tr class="separator:ac117be17c1c6e859ec7de8cb4880a94e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11dd90393c9b16548bdfa107fedf4bee" id="r_a11dd90393c9b16548bdfa107fedf4bee"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11dd90393c9b16548bdfa107fedf4bee">mark_opk_as_used</a> (Skissm__Account *account, uint32_t id)</td></tr>
-<tr class="memdesc:a11dd90393c9b16548bdfa107fedf4bee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mark one of the one-time pre-key pairs as used given by ID.  <br /></td></tr>
-<tr class="separator:a11dd90393c9b16548bdfa107fedf4bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cb64db81c2c65f3c054880b96e28e5d" id="r_a8cb64db81c2c65f3c054880b96e28e5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8cb64db81c2c65f3c054880b96e28e5d">free_one_time_pre_key</a> (Skissm__Account *account)</td></tr>
-<tr class="memdesc:a8cb64db81c2c65f3c054880b96e28e5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the used one-time pre-keys.  <br /></td></tr>
-<tr class="separator:a8cb64db81c2c65f3c054880b96e28e5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9a31a508531bb1a2398c3c47c7899f1" id="r_af9a31a508531bb1a2398c3c47c7899f1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9a31a508531bb1a2398c3c47c7899f1">create_account</a> (E2ees__Account **account_out, uint32_t e2ees_pack_id)</td></tr>
+<tr class="memdesc:af9a31a508531bb1a2398c3c47c7899f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new account object This will generate an identity key pair, a signed pre-key pair, a signature, and 100 one-time pre-key pairs.  <br /></td></tr>
+<tr class="separator:af9a31a508531bb1a2398c3c47c7899f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6022d13867f19b91dc49eb1a3bdd2b7d" id="r_a6022d13867f19b91dc49eb1a3bdd2b7d"><td class="memItemLeft" align="right" valign="top"><a id="a6022d13867f19b91dc49eb1a3bdd2b7d" name="a6022d13867f19b91dc49eb1a3bdd2b7d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>generate_identity_key</b> (E2ees__IdentityKey **identity_key_out, uint32_t e2ees_pack_id)</td></tr>
+<tr class="separator:a6022d13867f19b91dc49eb1a3bdd2b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5a52fa83c3a303875fd26b36318d216" id="r_aa5a52fa83c3a303875fd26b36318d216"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5a52fa83c3a303875fd26b36318d216">generate_signed_pre_key</a> (E2ees__SignedPreKey **signed_pre_key_out, uint32_t e2ees_pack_id, uint32_t cur_spk_id, const uint8_t *identity_private_key)</td></tr>
+<tr class="memdesc:aa5a52fa83c3a303875fd26b36318d216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a new signed pre-key pair and a new signature.  <br /></td></tr>
+<tr class="separator:aa5a52fa83c3a303875fd26b36318d216"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cd32f5b34f60113ea1b1e082047f32d" id="r_a6cd32f5b34f60113ea1b1e082047f32d"><td class="memItemLeft" align="right" valign="top">E2ees__OneTimePreKey *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6cd32f5b34f60113ea1b1e082047f32d">lookup_one_time_pre_key</a> (E2ees__Account *account, uint32_t one_time_pre_key_id)</td></tr>
+<tr class="memdesc:a6cd32f5b34f60113ea1b1e082047f32d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lookup an one-time pre-key with a given public key.  <br /></td></tr>
+<tr class="separator:a6cd32f5b34f60113ea1b1e082047f32d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af243882bcb723e64d761d72dad1615d6" id="r_af243882bcb723e64d761d72dad1615d6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af243882bcb723e64d761d72dad1615d6">generate_opks</a> (E2ees__OneTimePreKey ***one_time_pre_key_out, size_t number_of_keys, uint32_t e2ees_pack_id, uint32_t cur_opk_id)</td></tr>
+<tr class="memdesc:af243882bcb723e64d761d72dad1615d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a number of new one-time pre-keys.  <br /></td></tr>
+<tr class="separator:af243882bcb723e64d761d72dad1615d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1df0184756965ccca505d3e218dfeee1" id="r_a1df0184756965ccca505d3e218dfeee1"><td class="memItemLeft" align="right" valign="top"><a id="a1df0184756965ccca505d3e218dfeee1" name="a1df0184756965ccca505d3e218dfeee1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (E2ees__Account *account, E2ees__OneTimePreKey **src, size_t src_num)</td></tr>
+<tr class="separator:a1df0184756965ccca505d3e218dfeee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a958df954462ae995997474f920fabb9e" id="r_a958df954462ae995997474f920fabb9e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a958df954462ae995997474f920fabb9e">mark_opk_as_used</a> (E2ees__Account *account, uint32_t id)</td></tr>
+<tr class="memdesc:a958df954462ae995997474f920fabb9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mark one of the one-time pre-key pairs as used given by ID.  <br /></td></tr>
+<tr class="separator:a958df954462ae995997474f920fabb9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf989d4cd475fc37d5b35b747e2ccdd4" id="r_abf989d4cd475fc37d5b35b747e2ccdd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abf989d4cd475fc37d5b35b747e2ccdd4">free_one_time_pre_key</a> (E2ees__Account *account)</td></tr>
+<tr class="memdesc:abf989d4cd475fc37d5b35b747e2ccdd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the used one-time pre-keys.  <br /></td></tr>
+<tr class="separator:abf989d4cd475fc37d5b35b747e2ccdd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Copyright © 2020-2021 by Academia Sinica</p>
-<p>This file is part of SKISSM.</p>
+<div class="textblock"><p>Copyright © 2021 Academia Sinica. All Rights Reserved.</p>
+<p>This file is part of E2EE Security.</p>
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-<p>SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License along with SKISSM. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
+<p>E2EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with E2EE Security. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="acc61be04a857570ee55439f01e8f30c7" name="acc61be04a857570ee55439f01e8f30c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc61be04a857570ee55439f01e8f30c7">&#9670;&#160;</a></span>create_account()</h2>
+<a id="af9a31a508531bb1a2398c3c47c7899f1" name="af9a31a508531bb1a2398c3c47c7899f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9a31a508531bb1a2398c3c47c7899f1">&#9670;&#160;</a></span>create_account()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -150,12 +150,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
         <tr>
           <td class="memname">int create_account </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Account **</td>          <td class="paramname"><span class="paramname"><em>account_out</em></span>, </td>
+          <td class="paramtype">E2ees__Account **</td>          <td class="paramname"><span class="paramname"><em>account_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id</em></span>&#160;)</td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -164,7 +164,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">account_out</td><td>The generated account </td></tr>
-    <tr><td class="paramname">e2ee_pack_id</td><td>The e2ee pack ID </td></tr>
+    <tr><td class="paramname">e2ees_pack_id</td><td>The e2ee pack ID </td></tr>
   </table>
   </dd>
 </dl>
@@ -172,8 +172,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
 
 </div>
 </div>
-<a id="a8cb64db81c2c65f3c054880b96e28e5d" name="a8cb64db81c2c65f3c054880b96e28e5d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8cb64db81c2c65f3c054880b96e28e5d">&#9670;&#160;</a></span>free_one_time_pre_key()</h2>
+<a id="abf989d4cd475fc37d5b35b747e2ccdd4" name="abf989d4cd475fc37d5b35b747e2ccdd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf989d4cd475fc37d5b35b747e2ccdd4">&#9670;&#160;</a></span>free_one_time_pre_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -181,7 +181,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
         <tr>
           <td class="memname">void free_one_time_pre_key </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span></td><td>)</td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -197,8 +197,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
 
 </div>
 </div>
-<a id="a8d009b61eeffaf429c18d163cd371c51" name="a8d009b61eeffaf429c18d163cd371c51"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d009b61eeffaf429c18d163cd371c51">&#9670;&#160;</a></span>generate_opks()</h2>
+<a id="af243882bcb723e64d761d72dad1615d6" name="af243882bcb723e64d761d72dad1615d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af243882bcb723e64d761d72dad1615d6">&#9670;&#160;</a></span>generate_opks()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -206,7 +206,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
         <tr>
           <td class="memname">int generate_opks </td>
           <td>(</td>
-          <td class="paramtype">Skissm__OneTimePreKey ***</td>          <td class="paramname"><span class="paramname"><em>one_time_pre_key_out</em></span>, </td>
+          <td class="paramtype">E2ees__OneTimePreKey ***</td>          <td class="paramname"><span class="paramname"><em>one_time_pre_key_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -216,7 +216,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -231,7 +231,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
   <table class="params">
     <tr><td class="paramname">one_time_pre_key_out</td><td>The generated one-time pre-key list </td></tr>
     <tr><td class="paramname">number_of_keys</td><td>The given number </td></tr>
-    <tr><td class="paramname">e2ee_pack_id</td><td>The e2ee pack ID </td></tr>
+    <tr><td class="paramname">e2ees_pack_id</td><td>The e2ee pack ID </td></tr>
     <tr><td class="paramname">cur_opk_id</td><td>The current one-time pre-key ID </td></tr>
   </table>
   </dd>
@@ -240,8 +240,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
 
 </div>
 </div>
-<a id="aa95327406cb557a1346dcacac6686b44" name="aa95327406cb557a1346dcacac6686b44"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa95327406cb557a1346dcacac6686b44">&#9670;&#160;</a></span>generate_signed_pre_key()</h2>
+<a id="aa5a52fa83c3a303875fd26b36318d216" name="aa5a52fa83c3a303875fd26b36318d216"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5a52fa83c3a303875fd26b36318d216">&#9670;&#160;</a></span>generate_signed_pre_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -249,12 +249,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
         <tr>
           <td class="memname">int generate_signed_pre_key </td>
           <td>(</td>
-          <td class="paramtype">Skissm__SignedPreKey **</td>          <td class="paramname"><span class="paramname"><em>signed_pre_key_out</em></span>, </td>
+          <td class="paramtype">E2ees__SignedPreKey **</td>          <td class="paramname"><span class="paramname"><em>signed_pre_key_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -273,7 +273,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">signed_pre_key_out</td><td>The generated signed pre-key </td></tr>
-    <tr><td class="paramname">e2ee_pack_id</td><td>The e2ee pack ID </td></tr>
+    <tr><td class="paramname">e2ees_pack_id</td><td>The e2ee pack ID </td></tr>
     <tr><td class="paramname">cur_spk_id</td><td>The current signed pre-key ID </td></tr>
     <tr><td class="paramname">identity_private_key</td><td>The private part of the identity key </td></tr>
   </table>
@@ -283,16 +283,16 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
 
 </div>
 </div>
-<a id="a939d33806c6bb2473dfa8375f1f1766d" name="a939d33806c6bb2473dfa8375f1f1766d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a939d33806c6bb2473dfa8375f1f1766d">&#9670;&#160;</a></span>lookup_one_time_pre_key()</h2>
+<a id="a6cd32f5b34f60113ea1b1e082047f32d" name="a6cd32f5b34f60113ea1b1e082047f32d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cd32f5b34f60113ea1b1e082047f32d">&#9670;&#160;</a></span>lookup_one_time_pre_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Skissm__OneTimePreKey * lookup_one_time_pre_key </td>
+          <td class="memname">E2ees__OneTimePreKey * lookup_one_time_pre_key </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -310,12 +310,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>const Skissm__OneTimePreKey* The matched one-time pre-key. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>const E2ees__OneTimePreKey* The matched one-time pre-key. </dd></dl>
 
 </div>
 </div>
-<a id="a11dd90393c9b16548bdfa107fedf4bee" name="a11dd90393c9b16548bdfa107fedf4bee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11dd90393c9b16548bdfa107fedf4bee">&#9670;&#160;</a></span>mark_opk_as_used()</h2>
+<a id="a958df954462ae995997474f920fabb9e" name="a958df954462ae995997474f920fabb9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a958df954462ae995997474f920fabb9e">&#9670;&#160;</a></span>mark_opk_as_used()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -323,7 +323,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>insert_opks</b> (Skiss
         <tr>
           <td class="memname">int mark_opk_as_used </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>account</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

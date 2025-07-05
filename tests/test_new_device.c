@@ -1,28 +1,28 @@
 /*
- * Copyright © 2020-2021 by Academia Sinica
+ * Copyright © 2021 Academia Sinica. All Rights Reserved.
  *
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#include "skissm/e2ee_client.h"
-#include "skissm/mem_util.h"
+#include "e2ees/e2ees_client.h"
+#include "e2ees/mem_util.h"
 
 #include "mock_server_sending.h"
 #include "test_util.h"
@@ -31,26 +31,26 @@
 #define account_data_max 10
 #define group_max 10
 
-static Skissm__Account *account_data[account_data_max];
+static E2ees__Account *account_data[account_data_max];
 
 static uint8_t account_data_insert_pos;
 
 static uint8_t test_plaintext[] = "New devices test!!!";
 
-static void on_log(Skissm__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
+static void on_log(E2ees__E2eeAddress *user_address, LogCode log_code, const char *log_msg) {
     print_log((char *)log_msg, log_code);
 }
 
-static void on_user_registered(Skissm__Account *account){
+static void on_user_registered(E2ees__Account *account){
     copy_account_from_account(&(account_data[account_data_insert_pos]), account);
     account_data_insert_pos++;
 }
 
-static void on_inbound_session_invited(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from) {
+static void on_inbound_session_invited(E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from) {
     printf("on_inbound_session_invited\n");
 }
 
-static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *inbound_session){
+static void on_inbound_session_ready(E2ees__E2eeAddress *user_address, E2ees__Session *inbound_session){
     if (inbound_session->f2f == true) {
         printf("the face-to-face inbound session is ready\n");
     } else {
@@ -58,7 +58,7 @@ static void on_inbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__
     }
 }
 
-static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm__Session *outbound_session){
+static void on_outbound_session_ready(E2ees__E2eeAddress *user_address, E2ees__Session *outbound_session){
     if (outbound_session->f2f == true) {
         printf("the face-to-face outbound session is ready\n");
     } else {
@@ -67,9 +67,9 @@ static void on_outbound_session_ready(Skissm__E2eeAddress *user_address, Skissm_
 }
 
 static void on_one2one_msg_received(
-    Skissm__E2eeAddress *user_address, 
-    Skissm__E2eeAddress *from_address,
-    Skissm__E2eeAddress *to_address,
+    E2ees__E2eeAddress *user_address, 
+    E2ees__E2eeAddress *from_address,
+    E2ees__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     assert(memcmp(plaintext, test_plaintext, plaintext_len) == 0);
@@ -77,31 +77,31 @@ static void on_one2one_msg_received(
 }
 
 static void on_other_device_msg_received(
-    Skissm__E2eeAddress *user_address, 
-    Skissm__E2eeAddress *from_address,
-    Skissm__E2eeAddress *to_address,
+    E2ees__E2eeAddress *user_address, 
+    E2ees__E2eeAddress *from_address,
+    E2ees__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     assert(memcmp(plaintext, test_plaintext, plaintext_len) == 0);
     printf("%s received the message from other devices!\n", to_address->user->user_name);
 }
 
-static void on_group_msg_received(Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
+static void on_group_msg_received(E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from_address, E2ees__E2eeAddress *group_address, uint8_t *plaintext, size_t plaintext_len) {
     assert(memcmp(plaintext, test_plaintext, plaintext_len) == 0);
     printf("%s received the message from a group member!\n", user_address->user->user_name);
 }
 
 static void on_group_created(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **group_members, size_t group_members_num
+    E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *group_address, const char *group_name,
+    E2ees__GroupMember **group_members, size_t group_members_num
 ) {
     print_msg("on_group_created: group_name", (uint8_t *)group_name, strlen(group_name));
 }
 
 static void on_group_members_added(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **group_members, size_t group_members_num,
-    Skissm__GroupMember **added_group_members, size_t added_group_members_num
+    E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *group_address, const char *group_name,
+    E2ees__GroupMember **group_members, size_t group_members_num,
+    E2ees__GroupMember **added_group_members, size_t added_group_members_num
 ) {
     print_msg("on_group_members_added: group_name", (uint8_t *)group_name, strlen(group_name));
     size_t i;
@@ -111,9 +111,9 @@ static void on_group_members_added(
 }
 
 static void on_group_members_removed(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *group_address, const char *group_name,
-    Skissm__GroupMember **group_members, size_t group_members_num,
-    Skissm__GroupMember **removed_group_members, size_t removed_group_members_num
+    E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *group_address, const char *group_name,
+    E2ees__GroupMember **group_members, size_t group_members_num,
+    E2ees__GroupMember **removed_group_members, size_t removed_group_members_num
 ) {
     print_msg("on_group_members_removed: group_name", (uint8_t *)group_name, strlen(group_name));
     size_t i;
@@ -122,7 +122,7 @@ static void on_group_members_removed(
     }
 }
 
-static skissm_event_handler_t test_event_handler = {
+static e2ees_event_handler_t test_event_handler = {
     on_log,
     on_user_registered,
     on_inbound_session_invited,
@@ -143,7 +143,7 @@ static void test_begin(){
     }
     account_data_insert_pos = 0;
 
-    get_skissm_plugin()->event_handler = test_event_handler;
+    get_e2ees_plugin()->event_handler = test_event_handler;
 
     start_mock_server_sending();
 }
@@ -154,7 +154,7 @@ static void test_end(){
     int i;
     for (i = 0; i < account_data_max; i++) {
         if (account_data[i] != NULL) {
-            skissm__account__free_unpacked(account_data[i], NULL);
+            e2ees__account__free_unpacked(account_data[i], NULL);
             account_data[i] = NULL;
         }
     }
@@ -162,14 +162,14 @@ static void test_end(){
 }
 
 static void mock_alice_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_ecc();
     const char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     register_user(
         &response,
-        e2ee_pack_id,
+        e2ees_pack_id,
         user_name,
         user_name,
         device_id,
@@ -181,14 +181,14 @@ static void mock_alice_account(const char *user_name) {
 }
 
 static void mock_bob_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_ecc();
     const char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     register_user(
         &response,
-        e2ee_pack_id,
+        e2ees_pack_id,
         user_name,
         user_name,
         device_id,
@@ -200,14 +200,14 @@ static void mock_bob_account(const char *user_name) {
 }
 
 static void mock_claire_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_ecc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_ecc();
     const char *device_id = generate_uuid_str();
     const char *authenticator = "claire@domain.com.tw";
     const char *auth_code = "987654";
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     register_user(
         &response,
-        e2ee_pack_id,
+        e2ees_pack_id,
         user_name,
         user_name,
         device_id,
@@ -219,14 +219,14 @@ static void mock_claire_account(const char *user_name) {
 }
 
 static void mock_alice_pqc_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "alice@domain.com.tw";
     const char *auth_code = "123456";
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     register_user(
         &response,
-        e2ee_pack_id,
+        e2ees_pack_id,
         user_name,
         user_name,
         device_id,
@@ -238,18 +238,18 @@ static void mock_alice_pqc_account(const char *user_name) {
 
     // release
     free(device_id);
-    skissm__register_user_response__free_unpacked(response, NULL);
+    e2ees__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_bob_pqc_account(const char *user_name) {
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
     char *device_id = generate_uuid_str();
     const char *authenticator = "bob@domain.com.tw";
     const char *auth_code = "654321";
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     register_user(
         &response,
-        e2ee_pack_id,
+        e2ees_pack_id,
         user_name,
         user_name,
         device_id,
@@ -261,17 +261,17 @@ static void mock_bob_pqc_account(const char *user_name) {
 
     // release
     free(device_id);
-    skissm__register_user_response__free_unpacked(response, NULL);
+    e2ees__register_user_response__free_unpacked(response, NULL);
 }
 
 static void mock_user_pqc_account(const char *user_name, const char *authenticator, const char *auth_code) {
     int ret = 0;
-    uint32_t e2ee_pack_id = gen_e2ee_pack_id_pqc();
+    uint32_t e2ees_pack_id = gen_e2ees_pack_id_pqc();
     char *device_id = generate_uuid_str();
-    Skissm__RegisterUserResponse *response = NULL;
+    E2ees__RegisterUserResponse *response = NULL;
     ret = register_user(
         &response,
-        e2ee_pack_id,
+        e2ees_pack_id,
         user_name,
         user_name,
         device_id,
@@ -283,38 +283,38 @@ static void mock_user_pqc_account(const char *user_name, const char *authenticat
 
     // release
     free(device_id);
-    skissm__register_user_response__free_unpacked(response, NULL);
+    e2ees__register_user_response__free_unpacked(response, NULL);
 }
 
 static void test_encryption(
-    Skissm__E2eeAddress *from_address, const char *to_user_id, const char *to_domain,
+    E2ees__E2eeAddress *from_address, const char *to_user_id, const char *to_domain,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     // send encrypted msg
-    Skissm__SendOne2oneMsgResponse *response = NULL;
+    E2ees__SendOne2oneMsgResponse *response = NULL;
     response = send_one2one_msg(
         from_address, to_user_id, to_domain,
-        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
+        E2EES__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
         plaintext, plaintext_len);
 
     // release
-    skissm__send_one2one_msg_response__free_unpacked(response, NULL);
+    e2ees__send_one2one_msg_response__free_unpacked(response, NULL);
 }
 
 static void test_group_encryption(
-    Skissm__E2eeAddress *sender_address, Skissm__E2eeAddress *group_address,
+    E2ees__E2eeAddress *sender_address, E2ees__E2eeAddress *group_address,
     uint8_t *plaintext_data, size_t plaintext_data_len
 ) {
-    Skissm__SendGroupMsgResponse *response = NULL;
+    E2ees__SendGroupMsgResponse *response = NULL;
     int ret = send_group_msg(
         &response,
         sender_address, group_address,
-        SKISSM__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
+        E2EES__NOTIF_LEVEL__NOTIF_LEVEL_NORMAL,
         plaintext_data, plaintext_data_len
     );
 
     // release
-    skissm__send_group_msg_response__free_unpacked(response, NULL);
+    e2ees__send_group_msg_response__free_unpacked(response, NULL);
 }
 
 static void test_two_members_session() {
@@ -329,22 +329,22 @@ static void test_two_members_session() {
     mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
     mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
 
-    Skissm__E2eeAddress *alice_address = account_data[0]->address;
+    E2ees__E2eeAddress *alice_address = account_data[0]->address;
     char *alice_user_id = alice_address->user->user_id;
     char *alice_domain = alice_address->domain;
-    Skissm__E2eeAddress *bob_address = account_data[1]->address;
+    E2ees__E2eeAddress *bob_address = account_data[1]->address;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *invite_response = invite(alice_address, bob_user_id, bob_domain);
+    E2ees__InviteResponse *invite_response = invite(alice_address, bob_user_id, bob_domain);
 
     sleep(1);
 
     // Alice add a new device
     mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
 
-    Skissm__E2eeAddress *device_2 = account_data[2]->address;
+    E2ees__E2eeAddress *device_2 = account_data[2]->address;
 
     sleep(1);
     // Alice sends an encrypted message to Bob
@@ -371,15 +371,15 @@ static void test_two_members_four_devices() {
     mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
     mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
 
-    Skissm__E2eeAddress *alice_device_1 = account_data[0]->address;
+    E2ees__E2eeAddress *alice_device_1 = account_data[0]->address;
     char *alice_user_id = alice_device_1->user->user_id;
     char *alice_domain = alice_device_1->domain;
-    Skissm__E2eeAddress *bob_device_1 = account_data[1]->address;
+    E2ees__E2eeAddress *bob_device_1 = account_data[1]->address;
     char *bob_user_id = bob_device_1->user->user_id;
     char *bob_domain = bob_device_1->domain;
 
     // Alice invites Bob to create a session
-    Skissm__InviteResponse *invite_response = invite(alice_device_1, bob_user_id, bob_domain);
+    E2ees__InviteResponse *invite_response = invite(alice_device_1, bob_user_id, bob_domain);
 
     sleep(3);
 
@@ -394,7 +394,7 @@ static void test_two_members_four_devices() {
     // Alice adds a new device
     mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
 
-    Skissm__E2eeAddress *alice_device_2 = account_data[2]->address;
+    E2ees__E2eeAddress *alice_device_2 = account_data[2]->address;
 
     sleep(1);
 
@@ -410,7 +410,7 @@ static void test_two_members_four_devices() {
     // Bob adds a new device
     mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
 
-    Skissm__E2eeAddress *bob_device_2 = account_data[3]->address;
+    E2ees__E2eeAddress *bob_device_2 = account_data[3]->address;
 
     sleep(1);
 
@@ -446,16 +446,16 @@ static void test_multiple_devices() {
     mock_user_pqc_account("Alice", "alice@domain.com.tw", "123456");
     mock_user_pqc_account("Bob", "bob@domain.com.tw", "234567");
 
-    Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
+    E2ees__E2eeAddress *alice_address_1 = account_data[0]->address;
     char *alice_user_id = alice_address_1->user->user_id;
     char *alice_domain = alice_address_1->domain;
-    Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
+    E2ees__E2eeAddress *alice_address_2 = account_data[1]->address;
 
-    Skissm__E2eeAddress *bob_address = account_data[2]->address;
+    E2ees__E2eeAddress *bob_address = account_data[2]->address;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
-    Skissm__InviteResponse *invite_response = invite(alice_address_1, bob_user_id, bob_domain);
+    E2ees__InviteResponse *invite_response = invite(alice_address_1, bob_user_id, bob_domain);
 
     sleep(3);
 
@@ -496,86 +496,86 @@ static void test_several_members_and_groups() {
 
     sleep(5);
 
-    Skissm__E2eeAddress *alice_address_1 = account_data[0]->address;
+    E2ees__E2eeAddress *alice_address_1 = account_data[0]->address;
     char *alice_user_id = alice_address_1->user->user_id;
     char *alice_domain = alice_address_1->domain;
-    Skissm__E2eeAddress *alice_address_2 = account_data[1]->address;
+    E2ees__E2eeAddress *alice_address_2 = account_data[1]->address;
 
-    Skissm__E2eeAddress *bob_address = account_data[2]->address;
+    E2ees__E2eeAddress *bob_address = account_data[2]->address;
     char *bob_user_id = bob_address->user->user_id;
     char *bob_domain = bob_address->domain;
 
-    Skissm__E2eeAddress *claire_address_1 = account_data[3]->address;
+    E2ees__E2eeAddress *claire_address_1 = account_data[3]->address;
     char *claire_user_id = claire_address_1->user->user_id;
     char *claire_domain = claire_address_1->domain;
-    Skissm__E2eeAddress *claire_address_2 = account_data[4]->address;
+    E2ees__E2eeAddress *claire_address_2 = account_data[4]->address;
 
-    Skissm__E2eeAddress *david_address = account_data[5]->address;
+    E2ees__E2eeAddress *david_address = account_data[5]->address;
     char *david_user_id = david_address->user->user_id;
     char *david_domain = david_address->domain;
 
-    Skissm__E2eeAddress *emily_address_1 = account_data[6]->address;
+    E2ees__E2eeAddress *emily_address_1 = account_data[6]->address;
     char *emily_user_id = emily_address_1->user->user_id;
     char *emily_domain = emily_address_1->domain;
-    Skissm__E2eeAddress *emily_address_2 = account_data[7]->address;
+    E2ees__E2eeAddress *emily_address_2 = account_data[7]->address;
 
-    Skissm__E2eeAddress *frank_address = account_data[8]->address;
+    E2ees__E2eeAddress *frank_address = account_data[8]->address;
     char *frank_user_id = frank_address->user->user_id;
     char *frank_domain = frank_address->domain;
 
     // some invitation
-    Skissm__InviteResponse *response_1 = invite(alice_address_1, bob_user_id, bob_domain);
-    Skissm__InviteResponse *response_2 = invite(alice_address_2, claire_user_id, claire_domain);
+    E2ees__InviteResponse *response_1 = invite(alice_address_1, bob_user_id, bob_domain);
+    E2ees__InviteResponse *response_2 = invite(alice_address_2, claire_user_id, claire_domain);
 
-    Skissm__InviteResponse *response_3 = invite(david_address, emily_user_id, emily_domain);
+    E2ees__InviteResponse *response_3 = invite(david_address, emily_user_id, emily_domain);
 
-    Skissm__InviteResponse *response_4 = invite(frank_address, alice_user_id, alice_domain);
-    Skissm__InviteResponse *response_5 = invite(emily_address_2, frank_user_id, frank_domain);
+    E2ees__InviteResponse *response_4 = invite(frank_address, alice_user_id, alice_domain);
+    E2ees__InviteResponse *response_5 = invite(emily_address_2, frank_user_id, frank_domain);
 
     sleep(3);
 
     // Alice, Bob and Claire create a group
-    Skissm__GroupMember **group_members_1 = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
-    group_members_1[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members_1[0]);
+    E2ees__GroupMember **group_members_1 = (E2ees__GroupMember **)malloc(sizeof(E2ees__GroupMember *) * 3);
+    group_members_1[0] = (E2ees__GroupMember *)malloc(sizeof(E2ees__GroupMember));
+    e2ees__group_member__init(group_members_1[0]);
     group_members_1[0]->user_id = strdup(alice_user_id);
     group_members_1[0]->domain = strdup(alice_domain);
-    group_members_1[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
-    group_members_1[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members_1[1]);
+    group_members_1[0]->role = E2EES__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    group_members_1[1] = (E2ees__GroupMember *)malloc(sizeof(E2ees__GroupMember));
+    e2ees__group_member__init(group_members_1[1]);
     group_members_1[1]->user_id = strdup(bob_user_id);
     group_members_1[1]->domain = strdup(bob_domain);
-    group_members_1[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
-    group_members_1[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members_1[2]);
+    group_members_1[1]->role = E2EES__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    group_members_1[2] = (E2ees__GroupMember *)malloc(sizeof(E2ees__GroupMember));
+    e2ees__group_member__init(group_members_1[2]);
     group_members_1[2]->user_id = strdup(claire_user_id);
     group_members_1[2]->domain = strdup(claire_domain);
-    group_members_1[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    group_members_1[2]->role = E2EES__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response_1 = NULL;
+    E2ees__CreateGroupResponse *create_group_response_1 = NULL;
     create_group(&create_group_response_1, alice_address_1, "The first group", group_members_1, 3);
 
     sleep(2);
 
     // Alice, Emily and Frank create a group
-    Skissm__GroupMember **group_members_2 = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 3);
-    group_members_2[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members_2[0]);
+    E2ees__GroupMember **group_members_2 = (E2ees__GroupMember **)malloc(sizeof(E2ees__GroupMember *) * 3);
+    group_members_2[0] = (E2ees__GroupMember *)malloc(sizeof(E2ees__GroupMember));
+    e2ees__group_member__init(group_members_2[0]);
     group_members_2[0]->user_id = strdup(frank_user_id);
     group_members_2[0]->domain = strdup(frank_domain);
-    group_members_2[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
-    group_members_2[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members_2[1]);
+    group_members_2[0]->role = E2EES__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    group_members_2[1] = (E2ees__GroupMember *)malloc(sizeof(E2ees__GroupMember));
+    e2ees__group_member__init(group_members_2[1]);
     group_members_2[1]->user_id = strdup(emily_user_id);
     group_members_2[1]->domain = strdup(emily_domain);
-    group_members_2[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
-    group_members_2[2] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_members_2[2]);
+    group_members_2[1]->role = E2EES__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    group_members_2[2] = (E2ees__GroupMember *)malloc(sizeof(E2ees__GroupMember));
+    e2ees__group_member__init(group_members_2[2]);
     group_members_2[2]->user_id = strdup(alice_user_id);
     group_members_2[2]->domain = strdup(alice_domain);
-    group_members_2[2]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    group_members_2[2]->role = E2EES__GROUP_ROLE__GROUP_ROLE_MEMBER;
     // create the group
-    Skissm__CreateGroupResponse *create_group_response_2 = NULL;
+    E2ees__CreateGroupResponse *create_group_response_2 = NULL;
     create_group(&create_group_response_2, frank_address, "The second group", group_members_2, 3);
 
     sleep(2);
@@ -606,35 +606,35 @@ static void test_several_members_and_groups() {
 
     // release
     if (response_1 != NULL) {
-        skissm__invite_response__free_unpacked(response_1, NULL);
+        e2ees__invite_response__free_unpacked(response_1, NULL);
         response_1 = NULL;
     }
     if (response_2 != NULL) {
-        skissm__invite_response__free_unpacked(response_2, NULL);
+        e2ees__invite_response__free_unpacked(response_2, NULL);
         response_2 = NULL;
     }
     if (response_3 != NULL) {
-        skissm__invite_response__free_unpacked(response_3, NULL);
+        e2ees__invite_response__free_unpacked(response_3, NULL);
         response_3 = NULL;
     }
     if (response_4 != NULL) {
-        skissm__invite_response__free_unpacked(response_4, NULL);
+        e2ees__invite_response__free_unpacked(response_4, NULL);
         response_4 = NULL;
     }
     if (response_5 != NULL) {
-        skissm__invite_response__free_unpacked(response_5, NULL);
+        e2ees__invite_response__free_unpacked(response_5, NULL);
         response_5 = NULL;
     }
-    skissm__group_member__free_unpacked(group_members_1[0], NULL);
-    skissm__group_member__free_unpacked(group_members_1[1], NULL);
-    skissm__group_member__free_unpacked(group_members_1[2], NULL);
+    e2ees__group_member__free_unpacked(group_members_1[0], NULL);
+    e2ees__group_member__free_unpacked(group_members_1[1], NULL);
+    e2ees__group_member__free_unpacked(group_members_1[2], NULL);
     free(group_members_1);
-    skissm__group_member__free_unpacked(group_members_2[0], NULL);
-    skissm__group_member__free_unpacked(group_members_2[1], NULL);
-    skissm__group_member__free_unpacked(group_members_2[2], NULL);
+    e2ees__group_member__free_unpacked(group_members_2[0], NULL);
+    e2ees__group_member__free_unpacked(group_members_2[1], NULL);
+    e2ees__group_member__free_unpacked(group_members_2[2], NULL);
     free(group_members_2);
-    skissm__create_group_response__free_unpacked(create_group_response_1, NULL);
-    skissm__create_group_response__free_unpacked(create_group_response_2, NULL);
+    e2ees__create_group_response__free_unpacked(create_group_response_1, NULL);
+    e2ees__create_group_response__free_unpacked(create_group_response_2, NULL);
 
     // test stop
     test_end();

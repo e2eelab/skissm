@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/session_manager.h File Reference</title>
+<title>E2EES: include/e2ees/session_manager.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -95,61 +95,61 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="skissm_8h_source.html">skissm/skissm.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="e2ees_8h_source.html">e2ees/e2ees.h</a>&quot;</code><br />
 </div>
 <p><a href="session__manager_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad349d563d74c8e50e7316161f92e85e2" id="r_ad349d563d74c8e50e7316161f92e85e2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad349d563d74c8e50e7316161f92e85e2">produce_get_pre_key_bundle_request</a> (Skissm__GetPreKeyBundleRequest **request_out, const char *to_user_id, const char *to_domain, const char *to_device_id, bool active)</td></tr>
-<tr class="memdesc:ad349d563d74c8e50e7316161f92e85e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a get_pre_key_bundle_request to be sent to messaging server.  <br /></td></tr>
-<tr class="separator:ad349d563d74c8e50e7316161f92e85e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d3597241edbc1b07a398f53c715113e" id="r_a1d3597241edbc1b07a398f53c715113e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1d3597241edbc1b07a398f53c715113e">consume_get_pre_key_bundle_response</a> (Skissm__InviteResponse ***invite_response_list_out, size_t *invite_response_num, Skissm__E2eeAddress *from, uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len, Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response)</td></tr>
-<tr class="memdesc:a1d3597241edbc1b07a398f53c715113e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming get_pre_key_bundle_response_payload.  <br /></td></tr>
-<tr class="separator:a1d3597241edbc1b07a398f53c715113e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5543ca02871c3a22c6e46d148b43b286" id="r_a5543ca02871c3a22c6e46d148b43b286"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5543ca02871c3a22c6e46d148b43b286">produce_send_one2one_msg_request</a> (Skissm__SendOne2oneMsgRequest **request_out, Skissm__Session *outbound_session, uint32_t notif_level, const uint8_t *plaintext_data, size_t plaintext_data_len)</td></tr>
-<tr class="memdesc:a5543ca02871c3a22c6e46d148b43b286"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a send_one2one_msg_request to be sent to messaging server.  <br /></td></tr>
-<tr class="separator:a5543ca02871c3a22c6e46d148b43b286"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4167d8e938e32304cc02c6ef2d8d4ed" id="r_ad4167d8e938e32304cc02c6ef2d8d4ed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4167d8e938e32304cc02c6ef2d8d4ed">consume_send_one2one_msg_response</a> (Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response)</td></tr>
-<tr class="memdesc:ad4167d8e938e32304cc02c6ef2d8d4ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an send_one2one_msg_response with corresponding inbound session.  <br /></td></tr>
-<tr class="separator:ad4167d8e938e32304cc02c6ef2d8d4ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8de221893f715f8a505f57fc22edb6f7" id="r_a8de221893f715f8a505f57fc22edb6f7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8de221893f715f8a505f57fc22edb6f7">consume_one2one_msg</a> (Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg)</td></tr>
-<tr class="memdesc:a8de221893f715f8a505f57fc22edb6f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process a received Skissm__E2eeMsg message from server.  <br /></td></tr>
-<tr class="separator:a8de221893f715f8a505f57fc22edb6f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8fc1f6390daedd282eeac6882ff38f0" id="r_ae8fc1f6390daedd282eeac6882ff38f0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8fc1f6390daedd282eeac6882ff38f0">consume_add_user_device_msg</a> (Skissm__E2eeAddress *receiver_address, Skissm__AddUserDeviceMsg *msg)</td></tr>
-<tr class="memdesc:ae8fc1f6390daedd282eeac6882ff38f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming AddUserDeviceMsg message.  <br /></td></tr>
-<tr class="separator:ae8fc1f6390daedd282eeac6882ff38f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab918c8f59d9819e5ba0d58cca6e9b62e" id="r_ab918c8f59d9819e5ba0d58cca6e9b62e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab918c8f59d9819e5ba0d58cca6e9b62e">consume_remove_user_device_msg</a> (Skissm__E2eeAddress *receiver_address, Skissm__RemoveUserDeviceMsg *msg)</td></tr>
-<tr class="memdesc:ab918c8f59d9819e5ba0d58cca6e9b62e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming Skissm__RemoveUserDeviceMsg message.  <br /></td></tr>
-<tr class="separator:ab918c8f59d9819e5ba0d58cca6e9b62e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec65284b928c6ca6e7f020185754a2f0" id="r_aec65284b928c6ca6e7f020185754a2f0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aec65284b928c6ca6e7f020185754a2f0">produce_invite_request</a> (Skissm__InviteRequest **request_out, Skissm__Session *outbound_session)</td></tr>
-<tr class="memdesc:aec65284b928c6ca6e7f020185754a2f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a Skissm__InviteRequest message to be sent to server.  <br /></td></tr>
-<tr class="separator:aec65284b928c6ca6e7f020185754a2f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a685ddde667df495715e6855f81ae80f0" id="r_a685ddde667df495715e6855f81ae80f0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a685ddde667df495715e6855f81ae80f0">consume_invite_response</a> (Skissm__E2eeAddress *user_address, Skissm__InviteResponse *response)</td></tr>
-<tr class="memdesc:a685ddde667df495715e6855f81ae80f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming InviteResponse message.  <br /></td></tr>
-<tr class="separator:a685ddde667df495715e6855f81ae80f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a1c56871506cea90ec82d9fa5ab2e62" id="r_a3a1c56871506cea90ec82d9fa5ab2e62"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a1c56871506cea90ec82d9fa5ab2e62">consume_invite_msg</a> (Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *invite_msg)</td></tr>
-<tr class="memdesc:a3a1c56871506cea90ec82d9fa5ab2e62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming Skissm__InviteMsg message.  <br /></td></tr>
-<tr class="separator:a3a1c56871506cea90ec82d9fa5ab2e62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae75df08336b9e118bdfc667dab69f254" id="r_ae75df08336b9e118bdfc667dab69f254"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae75df08336b9e118bdfc667dab69f254">produce_accept_request</a> (Skissm__AcceptRequest **request_out, uint32_t e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1, ProtobufCBinaryData *our_ratchet_key)</td></tr>
-<tr class="memdesc:ae75df08336b9e118bdfc667dab69f254"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a Skissm__AcceptRequest message to be sent to server.  <br /></td></tr>
-<tr class="separator:ae75df08336b9e118bdfc667dab69f254"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4651d48014c11bb59e3087727fe4875" id="r_aa4651d48014c11bb59e3087727fe4875"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa4651d48014c11bb59e3087727fe4875">consume_accept_response</a> (Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response)</td></tr>
-<tr class="memdesc:aa4651d48014c11bb59e3087727fe4875"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming AcceptResponse message.  <br /></td></tr>
-<tr class="separator:aa4651d48014c11bb59e3087727fe4875"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78599c2c4d910a6488f45b8461e1cb4e" id="r_a78599c2c4d910a6488f45b8461e1cb4e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78599c2c4d910a6488f45b8461e1cb4e">consume_accept_msg</a> (Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *accept_msg)</td></tr>
-<tr class="memdesc:a78599c2c4d910a6488f45b8461e1cb4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming AcceptMsg message.  <br /></td></tr>
-<tr class="separator:a78599c2c4d910a6488f45b8461e1cb4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9922e0c113c3502e6488c9267663ac3a" id="r_a9922e0c113c3502e6488c9267663ac3a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9922e0c113c3502e6488c9267663ac3a">produce_get_pre_key_bundle_request</a> (E2ees__GetPreKeyBundleRequest **request_out, const char *to_user_id, const char *to_domain, const char *to_device_id, bool active)</td></tr>
+<tr class="memdesc:a9922e0c113c3502e6488c9267663ac3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a get_pre_key_bundle_request to be sent to messaging server.  <br /></td></tr>
+<tr class="separator:a9922e0c113c3502e6488c9267663ac3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a590346361ab4d81e3549afc63f5e74f4" id="r_a590346361ab4d81e3549afc63f5e74f4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a590346361ab4d81e3549afc63f5e74f4">consume_get_pre_key_bundle_response</a> (E2ees__InviteResponse ***invite_response_list_out, size_t *invite_response_num, E2ees__E2eeAddress *from, uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len, E2ees__GetPreKeyBundleResponse *get_pre_key_bundle_response)</td></tr>
+<tr class="memdesc:a590346361ab4d81e3549afc63f5e74f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming get_pre_key_bundle_response_payload.  <br /></td></tr>
+<tr class="separator:a590346361ab4d81e3549afc63f5e74f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7dd6315a6562a5c3a53267e976bbca4" id="r_ad7dd6315a6562a5c3a53267e976bbca4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7dd6315a6562a5c3a53267e976bbca4">produce_send_one2one_msg_request</a> (E2ees__SendOne2oneMsgRequest **request_out, E2ees__Session *outbound_session, uint32_t notif_level, const uint8_t *plaintext_data, size_t plaintext_data_len)</td></tr>
+<tr class="memdesc:ad7dd6315a6562a5c3a53267e976bbca4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a send_one2one_msg_request to be sent to messaging server.  <br /></td></tr>
+<tr class="separator:ad7dd6315a6562a5c3a53267e976bbca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a461c50d0ae08793fd773a895be217227" id="r_a461c50d0ae08793fd773a895be217227"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a461c50d0ae08793fd773a895be217227">consume_send_one2one_msg_response</a> (E2ees__Session *outbound_session, E2ees__SendOne2oneMsgResponse *response)</td></tr>
+<tr class="memdesc:a461c50d0ae08793fd773a895be217227"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an send_one2one_msg_response with corresponding inbound session.  <br /></td></tr>
+<tr class="separator:a461c50d0ae08793fd773a895be217227"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a674bb755aa611188bbd2cd863a76e888" id="r_a674bb755aa611188bbd2cd863a76e888"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a674bb755aa611188bbd2cd863a76e888">consume_one2one_msg</a> (E2ees__E2eeAddress *receiver_address, E2ees__E2eeMsg *e2ee_msg)</td></tr>
+<tr class="memdesc:a674bb755aa611188bbd2cd863a76e888"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process a received E2ees__E2eeMsg message from server.  <br /></td></tr>
+<tr class="separator:a674bb755aa611188bbd2cd863a76e888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4ce83a9d5bd0aa27198c54ca3e5bf21" id="r_ac4ce83a9d5bd0aa27198c54ca3e5bf21"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac4ce83a9d5bd0aa27198c54ca3e5bf21">consume_add_user_device_msg</a> (E2ees__E2eeAddress *receiver_address, E2ees__AddUserDeviceMsg *msg)</td></tr>
+<tr class="memdesc:ac4ce83a9d5bd0aa27198c54ca3e5bf21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming AddUserDeviceMsg message.  <br /></td></tr>
+<tr class="separator:ac4ce83a9d5bd0aa27198c54ca3e5bf21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc458be8b04cf79af4af5713aab0d87b" id="r_abc458be8b04cf79af4af5713aab0d87b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc458be8b04cf79af4af5713aab0d87b">consume_remove_user_device_msg</a> (E2ees__E2eeAddress *receiver_address, E2ees__RemoveUserDeviceMsg *msg)</td></tr>
+<tr class="memdesc:abc458be8b04cf79af4af5713aab0d87b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming E2ees__RemoveUserDeviceMsg message.  <br /></td></tr>
+<tr class="separator:abc458be8b04cf79af4af5713aab0d87b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a537f4de98bba72a6dcaf7196217f9d85" id="r_a537f4de98bba72a6dcaf7196217f9d85"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a537f4de98bba72a6dcaf7196217f9d85">produce_invite_request</a> (E2ees__InviteRequest **request_out, E2ees__Session *outbound_session)</td></tr>
+<tr class="memdesc:a537f4de98bba72a6dcaf7196217f9d85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a E2ees__InviteRequest message to be sent to server.  <br /></td></tr>
+<tr class="separator:a537f4de98bba72a6dcaf7196217f9d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9814eb6c730eca7bb558d4617437b5d9" id="r_a9814eb6c730eca7bb558d4617437b5d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9814eb6c730eca7bb558d4617437b5d9">consume_invite_response</a> (E2ees__E2eeAddress *user_address, E2ees__InviteResponse *response)</td></tr>
+<tr class="memdesc:a9814eb6c730eca7bb558d4617437b5d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming InviteResponse message.  <br /></td></tr>
+<tr class="separator:a9814eb6c730eca7bb558d4617437b5d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5364b74e5b5d05aa05822a0abfea8c89" id="r_a5364b74e5b5d05aa05822a0abfea8c89"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5364b74e5b5d05aa05822a0abfea8c89">consume_invite_msg</a> (E2ees__E2eeAddress *receiver_address, E2ees__InviteMsg *invite_msg)</td></tr>
+<tr class="memdesc:a5364b74e5b5d05aa05822a0abfea8c89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming E2ees__InviteMsg message.  <br /></td></tr>
+<tr class="separator:a5364b74e5b5d05aa05822a0abfea8c89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74a7d473e01a8a5ac10ff90b23f37b30" id="r_a74a7d473e01a8a5ac10ff90b23f37b30"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74a7d473e01a8a5ac10ff90b23f37b30">produce_accept_request</a> (E2ees__AcceptRequest **request_out, uint32_t e2ees_pack_id, E2ees__E2eeAddress *from, E2ees__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1, ProtobufCBinaryData *our_ratchet_key)</td></tr>
+<tr class="memdesc:a74a7d473e01a8a5ac10ff90b23f37b30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a E2ees__AcceptRequest message to be sent to server.  <br /></td></tr>
+<tr class="separator:a74a7d473e01a8a5ac10ff90b23f37b30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0748577e14fbde7d89aa3facf6b792ba" id="r_a0748577e14fbde7d89aa3facf6b792ba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0748577e14fbde7d89aa3facf6b792ba">consume_accept_response</a> (E2ees__E2eeAddress *user_address, E2ees__AcceptResponse *response)</td></tr>
+<tr class="memdesc:a0748577e14fbde7d89aa3facf6b792ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming AcceptResponse message.  <br /></td></tr>
+<tr class="separator:a0748577e14fbde7d89aa3facf6b792ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1967ccb6d2bffa980e9a3c847c60a134" id="r_a1967ccb6d2bffa980e9a3c847c60a134"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1967ccb6d2bffa980e9a3c847c60a134">consume_accept_msg</a> (E2ees__E2eeAddress *receiver_address, E2ees__AcceptMsg *accept_msg)</td></tr>
+<tr class="memdesc:a1967ccb6d2bffa980e9a3c847c60a134"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process an incoming AcceptMsg message.  <br /></td></tr>
+<tr class="separator:a1967ccb6d2bffa980e9a3c847c60a134"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Copyright © 2020-2021 by Academia Sinica</p>
-<p>This file is part of SKISSM.</p>
+<div class="textblock"><p>Copyright © 2021 Academia Sinica. All Rights Reserved.</p>
+<p>This file is part of E2EE Security.</p>
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-<p>SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License along with SKISSM. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
+<p>E2EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with E2EE Security. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a78599c2c4d910a6488f45b8461e1cb4e" name="a78599c2c4d910a6488f45b8461e1cb4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78599c2c4d910a6488f45b8461e1cb4e">&#9670;&#160;</a></span>consume_accept_msg()</h2>
+<a id="a1967ccb6d2bffa980e9a3c847c60a134" name="a1967ccb6d2bffa980e9a3c847c60a134"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1967ccb6d2bffa980e9a3c847c60a134">&#9670;&#160;</a></span>consume_accept_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,12 +157,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">bool consume_accept_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__AcceptMsg *</td>          <td class="paramname"><span class="paramname"><em>accept_msg</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__AcceptMsg *</td>          <td class="paramname"><span class="paramname"><em>accept_msg</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -181,8 +181,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="aa4651d48014c11bb59e3087727fe4875" name="aa4651d48014c11bb59e3087727fe4875"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4651d48014c11bb59e3087727fe4875">&#9670;&#160;</a></span>consume_accept_response()</h2>
+<a id="a0748577e14fbde7d89aa3facf6b792ba" name="a0748577e14fbde7d89aa3facf6b792ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0748577e14fbde7d89aa3facf6b792ba">&#9670;&#160;</a></span>consume_accept_response()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -190,12 +190,12 @@ false </dd></dl>
         <tr>
           <td class="memname">int consume_accept_response </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__AcceptResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__AcceptResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -214,8 +214,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ae8fc1f6390daedd282eeac6882ff38f0" name="ae8fc1f6390daedd282eeac6882ff38f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8fc1f6390daedd282eeac6882ff38f0">&#9670;&#160;</a></span>consume_add_user_device_msg()</h2>
+<a id="ac4ce83a9d5bd0aa27198c54ca3e5bf21" name="ac4ce83a9d5bd0aa27198c54ca3e5bf21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4ce83a9d5bd0aa27198c54ca3e5bf21">&#9670;&#160;</a></span>consume_add_user_device_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -223,12 +223,12 @@ false </dd></dl>
         <tr>
           <td class="memname">bool consume_add_user_device_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__AddUserDeviceMsg *</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__AddUserDeviceMsg *</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -247,8 +247,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a1d3597241edbc1b07a398f53c715113e" name="a1d3597241edbc1b07a398f53c715113e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d3597241edbc1b07a398f53c715113e">&#9670;&#160;</a></span>consume_get_pre_key_bundle_response()</h2>
+<a id="a590346361ab4d81e3549afc63f5e74f4" name="a590346361ab4d81e3549afc63f5e74f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a590346361ab4d81e3549afc63f5e74f4">&#9670;&#160;</a></span>consume_get_pre_key_bundle_response()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -256,7 +256,7 @@ false </dd></dl>
         <tr>
           <td class="memname">int consume_get_pre_key_bundle_response </td>
           <td>(</td>
-          <td class="paramtype">Skissm__InviteResponse ***</td>          <td class="paramname"><span class="paramname"><em>invite_response_list_out</em></span>, </td>
+          <td class="paramtype">E2ees__InviteResponse ***</td>          <td class="paramname"><span class="paramname"><em>invite_response_list_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -266,7 +266,7 @@ false </dd></dl>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>from</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>from</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -281,7 +281,7 @@ false </dd></dl>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GetPreKeyBundleResponse *</td>          <td class="paramname"><span class="paramname"><em>get_pre_key_bundle_response</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GetPreKeyBundleResponse *</td>          <td class="paramname"><span class="paramname"><em>get_pre_key_bundle_response</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -302,8 +302,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a3a1c56871506cea90ec82d9fa5ab2e62" name="a3a1c56871506cea90ec82d9fa5ab2e62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a1c56871506cea90ec82d9fa5ab2e62">&#9670;&#160;</a></span>consume_invite_msg()</h2>
+<a id="a5364b74e5b5d05aa05822a0abfea8c89" name="a5364b74e5b5d05aa05822a0abfea8c89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5364b74e5b5d05aa05822a0abfea8c89">&#9670;&#160;</a></span>consume_invite_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -311,17 +311,17 @@ false </dd></dl>
         <tr>
           <td class="memname">bool consume_invite_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__InviteMsg *</td>          <td class="paramname"><span class="paramname"><em>invite_msg</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__InviteMsg *</td>          <td class="paramname"><span class="paramname"><em>invite_msg</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process an incoming Skissm__InviteMsg message. </p>
+<p>Process an incoming E2ees__InviteMsg message. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">receiver_address</td><td></td></tr>
@@ -335,8 +335,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a685ddde667df495715e6855f81ae80f0" name="a685ddde667df495715e6855f81ae80f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a685ddde667df495715e6855f81ae80f0">&#9670;&#160;</a></span>consume_invite_response()</h2>
+<a id="a9814eb6c730eca7bb558d4617437b5d9" name="a9814eb6c730eca7bb558d4617437b5d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9814eb6c730eca7bb558d4617437b5d9">&#9670;&#160;</a></span>consume_invite_response()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -344,12 +344,12 @@ false </dd></dl>
         <tr>
           <td class="memname">int consume_invite_response </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>user_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__InviteResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__InviteResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -368,8 +368,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a8de221893f715f8a505f57fc22edb6f7" name="a8de221893f715f8a505f57fc22edb6f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8de221893f715f8a505f57fc22edb6f7">&#9670;&#160;</a></span>consume_one2one_msg()</h2>
+<a id="a674bb755aa611188bbd2cd863a76e888" name="a674bb755aa611188bbd2cd863a76e888"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a674bb755aa611188bbd2cd863a76e888">&#9670;&#160;</a></span>consume_one2one_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -377,17 +377,17 @@ false </dd></dl>
         <tr>
           <td class="memname">bool consume_one2one_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeMsg *</td>          <td class="paramname"><span class="paramname"><em>e2ee_msg</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__E2eeMsg *</td>          <td class="paramname"><span class="paramname"><em>e2ee_msg</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process a received Skissm__E2eeMsg message from server. </p>
+<p>Process a received E2ees__E2eeMsg message from server. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">receiver_address</td><td></td></tr>
@@ -401,8 +401,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ab918c8f59d9819e5ba0d58cca6e9b62e" name="ab918c8f59d9819e5ba0d58cca6e9b62e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab918c8f59d9819e5ba0d58cca6e9b62e">&#9670;&#160;</a></span>consume_remove_user_device_msg()</h2>
+<a id="abc458be8b04cf79af4af5713aab0d87b" name="abc458be8b04cf79af4af5713aab0d87b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc458be8b04cf79af4af5713aab0d87b">&#9670;&#160;</a></span>consume_remove_user_device_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -410,17 +410,17 @@ false </dd></dl>
         <tr>
           <td class="memname">bool consume_remove_user_device_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>receiver_address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__RemoveUserDeviceMsg *</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__RemoveUserDeviceMsg *</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Process an incoming Skissm__RemoveUserDeviceMsg message. </p>
+<p>Process an incoming E2ees__RemoveUserDeviceMsg message. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">receiver_address</td><td></td></tr>
@@ -434,8 +434,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ad4167d8e938e32304cc02c6ef2d8d4ed" name="ad4167d8e938e32304cc02c6ef2d8d4ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4167d8e938e32304cc02c6ef2d8d4ed">&#9670;&#160;</a></span>consume_send_one2one_msg_response()</h2>
+<a id="a461c50d0ae08793fd773a895be217227" name="a461c50d0ae08793fd773a895be217227"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a461c50d0ae08793fd773a895be217227">&#9670;&#160;</a></span>consume_send_one2one_msg_response()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -443,12 +443,12 @@ false </dd></dl>
         <tr>
           <td class="memname">bool consume_send_one2one_msg_response </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Session *</td>          <td class="paramname"><span class="paramname"><em>outbound_session</em></span>, </td>
+          <td class="paramtype">E2ees__Session *</td>          <td class="paramname"><span class="paramname"><em>outbound_session</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__SendOne2oneMsgResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__SendOne2oneMsgResponse *</td>          <td class="paramname"><span class="paramname"><em>response</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -467,8 +467,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ae75df08336b9e118bdfc667dab69f254" name="ae75df08336b9e118bdfc667dab69f254"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae75df08336b9e118bdfc667dab69f254">&#9670;&#160;</a></span>produce_accept_request()</h2>
+<a id="a74a7d473e01a8a5ac10ff90b23f37b30" name="a74a7d473e01a8a5ac10ff90b23f37b30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74a7d473e01a8a5ac10ff90b23f37b30">&#9670;&#160;</a></span>produce_accept_request()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -476,22 +476,22 @@ false </dd></dl>
         <tr>
           <td class="memname">int produce_accept_request </td>
           <td>(</td>
-          <td class="paramtype">Skissm__AcceptRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
+          <td class="paramtype">E2ees__AcceptRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>from</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>from</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>to</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>to</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -506,11 +506,11 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Create a Skissm__AcceptRequest message to be sent to server. </p>
+<p>Create a E2ees__AcceptRequest message to be sent to server. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">request_out</td><td></td></tr>
-    <tr><td class="paramname">e2ee_pack_id</td><td></td></tr>
+    <tr><td class="paramname">e2ees_pack_id</td><td></td></tr>
     <tr><td class="paramname">from</td><td></td></tr>
     <tr><td class="paramname">to</td><td></td></tr>
     <tr><td class="paramname">ciphertext_1</td><td></td></tr>
@@ -521,8 +521,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ad349d563d74c8e50e7316161f92e85e2" name="ad349d563d74c8e50e7316161f92e85e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad349d563d74c8e50e7316161f92e85e2">&#9670;&#160;</a></span>produce_get_pre_key_bundle_request()</h2>
+<a id="a9922e0c113c3502e6488c9267663ac3a" name="a9922e0c113c3502e6488c9267663ac3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9922e0c113c3502e6488c9267663ac3a">&#9670;&#160;</a></span>produce_get_pre_key_bundle_request()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -530,7 +530,7 @@ false </dd></dl>
         <tr>
           <td class="memname">int produce_get_pre_key_bundle_request </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GetPreKeyBundleRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
+          <td class="paramtype">E2ees__GetPreKeyBundleRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -570,8 +570,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="aec65284b928c6ca6e7f020185754a2f0" name="aec65284b928c6ca6e7f020185754a2f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec65284b928c6ca6e7f020185754a2f0">&#9670;&#160;</a></span>produce_invite_request()</h2>
+<a id="a537f4de98bba72a6dcaf7196217f9d85" name="a537f4de98bba72a6dcaf7196217f9d85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a537f4de98bba72a6dcaf7196217f9d85">&#9670;&#160;</a></span>produce_invite_request()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -579,17 +579,17 @@ false </dd></dl>
         <tr>
           <td class="memname">int produce_invite_request </td>
           <td>(</td>
-          <td class="paramtype">Skissm__InviteRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
+          <td class="paramtype">E2ees__InviteRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Session *</td>          <td class="paramname"><span class="paramname"><em>outbound_session</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__Session *</td>          <td class="paramname"><span class="paramname"><em>outbound_session</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a Skissm__InviteRequest message to be sent to server. </p>
+<p>Create a E2ees__InviteRequest message to be sent to server. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">request_out</td><td></td></tr>
@@ -601,8 +601,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a5543ca02871c3a22c6e46d148b43b286" name="a5543ca02871c3a22c6e46d148b43b286"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5543ca02871c3a22c6e46d148b43b286">&#9670;&#160;</a></span>produce_send_one2one_msg_request()</h2>
+<a id="ad7dd6315a6562a5c3a53267e976bbca4" name="ad7dd6315a6562a5c3a53267e976bbca4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7dd6315a6562a5c3a53267e976bbca4">&#9670;&#160;</a></span>produce_send_one2one_msg_request()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -610,12 +610,12 @@ false </dd></dl>
         <tr>
           <td class="memname">int produce_send_one2one_msg_request </td>
           <td>(</td>
-          <td class="paramtype">Skissm__SendOne2oneMsgRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
+          <td class="paramtype">E2ees__SendOne2oneMsgRequest **</td>          <td class="paramname"><span class="paramname"><em>request_out</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Session *</td>          <td class="paramname"><span class="paramname"><em>outbound_session</em></span>, </td>
+          <td class="paramtype">E2ees__Session *</td>          <td class="paramname"><span class="paramname"><em>outbound_session</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

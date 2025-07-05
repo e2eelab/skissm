@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/session_manager.h Source File</title>
+<title>E2EES: include/e2ees/session_manager.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -102,81 +102,81 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;<a class="code" href="skissm_8h.html">skissm/skissm.h</a>&quot;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;<a class="code" href="e2ees_8h.html">e2ees/e2ees.h</a>&quot;</span></div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="session__manager_8h.html#ad349d563d74c8e50e7316161f92e85e2">   41</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#ad349d563d74c8e50e7316161f92e85e2">produce_get_pre_key_bundle_request</a>(</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    Skissm__GetPreKeyBundleRequest **request_out,</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a9922e0c113c3502e6488c9267663ac3a">   41</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#a9922e0c113c3502e6488c9267663ac3a">produce_get_pre_key_bundle_request</a>(</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    E2ees__GetPreKeyBundleRequest **request_out,</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keyword">const</span> <span class="keywordtype">char</span> *to_user_id,</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keyword">const</span> <span class="keywordtype">char</span> *to_domain,</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keyword">const</span> <span class="keywordtype">char</span> *to_device_id,</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">bool</span> active</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>);</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a1d3597241edbc1b07a398f53c715113e">   60</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#a1d3597241edbc1b07a398f53c715113e">consume_get_pre_key_bundle_response</a>(</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    Skissm__InviteResponse ***invite_response_list_out,</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a590346361ab4d81e3549afc63f5e74f4">   60</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#a590346361ab4d81e3549afc63f5e74f4">consume_get_pre_key_bundle_response</a>(</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    E2ees__InviteResponse ***invite_response_list_out,</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordtype">size_t</span> *invite_response_num,</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    Skissm__E2eeAddress *from,</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    E2ees__E2eeAddress *from,</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    uint8_t *group_pre_key_plaintext_data,</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordtype">size_t</span> group_pre_key_plaintext_data_len,</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    E2ees__GetPreKeyBundleResponse *get_pre_key_bundle_response</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>);</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a5543ca02871c3a22c6e46d148b43b286">   79</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#a5543ca02871c3a22c6e46d148b43b286">produce_send_one2one_msg_request</a>(</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    Skissm__SendOne2oneMsgRequest **request_out,</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    Skissm__Session *outbound_session,</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="session__manager_8h.html#ad7dd6315a6562a5c3a53267e976bbca4">   79</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#ad7dd6315a6562a5c3a53267e976bbca4">produce_send_one2one_msg_request</a>(</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    E2ees__SendOne2oneMsgRequest **request_out,</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    E2ees__Session *outbound_session,</div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    uint32_t notif_level,</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keyword">const</span> uint8_t *plaintext_data, <span class="keywordtype">size_t</span> plaintext_data_len</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>);</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="session__manager_8h.html#ad4167d8e938e32304cc02c6ef2d8d4ed">   94</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#ad4167d8e938e32304cc02c6ef2d8d4ed">consume_send_one2one_msg_response</a>(</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    Skissm__Session *outbound_session,</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    Skissm__SendOne2oneMsgResponse *response</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a461c50d0ae08793fd773a895be217227">   94</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#a461c50d0ae08793fd773a895be217227">consume_send_one2one_msg_response</a>(</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    E2ees__Session *outbound_session,</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    E2ees__SendOne2oneMsgResponse *response</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>);</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a8de221893f715f8a505f57fc22edb6f7">  107</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#a8de221893f715f8a505f57fc22edb6f7">consume_one2one_msg</a>(</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    Skissm__E2eeAddress *receiver_address,</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    Skissm__E2eeMsg *e2ee_msg</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a674bb755aa611188bbd2cd863a76e888">  107</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#a674bb755aa611188bbd2cd863a76e888">consume_one2one_msg</a>(</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    E2ees__E2eeAddress *receiver_address,</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    E2ees__E2eeMsg *e2ee_msg</div>
 <div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>);</div>
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="session__manager_8h.html#ae8fc1f6390daedd282eeac6882ff38f0">  120</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#ae8fc1f6390daedd282eeac6882ff38f0">consume_add_user_device_msg</a>(</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    Skissm__E2eeAddress *receiver_address,</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    Skissm__AddUserDeviceMsg *msg</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="session__manager_8h.html#ac4ce83a9d5bd0aa27198c54ca3e5bf21">  120</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#ac4ce83a9d5bd0aa27198c54ca3e5bf21">consume_add_user_device_msg</a>(</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    E2ees__E2eeAddress *receiver_address,</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    E2ees__AddUserDeviceMsg *msg</div>
 <div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>);</div>
 <div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno"><a class="line" href="session__manager_8h.html#ab918c8f59d9819e5ba0d58cca6e9b62e">  133</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#ab918c8f59d9819e5ba0d58cca6e9b62e">consume_remove_user_device_msg</a>(</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    Skissm__E2eeAddress *receiver_address,</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    Skissm__RemoveUserDeviceMsg *msg</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno"><a class="line" href="session__manager_8h.html#abc458be8b04cf79af4af5713aab0d87b">  133</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#abc458be8b04cf79af4af5713aab0d87b">consume_remove_user_device_msg</a>(</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    E2ees__E2eeAddress *receiver_address,</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    E2ees__RemoveUserDeviceMsg *msg</div>
 <div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>);</div>
 <div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno"><a class="line" href="session__manager_8h.html#aec65284b928c6ca6e7f020185754a2f0">  145</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#aec65284b928c6ca6e7f020185754a2f0">produce_invite_request</a>(</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    Skissm__InviteRequest **request_out,</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    Skissm__Session *outbound_session</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a537f4de98bba72a6dcaf7196217f9d85">  145</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#a537f4de98bba72a6dcaf7196217f9d85">produce_invite_request</a>(</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    E2ees__InviteRequest **request_out,</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    E2ees__Session *outbound_session</div>
 <div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>);</div>
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a685ddde667df495715e6855f81ae80f0">  158</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#a685ddde667df495715e6855f81ae80f0">consume_invite_response</a>(</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    Skissm__E2eeAddress *user_address,</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    Skissm__InviteResponse *response</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a9814eb6c730eca7bb558d4617437b5d9">  158</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#a9814eb6c730eca7bb558d4617437b5d9">consume_invite_response</a>(</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    E2ees__E2eeAddress *user_address,</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    E2ees__InviteResponse *response</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>);</div>
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a3a1c56871506cea90ec82d9fa5ab2e62">  171</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#a3a1c56871506cea90ec82d9fa5ab2e62">consume_invite_msg</a>(</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    Skissm__E2eeAddress *receiver_address,</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    Skissm__InviteMsg *invite_msg</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a5364b74e5b5d05aa05822a0abfea8c89">  171</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#a5364b74e5b5d05aa05822a0abfea8c89">consume_invite_msg</a>(</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    E2ees__E2eeAddress *receiver_address,</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    E2ees__InviteMsg *invite_msg</div>
 <div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>);</div>
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno"><a class="line" href="session__manager_8h.html#ae75df08336b9e118bdfc667dab69f254">  186</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#ae75df08336b9e118bdfc667dab69f254">produce_accept_request</a>(</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    Skissm__AcceptRequest **request_out,</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    uint32_t e2ee_pack_id,</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    Skissm__E2eeAddress *from,</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    Skissm__E2eeAddress *to,</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a74a7d473e01a8a5ac10ff90b23f37b30">  186</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#a74a7d473e01a8a5ac10ff90b23f37b30">produce_accept_request</a>(</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    E2ees__AcceptRequest **request_out,</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    uint32_t e2ees_pack_id,</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    E2ees__E2eeAddress *from,</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    E2ees__E2eeAddress *to,</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    ProtobufCBinaryData *ciphertext_1,</div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    ProtobufCBinaryData *our_ratchet_key</div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>);</div>
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno"><a class="line" href="session__manager_8h.html#aa4651d48014c11bb59e3087727fe4875">  203</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#aa4651d48014c11bb59e3087727fe4875">consume_accept_response</a>(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response);</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a0748577e14fbde7d89aa3facf6b792ba">  203</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="session__manager_8h.html#a0748577e14fbde7d89aa3facf6b792ba">consume_accept_response</a>(E2ees__E2eeAddress *user_address, E2ees__AcceptResponse *response);</div>
 <div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span> </div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a78599c2c4d910a6488f45b8461e1cb4e">  213</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#a78599c2c4d910a6488f45b8461e1cb4e">consume_accept_msg</a>(</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    Skissm__E2eeAddress *receiver_address,</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    Skissm__AcceptMsg *accept_msg</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="session__manager_8h.html#a1967ccb6d2bffa980e9a3c847c60a134">  213</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="session__manager_8h.html#a1967ccb6d2bffa980e9a3c847c60a134">consume_accept_msg</a>(</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    E2ees__E2eeAddress *receiver_address,</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    E2ees__AcceptMsg *accept_msg</div>
 <div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>);</div>
 <div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span> </div>
 <div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="preprocessor">#ifdef __cplusplus</span></div>
@@ -184,20 +184,20 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
 <div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span><span class="preprocessor">#endif </span><span class="comment">/* SESSION_MANAGER_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="asession__manager_8h_html_a1d3597241edbc1b07a398f53c715113e"><div class="ttname"><a href="session__manager_8h.html#a1d3597241edbc1b07a398f53c715113e">consume_get_pre_key_bundle_response</a></div><div class="ttdeci">int consume_get_pre_key_bundle_response(Skissm__InviteResponse ***invite_response_list_out, size_t *invite_response_num, Skissm__E2eeAddress *from, uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len, Skissm__GetPreKeyBundleResponse *get_pre_key_bundle_response)</div><div class="ttdoc">Process an incoming get_pre_key_bundle_response_payload.</div></div>
-<div class="ttc" id="asession__manager_8h_html_a3a1c56871506cea90ec82d9fa5ab2e62"><div class="ttname"><a href="session__manager_8h.html#a3a1c56871506cea90ec82d9fa5ab2e62">consume_invite_msg</a></div><div class="ttdeci">bool consume_invite_msg(Skissm__E2eeAddress *receiver_address, Skissm__InviteMsg *invite_msg)</div><div class="ttdoc">Process an incoming Skissm__InviteMsg message.</div></div>
-<div class="ttc" id="asession__manager_8h_html_a5543ca02871c3a22c6e46d148b43b286"><div class="ttname"><a href="session__manager_8h.html#a5543ca02871c3a22c6e46d148b43b286">produce_send_one2one_msg_request</a></div><div class="ttdeci">int produce_send_one2one_msg_request(Skissm__SendOne2oneMsgRequest **request_out, Skissm__Session *outbound_session, uint32_t notif_level, const uint8_t *plaintext_data, size_t plaintext_data_len)</div><div class="ttdoc">Create a send_one2one_msg_request to be sent to messaging server.</div></div>
-<div class="ttc" id="asession__manager_8h_html_a685ddde667df495715e6855f81ae80f0"><div class="ttname"><a href="session__manager_8h.html#a685ddde667df495715e6855f81ae80f0">consume_invite_response</a></div><div class="ttdeci">int consume_invite_response(Skissm__E2eeAddress *user_address, Skissm__InviteResponse *response)</div><div class="ttdoc">Process an incoming InviteResponse message.</div></div>
-<div class="ttc" id="asession__manager_8h_html_a78599c2c4d910a6488f45b8461e1cb4e"><div class="ttname"><a href="session__manager_8h.html#a78599c2c4d910a6488f45b8461e1cb4e">consume_accept_msg</a></div><div class="ttdeci">bool consume_accept_msg(Skissm__E2eeAddress *receiver_address, Skissm__AcceptMsg *accept_msg)</div><div class="ttdoc">Process an incoming AcceptMsg message.</div></div>
-<div class="ttc" id="asession__manager_8h_html_a8de221893f715f8a505f57fc22edb6f7"><div class="ttname"><a href="session__manager_8h.html#a8de221893f715f8a505f57fc22edb6f7">consume_one2one_msg</a></div><div class="ttdeci">bool consume_one2one_msg(Skissm__E2eeAddress *receiver_address, Skissm__E2eeMsg *e2ee_msg)</div><div class="ttdoc">Process a received Skissm__E2eeMsg message from server.</div></div>
-<div class="ttc" id="asession__manager_8h_html_aa4651d48014c11bb59e3087727fe4875"><div class="ttname"><a href="session__manager_8h.html#aa4651d48014c11bb59e3087727fe4875">consume_accept_response</a></div><div class="ttdeci">int consume_accept_response(Skissm__E2eeAddress *user_address, Skissm__AcceptResponse *response)</div><div class="ttdoc">Process an incoming AcceptResponse message.</div></div>
-<div class="ttc" id="asession__manager_8h_html_ab918c8f59d9819e5ba0d58cca6e9b62e"><div class="ttname"><a href="session__manager_8h.html#ab918c8f59d9819e5ba0d58cca6e9b62e">consume_remove_user_device_msg</a></div><div class="ttdeci">bool consume_remove_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__RemoveUserDeviceMsg *msg)</div><div class="ttdoc">Process an incoming Skissm__RemoveUserDeviceMsg message.</div></div>
-<div class="ttc" id="asession__manager_8h_html_ad349d563d74c8e50e7316161f92e85e2"><div class="ttname"><a href="session__manager_8h.html#ad349d563d74c8e50e7316161f92e85e2">produce_get_pre_key_bundle_request</a></div><div class="ttdeci">int produce_get_pre_key_bundle_request(Skissm__GetPreKeyBundleRequest **request_out, const char *to_user_id, const char *to_domain, const char *to_device_id, bool active)</div><div class="ttdoc">Create a get_pre_key_bundle_request to be sent to messaging server.</div></div>
-<div class="ttc" id="asession__manager_8h_html_ad4167d8e938e32304cc02c6ef2d8d4ed"><div class="ttname"><a href="session__manager_8h.html#ad4167d8e938e32304cc02c6ef2d8d4ed">consume_send_one2one_msg_response</a></div><div class="ttdeci">bool consume_send_one2one_msg_response(Skissm__Session *outbound_session, Skissm__SendOne2oneMsgResponse *response)</div><div class="ttdoc">Process an send_one2one_msg_response with corresponding inbound session.</div></div>
-<div class="ttc" id="asession__manager_8h_html_ae75df08336b9e118bdfc667dab69f254"><div class="ttname"><a href="session__manager_8h.html#ae75df08336b9e118bdfc667dab69f254">produce_accept_request</a></div><div class="ttdeci">int produce_accept_request(Skissm__AcceptRequest **request_out, uint32_t e2ee_pack_id, Skissm__E2eeAddress *from, Skissm__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1, ProtobufCBinaryData *our_ratchet_key)</div><div class="ttdoc">Create a Skissm__AcceptRequest message to be sent to server.</div></div>
-<div class="ttc" id="asession__manager_8h_html_ae8fc1f6390daedd282eeac6882ff38f0"><div class="ttname"><a href="session__manager_8h.html#ae8fc1f6390daedd282eeac6882ff38f0">consume_add_user_device_msg</a></div><div class="ttdeci">bool consume_add_user_device_msg(Skissm__E2eeAddress *receiver_address, Skissm__AddUserDeviceMsg *msg)</div><div class="ttdoc">Process an incoming AddUserDeviceMsg message.</div></div>
-<div class="ttc" id="asession__manager_8h_html_aec65284b928c6ca6e7f020185754a2f0"><div class="ttname"><a href="session__manager_8h.html#aec65284b928c6ca6e7f020185754a2f0">produce_invite_request</a></div><div class="ttdeci">int produce_invite_request(Skissm__InviteRequest **request_out, Skissm__Session *outbound_session)</div><div class="ttdoc">Create a Skissm__InviteRequest message to be sent to server.</div></div>
-<div class="ttc" id="askissm_8h_html"><div class="ttname"><a href="skissm_8h.html">skissm.h</a></div></div>
+<div class="ttc" id="ae2ees_8h_html"><div class="ttname"><a href="e2ees_8h.html">e2ees.h</a></div></div>
+<div class="ttc" id="asession__manager_8h_html_a0748577e14fbde7d89aa3facf6b792ba"><div class="ttname"><a href="session__manager_8h.html#a0748577e14fbde7d89aa3facf6b792ba">consume_accept_response</a></div><div class="ttdeci">int consume_accept_response(E2ees__E2eeAddress *user_address, E2ees__AcceptResponse *response)</div><div class="ttdoc">Process an incoming AcceptResponse message.</div></div>
+<div class="ttc" id="asession__manager_8h_html_a1967ccb6d2bffa980e9a3c847c60a134"><div class="ttname"><a href="session__manager_8h.html#a1967ccb6d2bffa980e9a3c847c60a134">consume_accept_msg</a></div><div class="ttdeci">bool consume_accept_msg(E2ees__E2eeAddress *receiver_address, E2ees__AcceptMsg *accept_msg)</div><div class="ttdoc">Process an incoming AcceptMsg message.</div></div>
+<div class="ttc" id="asession__manager_8h_html_a461c50d0ae08793fd773a895be217227"><div class="ttname"><a href="session__manager_8h.html#a461c50d0ae08793fd773a895be217227">consume_send_one2one_msg_response</a></div><div class="ttdeci">bool consume_send_one2one_msg_response(E2ees__Session *outbound_session, E2ees__SendOne2oneMsgResponse *response)</div><div class="ttdoc">Process an send_one2one_msg_response with corresponding inbound session.</div></div>
+<div class="ttc" id="asession__manager_8h_html_a5364b74e5b5d05aa05822a0abfea8c89"><div class="ttname"><a href="session__manager_8h.html#a5364b74e5b5d05aa05822a0abfea8c89">consume_invite_msg</a></div><div class="ttdeci">bool consume_invite_msg(E2ees__E2eeAddress *receiver_address, E2ees__InviteMsg *invite_msg)</div><div class="ttdoc">Process an incoming E2ees__InviteMsg message.</div></div>
+<div class="ttc" id="asession__manager_8h_html_a537f4de98bba72a6dcaf7196217f9d85"><div class="ttname"><a href="session__manager_8h.html#a537f4de98bba72a6dcaf7196217f9d85">produce_invite_request</a></div><div class="ttdeci">int produce_invite_request(E2ees__InviteRequest **request_out, E2ees__Session *outbound_session)</div><div class="ttdoc">Create a E2ees__InviteRequest message to be sent to server.</div></div>
+<div class="ttc" id="asession__manager_8h_html_a590346361ab4d81e3549afc63f5e74f4"><div class="ttname"><a href="session__manager_8h.html#a590346361ab4d81e3549afc63f5e74f4">consume_get_pre_key_bundle_response</a></div><div class="ttdeci">int consume_get_pre_key_bundle_response(E2ees__InviteResponse ***invite_response_list_out, size_t *invite_response_num, E2ees__E2eeAddress *from, uint8_t *group_pre_key_plaintext_data, size_t group_pre_key_plaintext_data_len, E2ees__GetPreKeyBundleResponse *get_pre_key_bundle_response)</div><div class="ttdoc">Process an incoming get_pre_key_bundle_response_payload.</div></div>
+<div class="ttc" id="asession__manager_8h_html_a674bb755aa611188bbd2cd863a76e888"><div class="ttname"><a href="session__manager_8h.html#a674bb755aa611188bbd2cd863a76e888">consume_one2one_msg</a></div><div class="ttdeci">bool consume_one2one_msg(E2ees__E2eeAddress *receiver_address, E2ees__E2eeMsg *e2ee_msg)</div><div class="ttdoc">Process a received E2ees__E2eeMsg message from server.</div></div>
+<div class="ttc" id="asession__manager_8h_html_a74a7d473e01a8a5ac10ff90b23f37b30"><div class="ttname"><a href="session__manager_8h.html#a74a7d473e01a8a5ac10ff90b23f37b30">produce_accept_request</a></div><div class="ttdeci">int produce_accept_request(E2ees__AcceptRequest **request_out, uint32_t e2ees_pack_id, E2ees__E2eeAddress *from, E2ees__E2eeAddress *to, ProtobufCBinaryData *ciphertext_1, ProtobufCBinaryData *our_ratchet_key)</div><div class="ttdoc">Create a E2ees__AcceptRequest message to be sent to server.</div></div>
+<div class="ttc" id="asession__manager_8h_html_a9814eb6c730eca7bb558d4617437b5d9"><div class="ttname"><a href="session__manager_8h.html#a9814eb6c730eca7bb558d4617437b5d9">consume_invite_response</a></div><div class="ttdeci">int consume_invite_response(E2ees__E2eeAddress *user_address, E2ees__InviteResponse *response)</div><div class="ttdoc">Process an incoming InviteResponse message.</div></div>
+<div class="ttc" id="asession__manager_8h_html_a9922e0c113c3502e6488c9267663ac3a"><div class="ttname"><a href="session__manager_8h.html#a9922e0c113c3502e6488c9267663ac3a">produce_get_pre_key_bundle_request</a></div><div class="ttdeci">int produce_get_pre_key_bundle_request(E2ees__GetPreKeyBundleRequest **request_out, const char *to_user_id, const char *to_domain, const char *to_device_id, bool active)</div><div class="ttdoc">Create a get_pre_key_bundle_request to be sent to messaging server.</div></div>
+<div class="ttc" id="asession__manager_8h_html_abc458be8b04cf79af4af5713aab0d87b"><div class="ttname"><a href="session__manager_8h.html#abc458be8b04cf79af4af5713aab0d87b">consume_remove_user_device_msg</a></div><div class="ttdeci">bool consume_remove_user_device_msg(E2ees__E2eeAddress *receiver_address, E2ees__RemoveUserDeviceMsg *msg)</div><div class="ttdoc">Process an incoming E2ees__RemoveUserDeviceMsg message.</div></div>
+<div class="ttc" id="asession__manager_8h_html_ac4ce83a9d5bd0aa27198c54ca3e5bf21"><div class="ttname"><a href="session__manager_8h.html#ac4ce83a9d5bd0aa27198c54ca3e5bf21">consume_add_user_device_msg</a></div><div class="ttdeci">bool consume_add_user_device_msg(E2ees__E2eeAddress *receiver_address, E2ees__AddUserDeviceMsg *msg)</div><div class="ttdoc">Process an incoming AddUserDeviceMsg message.</div></div>
+<div class="ttc" id="asession__manager_8h_html_ad7dd6315a6562a5c3a53267e976bbca4"><div class="ttname"><a href="session__manager_8h.html#ad7dd6315a6562a5c3a53267e976bbca4">produce_send_one2one_msg_request</a></div><div class="ttdeci">int produce_send_one2one_msg_request(E2ees__SendOne2oneMsgRequest **request_out, E2ees__Session *outbound_session, uint32_t notif_level, const uint8_t *plaintext_data, size_t plaintext_data_len)</div><div class="ttdoc">Create a send_one2one_msg_request to be sent to messaging server.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

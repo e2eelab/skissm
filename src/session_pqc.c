@@ -1,129 +1,129 @@
 /*
- * Copyright © 2020-2021 by Academia Sinica
+ * Copyright © 2021 Academia Sinica. All Rights Reserved.
  *
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "skissm/session.h"
+#include "e2ees/session.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#include "skissm/account.h"
-#include "skissm/account_cache.h"
-#include "skissm/cipher.h"
-#include "skissm/e2ee_client_internal.h"
-#include "skissm/group_session.h"
-#include "skissm/mem_util.h"
-#include "skissm/ratchet.h"
-#include "skissm/validation.h"
+#include "e2ees/account.h"
+#include "e2ees/account_cache.h"
+#include "e2ees/cipher.h"
+#include "e2ees/e2ees_client_internal.h"
+#include "e2ees/group_session.h"
+#include "e2ees/mem_util.h"
+#include "e2ees/ratchet.h"
+#include "e2ees/validation.h"
 
 static const char FINGERPRINT_SEED[] = "Fingerprint";
 
 int pqc_new_outbound_session_v2(
-    Skissm__InviteResponse **response_out,
-    Skissm__E2eeAddress *from,
-    Skissm__PreKeyBundle *their_pre_key_bundle
+    E2ees__InviteResponse **response_out,
+    E2ees__E2eeAddress *from,
+    E2ees__PreKeyBundle *their_pre_key_bundle
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
-    uint32_t e2ee_pack_id;
+    uint32_t e2ees_pack_id;
     cipher_suite_t *cipher_suite = NULL;
-    Skissm__Account *local_account = NULL;
-    Skissm__KeyPair *my_identity_key_pair = NULL;
-    Skissm__IdentityKeyPublic *their_ik = NULL;
-    Skissm__SignedPreKeyPublic *their_spk = NULL;
-    Skissm__OneTimePreKeyPublic *their_opk = NULL;
+    E2ees__Account *local_account = NULL;
+    E2ees__KeyPair *my_identity_key_pair = NULL;
+    E2ees__IdentityKeyPublic *their_ik = NULL;
+    E2ees__SignedPreKeyPublic *their_spk = NULL;
+    E2ees__OneTimePreKeyPublic *their_opk = NULL;
     uint32_t asym_pub_key_len, sign_pub_key_len, sig_len, kem_ciphertext_len;
-    Skissm__E2eeAddress *to = NULL;
-    Skissm__Session *outbound_session = NULL;
-    Skissm__InviteResponse *response = NULL;
+    E2ees__E2eeAddress *to = NULL;
+    E2ees__Session *outbound_session = NULL;
+    E2ees__InviteResponse *response = NULL;
 
     if (is_valid_address(from)) {
         // load the account
-        get_skissm_plugin()->db_handler.load_account_by_address(from, &local_account);
+        get_e2ees_plugin()->db_handler.load_account_by_address(from, &local_account);
         if (is_valid_registered_account(local_account)) {
             my_identity_key_pair = local_account->identity_key->asym_key_pair;
             if (is_valid_pre_key_bundle(their_pre_key_bundle)) {
-                e2ee_pack_id = their_pre_key_bundle->e2ee_pack_id;
-                cipher_suite = get_e2ee_pack(e2ee_pack_id)->cipher_suite;
+                e2ees_pack_id = their_pre_key_bundle->e2ees_pack_id;
+                cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
                 to = their_pre_key_bundle->user_address;
                 if (is_valid_cipher_suite(cipher_suite)) {
                     asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-                    sign_pub_key_len = cipher_suite->digital_signature_suite->get_crypto_param().sign_pub_key_len;
-                    sig_len = cipher_suite->digital_signature_suite->get_crypto_param().sig_len;
+                    sign_pub_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+                    sig_len = cipher_suite->ds_suite->get_crypto_param().sig_len;
                     kem_ciphertext_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
 
                     their_ik = their_pre_key_bundle->identity_key_public;
                     their_spk = their_pre_key_bundle->signed_pre_key_public;
                     their_opk = their_pre_key_bundle->one_time_pre_key_public;
                 } else {
-                    ret = SKISSM_RESULT_FAIL;
+                    ret = E2EES_RESULT_FAIL;
                 }
             } else {
-                ssm_notify_log(from, BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
-                ret = SKISSM_RESULT_FAIL;
+                e2ees_notify_log(from, BAD_PRE_KEY_BUNDLE, "pqc_new_outbound_session()");
+                ret = E2EES_RESULT_FAIL;
             }
         } else {
-            ssm_notify_log(from, BAD_ACCOUNT, "pqc_new_outbound_session()");
-            ret = SKISSM_RESULT_FAIL;
+            e2ees_notify_log(from, BAD_ACCOUNT, "pqc_new_outbound_session()");
+            ret = E2EES_RESULT_FAIL;
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         if (their_ik->asym_public_key.len != asym_pub_key_len) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (their_ik->sign_public_key.len != sign_pub_key_len) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (their_spk->public_key.len != asym_pub_key_len) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (their_spk->signature.len != sig_len) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         // their_opk maybe empty
         if (their_opk != NULL) {
             if (their_opk->public_key.len != asym_pub_key_len) {
-                ret = SKISSM_RESULT_FAIL;
+                ret = E2EES_RESULT_FAIL;
             }
         }
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         // verify the signature
-        ret = cipher_suite->digital_signature_suite->verify(
+        ret = cipher_suite->ds_suite->verify(
             their_spk->signature.data, their_spk->signature.len,
             their_spk->public_key.data, asym_pub_key_len,
             their_ik->sign_public_key.data
         );
 
         if (ret != 0) {
-            ssm_notify_log(from, BAD_SIGNATURE, "pqc_new_outbound_session()");
+            e2ees_notify_log(from, BAD_SIGNATURE, "pqc_new_outbound_session()");
         }
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
-        outbound_session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
-        initialise_session(outbound_session, e2ee_pack_id, from, to);
+    if (ret == E2EES_RESULT_SUCC) {
+        outbound_session = (E2ees__Session *)malloc(sizeof(E2ees__Session));
+        initialise_session(outbound_session, e2ees_pack_id, from, to);
 
         // set the version
-        outbound_session->version = strdup(E2EE_PROTOCOL_VERSION);
+        outbound_session->version = strdup(E2EES_PROTOCOL_VERSION);
         // set the session ID
         outbound_session->session_id = generate_uuid_str();
         // set session not verified
@@ -133,10 +133,10 @@ int pqc_new_outbound_session_v2(
         outbound_session->responded = false;
         outbound_session->bob_signed_pre_key_id = their_spk->spk_id;
 
-        outbound_session->ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
-        skissm__ratchet__init(outbound_session->ratchet);
-        outbound_session->ratchet->sender_chain = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
-        skissm__sender_chain_node__init(outbound_session->ratchet->sender_chain);
+        outbound_session->ratchet = (E2ees__Ratchet *)malloc(sizeof(E2ees__Ratchet));
+        e2ees__ratchet__init(outbound_session->ratchet);
+        outbound_session->ratchet->sender_chain = (E2ees__SenderChainNode *)malloc(sizeof(E2ees__SenderChainNode));
+        e2ees__sender_chain_node__init(outbound_session->ratchet->sender_chain);
         copy_protobuf_from_protobuf(&(outbound_session->ratchet->sender_chain->their_ratchet_public_key), &(their_spk->public_key));
 
         // server may return empty one-time pre-key(public)
@@ -213,12 +213,12 @@ int pqc_new_outbound_session_v2(
         }
 
         // generate the base key
-        outbound_session->alice_base_key = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-        skissm__key_pair__init(outbound_session->alice_base_key);
+        outbound_session->alice_base_key = (E2ees__KeyPair *)malloc(sizeof(E2ees__KeyPair));
+        e2ees__key_pair__init(outbound_session->alice_base_key);
         cipher_suite->kem_suite->asym_key_gen(&outbound_session->alice_base_key->public_key, &outbound_session->alice_base_key->private_key);
 
         // store sesson state before send invite
-        ssm_notify_log(
+        e2ees_notify_log(
             outbound_session->our_address,
             DEBUG_LOG,
             "pqc_new_outbound_session() store sesson state before send invite session_id=%s, from [%s:%s], to [%s:%s]",
@@ -228,8 +228,8 @@ int pqc_new_outbound_session_v2(
             outbound_session->their_address->user->user_id,
             outbound_session->their_address->user->device_id
         );
-        outbound_session->invite_t = get_skissm_plugin()->common_handler.gen_ts();
-        get_skissm_plugin()->db_handler.store_session(outbound_session);
+        outbound_session->invite_t = get_e2ees_plugin()->common_handler.gen_ts();
+        get_e2ees_plugin()->db_handler.store_session(outbound_session);
 
         // send the invite request to the peer
         ret = invite_internal(&response, outbound_session);
@@ -239,11 +239,11 @@ int pqc_new_outbound_session_v2(
         free_protobuf(&ciphertext_2);
         free_protobuf(&ciphertext_3);
         free_protobuf(&ciphertext_4);
-        skissm__session__free_unpacked(outbound_session, NULL);
+        e2ees__session__free_unpacked(outbound_session, NULL);
         outbound_session = NULL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         *response_out = response;
     }
 
@@ -251,26 +251,26 @@ int pqc_new_outbound_session_v2(
 }
 
 int pqc_new_inbound_session(
-    Skissm__Session **inbound_session_out,
-    Skissm__Account *local_account,
-    Skissm__InviteMsg *msg
+    E2ees__Session **inbound_session_out,
+    E2ees__Account *local_account,
+    E2ees__InviteMsg *msg
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
-    Skissm__Session *session = NULL;
-    Skissm__AcceptResponse *accept_response = NULL;
+    E2ees__Session *session = NULL;
+    E2ees__AcceptResponse *accept_response = NULL;
     cipher_suite_t *cipher_suite = NULL;
-    Skissm__E2eeAddress *address = NULL;
-    Skissm__IdentityKey *our_ik = NULL;
-    Skissm__SignedPreKey *our_spk = NULL;
-    Skissm__SignedPreKey *old_spk_data = NULL;
+    E2ees__E2eeAddress *address = NULL;
+    E2ees__IdentityKey *our_ik = NULL;
+    E2ees__SignedPreKey *our_spk = NULL;
+    E2ees__SignedPreKey *old_spk_data = NULL;
     bool old_spk = false;
-    Skissm__OneTimePreKey *our_one_time_pre_key = NULL;
+    E2ees__OneTimePreKey *our_one_time_pre_key = NULL;
     uint32_t bob_signed_pre_key_id;
     uint32_t bob_one_time_pre_key_id;
-    Skissm__KeyPair *bob_identity_key = NULL;
-    Skissm__KeyPair *bob_signed_pre_key = NULL;
-    Skissm__KeyPair *bob_one_time_pre_key = NULL;
+    E2ees__KeyPair *bob_identity_key = NULL;
+    E2ees__KeyPair *bob_signed_pre_key = NULL;
+    E2ees__KeyPair *bob_one_time_pre_key = NULL;
     uint8_t x3dh_epoch = 3;
     int asym_pub_key_len;
     int ad_len;
@@ -281,18 +281,18 @@ int pqc_new_inbound_session(
     int shared_secret_len;
     uint32_t ciphertext_len;
     ProtobufCBinaryData ciphertext_1 = {0, NULL};
-    Skissm__Ratchet *ratchet = NULL;
+    E2ees__Ratchet *ratchet = NULL;
 
     if (is_valid_registered_account(local_account)) {
         our_ik = local_account->identity_key;
         our_spk = local_account->signed_pre_key;
         address = local_account->address;
     } else {
-        ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_new_inbound_session()");
-        ret = SKISSM_RESULT_FAIL;
+        e2ees_notify_log(NULL, BAD_ACCOUNT, "pqc_new_inbound_session()");
+        ret = E2EES_RESULT_FAIL;
     }
     if (is_valid_invite_msg(msg)) {
-        cipher_suite = get_e2ee_pack(msg->e2ee_pack_id)->cipher_suite;
+        cipher_suite = get_e2ees_pack(msg->e2ees_pack_id)->cipher_suite;
         asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
         shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
@@ -301,39 +301,39 @@ int pqc_new_inbound_session(
         bob_signed_pre_key_id = msg->bob_signed_pre_key_id;
         bob_one_time_pre_key_id = msg->bob_one_time_pre_key_id;
     } else {
-        ssm_notify_log(NULL, BAD_INVITE_MSG, "pqc_new_inbound_session()");
-        ret = SKISSM_RESULT_FAIL;
+        e2ees_notify_log(NULL, BAD_INVITE_MSG, "pqc_new_inbound_session()");
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         // verify the signed pre-key
         if (our_spk->spk_id != bob_signed_pre_key_id) {
-            get_skissm_plugin()->db_handler.load_signed_pre_key(address, bob_signed_pre_key_id, &old_spk_data);
+            get_e2ees_plugin()->db_handler.load_signed_pre_key(address, bob_signed_pre_key_id, &old_spk_data);
             if (is_valid_signed_pre_key(old_spk_data)) {
                 old_spk = true;
             } else {
-                ssm_notify_log(NULL, BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
-                ret = SKISSM_RESULT_FAIL;
+                e2ees_notify_log(NULL, BAD_SIGNED_PRE_KEY, "pqc_new_inbound_session()");
+                ret = E2EES_RESULT_FAIL;
             }
         }
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         // check the one-time pre-key
         if (bob_one_time_pre_key_id != 0) {
             x3dh_epoch = 4;
             our_one_time_pre_key = lookup_one_time_pre_key(local_account, bob_one_time_pre_key_id);
             if (!is_valid_one_time_pre_key(our_one_time_pre_key)) {
-                ssm_notify_log(NULL, BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
-                ret = SKISSM_RESULT_FAIL;
+                e2ees_notify_log(NULL, BAD_ONE_TIME_PRE_KEY, "pqc_new_inbound_session()");
+                ret = E2EES_RESULT_FAIL;
             }
         }
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         // create a session
-        session = (Skissm__Session *)malloc(sizeof(Skissm__Session));
-        initialise_session(session, msg->e2ee_pack_id, msg->to, msg->from);
+        session = (E2ees__Session *)malloc(sizeof(E2ees__Session));
+        initialise_session(session, msg->e2ees_pack_id, msg->to, msg->from);
         // set the version and session id
         session->version = strdup(msg->version);
         session->session_id = strdup(msg->session_id);
@@ -352,7 +352,7 @@ int pqc_new_inbound_session(
             bob_one_time_pre_key = our_one_time_pre_key->key_pair;
             // set the one-time pre-key id
             mark_opk_as_used(local_account, our_one_time_pre_key->opk_id);
-            get_skissm_plugin()->db_handler.update_one_time_pre_key(address, our_one_time_pre_key->opk_id);
+            get_e2ees_plugin()->db_handler.update_one_time_pre_key(address, our_one_time_pre_key->opk_id);
             session->bob_one_time_pre_key_id = our_one_time_pre_key->opk_id;
         } else {
             bob_one_time_pre_key = NULL;
@@ -408,18 +408,18 @@ int pqc_new_inbound_session(
         unset(secret, sizeof(secret));
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         session->ratchet = ratchet;
         // store sesson state
-        get_skissm_plugin()->db_handler.store_session(session);
+        get_e2ees_plugin()->db_handler.store_session(session);
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         /** The one who sends the acception message will be the one who received the invitation message.
          *  Thus, the "from" and "to" of acception message will be different from those in the session. */
         ret = accept_internal(
             &accept_response,
-            session->e2ee_pack_id,
+            session->e2ees_pack_id,
             session->our_address,
             session->their_address,
             &ciphertext_1,
@@ -427,7 +427,7 @@ int pqc_new_inbound_session(
         );
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         *inbound_session_out = session;
     } else {
         free_proto(session);
@@ -435,7 +435,7 @@ int pqc_new_inbound_session(
 
     // release
     if (old_spk_data != NULL) {
-        skissm__signed_pre_key__free_unpacked(old_spk_data, NULL);
+        e2ees__signed_pre_key__free_unpacked(old_spk_data, NULL);
         old_spk_data = NULL;
     }
     free_protobuf(&ciphertext_1);
@@ -445,43 +445,43 @@ int pqc_new_inbound_session(
     return ret;
 }
 
-int pqc_complete_outbound_session(Skissm__Session **outbound_session_out, Skissm__AcceptMsg *msg) {
-    int ret = SKISSM_RESULT_SUCC;
+int pqc_complete_outbound_session(E2ees__Session **outbound_session_out, E2ees__AcceptMsg *msg) {
+    int ret = E2EES_RESULT_SUCC;
 
-    Skissm__Session *session = NULL;
+    E2ees__Session *session = NULL;
     cipher_suite_t *cipher_suite = NULL;
-    Skissm__Account *account = NULL;
-    Skissm__IdentityKey *identity_key = NULL;
+    E2ees__Account *account = NULL;
+    E2ees__IdentityKey *identity_key = NULL;
     ProtobufCBinaryData their_ratchet_key = {0, NULL};
 
     if (is_valid_accept_msg(msg)) {
-        get_skissm_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &session);
+        get_e2ees_plugin()->db_handler.load_outbound_session(msg->to, msg->from, &session);
         if (is_valid_uncompleted_session(session)) {
             load_identity_key_from_cache(&identity_key, session->our_address);
 
             if (identity_key == NULL) {
-                get_skissm_plugin()->db_handler.load_account_by_address(session->our_address, &account);
+                get_e2ees_plugin()->db_handler.load_account_by_address(session->our_address, &account);
                 if (is_valid_registered_account(account)) {
                     copy_ik_from_ik(&identity_key, account->identity_key);
                 } else {
-                    ssm_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");
-                    ret = SKISSM_RESULT_FAIL;
+                    e2ees_notify_log(NULL, BAD_ACCOUNT, "pqc_complete_outbound_session()");
+                    ret = E2EES_RESULT_FAIL;
                 }
             }
         } else {
-            ssm_notify_log(NULL, BAD_SESSION, "pqc_complete_outbound_session()");
-            ret = SKISSM_RESULT_FAIL;
+            e2ees_notify_log(NULL, BAD_SESSION, "pqc_complete_outbound_session()");
+            ret = E2EES_RESULT_FAIL;
         }
     } else {
-        ssm_notify_log(NULL, BAD_ACCEPT_MSG, "pqc_complete_outbound_session()");
-        ret = SKISSM_RESULT_FAIL;
+        e2ees_notify_log(NULL, BAD_ACCEPT_MSG, "pqc_complete_outbound_session()");
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
-        cipher_suite = get_e2ee_pack(session->e2ee_pack_id)->cipher_suite;
+    if (ret == E2EES_RESULT_SUCC) {
+        cipher_suite = get_e2ees_pack(session->e2ees_pack_id)->cipher_suite;
 
         copy_protobuf_from_protobuf(&their_ratchet_key, &(session->ratchet->sender_chain->their_ratchet_public_key));
-        skissm__sender_chain_node__free_unpacked(session->ratchet->sender_chain, NULL);
+        e2ees__sender_chain_node__free_unpacked(session->ratchet->sender_chain, NULL);
         session->ratchet->sender_chain = NULL;
 
         session->responded = true;
@@ -501,10 +501,10 @@ int pqc_complete_outbound_session(Skissm__Session **outbound_session_out, Skissm
         );
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         *outbound_session_out = session;
         // store sesson state
-        get_skissm_plugin()->db_handler.store_session(session);
+        get_e2ees_plugin()->db_handler.store_session(session);
     } else {
         free_proto(session);
     }
@@ -518,7 +518,7 @@ int pqc_complete_outbound_session(Skissm__Session **outbound_session_out, Skissm
     return ret;
 }
 
-session_suite_t E2EE_SESSION_PQC = {
+session_suite_t E2EES_SESSION_PQC = {
     pqc_new_outbound_session_v2,
     pqc_new_inbound_session,
     pqc_complete_outbound_session

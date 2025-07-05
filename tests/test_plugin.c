@@ -1,20 +1,20 @@
 /*
- * Copyright © 2020-2021 by Academia Sinica
+ * Copyright © 2021 Academia Sinica. All Rights Reserved.
  *
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "test_plugin.h"
 
@@ -26,10 +26,10 @@
 #include <sqlite3.h>
 #include <string.h>
 
-#include "skissm/cipher.h"
-#include "skissm/crypto.h"
-#include "skissm/e2ee_client.h"
-#include "skissm/mem_util.h"
+#include "e2ees/cipher.h"
+#include "e2ees/crypto.h"
+#include "e2ees/e2ees_client.h"
+#include "e2ees/mem_util.h"
 
 #include "mock_server.h"
 #include "mock_server_sending.h"
@@ -54,35 +54,35 @@ static void gen_rand(uint8_t *rand_out, size_t rand_out_len) {
     }
 }
 
-static void gen_uuid(uint8_t uuid[UUID_LEN]) {
-    gen_rand(uuid, UUID_LEN);
+static void gen_uuid(uint8_t uuid[E2EES_UUID_LEN]) {
+    gen_rand(uuid, E2EES_UUID_LEN);
 }
 
 // ===============================================================
-// skissm_event_handler_t
+// e2ees_event_handler_t
 // callback handlers
 static void on_one2one_msg_received(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from_address, E2ees__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     print_msg("on_one2one_msg_received: plaintext", plaintext, plaintext_len);
 }
 
 static void on_other_device_msg_received(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address,
+    E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from_address, E2ees__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     print_msg("on_other_device_msg_received: plaintext", plaintext, plaintext_len);
 }
 
 static void on_group_msg_received(
-    Skissm__E2eeAddress *user_address, Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *group_address,
+    E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from_address, E2ees__E2eeAddress *group_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-struct skissm_plugin_t ssm_plugin = {
+struct e2ees_plugin_t ssm_plugin = {
     // common
     {
         gen_ts,
@@ -159,7 +159,7 @@ struct skissm_plugin_t ssm_plugin = {
 void tear_up() {
     mock_db_begin();
     mock_server_begin();
-    skissm_begin(&ssm_plugin);
+    e2ees_begin(&ssm_plugin);
 }
 
 void tear_down() {
@@ -167,5 +167,5 @@ void tear_down() {
     mock_db_end();
     mock_server_end();
     stop_mock_server_sending();
-    skissm_end();
+    e2ees_end();
 }

@@ -1,0 +1,667 @@
+\doxysection{e2ees.\+h}
+\hypertarget{e2ees_8h_source}{}\label{e2ees_8h_source}\index{include/e2ees/e2ees.h@{include/e2ees/e2ees.h}}
+\mbox{\hyperlink{e2ees_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#ifndef\ E2EES\_H\_}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ E2EES\_H\_}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ "{}e2ees/AcceptMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ "{}e2ees/AcceptRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ "{}e2ees/AcceptResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ "{}e2ees/Account.pb-\/c.h"{}}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}e2ees/AddGroupMemberDeviceMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ "{}e2ees/AddGroupMemberDeviceRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ "{}e2ees/AddGroupMemberDeviceResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ "{}e2ees/AddGroupMembersMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ "{}e2ees/AddGroupMembersRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ "{}e2ees/AddGroupMembersResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ "{}e2ees/AddUserDeviceMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ "{}e2ees/ChainKey.pb-\/c.h"{}}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ "{}e2ees/ConsumeProtoMsgRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ "{}e2ees/ConsumeProtoMsgResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ "{}e2ees/CreateGroupMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#include\ "{}e2ees/CreateGroupRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ "{}e2ees/CreateGroupResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ "{}e2ees/E2eeAddress.pb-\/c.h"{}}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ "{}e2ees/E2eeMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ "{}e2ees/GetGroupRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ "{}e2ees/GetGroupResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ "{}e2ees/GetPreKeyBundleRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ "{}e2ees/GetPreKeyBundleResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#include\ "{}e2ees/GroupMember.pb-\/c.h"{}}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#include\ "{}e2ees/GroupMemberInfo.pb-\/c.h"{}}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#include\ "{}e2ees/GroupMsgPayload.pb-\/c.h"{}}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#include\ "{}e2ees/GroupPreKeyBundle.pb-\/c.h"{}}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#include\ "{}e2ees/GroupUpdateKeyBundle.pb-\/c.h"{}}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#include\ "{}e2ees/GroupSession.pb-\/c.h"{}}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#include\ "{}e2ees/IdentityKey.pb-\/c.h"{}}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#include\ "{}e2ees/IdentityKeyPublic.pb-\/c.h"{}}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#include\ "{}e2ees/InviteMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#include\ "{}e2ees/InviteRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#include\ "{}e2ees/InviteResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#include\ "{}e2ees/KeyPair.pb-\/c.h"{}}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#include\ "{}e2ees/LeaveGroupMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#include\ "{}e2ees/LeaveGroupRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#include\ "{}e2ees/LeaveGroupResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#include\ "{}e2ees/MsgKey.pb-\/c.h"{}}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#include\ "{}e2ees/NotifLevel.pb-\/c.h"{}}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#include\ "{}e2ees/One2oneMsgPayload.pb-\/c.h"{}}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#include\ "{}e2ees/OneTimePreKey.pb-\/c.h"{}}}
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\#include\ "{}e2ees/OneTimePreKeyPublic.pb-\/c.h"{}}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#include\ "{}e2ees/PendingRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#include\ "{}e2ees/Plaintext.pb-\/c.h"{}}}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#include\ "{}e2ees/PreKeyBundle.pb-\/c.h"{}}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#include\ "{}e2ees/ProtoMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#include\ "{}e2ees/ProtoMsgTag.pb-\/c.h"{}}}
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\#include\ "{}e2ees/PublishSpkRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\#include\ "{}e2ees/PublishSpkResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\#include\ "{}e2ees/Ratchet.pb-\/c.h"{}}}
+\DoxyCodeLine{00077\ \textcolor{preprocessor}{\#include\ "{}e2ees/ReceiverChainNode.pb-\/c.h"{}}}
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\#include\ "{}e2ees/RegisterUserRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#include\ "{}e2ees/RegisterUserResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\#include\ "{}e2ees/RemoveGroupMembersMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00081\ \textcolor{preprocessor}{\#include\ "{}e2ees/RemoveGroupMembersRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\#include\ "{}e2ees/RemoveGroupMembersResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\#include\ "{}e2ees/RemoveUserDeviceMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00084\ \textcolor{preprocessor}{\#include\ "{}e2ees/ResponseCode.pb-\/c.h"{}}}
+\DoxyCodeLine{00085\ \textcolor{preprocessor}{\#include\ "{}e2ees/SendGroupMsgRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00086\ \textcolor{preprocessor}{\#include\ "{}e2ees/SendGroupMsgResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\#include\ "{}e2ees/SendOne2oneMsgRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00088\ \textcolor{preprocessor}{\#include\ "{}e2ees/SendOne2oneMsgResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00089\ \textcolor{preprocessor}{\#include\ "{}e2ees/SenderChainNode.pb-\/c.h"{}}}
+\DoxyCodeLine{00090\ \textcolor{preprocessor}{\#include\ "{}e2ees/Session.pb-\/c.h"{}}}
+\DoxyCodeLine{00091\ \textcolor{preprocessor}{\#include\ "{}e2ees/SignedPreKey.pb-\/c.h"{}}}
+\DoxyCodeLine{00092\ \textcolor{preprocessor}{\#include\ "{}e2ees/SignedPreKeyPublic.pb-\/c.h"{}}}
+\DoxyCodeLine{00093\ \textcolor{preprocessor}{\#include\ "{}e2ees/SkippedMsgKeyNode.pb-\/c.h"{}}}
+\DoxyCodeLine{00094\ \textcolor{preprocessor}{\#include\ "{}e2ees/SupplyOpksMsg.pb-\/c.h"{}}}
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#include\ "{}e2ees/SupplyOpksRequest.pb-\/c.h"{}}}
+\DoxyCodeLine{00096\ \textcolor{preprocessor}{\#include\ "{}e2ees/SupplyOpksResponse.pb-\/c.h"{}}}
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\#include\ "{}e2ees/UserDevicesBundle.pb-\/c.h"{}}}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00100\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00101\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{cipher_8h}{e2ees/cipher.h}}"{}}}
+\DoxyCodeLine{00104\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{log__code_8h}{e2ees/log\_code.h}}"{}}}
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{session_8h}{e2ees/session.h}}"{}}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\#define\ E2EES\_PROTOCOL\_VERSION\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)001"{}}}
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\#define\ E2EES\_PLAINTEXT\_VERSION\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)001"{}}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \textcolor{preprocessor}{\#define\ E2EES\_RESULT\_SUCC\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0}}
+\DoxyCodeLine{00111\ \textcolor{preprocessor}{\#define\ E2EES\_RESULT\_FAIL\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ -\/1}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{preprocessor}{\#define\ E2EES\_UUID\_LEN\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 16}}
+\DoxyCodeLine{00114\ \textcolor{preprocessor}{\#define\ E2EES\_SIGNED\_PRE\_KEY\_EXPIRATION\_MS\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 604800000\ }\textcolor{comment}{//\ 7\ days}}
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\#define\ E2EES\_ONE\_TIME\_PRE\_KEY\_INITIAL\_NUM\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 100}}
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\#define\ E2EES\_INVITE\_WAITING\_TIME\_MS\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 60000\ \ \ \ \ }\textcolor{comment}{//\ 1\ minute}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_CURVE25519\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0}}
+\DoxyCodeLine{00119\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_MLDSA44\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 1}}
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_MLDSA65\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 9}}
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_MLDSA87\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 17}}
+\DoxyCodeLine{00122\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_FALCON512\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 33}}
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_FALCON1024\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 41}}
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHA2\_128F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 65}}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHA2\_128S\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 69}}
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHA2\_192F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 73}}
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHA2\_192S\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 77}}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHA2\_256F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 81}}
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHA2\_256S\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 85}}
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHAKE\_128F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 89}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHAKE\_128S\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 93}}
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHAKE\_192F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 97}}
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHAKE\_192S\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 101}}
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHAKE\_256F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 105}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_DS\_SPHINCS\_SHAKE\_256S\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 109}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_CURVE25519\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0}}
+\DoxyCodeLine{00138\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_HQC128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 1}}
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_HQC192\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 9}}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_HQC256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 17}}
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MLKEM512\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 33}}
+\DoxyCodeLine{00142\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MLKEM768\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 41}}
+\DoxyCodeLine{00143\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MLKEM1024\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 49}}
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE348864\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 65}}
+\DoxyCodeLine{00145\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE348864F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 69}}
+\DoxyCodeLine{00146\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE460896\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 73}}
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE460896F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 77}}
+\DoxyCodeLine{00148\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE6688128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 81}}
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE6688128F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 85}}
+\DoxyCodeLine{00150\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE6960119\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 89}}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE6960119F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 93}}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE8192128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 97}}
+\DoxyCodeLine{00153\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_KEM\_MCELIECE8192128F\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 101}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_SE\_AES256GCM\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHA2\_224\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0}}
+\DoxyCodeLine{00158\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHA2\_256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 1}}
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHA2\_384\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 2}}
+\DoxyCodeLine{00160\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHA2\_512\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 3}}
+\DoxyCodeLine{00161\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHA3\_224\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 8}}
+\DoxyCodeLine{00162\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHA3\_256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 9}}
+\DoxyCodeLine{00163\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHA3\_384\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 10}}
+\DoxyCodeLine{00164\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHA3\_512\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 11}}
+\DoxyCodeLine{00165\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHAKE\_128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 12}}
+\DoxyCodeLine{00166\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ALG\_HASH\_SHAKE\_256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 13}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ID\_UNSPECIFIED\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0}}
+\DoxyCodeLine{00169\ \textcolor{preprocessor}{\#define\ E2EES\_PACK\_ID\_V\_0\_DEFAULT\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0x113101}}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \textcolor{preprocessor}{\#define\ E2EES\_CIPHER\_SUITE\_PART\_LEN\_IN\_BITS\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 8}}
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\#define\ E2EES\_CIPHER\_SUITE\_PART\_HALF\_LEN\_IN\_BITS\ \ \ \ \ \ \ \ \ \ \ \ \ \ 4}}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00177\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ees__pack__id__t}{e2ees\_pack\_id\_t}}\ \{}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ ver:E2EES\_CIPHER\_SUITE\_PART\_LEN\_IN\_BITS;\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ version}}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ ds:E2EES\_CIPHER\_SUITE\_PART\_LEN\_IN\_BITS;\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ digital\ signature\ algorithm}}
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ kem:E2EES\_CIPHER\_SUITE\_PART\_LEN\_IN\_BITS;\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ key\ encapsulation\ mechanism\ algorithm}}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ se:E2EES\_CIPHER\_SUITE\_PART\_HALF\_LEN\_IN\_BITS;\ \ \ \ \ \ \textcolor{comment}{//\ symmetric\ encryption\ algorithm}}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ hash:E2EES\_CIPHER\_SUITE\_PART\_HALF\_LEN\_IN\_BITS;\ \ \ \ \textcolor{comment}{//\ hash\ function\ algorithm}}
+\DoxyCodeLine{00183\ \}\ \mbox{\hyperlink{e2ees_8h_a16bb591375ca8a0b0dec257afc7c75d7}{e2ees\_pack\_id\_t}};}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00189\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ees__pack__t}{e2ees\_pack\_t}}\ \{}
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite;}
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsession__suite__t}{session\_suite\_t}}\ *session\_suite;}
+\DoxyCodeLine{00192\ \}\ \mbox{\hyperlink{e2ees_8h_ab337bf7181becbca083426814a1d3ad0}{e2ees\_pack\_t}};}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00197\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\_ds\_param\_t}}\ \{}
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keywordtype}{bool}\ pqc\_param;}
+\DoxyCodeLine{00199\ \ \ \ \ uint32\_t\ sign\_pub\_key\_len;}
+\DoxyCodeLine{00200\ \ \ \ \ uint32\_t\ sign\_priv\_key\_len;}
+\DoxyCodeLine{00201\ \ \ \ \ uint32\_t\ sig\_len;}
+\DoxyCodeLine{00202\ \}\ \mbox{\hyperlink{e2ees_8h_a3a5946bb59ef37e260551ccd156dda5e}{crypto\_ds\_param\_t}};}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00207\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keywordtype}{bool}\ pqc\_param;}
+\DoxyCodeLine{00209\ \ \ \ \ uint32\_t\ asym\_pub\_key\_len;}
+\DoxyCodeLine{00210\ \ \ \ \ uint32\_t\ asym\_priv\_key\_len;}
+\DoxyCodeLine{00211\ \ \ \ \ uint32\_t\ kem\_ciphertext\_len;}
+\DoxyCodeLine{00212\ \ \ \ \ uint32\_t\ shared\_secret\_len;}
+\DoxyCodeLine{00213\ \}\ \mbox{\hyperlink{e2ees_8h_ae20eb84b8db760dff90fb80506043872}{crypto\_kem\_param\_t}};}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00218\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__se__param__t}{crypto\_se\_param\_t}}\ \{}
+\DoxyCodeLine{00219\ \ \ \ \ uint32\_t\ aead\_key\_len;}
+\DoxyCodeLine{00220\ \ \ \ \ uint32\_t\ aead\_iv\_len;}
+\DoxyCodeLine{00221\ \ \ \ \ uint32\_t\ aead\_tag\_len;}
+\DoxyCodeLine{00222\ \}\ \mbox{\hyperlink{e2ees_8h_a72627fa90ca017b9a58e32122e1492ef}{crypto\_se\_param\_t}};}
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00227\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__hash__param__t}{crypto\_hash\_param\_t}}\ \{}
+\DoxyCodeLine{00228\ \ \ \ \ uint32\_t\ hash\_len;}
+\DoxyCodeLine{00229\ \}\ \mbox{\hyperlink{e2ees_8h_a4e32bf3a288f430cdca74c840b479f9e}{crypto\_hash\_param\_t}};}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00234\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structds__suite__t}{ds\_suite\_t}}\ \{}
+\DoxyCodeLine{00239\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\_ds\_param\_t}}\ (*\mbox{\hyperlink{structds__suite__t_a905d20de8a77174d2c6430a50d505e96}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00248\ \ \ \ \ int\ (*\mbox{\hyperlink{structds__suite__t_a54cd6cd0f027601ddf44a4fa1581e970}{sign\_key\_gen}})(}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *pub\_key,}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00251\ \ \ \ \ );}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00263\ \ \ \ \ int\ (*\mbox{\hyperlink{structds__suite__t_a46d695f2d62249196166f79052141229}{sign}})(}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ uint8\_t\ *signature\_out,\ \textcolor{keywordtype}{size\_t}\ *signature\_out\_len,}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *private\_key}
+\DoxyCodeLine{00267\ \ \ \ \ );}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00279\ \ \ \ \ int\ (*\mbox{\hyperlink{structds__suite__t_a320e9b1599d99c5a5e94ce9a97f264e0}{verify}})(}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *signature\_in,\ \textcolor{keywordtype}{size\_t}\ signature\_in\_len,}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *public\_key}
+\DoxyCodeLine{00283\ \ \ \ \ );}
+\DoxyCodeLine{00284\ \}\ \mbox{\hyperlink{e2ees_8h_a5680b1715e4077238b3c979284d1c8ba}{ds\_suite\_t}};}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00289\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ \{}
+\DoxyCodeLine{00294\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ (*\mbox{\hyperlink{structkem__suite__t_a2c102cdde7c6f66a97c1192ae845f7f6}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00302\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_a8cb7fafa56b33c45a717e4a2d358335f}{asym\_key\_gen}})(}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *pub\_key,}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00305\ \ \ \ \ );}
+\DoxyCodeLine{00306\ }
+\DoxyCodeLine{00315\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_acb69c24dfa2b2571fcf43f3676d2c23e}{encaps}})(}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00319\ \ \ \ \ );}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00329\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_a275cda3e1962677ce05f492bcd6de467}{decaps}})(}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00333\ \ \ \ \ );}
+\DoxyCodeLine{00334\ \}\ \mbox{\hyperlink{e2ees_8h_a7f99b84ece115e05e0f2385ecd9d35e4}{kem\_suite\_t}};}
+\DoxyCodeLine{00335\ }
+\DoxyCodeLine{00339\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structse__suite__t}{se\_suite\_t}}\ \{}
+\DoxyCodeLine{00344\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__se__param__t}{crypto\_se\_param\_t}}\ (*\mbox{\hyperlink{structse__suite__t_a5cff7596803766b01571fe0a4a873718}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00357\ \ \ \ \ int\ (*\mbox{\hyperlink{structse__suite__t_adbf054632d9528b1dee88be17c0a6faf}{encrypt}})(}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *,}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,\ size\_t,}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ uint8\_t\ **,\ \textcolor{keywordtype}{size\_t}\ *}
+\DoxyCodeLine{00362\ \ \ \ \ );}
+\DoxyCodeLine{00363\ }
+\DoxyCodeLine{00375\ \ \ \ \ int\ (*\mbox{\hyperlink{structse__suite__t_a28075d5db728fcdf04bce0519b093915}{decrypt}})(}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ uint8\_t\ **,\ \textcolor{keywordtype}{size\_t}\ *,}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *,}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,\ size\_t}
+\DoxyCodeLine{00380\ \ \ \ \ );}
+\DoxyCodeLine{00381\ \}\ \mbox{\hyperlink{e2ees_8h_ad12fee6d7f201a4525a795f1f56c3211}{se\_suite\_t}};}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00386\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structhash__suite__t}{hash\_suite\_t}}\ \{}
+\DoxyCodeLine{00391\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__hash__param__t}{crypto\_hash\_param\_t}}\ (*\mbox{\hyperlink{structhash__suite__t_ad03f8e1623c09090ed1760ee4d2c0d1f}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00392\ }
+\DoxyCodeLine{00406\ \ \ \ \ int\ (*\mbox{\hyperlink{structhash__suite__t_a24a93c49162231ce34b5cb34c611b51b}{hkdf}})(}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *salt,\ \textcolor{keywordtype}{size\_t}\ salt\_len,}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *info,\ \textcolor{keywordtype}{size\_t}\ info\_len,}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ uint8\_t\ *output,\ \textcolor{keywordtype}{size\_t}\ output\_len}
+\DoxyCodeLine{00411\ \ \ \ \ );}
+\DoxyCodeLine{00412\ }
+\DoxyCodeLine{00423\ \ \ \ \ int\ (*\mbox{\hyperlink{structhash__suite__t_a3e7b75b9bd093d20599c3e276a18e0c7}{hmac}})(}
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *key,\ \textcolor{keywordtype}{size\_t}\ key\_len,}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ uint8\_t\ *output}
+\DoxyCodeLine{00427\ \ \ \ \ );}
+\DoxyCodeLine{00428\ }
+\DoxyCodeLine{00437\ \ \ \ \ int\ (*\mbox{\hyperlink{structhash__suite__t_a07b0734eaccf837ac46b0dd1d4cb1b22}{hash}})(}
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ uint8\_t\ *hash\_out}
+\DoxyCodeLine{00441\ \ \ \ \ );}
+\DoxyCodeLine{00442\ \}\ \mbox{\hyperlink{e2ees_8h_a929c38c678a77d7993ba05573aa44aba}{hash\_suite\_t}};}
+\DoxyCodeLine{00443\ }
+\DoxyCodeLine{00447\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ \{}
+\DoxyCodeLine{00448\ \ \ \ \ \mbox{\hyperlink{structds__suite__t}{ds\_suite\_t}}\ *ds\_suite;}
+\DoxyCodeLine{00449\ \ \ \ \ \mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ *kem\_suite;}
+\DoxyCodeLine{00450\ \ \ \ \ \mbox{\hyperlink{structse__suite__t}{se\_suite\_t}}\ *se\_suite;}
+\DoxyCodeLine{00451\ \ \ \ \ \mbox{\hyperlink{structhash__suite__t}{hash\_suite\_t}}\ *hash\_suite;}
+\DoxyCodeLine{00452\ \}\ \mbox{\hyperlink{e2ees_8h_a764f131fe1cf3e866758cf3e45028de8}{cipher\_suite\_t}};}
+\DoxyCodeLine{00453\ }
+\DoxyCodeLine{00457\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ees__common__handler__t}{e2ees\_common\_handler\_t}}\ \{}
+\DoxyCodeLine{00462\ \ \ \ \ int64\_t\ (*\mbox{\hyperlink{structe2ees__common__handler__t_af28dc729e62dbc679d0e45971e8ec445}{gen\_ts}})();}
+\DoxyCodeLine{00463\ }
+\DoxyCodeLine{00469\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__common__handler__t_a817cb99fc9aaae98100a4d241e6d5e44}{gen\_rand}})(uint8\_t\ *rand\_data,\ \textcolor{keywordtype}{size\_t}\ rand\_data\_len);}
+\DoxyCodeLine{00470\ \ \ \ \ void\ (*gen\_uuid)(uint8\_t\ uuid[E2EES\_UUID\_LEN]);}
+\DoxyCodeLine{00471\ \}\ \mbox{\hyperlink{e2ees_8h_ac08ac7e2b47eea66b717187e64aa8c3e}{e2ees\_common\_handler\_t}};}
+\DoxyCodeLine{00472\ }
+\DoxyCodeLine{00476\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ees__db__handler__t}{e2ees\_db\_handler\_t}}\ \{}
+\DoxyCodeLine{00477\ \ \ \ \ \textcolor{comment}{//\ account\ related\ handlers}}
+\DoxyCodeLine{00482\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a20d0c78cf05163df22b63d20bdf07f42}{store\_account}})(}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ E2ees\_\_Account\ *account}
+\DoxyCodeLine{00484\ \ \ \ \ );}
+\DoxyCodeLine{00490\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a474d3ff24f36b6ac3b0ab0faed2717cf}{load\_account\_by\_address}})(}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ E2ees\_\_Account\ **account}
+\DoxyCodeLine{00493\ \ \ \ \ );}
+\DoxyCodeLine{00499\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structe2ees__db__handler__t_af2d34ab3492572676d5f644659a6974d}{load\_accounts}})(}
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ E2ees\_\_Account\ ***accounts}
+\DoxyCodeLine{00501\ \ \ \ \ );}
+\DoxyCodeLine{00507\ \ \ \ \ bool\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a37ee5b82ca60cd76640597233ad76546}{update\_signed\_pre\_key}})(}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ E2ees\_\_SignedPreKey\ *signed\_pre\_key}
+\DoxyCodeLine{00510\ \ \ \ \ );}
+\DoxyCodeLine{00517\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a7b3bbeca5e4ee584d86d9352f94973f9}{load\_signed\_pre\_key}})(}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00519\ \ \ \ \ \ \ \ \ uint32\_t\ spk\_id,}
+\DoxyCodeLine{00520\ \ \ \ \ \ \ \ \ E2ees\_\_SignedPreKey\ **signed\_pre\_key}
+\DoxyCodeLine{00521\ \ \ \ \ );}
+\DoxyCodeLine{00526\ \ \ \ \ bool\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a127cb95523581c29ae1a9291e66a3118}{remove\_expired\_signed\_pre\_key}})(}
+\DoxyCodeLine{00527\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address}
+\DoxyCodeLine{00528\ \ \ \ \ );}
+\DoxyCodeLine{00534\ \ \ \ \ bool\ (*\mbox{\hyperlink{structe2ees__db__handler__t_ac66b7ba5a6b6cd3c898bbd854cd1b229}{add\_one\_time\_pre\_key}})(}
+\DoxyCodeLine{00535\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00536\ \ \ \ \ \ \ \ \ E2ees\_\_OneTimePreKey\ *one\_time\_pre\_key}
+\DoxyCodeLine{00537\ \ \ \ \ );}
+\DoxyCodeLine{00543\ \ \ \ \ bool\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a6e5edb3b3e4ef345319a773b4a969bd0}{remove\_one\_time\_pre\_key}})(}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00545\ \ \ \ \ \ \ \ \ uint32\_t\ one\_time\_pre\_key\_id}
+\DoxyCodeLine{00546\ \ \ \ \ );}
+\DoxyCodeLine{00552\ \ \ \ \ bool\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a3a806bf2317089a6f6d53f8774b7b363}{update\_one\_time\_pre\_key}})(}
+\DoxyCodeLine{00553\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00554\ \ \ \ \ \ \ \ \ uint32\_t\ one\_time\_pre\_key\_id}
+\DoxyCodeLine{00555\ \ \ \ \ );}
+\DoxyCodeLine{00561\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a129a04ed272f21e7cfa91d3769eeabf6}{load\_auth}})(}
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ **auth}
+\DoxyCodeLine{00564\ \ \ \ \ );}
+\DoxyCodeLine{00565\ \ \ \ \ \textcolor{comment}{//\ session\ related\ handlers}}
+\DoxyCodeLine{00572\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a3377d516fe86d53f2f16fc48efed55d6}{load\_inbound\_session}})(}
+\DoxyCodeLine{00573\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *session\_id,}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00575\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ **inbound\_session}
+\DoxyCodeLine{00576\ \ \ \ \ );}
+\DoxyCodeLine{00583\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a99795726002a1917610af63531c62b36}{load\_outbound\_session}})(}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00585\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *their\_address,}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ **outbound\_session}
+\DoxyCodeLine{00587\ \ \ \ \ );}
+\DoxyCodeLine{00588\ }
+\DoxyCodeLine{00596\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a0a3c048a2f81a47af4b5345e92e7a470}{load\_outbound\_sessions}})(}
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *their\_user\_id,}
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *their\_domain,}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ ***outbound\_sessions}
+\DoxyCodeLine{00601\ \ \ \ \ );}
+\DoxyCodeLine{00602\ }
+\DoxyCodeLine{00607\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a15a43bb25c97ef5a59fe92ad6510c8ff}{store\_session}})(}
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ *session}
+\DoxyCodeLine{00609\ \ \ \ \ );}
+\DoxyCodeLine{00615\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a5c0c3d50d6290c6df0d043711884d592}{unload\_session}})(}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *their\_address}
+\DoxyCodeLine{00618\ \ \ \ \ );}
+\DoxyCodeLine{00625\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a66ff3a3862a818a88beedfc181ef6612}{unload\_old\_session}})(}
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00627\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *their\_address,}
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ int64\_t\ invite\_t}
+\DoxyCodeLine{00629\ \ \ \ \ );}
+\DoxyCodeLine{00630\ }
+\DoxyCodeLine{00631\ \ \ \ \ \textcolor{comment}{//\ group\ session\ related\ handlers}}
+\DoxyCodeLine{00639\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a05bca2a2767b6266128663d381171b91}{load\_group\_session\_by\_address}})(}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *sender\_address,}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{00643\ \ \ \ \ \ \ \ \ E2ees\_\_GroupSession\ **group\_session}
+\DoxyCodeLine{00644\ \ \ \ \ );}
+\DoxyCodeLine{00652\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_acda5dd9769a1fde5b940032fb79b14f4}{load\_group\_session\_by\_id}})(}
+\DoxyCodeLine{00653\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *sender\_address,}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *group\_session\_id,}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ E2ees\_\_GroupSession\ **group\_session}
+\DoxyCodeLine{00657\ \ \ \ \ );}
+\DoxyCodeLine{00664\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a4916e90fd483a765a7f60b45941c5b30}{load\_group\_sessions}})(}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \ \ E2ees\_\_GroupSession\ ***group\_sessions}
+\DoxyCodeLine{00668\ \ \ \ \ );}
+\DoxyCodeLine{00675\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structe2ees__db__handler__t_abd1262bc8cbb77ad469b848995f15125}{load\_group\_addresses}})(}
+\DoxyCodeLine{00676\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *sender\_address,}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00678\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ ***group\_addresses}
+\DoxyCodeLine{00679\ \ \ \ \ );}
+\DoxyCodeLine{00684\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_aa115d5399c46deab9ad2f337eef56fb6}{store\_group\_session}})(}
+\DoxyCodeLine{00685\ \ \ \ \ \ \ \ \ E2ees\_\_GroupSession\ *group\_session}
+\DoxyCodeLine{00686\ \ \ \ \ );}
+\DoxyCodeLine{00692\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a2e94635d175e4eaca96638fea1a46f17}{unload\_group\_session\_by\_address}})(}
+\DoxyCodeLine{00693\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00694\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *group\_address}
+\DoxyCodeLine{00695\ \ \ \ \ );}
+\DoxyCodeLine{00701\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a1ba930675eaef1c8c0991a9a9b144134}{unload\_group\_session\_by\_id}})(}
+\DoxyCodeLine{00702\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *session\_owner\_address,}
+\DoxyCodeLine{00703\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *group\_session\_id}
+\DoxyCodeLine{00704\ \ \ \ \ );}
+\DoxyCodeLine{00705\ }
+\DoxyCodeLine{00706\ \ \ \ \ \textcolor{comment}{//\ pending\ plaintext\ related\ handlers}}
+\DoxyCodeLine{00716\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a73a467804013eae0eec2154ce63d38ee}{store\_pending\_plaintext\_data}})(}
+\DoxyCodeLine{00717\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *plaintext\_id,}
+\DoxyCodeLine{00720\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext\_data,}
+\DoxyCodeLine{00721\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
+\DoxyCodeLine{00722\ \ \ \ \ \ \ \ \ E2ees\_\_NotifLevel\ notif\_level}
+\DoxyCodeLine{00723\ \ \ \ \ );}
+\DoxyCodeLine{00734\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structe2ees__db__handler__t_af40284269198938a68cee0ab0f014402}{load\_pending\_plaintext\_data}})(}
+\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ ***plaintext\_id\_list,}
+\DoxyCodeLine{00738\ \ \ \ \ \ \ \ \ uint8\_t\ ***plaintext\_data\_list,}
+\DoxyCodeLine{00739\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ **plaintext\_data\_len\_list,}
+\DoxyCodeLine{00740\ \ \ \ \ \ \ \ \ E2ees\_\_NotifLevel\ **notif\_level\_list}
+\DoxyCodeLine{00741\ \ \ \ \ );}
+\DoxyCodeLine{00748\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a8e31e32d54e6d1c294812e8f1c0d7740}{unload\_pending\_plaintext\_data}})(}
+\DoxyCodeLine{00749\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{00750\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{00751\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *plaintext\_id}
+\DoxyCodeLine{00752\ \ \ \ \ );}
+\DoxyCodeLine{00761\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a748c44f4efe2d255f1763fe442af9d43}{store\_pending\_request\_data}})(}
+\DoxyCodeLine{00762\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *request\_id,}
+\DoxyCodeLine{00764\ \ \ \ \ \ \ \ \ uint8\_t\ request\_type,}
+\DoxyCodeLine{00765\ \ \ \ \ \ \ \ \ uint8\_t\ *request\_data,}
+\DoxyCodeLine{00766\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ request\_data\_len}
+\DoxyCodeLine{00767\ \ \ \ \ );}
+\DoxyCodeLine{00777\ \ \ \ \ size\_t\ (*\mbox{\hyperlink{structe2ees__db__handler__t_a90be51cb62e65cf270d9a98166e46477}{load\_pending\_request\_data}})(}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *\ user\_address,}
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ ***request\_id\_list,}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ \ \ uint8\_t\ **request\_type\_list,}
+\DoxyCodeLine{00781\ \ \ \ \ \ \ \ \ uint8\_t\ ***request\_data\_list,}
+\DoxyCodeLine{00782\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ **request\_data\_len\_list}
+\DoxyCodeLine{00783\ \ \ \ \ );}
+\DoxyCodeLine{00789\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__db__handler__t_ab13552554f3e56995758d0984b6a3259}{unload\_pending\_request\_data}})(}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *request\_id}
+\DoxyCodeLine{00792\ \ \ \ \ );}
+\DoxyCodeLine{00793\ \}\ \mbox{\hyperlink{e2ees_8h_ae51e1cc40ef04c61cec44905d9eb65ae}{e2ees\_db\_handler\_t}};}
+\DoxyCodeLine{00794\ }
+\DoxyCodeLine{00798\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ees__proto__handler__t}{e2ees\_proto\_handler\_t}}\ \{}
+\DoxyCodeLine{00804\ \ \ \ \ E2ees\_\_RegisterUserResponse\ *(*register\_user)(}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ E2ees\_\_RegisterUserRequest\ *request}
+\DoxyCodeLine{00806\ \ \ \ \ );}
+\DoxyCodeLine{00814\ \ \ \ \ E2ees\_\_GetPreKeyBundleResponse\ *(*get\_pre\_key\_bundle)(}
+\DoxyCodeLine{00815\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00816\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00817\ \ \ \ \ \ \ \ \ E2ees\_\_GetPreKeyBundleRequest\ *request}
+\DoxyCodeLine{00818\ \ \ \ \ );}
+\DoxyCodeLine{00826\ \ \ \ \ E2ees\_\_InviteResponse\ *(*invite)(}
+\DoxyCodeLine{00827\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00828\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00829\ \ \ \ \ \ \ \ \ E2ees\_\_InviteRequest\ *request}
+\DoxyCodeLine{00830\ \ \ \ \ );}
+\DoxyCodeLine{00838\ \ \ \ \ E2ees\_\_AcceptResponse\ *(*accept)(}
+\DoxyCodeLine{00839\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00840\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00841\ \ \ \ \ \ \ \ \ E2ees\_\_AcceptRequest\ *request}
+\DoxyCodeLine{00842\ \ \ \ \ );}
+\DoxyCodeLine{00850\ \ \ \ \ E2ees\_\_PublishSpkResponse\ *(*publish\_spk)(}
+\DoxyCodeLine{00851\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00852\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00853\ \ \ \ \ \ \ \ \ E2ees\_\_PublishSpkRequest\ *request}
+\DoxyCodeLine{00854\ \ \ \ \ );}
+\DoxyCodeLine{00862\ \ \ \ \ E2ees\_\_SupplyOpksResponse\ *(*supply\_opks)(}
+\DoxyCodeLine{00863\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00864\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00865\ \ \ \ \ \ \ \ \ E2ees\_\_SupplyOpksRequest\ *request}
+\DoxyCodeLine{00866\ \ \ \ \ );}
+\DoxyCodeLine{00874\ \ \ \ \ E2ees\_\_SendOne2oneMsgResponse\ *(*send\_one2one\_msg)(}
+\DoxyCodeLine{00875\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00876\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00877\ \ \ \ \ \ \ \ \ E2ees\_\_SendOne2oneMsgRequest\ *request}
+\DoxyCodeLine{00878\ \ \ \ \ );}
+\DoxyCodeLine{00886\ \ \ \ \ E2ees\_\_CreateGroupResponse\ *(*create\_group)(}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00888\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00889\ \ \ \ \ \ \ \ \ E2ees\_\_CreateGroupRequest\ *request}
+\DoxyCodeLine{00890\ \ \ \ \ );}
+\DoxyCodeLine{00898\ \ \ \ \ E2ees\_\_AddGroupMembersResponse\ *(*add\_group\_members)(}
+\DoxyCodeLine{00899\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00900\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00901\ \ \ \ \ \ \ \ \ E2ees\_\_AddGroupMembersRequest\ *request}
+\DoxyCodeLine{00902\ \ \ \ \ );}
+\DoxyCodeLine{00910\ \ \ \ \ E2ees\_\_AddGroupMemberDeviceResponse\ *(*add\_group\_member\_device)(}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00912\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00913\ \ \ \ \ \ \ \ \ E2ees\_\_AddGroupMemberDeviceRequest\ *request}
+\DoxyCodeLine{00914\ \ \ \ \ );}
+\DoxyCodeLine{00922\ \ \ \ \ E2ees\_\_RemoveGroupMembersResponse\ *(*remove\_group\_members)(}
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00924\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00925\ \ \ \ \ \ \ \ \ E2ees\_\_RemoveGroupMembersRequest\ *request}
+\DoxyCodeLine{00926\ \ \ \ \ );}
+\DoxyCodeLine{00934\ \ \ \ \ E2ees\_\_LeaveGroupResponse\ *(*leave\_group)(}
+\DoxyCodeLine{00935\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00936\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00937\ \ \ \ \ \ \ \ \ E2ees\_\_LeaveGroupRequest\ *request}
+\DoxyCodeLine{00938\ \ \ \ \ );}
+\DoxyCodeLine{00946\ \ \ \ \ E2ees\_\_SendGroupMsgResponse\ *(*send\_group\_msg)(}
+\DoxyCodeLine{00947\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00948\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00949\ \ \ \ \ \ \ \ \ E2ees\_\_SendGroupMsgRequest\ *request}
+\DoxyCodeLine{00950\ \ \ \ \ );}
+\DoxyCodeLine{00958\ \ \ \ \ E2ees\_\_ConsumeProtoMsgResponse\ *(*consume\_proto\_msg)(}
+\DoxyCodeLine{00959\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00960\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *auth,}
+\DoxyCodeLine{00961\ \ \ \ \ \ \ \ \ E2ees\_\_ConsumeProtoMsgRequest\ *request}
+\DoxyCodeLine{00962\ \ \ \ \ );}
+\DoxyCodeLine{00963\ \}\ \mbox{\hyperlink{e2ees_8h_a8f0b12b962a164c3124303c72544cfc8}{e2ees\_proto\_handler\_t}};}
+\DoxyCodeLine{00964\ }
+\DoxyCodeLine{00965\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ees__event__handler__t}{e2ees\_event\_handler\_t}}\ \{}
+\DoxyCodeLine{00972\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_ad5d44437a0d1b322edf615d194a06ba2}{on\_log}})(}
+\DoxyCodeLine{00973\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00974\ \ \ \ \ \ \ \ \ LogCode\ log\_code,}
+\DoxyCodeLine{00975\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *log\_msg}
+\DoxyCodeLine{00976\ \ \ \ \ );}
+\DoxyCodeLine{00981\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_a001d83b813c0a7ae830bdb4a7b4dd870}{on\_user\_registered}})(}
+\DoxyCodeLine{00982\ \ \ \ \ \ \ \ \ E2ees\_\_Account\ *account}
+\DoxyCodeLine{00983\ \ \ \ \ );}
+\DoxyCodeLine{00989\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_a501fb3cc145d0a5c5b7024f0d96e729f}{on\_inbound\_session\_invited}})(}
+\DoxyCodeLine{00990\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00991\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from}
+\DoxyCodeLine{00992\ \ \ \ \ );}
+\DoxyCodeLine{00998\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_aca7ea990181f8b4adc775ce8d452e60c}{on\_inbound\_session\_ready}})(}
+\DoxyCodeLine{00999\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01000\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ *inbound\_session}
+\DoxyCodeLine{01001\ \ \ \ \ );}
+\DoxyCodeLine{01007\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_a5019f4a481c464f804700d6dcb6acb55}{on\_outbound\_session\_ready}})(}
+\DoxyCodeLine{01008\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01009\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ *outbound\_session}
+\DoxyCodeLine{01010\ \ \ \ \ );}
+\DoxyCodeLine{01019\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_aa16893d63d4917639d7a04ff7be33174}{on\_one2one\_msg\_received}})(}
+\DoxyCodeLine{01020\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01021\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{01022\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{01023\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext,}
+\DoxyCodeLine{01024\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01025\ \ \ \ \ );}
+\DoxyCodeLine{01026\ }
+\DoxyCodeLine{01035\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_a5ac02b99c90f6b630b2d8c82d533364c}{on\_other\_device\_msg\_received}})(}
+\DoxyCodeLine{01036\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01037\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{01038\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{01039\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext,}
+\DoxyCodeLine{01040\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01041\ \ \ \ \ );}
+\DoxyCodeLine{01042\ }
+\DoxyCodeLine{01051\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_a5a6210ad7d5f6cbfc1ccb480b11482dc}{on\_group\_msg\_received}})(}
+\DoxyCodeLine{01052\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01053\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *from\_address,}
+\DoxyCodeLine{01054\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01055\ \ \ \ \ \ \ \ \ uint8\_t\ *plaintext,}
+\DoxyCodeLine{01056\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01057\ \ \ \ \ );}
+\DoxyCodeLine{01058\ }
+\DoxyCodeLine{01067\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_a177245b71ea3090a3ce75364ca3f624f}{on\_group\_created}})(}
+\DoxyCodeLine{01068\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01069\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01070\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01071\ \ \ \ \ \ \ \ \ E2ees\_\_GroupMember\ **group\_members,}
+\DoxyCodeLine{01072\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num}
+\DoxyCodeLine{01073\ \ \ \ \ );}
+\DoxyCodeLine{01074\ }
+\DoxyCodeLine{01085\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_aff4021cb1e6b96950f2e59e3bed77484}{on\_group\_members\_added}})(}
+\DoxyCodeLine{01086\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01087\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01088\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01089\ \ \ \ \ \ \ \ \ E2ees\_\_GroupMember\ **group\_members,}
+\DoxyCodeLine{01090\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
+\DoxyCodeLine{01091\ \ \ \ \ \ \ \ \ E2ees\_\_GroupMember\ **added\_group\_members,}
+\DoxyCodeLine{01092\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ added\_group\_members\_num}
+\DoxyCodeLine{01093\ \ \ \ \ );}
+\DoxyCodeLine{01094\ }
+\DoxyCodeLine{01105\ \ \ \ \ void\ (*\mbox{\hyperlink{structe2ees__event__handler__t_a36ea7f3e63708a93c095d7a73c7ac800}{on\_group\_members\_removed}})(}
+\DoxyCodeLine{01106\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{01107\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01108\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01109\ \ \ \ \ \ \ \ \ E2ees\_\_GroupMember\ **group\_members,}
+\DoxyCodeLine{01110\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
+\DoxyCodeLine{01111\ \ \ \ \ \ \ \ \ E2ees\_\_GroupMember\ **removed\_group\_members,}
+\DoxyCodeLine{01112\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ removed\_group\_members\_num}
+\DoxyCodeLine{01113\ \ \ \ \ );}
+\DoxyCodeLine{01114\ \}\ \mbox{\hyperlink{structe2ees__event__handler__t}{e2ees\_event\_handler\_t}};}
+\DoxyCodeLine{01115\ }
+\DoxyCodeLine{01119\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structe2ees__plugin__t}{e2ees\_plugin\_t}}\ \{}
+\DoxyCodeLine{01120\ \ \ \ \ \mbox{\hyperlink{structe2ees__common__handler__t}{e2ees\_common\_handler\_t}}\ common\_handler;}
+\DoxyCodeLine{01121\ \ \ \ \ \mbox{\hyperlink{structe2ees__db__handler__t}{e2ees\_db\_handler\_t}}\ db\_handler;}
+\DoxyCodeLine{01122\ \ \ \ \ \mbox{\hyperlink{structe2ees__proto__handler__t}{e2ees\_proto\_handler\_t}}\ proto\_handler;}
+\DoxyCodeLine{01123\ \ \ \ \ \mbox{\hyperlink{structe2ees__event__handler__t}{e2ees\_event\_handler\_t}}\ event\_handler;}
+\DoxyCodeLine{01124\ \}\ \mbox{\hyperlink{e2ees_8h_a9fa57576a129ca90c912d2950d2f020e}{e2ees\_plugin\_t}};}
+\DoxyCodeLine{01125\ }
+\DoxyCodeLine{01132\ \mbox{\hyperlink{structds__suite__t}{ds\_suite\_t}}\ *\mbox{\hyperlink{e2ees_8h_a3b539d90daae8a9b65e6812aa3338e4b}{get\_ds\_suite}}(\textcolor{keywordtype}{unsigned}\ digital\_signature\_id);}
+\DoxyCodeLine{01133\ }
+\DoxyCodeLine{01140\ \mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ *\mbox{\hyperlink{e2ees_8h_a462243e4ae976b459ae16bd508245267}{get\_kem\_suite}}(\textcolor{keywordtype}{unsigned}\ kem\_id);}
+\DoxyCodeLine{01141\ }
+\DoxyCodeLine{01148\ \mbox{\hyperlink{structse__suite__t}{se\_suite\_t}}\ *\mbox{\hyperlink{e2ees_8h_a79f59b7d0c5be411361c55d0796a218f}{get\_se\_suite}}(\textcolor{keywordtype}{unsigned}\ symmetric\_encryption\_id);}
+\DoxyCodeLine{01149\ }
+\DoxyCodeLine{01155\ \mbox{\hyperlink{structhash__suite__t}{hash\_suite\_t}}\ *\mbox{\hyperlink{e2ees_8h_aabcd2fc78c62a8cf7080d0da3c4521df}{get\_hash\_suite}}(\textcolor{keywordtype}{unsigned}\ hash\_id);}
+\DoxyCodeLine{01156\ }
+\DoxyCodeLine{01165\ uint32\_t\ \mbox{\hyperlink{e2ees_8h_a10508002144034d1aeabaca872ca5589}{gen\_e2ees\_pack\_id\_raw}}(}
+\DoxyCodeLine{01166\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ ver,\ \textcolor{keywordtype}{unsigned}\ ds,\ \textcolor{keywordtype}{unsigned}\ kem,\ \textcolor{keywordtype}{unsigned}\ se,\ \textcolor{keywordtype}{unsigned}\ hash);}
+\DoxyCodeLine{01167\ }
+\DoxyCodeLine{01172\ \mbox{\hyperlink{structe2ees__pack__t}{e2ees\_pack\_t}}\ *\mbox{\hyperlink{e2ees_8h_a3a25b0ef11a49a303ab7cf29ec6941a2}{get\_e2ees\_pack}}(uint32\_t\ e2ees\_pack\_id\_raw);}
+\DoxyCodeLine{01173\ }
+\DoxyCodeLine{01178\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_a8ec7027a251714c836c62bdf4bc2ded0}{e2ees\_begin}}(\mbox{\hyperlink{structe2ees__plugin__t}{e2ees\_plugin\_t}}\ *ssm\_plugin);}
+\DoxyCodeLine{01179\ }
+\DoxyCodeLine{01183\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_ac007d4de2c49628872b83b4840daeaac}{e2ees\_end}}();}
+\DoxyCodeLine{01184\ }
+\DoxyCodeLine{01188\ \mbox{\hyperlink{structe2ees__plugin__t}{e2ees\_plugin\_t}}\ *\mbox{\hyperlink{e2ees_8h_ad34f3a12c5f4a33136a879d9f90ba4a3}{get\_e2ees\_plugin}}();}
+\DoxyCodeLine{01189\ }
+\DoxyCodeLine{01193\ uint32\_t\ \mbox{\hyperlink{e2ees_8h_a582ff99ead0f4a8801806c1390395f33}{e2ees\_pack\_id\_to\_raw}}(\mbox{\hyperlink{structe2ees__pack__id__t}{e2ees\_pack\_id\_t}}\ e2ees\_pack\_id);}
+\DoxyCodeLine{01194\ }
+\DoxyCodeLine{01198\ \mbox{\hyperlink{structe2ees__pack__id__t}{e2ees\_pack\_id\_t}}\ \mbox{\hyperlink{e2ees_8h_a2e96dc208ad14bb697227160ef5cf64e}{raw\_to\_e2ees\_pack\_id}}(uint32\_t\ e2ees\_pack\_id\_raw);}
+\DoxyCodeLine{01199\ }
+\DoxyCodeLine{01206\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_af2e416dd499204d6116336d67397ea25}{e2ees\_notify\_log}}(E2ees\_\_E2eeAddress\ *user\_address,\ LogCode\ log\_code,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *log\_msg,\ ...);}
+\DoxyCodeLine{01207\ }
+\DoxyCodeLine{01212\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_a1e6d50f9cd4fe8271a3a36403787b69f}{e2ees\_notify\_user\_registered}}(E2ees\_\_Account\ *account);}
+\DoxyCodeLine{01213\ }
+\DoxyCodeLine{01219\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_ae345cee3a24a96260c41e2b1b039694f}{e2ees\_notify\_inbound\_session\_invited}}(E2ees\_\_E2eeAddress\ *user\_address,\ E2ees\_\_E2eeAddress\ *from);}
+\DoxyCodeLine{01220\ }
+\DoxyCodeLine{01226\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_a5916f2ef7c640191fc8009d701a74098}{e2ees\_notify\_inbound\_session\_ready}}(E2ees\_\_E2eeAddress\ *user\_address,\ E2ees\_\_Session\ *inbound\_session);}
+\DoxyCodeLine{01227\ }
+\DoxyCodeLine{01233\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_ab9f1c2e947303eaeaa39f9c99eccace3}{e2ees\_notify\_outbound\_session\_ready}}(E2ees\_\_E2eeAddress\ *user\_address,\ E2ees\_\_Session\ *outbound\_session);}
+\DoxyCodeLine{01234\ }
+\DoxyCodeLine{01243\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_a7eaaa505d688b0f34835ec70b43c1f22}{e2ees\_notify\_one2one\_msg}}(}
+\DoxyCodeLine{01244\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,\ E2ees\_\_E2eeAddress\ *from\_address,\ E2ees\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{01245\ \ \ \ \ uint8\_t\ *plaintext,\ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01246\ );}
+\DoxyCodeLine{01247\ }
+\DoxyCodeLine{01256\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_a672d82427765985c2d5d7daf932638b3}{e2ees\_notify\_other\_device\_msg}}(}
+\DoxyCodeLine{01257\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,\ E2ees\_\_E2eeAddress\ *from\_address,\ E2ees\_\_E2eeAddress\ *to\_address,}
+\DoxyCodeLine{01258\ \ \ \ \ uint8\_t\ *plaintext,\ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01259\ );}
+\DoxyCodeLine{01260\ }
+\DoxyCodeLine{01269\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_af6390c87f5d0a4d486e157c8eb9ca093}{e2ees\_notify\_group\_msg}}(}
+\DoxyCodeLine{01270\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,\ E2ees\_\_E2eeAddress\ *from\_address,\ E2ees\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{01271\ \ \ \ \ uint8\_t\ *plaintext,\ \textcolor{keywordtype}{size\_t}\ plaintext\_len}
+\DoxyCodeLine{01272\ );}
+\DoxyCodeLine{01273\ }
+\DoxyCodeLine{01282\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_ad547c26d5ff85b53eac67181ed4e3fff}{e2ees\_notify\_group\_created}}(}
+\DoxyCodeLine{01283\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,\ E2ees\_\_E2eeAddress\ *group\_address,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01284\ \ \ \ \ E2ees\_\_GroupMember\ **group\_members,\ \textcolor{keywordtype}{size\_t}\ group\_members\_num}
+\DoxyCodeLine{01285\ );}
+\DoxyCodeLine{01286\ }
+\DoxyCodeLine{01297\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_acbb5ed8001c022c3fb8f65297f95b3d9}{e2ees\_notify\_group\_members\_added}}(}
+\DoxyCodeLine{01298\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,\ E2ees\_\_E2eeAddress\ *group\_address,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01299\ \ \ \ \ E2ees\_\_GroupMember\ **group\_members,\ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
+\DoxyCodeLine{01300\ \ \ \ \ E2ees\_\_GroupMember\ **added\_group\_members,\ \textcolor{keywordtype}{size\_t}\ added\_group\_members\_num}
+\DoxyCodeLine{01301\ );}
+\DoxyCodeLine{01302\ }
+\DoxyCodeLine{01313\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{e2ees_8h_a15723a560d8fe944c731a7a8c4bdf673}{e2ees\_notify\_group\_members\_removed}}(}
+\DoxyCodeLine{01314\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,\ E2ees\_\_E2eeAddress\ *group\_address,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
+\DoxyCodeLine{01315\ \ \ \ \ E2ees\_\_GroupMember\ **group\_members,\ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
+\DoxyCodeLine{01316\ \ \ \ \ E2ees\_\_GroupMember\ **removed\_group\_members,\ \textcolor{keywordtype}{size\_t}\ removed\_group\_members\_num}
+\DoxyCodeLine{01317\ );}
+\DoxyCodeLine{01318\ }
+\DoxyCodeLine{01319\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{01320\ \}}
+\DoxyCodeLine{01321\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01322\ }
+\DoxyCodeLine{01323\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ E2EES\_H\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

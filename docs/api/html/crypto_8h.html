@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/crypto.h File Reference</title>
+<title>E2EES: include/e2ees/crypto.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -100,7 +100,7 @@ $(function(){ initResizable(false); });
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="skissm_8h_source.html">skissm/skissm.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="e2ees_8h_source.html">e2ees/e2ees.h</a>&quot;</code><br />
 </div>
 <p><a href="crypto_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -123,69 +123,69 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae95a2878a5bc5d35cf42dda2bce65c78" id="r_ae95a2878a5bc5d35cf42dda2bce65c78"><td class="memItemLeft" align="right" valign="top"><a id="ae95a2878a5bc5d35cf42dda2bce65c78" name="ae95a2878a5bc5d35cf42dda2bce65c78"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_curve25519_sign_param</b> ()</td></tr>
-<tr class="separator:ae95a2878a5bc5d35cf42dda2bce65c78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2418faf0801a6d3d51563237266e2a4a" id="r_a2418faf0801a6d3d51563237266e2a4a"><td class="memItemLeft" align="right" valign="top"><a id="a2418faf0801a6d3d51563237266e2a4a" name="a2418faf0801a6d3d51563237266e2a4a"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mldsa44_param</b> ()</td></tr>
-<tr class="separator:a2418faf0801a6d3d51563237266e2a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ec5623db3ca26307a48a942b7ca01b0" id="r_a2ec5623db3ca26307a48a942b7ca01b0"><td class="memItemLeft" align="right" valign="top"><a id="a2ec5623db3ca26307a48a942b7ca01b0" name="a2ec5623db3ca26307a48a942b7ca01b0"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mldsa65_param</b> ()</td></tr>
-<tr class="separator:a2ec5623db3ca26307a48a942b7ca01b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8892aad10314ce03135c24598d719738" id="r_a8892aad10314ce03135c24598d719738"><td class="memItemLeft" align="right" valign="top"><a id="a8892aad10314ce03135c24598d719738" name="a8892aad10314ce03135c24598d719738"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mldsa87_param</b> ()</td></tr>
-<tr class="separator:a8892aad10314ce03135c24598d719738"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae53087c1f789e39f6150eac081a2916" id="r_aae53087c1f789e39f6150eac081a2916"><td class="memItemLeft" align="right" valign="top"><a id="aae53087c1f789e39f6150eac081a2916" name="aae53087c1f789e39f6150eac081a2916"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_falcon512_param</b> ()</td></tr>
-<tr class="separator:aae53087c1f789e39f6150eac081a2916"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa189b6170f4a11feb5f3d033fb54b6ea" id="r_aa189b6170f4a11feb5f3d033fb54b6ea"><td class="memItemLeft" align="right" valign="top"><a id="aa189b6170f4a11feb5f3d033fb54b6ea" name="aa189b6170f4a11feb5f3d033fb54b6ea"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_falcon1024_param</b> ()</td></tr>
-<tr class="separator:aa189b6170f4a11feb5f3d033fb54b6ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5700d261d5ff08a32e5351d9cde27550" id="r_a5700d261d5ff08a32e5351d9cde27550"><td class="memItemLeft" align="right" valign="top"><a id="a5700d261d5ff08a32e5351d9cde27550" name="a5700d261d5ff08a32e5351d9cde27550"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_128f_param</b> ()</td></tr>
-<tr class="separator:a5700d261d5ff08a32e5351d9cde27550"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad826afb4f0f8b36609af0cb44b4582f9" id="r_ad826afb4f0f8b36609af0cb44b4582f9"><td class="memItemLeft" align="right" valign="top"><a id="ad826afb4f0f8b36609af0cb44b4582f9" name="ad826afb4f0f8b36609af0cb44b4582f9"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_128s_param</b> ()</td></tr>
-<tr class="separator:ad826afb4f0f8b36609af0cb44b4582f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17e32a6888f9b707b3131178833b8514" id="r_a17e32a6888f9b707b3131178833b8514"><td class="memItemLeft" align="right" valign="top"><a id="a17e32a6888f9b707b3131178833b8514" name="a17e32a6888f9b707b3131178833b8514"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_192f_param</b> ()</td></tr>
-<tr class="separator:a17e32a6888f9b707b3131178833b8514"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaec6e456e7f23b5cc75ed686e19d6ba9" id="r_aaec6e456e7f23b5cc75ed686e19d6ba9"><td class="memItemLeft" align="right" valign="top"><a id="aaec6e456e7f23b5cc75ed686e19d6ba9" name="aaec6e456e7f23b5cc75ed686e19d6ba9"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_192s_param</b> ()</td></tr>
-<tr class="separator:aaec6e456e7f23b5cc75ed686e19d6ba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa97769291d3d865530088794495acea5" id="r_aa97769291d3d865530088794495acea5"><td class="memItemLeft" align="right" valign="top"><a id="aa97769291d3d865530088794495acea5" name="aa97769291d3d865530088794495acea5"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_256f_param</b> ()</td></tr>
-<tr class="separator:aa97769291d3d865530088794495acea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c83048e11821de8e9f2bd0d4df157ce" id="r_a6c83048e11821de8e9f2bd0d4df157ce"><td class="memItemLeft" align="right" valign="top"><a id="a6c83048e11821de8e9f2bd0d4df157ce" name="a6c83048e11821de8e9f2bd0d4df157ce"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_256s_param</b> ()</td></tr>
-<tr class="separator:a6c83048e11821de8e9f2bd0d4df157ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd4b4c9b95b7b540fa2d98a9fa7a3a70" id="r_afd4b4c9b95b7b540fa2d98a9fa7a3a70"><td class="memItemLeft" align="right" valign="top"><a id="afd4b4c9b95b7b540fa2d98a9fa7a3a70" name="afd4b4c9b95b7b540fa2d98a9fa7a3a70"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_128f_param</b> ()</td></tr>
-<tr class="separator:afd4b4c9b95b7b540fa2d98a9fa7a3a70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b2ba48501229315365b2d74f57da875" id="r_a8b2ba48501229315365b2d74f57da875"><td class="memItemLeft" align="right" valign="top"><a id="a8b2ba48501229315365b2d74f57da875" name="a8b2ba48501229315365b2d74f57da875"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_128s_param</b> ()</td></tr>
-<tr class="separator:a8b2ba48501229315365b2d74f57da875"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0970e278fef4e068dcc9a4afdaf6eebe" id="r_a0970e278fef4e068dcc9a4afdaf6eebe"><td class="memItemLeft" align="right" valign="top"><a id="a0970e278fef4e068dcc9a4afdaf6eebe" name="a0970e278fef4e068dcc9a4afdaf6eebe"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_192f_param</b> ()</td></tr>
-<tr class="separator:a0970e278fef4e068dcc9a4afdaf6eebe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a070e04a2cfbacb5cab83eb480d2dfaa6" id="r_a070e04a2cfbacb5cab83eb480d2dfaa6"><td class="memItemLeft" align="right" valign="top"><a id="a070e04a2cfbacb5cab83eb480d2dfaa6" name="a070e04a2cfbacb5cab83eb480d2dfaa6"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_192s_param</b> ()</td></tr>
-<tr class="separator:a070e04a2cfbacb5cab83eb480d2dfaa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaee202a0ebf99a58a38de2c8a533cc2c" id="r_aaee202a0ebf99a58a38de2c8a533cc2c"><td class="memItemLeft" align="right" valign="top"><a id="aaee202a0ebf99a58a38de2c8a533cc2c" name="aaee202a0ebf99a58a38de2c8a533cc2c"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_256f_param</b> ()</td></tr>
-<tr class="separator:aaee202a0ebf99a58a38de2c8a533cc2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90b28f6ff2dfebf44ba4906f8b7bca53" id="r_a90b28f6ff2dfebf44ba4906f8b7bca53"><td class="memItemLeft" align="right" valign="top"><a id="a90b28f6ff2dfebf44ba4906f8b7bca53" name="a90b28f6ff2dfebf44ba4906f8b7bca53"></a>
-<a class="el" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_256s_param</b> ()</td></tr>
-<tr class="separator:a90b28f6ff2dfebf44ba4906f8b7bca53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68ea738861e87a30a3d139403ccd61bf" id="r_a68ea738861e87a30a3d139403ccd61bf"><td class="memItemLeft" align="right" valign="top"><a id="a68ea738861e87a30a3d139403ccd61bf" name="a68ea738861e87a30a3d139403ccd61bf"></a>
+<tr class="memitem:acfcc17f9f382228311fa4e95b445861c" id="r_acfcc17f9f382228311fa4e95b445861c"><td class="memItemLeft" align="right" valign="top"><a id="acfcc17f9f382228311fa4e95b445861c" name="acfcc17f9f382228311fa4e95b445861c"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_curve25519_sign_param</b> ()</td></tr>
+<tr class="separator:acfcc17f9f382228311fa4e95b445861c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4719fc547b13d202e0675f7db2e29796" id="r_a4719fc547b13d202e0675f7db2e29796"><td class="memItemLeft" align="right" valign="top"><a id="a4719fc547b13d202e0675f7db2e29796" name="a4719fc547b13d202e0675f7db2e29796"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mldsa44_param</b> ()</td></tr>
+<tr class="separator:a4719fc547b13d202e0675f7db2e29796"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64806bb0fd3de9d5a12ae8d8bda10ead" id="r_a64806bb0fd3de9d5a12ae8d8bda10ead"><td class="memItemLeft" align="right" valign="top"><a id="a64806bb0fd3de9d5a12ae8d8bda10ead" name="a64806bb0fd3de9d5a12ae8d8bda10ead"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mldsa65_param</b> ()</td></tr>
+<tr class="separator:a64806bb0fd3de9d5a12ae8d8bda10ead"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f77aab1d49dc045138f3687b6007c91" id="r_a1f77aab1d49dc045138f3687b6007c91"><td class="memItemLeft" align="right" valign="top"><a id="a1f77aab1d49dc045138f3687b6007c91" name="a1f77aab1d49dc045138f3687b6007c91"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mldsa87_param</b> ()</td></tr>
+<tr class="separator:a1f77aab1d49dc045138f3687b6007c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0d1d1f829541243b0e1a814ef422085" id="r_af0d1d1f829541243b0e1a814ef422085"><td class="memItemLeft" align="right" valign="top"><a id="af0d1d1f829541243b0e1a814ef422085" name="af0d1d1f829541243b0e1a814ef422085"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_falcon512_param</b> ()</td></tr>
+<tr class="separator:af0d1d1f829541243b0e1a814ef422085"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4f5ce00a0663e539866bab4e062d0c8" id="r_ab4f5ce00a0663e539866bab4e062d0c8"><td class="memItemLeft" align="right" valign="top"><a id="ab4f5ce00a0663e539866bab4e062d0c8" name="ab4f5ce00a0663e539866bab4e062d0c8"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_falcon1024_param</b> ()</td></tr>
+<tr class="separator:ab4f5ce00a0663e539866bab4e062d0c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae10e1f81146bd075099805aad9105a27" id="r_ae10e1f81146bd075099805aad9105a27"><td class="memItemLeft" align="right" valign="top"><a id="ae10e1f81146bd075099805aad9105a27" name="ae10e1f81146bd075099805aad9105a27"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_128f_param</b> ()</td></tr>
+<tr class="separator:ae10e1f81146bd075099805aad9105a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaedaf50277a975a7910068c6ee7d0bb1" id="r_aaedaf50277a975a7910068c6ee7d0bb1"><td class="memItemLeft" align="right" valign="top"><a id="aaedaf50277a975a7910068c6ee7d0bb1" name="aaedaf50277a975a7910068c6ee7d0bb1"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_128s_param</b> ()</td></tr>
+<tr class="separator:aaedaf50277a975a7910068c6ee7d0bb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8c935d2664feb955753723401cf6860" id="r_ab8c935d2664feb955753723401cf6860"><td class="memItemLeft" align="right" valign="top"><a id="ab8c935d2664feb955753723401cf6860" name="ab8c935d2664feb955753723401cf6860"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_192f_param</b> ()</td></tr>
+<tr class="separator:ab8c935d2664feb955753723401cf6860"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b830b7de67deae75f3b0ba5e98c6bb8" id="r_a2b830b7de67deae75f3b0ba5e98c6bb8"><td class="memItemLeft" align="right" valign="top"><a id="a2b830b7de67deae75f3b0ba5e98c6bb8" name="a2b830b7de67deae75f3b0ba5e98c6bb8"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_192s_param</b> ()</td></tr>
+<tr class="separator:a2b830b7de67deae75f3b0ba5e98c6bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb8f8500c997e8971568f9b602f41e7d" id="r_acb8f8500c997e8971568f9b602f41e7d"><td class="memItemLeft" align="right" valign="top"><a id="acb8f8500c997e8971568f9b602f41e7d" name="acb8f8500c997e8971568f9b602f41e7d"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_256f_param</b> ()</td></tr>
+<tr class="separator:acb8f8500c997e8971568f9b602f41e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ab87f9e7a3129b1560d9b8bdcfe8887" id="r_a2ab87f9e7a3129b1560d9b8bdcfe8887"><td class="memItemLeft" align="right" valign="top"><a id="a2ab87f9e7a3129b1560d9b8bdcfe8887" name="a2ab87f9e7a3129b1560d9b8bdcfe8887"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_256s_param</b> ()</td></tr>
+<tr class="separator:a2ab87f9e7a3129b1560d9b8bdcfe8887"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ee2d41ba2de10091b544451aacb022f" id="r_a8ee2d41ba2de10091b544451aacb022f"><td class="memItemLeft" align="right" valign="top"><a id="a8ee2d41ba2de10091b544451aacb022f" name="a8ee2d41ba2de10091b544451aacb022f"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_128f_param</b> ()</td></tr>
+<tr class="separator:a8ee2d41ba2de10091b544451aacb022f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaefb8457572bae1597d79a678a10bf4c" id="r_aaefb8457572bae1597d79a678a10bf4c"><td class="memItemLeft" align="right" valign="top"><a id="aaefb8457572bae1597d79a678a10bf4c" name="aaefb8457572bae1597d79a678a10bf4c"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_128s_param</b> ()</td></tr>
+<tr class="separator:aaefb8457572bae1597d79a678a10bf4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a474c1a73d3654b463d57751b4a8c7d03" id="r_a474c1a73d3654b463d57751b4a8c7d03"><td class="memItemLeft" align="right" valign="top"><a id="a474c1a73d3654b463d57751b4a8c7d03" name="a474c1a73d3654b463d57751b4a8c7d03"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_192f_param</b> ()</td></tr>
+<tr class="separator:a474c1a73d3654b463d57751b4a8c7d03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f707ad7e9ccef1a2657ccc01f4e94db" id="r_a6f707ad7e9ccef1a2657ccc01f4e94db"><td class="memItemLeft" align="right" valign="top"><a id="a6f707ad7e9ccef1a2657ccc01f4e94db" name="a6f707ad7e9ccef1a2657ccc01f4e94db"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_192s_param</b> ()</td></tr>
+<tr class="separator:a6f707ad7e9ccef1a2657ccc01f4e94db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca1d6f5387d20c2fff33acc891628258" id="r_aca1d6f5387d20c2fff33acc891628258"><td class="memItemLeft" align="right" valign="top"><a id="aca1d6f5387d20c2fff33acc891628258" name="aca1d6f5387d20c2fff33acc891628258"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_256f_param</b> ()</td></tr>
+<tr class="separator:aca1d6f5387d20c2fff33acc891628258"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae41fb0b3b623a4b65a9778cf4827440d" id="r_ae41fb0b3b623a4b65a9778cf4827440d"><td class="memItemLeft" align="right" valign="top"><a id="ae41fb0b3b623a4b65a9778cf4827440d" name="ae41fb0b3b623a4b65a9778cf4827440d"></a>
+<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_256s_param</b> ()</td></tr>
+<tr class="separator:ae41fb0b3b623a4b65a9778cf4827440d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a160f647a5fd3664f70fac700316bc5f8" id="r_a160f647a5fd3664f70fac700316bc5f8"><td class="memItemLeft" align="right" valign="top"><a id="a160f647a5fd3664f70fac700316bc5f8" name="a160f647a5fd3664f70fac700316bc5f8"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mldsa44_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a68ea738861e87a30a3d139403ccd61bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace5e4ecd1a48854b2b5f4cc20a8b9912" id="r_ace5e4ecd1a48854b2b5f4cc20a8b9912"><td class="memItemLeft" align="right" valign="top"><a id="ace5e4ecd1a48854b2b5f4cc20a8b9912" name="ace5e4ecd1a48854b2b5f4cc20a8b9912"></a>
+<tr class="separator:a160f647a5fd3664f70fac700316bc5f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c4abafc02f8b8b0eed5a3cfb8c981d5" id="r_a6c4abafc02f8b8b0eed5a3cfb8c981d5"><td class="memItemLeft" align="right" valign="top"><a id="a6c4abafc02f8b8b0eed5a3cfb8c981d5" name="a6c4abafc02f8b8b0eed5a3cfb8c981d5"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mldsa65_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:ace5e4ecd1a48854b2b5f4cc20a8b9912"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac5ab672b584de1276e5da29454ac627" id="r_aac5ab672b584de1276e5da29454ac627"><td class="memItemLeft" align="right" valign="top"><a id="aac5ab672b584de1276e5da29454ac627" name="aac5ab672b584de1276e5da29454ac627"></a>
+<tr class="separator:a6c4abafc02f8b8b0eed5a3cfb8c981d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd3872da5e49667ca194a599192077b1" id="r_abd3872da5e49667ca194a599192077b1"><td class="memItemLeft" align="right" valign="top"><a id="abd3872da5e49667ca194a599192077b1" name="abd3872da5e49667ca194a599192077b1"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mldsa87_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:aac5ab672b584de1276e5da29454ac627"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:abd3872da5e49667ca194a599192077b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada5d43accf1d9aaece24f7b7d1b4aeb4" id="r_ada5d43accf1d9aaece24f7b7d1b4aeb4"><td class="memItemLeft" align="right" valign="top"><a id="ada5d43accf1d9aaece24f7b7d1b4aeb4" name="ada5d43accf1d9aaece24f7b7d1b4aeb4"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_falcon512_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
 <tr class="separator:ada5d43accf1d9aaece24f7b7d1b4aeb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -240,15 +240,15 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_shake_2
 <tr class="memitem:a7a8727dd68c23ab09544e4798341d62d" id="r_a7a8727dd68c23ab09544e4798341d62d"><td class="memItemLeft" align="right" valign="top"><a id="a7a8727dd68c23ab09544e4798341d62d" name="a7a8727dd68c23ab09544e4798341d62d"></a>
 <a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_hqc256_param</b> ()</td></tr>
 <tr class="separator:a7a8727dd68c23ab09544e4798341d62d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34a41d380a2a281a140409892622f123" id="r_a34a41d380a2a281a140409892622f123"><td class="memItemLeft" align="right" valign="top"><a id="a34a41d380a2a281a140409892622f123" name="a34a41d380a2a281a140409892622f123"></a>
+<tr class="memitem:a9239b80200b2ecfd1b0bcac5e9d14c18" id="r_a9239b80200b2ecfd1b0bcac5e9d14c18"><td class="memItemLeft" align="right" valign="top"><a id="a9239b80200b2ecfd1b0bcac5e9d14c18" name="a9239b80200b2ecfd1b0bcac5e9d14c18"></a>
 <a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mlkem512_param</b> ()</td></tr>
-<tr class="separator:a34a41d380a2a281a140409892622f123"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a489b219df8f2fdd92641aa9593a26492" id="r_a489b219df8f2fdd92641aa9593a26492"><td class="memItemLeft" align="right" valign="top"><a id="a489b219df8f2fdd92641aa9593a26492" name="a489b219df8f2fdd92641aa9593a26492"></a>
+<tr class="separator:a9239b80200b2ecfd1b0bcac5e9d14c18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7487b5b96948aef1da8ffbb77ccf9e2" id="r_ac7487b5b96948aef1da8ffbb77ccf9e2"><td class="memItemLeft" align="right" valign="top"><a id="ac7487b5b96948aef1da8ffbb77ccf9e2" name="ac7487b5b96948aef1da8ffbb77ccf9e2"></a>
 <a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mlkem768_param</b> ()</td></tr>
-<tr class="separator:a489b219df8f2fdd92641aa9593a26492"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a534336aca0c952d6aed1a4aa028631ac" id="r_a534336aca0c952d6aed1a4aa028631ac"><td class="memItemLeft" align="right" valign="top"><a id="a534336aca0c952d6aed1a4aa028631ac" name="a534336aca0c952d6aed1a4aa028631ac"></a>
+<tr class="separator:ac7487b5b96948aef1da8ffbb77ccf9e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74093167dfe00891e9adfbd89a25e841" id="r_a74093167dfe00891e9adfbd89a25e841"><td class="memItemLeft" align="right" valign="top"><a id="a74093167dfe00891e9adfbd89a25e841" name="a74093167dfe00891e9adfbd89a25e841"></a>
 <a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mlkem1024_param</b> ()</td></tr>
-<tr class="separator:a534336aca0c952d6aed1a4aa028631ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a74093167dfe00891e9adfbd89a25e841"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0018de3bb3769a355a391bca56001ba" id="r_ac0018de3bb3769a355a391bca56001ba"><td class="memItemLeft" align="right" valign="top"><a id="ac0018de3bb3769a355a391bca56001ba" name="ac0018de3bb3769a355a391bca56001ba"></a>
 <a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece348864_param</b> ()</td></tr>
 <tr class="separator:ac0018de3bb3769a355a391bca56001ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -279,9 +279,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_shake_2
 <tr class="memitem:a40e354bfc29c979eeb4e1d80fa6838ac" id="r_a40e354bfc29c979eeb4e1d80fa6838ac"><td class="memItemLeft" align="right" valign="top"><a id="a40e354bfc29c979eeb4e1d80fa6838ac" name="a40e354bfc29c979eeb4e1d80fa6838ac"></a>
 <a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece8192128f_param</b> ()</td></tr>
 <tr class="separator:a40e354bfc29c979eeb4e1d80fa6838ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62d9b31e71c03903f48ec03b81951edb" id="r_a62d9b31e71c03903f48ec03b81951edb"><td class="memItemLeft" align="right" valign="top"><a id="a62d9b31e71c03903f48ec03b81951edb" name="a62d9b31e71c03903f48ec03b81951edb"></a>
-<a class="el" href="structcrypto__symmetric__encryption__param__t.html">crypto_symmetric_encryption_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_aes256_param</b> ()</td></tr>
-<tr class="separator:a62d9b31e71c03903f48ec03b81951edb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac915a50a9c87392422cb0c159cb1620e" id="r_ac915a50a9c87392422cb0c159cb1620e"><td class="memItemLeft" align="right" valign="top"><a id="ac915a50a9c87392422cb0c159cb1620e" name="ac915a50a9c87392422cb0c159cb1620e"></a>
+<a class="el" href="structcrypto__se__param__t.html">crypto_se_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_aes256_param</b> ()</td></tr>
+<tr class="separator:ac915a50a9c87392422cb0c159cb1620e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a965a4d8e65c0753655a0288b6271dbf0" id="r_a965a4d8e65c0753655a0288b6271dbf0"><td class="memItemLeft" align="right" valign="top"><a id="a965a4d8e65c0753655a0288b6271dbf0" name="a965a4d8e65c0753655a0288b6271dbf0"></a>
 <a class="el" href="structcrypto__hash__param__t.html">crypto_hash_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sha256_param</b> ()</td></tr>
 <tr class="separator:a965a4d8e65c0753655a0288b6271dbf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -294,15 +294,15 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc192_generate
 <tr class="memitem:ac7854c5c3468bf316b69067fb4a549d6" id="r_ac7854c5c3468bf316b69067fb4a549d6"><td class="memItemLeft" align="right" valign="top"><a id="ac7854c5c3468bf316b69067fb4a549d6" name="ac7854c5c3468bf316b69067fb4a549d6"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc256_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
 <tr class="separator:ac7854c5c3468bf316b69067fb4a549d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68500f2fb5dc060d49f274cf630085dc" id="r_a68500f2fb5dc060d49f274cf630085dc"><td class="memItemLeft" align="right" valign="top"><a id="a68500f2fb5dc060d49f274cf630085dc" name="a68500f2fb5dc060d49f274cf630085dc"></a>
+<tr class="memitem:abcffc9f7b22da7de8847c5b5bb389a6a" id="r_abcffc9f7b22da7de8847c5b5bb389a6a"><td class="memItemLeft" align="right" valign="top"><a id="abcffc9f7b22da7de8847c5b5bb389a6a" name="abcffc9f7b22da7de8847c5b5bb389a6a"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem512_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a68500f2fb5dc060d49f274cf630085dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c1965a1c9389f32ba5f7fb5705045a8" id="r_a0c1965a1c9389f32ba5f7fb5705045a8"><td class="memItemLeft" align="right" valign="top"><a id="a0c1965a1c9389f32ba5f7fb5705045a8" name="a0c1965a1c9389f32ba5f7fb5705045a8"></a>
+<tr class="separator:abcffc9f7b22da7de8847c5b5bb389a6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c26b24c8bcefe2447a3c7abf5ffab46" id="r_a3c26b24c8bcefe2447a3c7abf5ffab46"><td class="memItemLeft" align="right" valign="top"><a id="a3c26b24c8bcefe2447a3c7abf5ffab46" name="a3c26b24c8bcefe2447a3c7abf5ffab46"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem768_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a0c1965a1c9389f32ba5f7fb5705045a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2575add5a035af96120975f81624834" id="r_ad2575add5a035af96120975f81624834"><td class="memItemLeft" align="right" valign="top"><a id="ad2575add5a035af96120975f81624834" name="ad2575add5a035af96120975f81624834"></a>
+<tr class="separator:a3c26b24c8bcefe2447a3c7abf5ffab46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af815467723afa7aa8bc430a4552bf0f2" id="r_af815467723afa7aa8bc430a4552bf0f2"><td class="memItemLeft" align="right" valign="top"><a id="af815467723afa7aa8bc430a4552bf0f2" name="af815467723afa7aa8bc430a4552bf0f2"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem1024_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:ad2575add5a035af96120975f81624834"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:af815467723afa7aa8bc430a4552bf0f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a257398f436471200daed3ef4135850c3" id="r_a257398f436471200daed3ef4135850c3"><td class="memItemLeft" align="right" valign="top"><a id="a257398f436471200daed3ef4135850c3" name="a257398f436471200daed3ef4135850c3"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece348864_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
 <tr class="separator:a257398f436471200daed3ef4135850c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -342,15 +342,15 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc192_encaps</
 <tr class="memitem:ab5d8e251f4c26337af88490baebb93a1" id="r_ab5d8e251f4c26337af88490baebb93a1"><td class="memItemLeft" align="right" valign="top"><a id="ab5d8e251f4c26337af88490baebb93a1" name="ab5d8e251f4c26337af88490baebb93a1"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc256_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
 <tr class="separator:ab5d8e251f4c26337af88490baebb93a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2b4a48db8a60585d4ca0b9c965b0b16" id="r_ab2b4a48db8a60585d4ca0b9c965b0b16"><td class="memItemLeft" align="right" valign="top"><a id="ab2b4a48db8a60585d4ca0b9c965b0b16" name="ab2b4a48db8a60585d4ca0b9c965b0b16"></a>
+<tr class="memitem:a2a57b773f74907f614804a46bffd1532" id="r_a2a57b773f74907f614804a46bffd1532"><td class="memItemLeft" align="right" valign="top"><a id="a2a57b773f74907f614804a46bffd1532" name="a2a57b773f74907f614804a46bffd1532"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem512_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:ab2b4a48db8a60585d4ca0b9c965b0b16"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf0e30265da126c8a5e8bdf23774b16b" id="r_adf0e30265da126c8a5e8bdf23774b16b"><td class="memItemLeft" align="right" valign="top"><a id="adf0e30265da126c8a5e8bdf23774b16b" name="adf0e30265da126c8a5e8bdf23774b16b"></a>
+<tr class="separator:a2a57b773f74907f614804a46bffd1532"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a606fcda2cdba0e24417c95eb195ed37a" id="r_a606fcda2cdba0e24417c95eb195ed37a"><td class="memItemLeft" align="right" valign="top"><a id="a606fcda2cdba0e24417c95eb195ed37a" name="a606fcda2cdba0e24417c95eb195ed37a"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem768_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:adf0e30265da126c8a5e8bdf23774b16b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac212b08c5cb44e1f43f820dbee6adf10" id="r_ac212b08c5cb44e1f43f820dbee6adf10"><td class="memItemLeft" align="right" valign="top"><a id="ac212b08c5cb44e1f43f820dbee6adf10" name="ac212b08c5cb44e1f43f820dbee6adf10"></a>
+<tr class="separator:a606fcda2cdba0e24417c95eb195ed37a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3c0bff6470d5b67c89af386b010bddf" id="r_af3c0bff6470d5b67c89af386b010bddf"><td class="memItemLeft" align="right" valign="top"><a id="af3c0bff6470d5b67c89af386b010bddf" name="af3c0bff6470d5b67c89af386b010bddf"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem1024_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:ac212b08c5cb44e1f43f820dbee6adf10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:af3c0bff6470d5b67c89af386b010bddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae20685821fa2c4effc730b7c39dd49a9" id="r_ae20685821fa2c4effc730b7c39dd49a9"><td class="memItemLeft" align="right" valign="top"><a id="ae20685821fa2c4effc730b7c39dd49a9" name="ae20685821fa2c4effc730b7c39dd49a9"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece348864_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
 <tr class="separator:ae20685821fa2c4effc730b7c39dd49a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -390,15 +390,15 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc192_decaps</
 <tr class="memitem:a50f46f7a1fb2618610d75bf4b91d432d" id="r_a50f46f7a1fb2618610d75bf4b91d432d"><td class="memItemLeft" align="right" valign="top"><a id="a50f46f7a1fb2618610d75bf4b91d432d" name="a50f46f7a1fb2618610d75bf4b91d432d"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc256_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
 <tr class="separator:a50f46f7a1fb2618610d75bf4b91d432d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93001b08552a713d6a23c5e82c089e67" id="r_a93001b08552a713d6a23c5e82c089e67"><td class="memItemLeft" align="right" valign="top"><a id="a93001b08552a713d6a23c5e82c089e67" name="a93001b08552a713d6a23c5e82c089e67"></a>
+<tr class="memitem:a574693f0c013644b57d91a4bfce8a345" id="r_a574693f0c013644b57d91a4bfce8a345"><td class="memItemLeft" align="right" valign="top"><a id="a574693f0c013644b57d91a4bfce8a345" name="a574693f0c013644b57d91a4bfce8a345"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem512_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a93001b08552a713d6a23c5e82c089e67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab972572c3fec2413e52a25d55138d090" id="r_ab972572c3fec2413e52a25d55138d090"><td class="memItemLeft" align="right" valign="top"><a id="ab972572c3fec2413e52a25d55138d090" name="ab972572c3fec2413e52a25d55138d090"></a>
+<tr class="separator:a574693f0c013644b57d91a4bfce8a345"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af52ab581b7b882766dd65c318412037e" id="r_af52ab581b7b882766dd65c318412037e"><td class="memItemLeft" align="right" valign="top"><a id="af52ab581b7b882766dd65c318412037e" name="af52ab581b7b882766dd65c318412037e"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem768_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:ab972572c3fec2413e52a25d55138d090"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d4af64a277869cbf8628b08ec2bd4f8" id="r_a9d4af64a277869cbf8628b08ec2bd4f8"><td class="memItemLeft" align="right" valign="top"><a id="a9d4af64a277869cbf8628b08ec2bd4f8" name="a9d4af64a277869cbf8628b08ec2bd4f8"></a>
+<tr class="separator:af52ab581b7b882766dd65c318412037e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3be0c33608b698ed9175a0229d1f3636" id="r_a3be0c33608b698ed9175a0229d1f3636"><td class="memItemLeft" align="right" valign="top"><a id="a3be0c33608b698ed9175a0229d1f3636" name="a3be0c33608b698ed9175a0229d1f3636"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem1024_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a9d4af64a277869cbf8628b08ec2bd4f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a3be0c33608b698ed9175a0229d1f3636"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62d852af3293d65eeb0d8a3c1c3718ed" id="r_a62d852af3293d65eeb0d8a3c1c3718ed"><td class="memItemLeft" align="right" valign="top"><a id="a62d852af3293d65eeb0d8a3c1c3718ed" name="a62d852af3293d65eeb0d8a3c1c3718ed"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece348864_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
 <tr class="separator:a62d852af3293d65eeb0d8a3c1c3718ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -495,25 +495,25 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 <tr class="memitem:a4f5e0daca1f3aca72b3e6e0c35a18de6" id="r_a4f5e0daca1f3aca72b3e6e0c35a18de6"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f5e0daca1f3aca72b3e6e0c35a18de6">crypto_base64_decode</a> (uint8_t **msg_out, const unsigned char *base64_str)</td></tr>
 <tr class="memdesc:a4f5e0daca1f3aca72b3e6e0c35a18de6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decode from base64 string.  <br /></td></tr>
 <tr class="separator:a4f5e0daca1f3aca72b3e6e0c35a18de6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6267438912568b236ef3982e3738fc3a" id="r_a6267438912568b236ef3982e3738fc3a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6267438912568b236ef3982e3738fc3a">crypto_hash_by_e2ee_pack_id</a> (uint32_t e2ee_pack_id_raw, const uint8_t *msg, size_t msg_len, uint8_t **hash_out, size_t *hash_out_len)</td></tr>
-<tr class="memdesc:a6267438912568b236ef3982e3738fc3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate hash with respect to the specific e2ee pack ID raw number.  <br /></td></tr>
-<tr class="separator:a6267438912568b236ef3982e3738fc3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1614f1ad3633e9adc223673fec666da7" id="r_a1614f1ad3633e9adc223673fec666da7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1614f1ad3633e9adc223673fec666da7">crypto_ds_key_gen_by_e2ee_pack_id</a> (uint32_t e2ee_pack_id_raw, ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="memdesc:a1614f1ad3633e9adc223673fec666da7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a random key pair that will be used to generate or verify a signature with respect to the specific e2ee pack ID raw number.  <br /></td></tr>
-<tr class="separator:a1614f1ad3633e9adc223673fec666da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69bc67c54a1fe0f704d7b979dc1446db" id="r_a69bc67c54a1fe0f704d7b979dc1446db"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69bc67c54a1fe0f704d7b979dc1446db">crypto_ds_sign_by_e2ee_pack_id</a> (uint32_t e2ee_pack_id_raw, uint8_t **signature_out, size_t *signature_out_len, const uint8_t *msg, size_t msg_len, const uint8_t *private_key, size_t private_key_len)</td></tr>
-<tr class="memdesc:a69bc67c54a1fe0f704d7b979dc1446db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sign a message with respect to the specific e2ee pack ID raw number.  <br /></td></tr>
-<tr class="separator:a69bc67c54a1fe0f704d7b979dc1446db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b0e67950893e303b3eb0f4848a79d57" id="r_a3b0e67950893e303b3eb0f4848a79d57"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3b0e67950893e303b3eb0f4848a79d57">crypto_ds_verify_by_e2ee_pack_id</a> (uint32_t e2ee_pack_id_raw, const uint8_t *signature_in, size_t signature_in_len, const uint8_t *msg, size_t msg_len, const uint8_t *public_key, size_t public_key_len)</td></tr>
-<tr class="memdesc:a3b0e67950893e303b3eb0f4848a79d57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verify a signature with a given message with respect to the specific e2ee pack ID raw number.  <br /></td></tr>
-<tr class="separator:a3b0e67950893e303b3eb0f4848a79d57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79bd3406be3772ecc1eb6191e49faf65" id="r_a79bd3406be3772ecc1eb6191e49faf65"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a79bd3406be3772ecc1eb6191e49faf65">crypto_hash_by_e2ees_pack_id</a> (uint32_t e2ees_pack_id_raw, const uint8_t *msg, size_t msg_len, uint8_t **hash_out, size_t *hash_out_len)</td></tr>
+<tr class="memdesc:a79bd3406be3772ecc1eb6191e49faf65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate hash with respect to the specific e2ee pack ID raw number.  <br /></td></tr>
+<tr class="separator:a79bd3406be3772ecc1eb6191e49faf65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8345083dac081465341bff062a51aa9c" id="r_a8345083dac081465341bff062a51aa9c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8345083dac081465341bff062a51aa9c">crypto_ds_key_gen_by_e2ees_pack_id</a> (uint32_t e2ees_pack_id_raw, ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
+<tr class="memdesc:a8345083dac081465341bff062a51aa9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a random key pair that will be used to generate or verify a signature with respect to the specific e2ee pack ID raw number.  <br /></td></tr>
+<tr class="separator:a8345083dac081465341bff062a51aa9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07c3e7cb3179f803c2f5447353fb09aa" id="r_a07c3e7cb3179f803c2f5447353fb09aa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07c3e7cb3179f803c2f5447353fb09aa">crypto_ds_sign_by_e2ees_pack_id</a> (uint32_t e2ees_pack_id_raw, uint8_t **signature_out, size_t *signature_out_len, const uint8_t *msg, size_t msg_len, const uint8_t *private_key, size_t private_key_len)</td></tr>
+<tr class="memdesc:a07c3e7cb3179f803c2f5447353fb09aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sign a message with respect to the specific e2ee pack ID raw number.  <br /></td></tr>
+<tr class="separator:a07c3e7cb3179f803c2f5447353fb09aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c2d6f9fac817fe5f7451cf5dd84dea7" id="r_a7c2d6f9fac817fe5f7451cf5dd84dea7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7c2d6f9fac817fe5f7451cf5dd84dea7">crypto_ds_verify_by_e2ees_pack_id</a> (uint32_t e2ees_pack_id_raw, const uint8_t *signature_in, size_t signature_in_len, const uint8_t *msg, size_t msg_len, const uint8_t *public_key, size_t public_key_len)</td></tr>
+<tr class="memdesc:a7c2d6f9fac817fe5f7451cf5dd84dea7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verify a signature with a given message with respect to the specific e2ee pack ID raw number.  <br /></td></tr>
+<tr class="separator:a7c2d6f9fac817fe5f7451cf5dd84dea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Copyright © 2020-2021 by Academia Sinica</p>
-<p>This file is part of SKISSM.</p>
+<div class="textblock"><p>Copyright © 2021 Academia Sinica. All Rights Reserved.</p>
+<p>This file is part of E2EE Security.</p>
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-<p>SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License along with SKISSM. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
+<p>E2EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with E2EE Security. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="adbbbf1c1be8a7fb625cf3879c3168dc3" name="adbbbf1c1be8a7fb625cf3879c3168dc3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adbbbf1c1be8a7fb625cf3879c3168dc3">&#9670;&#160;</a></span>AES256_DATA_IV_LENGTH</h2>
@@ -812,16 +812,16 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 
 </div>
 </div>
-<a id="a1614f1ad3633e9adc223673fec666da7" name="a1614f1ad3633e9adc223673fec666da7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1614f1ad3633e9adc223673fec666da7">&#9670;&#160;</a></span>crypto_ds_key_gen_by_e2ee_pack_id()</h2>
+<a id="a8345083dac081465341bff062a51aa9c" name="a8345083dac081465341bff062a51aa9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8345083dac081465341bff062a51aa9c">&#9670;&#160;</a></span>crypto_ds_key_gen_by_e2ees_pack_id()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int crypto_ds_key_gen_by_e2ee_pack_id </td>
+          <td class="memname">int crypto_ds_key_gen_by_e2ees_pack_id </td>
           <td>(</td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id_raw</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id_raw</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -839,7 +839,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 <p>Generate a random key pair that will be used to generate or verify a signature with respect to the specific e2ee pack ID raw number. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">e2ee_pack_id_raw</td><td></td></tr>
+    <tr><td class="paramname">e2ees_pack_id_raw</td><td></td></tr>
     <tr><td class="paramname">pub_key</td><td></td></tr>
     <tr><td class="paramname">priv_key</td><td></td></tr>
   </table>
@@ -849,16 +849,16 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 
 </div>
 </div>
-<a id="a69bc67c54a1fe0f704d7b979dc1446db" name="a69bc67c54a1fe0f704d7b979dc1446db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69bc67c54a1fe0f704d7b979dc1446db">&#9670;&#160;</a></span>crypto_ds_sign_by_e2ee_pack_id()</h2>
+<a id="a07c3e7cb3179f803c2f5447353fb09aa" name="a07c3e7cb3179f803c2f5447353fb09aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07c3e7cb3179f803c2f5447353fb09aa">&#9670;&#160;</a></span>crypto_ds_sign_by_e2ees_pack_id()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int crypto_ds_sign_by_e2ee_pack_id </td>
+          <td class="memname">int crypto_ds_sign_by_e2ees_pack_id </td>
           <td>(</td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id_raw</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id_raw</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -896,7 +896,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 <p>Sign a message with respect to the specific e2ee pack ID raw number. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">e2ee_pack_id_raw</td><td></td></tr>
+    <tr><td class="paramname">e2ees_pack_id_raw</td><td></td></tr>
     <tr><td class="paramname">signature_out</td><td></td></tr>
     <tr><td class="paramname">signature_out_len</td><td></td></tr>
     <tr><td class="paramname">msg</td><td></td></tr>
@@ -910,16 +910,16 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 
 </div>
 </div>
-<a id="a3b0e67950893e303b3eb0f4848a79d57" name="a3b0e67950893e303b3eb0f4848a79d57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b0e67950893e303b3eb0f4848a79d57">&#9670;&#160;</a></span>crypto_ds_verify_by_e2ee_pack_id()</h2>
+<a id="a7c2d6f9fac817fe5f7451cf5dd84dea7" name="a7c2d6f9fac817fe5f7451cf5dd84dea7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c2d6f9fac817fe5f7451cf5dd84dea7">&#9670;&#160;</a></span>crypto_ds_verify_by_e2ees_pack_id()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int crypto_ds_verify_by_e2ee_pack_id </td>
+          <td class="memname">int crypto_ds_verify_by_e2ees_pack_id </td>
           <td>(</td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id_raw</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id_raw</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -957,7 +957,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 <p>Verify a signature with a given message with respect to the specific e2ee pack ID raw number. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">e2ee_pack_id_raw</td><td></td></tr>
+    <tr><td class="paramname">e2ees_pack_id_raw</td><td></td></tr>
     <tr><td class="paramname">signature_in</td><td></td></tr>
     <tr><td class="paramname">signature_in_len</td><td></td></tr>
     <tr><td class="paramname">msg</td><td></td></tr>
@@ -971,16 +971,16 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 
 </div>
 </div>
-<a id="a6267438912568b236ef3982e3738fc3a" name="a6267438912568b236ef3982e3738fc3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6267438912568b236ef3982e3738fc3a">&#9670;&#160;</a></span>crypto_hash_by_e2ee_pack_id()</h2>
+<a id="a79bd3406be3772ecc1eb6191e49faf65" name="a79bd3406be3772ecc1eb6191e49faf65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79bd3406be3772ecc1eb6191e49faf65">&#9670;&#160;</a></span>crypto_hash_by_e2ees_pack_id()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int crypto_hash_by_e2ee_pack_id </td>
+          <td class="memname">int crypto_hash_by_e2ees_pack_id </td>
           <td>(</td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ee_pack_id_raw</em></span>, </td>
+          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>e2ees_pack_id_raw</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1008,7 +1008,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 <p>Calculate hash with respect to the specific e2ee pack ID raw number. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">e2ee_pack_id_raw</td><td></td></tr>
+    <tr><td class="paramname">e2ees_pack_id_raw</td><td></td></tr>
     <tr><td class="paramname">msg</td><td></td></tr>
     <tr><td class="paramname">msg_len</td><td></td></tr>
     <tr><td class="paramname">hash_out</td><td></td></tr>

@@ -1,63 +1,63 @@
 /*
- * Copyright © 2020-2021 by Academia Sinica
+ * Copyright © 2021 Academia Sinica. All Rights Reserved.
  *
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "skissm/ratchet.h"
+#include "e2ees/ratchet.h"
 
 #include <string.h>
 #include <stdio.h>
 
-#include "skissm/cipher.h"
-#include "skissm/mem_util.h"
-#include "skissm/validation.h"
+#include "e2ees/cipher.h"
+#include "e2ees/mem_util.h"
+#include "e2ees/validation.h"
 
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
 static const size_t MAX_SKIPPED_MESSAGE_KEY_NODES = 8192;
 
 static void copy_skipped_msg_key_node(
-    Skissm__SkippedMsgKeyNode **dest,
-    Skissm__SkippedMsgKeyNode **src,
+    E2ees__SkippedMsgKeyNode **dest,
+    E2ees__SkippedMsgKeyNode **src,
     size_t num
 ) {
     size_t i;
     for (i = 0; i < num; i++){
-        dest[i] = (Skissm__SkippedMsgKeyNode *)malloc(sizeof(Skissm__SkippedMsgKeyNode));
-        skissm__skipped_msg_key_node__init(dest[i]);
+        dest[i] = (E2ees__SkippedMsgKeyNode *)malloc(sizeof(E2ees__SkippedMsgKeyNode));
+        e2ees__skipped_msg_key_node__init(dest[i]);
         copy_protobuf_from_protobuf(&(dest[i]->ratchet_key_public), &(src[i]->ratchet_key_public));
-        dest[i]->msg_key = (Skissm__MsgKey *)malloc(sizeof(Skissm__MsgKey));
-        skissm__msg_key__init(dest[i]->msg_key);
+        dest[i]->msg_key = (E2ees__MsgKey *)malloc(sizeof(E2ees__MsgKey));
+        e2ees__msg_key__init(dest[i]->msg_key);
         dest[i]->msg_key->index = src[i]->msg_key->index;
         copy_protobuf_from_protobuf(&(dest[i]->msg_key->derived_key), &(src[i]->msg_key->derived_key));
     }
 }
 
 static void free_skipped_message_key(
-    Skissm__SkippedMsgKeyNode ***src,
+    E2ees__SkippedMsgKeyNode ***src,
     size_t num
 ) {
     size_t i;
     for (i = 0; i < num; i++) {
         if ((*src)[i] != NULL) {
-            skissm__skipped_msg_key_node__free_unpacked((*src)[i], NULL);
+            e2ees__skipped_msg_key_node__free_unpacked((*src)[i], NULL);
             (*src)[i] = NULL;
         }
     }
-    free_mem((void **)src, sizeof(Skissm__SkippedMsgKeyNode *) * num);
+    free_mem((void **)src, sizeof(E2ees__SkippedMsgKeyNode *) * num);
     *src = NULL;
 }
 
@@ -67,39 +67,39 @@ static int create_chain_key(
     const ProtobufCBinaryData *our_private_key,
     const ProtobufCBinaryData *their_key,
     ProtobufCBinaryData *new_root_key,
-    Skissm__ChainKey *new_chain_key,
+    E2ees__ChainKey *new_chain_key,
     ProtobufCBinaryData *ratchet_public_key
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
     bool pqc_param;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if ((our_private_key == NULL && ratchet_public_key == NULL) || (our_private_key != NULL && ratchet_public_key != NULL)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (our_private_key != NULL) {
             if (!is_valid_protobuf(our_private_key)) {
-                ret = SKISSM_RESULT_FAIL;
+                ret = E2EES_RESULT_FAIL;
             }
         }
         if (ratchet_public_key != NULL) {
             // ratchet_public_key should be {0, NULL}
             if (is_valid_protobuf(ratchet_public_key)) {
-                ret = SKISSM_RESULT_FAIL;
+                ret = E2EES_RESULT_FAIL;
             }
         }
         if (!is_valid_protobuf(&(root_key))) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (!is_valid_protobuf(their_key)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
 
         int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
@@ -148,19 +148,19 @@ static int create_chain_key(
 
 static int advance_chain_key(
     const cipher_suite_t *cipher_suite,
-    Skissm__ChainKey *chain_key
+    E2ees__ChainKey *chain_key
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if (!is_valid_chain_key(chain_key)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t shared_key[shared_key_len];
         memset(shared_key, 0, shared_key_len);
@@ -179,26 +179,26 @@ static int advance_chain_key(
 
 static int create_msg_keys(
     const cipher_suite_t *cipher_suite,
-    const Skissm__ChainKey *chain_key,
-    Skissm__MsgKey **msg_key_out
+    const E2ees__ChainKey *chain_key,
+    E2ees__MsgKey **msg_key_out
 ) {
-    int ret = SKISSM_RESULT_SUCC;
-    Skissm__MsgKey *msg_key = NULL;
+    int ret = E2EES_RESULT_SUCC;
+    E2ees__MsgKey *msg_key = NULL;
     uint8_t *output = NULL;
     int msg_key_len = 0;
     int hash_len;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if (!is_valid_chain_key(chain_key)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
-        msg_key_len = cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_key_len
-                    + cipher_suite->symmetric_encryption_suite->get_crypto_param().aead_iv_len;
+    if (ret == E2EES_RESULT_SUCC) {
+        msg_key_len = cipher_suite->se_suite->get_crypto_param().aead_key_len
+                    + cipher_suite->se_suite->get_crypto_param().aead_iv_len;
         output = (uint8_t *)malloc(sizeof(uint8_t) * msg_key_len);
         hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         uint8_t salt[hash_len];
@@ -211,9 +211,9 @@ static int create_msg_keys(
         );
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
-        msg_key = (Skissm__MsgKey *)malloc(sizeof(Skissm__MsgKey));
-        skissm__msg_key__init(msg_key);
+    if (ret == E2EES_RESULT_SUCC) {
+        msg_key = (E2ees__MsgKey *)malloc(sizeof(E2ees__MsgKey));
+        e2ees__msg_key__init(msg_key);
 
         msg_key->derived_key.data = output;
         msg_key->derived_key.len = msg_key_len;
@@ -232,27 +232,27 @@ static int verify_and_decrypt(
     size_t *decrypted_data_len_out,
     const cipher_suite_t *cipher_suite,
     ProtobufCBinaryData ad,
-    const Skissm__MsgKey *message_key,
-    const Skissm__One2oneMsgPayload *payload
+    const E2ees__MsgKey *message_key,
+    const E2ees__One2oneMsgPayload *payload
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if (!is_valid_protobuf(&ad)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (!is_valid_msg_key(message_key)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (!is_valid_one2one_msg_payload(payload)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
-        ret = cipher_suite->symmetric_encryption_suite->decrypt(
+    if (ret == E2EES_RESULT_SUCC) {
+        ret = cipher_suite->se_suite->decrypt(
             decrypted_data_out, decrypted_data_len_out,
             &ad,
             message_key->derived_key.data,
@@ -261,7 +261,7 @@ static int verify_and_decrypt(
     }
 
     if (ret < 0)
-        ssm_notify_log(NULL, BAD_MESSAGE_DECRYPTION, "verify_and_decrypt()");
+        e2ees_notify_log(NULL, BAD_MESSAGE_DECRYPTION, "verify_and_decrypt()");
 
     return ret;
 }
@@ -270,34 +270,34 @@ static int verify_and_decrypt_for_existing_chain(
     uint8_t **decrypted_data_out, size_t *decrypted_data_len_out,
     const cipher_suite_t *cipher_suite,
     ProtobufCBinaryData ad,
-    const Skissm__ChainKey *chain,
-    const Skissm__One2oneMsgPayload *payload
+    const E2ees__ChainKey *chain,
+    const E2ees__One2oneMsgPayload *payload
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if (!is_valid_protobuf(&ad)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (!is_valid_chain_key(chain)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (!is_valid_one2one_msg_payload(payload)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
-        if (ret == SKISSM_RESULT_SUCC) {
+        if (ret == E2EES_RESULT_SUCC) {
             if (payload->sequence < chain->index) {
-                ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
-                ret = SKISSM_RESULT_FAIL;
+                e2ees_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_existing_chain()");
+                ret = E2EES_RESULT_FAIL;
             }
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
-        Skissm__ChainKey *new_chain = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
-        skissm__chain_key__init(new_chain);
+    if (ret == E2EES_RESULT_SUCC) {
+        E2ees__ChainKey *new_chain = (E2ees__ChainKey *)malloc(sizeof(E2ees__ChainKey));
+        e2ees__chain_key__init(new_chain);
         new_chain->index = chain->index;
         copy_protobuf_from_protobuf(&(new_chain->shared_key), &(chain->shared_key));
 
@@ -305,7 +305,7 @@ static int verify_and_decrypt_for_existing_chain(
             advance_chain_key(cipher_suite, new_chain);
         }
 
-        Skissm__MsgKey *mk = NULL;
+        E2ees__MsgKey *mk = NULL;
         create_msg_keys(cipher_suite, new_chain, &mk);
 
         ret = verify_and_decrypt(
@@ -313,8 +313,8 @@ static int verify_and_decrypt_for_existing_chain(
             cipher_suite, ad, mk, payload
         );
 
-        skissm__chain_key__free_unpacked(new_chain, NULL);
-        skissm__msg_key__free_unpacked(mk, NULL);
+        e2ees__chain_key__free_unpacked(new_chain, NULL);
+        e2ees__msg_key__free_unpacked(mk, NULL);
     }
 
     return ret;
@@ -323,10 +323,10 @@ static int verify_and_decrypt_for_existing_chain(
 static size_t verify_and_decrypt_for_new_chain(
     uint8_t **decrypted_data_out, size_t *decrypted_data_len_out,
     const cipher_suite_t *cipher_suite,
-    const Skissm__Ratchet *ratchet, ProtobufCBinaryData ad,
-    const Skissm__One2oneMsgPayload *payload
+    const E2ees__Ratchet *ratchet, ProtobufCBinaryData ad,
+    const E2ees__One2oneMsgPayload *payload
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
     bool pqc_param;
     uint32_t coming_root_sequence;
@@ -335,44 +335,44 @@ static size_t verify_and_decrypt_for_new_chain(
     if (is_valid_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
         if (!is_valid_protobuf(&ad)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (is_valid_ratchet(ratchet)) {
             our_root_sequence = ratchet->root_sequence;
         } else {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (is_valid_one2one_msg_payload(payload)) {
             coming_root_sequence = payload->root_sequence;
             // coming_root_sequence should be positive
             if (coming_root_sequence == 0) {
-                ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
-                ret = SKISSM_RESULT_FAIL;
+                e2ees_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "verify_and_decrypt_for_new_chain()");
+                ret = E2EES_RESULT_FAIL;
             }
             // the length of the ratchet key should be correct
             if (pqc_param) {
                 if (payload->ratchet_key.len != cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len) {
-                    ret = SKISSM_RESULT_FAIL;
+                    ret = E2EES_RESULT_FAIL;
                 }
             } else {
                 if (payload->ratchet_key.len != cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len) {
-                    ret = SKISSM_RESULT_FAIL;
+                    ret = E2EES_RESULT_FAIL;
                 }
             }
         } else {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         ProtobufCBinaryData new_root_key = {0, NULL};
-        Skissm__ReceiverChainNode new_chain;
+        E2ees__ReceiverChainNode new_chain;
 
-        skissm__receiver_chain_node__init(&new_chain);
-        new_chain.chain_key = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
-        skissm__chain_key__init(new_chain.chain_key);
+        e2ees__receiver_chain_node__init(&new_chain);
+        new_chain.chain_key = (E2ees__ChainKey *)malloc(sizeof(E2ees__ChainKey));
+        e2ees__chain_key__init(new_chain.chain_key);
 
         uint32_t i;
         copy_protobuf_from_protobuf(&new_root_key, &(ratchet->root_key));
@@ -395,21 +395,21 @@ static size_t verify_and_decrypt_for_new_chain(
         free_protobuf(&new_root_key);
         unset((void volatile *)&new_root_key, sizeof(ProtobufCBinaryData));
         free_protobuf(&(new_chain.chain_key->shared_key));
-        unset((void volatile *)&new_chain, sizeof(Skissm__ReceiverChainNode));
+        unset((void volatile *)&new_chain, sizeof(E2ees__ReceiverChainNode));
     }
 
     return ret;
 }
 
 int initialise_as_bob(
-    Skissm__Ratchet **ratchet_out,
+    E2ees__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
     const uint8_t *shared_secret, size_t shared_secret_len,
-    const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
+    const E2ees__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
-    Skissm__Ratchet *ratchet = NULL;
+    E2ees__Ratchet *ratchet = NULL;
     bool pqc_param;
     int shared_key_len;
     int hash_len;
@@ -420,20 +420,20 @@ int initialise_as_bob(
     if (is_valid_cipher_suite(cipher_suite)) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
     if (shared_secret == NULL)
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     if (shared_secret_len == 0)
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     if (!is_valid_key_pair(our_ratchet_key)) {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
     if (!is_valid_protobuf(their_ratchet_key)) {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         // the ssk will be 64 bytes
         shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         derived_secrets_len = shared_key_len * 2;
@@ -449,7 +449,7 @@ int initialise_as_bob(
         );
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         int temp_shared_key_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
         uint8_t temp_secret[temp_shared_key_len];
         ret = cipher_suite->kem_suite->encaps(temp_secret, &ciphertext, their_ratchet_key);
@@ -457,20 +457,20 @@ int initialise_as_bob(
         unset(temp_secret, sizeof(temp_secret));
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
-        ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
-        skissm__ratchet__init(ratchet);
+    if (ret == E2EES_RESULT_SUCC) {
+        ratchet = (E2ees__Ratchet *)malloc(sizeof(E2ees__Ratchet));
+        e2ees__ratchet__init(ratchet);
 
-        ratchet->receiver_chain = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
-        Skissm__ReceiverChainNode *receiver_chain = ratchet->receiver_chain;
-        skissm__receiver_chain_node__init(receiver_chain);
+        ratchet->receiver_chain = (E2ees__ReceiverChainNode *)malloc(sizeof(E2ees__ReceiverChainNode));
+        E2ees__ReceiverChainNode *receiver_chain = ratchet->receiver_chain;
+        e2ees__receiver_chain_node__init(receiver_chain);
         copy_protobuf_from_protobuf(&(receiver_chain->our_ratchet_private_key), &(our_ratchet_key->private_key));
 
-        ratchet->sender_chain = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
-        Skissm__SenderChainNode *sender_chain = ratchet->sender_chain;
-        skissm__sender_chain_node__init(sender_chain);
-        sender_chain->chain_key = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
-        skissm__chain_key__init(sender_chain->chain_key);
+        ratchet->sender_chain = (E2ees__SenderChainNode *)malloc(sizeof(E2ees__SenderChainNode));
+        E2ees__SenderChainNode *sender_chain = ratchet->sender_chain;
+        e2ees__sender_chain_node__init(sender_chain);
+        sender_chain->chain_key = (E2ees__ChainKey *)malloc(sizeof(E2ees__ChainKey));
+        e2ees__chain_key__init(sender_chain->chain_key);
         sender_chain->chain_key->index = 0;
 
         /** The first half of the derived_secrets will be the root key,
@@ -492,7 +492,7 @@ int initialise_as_bob(
         free_mem((void **)&derived_secrets, sizeof(uint8_t) * derived_secrets_len);
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         *ratchet_out = ratchet;
     } else {
         free_proto(ratchet);
@@ -502,17 +502,17 @@ int initialise_as_bob(
 }
 
 int initialise_as_alice(
-    Skissm__Ratchet **ratchet_out,
+    E2ees__Ratchet **ratchet_out,
     const cipher_suite_t *cipher_suite,
     const uint8_t *shared_secret,
     size_t shared_secret_len,
-    const Skissm__KeyPair *our_ratchet_key,
+    const E2ees__KeyPair *our_ratchet_key,
     ProtobufCBinaryData *their_ratchet_key,
     ProtobufCBinaryData *their_encaps_ciphertext
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
-    Skissm__Ratchet *ratchet = NULL;
+    E2ees__Ratchet *ratchet = NULL;
     bool pqc_param;
     int shared_key_len = 0;
     int hash_len = 0;
@@ -523,25 +523,25 @@ int initialise_as_alice(
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
         if (pqc_param) {
             if (!is_valid_protobuf(their_encaps_ciphertext))
-                ret = SKISSM_RESULT_FAIL;
+                ret = E2EES_RESULT_FAIL;
         } else {
             if (their_encaps_ciphertext != NULL)
-                ret = SKISSM_RESULT_FAIL;
+                ret = E2EES_RESULT_FAIL;
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
     if (shared_secret == NULL)
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     if (shared_secret_len == 0)
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     if (!is_valid_key_pair(our_ratchet_key)) {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
     if (!is_valid_protobuf(their_ratchet_key))
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         // the length of derived_secrets will be 64 bytes
         shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
         derived_secrets_len = shared_key_len * 2;
@@ -558,14 +558,14 @@ int initialise_as_alice(
         );
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
-        ratchet = (Skissm__Ratchet *)malloc(sizeof(Skissm__Ratchet));
-        skissm__ratchet__init(ratchet);
-        ratchet->receiver_chain = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
-        Skissm__ReceiverChainNode *receiver_chain = ratchet->receiver_chain;
-        skissm__receiver_chain_node__init(receiver_chain);
-        receiver_chain->chain_key = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
-        skissm__chain_key__init(receiver_chain->chain_key);
+    if (ret == E2EES_RESULT_SUCC) {
+        ratchet = (E2ees__Ratchet *)malloc(sizeof(E2ees__Ratchet));
+        e2ees__ratchet__init(ratchet);
+        ratchet->receiver_chain = (E2ees__ReceiverChainNode *)malloc(sizeof(E2ees__ReceiverChainNode));
+        E2ees__ReceiverChainNode *receiver_chain = ratchet->receiver_chain;
+        e2ees__receiver_chain_node__init(receiver_chain);
+        receiver_chain->chain_key = (E2ees__ChainKey *)malloc(sizeof(E2ees__ChainKey));
+        e2ees__chain_key__init(receiver_chain->chain_key);
 
         /** The first half of the derived_secrets will be the root key,
          *  and the second half will be the receiver chain key */
@@ -583,12 +583,12 @@ int initialise_as_alice(
         }
 
         // generate a new root key and a sender chain key
-        ratchet->sender_chain = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
-        Skissm__SenderChainNode *sender_chain = ratchet->sender_chain;
-        skissm__sender_chain_node__init(sender_chain);
+        ratchet->sender_chain = (E2ees__SenderChainNode *)malloc(sizeof(E2ees__SenderChainNode));
+        E2ees__SenderChainNode *sender_chain = ratchet->sender_chain;
+        e2ees__sender_chain_node__init(sender_chain);
 
-        sender_chain->chain_key = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
-        skissm__chain_key__init(sender_chain->chain_key);
+        sender_chain->chain_key = (E2ees__ChainKey *)malloc(sizeof(E2ees__ChainKey));
+        e2ees__chain_key__init(sender_chain->chain_key);
 
         if (pqc_param == false) {
             // ECC mode
@@ -613,7 +613,7 @@ int initialise_as_alice(
         free_mem((void **)&derived_secrets, sizeof(uint8_t) * derived_secrets_len);
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         *ratchet_out = ratchet;
     } else {
         free_proto(ratchet);
@@ -623,36 +623,36 @@ int initialise_as_alice(
 }
 
 int encrypt_ratchet(
-    Skissm__One2oneMsgPayload **payload_out,
+    E2ees__One2oneMsgPayload **payload_out,
     const cipher_suite_t *cipher_suite,
-    Skissm__Ratchet *ratchet,
+    E2ees__Ratchet *ratchet,
     ProtobufCBinaryData ad,
     const uint8_t *plaintext_data, size_t plaintext_data_len
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
-    Skissm__SenderChainNode *sender_chain = NULL;
-    Skissm__ChainKey *chain_key = NULL;
+    E2ees__SenderChainNode *sender_chain = NULL;
+    E2ees__ChainKey *chain_key = NULL;
 
     if (!is_valid_cipher_suite(cipher_suite)) {
-        ssm_notify_log(NULL, BAD_CIPHER_SUITE, "encrypt_ratchet()");
-        ret = SKISSM_RESULT_FAIL;
+        e2ees_notify_log(NULL, BAD_CIPHER_SUITE, "encrypt_ratchet()");
+        ret = E2EES_RESULT_FAIL;
     }
     if (ratchet != NULL) {
         if (is_valid_sender_chain(ratchet->sender_chain)) {
             sender_chain = ratchet->sender_chain;
             chain_key = sender_chain->chain_key;
         } else {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
     if (plaintext_data == NULL)
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
 
-    if (ret == SKISSM_RESULT_SUCC) {
-        Skissm__MsgKey *msg_key = NULL;
+    if (ret == E2EES_RESULT_SUCC) {
+        E2ees__MsgKey *msg_key = NULL;
         create_msg_keys(cipher_suite, chain_key, &msg_key);
         advance_chain_key(cipher_suite, chain_key);
 
@@ -660,13 +660,13 @@ int encrypt_ratchet(
 
         uint32_t sequence = msg_key->index;
 
-        *payload_out = (Skissm__One2oneMsgPayload *)malloc(sizeof(Skissm__One2oneMsgPayload));
-        skissm__one2one_msg_payload__init(*payload_out);
+        *payload_out = (E2ees__One2oneMsgPayload *)malloc(sizeof(E2ees__One2oneMsgPayload));
+        e2ees__one2one_msg_payload__init(*payload_out);
         (*payload_out)->sequence = sequence;
         copy_protobuf_from_protobuf(&((*payload_out)->ratchet_key), &(sender_chain->our_ratchet_public_key));
         (*payload_out)->root_sequence = ratchet->root_sequence;
         (*payload_out)->sending_message_sequence = ratchet->sending_message_sequence;
-        ret = cipher_suite->symmetric_encryption_suite->encrypt(
+        ret = cipher_suite->se_suite->encrypt(
             &ad,
             msg_key->derived_key.data,
             plaintext_data, plaintext_data_len,
@@ -675,7 +675,7 @@ int encrypt_ratchet(
         );
 
         // release
-        skissm__msg_key__free_unpacked(msg_key, NULL);
+        e2ees__msg_key__free_unpacked(msg_key, NULL);
     }
 
     // done
@@ -685,15 +685,15 @@ int encrypt_ratchet(
 int decrypt_ratchet(
     uint8_t **decrypted_data_out, size_t *decrypted_data_len_out,
     const cipher_suite_t *cipher_suite,
-    Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload
+    E2ees__Ratchet *ratchet, ProtobufCBinaryData ad, E2ees__One2oneMsgPayload *payload
 ) {
-    int ret = SKISSM_RESULT_SUCC;
+    int ret = E2EES_RESULT_SUCC;
 
     bool pqc_param;
     int ratchet_key_len;
     uint32_t coming_root_sequence;
     uint32_t our_root_sequence;
-    Skissm__ReceiverChainNode *corresponding_receiver_chain = NULL;
+    E2ees__ReceiverChainNode *corresponding_receiver_chain = NULL;
     bool skipped_message = false;
 
     if (is_valid_cipher_suite(cipher_suite)) {
@@ -707,26 +707,26 @@ int decrypt_ratchet(
         if (is_valid_one2one_msg_payload(payload)) {
             if (payload->ratchet_key.len != ratchet_key_len) {
                 // the ratchet key length should be equal
-                ret = SKISSM_RESULT_FAIL;
+                ret = E2EES_RESULT_FAIL;
             }
         } else {
             // something wrong with the payload
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (!is_valid_protobuf(&ad)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
         if (!is_valid_ratchet(ratchet)) {
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
         }
-        if (ret == SKISSM_RESULT_SUCC) {
+        if (ret == E2EES_RESULT_SUCC) {
             if (ratchet->root_sequence == 0) {
                 if (payload->sending_message_sequence < payload->sequence) {
-                    ret = SKISSM_RESULT_FAIL;
+                    ret = E2EES_RESULT_FAIL;
                 }
             }
         }
-        if (ret == SKISSM_RESULT_SUCC) {
+        if (ret == E2EES_RESULT_SUCC) {
             // compare the root sequences of each other
             coming_root_sequence = payload->root_sequence;
             our_root_sequence = ratchet->root_sequence;
@@ -740,8 +740,8 @@ int decrypt_ratchet(
                                 skipped_message = true;
                             }
                         } else {
-                            ssm_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet()");
-                            ret = SKISSM_RESULT_FAIL;
+                            e2ees_notify_log(NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet()");
+                            ret = E2EES_RESULT_FAIL;
                         }
                     } else {
                         // the chain before the current one
@@ -753,31 +753,31 @@ int decrypt_ratchet(
                      * coming_root_sequence = our_root_sequence + 1
                     */
                     if (coming_root_sequence != our_root_sequence + 1) {
-                        ssm_notify_log(
+                        e2ees_notify_log(
                             NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet() coming_root_sequence: %d, our_root_sequence: %d",
                             coming_root_sequence, our_root_sequence
                         );
-                        ret = SKISSM_RESULT_FAIL;
+                        ret = E2EES_RESULT_FAIL;
                     }
                 }
             } else {
                 // the root sequences of each other cannot be the same
-                ssm_notify_log(
+                e2ees_notify_log(
                     NULL, BAD_MESSAGE_SEQUENCE, "decrypt_ratchet() coming_root_sequence: %d, our_root_sequence: %d",
                     coming_root_sequence, our_root_sequence
                 );
-                ret = SKISSM_RESULT_FAIL;
+                ret = E2EES_RESULT_FAIL;
             }
         }
     } else {
-        ret = SKISSM_RESULT_FAIL;
+        ret = E2EES_RESULT_FAIL;
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         if (skipped_message == true) {
             /* receiver_chain already advanced beyond the key for this message
             * Check if the message keys are in the skipped key list. */
-            ret = SKISSM_RESULT_FAIL;
+            ret = E2EES_RESULT_FAIL;
             size_t i, j;
             for (i = 0; i < ratchet->n_skipped_msg_key_list; i++){
                 if (payload->sequence == ratchet->skipped_msg_key_list[i]->msg_key->index
@@ -792,8 +792,8 @@ int decrypt_ratchet(
                         cipher_suite, ad, ratchet->skipped_msg_key_list[i]->msg_key, payload
                     );
 
-                    if (ret == SKISSM_RESULT_SUCC){
-                        Skissm__SkippedMsgKeyNode **temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **)malloc(sizeof(Skissm__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_key_list - 1));
+                    if (ret == E2EES_RESULT_SUCC){
+                        E2ees__SkippedMsgKeyNode **temp_skipped_message_keys = (E2ees__SkippedMsgKeyNode **)malloc(sizeof(E2ees__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_key_list - 1));
 
                         size_t k = 0;
                         for (j = 0; j < ratchet->n_skipped_msg_key_list; j++) {
@@ -801,11 +801,11 @@ int decrypt_ratchet(
                                 // remove node
                                 continue;
                             }
-                            temp_skipped_message_keys[k] = (Skissm__SkippedMsgKeyNode *)malloc(sizeof(Skissm__SkippedMsgKeyNode));
-                            skissm__skipped_msg_key_node__init(temp_skipped_message_keys[k]);
+                            temp_skipped_message_keys[k] = (E2ees__SkippedMsgKeyNode *)malloc(sizeof(E2ees__SkippedMsgKeyNode));
+                            e2ees__skipped_msg_key_node__init(temp_skipped_message_keys[k]);
                             copy_protobuf_from_protobuf(&(temp_skipped_message_keys[k]->ratchet_key_public), &(ratchet->skipped_msg_key_list[j]->ratchet_key_public));
-                            temp_skipped_message_keys[k]->msg_key = (Skissm__MsgKey *)malloc(sizeof(Skissm__MsgKey));
-                            skissm__msg_key__init(temp_skipped_message_keys[k]->msg_key);
+                            temp_skipped_message_keys[k]->msg_key = (E2ees__MsgKey *)malloc(sizeof(E2ees__MsgKey));
+                            e2ees__msg_key__init(temp_skipped_message_keys[k]->msg_key);
                             temp_skipped_message_keys[k]->msg_key->index = ratchet->skipped_msg_key_list[j]->msg_key->index;
                             copy_protobuf_from_protobuf(&(temp_skipped_message_keys[k]->msg_key->derived_key), &(ratchet->skipped_msg_key_list[j]->msg_key->derived_key));
                             k++;
@@ -816,13 +816,13 @@ int decrypt_ratchet(
                         break;
                     } else {
                         // the decryption failed
-                        ssm_notify_log(NULL, BAD_MESSAGE_DECRYPTION, "verify_and_decrypt() in decrypt_ratchet()");
+                        e2ees_notify_log(NULL, BAD_MESSAGE_DECRYPTION, "verify_and_decrypt() in decrypt_ratchet()");
                     }
                 }
             }
             if (ret != 0) {
                 // the corresponding message key not found or the decryption failed
-                ssm_notify_log(NULL, BAD_MESSAGE_KEY, "decrypt_ratchet()");
+                e2ees_notify_log(NULL, BAD_MESSAGE_KEY, "decrypt_ratchet()");
             }
         } else {
             if (corresponding_receiver_chain == NULL) {
@@ -837,7 +837,7 @@ int decrypt_ratchet(
                 );
                 if (ret != 0) {
                     // the decryption failed
-                    ssm_notify_log(NULL, BAD_MESSAGE_DECRYPTION, "verify_and_decrypt_for_new_chain() in decrypt_ratchet()");
+                    e2ees_notify_log(NULL, BAD_MESSAGE_DECRYPTION, "verify_and_decrypt_for_new_chain() in decrypt_ratchet()");
                 }
             } else {
                 /* They use the same ratchet key. The sequence of the payload(incoming message)
@@ -850,13 +850,13 @@ int decrypt_ratchet(
                 );
                 if (ret != 0) {
                     // the decryption failed
-                    ssm_notify_log(NULL, BAD_MESSAGE_DECRYPTION, "verify_and_decrypt_for_existing_chain() in decrypt_ratchet()");
+                    e2ees_notify_log(NULL, BAD_MESSAGE_DECRYPTION, "verify_and_decrypt_for_existing_chain() in decrypt_ratchet()");
                 }
             }
         }
     }
 
-    if (ret == SKISSM_RESULT_SUCC) {
+    if (ret == E2EES_RESULT_SUCC) {
         // if the decryption is success, we will update our ratchet state if neccessary
         if (corresponding_receiver_chain == NULL) {
             if (skipped_message == false) {
@@ -869,10 +869,10 @@ int decrypt_ratchet(
                     // we skipped some messages in the previous ratchet
                     size_t skipped_num = payload->sending_message_sequence - ratchet->received_message_sequence - (payload->sequence + 1);
                     if (ratchet->skipped_msg_key_list == NULL){
-                        ratchet->skipped_msg_key_list = (Skissm__SkippedMsgKeyNode **)malloc(sizeof(Skissm__SkippedMsgKeyNode *) * skipped_num);
+                        ratchet->skipped_msg_key_list = (E2ees__SkippedMsgKeyNode **)malloc(sizeof(E2ees__SkippedMsgKeyNode *) * skipped_num);
                     } else{
-                        Skissm__SkippedMsgKeyNode **temp_skipped_message_keys;
-                        temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **)malloc(sizeof(Skissm__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_key_list + skipped_num));
+                        E2ees__SkippedMsgKeyNode **temp_skipped_message_keys;
+                        temp_skipped_message_keys = (E2ees__SkippedMsgKeyNode **)malloc(sizeof(E2ees__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_key_list + skipped_num));
                         copy_skipped_msg_key_node(temp_skipped_message_keys, ratchet->skipped_msg_key_list, ratchet->n_skipped_msg_key_list);
                         free_skipped_message_key(&(ratchet->skipped_msg_key_list), ratchet->n_skipped_msg_key_list);
                         ratchet->skipped_msg_key_list = temp_skipped_message_keys;
@@ -880,8 +880,8 @@ int decrypt_ratchet(
                     size_t cur_seq;
                     for (cur_seq = 0; cur_seq < skipped_num; cur_seq++){
                         // insert data
-                        Skissm__SkippedMsgKeyNode *key = (Skissm__SkippedMsgKeyNode *)malloc(sizeof(Skissm__SkippedMsgKeyNode));
-                        skissm__skipped_msg_key_node__init(key);
+                        E2ees__SkippedMsgKeyNode *key = (E2ees__SkippedMsgKeyNode *)malloc(sizeof(E2ees__SkippedMsgKeyNode));
+                        e2ees__skipped_msg_key_node__init(key);
                         key->msg_key = NULL;
                         create_msg_keys(cipher_suite, ratchet->receiver_chain->chain_key, &(key->msg_key));
                         copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(ratchet->receiver_chain->their_ratchet_public_key));
@@ -892,17 +892,17 @@ int decrypt_ratchet(
                     }
                 }
 
-                Skissm__KeyPair *new_ratchet_key_pair = NULL;
+                E2ees__KeyPair *new_ratchet_key_pair = NULL;
 
-                Skissm__ReceiverChainNode *new_receiver_chain = (Skissm__ReceiverChainNode *)malloc(sizeof(Skissm__ReceiverChainNode));
-                skissm__receiver_chain_node__init(new_receiver_chain);
+                E2ees__ReceiverChainNode *new_receiver_chain = (E2ees__ReceiverChainNode *)malloc(sizeof(E2ees__ReceiverChainNode));
+                e2ees__receiver_chain_node__init(new_receiver_chain);
 
                 // copy their ratchet key
                 copy_protobuf_from_protobuf(&(new_receiver_chain->their_ratchet_public_key), &(payload->ratchet_key));
 
                 // create a new receiver chain key
-                new_receiver_chain->chain_key = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
-                skissm__chain_key__init(new_receiver_chain->chain_key);
+                new_receiver_chain->chain_key = (E2ees__ChainKey *)malloc(sizeof(E2ees__ChainKey));
+                e2ees__chain_key__init(new_receiver_chain->chain_key);
                 create_chain_key(
                     cipher_suite,
                     ratchet->root_key,
@@ -916,15 +916,15 @@ int decrypt_ratchet(
                 corresponding_receiver_chain = new_receiver_chain;
 
                 // create a new sender chain
-                Skissm__SenderChainNode *new_sender_chain = (Skissm__SenderChainNode *)malloc(sizeof(Skissm__SenderChainNode));
-                skissm__sender_chain_node__init(new_sender_chain);
+                E2ees__SenderChainNode *new_sender_chain = (E2ees__SenderChainNode *)malloc(sizeof(E2ees__SenderChainNode));
+                e2ees__sender_chain_node__init(new_sender_chain);
 
-                new_sender_chain->chain_key = (Skissm__ChainKey *)malloc(sizeof(Skissm__ChainKey));
-                skissm__chain_key__init(new_sender_chain->chain_key);
+                new_sender_chain->chain_key = (E2ees__ChainKey *)malloc(sizeof(E2ees__ChainKey));
+                e2ees__chain_key__init(new_sender_chain->chain_key);
                 if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
                     // ECC mode
-                    new_ratchet_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-                    skissm__key_pair__init(new_ratchet_key_pair);
+                    new_ratchet_key_pair = (E2ees__KeyPair *)malloc(sizeof(E2ees__KeyPair));
+                    e2ees__key_pair__init(new_ratchet_key_pair);
                     cipher_suite->kem_suite->asym_key_gen(&new_ratchet_key_pair->public_key, &new_ratchet_key_pair->private_key);
 
                     copy_protobuf_from_protobuf(&(new_receiver_chain->our_ratchet_private_key), &(new_ratchet_key_pair->private_key));
@@ -948,11 +948,11 @@ int decrypt_ratchet(
                     );
                 }
 
-                skissm__receiver_chain_node__free_unpacked(ratchet->receiver_chain, NULL);
+                e2ees__receiver_chain_node__free_unpacked(ratchet->receiver_chain, NULL);
                 ratchet->receiver_chain = new_receiver_chain;
                 (ratchet->root_sequence)++;
 
-                skissm__sender_chain_node__free_unpacked(ratchet->sender_chain, NULL);
+                e2ees__sender_chain_node__free_unpacked(ratchet->sender_chain, NULL);
                 ratchet->sender_chain = new_sender_chain;
                 (ratchet->root_sequence)++;
             }
@@ -965,18 +965,18 @@ int decrypt_ratchet(
                 * together with their ratchet key in the skipped message key list. */
                 size_t skipped_num = payload->sequence - corresponding_receiver_chain->chain_key->index;
                 if (ratchet->skipped_msg_key_list == NULL){
-                    ratchet->skipped_msg_key_list = (Skissm__SkippedMsgKeyNode **)malloc(sizeof(Skissm__SkippedMsgKeyNode *) * skipped_num);
+                    ratchet->skipped_msg_key_list = (E2ees__SkippedMsgKeyNode **)malloc(sizeof(E2ees__SkippedMsgKeyNode *) * skipped_num);
                 } else{
-                    Skissm__SkippedMsgKeyNode **temp_skipped_message_keys;
-                    temp_skipped_message_keys = (Skissm__SkippedMsgKeyNode **)malloc(sizeof(Skissm__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_key_list + skipped_num));
+                    E2ees__SkippedMsgKeyNode **temp_skipped_message_keys;
+                    temp_skipped_message_keys = (E2ees__SkippedMsgKeyNode **)malloc(sizeof(E2ees__SkippedMsgKeyNode *) * (ratchet->n_skipped_msg_key_list + skipped_num));
                     copy_skipped_msg_key_node(temp_skipped_message_keys, ratchet->skipped_msg_key_list, ratchet->n_skipped_msg_key_list);
                     free_skipped_message_key(&(ratchet->skipped_msg_key_list), ratchet->n_skipped_msg_key_list);
                     ratchet->skipped_msg_key_list = temp_skipped_message_keys;
                 }
                 while (corresponding_receiver_chain->chain_key->index < payload->sequence){
                     // insert data
-                    Skissm__SkippedMsgKeyNode *key = (Skissm__SkippedMsgKeyNode *)malloc(sizeof(Skissm__SkippedMsgKeyNode));
-                    skissm__skipped_msg_key_node__init(key);
+                    E2ees__SkippedMsgKeyNode *key = (E2ees__SkippedMsgKeyNode *)malloc(sizeof(E2ees__SkippedMsgKeyNode));
+                    e2ees__skipped_msg_key_node__init(key);
                     key->msg_key = NULL;
                     create_msg_keys(cipher_suite, corresponding_receiver_chain->chain_key, &(key->msg_key));
                     copy_protobuf_from_protobuf(&(key->ratchet_key_public), &(corresponding_receiver_chain->their_ratchet_public_key));

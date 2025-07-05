@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/account_manager.h Source File</title>
+<title>E2EES: include/e2ees/account_manager.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -100,48 +100,48 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;<a class="code" href="skissm_8h.html">skissm/skissm.h</a>&quot;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;<a class="code" href="e2ees_8h.html">e2ees/e2ees.h</a>&quot;</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a5bba5700a82724284e2915aef45fe433">   37</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#a5bba5700a82724284e2915aef45fe433">produce_register_request</a>(</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    Skissm__RegisterUserRequest **request_out,</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    Skissm__Account *account</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="account__manager_8h.html#acc28e8dbb44d4b655a38376850197efe">   37</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#acc28e8dbb44d4b655a38376850197efe">produce_register_request</a>(</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    E2ees__RegisterUserRequest **request_out,</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    E2ees__Account *account</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>);</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="account__manager_8h.html#afda5986fbaa80ab8322386e131e56e78">   50</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="account__manager_8h.html#afda5986fbaa80ab8322386e131e56e78">consume_register_response</a>(Skissm__Account *account, Skissm__RegisterUserResponse *payload);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="account__manager_8h.html#aa8b2297e68b8b39545b72181ceabcbb4">   50</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="account__manager_8h.html#aa8b2297e68b8b39545b72181ceabcbb4">consume_register_response</a>(E2ees__Account *account, E2ees__RegisterUserResponse *payload);</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a80c4de20f4a62e074b12c835554a0532">   59</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#a80c4de20f4a62e074b12c835554a0532">produce_publish_spk_request</a>(</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    Skissm__PublishSpkRequest **request_out,</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    Skissm__Account *account</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a71017e163c3f8eea92b73a0314c5a9ea">   59</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#a71017e163c3f8eea92b73a0314c5a9ea">produce_publish_spk_request</a>(</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    E2ees__PublishSpkRequest **request_out,</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    E2ees__Account *account</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>);</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a07af9d935febfe553d8a1b44d52ce7f3">   71</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#a07af9d935febfe553d8a1b44d52ce7f3">consume_publish_spk_response</a>(</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    Skissm__Account *account,</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    Skissm__PublishSpkResponse *response</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a91b6d6b7915cf09edaa4279d42bc0e21">   71</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#a91b6d6b7915cf09edaa4279d42bc0e21">consume_publish_spk_response</a>(</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    E2ees__Account *account,</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    E2ees__PublishSpkResponse *response</div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>);</div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a16208bffc298846368e8522a76cfa9d4">   84</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#a16208bffc298846368e8522a76cfa9d4">produce_supply_opks_request</a>(</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    Skissm__SupplyOpksRequest **request_out,</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    Skissm__Account *account,</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a75cc15d31e43ea2fcf77fb22461e87d9">   84</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#a75cc15d31e43ea2fcf77fb22461e87d9">produce_supply_opks_request</a>(</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    E2ees__SupplyOpksRequest **request_out,</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    E2ees__Account *account,</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    uint32_t opks_num</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>);</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a4a131ad250eb68d2c609efad87f75fd9">   98</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#a4a131ad250eb68d2c609efad87f75fd9">consume_supply_opks_response</a>(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a512e1107d35ed9da79bece0126c5e601">   98</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="account__manager_8h.html#a512e1107d35ed9da79bece0126c5e601">consume_supply_opks_response</a>(E2ees__Account *account, uint32_t opks_num, E2ees__SupplyOpksResponse *response);</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="account__manager_8h.html#a19b64e4e3bd56914928a0d99402255e1">  108</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="account__manager_8h.html#a19b64e4e3bd56914928a0d99402255e1">consume_supply_opks_msg</a>(Skissm__E2eeAddress *receiver_address, Skissm__SupplyOpksMsg *msg);</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="account__manager_8h.html#aee6d38f1417029686db5725f526e2d1d">  108</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="account__manager_8h.html#aee6d38f1417029686db5725f526e2d1d">consume_supply_opks_msg</a>(E2ees__E2eeAddress *receiver_address, E2ees__SupplyOpksMsg *msg);</div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
 <div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="preprocessor">#ifdef __cplusplus</span></div>
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>}</div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="preprocessor">#endif </span><span class="comment">// ACCOUNT_MANAGER_H_</span></div>
-<div class="ttc" id="aaccount__manager_8h_html_a07af9d935febfe553d8a1b44d52ce7f3"><div class="ttname"><a href="account__manager_8h.html#a07af9d935febfe553d8a1b44d52ce7f3">consume_publish_spk_response</a></div><div class="ttdeci">int consume_publish_spk_response(Skissm__Account *account, Skissm__PublishSpkResponse *response)</div><div class="ttdoc">Process an incoming PublishSpkResponse message.</div></div>
-<div class="ttc" id="aaccount__manager_8h_html_a16208bffc298846368e8522a76cfa9d4"><div class="ttname"><a href="account__manager_8h.html#a16208bffc298846368e8522a76cfa9d4">produce_supply_opks_request</a></div><div class="ttdeci">int produce_supply_opks_request(Skissm__SupplyOpksRequest **request_out, Skissm__Account *account, uint32_t opks_num)</div><div class="ttdoc">Create a SupplyOpksRequest message to be sent to server.</div></div>
-<div class="ttc" id="aaccount__manager_8h_html_a19b64e4e3bd56914928a0d99402255e1"><div class="ttname"><a href="account__manager_8h.html#a19b64e4e3bd56914928a0d99402255e1">consume_supply_opks_msg</a></div><div class="ttdeci">bool consume_supply_opks_msg(Skissm__E2eeAddress *receiver_address, Skissm__SupplyOpksMsg *msg)</div><div class="ttdoc">Process an incoming SupplyOpksMsg message.</div></div>
-<div class="ttc" id="aaccount__manager_8h_html_a4a131ad250eb68d2c609efad87f75fd9"><div class="ttname"><a href="account__manager_8h.html#a4a131ad250eb68d2c609efad87f75fd9">consume_supply_opks_response</a></div><div class="ttdeci">int consume_supply_opks_response(Skissm__Account *account, uint32_t opks_num, Skissm__SupplyOpksResponse *response)</div><div class="ttdoc">Process an incoming SupplyOpksResponse message.</div></div>
-<div class="ttc" id="aaccount__manager_8h_html_a5bba5700a82724284e2915aef45fe433"><div class="ttname"><a href="account__manager_8h.html#a5bba5700a82724284e2915aef45fe433">produce_register_request</a></div><div class="ttdeci">int produce_register_request(Skissm__RegisterUserRequest **request_out, Skissm__Account *account)</div><div class="ttdoc">Create a RegisterUserRequest message to be sent to server.</div></div>
-<div class="ttc" id="aaccount__manager_8h_html_a80c4de20f4a62e074b12c835554a0532"><div class="ttname"><a href="account__manager_8h.html#a80c4de20f4a62e074b12c835554a0532">produce_publish_spk_request</a></div><div class="ttdeci">int produce_publish_spk_request(Skissm__PublishSpkRequest **request_out, Skissm__Account *account)</div><div class="ttdoc">Create a PublishSpkRequest message to be sent to server.</div></div>
-<div class="ttc" id="aaccount__manager_8h_html_afda5986fbaa80ab8322386e131e56e78"><div class="ttname"><a href="account__manager_8h.html#afda5986fbaa80ab8322386e131e56e78">consume_register_response</a></div><div class="ttdeci">bool consume_register_response(Skissm__Account *account, Skissm__RegisterUserResponse *payload)</div><div class="ttdoc">Process an incoming RegisterUserResponse message.</div></div>
-<div class="ttc" id="askissm_8h_html"><div class="ttname"><a href="skissm_8h.html">skissm.h</a></div></div>
+<div class="ttc" id="aaccount__manager_8h_html_a512e1107d35ed9da79bece0126c5e601"><div class="ttname"><a href="account__manager_8h.html#a512e1107d35ed9da79bece0126c5e601">consume_supply_opks_response</a></div><div class="ttdeci">int consume_supply_opks_response(E2ees__Account *account, uint32_t opks_num, E2ees__SupplyOpksResponse *response)</div><div class="ttdoc">Process an incoming SupplyOpksResponse message.</div></div>
+<div class="ttc" id="aaccount__manager_8h_html_a71017e163c3f8eea92b73a0314c5a9ea"><div class="ttname"><a href="account__manager_8h.html#a71017e163c3f8eea92b73a0314c5a9ea">produce_publish_spk_request</a></div><div class="ttdeci">int produce_publish_spk_request(E2ees__PublishSpkRequest **request_out, E2ees__Account *account)</div><div class="ttdoc">Create a PublishSpkRequest message to be sent to server.</div></div>
+<div class="ttc" id="aaccount__manager_8h_html_a75cc15d31e43ea2fcf77fb22461e87d9"><div class="ttname"><a href="account__manager_8h.html#a75cc15d31e43ea2fcf77fb22461e87d9">produce_supply_opks_request</a></div><div class="ttdeci">int produce_supply_opks_request(E2ees__SupplyOpksRequest **request_out, E2ees__Account *account, uint32_t opks_num)</div><div class="ttdoc">Create a SupplyOpksRequest message to be sent to server.</div></div>
+<div class="ttc" id="aaccount__manager_8h_html_a91b6d6b7915cf09edaa4279d42bc0e21"><div class="ttname"><a href="account__manager_8h.html#a91b6d6b7915cf09edaa4279d42bc0e21">consume_publish_spk_response</a></div><div class="ttdeci">int consume_publish_spk_response(E2ees__Account *account, E2ees__PublishSpkResponse *response)</div><div class="ttdoc">Process an incoming PublishSpkResponse message.</div></div>
+<div class="ttc" id="aaccount__manager_8h_html_aa8b2297e68b8b39545b72181ceabcbb4"><div class="ttname"><a href="account__manager_8h.html#aa8b2297e68b8b39545b72181ceabcbb4">consume_register_response</a></div><div class="ttdeci">bool consume_register_response(E2ees__Account *account, E2ees__RegisterUserResponse *payload)</div><div class="ttdoc">Process an incoming RegisterUserResponse message.</div></div>
+<div class="ttc" id="aaccount__manager_8h_html_acc28e8dbb44d4b655a38376850197efe"><div class="ttname"><a href="account__manager_8h.html#acc28e8dbb44d4b655a38376850197efe">produce_register_request</a></div><div class="ttdeci">int produce_register_request(E2ees__RegisterUserRequest **request_out, E2ees__Account *account)</div><div class="ttdoc">Create a RegisterUserRequest message to be sent to server.</div></div>
+<div class="ttc" id="aaccount__manager_8h_html_aee6d38f1417029686db5725f526e2d1d"><div class="ttname"><a href="account__manager_8h.html#aee6d38f1417029686db5725f526e2d1d">consume_supply_opks_msg</a></div><div class="ttdeci">bool consume_supply_opks_msg(E2ees__E2eeAddress *receiver_address, E2ees__SupplyOpksMsg *msg)</div><div class="ttdoc">Process an incoming SupplyOpksMsg message.</div></div>
+<div class="ttc" id="ae2ees_8h_html"><div class="ttname"><a href="e2ees_8h.html">e2ees.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

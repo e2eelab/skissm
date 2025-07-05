@@ -1,20 +1,20 @@
 /*
- * Copyright © 2020-2021 by Academia Sinica
+ * Copyright © 2021 Academia Sinica. All Rights Reserved.
  *
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
 // TODO: UPDATE HEADER FILE
 #include "mock_db.h"
@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "skissm/mem_util.h"
+#include "e2ees/mem_util.h"
 
 // global variable
 // db in memory
@@ -378,7 +378,7 @@ static const char *ACCOUNT_CREATE_TABLE = "CREATE TABLE ACCOUNT( "
                                           "SAVED INTEGER NOT NULL, "
                                           "AUTH TEXT NOT NULL, " // newly added
                                           "PASSWORD TEXT NOT NULL, "
-                                          "E2EE_PACK_ID INTEGER NOT NULL, "
+                                          "e2ees_pack_id INTEGER NOT NULL, "
                                           "IDENTITY_KEY INTEGER NOT NULL, "
                                           "SIGNED_PRE_KEY INTEGER NOT NULL, "
                                           "NEXT_ONETIME_PRE_KEY_ID INTEGER NOT NULL, "
@@ -446,7 +446,7 @@ static const char *LOAD_AUTH_BY_ADDRESS_ID = "SELECT AUTH "
                                              "FROM ACCOUNT "
                                              "WHERE ACCOUNT.ADDRESS is (?);";
 
-static const char *LOAD_E2EE_PACK_ID_BY_ADDRESS_ID = "SELECT E2EE_PACK_ID "
+static const char *LOAD_e2ees_pack_id_BY_ADDRESS_ID = "SELECT e2ees_pack_id "
                                                      "FROM ACCOUNT "
                                                      "WHERE ACCOUNT.ADDRESS is (?);";
 // not used
@@ -573,7 +573,7 @@ static const char *ACCOUNT_INSERT = "INSERT INTO ACCOUNT "
                                     "AUTH, "
                                     "ADDRESS, "
                                     "PASSWORD, "
-                                    "E2EE_PACK_ID, "
+                                    "e2ees_pack_id, "
                                     "IDENTITY_KEY, "
                                     "SIGNED_PRE_KEY, "
                                     "NEXT_ONETIME_PRE_KEY_ID) "
@@ -767,7 +767,7 @@ protobuf_c_boolean load_saved(uint64_t address_id) {
     return saved;
 }
 
-bool load_address(uint64_t address_id, Skissm__E2eeAddress **address) {
+bool load_address(uint64_t address_id, E2ees__E2eeAddress **address) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_ADDRESS, &stmt);
@@ -779,12 +779,12 @@ bool load_address(uint64_t address_id, Skissm__E2eeAddress **address) {
     // load
     if (succ) {
         // allocate memory
-        *address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-        skissm__e2ee_address__init(*address);
+        *address = (E2ees__E2eeAddress *)malloc(sizeof(E2ees__E2eeAddress));
+        e2ees__e2ee_address__init(*address);
 
-        (*address)->user = (Skissm__PeerUser *)malloc(sizeof(Skissm__PeerUser));
-        skissm__peer_user__init((*address)->user);
-        (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_USER;
+        (*address)->user = (E2ees__PeerUser *)malloc(sizeof(E2ees__PeerUser));
+        e2ees__peer_user__init((*address)->user);
+        (*address)->peer_case = E2EES__E2EE_ADDRESS__PEER_USER;
         (*address)->domain = strdup((char *)sqlite3_column_text(stmt, 0));
         (*address)->user->user_id = strdup((char *)sqlite3_column_text(stmt, 1));
         (*address)->user->device_id = strdup((char *)sqlite3_column_text(stmt, 2));
@@ -796,7 +796,7 @@ bool load_address(uint64_t address_id, Skissm__E2eeAddress **address) {
     return succ;
 }
 
-bool load_group_address(uint64_t address_id, Skissm__E2eeAddress **address) {
+bool load_group_address(uint64_t address_id, E2ees__E2eeAddress **address) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_GROUP_ADDRESS, &stmt);
@@ -808,12 +808,12 @@ bool load_group_address(uint64_t address_id, Skissm__E2eeAddress **address) {
     // load
     if (succ) {
         // allocate memory
-        *address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-        skissm__e2ee_address__init(*address);
+        *address = (E2ees__E2eeAddress *)malloc(sizeof(E2ees__E2eeAddress));
+        e2ees__e2ee_address__init(*address);
 
-        (*address)->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
-        skissm__peer_group__init((*address)->group);
-        (*address)->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
+        (*address)->group = (E2ees__PeerGroup *)malloc(sizeof(E2ees__PeerGroup));
+        e2ees__peer_group__init((*address)->group);
+        (*address)->peer_case = E2EES__E2EE_ADDRESS__PEER_GROUP;
         (*address)->domain = strdup((char *)sqlite3_column_text(stmt, 0));
         (*address)->group->group_name = strdup((char *)sqlite3_column_text(stmt, 1));
         (*address)->group->group_id = strdup((char *)sqlite3_column_text(stmt, 2));
@@ -841,28 +841,28 @@ void load_password(uint64_t address_id, char **password) {
     sqlite_finalize(stmt);
 }
 
-uint32_t load_e2ee_pack_id(uint64_t address_id) {
+uint32_t load_e2ees_pack_id(uint64_t address_id) {
     // prepare
     sqlite3_stmt *stmt;
-    sqlite_prepare(LOAD_E2EE_PACK_ID_BY_ADDRESS_ID, &stmt);
+    sqlite_prepare(LOAD_e2ees_pack_id_BY_ADDRESS_ID, &stmt);
     sqlite3_bind_int64(stmt, 1, address_id);
 
     // step
     sqlite_step(stmt, SQLITE_ROW);
 
     // load
-    uint32_t e2ee_pack_id = (uint32_t)sqlite3_column_int(stmt, 0);
+    uint32_t e2ees_pack_id = (uint32_t)sqlite3_column_int(stmt, 0);
 
     // release
     sqlite_finalize(stmt);
 
-    return e2ee_pack_id;
+    return e2ees_pack_id;
 }
 
-static void load_identity_key_asym(sqlite_int64 identity_key_id, Skissm__KeyPair **asym_key_pair) {
+static void load_identity_key_asym(sqlite_int64 identity_key_id, E2ees__KeyPair **asym_key_pair) {
     // allocate memory
-    *asym_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-    skissm__key_pair__init(*asym_key_pair);
+    *asym_key_pair = (E2ees__KeyPair *)malloc(sizeof(E2ees__KeyPair));
+    e2ees__key_pair__init(*asym_key_pair);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -880,10 +880,10 @@ static void load_identity_key_asym(sqlite_int64 identity_key_id, Skissm__KeyPair
     sqlite_finalize(stmt);
 }
 
-static void load_identity_key_sign(sqlite_int64 identity_key_id, Skissm__KeyPair **sign_key_pair) {
+static void load_identity_key_sign(sqlite_int64 identity_key_id, E2ees__KeyPair **sign_key_pair) {
     // allocate memory
-    *sign_key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-    skissm__key_pair__init(*sign_key_pair);
+    *sign_key_pair = (E2ees__KeyPair *)malloc(sizeof(E2ees__KeyPair));
+    e2ees__key_pair__init(*sign_key_pair);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -901,10 +901,10 @@ static void load_identity_key_sign(sqlite_int64 identity_key_id, Skissm__KeyPair
     sqlite_finalize(stmt);
 }
 
-void load_identity_key_pair(uint64_t address_id, Skissm__IdentityKey **identity_key) {
+void load_identity_key_pair(uint64_t address_id, E2ees__IdentityKey **identity_key) {
     // allocate memory
-    *identity_key = (Skissm__IdentityKey *)malloc(sizeof(Skissm__IdentityKey));
-    skissm__identity_key__init(*identity_key);
+    *identity_key = (E2ees__IdentityKey *)malloc(sizeof(E2ees__IdentityKey));
+    e2ees__identity_key__init(*identity_key);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -923,13 +923,13 @@ void load_identity_key_pair(uint64_t address_id, Skissm__IdentityKey **identity_
     sqlite_finalize(stmt);
 }
 
-void load_signed_pre_key_pair(uint64_t address_id, Skissm__SignedPreKey **signed_pre_key) {
+void load_signed_pre_key_pair(uint64_t address_id, E2ees__SignedPreKey **signed_pre_key) {
     // allocate memory
-    *signed_pre_key = (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
-    skissm__signed_pre_key__init(*signed_pre_key);
+    *signed_pre_key = (E2ees__SignedPreKey *)malloc(sizeof(E2ees__SignedPreKey));
+    e2ees__signed_pre_key__init(*signed_pre_key);
 
-    Skissm__KeyPair *key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-    skissm__key_pair__init(key_pair);
+    E2ees__KeyPair *key_pair = (E2ees__KeyPair *)malloc(sizeof(E2ees__KeyPair));
+    e2ees__key_pair__init(key_pair);
     (*signed_pre_key)->key_pair = key_pair;
 
     // prepare
@@ -971,10 +971,10 @@ int load_n_one_time_pre_keys(uint64_t address_id) {
     return n_one_time_pre_key_list;
 }
 
-size_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_time_pre_key_list) {
+size_t load_one_time_pre_keys(uint64_t address_id, E2ees__OneTimePreKey ***one_time_pre_key_list) {
     // allocate memory
     size_t n_one_time_pre_key_list = load_n_one_time_pre_keys(address_id);
-    (*one_time_pre_key_list) = (Skissm__OneTimePreKey **)malloc(n_one_time_pre_key_list * sizeof(Skissm__OneTimePreKey *));
+    (*one_time_pre_key_list) = (E2ees__OneTimePreKey **)malloc(n_one_time_pre_key_list * sizeof(E2ees__OneTimePreKey *));
 
     // prepare
     sqlite3_stmt *stmt;
@@ -986,11 +986,11 @@ size_t load_one_time_pre_keys(uint64_t address_id, Skissm__OneTimePreKey ***one_
         sqlite3_step(stmt);
 
         // allocate
-        (*one_time_pre_key_list)[i] = (Skissm__OneTimePreKey *)malloc(sizeof(Skissm__OneTimePreKey));
-        skissm__one_time_pre_key__init((*one_time_pre_key_list)[i]);
+        (*one_time_pre_key_list)[i] = (E2ees__OneTimePreKey *)malloc(sizeof(E2ees__OneTimePreKey));
+        e2ees__one_time_pre_key__init((*one_time_pre_key_list)[i]);
 
-        Skissm__KeyPair *key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-        skissm__key_pair__init(key_pair);
+        E2ees__KeyPair *key_pair = (E2ees__KeyPair *)malloc(sizeof(E2ees__KeyPair));
+        e2ees__key_pair__init(key_pair);
         (*one_time_pre_key_list)[i]->key_pair = key_pair;
 
         // load
@@ -1024,7 +1024,7 @@ uint32_t load_next_one_time_pre_key_id(uint64_t address_id) {
     return next_one_time_pre_key_id;
 }
 
-bool load_address_id(Skissm__E2eeAddress *address, sqlite_int64 *address_id) {
+bool load_address_id(E2ees__E2eeAddress *address, sqlite_int64 *address_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(LOAD_ADDRESS_ID, &stmt);
@@ -1045,7 +1045,7 @@ bool load_address_id(Skissm__E2eeAddress *address, sqlite_int64 *address_id) {
     return succ;
 }
 
-static sqlite_int64 address_row_id(Skissm__E2eeAddress *address) {
+static sqlite_int64 address_row_id(E2ees__E2eeAddress *address) {
     sqlite_int64 rol_id = 0;
 
     // prepare
@@ -1054,11 +1054,11 @@ static sqlite_int64 address_row_id(Skissm__E2eeAddress *address) {
 
     // bind
     sqlite3_bind_text(stmt, 1, address->domain, -1, SQLITE_TRANSIENT);
-    if (address->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER) {
+    if (address->peer_case == E2EES__E2EE_ADDRESS__PEER_USER) {
         sqlite3_bind_text(stmt, 2, address->user->user_id, -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(stmt, 3, address->user->device_id, -1, SQLITE_TRANSIENT);
         sqlite3_bind_null(stmt, 4);
-    } else if (address->peer_case == SKISSM__E2EE_ADDRESS__PEER_GROUP) {
+    } else if (address->peer_case == E2EES__E2EE_ADDRESS__PEER_GROUP) {
         sqlite3_bind_null(stmt, 2);
         sqlite3_bind_null(stmt, 3);
         sqlite3_bind_text(stmt, 4, address->group->group_id, -1, SQLITE_TRANSIENT);
@@ -1075,7 +1075,7 @@ static sqlite_int64 address_row_id(Skissm__E2eeAddress *address) {
     return rol_id;
 }
 
-sqlite_int64 insert_address(Skissm__E2eeAddress *address) {
+sqlite_int64 insert_address(E2ees__E2eeAddress *address) {
     // address exists
     sqlite_int64 row_id = address_row_id(address);
     if (row_id > 0)
@@ -1087,11 +1087,11 @@ sqlite_int64 insert_address(Skissm__E2eeAddress *address) {
 
     // bind
     sqlite3_bind_text(stmt, 1, address->domain, -1, SQLITE_TRANSIENT);
-    if (address->peer_case == SKISSM__E2EE_ADDRESS__PEER_USER) {
+    if (address->peer_case == E2EES__E2EE_ADDRESS__PEER_USER) {
         sqlite3_bind_text(stmt, 2, address->user->user_id, -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(stmt, 3, address->user->device_id, -1, SQLITE_TRANSIENT);
         sqlite3_bind_null(stmt, 4);
-    } else if (address->peer_case == SKISSM__E2EE_ADDRESS__PEER_GROUP) {
+    } else if (address->peer_case == E2EES__E2EE_ADDRESS__PEER_GROUP) {
         sqlite3_bind_null(stmt, 2);
         sqlite3_bind_null(stmt, 3);
         sqlite3_bind_text(stmt, 4, address->group->group_id, -1, SQLITE_TRANSIENT);
@@ -1107,7 +1107,7 @@ sqlite_int64 insert_address(Skissm__E2eeAddress *address) {
     return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_key_pair(Skissm__KeyPair *key_pair) {
+sqlite_int64 insert_key_pair(E2ees__KeyPair *key_pair) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(KEYPAIR_INSERT, &stmt);
@@ -1125,7 +1125,7 @@ sqlite_int64 insert_key_pair(Skissm__KeyPair *key_pair) {
     return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_identity_key(Skissm__IdentityKey *identity_key) {
+sqlite_int64 insert_identity_key(E2ees__IdentityKey *identity_key) {
     sqlite_int64 key_pair_id_1 = insert_key_pair(identity_key->asym_key_pair);
     sqlite_int64 key_pair_id_2 = insert_key_pair(identity_key->sign_key_pair);
 
@@ -1146,7 +1146,7 @@ sqlite_int64 insert_identity_key(Skissm__IdentityKey *identity_key) {
     return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_signed_pre_key(Skissm__SignedPreKey *signed_pre_key) {
+sqlite_int64 insert_signed_pre_key(E2ees__SignedPreKey *signed_pre_key) {
     sqlite_int64 key_pair_id = insert_key_pair(signed_pre_key->key_pair);
 
     // prepare
@@ -1168,7 +1168,7 @@ sqlite_int64 insert_signed_pre_key(Skissm__SignedPreKey *signed_pre_key) {
     return sqlite3_last_insert_rowid(db);
 }
 
-sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key) {
+sqlite_int64 insert_one_time_pre_key(E2ees__OneTimePreKey *one_time_pre_key) {
     sqlite_int64 key_pair_id = insert_key_pair(one_time_pre_key->key_pair);
 
     // prepare
@@ -1191,7 +1191,7 @@ sqlite_int64 insert_one_time_pre_key(Skissm__OneTimePreKey *one_time_pre_key) {
 
 sqlite_int64 insert_account(
     const char *version, protobuf_c_boolean saved, const char *auth, sqlite_int64 address_id,
-    const char *password, uint32_t e2ee_pack_id, sqlite_int64 identity_key_pair_id,
+    const char *password, uint32_t e2ees_pack_id, sqlite_int64 identity_key_pair_id,
     sqlite_int64 signed_pre_key_id, sqlite_int64 next_one_time_pre_key_id
 ) {
     // prepare
@@ -1204,7 +1204,7 @@ sqlite_int64 insert_account(
     sqlite3_bind_text(stmt, 3, auth, (int)strlen(auth), NULL);
     sqlite3_bind_int64(stmt, 4, address_id);
     sqlite3_bind_text(stmt, 5, password, (int)strlen(password), NULL);
-    sqlite3_bind_int64(stmt, 6, e2ee_pack_id);
+    sqlite3_bind_int64(stmt, 6, e2ees_pack_id);
     sqlite3_bind_int64(stmt, 7, identity_key_pair_id);
     sqlite3_bind_int64(stmt, 8, signed_pre_key_id);
     sqlite3_bind_int64(stmt, 9, next_one_time_pre_key_id);
@@ -1266,7 +1266,7 @@ void insert_account_one_time_pre_key_id(uint64_t address_id, sqlite_int64 one_ti
     sqlite_finalize(stmt);
 }
 
-bool update_signed_pre_key(Skissm__E2eeAddress *address, Skissm__SignedPreKey *signed_pre_key) {
+bool update_signed_pre_key(E2ees__E2eeAddress *address, E2ees__SignedPreKey *signed_pre_key) {
     sqlite_int64 address_id;
     bool succ = load_address_id(address, &address_id);
 
@@ -1294,7 +1294,7 @@ bool update_signed_pre_key(Skissm__E2eeAddress *address, Skissm__SignedPreKey *s
     return true;
 }
 
-void load_signed_pre_key(Skissm__E2eeAddress *address, uint32_t spk_id, Skissm__SignedPreKey **signed_pre_key) {
+void load_signed_pre_key(E2ees__E2eeAddress *address, uint32_t spk_id, E2ees__SignedPreKey **signed_pre_key) {
     sqlite_int64 address_id;
     bool succ = load_address_id(address, &address_id);
 
@@ -1315,11 +1315,11 @@ void load_signed_pre_key(Skissm__E2eeAddress *address, uint32_t spk_id, Skissm__
     }
 
     // allocate memory
-    *signed_pre_key = (Skissm__SignedPreKey *)malloc(sizeof(Skissm__SignedPreKey));
-    skissm__signed_pre_key__init(*signed_pre_key);
+    *signed_pre_key = (E2ees__SignedPreKey *)malloc(sizeof(E2ees__SignedPreKey));
+    e2ees__signed_pre_key__init(*signed_pre_key);
 
-    Skissm__KeyPair *key_pair = (Skissm__KeyPair *)malloc(sizeof(Skissm__KeyPair));
-    skissm__key_pair__init(key_pair);
+    E2ees__KeyPair *key_pair = (E2ees__KeyPair *)malloc(sizeof(E2ees__KeyPair));
+    e2ees__key_pair__init(key_pair);
     (*signed_pre_key)->key_pair = key_pair;
 
     // load
@@ -1362,7 +1362,7 @@ static void delete_account_signed_pre_key(uint64_t address_id, sqlite_int64 sign
     sqlite_finalize(stmt);
 }
 
-bool remove_expired_signed_pre_key(Skissm__E2eeAddress *address) {
+bool remove_expired_signed_pre_key(E2ees__E2eeAddress *address) {
     // delete old signed pre-keys and keep last two
     sqlite_int64 address_id;
     bool succ = load_address_id(address, &address_id);
@@ -1388,7 +1388,7 @@ bool remove_expired_signed_pre_key(Skissm__E2eeAddress *address) {
     return true;
 }
 
-bool add_one_time_pre_key(Skissm__E2eeAddress *address, Skissm__OneTimePreKey *one_time_pre_key) {
+bool add_one_time_pre_key(E2ees__E2eeAddress *address, E2ees__OneTimePreKey *one_time_pre_key) {
     sqlite_int64 address_id;
     bool succ = load_address_id(address, &address_id);
 
@@ -1440,7 +1440,7 @@ static void delete_account_one_time_pre_key(uint64_t address_id, sqlite_int64 on
     sqlite_finalize(stmt);
 }
 
-bool remove_one_time_pre_key(Skissm__E2eeAddress *address, uint32_t one_time_pre_key_id) {
+bool remove_one_time_pre_key(E2ees__E2eeAddress *address, uint32_t one_time_pre_key_id) {
     sqlite_int64 address_id;
     bool succ = load_address_id(address, &address_id);
 
@@ -1483,7 +1483,7 @@ static void mark_one_time_pre_key_as_used(sqlite_int64 one_time_pre_key_id) {
     sqlite_finalize(stmt);
 }
 
-bool update_one_time_pre_key(Skissm__E2eeAddress *address, uint32_t one_time_pre_key_id) {
+bool update_one_time_pre_key(E2ees__E2eeAddress *address, uint32_t one_time_pre_key_id) {
     sqlite_int64 address_id;
     bool succ = load_address_id(address, &address_id);
 
@@ -1510,7 +1510,7 @@ bool update_one_time_pre_key(Skissm__E2eeAddress *address, uint32_t one_time_pre
     return true;
 }
 
-void store_account(Skissm__Account *account) {
+void store_account(E2ees__Account *account) {
     // insert address
     sqlite_int64 address_id = insert_address(account->address);
 
@@ -1529,7 +1529,7 @@ void store_account(Skissm__Account *account) {
     // insert account
     insert_account(
         account->version, account->saved, account->auth, address_id,
-        account->password, account->e2ee_pack_id,
+        account->password, account->e2ees_pack_id,
         identity_key_pair_id, signed_pre_key_id, account->next_one_time_pre_key_id
     );
 
@@ -1542,16 +1542,16 @@ void store_account(Skissm__Account *account) {
     }
 }
 // NOTE: new
-void load_account_by_address_id(uint64_t address_id, Skissm__Account **account) {
-    Skissm__E2eeAddress *address = NULL;
+void load_account_by_address_id(uint64_t address_id, E2ees__Account **account) {
+    E2ees__E2eeAddress *address = NULL;
     bool succ = load_address(address_id, &address);
     if (succ) {
-        *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
-        skissm__account__init((*account));
+        *account = (E2ees__Account *)malloc(sizeof(E2ees__Account));
+        e2ees__account__init((*account));
 
         (*account)->version = load_version(address_id);
         (*account)->saved = load_saved(address_id);
-        (*account)->e2ee_pack_id = load_e2ee_pack_id(address_id);
+        (*account)->e2ees_pack_id = load_e2ees_pack_id(address_id);
         (*account)->address = address;
         load_password(address_id, &((*account)->password));
 
@@ -1565,7 +1565,7 @@ void load_account_by_address_id(uint64_t address_id, Skissm__Account **account) 
 }
 
 // DONE: load auth , in Account.proto
-void load_auth(Skissm__E2eeAddress *address, char **auth) {
+void load_auth(E2ees__E2eeAddress *address, char **auth) {
     sqlite_int64 address_id;
     if (load_address_id(address, &address_id) == false) {
         *auth = NULL;
@@ -1587,16 +1587,16 @@ void load_auth(Skissm__E2eeAddress *address, char **auth) {
     sqlite_finalize(stmt);
 }
 
-void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **account) {
+void load_account_by_address(E2ees__E2eeAddress *address, E2ees__Account **account) {
     sqlite_int64 address_id;
     bool succ = load_address_id(address, &address_id);
     if (succ) {
-        *account = (Skissm__Account *)malloc(sizeof(Skissm__Account));
-        skissm__account__init((*account));
+        *account = (E2ees__Account *)malloc(sizeof(E2ees__Account));
+        e2ees__account__init((*account));
 
         (*account)->version = load_version(address_id);
         (*account)->saved = load_saved(address_id);
-        (*account)->e2ee_pack_id = load_e2ee_pack_id(address_id);
+        (*account)->e2ees_pack_id = load_e2ees_pack_id(address_id);
         copy_address_from_address(&((*account)->address), address);
         load_auth((*account)->address, &((*account)->auth));
         load_password(address_id, &((*account)->password));
@@ -1610,7 +1610,7 @@ void load_account_by_address(Skissm__E2eeAddress *address, Skissm__Account **acc
     }
 }
 // NOTE:NEW
-size_t load_accounts(Skissm__Account ***accounts) {
+size_t load_accounts(E2ees__Account ***accounts) {
     // load all address_ids
     sqlite_int64 *address_ids;
     size_t num = load_address_ids(&address_ids);
@@ -1619,7 +1619,7 @@ size_t load_accounts(Skissm__Account ***accounts) {
     if (num == 0) {
         *accounts = NULL;
     } else {
-        *accounts = (Skissm__Account **)malloc(sizeof(Skissm__Account *) * num);
+        *accounts = (E2ees__Account **)malloc(sizeof(E2ees__Account *) * num);
         for (int i = 0; i < num; i++) {
             load_account_by_address_id(address_ids[i], &(*accounts)[i]);
         }
@@ -1634,7 +1634,7 @@ size_t load_accounts(Skissm__Account ***accounts) {
 
 // session related handlers
 void load_inbound_session(
-    char *session_id, Skissm__E2eeAddress *our_address, Skissm__Session **session
+    char *session_id, E2ees__E2eeAddress *our_address, E2ees__Session **session
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -1668,7 +1668,7 @@ void load_inbound_session(
     }
 
     // unpack
-    *session = skissm__session__unpack(NULL, session_data_len, session_data);
+    *session = e2ees__session__unpack(NULL, session_data_len, session_data);
 
     // release
     sqlite_finalize(stmt);
@@ -1678,7 +1678,7 @@ void load_inbound_session(
 
 // return the lastest updated session
 void load_outbound_session(
-    Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address, Skissm__Session **session
+    E2ees__E2eeAddress *our_address, E2ees__E2eeAddress *their_address, E2ees__Session **session
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -1712,7 +1712,7 @@ void load_outbound_session(
     }
 
     // unpack
-    *session = skissm__session__unpack(NULL, session_data_len, session_data);
+    *session = e2ees__session__unpack(NULL, session_data_len, session_data);
 
     // release
     sqlite_finalize(stmt);
@@ -1721,7 +1721,7 @@ void load_outbound_session(
 }
 
 int load_n_outbound_sessions(
-    Skissm__E2eeAddress *our_address, const char *their_user_id
+    E2ees__E2eeAddress *our_address, const char *their_user_id
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -1744,13 +1744,13 @@ int load_n_outbound_sessions(
 }
 
 size_t load_outbound_sessions(
-    Skissm__E2eeAddress *our_address,
+    E2ees__E2eeAddress *our_address,
     const char *their_user_id, const char *their_domain,
-    Skissm__Session ***outbound_sessions
+    E2ees__Session ***outbound_sessions
 ) {
     // allocate memory
     size_t n_outbound_sessions = load_n_outbound_sessions(our_address, their_user_id);
-    (*outbound_sessions) = (Skissm__Session **)malloc(n_outbound_sessions * sizeof(Skissm__Session *));
+    (*outbound_sessions) = (E2ees__Session **)malloc(n_outbound_sessions * sizeof(E2ees__Session *));
 
     // prepare
     sqlite3_stmt *stmt;
@@ -1769,7 +1769,7 @@ size_t load_outbound_sessions(
         uint8_t *session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
 
         // unpack
-        (*outbound_sessions)[i] = skissm__session__unpack(NULL, session_data_len, session_data);
+        (*outbound_sessions)[i] = e2ees__session__unpack(NULL, session_data_len, session_data);
     }
 
     // release
@@ -1778,12 +1778,12 @@ size_t load_outbound_sessions(
     return n_outbound_sessions;
 }
 
-void store_session(Skissm__Session *session) {
+void store_session(E2ees__Session *session) {
     // pack
     char *session_id = session->session_id;
-    size_t session_data_len = skissm__session__get_packed_size(session);
+    size_t session_data_len = e2ees__session__get_packed_size(session);
     uint8_t *session_data = (uint8_t *)malloc(session_data_len);
-    skissm__session__pack(session, session_data);
+    e2ees__session__pack(session, session_data);
 
     sqlite_int64 our_id = insert_address(session->our_address);
     sqlite_int64 their_id = insert_address(session->their_address);
@@ -1808,7 +1808,7 @@ void store_session(Skissm__Session *session) {
     free_mem((void **)&session_data, session_data_len);
 }
 
-void unload_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address) {
+void unload_session(E2ees__E2eeAddress *our_address, E2ees__E2eeAddress *their_address) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SESSION_DELETE_DATA_BY_ADDRESSES, &stmt);
@@ -1826,7 +1826,7 @@ void unload_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their
     sqlite_finalize(stmt);
 }
 
-void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address, int64_t invite_t) {
+void unload_old_session(E2ees__E2eeAddress *our_address, E2ees__E2eeAddress *their_address, int64_t invite_t) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(SESSION_DELETE_OLD_DATA, &stmt);
@@ -1847,10 +1847,10 @@ void unload_old_session(Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *t
 
 // group session
 void load_group_session_by_address(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *owner_address,
-    Skissm__E2eeAddress *group_address,
-    Skissm__GroupSession **group_session
+    E2ees__E2eeAddress *sender_address,
+    E2ees__E2eeAddress *owner_address,
+    E2ees__E2eeAddress *group_address,
+    E2ees__GroupSession **group_session
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -1887,7 +1887,7 @@ void load_group_session_by_address(
     }
 
     // unpack
-    *group_session = skissm__group_session__unpack(NULL, group_session_data_len, group_session_data);
+    *group_session = e2ees__group_session__unpack(NULL, group_session_data_len, group_session_data);
 
     // release
     sqlite_finalize(stmt);
@@ -1896,10 +1896,10 @@ void load_group_session_by_address(
 }
 
 void load_group_session_by_id(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *owner_address,
+    E2ees__E2eeAddress *sender_address,
+    E2ees__E2eeAddress *owner_address,
     char *session_id,
-    Skissm__GroupSession **group_session
+    E2ees__GroupSession **group_session
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -1936,7 +1936,7 @@ void load_group_session_by_id(
     }
 
     // unpack
-    *group_session = skissm__group_session__unpack(NULL, group_session_data_len, group_session_data);
+    *group_session = e2ees__group_session__unpack(NULL, group_session_data_len, group_session_data);
 
     // release
     sqlite_finalize(stmt);
@@ -1945,8 +1945,8 @@ void load_group_session_by_id(
 }
 
 int load_n_group_sessions(
-    Skissm__E2eeAddress *owner_address,
-    Skissm__E2eeAddress *group_address
+    E2ees__E2eeAddress *owner_address,
+    E2ees__E2eeAddress *group_address
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -1969,13 +1969,13 @@ int load_n_group_sessions(
 }
 
 size_t load_group_sessions(
-    Skissm__E2eeAddress *owner_address,
-    Skissm__E2eeAddress *group_address,
-    Skissm__GroupSession ***group_sessions
+    E2ees__E2eeAddress *owner_address,
+    E2ees__E2eeAddress *group_address,
+    E2ees__GroupSession ***group_sessions
 ) {
     // allocate memory
     size_t n_group_sessions = load_n_group_sessions(owner_address, group_address);
-    (*group_sessions) = (Skissm__GroupSession **)malloc(n_group_sessions * sizeof(Skissm__GroupSession *));
+    (*group_sessions) = (E2ees__GroupSession **)malloc(n_group_sessions * sizeof(E2ees__GroupSession *));
 
     // prepare
     sqlite3_stmt *stmt;
@@ -1994,7 +1994,7 @@ size_t load_group_sessions(
         uint8_t *group_session_data = (uint8_t *)sqlite3_column_blob(stmt, 0);
 
         // unpack
-        (*group_sessions)[i] = skissm__group_session__unpack(NULL, group_session_data_len, group_session_data);
+        (*group_sessions)[i] = e2ees__group_session__unpack(NULL, group_session_data_len, group_session_data);
     }
 
     // release
@@ -2004,8 +2004,8 @@ size_t load_group_sessions(
 }
 
 int load_n_group_addresses(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *owner_address
+    E2ees__E2eeAddress *sender_address,
+    E2ees__E2eeAddress *owner_address
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -2030,13 +2030,13 @@ int load_n_group_addresses(
 }
 
 size_t load_group_addresses(
-    Skissm__E2eeAddress *sender_address,
-    Skissm__E2eeAddress *owner_address,
-    Skissm__E2eeAddress ***group_addresses
+    E2ees__E2eeAddress *sender_address,
+    E2ees__E2eeAddress *owner_address,
+    E2ees__E2eeAddress ***group_addresses
 ) {
     // allocate memory
     size_t n_group_addresses = load_n_group_addresses(sender_address, owner_address);
-    (*group_addresses) = (Skissm__E2eeAddress **)malloc(sizeof(Skissm__E2eeAddress *) * n_group_addresses);
+    (*group_addresses) = (E2ees__E2eeAddress **)malloc(sizeof(E2ees__E2eeAddress *) * n_group_addresses);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -2064,11 +2064,11 @@ size_t load_group_addresses(
     return n_group_addresses;
 }
 
-void store_group_session(Skissm__GroupSession *group_session) {
+void store_group_session(E2ees__GroupSession *group_session) {
     // pack
-    size_t group_session_data_len = skissm__group_session__get_packed_size(group_session);
+    size_t group_session_data_len = e2ees__group_session__get_packed_size(group_session);
     uint8_t *group_session_data = (uint8_t *)malloc(group_session_data_len);
-    skissm__group_session__pack(group_session, group_session_data);
+    e2ees__group_session__pack(group_session, group_session_data);
 
     sqlite_int64 sender_id = insert_address(group_session->sender);
     sqlite_int64 owner_id = insert_address(group_session->session_owner);
@@ -2103,8 +2103,8 @@ void store_group_session(Skissm__GroupSession *group_session) {
 }
 
 void unload_group_session_by_address(
-    Skissm__E2eeAddress *session_owner,
-    Skissm__E2eeAddress *group_address
+    E2ees__E2eeAddress *session_owner,
+    E2ees__E2eeAddress *group_address
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -2124,7 +2124,7 @@ void unload_group_session_by_address(
 }
 
 void unload_group_session_by_id(
-    Skissm__E2eeAddress *session_owner,
+    E2ees__E2eeAddress *session_owner,
     char *session_id
 ) {
     if (session_id == NULL) {
@@ -2148,9 +2148,9 @@ void unload_group_session_by_id(
 }
 
 void unload_group_session_with_no_session_id(
-    Skissm__E2eeAddress *sender,
-    Skissm__E2eeAddress *session_owner,
-    Skissm__E2eeAddress *group_address
+    E2ees__E2eeAddress *sender,
+    E2ees__E2eeAddress *session_owner,
+    E2ees__E2eeAddress *group_address
 ) {
     // prepare
     sqlite3_stmt *stmt;
@@ -2174,12 +2174,12 @@ void unload_group_session_with_no_session_id(
 }
 
 void store_pending_plaintext_data(
-    Skissm__E2eeAddress *from_address,
-    Skissm__E2eeAddress *to_address,
+    E2ees__E2eeAddress *from_address,
+    E2ees__E2eeAddress *to_address,
     char *pending_plaintext_id,
     uint8_t *group_pre_key_plaintext,
     size_t group_pre_key_plaintext_len,
-    Skissm__NotifLevel notif_level
+    E2ees__NotifLevel notif_level
 ) {
     // insert the sender's and the receiver's address
     sqlite_int64 from_address_id = insert_address(from_address);
@@ -2203,7 +2203,7 @@ void store_pending_plaintext_data(
     sqlite_finalize(stmt);
 }
 
-int load_n_group_pre_keys(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address) {
+int load_n_group_pre_keys(E2ees__E2eeAddress *from_address, E2ees__E2eeAddress *to_address) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(N_PENDING_PLAINTEXT_DATA_LOAD, &stmt);
@@ -2227,12 +2227,12 @@ int load_n_group_pre_keys(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress
 }
 
 size_t load_pending_plaintext_data(
-    Skissm__E2eeAddress *from_address,
-    Skissm__E2eeAddress *to_address,
+    E2ees__E2eeAddress *from_address,
+    E2ees__E2eeAddress *to_address,
     char ***pending_plaintext_id_list,
     uint8_t ***e2ee_plaintext_data_list,
     size_t **e2ee_plaintext_data_len_list,
-    Skissm__NotifLevel **notif_level_list
+    E2ees__NotifLevel **notif_level_list
 ) {
     // allocate memory
     size_t n_group_pre_keys = load_n_group_pre_keys(from_address, to_address);
@@ -2248,7 +2248,7 @@ size_t load_pending_plaintext_data(
 
     *e2ee_plaintext_data_len_list = (size_t *)malloc(sizeof(size_t) * n_group_pre_keys);
 
-    *notif_level_list = (Skissm__NotifLevel *)malloc(sizeof(Skissm__NotifLevel) * n_group_pre_keys);
+    *notif_level_list = (E2ees__NotifLevel *)malloc(sizeof(E2ees__NotifLevel) * n_group_pre_keys);
 
     // prepare
     sqlite3_stmt *stmt;
@@ -2282,7 +2282,7 @@ size_t load_pending_plaintext_data(
     return n_group_pre_keys;
 }
 
-void unload_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2eeAddress *to_address, char *pending_plaintext_id) {
+void unload_pending_plaintext_data(E2ees__E2eeAddress *from_address, E2ees__E2eeAddress *to_address, char *pending_plaintext_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(PENDING_PLAINTEXT_DATA_DELETE, &stmt);
@@ -2303,7 +2303,7 @@ void unload_pending_plaintext_data(Skissm__E2eeAddress *from_address, Skissm__E2
     sqlite_finalize(stmt);
 }
 
-void store_pending_request_data(Skissm__E2eeAddress *user_address, char *pending_request_id, uint8_t request_type, uint8_t *request_data, size_t request_data_len) {
+void store_pending_request_data(E2ees__E2eeAddress *user_address, char *pending_request_id, uint8_t request_type, uint8_t *request_data, size_t request_data_len) {
     // insert user's address
     sqlite_int64 user_address_id = insert_address(user_address);
 
@@ -2324,7 +2324,7 @@ void store_pending_request_data(Skissm__E2eeAddress *user_address, char *pending
     sqlite_finalize(stmt);
 }
 
-int load_n_pending_request_data(Skissm__E2eeAddress *user_address) {
+int load_n_pending_request_data(E2ees__E2eeAddress *user_address) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(N_PENDING_REQUEST_DATA_LOAD, &stmt);
@@ -2344,7 +2344,7 @@ int load_n_pending_request_data(Skissm__E2eeAddress *user_address) {
     return n_pending_request_data;
 }
 
-size_t load_pending_request_data(Skissm__E2eeAddress *user_address, char ***request_id_list, uint8_t **request_type_list, uint8_t ***request_data_list, size_t **request_data_len_list) {
+size_t load_pending_request_data(E2ees__E2eeAddress *user_address, char ***request_id_list, uint8_t **request_type_list, uint8_t ***request_data_list, size_t **request_data_len_list) {
     // allocate memory
     size_t n_pending_request_data = load_n_pending_request_data(user_address);
     if (n_pending_request_data == 0) {
@@ -2390,7 +2390,7 @@ size_t load_pending_request_data(Skissm__E2eeAddress *user_address, char ***requ
     return n_pending_request_data;
 }
 
-void unload_pending_request_data(Skissm__E2eeAddress *user_address, char *pending_request_id) {
+void unload_pending_request_data(E2ees__E2eeAddress *user_address, char *pending_request_id) {
     // prepare
     sqlite3_stmt *stmt;
     sqlite_prepare(PENDING_REQUEST_DATA_DELETE, &stmt);

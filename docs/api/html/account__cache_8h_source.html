@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/account_cache.h Source File</title>
+<title>E2EES: include/e2ees/account_cache.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -93,22 +93,22 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Copyright © 2020-2021 by Academia Sinica</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * Copyright © 2021 Academia Sinica. All Rights Reserved.</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> *</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * This file is part of SKISSM.</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * This file is part of E2EE Security.</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> * This program is free software: you can redistribute it and/or modify</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment"> * it under the terms of the GNU General Public License as published by</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment"> * the Free Software Foundation, either version 3 of the License, or</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment"> * (at your option) any later version.</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment"> *</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> * SKISSM is distributed in the hope that it will be useful,</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> * E2EE Security is distributed in the hope that it will be useful,</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment"> * GNU General Public License for more details.</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="comment"> *</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment"> * You should have received a copy of the GNU General Public License</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment"> * along with SKISSM.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment"> * along with E2EE Security.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment"> */</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#ifndef ACCOUNT_CACHE_H_</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#define ACCOUNT_CACHE_H_</span></div>
@@ -121,31 +121,31 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="skissm_8h.html">skissm/skissm.h</a>&quot;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="e2ees_8h.html">e2ees/e2ees.h</a>&quot;</span></div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
 <div class="foldopen" id="foldopen00032" data-start="{" data-end="};">
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structaccount__cacheer.html">   32</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structaccount__cacheer.html">account_cacheer</a> {</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keywordtype">char</span> *version;</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    uint32_t e2ee_pack_id;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    Skissm__E2eeAddress *address;</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    Skissm__IdentityKey *identity_key;</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    Skissm__SignedPreKey *signed_pre_key;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    uint32_t e2ees_pack_id;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    E2ees__E2eeAddress *address;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    E2ees__IdentityKey *identity_key;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    E2ees__SignedPreKey *signed_pre_key;</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    ProtobufCBinaryData server_public_key;</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structaccount__cacheer.html">account_cacheer</a> *next;</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>} <a class="code hl_struct" href="structaccount__cacheer.html">account_cacheer</a>;</div>
 </div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keywordtype">void</span> store_account_into_cache(Skissm__Account *account);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keywordtype">void</span> store_account_into_cache(E2ees__Account *account);</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keywordtype">void</span> load_version_from_cache(<span class="keywordtype">char</span> **version_out, Skissm__E2eeAddress *address);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keywordtype">void</span> load_version_from_cache(<span class="keywordtype">char</span> **version_out, E2ees__E2eeAddress *address);</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="keywordtype">void</span> load_e2ee_pack_id_from_cache(uint32_t *e2ee_pack_id_out, Skissm__E2eeAddress *address);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="keywordtype">void</span> load_e2ees_pack_id_from_cache(uint32_t *e2ees_pack_id_out, E2ees__E2eeAddress *address);</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keywordtype">void</span> load_identity_key_from_cache(Skissm__IdentityKey **identity_key_out, Skissm__E2eeAddress *address);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keywordtype">void</span> load_identity_key_from_cache(E2ees__IdentityKey **identity_key_out, E2ees__E2eeAddress *address);</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keywordtype">void</span> load_signed_pre_key_from_cache(Skissm__SignedPreKey **signed_pre_key_out, Skissm__E2eeAddress *address);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keywordtype">void</span> load_signed_pre_key_from_cache(E2ees__SignedPreKey **signed_pre_key_out, E2ees__E2eeAddress *address);</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keywordtype">void</span> load_server_public_key_from_cache(ProtobufCBinaryData *server_public_key, Skissm__E2eeAddress *address);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keywordtype">void</span> load_server_public_key_from_cache(ProtobufCBinaryData *server_public_key, E2ees__E2eeAddress *address);</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keywordtype">void</span> free_account_cacheer_list();</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
@@ -154,7 +154,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="preprocessor">#endif </span><span class="comment">/* ACCOUNT_CACHE_H_ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="askissm_8h_html"><div class="ttname"><a href="skissm_8h.html">skissm.h</a></div></div>
+<div class="ttc" id="ae2ees_8h_html"><div class="ttname"><a href="e2ees_8h.html">e2ees.h</a></div></div>
 <div class="ttc" id="astructaccount__cacheer_html"><div class="ttname"><a href="structaccount__cacheer.html">account_cacheer</a></div><div class="ttdef"><b>Definition</b> account_cache.h:32</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

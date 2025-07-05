@@ -1,5 +1,5 @@
 \doxysection{group\+\_\+session.\+h}
-\hypertarget{group__session_8h_source}{}\label{group__session_8h_source}\index{include/skissm/group\_session.h@{include/skissm/group\_session.h}}
+\hypertarget{group__session_8h_source}{}\label{group__session_8h_source}\index{include/e2ees/group\_session.h@{include/e2ees/group\_session.h}}
 \mbox{\hyperlink{group__session_8h}{Go to the documentation of this file.}}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ }
@@ -13,114 +13,114 @@
 \DoxyCodeLine{00027\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
 \DoxyCodeLine{00028\ \textcolor{preprocessor}{\#endif}}
 \DoxyCodeLine{00029\ }
-\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{skissm_8h}{skissm/skissm.h}}"{}}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{e2ees_8h}{e2ees/e2ees.h}}"{}}}
 \DoxyCodeLine{00031\ }
 \DoxyCodeLine{00038\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__session_8h_a92489a129519dfc9a8168075cc7b4c11}{advance\_group\_chain\_key}}(}
 \DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
 \DoxyCodeLine{00040\ \ \ \ \ ProtobufCBinaryData\ *chain\_key}
 \DoxyCodeLine{00041\ );}
 \DoxyCodeLine{00042\ }
-\DoxyCodeLine{00050\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__session_8h_a55c64ec1587b3e5ae847a55427abc6ae}{create\_group\_message\_key}}(}
+\DoxyCodeLine{00050\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{group__session_8h_af7d9c8115657c99a78962c9a4b3eafdc}{create\_group\_message\_key}}(}
 \DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
 \DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *chain\_key,}
-\DoxyCodeLine{00053\ \ \ \ \ Skissm\_\_MsgKey\ *message\_key}
+\DoxyCodeLine{00053\ \ \ \ \ E2ees\_\_MsgKey\ *message\_key}
 \DoxyCodeLine{00054\ );}
 \DoxyCodeLine{00055\ }
-\DoxyCodeLine{00063\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{group__session_8h_a61ea17b3590ab876f7c49a3a7761d4eb}{pack\_group\_pre\_key\_plaintext}}(}
-\DoxyCodeLine{00064\ \ \ \ \ Skissm\_\_GroupSession\ *outbound\_group\_session,}
+\DoxyCodeLine{00063\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{group__session_8h_a5ddad1b784b55a2444b0b3904954c935}{pack\_group\_pre\_key\_plaintext}}(}
+\DoxyCodeLine{00064\ \ \ \ \ E2ees\_\_GroupSession\ *outbound\_group\_session,}
 \DoxyCodeLine{00065\ \ \ \ \ uint8\_t\ **group\_pre\_key\_plaintext\_data,}
 \DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{char}\ *old\_session\_id}
 \DoxyCodeLine{00067\ );}
 \DoxyCodeLine{00068\ }
-\DoxyCodeLine{00082\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a78057e7997c82d86d34ba71262d4f6e5}{new\_outbound\_group\_session\_by\_sender}}(}
+\DoxyCodeLine{00082\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a13dd56c7952ea55aee22a0ccd5b2cd34}{new\_outbound\_group\_session\_by\_sender}}(}
 \DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ n\_member\_info\_list,}
-\DoxyCodeLine{00084\ \ \ \ \ Skissm\_\_GroupMemberInfo\ **member\_info\_list,}
-\DoxyCodeLine{00085\ \ \ \ \ uint32\_t\ e2ee\_pack\_id,}
-\DoxyCodeLine{00086\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00084\ \ \ \ \ E2ees\_\_GroupMemberInfo\ **member\_info\_list,}
+\DoxyCodeLine{00085\ \ \ \ \ uint32\_t\ e2ees\_pack\_id,}
+\DoxyCodeLine{00086\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
 \DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
-\DoxyCodeLine{00088\ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
-\DoxyCodeLine{00089\ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,}
+\DoxyCodeLine{00088\ \ \ \ \ E2ees\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{00089\ \ \ \ \ E2ees\_\_GroupMember\ **group\_members,}
 \DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num,}
 \DoxyCodeLine{00091\ \ \ \ \ \textcolor{keywordtype}{char}\ *old\_session\_id}
 \DoxyCodeLine{00092\ );}
 \DoxyCodeLine{00093\ }
-\DoxyCodeLine{00106\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_abda463aceed174e99b9db6d639b3f95e}{new\_outbound\_group\_session\_by\_receiver}}(}
+\DoxyCodeLine{00106\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_ae895a2bf853536cb24252e7ee73c950d}{new\_outbound\_group\_session\_by\_receiver}}(}
 \DoxyCodeLine{00107\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *group\_seed,}
-\DoxyCodeLine{00108\ \ \ \ \ uint32\_t\ e2ee\_pack\_id,}
-\DoxyCodeLine{00109\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00108\ \ \ \ \ uint32\_t\ e2ees\_pack\_id,}
+\DoxyCodeLine{00109\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
 \DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *group\_name,}
-\DoxyCodeLine{00111\ \ \ \ \ Skissm\_\_E2eeAddress\ *group\_address,}
+\DoxyCodeLine{00111\ \ \ \ \ E2ees\_\_E2eeAddress\ *group\_address,}
 \DoxyCodeLine{00112\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *session\_id,}
-\DoxyCodeLine{00113\ \ \ \ \ Skissm\_\_GroupMember\ **group\_members,}
+\DoxyCodeLine{00113\ \ \ \ \ E2ees\_\_GroupMember\ **group\_members,}
 \DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ group\_members\_num}
 \DoxyCodeLine{00115\ );}
 \DoxyCodeLine{00116\ }
-\DoxyCodeLine{00123\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a5204ffc06de8f27a1951f008dcc1f82e}{new\_outbound\_group\_session\_invited}}(}
-\DoxyCodeLine{00124\ \ \ \ \ Skissm\_\_GroupUpdateKeyBundle\ *group\_update\_key\_bundle,}
-\DoxyCodeLine{00125\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address}
+\DoxyCodeLine{00123\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a23ccd36a24b97803048fe13a4ae0e86d}{new\_outbound\_group\_session\_invited}}(}
+\DoxyCodeLine{00124\ \ \ \ \ E2ees\_\_GroupUpdateKeyBundle\ *group\_update\_key\_bundle,}
+\DoxyCodeLine{00125\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address}
 \DoxyCodeLine{00126\ );}
 \DoxyCodeLine{00127\ }
-\DoxyCodeLine{00135\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a7d4b59bbcd89653b2f3f5065694dcf99}{new\_inbound\_group\_session\_by\_pre\_key\_bundle}}(}
-\DoxyCodeLine{00136\ \ \ \ \ uint32\_t\ e2ee\_pack\_id,}
-\DoxyCodeLine{00137\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00138\ \ \ \ \ Skissm\_\_GroupPreKeyBundle\ *group\_pre\_key\_bundle}
+\DoxyCodeLine{00135\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a8365af7a9a658a7aad7476638428d388}{new\_inbound\_group\_session\_by\_pre\_key\_bundle}}(}
+\DoxyCodeLine{00136\ \ \ \ \ uint32\_t\ e2ees\_pack\_id,}
+\DoxyCodeLine{00137\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00138\ \ \ \ \ E2ees\_\_GroupPreKeyBundle\ *group\_pre\_key\_bundle}
 \DoxyCodeLine{00139\ );}
 \DoxyCodeLine{00140\ }
-\DoxyCodeLine{00149\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a39296bbfc862fb87cf38c7350ead7b80}{new\_inbound\_group\_session\_by\_member\_id}}(}
-\DoxyCodeLine{00150\ \ \ \ \ uint32\_t\ e2ee\_pack\_id,}
-\DoxyCodeLine{00151\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address,}
-\DoxyCodeLine{00152\ \ \ \ \ Skissm\_\_GroupMemberInfo\ *group\_member\_id,}
-\DoxyCodeLine{00153\ \ \ \ \ Skissm\_\_GroupInfo\ *group\_info}
+\DoxyCodeLine{00149\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_afef6c0735d164bcfda418397babdcacd}{new\_inbound\_group\_session\_by\_member\_id}}(}
+\DoxyCodeLine{00150\ \ \ \ \ uint32\_t\ e2ees\_pack\_id,}
+\DoxyCodeLine{00151\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address,}
+\DoxyCodeLine{00152\ \ \ \ \ E2ees\_\_GroupMemberInfo\ *group\_member\_id,}
+\DoxyCodeLine{00153\ \ \ \ \ E2ees\_\_GroupInfo\ *group\_info}
 \DoxyCodeLine{00154\ );}
 \DoxyCodeLine{00155\ }
-\DoxyCodeLine{00162\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_ace661c9b0d1a198c3227d1eda4a45a56}{complete\_inbound\_group\_session\_by\_pre\_key\_bundle}}(}
-\DoxyCodeLine{00163\ \ \ \ \ Skissm\_\_GroupSession\ *inbound\_group\_session,}
-\DoxyCodeLine{00164\ \ \ \ \ Skissm\_\_GroupPreKeyBundle\ *group\_pre\_key\_bundle}
+\DoxyCodeLine{00162\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_aad919233241fc16cc882d96960a134f2}{complete\_inbound\_group\_session\_by\_pre\_key\_bundle}}(}
+\DoxyCodeLine{00163\ \ \ \ \ E2ees\_\_GroupSession\ *inbound\_group\_session,}
+\DoxyCodeLine{00164\ \ \ \ \ E2ees\_\_GroupPreKeyBundle\ *group\_pre\_key\_bundle}
 \DoxyCodeLine{00165\ );}
 \DoxyCodeLine{00166\ }
-\DoxyCodeLine{00173\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_abcefe9ffa80697c04a44eef3b5e11c10}{complete\_inbound\_group\_session\_by\_member\_id}}(}
-\DoxyCodeLine{00174\ \ \ \ \ Skissm\_\_GroupSession\ *inbound\_group\_session,}
-\DoxyCodeLine{00175\ \ \ \ \ Skissm\_\_GroupMemberInfo\ *group\_member\_id}
+\DoxyCodeLine{00173\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_adb6c7cf7100e659f069937c794bca849}{complete\_inbound\_group\_session\_by\_member\_id}}(}
+\DoxyCodeLine{00174\ \ \ \ \ E2ees\_\_GroupSession\ *inbound\_group\_session,}
+\DoxyCodeLine{00175\ \ \ \ \ E2ees\_\_GroupMemberInfo\ *group\_member\_id}
 \DoxyCodeLine{00176\ );}
 \DoxyCodeLine{00177\ }
-\DoxyCodeLine{00184\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a40a400c51d82360729bfe464cf60501c}{new\_and\_complete\_inbound\_group\_session}}(}
-\DoxyCodeLine{00185\ \ \ \ \ Skissm\_\_GroupMemberInfo\ *group\_member\_id,}
-\DoxyCodeLine{00186\ \ \ \ \ Skissm\_\_GroupSession\ *other\_inbound\_group\_session}
+\DoxyCodeLine{00184\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_ad749d90e0347fe4b5f44d16d9cc33140}{new\_and\_complete\_inbound\_group\_session}}(}
+\DoxyCodeLine{00185\ \ \ \ \ E2ees\_\_GroupMemberInfo\ *group\_member\_id,}
+\DoxyCodeLine{00186\ \ \ \ \ E2ees\_\_GroupSession\ *other\_inbound\_group\_session}
 \DoxyCodeLine{00187\ );}
 \DoxyCodeLine{00188\ }
-\DoxyCodeLine{00196\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_aa30a7b399d91af7ea6ebb411d0c382ef}{new\_and\_complete\_inbound\_group\_session\_with\_chain\_key}}(}
-\DoxyCodeLine{00197\ \ \ \ \ Skissm\_\_GroupMemberInfo\ *group\_member\_id,}
-\DoxyCodeLine{00198\ \ \ \ \ Skissm\_\_GroupSession\ *other\_group\_session,}
+\DoxyCodeLine{00196\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a504a0cb3af07ea4c5e355e1ac6dd984a}{new\_and\_complete\_inbound\_group\_session\_with\_chain\_key}}(}
+\DoxyCodeLine{00197\ \ \ \ \ E2ees\_\_GroupMemberInfo\ *group\_member\_id,}
+\DoxyCodeLine{00198\ \ \ \ \ E2ees\_\_GroupSession\ *other\_group\_session,}
 \DoxyCodeLine{00199\ \ \ \ \ ProtobufCBinaryData\ *their\_chain\_key}
 \DoxyCodeLine{00200\ );}
 \DoxyCodeLine{00201\ }
-\DoxyCodeLine{00208\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a82aeb0b321e6c833af4a1781f3dfdca0}{new\_and\_complete\_inbound\_group\_session\_with\_ratchet\_state}}(}
-\DoxyCodeLine{00209\ \ \ \ \ Skissm\_\_GroupUpdateKeyBundle\ *group\_update\_key\_bundle,}
-\DoxyCodeLine{00210\ \ \ \ \ Skissm\_\_E2eeAddress\ *user\_address}
+\DoxyCodeLine{00208\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_ac7854d5071873cfe41048c3a6308496c}{new\_and\_complete\_inbound\_group\_session\_with\_ratchet\_state}}(}
+\DoxyCodeLine{00209\ \ \ \ \ E2ees\_\_GroupUpdateKeyBundle\ *group\_update\_key\_bundle,}
+\DoxyCodeLine{00210\ \ \ \ \ E2ees\_\_E2eeAddress\ *user\_address}
 \DoxyCodeLine{00211\ );}
 \DoxyCodeLine{00212\ }
-\DoxyCodeLine{00224\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a529cdb3dd927985a73f96e5b2ab21d9f}{renew\_outbound\_group\_session\_by\_welcome\_and\_add}}(}
-\DoxyCodeLine{00225\ \ \ \ \ Skissm\_\_GroupSession\ *outbound\_group\_session,}
+\DoxyCodeLine{00224\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a69591252bb8ffb10a35af0463a6f859a}{renew\_outbound\_group\_session\_by\_welcome\_and\_add}}(}
+\DoxyCodeLine{00225\ \ \ \ \ E2ees\_\_GroupSession\ *outbound\_group\_session,}
 \DoxyCodeLine{00226\ \ \ \ \ ProtobufCBinaryData\ *sender\_chain\_key,}
-\DoxyCodeLine{00227\ \ \ \ \ Skissm\_\_E2eeAddress\ *sender\_address,}
+\DoxyCodeLine{00227\ \ \ \ \ E2ees\_\_E2eeAddress\ *sender\_address,}
 \DoxyCodeLine{00228\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ n\_adding\_member\_info\_list,}
-\DoxyCodeLine{00229\ \ \ \ \ Skissm\_\_GroupMemberInfo\ **adding\_member\_info\_list,}
+\DoxyCodeLine{00229\ \ \ \ \ E2ees\_\_GroupMemberInfo\ **adding\_member\_info\_list,}
 \DoxyCodeLine{00230\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ adding\_group\_members\_num,}
-\DoxyCodeLine{00231\ \ \ \ \ Skissm\_\_GroupMember\ **adding\_group\_members}
+\DoxyCodeLine{00231\ \ \ \ \ E2ees\_\_GroupMember\ **adding\_group\_members}
 \DoxyCodeLine{00232\ );}
 \DoxyCodeLine{00233\ }
-\DoxyCodeLine{00241\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_ac7c84d20114d98de1989ec9115d29f8e}{renew\_inbound\_group\_session\_by\_welcome\_and\_add}}(}
+\DoxyCodeLine{00241\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_aef6b3892002de80ca49029c24cd7aeca}{renew\_inbound\_group\_session\_by\_welcome\_and\_add}}(}
 \DoxyCodeLine{00242\ \ \ \ \ ProtobufCBinaryData\ *sender\_chain\_key,}
-\DoxyCodeLine{00243\ \ \ \ \ Skissm\_\_GroupSession\ *inbound\_group\_session,}
-\DoxyCodeLine{00244\ \ \ \ \ Skissm\_\_GroupInfo\ *new\_group\_info}
+\DoxyCodeLine{00243\ \ \ \ \ E2ees\_\_GroupSession\ *inbound\_group\_session,}
+\DoxyCodeLine{00244\ \ \ \ \ E2ees\_\_GroupInfo\ *new\_group\_info}
 \DoxyCodeLine{00245\ );}
 \DoxyCodeLine{00246\ }
-\DoxyCodeLine{00256\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_a51d9c28171f5dabe3d73ceddd125ca45}{renew\_group\_sessions\_with\_new\_device}}(}
-\DoxyCodeLine{00257\ \ \ \ \ Skissm\_\_GroupSession\ *outbound\_group\_session,}
+\DoxyCodeLine{00256\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{group__session_8h_af1ebb87acbad25ce5a732603f84ff02d}{renew\_group\_sessions\_with\_new\_device}}(}
+\DoxyCodeLine{00257\ \ \ \ \ E2ees\_\_GroupSession\ *outbound\_group\_session,}
 \DoxyCodeLine{00258\ \ \ \ \ ProtobufCBinaryData\ *sender\_chain\_key,}
-\DoxyCodeLine{00259\ \ \ \ \ Skissm\_\_E2eeAddress\ *sender\_address,}
-\DoxyCodeLine{00260\ \ \ \ \ Skissm\_\_E2eeAddress\ *new\_device\_address,}
-\DoxyCodeLine{00261\ \ \ \ \ Skissm\_\_GroupMemberInfo\ *adding\_member\_device\_info}
+\DoxyCodeLine{00259\ \ \ \ \ E2ees\_\_E2eeAddress\ *sender\_address,}
+\DoxyCodeLine{00260\ \ \ \ \ E2ees\_\_E2eeAddress\ *new\_device\_address,}
+\DoxyCodeLine{00261\ \ \ \ \ E2ees\_\_GroupMemberInfo\ *adding\_member\_device\_info}
 \DoxyCodeLine{00262\ );}
 \DoxyCodeLine{00263\ }
 \DoxyCodeLine{00264\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}

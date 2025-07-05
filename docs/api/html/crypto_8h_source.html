@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/crypto.h Source File</title>
+<title>E2EES: include/e2ees/crypto.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -106,7 +106,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &quot;<a class="code" href="skissm_8h.html">skissm/skissm.h</a>&quot;</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &quot;<a class="code" href="e2ees_8h.html">e2ees/e2ees.h</a>&quot;</span></div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="crypto_8h.html#ab1bd3ef9b594e851769e8d7baf17f0f1">   36</a></span><span class="preprocessor">#define SHA256_OUTPUT_LENGTH 32</span></div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
@@ -122,41 +122,41 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="crypto_8h.html#adbbbf1c1be8a7fb625cf3879c3168dc3">   54</a></span><span class="preprocessor">#define AES256_DATA_IV_LENGTH 12</span></div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_curve25519_sign_param();</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_curve25519_sign_param();</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_mldsa44_param();</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_mldsa44_param();</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_mldsa65_param();</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_mldsa65_param();</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_mldsa87_param();</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_mldsa87_param();</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_falcon512_param();</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_falcon512_param();</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_falcon1024_param();</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_falcon1024_param();</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_sha2_128f_param();</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_sha2_128f_param();</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_sha2_128s_param();</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_sha2_128s_param();</div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_sha2_192f_param();</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_sha2_192f_param();</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_sha2_192s_param();</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_sha2_192s_param();</div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_sha2_256f_param();</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_sha2_256f_param();</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_sha2_256s_param();</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_sha2_256s_param();</div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_shake_128f_param();</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_shake_128f_param();</div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_shake_128s_param();</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_shake_128s_param();</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_shake_192f_param();</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_shake_192f_param();</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_shake_192s_param();</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_shake_192s_param();</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_shake_256f_param();</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_shake_256f_param();</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><a class="code hl_struct" href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a> get_sphincs_shake_256s_param();</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><a class="code hl_struct" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a> get_sphincs_shake_256s_param();</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="keywordtype">int</span> crypto_mldsa44_generate_key_pair(</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key</div>
@@ -260,7 +260,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><a class="code hl_struct" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a> get_mceliece8192128f_param();</div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><a class="code hl_struct" href="structcrypto__symmetric__encryption__param__t.html">crypto_symmetric_encryption_param_t</a> get_aes256_param();</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><a class="code hl_struct" href="structcrypto__se__param__t.html">crypto_se_param_t</a> get_aes256_param();</div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
 <div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><a class="code hl_struct" href="structcrypto__hash__param__t.html">crypto_hash_param_t</a> get_sha256_param();</div>
 <div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
@@ -635,27 +635,27 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span> </div>
 <div class="line"><a id="l00722" name="l00722"></a><span class="lineno"><a class="line" href="crypto_8h.html#a4f5e0daca1f3aca72b3e6e0c35a18de6">  722</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="crypto_8h.html#a4f5e0daca1f3aca72b3e6e0c35a18de6">crypto_base64_decode</a>(uint8_t **msg_out, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *base64_str);</div>
 <div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span> </div>
-<div class="line"><a id="l00734" name="l00734"></a><span class="lineno"><a class="line" href="crypto_8h.html#a6267438912568b236ef3982e3738fc3a">  734</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="crypto_8h.html#a6267438912568b236ef3982e3738fc3a">crypto_hash_by_e2ee_pack_id</a>(</div>
-<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>    uint32_t e2ee_pack_id_raw,</div>
+<div class="line"><a id="l00734" name="l00734"></a><span class="lineno"><a class="line" href="crypto_8h.html#a79bd3406be3772ecc1eb6191e49faf65">  734</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="crypto_8h.html#a79bd3406be3772ecc1eb6191e49faf65">crypto_hash_by_e2ees_pack_id</a>(</div>
+<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>    uint32_t e2ees_pack_id_raw,</div>
 <div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>    <span class="keyword">const</span> uint8_t *msg, <span class="keywordtype">size_t</span> msg_len,</div>
 <div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>    uint8_t **hash_out, <span class="keywordtype">size_t</span> *hash_out_len</div>
 <div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>);</div>
 <div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span> </div>
-<div class="line"><a id="l00749" name="l00749"></a><span class="lineno"><a class="line" href="crypto_8h.html#a1614f1ad3633e9adc223673fec666da7">  749</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="crypto_8h.html#a1614f1ad3633e9adc223673fec666da7">crypto_ds_key_gen_by_e2ee_pack_id</a>(</div>
-<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>    uint32_t e2ee_pack_id_raw,</div>
+<div class="line"><a id="l00749" name="l00749"></a><span class="lineno"><a class="line" href="crypto_8h.html#a8345083dac081465341bff062a51aa9c">  749</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="crypto_8h.html#a8345083dac081465341bff062a51aa9c">crypto_ds_key_gen_by_e2ees_pack_id</a>(</div>
+<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>    uint32_t e2ees_pack_id_raw,</div>
 <div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>    ProtobufCBinaryData *pub_key,</div>
 <div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>    ProtobufCBinaryData *priv_key</div>
 <div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>);</div>
 <div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span> </div>
-<div class="line"><a id="l00768" name="l00768"></a><span class="lineno"><a class="line" href="crypto_8h.html#a69bc67c54a1fe0f704d7b979dc1446db">  768</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="crypto_8h.html#a69bc67c54a1fe0f704d7b979dc1446db">crypto_ds_sign_by_e2ee_pack_id</a>(</div>
-<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>    uint32_t e2ee_pack_id_raw,</div>
+<div class="line"><a id="l00768" name="l00768"></a><span class="lineno"><a class="line" href="crypto_8h.html#a07c3e7cb3179f803c2f5447353fb09aa">  768</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="crypto_8h.html#a07c3e7cb3179f803c2f5447353fb09aa">crypto_ds_sign_by_e2ees_pack_id</a>(</div>
+<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>    uint32_t e2ees_pack_id_raw,</div>
 <div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>    uint8_t **signature_out, <span class="keywordtype">size_t</span> *signature_out_len,</div>
 <div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>    <span class="keyword">const</span> uint8_t *msg, <span class="keywordtype">size_t</span> msg_len,</div>
 <div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>    <span class="keyword">const</span> uint8_t *private_key, <span class="keywordtype">size_t</span> private_key_len</div>
 <div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>);</div>
 <div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span> </div>
-<div class="line"><a id="l00788" name="l00788"></a><span class="lineno"><a class="line" href="crypto_8h.html#a3b0e67950893e303b3eb0f4848a79d57">  788</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="crypto_8h.html#a3b0e67950893e303b3eb0f4848a79d57">crypto_ds_verify_by_e2ee_pack_id</a>(</div>
-<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>    uint32_t e2ee_pack_id_raw,</div>
+<div class="line"><a id="l00788" name="l00788"></a><span class="lineno"><a class="line" href="crypto_8h.html#a7c2d6f9fac817fe5f7451cf5dd84dea7">  788</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="crypto_8h.html#a7c2d6f9fac817fe5f7451cf5dd84dea7">crypto_ds_verify_by_e2ees_pack_id</a>(</div>
+<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>    uint32_t e2ees_pack_id_raw,</div>
 <div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>    <span class="keyword">const</span> uint8_t *signature_in, <span class="keywordtype">size_t</span> signature_in_len,</div>
 <div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>    <span class="keyword">const</span> uint8_t *msg, <span class="keywordtype">size_t</span> msg_len,</div>
 <div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>    <span class="keyword">const</span> uint8_t *public_key, <span class="keywordtype">size_t</span> public_key_len</div>
@@ -666,17 +666,17 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span> </div>
 <div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span><span class="preprocessor">#endif </span><span class="comment">/* CRYPTO_H_ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="acrypto_8h_html_a07c3e7cb3179f803c2f5447353fb09aa"><div class="ttname"><a href="crypto_8h.html#a07c3e7cb3179f803c2f5447353fb09aa">crypto_ds_sign_by_e2ees_pack_id</a></div><div class="ttdeci">int crypto_ds_sign_by_e2ees_pack_id(uint32_t e2ees_pack_id_raw, uint8_t **signature_out, size_t *signature_out_len, const uint8_t *msg, size_t msg_len, const uint8_t *private_key, size_t private_key_len)</div><div class="ttdoc">Sign a message with respect to the specific e2ee pack ID raw number.</div></div>
 <div class="ttc" id="acrypto_8h_html_a0abf54c9a3f3c89e4552ea50b87afde3"><div class="ttname"><a href="crypto_8h.html#a0abf54c9a3f3c89e4552ea50b87afde3">crypto_aes_decrypt_gcm</a></div><div class="ttdeci">int crypto_aes_decrypt_gcm(const uint8_t *ciphertext_data, size_t ciphertext_data_len, const uint8_t *aes_key, const uint8_t *iv, const uint8_t *add, size_t add_len, uint8_t *plaintext_data, size_t *plaintext_data_len)</div><div class="ttdoc">AES256 decrypt function in GCM mode.</div></div>
-<div class="ttc" id="acrypto_8h_html_a1614f1ad3633e9adc223673fec666da7"><div class="ttname"><a href="crypto_8h.html#a1614f1ad3633e9adc223673fec666da7">crypto_ds_key_gen_by_e2ee_pack_id</a></div><div class="ttdeci">int crypto_ds_key_gen_by_e2ee_pack_id(uint32_t e2ee_pack_id_raw, ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</div><div class="ttdoc">Generate a random key pair that will be used to generate or verify a signature with respect to the sp...</div></div>
 <div class="ttc" id="acrypto_8h_html_a1ecbc7f2cf34bcec4b5d3853bd504bad"><div class="ttname"><a href="crypto_8h.html#a1ecbc7f2cf34bcec4b5d3853bd504bad">crypto_aes_encrypt_gcm</a></div><div class="ttdeci">int crypto_aes_encrypt_gcm(const uint8_t *plaintext_data, size_t plaintext_data_len, const uint8_t *aes_key, const uint8_t *iv, const uint8_t *add, size_t add_len, uint8_t *ciphertext_data)</div><div class="ttdoc">AES256 encrypt function in GCM mode.</div></div>
 <div class="ttc" id="acrypto_8h_html_a272ff8f6ce4ccfeb3fe4b94858d16ac7"><div class="ttname"><a href="crypto_8h.html#a272ff8f6ce4ccfeb3fe4b94858d16ac7">decrypt_aes_data</a></div><div class="ttdeci">size_t decrypt_aes_data(const uint8_t *ciphertext_data, size_t ciphertext_data_len, const uint8_t aes_key[AES256_KEY_LENGTH], uint8_t **plaintext_data)</div><div class="ttdoc">AES256 decrypt data in GCM mode. The initial vector iv is designated to zeros.</div></div>
-<div class="ttc" id="acrypto_8h_html_a3b0e67950893e303b3eb0f4848a79d57"><div class="ttname"><a href="crypto_8h.html#a3b0e67950893e303b3eb0f4848a79d57">crypto_ds_verify_by_e2ee_pack_id</a></div><div class="ttdeci">int crypto_ds_verify_by_e2ee_pack_id(uint32_t e2ee_pack_id_raw, const uint8_t *signature_in, size_t signature_in_len, const uint8_t *msg, size_t msg_len, const uint8_t *public_key, size_t public_key_len)</div><div class="ttdoc">Verify a signature with a given message with respect to the specific e2ee pack ID raw number.</div></div>
 <div class="ttc" id="acrypto_8h_html_a450cb7660c7518fa1387b4e73696b464"><div class="ttname"><a href="crypto_8h.html#a450cb7660c7518fa1387b4e73696b464">encrypt_file</a></div><div class="ttdeci">int encrypt_file(const char *in_file_path, const char *out_file_path, const uint8_t *password, const size_t password_len)</div><div class="ttdoc">AES256 encrypt file in GCM mode. The initial vector iv is designated to zeros. The password is an arb...</div></div>
 <div class="ttc" id="acrypto_8h_html_a4f5e0daca1f3aca72b3e6e0c35a18de6"><div class="ttname"><a href="crypto_8h.html#a4f5e0daca1f3aca72b3e6e0c35a18de6">crypto_base64_decode</a></div><div class="ttdeci">size_t crypto_base64_decode(uint8_t **msg_out, const unsigned char *base64_str)</div><div class="ttdoc">Decode from base64 string.</div></div>
 <div class="ttc" id="acrypto_8h_html_a5fbde9fbb7fd0c6ffc949e1384b84906"><div class="ttname"><a href="crypto_8h.html#a5fbde9fbb7fd0c6ffc949e1384b84906">crypto_base64_encode</a></div><div class="ttdeci">char * crypto_base64_encode(const uint8_t *msg, size_t msg_len)</div><div class="ttdoc">Encode to base64 string.</div></div>
-<div class="ttc" id="acrypto_8h_html_a6267438912568b236ef3982e3738fc3a"><div class="ttname"><a href="crypto_8h.html#a6267438912568b236ef3982e3738fc3a">crypto_hash_by_e2ee_pack_id</a></div><div class="ttdeci">int crypto_hash_by_e2ee_pack_id(uint32_t e2ee_pack_id_raw, const uint8_t *msg, size_t msg_len, uint8_t **hash_out, size_t *hash_out_len)</div><div class="ttdoc">Calculate hash with respect to the specific e2ee pack ID raw number.</div></div>
-<div class="ttc" id="acrypto_8h_html_a69bc67c54a1fe0f704d7b979dc1446db"><div class="ttname"><a href="crypto_8h.html#a69bc67c54a1fe0f704d7b979dc1446db">crypto_ds_sign_by_e2ee_pack_id</a></div><div class="ttdeci">int crypto_ds_sign_by_e2ee_pack_id(uint32_t e2ee_pack_id_raw, uint8_t **signature_out, size_t *signature_out_len, const uint8_t *msg, size_t msg_len, const uint8_t *private_key, size_t private_key_len)</div><div class="ttdoc">Sign a message with respect to the specific e2ee pack ID raw number.</div></div>
+<div class="ttc" id="acrypto_8h_html_a79bd3406be3772ecc1eb6191e49faf65"><div class="ttname"><a href="crypto_8h.html#a79bd3406be3772ecc1eb6191e49faf65">crypto_hash_by_e2ees_pack_id</a></div><div class="ttdeci">int crypto_hash_by_e2ees_pack_id(uint32_t e2ees_pack_id_raw, const uint8_t *msg, size_t msg_len, uint8_t **hash_out, size_t *hash_out_len)</div><div class="ttdoc">Calculate hash with respect to the specific e2ee pack ID raw number.</div></div>
+<div class="ttc" id="acrypto_8h_html_a7c2d6f9fac817fe5f7451cf5dd84dea7"><div class="ttname"><a href="crypto_8h.html#a7c2d6f9fac817fe5f7451cf5dd84dea7">crypto_ds_verify_by_e2ees_pack_id</a></div><div class="ttdeci">int crypto_ds_verify_by_e2ees_pack_id(uint32_t e2ees_pack_id_raw, const uint8_t *signature_in, size_t signature_in_len, const uint8_t *msg, size_t msg_len, const uint8_t *public_key, size_t public_key_len)</div><div class="ttdoc">Verify a signature with a given message with respect to the specific e2ee pack ID raw number.</div></div>
 <div class="ttc" id="acrypto_8h_html_a831ecc64b494384eeef10f02f0c5432c"><div class="ttname"><a href="crypto_8h.html#a831ecc64b494384eeef10f02f0c5432c">decrypt_aes_data_with_iv</a></div><div class="ttdeci">size_t decrypt_aes_data_with_iv(const uint8_t *ciphertext_data, size_t ciphertext_data_len, const uint8_t aes_key[AES256_KEY_LENGTH], const uint8_t iv[AES256_DATA_IV_LENGTH], uint8_t **plaintext_data)</div><div class="ttdoc">AES256 decrypt data in GCM mode.</div></div>
+<div class="ttc" id="acrypto_8h_html_a8345083dac081465341bff062a51aa9c"><div class="ttname"><a href="crypto_8h.html#a8345083dac081465341bff062a51aa9c">crypto_ds_key_gen_by_e2ees_pack_id</a></div><div class="ttdeci">int crypto_ds_key_gen_by_e2ees_pack_id(uint32_t e2ees_pack_id_raw, ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</div><div class="ttdoc">Generate a random key pair that will be used to generate or verify a signature with respect to the sp...</div></div>
 <div class="ttc" id="acrypto_8h_html_a9239e4f32141c64f2ed409902253db2e"><div class="ttname"><a href="crypto_8h.html#a9239e4f32141c64f2ed409902253db2e">encrypt_aes_data</a></div><div class="ttdeci">size_t encrypt_aes_data(const uint8_t *plaintext_data, size_t plaintext_data_len, const uint8_t aes_key[AES256_KEY_LENGTH], uint8_t **ciphertext_data)</div><div class="ttdoc">AES256 encrypt data in GCM mode. The initial vector iv is designated to zeros.</div></div>
 <div class="ttc" id="acrypto_8h_html_aa06fbcdf5dc0b8f1c2bb4ad5eb70a6b9"><div class="ttname"><a href="crypto_8h.html#aa06fbcdf5dc0b8f1c2bb4ad5eb70a6b9">encrypt_aes_file</a></div><div class="ttdeci">int encrypt_aes_file(const char *in_file_path, const char *out_file_path, const uint8_t aes_key[AES256_KEY_LENGTH])</div><div class="ttdoc">AES256 encrypt file in GCM mode. The initial vector iv is designated to zeros.</div></div>
 <div class="ttc" id="acrypto_8h_html_abc1ba4ed4300cb5b7dd5dd9bba2491c4"><div class="ttname"><a href="crypto_8h.html#abc1ba4ed4300cb5b7dd5dd9bba2491c4">crypto_sha256</a></div><div class="ttdeci">int crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out)</div><div class="ttdoc">Secure Hash Algorithms (SHAs) https://www.rfc-editor.org/rfc/rfc6234 Computes HMAC-SHA-256 of the inp...</div></div>
@@ -687,11 +687,11 @@ $(function(){ initResizable(false); });
 <div class="ttc" id="acrypto_8h_html_af36200aa1d4d85292b027b6d811263ad"><div class="ttname"><a href="crypto_8h.html#af36200aa1d4d85292b027b6d811263ad">AES256_KEY_LENGTH</a></div><div class="ttdeci">#define AES256_KEY_LENGTH</div><div class="ttdef"><b>Definition</b> crypto.h:45</div></div>
 <div class="ttc" id="acrypto_8h_html_afc26d7ca538bd3f7fec38b2c1959beb0"><div class="ttname"><a href="crypto_8h.html#afc26d7ca538bd3f7fec38b2c1959beb0">encrypt_aes_data_with_iv</a></div><div class="ttdeci">size_t encrypt_aes_data_with_iv(const uint8_t *plaintext_data, size_t plaintext_data_len, const uint8_t aes_key[AES256_KEY_LENGTH], const uint8_t iv[AES256_DATA_IV_LENGTH], uint8_t **ciphertext_data)</div><div class="ttdoc">AES256 encrypt data in GCM mode.</div></div>
 <div class="ttc" id="acrypto_8h_html_afc58ceff0d85193ef70700f828959123"><div class="ttname"><a href="crypto_8h.html#afc58ceff0d85193ef70700f828959123">decrypt_aes_file</a></div><div class="ttdeci">int decrypt_aes_file(const char *in_file_path, const char *out_file_path, const uint8_t aes_key[AES256_KEY_LENGTH])</div><div class="ttdoc">AES256 decrypt file in GCM mode. The initial vector iv is designated to zeros.</div></div>
-<div class="ttc" id="askissm_8h_html"><div class="ttname"><a href="skissm_8h.html">skissm.h</a></div></div>
-<div class="ttc" id="astructcrypto__digital__signature__param__t_html"><div class="ttname"><a href="structcrypto__digital__signature__param__t.html">crypto_digital_signature_param_t</a></div><div class="ttdoc">Type definition of digital signature algorithm parameters.</div><div class="ttdef"><b>Definition</b> skissm.h:196</div></div>
-<div class="ttc" id="astructcrypto__hash__param__t_html"><div class="ttname"><a href="structcrypto__hash__param__t.html">crypto_hash_param_t</a></div><div class="ttdoc">Type definition of hash algorithm parameters.</div><div class="ttdef"><b>Definition</b> skissm.h:226</div></div>
-<div class="ttc" id="astructcrypto__kem__param__t_html"><div class="ttname"><a href="structcrypto__kem__param__t.html">crypto_kem_param_t</a></div><div class="ttdoc">Type definition of kem algorithm parameters.</div><div class="ttdef"><b>Definition</b> skissm.h:206</div></div>
-<div class="ttc" id="astructcrypto__symmetric__encryption__param__t_html"><div class="ttname"><a href="structcrypto__symmetric__encryption__param__t.html">crypto_symmetric_encryption_param_t</a></div><div class="ttdoc">Type definition of symmetric encryption algorithm parameters.</div><div class="ttdef"><b>Definition</b> skissm.h:217</div></div>
+<div class="ttc" id="ae2ees_8h_html"><div class="ttname"><a href="e2ees_8h.html">e2ees.h</a></div></div>
+<div class="ttc" id="astructcrypto__ds__param__t_html"><div class="ttname"><a href="structcrypto__ds__param__t.html">crypto_ds_param_t</a></div><div class="ttdoc">Type definition of digital signature algorithm parameters.</div><div class="ttdef"><b>Definition</b> e2ees.h:197</div></div>
+<div class="ttc" id="astructcrypto__hash__param__t_html"><div class="ttname"><a href="structcrypto__hash__param__t.html">crypto_hash_param_t</a></div><div class="ttdoc">Type definition of hash algorithm parameters.</div><div class="ttdef"><b>Definition</b> e2ees.h:227</div></div>
+<div class="ttc" id="astructcrypto__kem__param__t_html"><div class="ttname"><a href="structcrypto__kem__param__t.html">crypto_kem_param_t</a></div><div class="ttdoc">Type definition of kem algorithm parameters.</div><div class="ttdef"><b>Definition</b> e2ees.h:207</div></div>
+<div class="ttc" id="astructcrypto__se__param__t_html"><div class="ttname"><a href="structcrypto__se__param__t.html">crypto_se_param_t</a></div><div class="ttdoc">Type definition of symmetric encryption algorithm parameters.</div><div class="ttdef"><b>Definition</b> e2ees.h:218</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

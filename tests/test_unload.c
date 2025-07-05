@@ -1,33 +1,33 @@
 /*
- * Copyright © 2020-2021 by Academia Sinica
+ * Copyright © 2021 Academia Sinica. All Rights Reserved.
  *
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
-#include "skissm/account.h"
-#include "skissm/crypto.h"
-#include "skissm/e2ee_client.h"
-#include "skissm/group_session.h"
-#include "skissm/mem_util.h"
-#include "skissm/session.h"
-#include "skissm/skissm.h"
+#include "e2ees/account.h"
+#include "e2ees/crypto.h"
+#include "e2ees/e2ees_client.h"
+#include "e2ees/group_session.h"
+#include "e2ees/mem_util.h"
+#include "e2ees/session.h"
+#include "e2ees/e2ees.h"
 
 #include "test_plugin.h"
 #include "mock_db.h"
@@ -37,47 +37,47 @@ void test_unload_group_session_by_id(){
     tear_up();
 
     // create two addresses
-    Skissm__E2eeAddress *Alice, *Bob;
+    E2ees__E2eeAddress *Alice, *Bob;
     mock_address(&Alice, "alice", E2EELAB_DOMAIN, "alice's device");
     mock_address(&Bob, "bob", E2EELAB_DOMAIN, "bob's device");
 
     // the first group member is Alice
-    Skissm__GroupMember **group_member_list = (Skissm__GroupMember **)malloc(sizeof(Skissm__GroupMember *) * 2);
-    group_member_list[0] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_member_list[0]);
+    E2ees__GroupMember **group_member_list = (E2ees__GroupMember **)malloc(sizeof(E2ees__GroupMember *) * 2);
+    group_member_list[0] = (E2ees__GroupMember *)malloc(sizeof(E2ees__GroupMember));
+    e2ees__group_member__init(group_member_list[0]);
     group_member_list[0]->user_id = strdup(Alice->user->user_id);
     group_member_list[0]->domain = strdup(Alice->domain);
-    group_member_list[0]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MANAGER;
+    group_member_list[0]->role = E2EES__GROUP_ROLE__GROUP_ROLE_MANAGER;
     // the second group member is Bob
-    group_member_list[1] = (Skissm__GroupMember *)malloc(sizeof(Skissm__GroupMember));
-    skissm__group_member__init(group_member_list[1]);
+    group_member_list[1] = (E2ees__GroupMember *)malloc(sizeof(E2ees__GroupMember));
+    e2ees__group_member__init(group_member_list[1]);
     group_member_list[1]->user_id = strdup(Bob->user->user_id);
     group_member_list[1]->domain = strdup(Bob->domain);
-    group_member_list[1]->role = SKISSM__GROUP_ROLE__GROUP_ROLE_MEMBER;
+    group_member_list[1]->role = E2EES__GROUP_ROLE__GROUP_ROLE_MEMBER;
 
     // mock group address
-    Skissm__E2eeAddress *group_address = (Skissm__E2eeAddress *)malloc(sizeof(Skissm__E2eeAddress));
-    skissm__e2ee_address__init(group_address);
-    group_address->group = (Skissm__PeerGroup *)malloc(sizeof(Skissm__PeerGroup));
-    skissm__peer_group__init(group_address->group);
-    group_address->peer_case = SKISSM__E2EE_ADDRESS__PEER_GROUP;
+    E2ees__E2eeAddress *group_address = (E2ees__E2eeAddress *)malloc(sizeof(E2ees__E2eeAddress));
+    e2ees__e2ee_address__init(group_address);
+    group_address->group = (E2ees__PeerGroup *)malloc(sizeof(E2ees__PeerGroup));
+    e2ees__peer_group__init(group_address->group);
+    group_address->peer_case = E2EES__E2EE_ADDRESS__PEER_GROUP;
     group_address->domain = mock_domain_str();
     group_address->group->group_id = generate_uuid_str();
 
     // create inbound group session
-    Skissm__GroupSession *group_session = (Skissm__GroupSession *)malloc(sizeof(Skissm__GroupSession));
-    skissm__group_session__init(group_session);
+    E2ees__GroupSession *group_session = (E2ees__GroupSession *)malloc(sizeof(E2ees__GroupSession));
+    e2ees__group_session__init(group_session);
 
-    group_session->version = strdup(E2EE_PROTOCOL_VERSION);
+    group_session->version = strdup(E2EES_PROTOCOL_VERSION);
 
     copy_address_from_address(&(group_session->sender), Alice);
     copy_address_from_address(&(group_session->session_owner), Alice);
     group_session->session_id = generate_uuid_str();
 
     group_session->group_info =
-    (Skissm__GroupInfo *)malloc(sizeof(Skissm__GroupInfo));
-    Skissm__GroupInfo *group_info = group_session->group_info;
-    skissm__group_info__init(group_info);
+    (E2ees__GroupInfo *)malloc(sizeof(E2ees__GroupInfo));
+    E2ees__GroupInfo *group_info = group_session->group_info;
+    e2ees__group_info__init(group_info);
     group_info->group_name = strdup("test_group");
     copy_address_from_address(&(group_info->group_address), group_address);
     group_info->n_group_member_list = 2;
@@ -87,7 +87,7 @@ void test_unload_group_session_by_id(){
 
     group_session->chain_key.len = 32;
     group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * 32);
-    get_skissm_plugin()->common_handler.gen_rand(group_session->chain_key.data, 32);
+    get_e2ees_plugin()->common_handler.gen_rand(group_session->chain_key.data, 32);
 
     group_session->associated_data.len = 64;
     group_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * 64);
@@ -101,21 +101,21 @@ void test_unload_group_session_by_id(){
     unload_group_session_by_id(Alice, group_session->session_id);
 
     // try to load the unloaded group session
-    Skissm__GroupSession *group_session_copy = NULL;
+    E2ees__GroupSession *group_session_copy = NULL;
     load_group_session_by_id(Alice, Alice, group_session->session_id, &group_session_copy);
 
     // assert group_session_copy is NULL
     print_result("test_unload_group_session_by_id", (group_session_copy == NULL));
 
     // free
-    skissm__e2ee_address__free_unpacked(Alice, NULL);
-    skissm__e2ee_address__free_unpacked(Bob, NULL);
-    skissm__group_member__free_unpacked(group_member_list[0], NULL);
-    skissm__group_member__free_unpacked(group_member_list[1], NULL);
+    e2ees__e2ee_address__free_unpacked(Alice, NULL);
+    e2ees__e2ee_address__free_unpacked(Bob, NULL);
+    e2ees__group_member__free_unpacked(group_member_list[0], NULL);
+    e2ees__group_member__free_unpacked(group_member_list[1], NULL);
     free(group_member_list);
-    skissm__e2ee_address__free_unpacked(group_address, NULL);
-    skissm__group_session__free_unpacked(group_session, NULL);
-    skissm__group_session__free_unpacked(group_session_copy, NULL);
+    e2ees__e2ee_address__free_unpacked(group_address, NULL);
+    e2ees__group_session__free_unpacked(group_session, NULL);
+    e2ees__group_session__free_unpacked(group_session_copy, NULL);
 
     tear_down();
 }

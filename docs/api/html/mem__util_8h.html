@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/mem_util.h File Reference</title>
+<title>E2EES: include/e2ees/mem_util.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -98,14 +98,16 @@ $(function(){ initResizable(false); });
 <div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;stddef.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="skissm_8h_source.html">skissm/skissm.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="e2ees_8h_source.html">e2ees/e2ees.h</a>&quot;</code><br />
 </div>
 <p><a href="mem__util_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ac09f1868695fde36561a5b8b4e75a811" id="r_ac09f1868695fde36561a5b8b4e75a811"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac09f1868695fde36561a5b8b4e75a811">free_proto</a>(name)</td></tr>
-<tr class="separator:ac09f1868695fde36561a5b8b4e75a811"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93e42f3f52063148fbf1ff5fcf4ace74" id="r_a93e42f3f52063148fbf1ff5fcf4ace74"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93e42f3f52063148fbf1ff5fcf4ace74">free_string</a>(arg)</td></tr>
+<tr class="separator:a93e42f3f52063148fbf1ff5fcf4ace74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af45986259d8da02d4a59be7b902c4c3f" id="r_af45986259d8da02d4a59be7b902c4c3f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af45986259d8da02d4a59be7b902c4c3f">free_proto</a>(arg)</td></tr>
+<tr class="separator:af45986259d8da02d4a59be7b902c4c3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -123,27 +125,27 @@ Functions</h2></td></tr>
 <tr class="memitem:acaf04287564cbb5a3662c896622257d5" id="r_acaf04287564cbb5a3662c896622257d5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acaf04287564cbb5a3662c896622257d5">safe_strcmp</a> (const char *str_1, const char *str_2)</td></tr>
 <tr class="memdesc:acaf04287564cbb5a3662c896622257d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two char string that can be NULL.  <br /></td></tr>
 <tr class="separator:acaf04287564cbb5a3662c896622257d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ef01c200e2ad9d6de7c7ca2bd116fe1" id="r_a5ef01c200e2ad9d6de7c7ca2bd116fe1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ef01c200e2ad9d6de7c7ca2bd116fe1">compare_user_id</a> (Skissm__E2eeAddress *address, const char *user_id, const char *domain)</td></tr>
-<tr class="memdesc:a5ef01c200e2ad9d6de7c7ca2bd116fe1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two user's ids.  <br /></td></tr>
-<tr class="separator:a5ef01c200e2ad9d6de7c7ca2bd116fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aacb95aedc72866264233411ab7fc5f9c" id="r_aacb95aedc72866264233411ab7fc5f9c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aacb95aedc72866264233411ab7fc5f9c">compare_address</a> (Skissm__E2eeAddress *address_1, Skissm__E2eeAddress *address_2)</td></tr>
-<tr class="memdesc:aacb95aedc72866264233411ab7fc5f9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two Skissm__E2eeAddress objects.  <br /></td></tr>
-<tr class="separator:aacb95aedc72866264233411ab7fc5f9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30459451415ece193eb01a12cafa1a72" id="r_a30459451415ece193eb01a12cafa1a72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a30459451415ece193eb01a12cafa1a72">compare_group_member</a> (Skissm__GroupMember **group_members_1, size_t group_member_num_1, Skissm__GroupMember **group_members_2, size_t group_member_num_2)</td></tr>
-<tr class="memdesc:a30459451415ece193eb01a12cafa1a72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compaare two Skissm__GroupMember arrays.  <br /></td></tr>
-<tr class="separator:a30459451415ece193eb01a12cafa1a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52538a3024b4576f26801089eb085519" id="r_a52538a3024b4576f26801089eb085519"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a52538a3024b4576f26801089eb085519">compare_user_id</a> (E2ees__E2eeAddress *address, const char *user_id, const char *domain)</td></tr>
+<tr class="memdesc:a52538a3024b4576f26801089eb085519"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two user's ids.  <br /></td></tr>
+<tr class="separator:a52538a3024b4576f26801089eb085519"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb851ab1088cb5c0b744e9bd563ca6cc" id="r_adb851ab1088cb5c0b744e9bd563ca6cc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb851ab1088cb5c0b744e9bd563ca6cc">compare_address</a> (E2ees__E2eeAddress *address_1, E2ees__E2eeAddress *address_2)</td></tr>
+<tr class="memdesc:adb851ab1088cb5c0b744e9bd563ca6cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare two E2ees__E2eeAddress objects.  <br /></td></tr>
+<tr class="separator:adb851ab1088cb5c0b744e9bd563ca6cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab523305c2bbb180c751e215a6eb0282f" id="r_ab523305c2bbb180c751e215a6eb0282f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab523305c2bbb180c751e215a6eb0282f">compare_group_member</a> (E2ees__GroupMember **group_members_1, size_t group_member_num_1, E2ees__GroupMember **group_members_2, size_t group_member_num_2)</td></tr>
+<tr class="memdesc:ab523305c2bbb180c751e215a6eb0282f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compaare two E2ees__GroupMember arrays.  <br /></td></tr>
+<tr class="separator:ab523305c2bbb180c751e215a6eb0282f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36d44ad52211f32b13d2b6cdc672607a" id="r_a36d44ad52211f32b13d2b6cdc672607a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36d44ad52211f32b13d2b6cdc672607a">init_protobuf</a> (ProtobufCBinaryData *dest)</td></tr>
 <tr class="memdesc:a36d44ad52211f32b13d2b6cdc672607a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the ProtobufCBinaryData.  <br /></td></tr>
 <tr class="separator:a36d44ad52211f32b13d2b6cdc672607a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6035838a960c7a620c83957b4b5f1eb" id="r_ab6035838a960c7a620c83957b4b5f1eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6035838a960c7a620c83957b4b5f1eb">malloc_protobuf</a> (ProtobufCBinaryData *dest, size_t len)</td></tr>
 <tr class="memdesc:ab6035838a960c7a620c83957b4b5f1eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Malloc the ProtobufCBinaryData with given len.  <br /></td></tr>
 <tr class="separator:ab6035838a960c7a620c83957b4b5f1eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a735d12d4ffcd8cea2eee9561f62f155e" id="r_a735d12d4ffcd8cea2eee9561f62f155e"><td class="memItemLeft" align="right" valign="top"><a id="a735d12d4ffcd8cea2eee9561f62f155e" name="a735d12d4ffcd8cea2eee9561f62f155e"></a>
-uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><b>get_identity_public_key_ds_uint8_from_account</b> (Skissm__Account *src)</td></tr>
-<tr class="separator:a735d12d4ffcd8cea2eee9561f62f155e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae650cd414e3874170c10a9efe7fdcbaf" id="r_ae650cd414e3874170c10a9efe7fdcbaf"><td class="memItemLeft" align="right" valign="top"><a id="ae650cd414e3874170c10a9efe7fdcbaf" name="ae650cd414e3874170c10a9efe7fdcbaf"></a>
-ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_identity_public_key_ds_bytes_from_account</b> (Skissm__Account *src)</td></tr>
-<tr class="separator:ae650cd414e3874170c10a9efe7fdcbaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77f3840f0e1749260887dd849b5438b8" id="r_a77f3840f0e1749260887dd849b5438b8"><td class="memItemLeft" align="right" valign="top"><a id="a77f3840f0e1749260887dd849b5438b8" name="a77f3840f0e1749260887dd849b5438b8"></a>
+uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><b>get_identity_public_key_ds_uint8_from_account</b> (E2ees__Account *src)</td></tr>
+<tr class="separator:a77f3840f0e1749260887dd849b5438b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a897b4af6aaf9cb3c339ad172a358c3a6" id="r_a897b4af6aaf9cb3c339ad172a358c3a6"><td class="memItemLeft" align="right" valign="top"><a id="a897b4af6aaf9cb3c339ad172a358c3a6" name="a897b4af6aaf9cb3c339ad172a358c3a6"></a>
+ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_identity_public_key_ds_bytes_from_account</b> (E2ees__Account *src)</td></tr>
+<tr class="separator:a897b4af6aaf9cb3c339ad172a358c3a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf538490e6385b7e1478111e25d1029d" id="r_adf538490e6385b7e1478111e25d1029d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf538490e6385b7e1478111e25d1029d">copy_protobuf_from_protobuf</a> (ProtobufCBinaryData *dest, const ProtobufCBinaryData *src)</td></tr>
 <tr class="memdesc:adf538490e6385b7e1478111e25d1029d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy ProtobufCBinaryData from src to dest.  <br /></td></tr>
 <tr class="separator:adf538490e6385b7e1478111e25d1029d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,123 +161,120 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
 <tr class="memitem:a4fb4213e819b3b7fc42a2fe394810cd8" id="r_a4fb4213e819b3b7fc42a2fe394810cd8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4fb4213e819b3b7fc42a2fe394810cd8">copy_protobuf_list_from_protobuf_list</a> (ProtobufCBinaryData *dest, const ProtobufCBinaryData *src, size_t protobuf_num)</td></tr>
 <tr class="memdesc:a4fb4213e819b3b7fc42a2fe394810cd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy ProtobufCBinaryData list from src to dest.  <br /></td></tr>
 <tr class="separator:a4fb4213e819b3b7fc42a2fe394810cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1f0397393f2f0be30814a764bb4fd32" id="r_ac1f0397393f2f0be30814a764bb4fd32"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1f0397393f2f0be30814a764bb4fd32">copy_address_from_address</a> (Skissm__E2eeAddress **dest, const Skissm__E2eeAddress *src)</td></tr>
-<tr class="memdesc:ac1f0397393f2f0be30814a764bb4fd32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__E2eeAddress from src to dest.  <br /></td></tr>
-<tr class="separator:ac1f0397393f2f0be30814a764bb4fd32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32d07c33cc3bdcfd95cd571f9095c10e" id="r_a32d07c33cc3bdcfd95cd571f9095c10e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a32d07c33cc3bdcfd95cd571f9095c10e">copy_key_pair_from_key_pair</a> (Skissm__KeyPair **dest, Skissm__KeyPair *src)</td></tr>
-<tr class="memdesc:a32d07c33cc3bdcfd95cd571f9095c10e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__KeyPair from src to dest.  <br /></td></tr>
-<tr class="separator:a32d07c33cc3bdcfd95cd571f9095c10e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbdbf141707ff3cfb1ac8d28658d3492" id="r_acbdbf141707ff3cfb1ac8d28658d3492"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acbdbf141707ff3cfb1ac8d28658d3492">copy_ik_from_ik</a> (Skissm__IdentityKey **dest, Skissm__IdentityKey *src)</td></tr>
-<tr class="memdesc:acbdbf141707ff3cfb1ac8d28658d3492"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__IdentityKey from src to dest.  <br /></td></tr>
-<tr class="separator:acbdbf141707ff3cfb1ac8d28658d3492"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77730aa637919b266fb9c1dcc28669d8" id="r_a77730aa637919b266fb9c1dcc28669d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77730aa637919b266fb9c1dcc28669d8">copy_spk_from_spk</a> (Skissm__SignedPreKey **dest, Skissm__SignedPreKey *src)</td></tr>
-<tr class="memdesc:a77730aa637919b266fb9c1dcc28669d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__SignedPreKey from src to dest.  <br /></td></tr>
-<tr class="separator:a77730aa637919b266fb9c1dcc28669d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3f5ddc5932a9a884226f2406f9bf642" id="r_ae3f5ddc5932a9a884226f2406f9bf642"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae3f5ddc5932a9a884226f2406f9bf642">copy_opks_from_opks</a> (Skissm__OneTimePreKey ***dest, Skissm__OneTimePreKey **src, size_t opk_num)</td></tr>
-<tr class="memdesc:ae3f5ddc5932a9a884226f2406f9bf642"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__OneTimePreKey from src to dest.  <br /></td></tr>
-<tr class="separator:ae3f5ddc5932a9a884226f2406f9bf642"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acef1e409e01c1ee68cd4531201459523" id="r_acef1e409e01c1ee68cd4531201459523"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acef1e409e01c1ee68cd4531201459523">copy_subject_from_subject</a> (Skissm__Subject **dest, Skissm__Subject *src)</td></tr>
-<tr class="memdesc:acef1e409e01c1ee68cd4531201459523"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__Subject from src to dest.  <br /></td></tr>
-<tr class="separator:acef1e409e01c1ee68cd4531201459523"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72fcf214d100cb424153b38a0dbf43ed" id="r_a72fcf214d100cb424153b38a0dbf43ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a72fcf214d100cb424153b38a0dbf43ed">copy_cert_from_cert</a> (Skissm__Cert **dest, Skissm__Cert *src)</td></tr>
-<tr class="memdesc:a72fcf214d100cb424153b38a0dbf43ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__Cert from src to dest.  <br /></td></tr>
-<tr class="separator:a72fcf214d100cb424153b38a0dbf43ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcd042a5b25fe5f69d469c6b9f516cbe" id="r_afcd042a5b25fe5f69d469c6b9f516cbe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afcd042a5b25fe5f69d469c6b9f516cbe">copy_certificate_from_certificate</a> (Skissm__Certificate **dest, Skissm__Certificate *src)</td></tr>
-<tr class="memdesc:afcd042a5b25fe5f69d469c6b9f516cbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__Certificate from src to dest.  <br /></td></tr>
-<tr class="separator:afcd042a5b25fe5f69d469c6b9f516cbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d0aa5eb4d944115658b69922bdec638" id="r_a4d0aa5eb4d944115658b69922bdec638"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d0aa5eb4d944115658b69922bdec638">copy_account_from_account</a> (Skissm__Account **dest, Skissm__Account *src)</td></tr>
-<tr class="memdesc:a4d0aa5eb4d944115658b69922bdec638"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__Account from src to dest.  <br /></td></tr>
-<tr class="separator:a4d0aa5eb4d944115658b69922bdec638"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe436580d84f1fe668492a433fd2130c" id="r_afe436580d84f1fe668492a433fd2130c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe436580d84f1fe668492a433fd2130c">copy_chain_key_from_chain_key</a> (Skissm__ChainKey **dest, Skissm__ChainKey *src)</td></tr>
-<tr class="memdesc:afe436580d84f1fe668492a433fd2130c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__ChainKey from src to dest.  <br /></td></tr>
-<tr class="separator:afe436580d84f1fe668492a433fd2130c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10302ce2ad7bd70cf6636b50d2561ad5" id="r_a10302ce2ad7bd70cf6636b50d2561ad5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a10302ce2ad7bd70cf6636b50d2561ad5">copy_msg_key_from_msg_key</a> (Skissm__MsgKey **dest, Skissm__MsgKey *src)</td></tr>
-<tr class="memdesc:a10302ce2ad7bd70cf6636b50d2561ad5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__MsgKey from src to dest.  <br /></td></tr>
-<tr class="separator:a10302ce2ad7bd70cf6636b50d2561ad5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fc32eed107fce573728132d99a5190b" id="r_a7fc32eed107fce573728132d99a5190b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7fc32eed107fce573728132d99a5190b">copy_sender_chain_from_sender_chain</a> (Skissm__SenderChainNode **dest, Skissm__SenderChainNode *src)</td></tr>
-<tr class="memdesc:a7fc32eed107fce573728132d99a5190b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__SenderChainNode from src to dest.  <br /></td></tr>
-<tr class="separator:a7fc32eed107fce573728132d99a5190b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c9fe8f20f23d3fe686c6935c33c0b19" id="r_a1c9fe8f20f23d3fe686c6935c33c0b19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c9fe8f20f23d3fe686c6935c33c0b19">copy_receiver_chain_from_receiver_chain</a> (Skissm__ReceiverChainNode **dest, Skissm__ReceiverChainNode *src)</td></tr>
-<tr class="memdesc:a1c9fe8f20f23d3fe686c6935c33c0b19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__ReceiverChainNode from src to dest.  <br /></td></tr>
-<tr class="separator:a1c9fe8f20f23d3fe686c6935c33c0b19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02b44916c5a882bc79a98058be4ee668" id="r_a02b44916c5a882bc79a98058be4ee668"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02b44916c5a882bc79a98058be4ee668">copy_skipped_msg_keys_from_skipped_msg_keys</a> (Skissm__SkippedMsgKeyNode ***dest, Skissm__SkippedMsgKeyNode **src, size_t skipped_msg_keys_num)</td></tr>
-<tr class="memdesc:a02b44916c5a882bc79a98058be4ee668"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__SkippedMsgKeyNode from src to dest.  <br /></td></tr>
-<tr class="separator:a02b44916c5a882bc79a98058be4ee668"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2bc6f23c4a0a37cdc6c784550200aac1" id="r_a2bc6f23c4a0a37cdc6c784550200aac1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2bc6f23c4a0a37cdc6c784550200aac1">copy_ratchet_from_ratchet</a> (Skissm__Ratchet **dest, Skissm__Ratchet *src)</td></tr>
-<tr class="memdesc:a2bc6f23c4a0a37cdc6c784550200aac1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__Ratchet from src to dest.  <br /></td></tr>
-<tr class="separator:a2bc6f23c4a0a37cdc6c784550200aac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0510055d9da808add115a74403a65fe" id="r_af0510055d9da808add115a74403a65fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af0510055d9da808add115a74403a65fe">copy_session_from_session</a> (Skissm__Session **dest, Skissm__Session *src)</td></tr>
-<tr class="memdesc:af0510055d9da808add115a74403a65fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__Session from src to dest.  <br /></td></tr>
-<tr class="separator:af0510055d9da808add115a74403a65fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bb100133c25d7d3d083531be1536abb" id="r_a0bb100133c25d7d3d083531be1536abb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bb100133c25d7d3d083531be1536abb">copy_ik_public_from_ik_public</a> (Skissm__IdentityKeyPublic **dest, Skissm__IdentityKeyPublic *src)</td></tr>
-<tr class="memdesc:a0bb100133c25d7d3d083531be1536abb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__IdentityKeyPublic from src to dest.  <br /></td></tr>
-<tr class="separator:a0bb100133c25d7d3d083531be1536abb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ca625ace75cccf4ef7a63c8f0193d1b" id="r_a5ca625ace75cccf4ef7a63c8f0193d1b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ca625ace75cccf4ef7a63c8f0193d1b">copy_spk_public_from_spk_public</a> (Skissm__SignedPreKeyPublic **dest, Skissm__SignedPreKeyPublic *src)</td></tr>
-<tr class="memdesc:a5ca625ace75cccf4ef7a63c8f0193d1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__SignedPreKeyPublic from src to dest.  <br /></td></tr>
-<tr class="separator:a5ca625ace75cccf4ef7a63c8f0193d1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e980b596f65e036d445bbb975449717" id="r_a6e980b596f65e036d445bbb975449717"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6e980b596f65e036d445bbb975449717">copy_opk_public_from_opk_public</a> (Skissm__OneTimePreKeyPublic **dest, Skissm__OneTimePreKeyPublic *src)</td></tr>
-<tr class="memdesc:a6e980b596f65e036d445bbb975449717"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__OneTimePreKeyPublic from src to dest.  <br /></td></tr>
-<tr class="separator:a6e980b596f65e036d445bbb975449717"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb0b86a387f139632320bb22f1ed2e12" id="r_aeb0b86a387f139632320bb22f1ed2e12"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb0b86a387f139632320bb22f1ed2e12">copy_group_member_id</a> (Skissm__GroupMemberInfo **dest, Skissm__GroupMemberInfo *src)</td></tr>
-<tr class="memdesc:aeb0b86a387f139632320bb22f1ed2e12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__GroupMemberInfo from src to dest.  <br /></td></tr>
-<tr class="separator:aeb0b86a387f139632320bb22f1ed2e12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af39f0903813fb614b393fc250948da9d" id="r_af39f0903813fb614b393fc250948da9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af39f0903813fb614b393fc250948da9d">copy_group_member_ids</a> (Skissm__GroupMemberInfo ***dest, Skissm__GroupMemberInfo **src, size_t to_member_addresses_total_num)</td></tr>
-<tr class="memdesc:af39f0903813fb614b393fc250948da9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__GroupMemberInfo array from src to dest.  <br /></td></tr>
-<tr class="separator:af39f0903813fb614b393fc250948da9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4dab70dafaefe4e5a0217a820c5a8c09" id="r_a4dab70dafaefe4e5a0217a820c5a8c09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4dab70dafaefe4e5a0217a820c5a8c09">copy_group_member</a> (Skissm__GroupMember **dest, Skissm__GroupMember *src)</td></tr>
-<tr class="memdesc:a4dab70dafaefe4e5a0217a820c5a8c09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__GroupMember from src to dest.  <br /></td></tr>
-<tr class="separator:a4dab70dafaefe4e5a0217a820c5a8c09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fb0a33b097e82a45325e1c5ee93e25c" id="r_a4fb0a33b097e82a45325e1c5ee93e25c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4fb0a33b097e82a45325e1c5ee93e25c">copy_group_members</a> (Skissm__GroupMember ***dest, Skissm__GroupMember **src, size_t group_members_num)</td></tr>
-<tr class="memdesc:a4fb0a33b097e82a45325e1c5ee93e25c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__GroupMember array from src to dest.  <br /></td></tr>
-<tr class="separator:a4fb0a33b097e82a45325e1c5ee93e25c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a691aec59dad9f630a0fd5d31232277c7" id="r_a691aec59dad9f630a0fd5d31232277c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a691aec59dad9f630a0fd5d31232277c7">copy_group_info</a> (Skissm__GroupInfo **dest, Skissm__GroupInfo *src)</td></tr>
-<tr class="memdesc:a691aec59dad9f630a0fd5d31232277c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__GroupInfo from src to dest.  <br /></td></tr>
-<tr class="separator:a691aec59dad9f630a0fd5d31232277c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade001e7fef83f8ec85bf25d55d9ec7cc" id="r_ade001e7fef83f8ec85bf25d55d9ec7cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ade001e7fef83f8ec85bf25d55d9ec7cc">copy_create_group_msg</a> (Skissm__CreateGroupMsg **dest, Skissm__CreateGroupMsg *src)</td></tr>
-<tr class="memdesc:ade001e7fef83f8ec85bf25d55d9ec7cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__CreateGroupMsg from src to dest.  <br /></td></tr>
-<tr class="separator:ade001e7fef83f8ec85bf25d55d9ec7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fc358de42278810c7c708ad52325933" id="r_a8fc358de42278810c7c708ad52325933"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8fc358de42278810c7c708ad52325933">copy_add_group_members_msg</a> (Skissm__AddGroupMembersMsg **dest, Skissm__AddGroupMembersMsg *src)</td></tr>
-<tr class="memdesc:a8fc358de42278810c7c708ad52325933"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__AddGroupMembersMsg from src to dest.  <br /></td></tr>
-<tr class="separator:a8fc358de42278810c7c708ad52325933"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03be53f60d9a88e514c38aeb6fbd3eed" id="r_a03be53f60d9a88e514c38aeb6fbd3eed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03be53f60d9a88e514c38aeb6fbd3eed">copy_add_group_member_device_msg</a> (Skissm__AddGroupMemberDeviceMsg **dest, Skissm__AddGroupMemberDeviceMsg *src)</td></tr>
-<tr class="memdesc:a03be53f60d9a88e514c38aeb6fbd3eed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__AddGroupMemberDeviceMsg from src to dest.  <br /></td></tr>
-<tr class="separator:a03be53f60d9a88e514c38aeb6fbd3eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2c85c9581a8b9ffa936a8eb788f6cfc" id="r_ab2c85c9581a8b9ffa936a8eb788f6cfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab2c85c9581a8b9ffa936a8eb788f6cfc">copy_remove_group_members_msg</a> (Skissm__RemoveGroupMembersMsg **dest, Skissm__RemoveGroupMembersMsg *src)</td></tr>
-<tr class="memdesc:ab2c85c9581a8b9ffa936a8eb788f6cfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__RemoveGroupMembersMsg from src to dest.  <br /></td></tr>
-<tr class="separator:ab2c85c9581a8b9ffa936a8eb788f6cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc5ddafeee8df2893b9a6e349ee370f7" id="r_adc5ddafeee8df2893b9a6e349ee370f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc5ddafeee8df2893b9a6e349ee370f7">copy_leave_group_msg</a> (Skissm__LeaveGroupMsg **dest, Skissm__LeaveGroupMsg *src)</td></tr>
-<tr class="memdesc:adc5ddafeee8df2893b9a6e349ee370f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy Skissm__LeaveGroupMsg from src to dest.  <br /></td></tr>
-<tr class="separator:adc5ddafeee8df2893b9a6e349ee370f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad213c810049364e0d1f44d01961f90ba" id="r_ad213c810049364e0d1f44d01961f90ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad213c810049364e0d1f44d01961f90ba">add_group_members_to_group_info</a> (Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **adding_members, size_t adding_members_num)</td></tr>
-<tr class="memdesc:ad213c810049364e0d1f44d01961f90ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add new Skissm__GroupMember array to dest.  <br /></td></tr>
-<tr class="separator:ad213c810049364e0d1f44d01961f90ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ba27d0df4c5016bf1abfa92a33f663d" id="r_a6ba27d0df4c5016bf1abfa92a33f663d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6ba27d0df4c5016bf1abfa92a33f663d">remove_group_members_from_group_info</a> (Skissm__GroupInfo **dest, Skissm__GroupInfo *old_group_info, Skissm__GroupMember **removing_members, size_t removing_members_num)</td></tr>
-<tr class="memdesc:a6ba27d0df4c5016bf1abfa92a33f663d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove some Skissm__GroupMember from old_group_info.  <br /></td></tr>
-<tr class="separator:a6ba27d0df4c5016bf1abfa92a33f663d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5bb6351db01a906ef70252c2d39c23e" id="r_aa5bb6351db01a906ef70252c2d39c23e"><td class="memItemLeft" align="right" valign="top">Skissm__GroupMember *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5bb6351db01a906ef70252c2d39c23e">member_info_to_group_member</a> (Skissm__GroupMemberInfo *member_info)</td></tr>
-<tr class="memdesc:aa5bb6351db01a906ef70252c2d39c23e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy member info to group member.  <br /></td></tr>
-<tr class="separator:aa5bb6351db01a906ef70252c2d39c23e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87e5d5beabec64a4ce955668b8b8f43c" id="r_a87e5d5beabec64a4ce955668b8b8f43c"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a87e5d5beabec64a4ce955668b8b8f43c">member_info_to_group_members</a> (Skissm__GroupMember ***dest, Skissm__GroupMemberInfo **member_info_list, size_t member_info_list_num, Skissm__GroupMember **member_list, size_t member_list_num)</td></tr>
-<tr class="memdesc:a87e5d5beabec64a4ce955668b8b8f43c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collect unique user ID from member_info_list then convert and collect it into member_list.  <br /></td></tr>
-<tr class="separator:a87e5d5beabec64a4ce955668b8b8f43c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4101f07085b61c37e95eb37cf75eda3d" id="r_a4101f07085b61c37e95eb37cf75eda3d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4101f07085b61c37e95eb37cf75eda3d">free_e2ee_addresses</a> (Skissm__E2eeAddress ***dest, size_t e2ee_addresses_num)</td></tr>
-<tr class="memdesc:a4101f07085b61c37e95eb37cf75eda3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release memory of Skissm__E2eeAddress array.  <br /></td></tr>
-<tr class="separator:a4101f07085b61c37e95eb37cf75eda3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20fb6f6fb0fc02291c74097c7bd6992e" id="r_a20fb6f6fb0fc02291c74097c7bd6992e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20fb6f6fb0fc02291c74097c7bd6992e">free_invite_response_list</a> (Skissm__InviteResponse ***dest, size_t invite_response_num)</td></tr>
-<tr class="memdesc:a20fb6f6fb0fc02291c74097c7bd6992e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release memory of Skissm__InviteResponse array.  <br /></td></tr>
-<tr class="separator:a20fb6f6fb0fc02291c74097c7bd6992e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada50d2b0db09c3de8f055212f19a7568" id="r_ada50d2b0db09c3de8f055212f19a7568"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ada50d2b0db09c3de8f055212f19a7568">free_group_members</a> (Skissm__GroupMember ***dest, size_t group_members_num)</td></tr>
-<tr class="memdesc:ada50d2b0db09c3de8f055212f19a7568"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release memory of Skissm__GroupMember array.  <br /></td></tr>
-<tr class="separator:ada50d2b0db09c3de8f055212f19a7568"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d2c9c21c0ec9d6b5bf1587ab9a93b19" id="r_a5d2c9c21c0ec9d6b5bf1587ab9a93b19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5d2c9c21c0ec9d6b5bf1587ab9a93b19">copy_address_from_address</a> (E2ees__E2eeAddress **dest, const E2ees__E2eeAddress *src)</td></tr>
+<tr class="memdesc:a5d2c9c21c0ec9d6b5bf1587ab9a93b19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__E2eeAddress from src to dest.  <br /></td></tr>
+<tr class="separator:a5d2c9c21c0ec9d6b5bf1587ab9a93b19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a744421e3f996c8e46dbcd3b5acab9002" id="r_a744421e3f996c8e46dbcd3b5acab9002"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a744421e3f996c8e46dbcd3b5acab9002">copy_key_pair_from_key_pair</a> (E2ees__KeyPair **dest, E2ees__KeyPair *src)</td></tr>
+<tr class="memdesc:a744421e3f996c8e46dbcd3b5acab9002"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__KeyPair from src to dest.  <br /></td></tr>
+<tr class="separator:a744421e3f996c8e46dbcd3b5acab9002"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92365c9893d57095101648eb37cd5f63" id="r_a92365c9893d57095101648eb37cd5f63"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92365c9893d57095101648eb37cd5f63">copy_ik_from_ik</a> (E2ees__IdentityKey **dest, E2ees__IdentityKey *src)</td></tr>
+<tr class="memdesc:a92365c9893d57095101648eb37cd5f63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__IdentityKey from src to dest.  <br /></td></tr>
+<tr class="separator:a92365c9893d57095101648eb37cd5f63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7525482eb77ee7a59a477e9afde0603" id="r_ab7525482eb77ee7a59a477e9afde0603"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab7525482eb77ee7a59a477e9afde0603">copy_spk_from_spk</a> (E2ees__SignedPreKey **dest, E2ees__SignedPreKey *src)</td></tr>
+<tr class="memdesc:ab7525482eb77ee7a59a477e9afde0603"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__SignedPreKey from src to dest.  <br /></td></tr>
+<tr class="separator:ab7525482eb77ee7a59a477e9afde0603"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38e94d642ddf60c33965d4c45d38d31e" id="r_a38e94d642ddf60c33965d4c45d38d31e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a38e94d642ddf60c33965d4c45d38d31e">copy_opks_from_opks</a> (E2ees__OneTimePreKey ***dest, E2ees__OneTimePreKey **src, size_t opk_num)</td></tr>
+<tr class="memdesc:a38e94d642ddf60c33965d4c45d38d31e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__OneTimePreKey from src to dest.  <br /></td></tr>
+<tr class="separator:a38e94d642ddf60c33965d4c45d38d31e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe230bea0c2423e6b3f0e6bb20a5ffe7" id="r_abe230bea0c2423e6b3f0e6bb20a5ffe7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe230bea0c2423e6b3f0e6bb20a5ffe7">copy_subject_from_subject</a> (E2ees__Subject **dest, E2ees__Subject *src)</td></tr>
+<tr class="memdesc:abe230bea0c2423e6b3f0e6bb20a5ffe7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__Subject from src to dest.  <br /></td></tr>
+<tr class="separator:abe230bea0c2423e6b3f0e6bb20a5ffe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3925641b5835260ee21a6c6ef374ee35" id="r_a3925641b5835260ee21a6c6ef374ee35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3925641b5835260ee21a6c6ef374ee35">copy_cert_from_cert</a> (E2ees__Cert **dest, E2ees__Cert *src)</td></tr>
+<tr class="memdesc:a3925641b5835260ee21a6c6ef374ee35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__Cert from src to dest.  <br /></td></tr>
+<tr class="separator:a3925641b5835260ee21a6c6ef374ee35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5faa218482405eb0280d809d2f41a853" id="r_a5faa218482405eb0280d809d2f41a853"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5faa218482405eb0280d809d2f41a853">copy_certificate_from_certificate</a> (E2ees__Certificate **dest, E2ees__Certificate *src)</td></tr>
+<tr class="memdesc:a5faa218482405eb0280d809d2f41a853"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__Certificate from src to dest.  <br /></td></tr>
+<tr class="separator:a5faa218482405eb0280d809d2f41a853"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab76b8ca376dc2f0699502219873f6bc1" id="r_ab76b8ca376dc2f0699502219873f6bc1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab76b8ca376dc2f0699502219873f6bc1">copy_account_from_account</a> (E2ees__Account **dest, E2ees__Account *src)</td></tr>
+<tr class="memdesc:ab76b8ca376dc2f0699502219873f6bc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__Account from src to dest.  <br /></td></tr>
+<tr class="separator:ab76b8ca376dc2f0699502219873f6bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae63f012122d19816bc29c6c70bbbc188" id="r_ae63f012122d19816bc29c6c70bbbc188"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae63f012122d19816bc29c6c70bbbc188">copy_chain_key_from_chain_key</a> (E2ees__ChainKey **dest, E2ees__ChainKey *src)</td></tr>
+<tr class="memdesc:ae63f012122d19816bc29c6c70bbbc188"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__ChainKey from src to dest.  <br /></td></tr>
+<tr class="separator:ae63f012122d19816bc29c6c70bbbc188"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a117aa8c9d7586959be2699be88981043" id="r_a117aa8c9d7586959be2699be88981043"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a117aa8c9d7586959be2699be88981043">copy_msg_key_from_msg_key</a> (E2ees__MsgKey **dest, E2ees__MsgKey *src)</td></tr>
+<tr class="memdesc:a117aa8c9d7586959be2699be88981043"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__MsgKey from src to dest.  <br /></td></tr>
+<tr class="separator:a117aa8c9d7586959be2699be88981043"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd3587933ddadd1227b66ed25585d030" id="r_afd3587933ddadd1227b66ed25585d030"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd3587933ddadd1227b66ed25585d030">copy_sender_chain_from_sender_chain</a> (E2ees__SenderChainNode **dest, E2ees__SenderChainNode *src)</td></tr>
+<tr class="memdesc:afd3587933ddadd1227b66ed25585d030"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__SenderChainNode from src to dest.  <br /></td></tr>
+<tr class="separator:afd3587933ddadd1227b66ed25585d030"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a099e53e7abca5380d6b9a1d64b6c2de5" id="r_a099e53e7abca5380d6b9a1d64b6c2de5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a099e53e7abca5380d6b9a1d64b6c2de5">copy_receiver_chain_from_receiver_chain</a> (E2ees__ReceiverChainNode **dest, E2ees__ReceiverChainNode *src)</td></tr>
+<tr class="memdesc:a099e53e7abca5380d6b9a1d64b6c2de5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__ReceiverChainNode from src to dest.  <br /></td></tr>
+<tr class="separator:a099e53e7abca5380d6b9a1d64b6c2de5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a185175f1cf32aa44063fdccff9136ce4" id="r_a185175f1cf32aa44063fdccff9136ce4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a185175f1cf32aa44063fdccff9136ce4">copy_skipped_msg_keys_from_skipped_msg_keys</a> (E2ees__SkippedMsgKeyNode ***dest, E2ees__SkippedMsgKeyNode **src, size_t skipped_msg_keys_num)</td></tr>
+<tr class="memdesc:a185175f1cf32aa44063fdccff9136ce4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__SkippedMsgKeyNode from src to dest.  <br /></td></tr>
+<tr class="separator:a185175f1cf32aa44063fdccff9136ce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0225ecc844e14384edac3f5613ed14a" id="r_ab0225ecc844e14384edac3f5613ed14a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0225ecc844e14384edac3f5613ed14a">copy_ratchet_from_ratchet</a> (E2ees__Ratchet **dest, E2ees__Ratchet *src)</td></tr>
+<tr class="memdesc:ab0225ecc844e14384edac3f5613ed14a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__Ratchet from src to dest.  <br /></td></tr>
+<tr class="separator:ab0225ecc844e14384edac3f5613ed14a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaccf0ec25cf53cd0b39768f000db255b" id="r_aaccf0ec25cf53cd0b39768f000db255b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaccf0ec25cf53cd0b39768f000db255b">copy_session_from_session</a> (E2ees__Session **dest, E2ees__Session *src)</td></tr>
+<tr class="memdesc:aaccf0ec25cf53cd0b39768f000db255b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__Session from src to dest.  <br /></td></tr>
+<tr class="separator:aaccf0ec25cf53cd0b39768f000db255b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25a7967e500ae0359a43932124ab5fe9" id="r_a25a7967e500ae0359a43932124ab5fe9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25a7967e500ae0359a43932124ab5fe9">copy_ik_public_from_ik_public</a> (E2ees__IdentityKeyPublic **dest, E2ees__IdentityKeyPublic *src)</td></tr>
+<tr class="memdesc:a25a7967e500ae0359a43932124ab5fe9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__IdentityKeyPublic from src to dest.  <br /></td></tr>
+<tr class="separator:a25a7967e500ae0359a43932124ab5fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae73a16cd68b9eea282dddc387010d272" id="r_ae73a16cd68b9eea282dddc387010d272"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae73a16cd68b9eea282dddc387010d272">copy_spk_public_from_spk_public</a> (E2ees__SignedPreKeyPublic **dest, E2ees__SignedPreKeyPublic *src)</td></tr>
+<tr class="memdesc:ae73a16cd68b9eea282dddc387010d272"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__SignedPreKeyPublic from src to dest.  <br /></td></tr>
+<tr class="separator:ae73a16cd68b9eea282dddc387010d272"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d3462db17c56d553c1372ccb0d791ab" id="r_a0d3462db17c56d553c1372ccb0d791ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0d3462db17c56d553c1372ccb0d791ab">copy_opk_public_from_opk_public</a> (E2ees__OneTimePreKeyPublic **dest, E2ees__OneTimePreKeyPublic *src)</td></tr>
+<tr class="memdesc:a0d3462db17c56d553c1372ccb0d791ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__OneTimePreKeyPublic from src to dest.  <br /></td></tr>
+<tr class="separator:a0d3462db17c56d553c1372ccb0d791ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc39ca2a8ee29ca1128177b815e72d23" id="r_abc39ca2a8ee29ca1128177b815e72d23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc39ca2a8ee29ca1128177b815e72d23">copy_group_member_id</a> (E2ees__GroupMemberInfo **dest, E2ees__GroupMemberInfo *src)</td></tr>
+<tr class="memdesc:abc39ca2a8ee29ca1128177b815e72d23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__GroupMemberInfo from src to dest.  <br /></td></tr>
+<tr class="separator:abc39ca2a8ee29ca1128177b815e72d23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fc1e544551f224fa042c1e7a5dfee5c" id="r_a6fc1e544551f224fa042c1e7a5dfee5c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6fc1e544551f224fa042c1e7a5dfee5c">copy_group_member_ids</a> (E2ees__GroupMemberInfo ***dest, E2ees__GroupMemberInfo **src, size_t to_member_addresses_total_num)</td></tr>
+<tr class="memdesc:a6fc1e544551f224fa042c1e7a5dfee5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__GroupMemberInfo array from src to dest.  <br /></td></tr>
+<tr class="separator:a6fc1e544551f224fa042c1e7a5dfee5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1bbb81fa3d531f563f64b2d015e230a" id="r_ac1bbb81fa3d531f563f64b2d015e230a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1bbb81fa3d531f563f64b2d015e230a">copy_group_member</a> (E2ees__GroupMember **dest, E2ees__GroupMember *src)</td></tr>
+<tr class="memdesc:ac1bbb81fa3d531f563f64b2d015e230a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__GroupMember from src to dest.  <br /></td></tr>
+<tr class="separator:ac1bbb81fa3d531f563f64b2d015e230a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb6d7e155016fd8d5e062b5beaca0485" id="r_afb6d7e155016fd8d5e062b5beaca0485"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb6d7e155016fd8d5e062b5beaca0485">copy_group_members</a> (E2ees__GroupMember ***dest, E2ees__GroupMember **src, size_t group_members_num)</td></tr>
+<tr class="memdesc:afb6d7e155016fd8d5e062b5beaca0485"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__GroupMember array from src to dest.  <br /></td></tr>
+<tr class="separator:afb6d7e155016fd8d5e062b5beaca0485"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3726db94d873d15e13248d8ef4f144b" id="r_af3726db94d873d15e13248d8ef4f144b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af3726db94d873d15e13248d8ef4f144b">copy_group_info</a> (E2ees__GroupInfo **dest, E2ees__GroupInfo *src)</td></tr>
+<tr class="memdesc:af3726db94d873d15e13248d8ef4f144b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__GroupInfo from src to dest.  <br /></td></tr>
+<tr class="separator:af3726db94d873d15e13248d8ef4f144b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a629a4bcd4d0322e5d5e8be386dde91d6" id="r_a629a4bcd4d0322e5d5e8be386dde91d6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a629a4bcd4d0322e5d5e8be386dde91d6">copy_create_group_msg</a> (E2ees__CreateGroupMsg **dest, E2ees__CreateGroupMsg *src)</td></tr>
+<tr class="memdesc:a629a4bcd4d0322e5d5e8be386dde91d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__CreateGroupMsg from src to dest.  <br /></td></tr>
+<tr class="separator:a629a4bcd4d0322e5d5e8be386dde91d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a546fd7b945514ef3c36da79567e4bb63" id="r_a546fd7b945514ef3c36da79567e4bb63"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a546fd7b945514ef3c36da79567e4bb63">copy_add_group_members_msg</a> (E2ees__AddGroupMembersMsg **dest, E2ees__AddGroupMembersMsg *src)</td></tr>
+<tr class="memdesc:a546fd7b945514ef3c36da79567e4bb63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__AddGroupMembersMsg from src to dest.  <br /></td></tr>
+<tr class="separator:a546fd7b945514ef3c36da79567e4bb63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd1ab95bc9a1a886fb19b61616105ea0" id="r_abd1ab95bc9a1a886fb19b61616105ea0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abd1ab95bc9a1a886fb19b61616105ea0">copy_add_group_member_device_msg</a> (E2ees__AddGroupMemberDeviceMsg **dest, E2ees__AddGroupMemberDeviceMsg *src)</td></tr>
+<tr class="memdesc:abd1ab95bc9a1a886fb19b61616105ea0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__AddGroupMemberDeviceMsg from src to dest.  <br /></td></tr>
+<tr class="separator:abd1ab95bc9a1a886fb19b61616105ea0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f0d73be517ace49a5820db73d4431b5" id="r_a8f0d73be517ace49a5820db73d4431b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f0d73be517ace49a5820db73d4431b5">copy_remove_group_members_msg</a> (E2ees__RemoveGroupMembersMsg **dest, E2ees__RemoveGroupMembersMsg *src)</td></tr>
+<tr class="memdesc:a8f0d73be517ace49a5820db73d4431b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__RemoveGroupMembersMsg from src to dest.  <br /></td></tr>
+<tr class="separator:a8f0d73be517ace49a5820db73d4431b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a600076dfea95c00210acb80597e0ec56" id="r_a600076dfea95c00210acb80597e0ec56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a600076dfea95c00210acb80597e0ec56">copy_leave_group_msg</a> (E2ees__LeaveGroupMsg **dest, E2ees__LeaveGroupMsg *src)</td></tr>
+<tr class="memdesc:a600076dfea95c00210acb80597e0ec56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy E2ees__LeaveGroupMsg from src to dest.  <br /></td></tr>
+<tr class="separator:a600076dfea95c00210acb80597e0ec56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adff76db0f2348850a6aa9e236b10b6ec" id="r_adff76db0f2348850a6aa9e236b10b6ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adff76db0f2348850a6aa9e236b10b6ec">add_group_members_to_group_info</a> (E2ees__GroupInfo **dest, E2ees__GroupInfo *old_group_info, E2ees__GroupMember **adding_members, size_t adding_members_num)</td></tr>
+<tr class="memdesc:adff76db0f2348850a6aa9e236b10b6ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add new E2ees__GroupMember array to dest.  <br /></td></tr>
+<tr class="separator:adff76db0f2348850a6aa9e236b10b6ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc0bbbd73b2ea2a20cc3ba84d3ced4b9" id="r_abc0bbbd73b2ea2a20cc3ba84d3ced4b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc0bbbd73b2ea2a20cc3ba84d3ced4b9">remove_group_members_from_group_info</a> (E2ees__GroupInfo **dest, E2ees__GroupInfo *old_group_info, E2ees__GroupMember **removing_members, size_t removing_members_num)</td></tr>
+<tr class="memdesc:abc0bbbd73b2ea2a20cc3ba84d3ced4b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove some E2ees__GroupMember from old_group_info.  <br /></td></tr>
+<tr class="separator:abc0bbbd73b2ea2a20cc3ba84d3ced4b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b4ac05722df7e700ef2c4de07334497" id="r_a4b4ac05722df7e700ef2c4de07334497"><td class="memItemLeft" align="right" valign="top">E2ees__GroupMember *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4b4ac05722df7e700ef2c4de07334497">member_info_to_group_member</a> (E2ees__GroupMemberInfo *member_info)</td></tr>
+<tr class="memdesc:a4b4ac05722df7e700ef2c4de07334497"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy member info to group member.  <br /></td></tr>
+<tr class="separator:a4b4ac05722df7e700ef2c4de07334497"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a65fd5707fe0e46f29f6e73f8614048" id="r_a4a65fd5707fe0e46f29f6e73f8614048"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a65fd5707fe0e46f29f6e73f8614048">member_info_to_group_members</a> (E2ees__GroupMember ***dest, E2ees__GroupMemberInfo **member_info_list, size_t member_info_list_num, E2ees__GroupMember **member_list, size_t member_list_num)</td></tr>
+<tr class="memdesc:a4a65fd5707fe0e46f29f6e73f8614048"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collect unique user ID from member_info_list then convert and collect it into member_list.  <br /></td></tr>
+<tr class="separator:a4a65fd5707fe0e46f29f6e73f8614048"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37ae63164ec9cb6c5f3e29402468adaa" id="r_a37ae63164ec9cb6c5f3e29402468adaa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37ae63164ec9cb6c5f3e29402468adaa">free_e2ee_addresses</a> (E2ees__E2eeAddress ***dest, size_t e2ee_addresses_num)</td></tr>
+<tr class="memdesc:a37ae63164ec9cb6c5f3e29402468adaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release memory of E2ees__E2eeAddress array.  <br /></td></tr>
+<tr class="separator:a37ae63164ec9cb6c5f3e29402468adaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7095642feac3fab03741092bd0b9d57" id="r_ad7095642feac3fab03741092bd0b9d57"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7095642feac3fab03741092bd0b9d57">free_invite_response_list</a> (E2ees__InviteResponse ***dest, size_t invite_response_num)</td></tr>
+<tr class="memdesc:ad7095642feac3fab03741092bd0b9d57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release memory of E2ees__InviteResponse array.  <br /></td></tr>
+<tr class="separator:ad7095642feac3fab03741092bd0b9d57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c10eac67e024133537afb794d5af7e6" id="r_a0c10eac67e024133537afb794d5af7e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c10eac67e024133537afb794d5af7e6">free_group_members</a> (E2ees__GroupMember ***dest, size_t group_members_num)</td></tr>
+<tr class="memdesc:a0c10eac67e024133537afb794d5af7e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release memory of E2ees__GroupMember array.  <br /></td></tr>
+<tr class="separator:a0c10eac67e024133537afb794d5af7e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad355289d6c6909bc963d40220d32f2a4" id="r_ad355289d6c6909bc963d40220d32f2a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad355289d6c6909bc963d40220d32f2a4">free_protobuf</a> (ProtobufCBinaryData *output)</td></tr>
 <tr class="memdesc:ad355289d6c6909bc963d40220d32f2a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release memory of ProtobufCBinaryData.  <br /></td></tr>
 <tr class="separator:ad355289d6c6909bc963d40220d32f2a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af538c2a1b73b49b349c3face2518be5b" id="r_af538c2a1b73b49b349c3face2518be5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af538c2a1b73b49b349c3face2518be5b">free_protobuf_list</a> (ProtobufCBinaryData **output, size_t protobuf_num)</td></tr>
 <tr class="memdesc:af538c2a1b73b49b349c3face2518be5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release memory of ProtobufCBinaryData list.  <br /></td></tr>
 <tr class="separator:af538c2a1b73b49b349c3face2518be5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad757cdc6a1d8462f8a6e71f5f21be004" id="r_ad757cdc6a1d8462f8a6e71f5f21be004"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad757cdc6a1d8462f8a6e71f5f21be004">free_string</a> (char **buffer)</td></tr>
-<tr class="memdesc:ad757cdc6a1d8462f8a6e71f5f21be004"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release a string.  <br /></td></tr>
-<tr class="separator:ad757cdc6a1d8462f8a6e71f5f21be004"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad52318053f6e2ff82479263171309447" id="r_ad52318053f6e2ff82479263171309447"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad52318053f6e2ff82479263171309447">free_mem</a> (void **buffer, size_t buffer_len)</td></tr>
 <tr class="memdesc:ad52318053f6e2ff82479263171309447"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release a memory block.  <br /></td></tr>
 <tr class="separator:ad52318053f6e2ff82479263171309447"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -283,14 +282,14 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
 <tr class="separator:a7084bf913a19b0f4f621834fded3c3e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Copyright © 2020-2021 by Academia Sinica</p>
-<p>This file is part of SKISSM.</p>
+<div class="textblock"><p>Copyright © 2021 Academia Sinica. All Rights Reserved.</p>
+<p>This file is part of E2EE Security.</p>
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-<p>SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License along with SKISSM. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
+<p>E2EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with E2EE Security. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ac09f1868695fde36561a5b8b4e75a811" name="ac09f1868695fde36561a5b8b4e75a811"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac09f1868695fde36561a5b8b4e75a811">&#9670;&#160;</a></span>free_proto</h2>
+<a id="af45986259d8da02d4a59be7b902c4c3f" name="af45986259d8da02d4a59be7b902c4c3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af45986259d8da02d4a59be7b902c4c3f">&#9670;&#160;</a></span>free_proto</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -298,21 +297,42 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
         <tr>
           <td class="memname">#define free_proto</td>
           <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>name</em></span></td><td>)</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>arg</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> (name != NULL) { \</div>
-<div class="line">        skissm__##name##__free_unpacked(name, NULL); \</div>
-<div class="line">        name = NULL; \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> (arg != NULL) { \</div>
+<div class="line">        e2ees__##arg##__free_unpacked(arg, NULL); \</div>
+<div class="line">        arg = NULL; \</div>
+<div class="line">    }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a93e42f3f52063148fbf1ff5fcf4ace74" name="a93e42f3f52063148fbf1ff5fcf4ace74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93e42f3f52063148fbf1ff5fcf4ace74">&#9670;&#160;</a></span>free_string</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define free_string</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>arg</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> (arg != NULL) { \</div>
+<div class="line">        free(arg); \</div>
+<div class="line">        arg = NULL; \</div>
 <div class="line">    }</div>
 </div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ad213c810049364e0d1f44d01961f90ba" name="ad213c810049364e0d1f44d01961f90ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad213c810049364e0d1f44d01961f90ba">&#9670;&#160;</a></span>add_group_members_to_group_info()</h2>
+<a id="adff76db0f2348850a6aa9e236b10b6ec" name="adff76db0f2348850a6aa9e236b10b6ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adff76db0f2348850a6aa9e236b10b6ec">&#9670;&#160;</a></span>add_group_members_to_group_info()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -320,17 +340,17 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
         <tr>
           <td class="memname">void add_group_members_to_group_info </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupInfo **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__GroupInfo **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>old_group_info</em></span>, </td>
+          <td class="paramtype">E2ees__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>old_group_info</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>adding_members</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>adding_members</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -340,7 +360,7 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
       </table>
 </div><div class="memdoc">
 
-<p>Add new Skissm__GroupMember array to dest. </p>
+<p>Add new E2ees__GroupMember array to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -353,8 +373,8 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
 
 </div>
 </div>
-<a id="aacb95aedc72866264233411ab7fc5f9c" name="aacb95aedc72866264233411ab7fc5f9c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aacb95aedc72866264233411ab7fc5f9c">&#9670;&#160;</a></span>compare_address()</h2>
+<a id="adb851ab1088cb5c0b744e9bd563ca6cc" name="adb851ab1088cb5c0b744e9bd563ca6cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb851ab1088cb5c0b744e9bd563ca6cc">&#9670;&#160;</a></span>compare_address()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -362,17 +382,17 @@ ProtobufCBinaryData *&#160;</td><td class="memItemRight" valign="bottom"><b>get_
         <tr>
           <td class="memname">bool compare_address </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>address_1</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>address_1</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>address_2</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>address_2</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Compare two Skissm__E2eeAddress objects. </p>
+<p>Compare two E2ees__E2eeAddress objects. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">address_1</td><td></td></tr>
@@ -386,8 +406,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a30459451415ece193eb01a12cafa1a72" name="a30459451415ece193eb01a12cafa1a72"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30459451415ece193eb01a12cafa1a72">&#9670;&#160;</a></span>compare_group_member()</h2>
+<a id="ab523305c2bbb180c751e215a6eb0282f" name="ab523305c2bbb180c751e215a6eb0282f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab523305c2bbb180c751e215a6eb0282f">&#9670;&#160;</a></span>compare_group_member()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -395,7 +415,7 @@ false </dd></dl>
         <tr>
           <td class="memname">bool compare_group_member </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>group_members_1</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>group_members_1</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -405,7 +425,7 @@ false </dd></dl>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>group_members_2</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>group_members_2</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -415,7 +435,7 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Compaare two Skissm__GroupMember arrays. </p>
+<p>Compaare two E2ees__GroupMember arrays. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">group_members_1</td><td></td></tr>
@@ -464,8 +484,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a5ef01c200e2ad9d6de7c7ca2bd116fe1" name="a5ef01c200e2ad9d6de7c7ca2bd116fe1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ef01c200e2ad9d6de7c7ca2bd116fe1">&#9670;&#160;</a></span>compare_user_id()</h2>
+<a id="a52538a3024b4576f26801089eb085519" name="a52538a3024b4576f26801089eb085519"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52538a3024b4576f26801089eb085519">&#9670;&#160;</a></span>compare_user_id()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -473,7 +493,7 @@ false </dd></dl>
         <tr>
           <td class="memname">bool compare_user_id </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>address</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>address</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -503,8 +523,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a4d0aa5eb4d944115658b69922bdec638" name="a4d0aa5eb4d944115658b69922bdec638"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d0aa5eb4d944115658b69922bdec638">&#9670;&#160;</a></span>copy_account_from_account()</h2>
+<a id="ab76b8ca376dc2f0699502219873f6bc1" name="ab76b8ca376dc2f0699502219873f6bc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab76b8ca376dc2f0699502219873f6bc1">&#9670;&#160;</a></span>copy_account_from_account()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -512,17 +532,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_account_from_account </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Account **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__Account **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Account *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__Account *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__Account from src to dest. </p>
+<p>Copy E2ees__Account from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -533,8 +553,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a03be53f60d9a88e514c38aeb6fbd3eed" name="a03be53f60d9a88e514c38aeb6fbd3eed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03be53f60d9a88e514c38aeb6fbd3eed">&#9670;&#160;</a></span>copy_add_group_member_device_msg()</h2>
+<a id="abd1ab95bc9a1a886fb19b61616105ea0" name="abd1ab95bc9a1a886fb19b61616105ea0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd1ab95bc9a1a886fb19b61616105ea0">&#9670;&#160;</a></span>copy_add_group_member_device_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -542,17 +562,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_add_group_member_device_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__AddGroupMemberDeviceMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__AddGroupMemberDeviceMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__AddGroupMemberDeviceMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__AddGroupMemberDeviceMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__AddGroupMemberDeviceMsg from src to dest. </p>
+<p>Copy E2ees__AddGroupMemberDeviceMsg from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -563,8 +583,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a8fc358de42278810c7c708ad52325933" name="a8fc358de42278810c7c708ad52325933"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8fc358de42278810c7c708ad52325933">&#9670;&#160;</a></span>copy_add_group_members_msg()</h2>
+<a id="a546fd7b945514ef3c36da79567e4bb63" name="a546fd7b945514ef3c36da79567e4bb63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a546fd7b945514ef3c36da79567e4bb63">&#9670;&#160;</a></span>copy_add_group_members_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -572,17 +592,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_add_group_members_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__AddGroupMembersMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__AddGroupMembersMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__AddGroupMembersMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__AddGroupMembersMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__AddGroupMembersMsg from src to dest. </p>
+<p>Copy E2ees__AddGroupMembersMsg from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -593,8 +613,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ac1f0397393f2f0be30814a764bb4fd32" name="ac1f0397393f2f0be30814a764bb4fd32"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1f0397393f2f0be30814a764bb4fd32">&#9670;&#160;</a></span>copy_address_from_address()</h2>
+<a id="a5d2c9c21c0ec9d6b5bf1587ab9a93b19" name="a5d2c9c21c0ec9d6b5bf1587ab9a93b19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d2c9c21c0ec9d6b5bf1587ab9a93b19">&#9670;&#160;</a></span>copy_address_from_address()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -602,17 +622,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_address_from_address </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Skissm__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">const E2ees__E2eeAddress *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__E2eeAddress from src to dest. </p>
+<p>Copy E2ees__E2eeAddress from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -623,8 +643,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a72fcf214d100cb424153b38a0dbf43ed" name="a72fcf214d100cb424153b38a0dbf43ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a72fcf214d100cb424153b38a0dbf43ed">&#9670;&#160;</a></span>copy_cert_from_cert()</h2>
+<a id="a3925641b5835260ee21a6c6ef374ee35" name="a3925641b5835260ee21a6c6ef374ee35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3925641b5835260ee21a6c6ef374ee35">&#9670;&#160;</a></span>copy_cert_from_cert()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -632,17 +652,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_cert_from_cert </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Cert **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__Cert **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Cert *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__Cert *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__Cert from src to dest. </p>
+<p>Copy E2ees__Cert from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -653,8 +673,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="afcd042a5b25fe5f69d469c6b9f516cbe" name="afcd042a5b25fe5f69d469c6b9f516cbe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afcd042a5b25fe5f69d469c6b9f516cbe">&#9670;&#160;</a></span>copy_certificate_from_certificate()</h2>
+<a id="a5faa218482405eb0280d809d2f41a853" name="a5faa218482405eb0280d809d2f41a853"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5faa218482405eb0280d809d2f41a853">&#9670;&#160;</a></span>copy_certificate_from_certificate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -662,17 +682,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_certificate_from_certificate </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Certificate **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__Certificate **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Certificate *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__Certificate *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__Certificate from src to dest. </p>
+<p>Copy E2ees__Certificate from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -683,8 +703,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="afe436580d84f1fe668492a433fd2130c" name="afe436580d84f1fe668492a433fd2130c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe436580d84f1fe668492a433fd2130c">&#9670;&#160;</a></span>copy_chain_key_from_chain_key()</h2>
+<a id="ae63f012122d19816bc29c6c70bbbc188" name="ae63f012122d19816bc29c6c70bbbc188"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae63f012122d19816bc29c6c70bbbc188">&#9670;&#160;</a></span>copy_chain_key_from_chain_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -692,17 +712,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_chain_key_from_chain_key </td>
           <td>(</td>
-          <td class="paramtype">Skissm__ChainKey **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__ChainKey **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__ChainKey *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__ChainKey *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__ChainKey from src to dest. </p>
+<p>Copy E2ees__ChainKey from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -713,8 +733,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ade001e7fef83f8ec85bf25d55d9ec7cc" name="ade001e7fef83f8ec85bf25d55d9ec7cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade001e7fef83f8ec85bf25d55d9ec7cc">&#9670;&#160;</a></span>copy_create_group_msg()</h2>
+<a id="a629a4bcd4d0322e5d5e8be386dde91d6" name="a629a4bcd4d0322e5d5e8be386dde91d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a629a4bcd4d0322e5d5e8be386dde91d6">&#9670;&#160;</a></span>copy_create_group_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -722,17 +742,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_create_group_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__CreateGroupMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__CreateGroupMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__CreateGroupMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__CreateGroupMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__CreateGroupMsg from src to dest. </p>
+<p>Copy E2ees__CreateGroupMsg from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -743,8 +763,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a691aec59dad9f630a0fd5d31232277c7" name="a691aec59dad9f630a0fd5d31232277c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a691aec59dad9f630a0fd5d31232277c7">&#9670;&#160;</a></span>copy_group_info()</h2>
+<a id="af3726db94d873d15e13248d8ef4f144b" name="af3726db94d873d15e13248d8ef4f144b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3726db94d873d15e13248d8ef4f144b">&#9670;&#160;</a></span>copy_group_info()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -752,17 +772,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_group_info </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupInfo **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__GroupInfo **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__GroupInfo from src to dest. </p>
+<p>Copy E2ees__GroupInfo from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -773,8 +793,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a4dab70dafaefe4e5a0217a820c5a8c09" name="a4dab70dafaefe4e5a0217a820c5a8c09"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4dab70dafaefe4e5a0217a820c5a8c09">&#9670;&#160;</a></span>copy_group_member()</h2>
+<a id="ac1bbb81fa3d531f563f64b2d015e230a" name="ac1bbb81fa3d531f563f64b2d015e230a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1bbb81fa3d531f563f64b2d015e230a">&#9670;&#160;</a></span>copy_group_member()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -782,17 +802,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_group_member </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMember *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupMember *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__GroupMember from src to dest. </p>
+<p>Copy E2ees__GroupMember from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -803,8 +823,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="aeb0b86a387f139632320bb22f1ed2e12" name="aeb0b86a387f139632320bb22f1ed2e12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeb0b86a387f139632320bb22f1ed2e12">&#9670;&#160;</a></span>copy_group_member_id()</h2>
+<a id="abc39ca2a8ee29ca1128177b815e72d23" name="abc39ca2a8ee29ca1128177b815e72d23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc39ca2a8ee29ca1128177b815e72d23">&#9670;&#160;</a></span>copy_group_member_id()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -812,17 +832,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_group_member_id </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__GroupMemberInfo from src to dest. </p>
+<p>Copy E2ees__GroupMemberInfo from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -833,8 +853,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="af39f0903813fb614b393fc250948da9d" name="af39f0903813fb614b393fc250948da9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af39f0903813fb614b393fc250948da9d">&#9670;&#160;</a></span>copy_group_member_ids()</h2>
+<a id="a6fc1e544551f224fa042c1e7a5dfee5c" name="a6fc1e544551f224fa042c1e7a5dfee5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fc1e544551f224fa042c1e7a5dfee5c">&#9670;&#160;</a></span>copy_group_member_ids()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -842,12 +862,12 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_group_member_ids </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMemberInfo ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMemberInfo ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -857,7 +877,7 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__GroupMemberInfo array from src to dest. </p>
+<p>Copy E2ees__GroupMemberInfo array from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -869,8 +889,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a4fb0a33b097e82a45325e1c5ee93e25c" name="a4fb0a33b097e82a45325e1c5ee93e25c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4fb0a33b097e82a45325e1c5ee93e25c">&#9670;&#160;</a></span>copy_group_members()</h2>
+<a id="afb6d7e155016fd8d5e062b5beaca0485" name="afb6d7e155016fd8d5e062b5beaca0485"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb6d7e155016fd8d5e062b5beaca0485">&#9670;&#160;</a></span>copy_group_members()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -878,12 +898,12 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_group_members </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMember ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -893,7 +913,7 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__GroupMember array from src to dest. </p>
+<p>Copy E2ees__GroupMember array from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -905,8 +925,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="acbdbf141707ff3cfb1ac8d28658d3492" name="acbdbf141707ff3cfb1ac8d28658d3492"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acbdbf141707ff3cfb1ac8d28658d3492">&#9670;&#160;</a></span>copy_ik_from_ik()</h2>
+<a id="a92365c9893d57095101648eb37cd5f63" name="a92365c9893d57095101648eb37cd5f63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92365c9893d57095101648eb37cd5f63">&#9670;&#160;</a></span>copy_ik_from_ik()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -914,17 +934,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_ik_from_ik </td>
           <td>(</td>
-          <td class="paramtype">Skissm__IdentityKey **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__IdentityKey **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__IdentityKey *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__IdentityKey *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__IdentityKey from src to dest. </p>
+<p>Copy E2ees__IdentityKey from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -935,8 +955,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a0bb100133c25d7d3d083531be1536abb" name="a0bb100133c25d7d3d083531be1536abb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0bb100133c25d7d3d083531be1536abb">&#9670;&#160;</a></span>copy_ik_public_from_ik_public()</h2>
+<a id="a25a7967e500ae0359a43932124ab5fe9" name="a25a7967e500ae0359a43932124ab5fe9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25a7967e500ae0359a43932124ab5fe9">&#9670;&#160;</a></span>copy_ik_public_from_ik_public()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -944,17 +964,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_ik_public_from_ik_public </td>
           <td>(</td>
-          <td class="paramtype">Skissm__IdentityKeyPublic **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__IdentityKeyPublic **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__IdentityKeyPublic *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__IdentityKeyPublic *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__IdentityKeyPublic from src to dest. </p>
+<p>Copy E2ees__IdentityKeyPublic from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -965,8 +985,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a32d07c33cc3bdcfd95cd571f9095c10e" name="a32d07c33cc3bdcfd95cd571f9095c10e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a32d07c33cc3bdcfd95cd571f9095c10e">&#9670;&#160;</a></span>copy_key_pair_from_key_pair()</h2>
+<a id="a744421e3f996c8e46dbcd3b5acab9002" name="a744421e3f996c8e46dbcd3b5acab9002"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a744421e3f996c8e46dbcd3b5acab9002">&#9670;&#160;</a></span>copy_key_pair_from_key_pair()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -974,17 +994,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_key_pair_from_key_pair </td>
           <td>(</td>
-          <td class="paramtype">Skissm__KeyPair **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__KeyPair **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__KeyPair *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__KeyPair *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__KeyPair from src to dest. </p>
+<p>Copy E2ees__KeyPair from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -995,8 +1015,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="adc5ddafeee8df2893b9a6e349ee370f7" name="adc5ddafeee8df2893b9a6e349ee370f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc5ddafeee8df2893b9a6e349ee370f7">&#9670;&#160;</a></span>copy_leave_group_msg()</h2>
+<a id="a600076dfea95c00210acb80597e0ec56" name="a600076dfea95c00210acb80597e0ec56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a600076dfea95c00210acb80597e0ec56">&#9670;&#160;</a></span>copy_leave_group_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1004,17 +1024,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_leave_group_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__LeaveGroupMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__LeaveGroupMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__LeaveGroupMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__LeaveGroupMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__LeaveGroupMsg from src to dest. </p>
+<p>Copy E2ees__LeaveGroupMsg from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1025,8 +1045,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a10302ce2ad7bd70cf6636b50d2561ad5" name="a10302ce2ad7bd70cf6636b50d2561ad5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10302ce2ad7bd70cf6636b50d2561ad5">&#9670;&#160;</a></span>copy_msg_key_from_msg_key()</h2>
+<a id="a117aa8c9d7586959be2699be88981043" name="a117aa8c9d7586959be2699be88981043"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a117aa8c9d7586959be2699be88981043">&#9670;&#160;</a></span>copy_msg_key_from_msg_key()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1034,17 +1054,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_msg_key_from_msg_key </td>
           <td>(</td>
-          <td class="paramtype">Skissm__MsgKey **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__MsgKey **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__MsgKey *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__MsgKey *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__MsgKey from src to dest. </p>
+<p>Copy E2ees__MsgKey from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1055,8 +1075,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a6e980b596f65e036d445bbb975449717" name="a6e980b596f65e036d445bbb975449717"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e980b596f65e036d445bbb975449717">&#9670;&#160;</a></span>copy_opk_public_from_opk_public()</h2>
+<a id="a0d3462db17c56d553c1372ccb0d791ab" name="a0d3462db17c56d553c1372ccb0d791ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d3462db17c56d553c1372ccb0d791ab">&#9670;&#160;</a></span>copy_opk_public_from_opk_public()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1064,17 +1084,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_opk_public_from_opk_public </td>
           <td>(</td>
-          <td class="paramtype">Skissm__OneTimePreKeyPublic **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__OneTimePreKeyPublic **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__OneTimePreKeyPublic *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__OneTimePreKeyPublic *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__OneTimePreKeyPublic from src to dest. </p>
+<p>Copy E2ees__OneTimePreKeyPublic from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1085,8 +1105,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ae3f5ddc5932a9a884226f2406f9bf642" name="ae3f5ddc5932a9a884226f2406f9bf642"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3f5ddc5932a9a884226f2406f9bf642">&#9670;&#160;</a></span>copy_opks_from_opks()</h2>
+<a id="a38e94d642ddf60c33965d4c45d38d31e" name="a38e94d642ddf60c33965d4c45d38d31e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38e94d642ddf60c33965d4c45d38d31e">&#9670;&#160;</a></span>copy_opks_from_opks()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1094,12 +1114,12 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_opks_from_opks </td>
           <td>(</td>
-          <td class="paramtype">Skissm__OneTimePreKey ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__OneTimePreKey ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__OneTimePreKey **</td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
+          <td class="paramtype">E2ees__OneTimePreKey **</td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1109,7 +1129,7 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__OneTimePreKey from src to dest. </p>
+<p>Copy E2ees__OneTimePreKey from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1253,8 +1273,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a2bc6f23c4a0a37cdc6c784550200aac1" name="a2bc6f23c4a0a37cdc6c784550200aac1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2bc6f23c4a0a37cdc6c784550200aac1">&#9670;&#160;</a></span>copy_ratchet_from_ratchet()</h2>
+<a id="ab0225ecc844e14384edac3f5613ed14a" name="ab0225ecc844e14384edac3f5613ed14a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0225ecc844e14384edac3f5613ed14a">&#9670;&#160;</a></span>copy_ratchet_from_ratchet()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1262,17 +1282,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_ratchet_from_ratchet </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Ratchet **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__Ratchet **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Ratchet *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__Ratchet *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__Ratchet from src to dest. </p>
+<p>Copy E2ees__Ratchet from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1283,8 +1303,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a1c9fe8f20f23d3fe686c6935c33c0b19" name="a1c9fe8f20f23d3fe686c6935c33c0b19"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c9fe8f20f23d3fe686c6935c33c0b19">&#9670;&#160;</a></span>copy_receiver_chain_from_receiver_chain()</h2>
+<a id="a099e53e7abca5380d6b9a1d64b6c2de5" name="a099e53e7abca5380d6b9a1d64b6c2de5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a099e53e7abca5380d6b9a1d64b6c2de5">&#9670;&#160;</a></span>copy_receiver_chain_from_receiver_chain()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1292,17 +1312,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_receiver_chain_from_receiver_chain </td>
           <td>(</td>
-          <td class="paramtype">Skissm__ReceiverChainNode **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__ReceiverChainNode **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__ReceiverChainNode *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__ReceiverChainNode *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__ReceiverChainNode from src to dest. </p>
+<p>Copy E2ees__ReceiverChainNode from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1313,8 +1333,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ab2c85c9581a8b9ffa936a8eb788f6cfc" name="ab2c85c9581a8b9ffa936a8eb788f6cfc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2c85c9581a8b9ffa936a8eb788f6cfc">&#9670;&#160;</a></span>copy_remove_group_members_msg()</h2>
+<a id="a8f0d73be517ace49a5820db73d4431b5" name="a8f0d73be517ace49a5820db73d4431b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f0d73be517ace49a5820db73d4431b5">&#9670;&#160;</a></span>copy_remove_group_members_msg()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1322,17 +1342,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_remove_group_members_msg </td>
           <td>(</td>
-          <td class="paramtype">Skissm__RemoveGroupMembersMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__RemoveGroupMembersMsg **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__RemoveGroupMembersMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__RemoveGroupMembersMsg *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__RemoveGroupMembersMsg from src to dest. </p>
+<p>Copy E2ees__RemoveGroupMembersMsg from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1343,8 +1363,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a7fc32eed107fce573728132d99a5190b" name="a7fc32eed107fce573728132d99a5190b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fc32eed107fce573728132d99a5190b">&#9670;&#160;</a></span>copy_sender_chain_from_sender_chain()</h2>
+<a id="afd3587933ddadd1227b66ed25585d030" name="afd3587933ddadd1227b66ed25585d030"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd3587933ddadd1227b66ed25585d030">&#9670;&#160;</a></span>copy_sender_chain_from_sender_chain()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1352,17 +1372,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_sender_chain_from_sender_chain </td>
           <td>(</td>
-          <td class="paramtype">Skissm__SenderChainNode **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__SenderChainNode **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__SenderChainNode *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__SenderChainNode *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__SenderChainNode from src to dest. </p>
+<p>Copy E2ees__SenderChainNode from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1373,8 +1393,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="af0510055d9da808add115a74403a65fe" name="af0510055d9da808add115a74403a65fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af0510055d9da808add115a74403a65fe">&#9670;&#160;</a></span>copy_session_from_session()</h2>
+<a id="aaccf0ec25cf53cd0b39768f000db255b" name="aaccf0ec25cf53cd0b39768f000db255b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaccf0ec25cf53cd0b39768f000db255b">&#9670;&#160;</a></span>copy_session_from_session()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1382,17 +1402,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_session_from_session </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Session **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__Session **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Session *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__Session *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__Session from src to dest. </p>
+<p>Copy E2ees__Session from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1403,8 +1423,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a02b44916c5a882bc79a98058be4ee668" name="a02b44916c5a882bc79a98058be4ee668"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02b44916c5a882bc79a98058be4ee668">&#9670;&#160;</a></span>copy_skipped_msg_keys_from_skipped_msg_keys()</h2>
+<a id="a185175f1cf32aa44063fdccff9136ce4" name="a185175f1cf32aa44063fdccff9136ce4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a185175f1cf32aa44063fdccff9136ce4">&#9670;&#160;</a></span>copy_skipped_msg_keys_from_skipped_msg_keys()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1412,12 +1432,12 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_skipped_msg_keys_from_skipped_msg_keys </td>
           <td>(</td>
-          <td class="paramtype">Skissm__SkippedMsgKeyNode ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__SkippedMsgKeyNode ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__SkippedMsgKeyNode **</td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
+          <td class="paramtype">E2ees__SkippedMsgKeyNode **</td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1427,7 +1447,7 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__SkippedMsgKeyNode from src to dest. </p>
+<p>Copy E2ees__SkippedMsgKeyNode from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1439,8 +1459,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a77730aa637919b266fb9c1dcc28669d8" name="a77730aa637919b266fb9c1dcc28669d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77730aa637919b266fb9c1dcc28669d8">&#9670;&#160;</a></span>copy_spk_from_spk()</h2>
+<a id="ab7525482eb77ee7a59a477e9afde0603" name="ab7525482eb77ee7a59a477e9afde0603"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7525482eb77ee7a59a477e9afde0603">&#9670;&#160;</a></span>copy_spk_from_spk()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1448,17 +1468,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_spk_from_spk </td>
           <td>(</td>
-          <td class="paramtype">Skissm__SignedPreKey **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__SignedPreKey **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__SignedPreKey *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__SignedPreKey *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__SignedPreKey from src to dest. </p>
+<p>Copy E2ees__SignedPreKey from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1469,8 +1489,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a5ca625ace75cccf4ef7a63c8f0193d1b" name="a5ca625ace75cccf4ef7a63c8f0193d1b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ca625ace75cccf4ef7a63c8f0193d1b">&#9670;&#160;</a></span>copy_spk_public_from_spk_public()</h2>
+<a id="ae73a16cd68b9eea282dddc387010d272" name="ae73a16cd68b9eea282dddc387010d272"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae73a16cd68b9eea282dddc387010d272">&#9670;&#160;</a></span>copy_spk_public_from_spk_public()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1478,17 +1498,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_spk_public_from_spk_public </td>
           <td>(</td>
-          <td class="paramtype">Skissm__SignedPreKeyPublic **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__SignedPreKeyPublic **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__SignedPreKeyPublic *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__SignedPreKeyPublic *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__SignedPreKeyPublic from src to dest. </p>
+<p>Copy E2ees__SignedPreKeyPublic from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1499,8 +1519,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="acef1e409e01c1ee68cd4531201459523" name="acef1e409e01c1ee68cd4531201459523"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acef1e409e01c1ee68cd4531201459523">&#9670;&#160;</a></span>copy_subject_from_subject()</h2>
+<a id="abe230bea0c2423e6b3f0e6bb20a5ffe7" name="abe230bea0c2423e6b3f0e6bb20a5ffe7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe230bea0c2423e6b3f0e6bb20a5ffe7">&#9670;&#160;</a></span>copy_subject_from_subject()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1508,17 +1528,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void copy_subject_from_subject </td>
           <td>(</td>
-          <td class="paramtype">Skissm__Subject **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__Subject **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__Subject *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+          <td class="paramtype">E2ees__Subject *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy Skissm__Subject from src to dest. </p>
+<p>Copy E2ees__Subject from src to dest. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1529,8 +1549,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a4101f07085b61c37e95eb37cf75eda3d" name="a4101f07085b61c37e95eb37cf75eda3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4101f07085b61c37e95eb37cf75eda3d">&#9670;&#160;</a></span>free_e2ee_addresses()</h2>
+<a id="a37ae63164ec9cb6c5f3e29402468adaa" name="a37ae63164ec9cb6c5f3e29402468adaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37ae63164ec9cb6c5f3e29402468adaa">&#9670;&#160;</a></span>free_e2ee_addresses()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1538,7 +1558,7 @@ false </dd></dl>
         <tr>
           <td class="memname">void free_e2ee_addresses </td>
           <td>(</td>
-          <td class="paramtype">Skissm__E2eeAddress ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__E2eeAddress ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1548,7 +1568,7 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Release memory of Skissm__E2eeAddress array. </p>
+<p>Release memory of E2ees__E2eeAddress array. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1559,8 +1579,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="ada50d2b0db09c3de8f055212f19a7568" name="ada50d2b0db09c3de8f055212f19a7568"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada50d2b0db09c3de8f055212f19a7568">&#9670;&#160;</a></span>free_group_members()</h2>
+<a id="a0c10eac67e024133537afb794d5af7e6" name="a0c10eac67e024133537afb794d5af7e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c10eac67e024133537afb794d5af7e6">&#9670;&#160;</a></span>free_group_members()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1568,7 +1588,7 @@ false </dd></dl>
         <tr>
           <td class="memname">void free_group_members </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMember ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1578,7 +1598,7 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Release memory of Skissm__GroupMember array. </p>
+<p>Release memory of E2ees__GroupMember array. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1589,8 +1609,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a20fb6f6fb0fc02291c74097c7bd6992e" name="a20fb6f6fb0fc02291c74097c7bd6992e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20fb6f6fb0fc02291c74097c7bd6992e">&#9670;&#160;</a></span>free_invite_response_list()</h2>
+<a id="ad7095642feac3fab03741092bd0b9d57" name="ad7095642feac3fab03741092bd0b9d57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7095642feac3fab03741092bd0b9d57">&#9670;&#160;</a></span>free_invite_response_list()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1598,7 +1618,7 @@ false </dd></dl>
         <tr>
           <td class="memname">void free_invite_response_list </td>
           <td>(</td>
-          <td class="paramtype">Skissm__InviteResponse ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__InviteResponse ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1608,7 +1628,7 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Release memory of Skissm__InviteResponse array. </p>
+<p>Release memory of E2ees__InviteResponse array. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>
@@ -1698,31 +1718,6 @@ false </dd></dl>
   <table class="params">
     <tr><td class="paramname">output</td><td></td></tr>
     <tr><td class="paramname">protobuf_num</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ad757cdc6a1d8462f8a6e71f5f21be004" name="ad757cdc6a1d8462f8a6e71f5f21be004"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad757cdc6a1d8462f8a6e71f5f21be004">&#9670;&#160;</a></span>free_string()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void free_string </td>
-          <td>(</td>
-          <td class="paramtype">char **</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Release a string. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">buffer</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -1831,16 +1826,16 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="aa5bb6351db01a906ef70252c2d39c23e" name="aa5bb6351db01a906ef70252c2d39c23e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5bb6351db01a906ef70252c2d39c23e">&#9670;&#160;</a></span>member_info_to_group_member()</h2>
+<a id="a4b4ac05722df7e700ef2c4de07334497" name="a4b4ac05722df7e700ef2c4de07334497"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b4ac05722df7e700ef2c4de07334497">&#9670;&#160;</a></span>member_info_to_group_member()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Skissm__GroupMember * member_info_to_group_member </td>
+          <td class="memname">E2ees__GroupMember * member_info_to_group_member </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>member_info</em></span></td><td>)</td>
+          <td class="paramtype">E2ees__GroupMemberInfo *</td>          <td class="paramname"><span class="paramname"><em>member_info</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1857,8 +1852,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a87e5d5beabec64a4ce955668b8b8f43c" name="a87e5d5beabec64a4ce955668b8b8f43c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87e5d5beabec64a4ce955668b8b8f43c">&#9670;&#160;</a></span>member_info_to_group_members()</h2>
+<a id="a4a65fd5707fe0e46f29f6e73f8614048" name="a4a65fd5707fe0e46f29f6e73f8614048"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a65fd5707fe0e46f29f6e73f8614048">&#9670;&#160;</a></span>member_info_to_group_members()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1866,12 +1861,12 @@ false </dd></dl>
         <tr>
           <td class="memname">size_t member_info_to_group_members </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupMember ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember ***</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>member_info_list</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMemberInfo **</td>          <td class="paramname"><span class="paramname"><em>member_info_list</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1881,7 +1876,7 @@ false </dd></dl>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>member_list</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>member_list</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1936,8 +1931,8 @@ false </dd></dl>
 
 </div>
 </div>
-<a id="a6ba27d0df4c5016bf1abfa92a33f663d" name="a6ba27d0df4c5016bf1abfa92a33f663d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ba27d0df4c5016bf1abfa92a33f663d">&#9670;&#160;</a></span>remove_group_members_from_group_info()</h2>
+<a id="abc0bbbd73b2ea2a20cc3ba84d3ced4b9" name="abc0bbbd73b2ea2a20cc3ba84d3ced4b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc0bbbd73b2ea2a20cc3ba84d3ced4b9">&#9670;&#160;</a></span>remove_group_members_from_group_info()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1945,17 +1940,17 @@ false </dd></dl>
         <tr>
           <td class="memname">void remove_group_members_from_group_info </td>
           <td>(</td>
-          <td class="paramtype">Skissm__GroupInfo **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">E2ees__GroupInfo **</td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>old_group_info</em></span>, </td>
+          <td class="paramtype">E2ees__GroupInfo *</td>          <td class="paramname"><span class="paramname"><em>old_group_info</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Skissm__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>removing_members</em></span>, </td>
+          <td class="paramtype">E2ees__GroupMember **</td>          <td class="paramname"><span class="paramname"><em>removing_members</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1965,7 +1960,7 @@ false </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Remove some Skissm__GroupMember from old_group_info. </p>
+<p>Remove some E2ees__GroupMember from old_group_info. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dest</td><td></td></tr>

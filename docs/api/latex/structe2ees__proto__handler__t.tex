@@ -1,0 +1,357 @@
+\doxysection{e2ees\+\_\+proto\+\_\+handler\+\_\+t Struct Reference}
+\hypertarget{structe2ees__proto__handler__t}{}\label{structe2ees__proto__handler__t}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+
+
+Type definition of protocol handler.  
+
+
+
+
+{\ttfamily \#include $<$e2ees.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+E2ees\+\_\+\+\_\+\+Register\+User\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_aa42075445e770b7e2c4a792489455236}{register\+\_\+user}} )(E2ees\+\_\+\+\_\+\+Register\+User\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Register user. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_ade4354875b0fea0f082ed3331a8dfa7c}{get\+\_\+pre\+\_\+key\+\_\+bundle}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Get pre-\/key bundle. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_a46d9ef3b88e22ab79893721040aded77}{invite}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Invite\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Invite. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Accept\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_acd99a87b29a2edc5867444ce4f9ba546}{accept}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Accept\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Accept. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Publish\+Spk\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_a8c0cb7745079ed54e0ebf8902f7d98df}{publish\+\_\+spk}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Publish\+Spk\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Publish signed pre-\/key. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Supply\+Opks\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_af9b74d31bd3ecf0b6eafa491604825c4}{supply\+\_\+opks}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Supply\+Opks\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Supply onetime pre-\/key. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Send\+One2one\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_ad0d03b367e1454f5ecf7ae50c3ad0587}{send\+\_\+one2one\+\_\+msg}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Send\+One2one\+Msg\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Send one2one message. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_ac5927e0025ec0f5105de92c6f7f2269d}{create\+\_\+group}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Create\+Group\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Create group. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_a7cf319adfaa6494ec1846082c9bc2724}{add\+\_\+group\+\_\+members}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Add group members. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_aefac4332152e83053ffc50d7a45d3a4d}{add\+\_\+group\+\_\+member\+\_\+device}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Add group member device. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_a0650e10a30d4e30a8437341e3dd38761}{remove\+\_\+group\+\_\+members}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Remove group members. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_aae98cedf66faf322665b48d848d89848}{leave\+\_\+group}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Leave\+Group\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Leave group. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_aaefb30fdad3bf63d00013be968ae197b}{send\+\_\+group\+\_\+msg}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Send group message. \end{DoxyCompactList}\item 
+E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structe2ees__proto__handler__t_ab5fdd84a4ae2a00aa362aee01d5de8ed}{consume\+\_\+proto\+\_\+msg}} )(E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Request \texorpdfstring{$\ast$}{*}request)
+\begin{DoxyCompactList}\small\item\em Consume a Proto\+Msg. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Type definition of protocol handler. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structe2ees__proto__handler__t_acd99a87b29a2edc5867444ce4f9ba546}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!accept@{accept}}
+\index{accept@{accept}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{accept}{accept}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_acd99a87b29a2edc5867444ce4f9ba546} 
+E2ees\+\_\+\+\_\+\+Accept\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::accept) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Accept\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Accept. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_aefac4332152e83053ffc50d7a45d3a4d}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!add\_group\_member\_device@{add\_group\_member\_device}}
+\index{add\_group\_member\_device@{add\_group\_member\_device}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{add\_group\_member\_device}{add\_group\_member\_device}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_aefac4332152e83053ffc50d7a45d3a4d} 
+E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::add\+\_\+group\+\_\+member\+\_\+device) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Add\+Group\+Member\+Device\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Add group member device. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_a7cf319adfaa6494ec1846082c9bc2724}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!add\_group\_members@{add\_group\_members}}
+\index{add\_group\_members@{add\_group\_members}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{add\_group\_members}{add\_group\_members}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_a7cf319adfaa6494ec1846082c9bc2724} 
+E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::add\+\_\+group\+\_\+members) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Add\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Add group members. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_ab5fdd84a4ae2a00aa362aee01d5de8ed}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!consume\_proto\_msg@{consume\_proto\_msg}}
+\index{consume\_proto\_msg@{consume\_proto\_msg}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{consume\_proto\_msg}{consume\_proto\_msg}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_ab5fdd84a4ae2a00aa362aee01d5de8ed} 
+E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::consume\+\_\+proto\+\_\+msg) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Consume\+Proto\+Msg\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Consume a Proto\+Msg. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_ac5927e0025ec0f5105de92c6f7f2269d}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!create\_group@{create\_group}}
+\index{create\_group@{create\_group}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{create\_group}{create\_group}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_ac5927e0025ec0f5105de92c6f7f2269d} 
+E2ees\+\_\+\+\_\+\+Create\+Group\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::create\+\_\+group) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Create\+Group\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Create group. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_ade4354875b0fea0f082ed3331a8dfa7c}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!get\_pre\_key\_bundle@{get\_pre\_key\_bundle}}
+\index{get\_pre\_key\_bundle@{get\_pre\_key\_bundle}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{get\_pre\_key\_bundle}{get\_pre\_key\_bundle}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_ade4354875b0fea0f082ed3331a8dfa7c} 
+E2ees\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::get\+\_\+pre\+\_\+key\+\_\+bundle) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Get\+Pre\+Key\+Bundle\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Get pre-\/key bundle. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_a46d9ef3b88e22ab79893721040aded77}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!invite@{invite}}
+\index{invite@{invite}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{invite}{invite}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_a46d9ef3b88e22ab79893721040aded77} 
+E2ees\+\_\+\+\_\+\+Invite\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::invite) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Invite\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Invite. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_aae98cedf66faf322665b48d848d89848}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!leave\_group@{leave\_group}}
+\index{leave\_group@{leave\_group}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{leave\_group}{leave\_group}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_aae98cedf66faf322665b48d848d89848} 
+E2ees\+\_\+\+\_\+\+Leave\+Group\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::leave\+\_\+group) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Leave\+Group\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Leave group. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_a8c0cb7745079ed54e0ebf8902f7d98df}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!publish\_spk@{publish\_spk}}
+\index{publish\_spk@{publish\_spk}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{publish\_spk}{publish\_spk}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_a8c0cb7745079ed54e0ebf8902f7d98df} 
+E2ees\+\_\+\+\_\+\+Publish\+Spk\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::publish\+\_\+spk) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Publish\+Spk\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Publish signed pre-\/key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_aa42075445e770b7e2c4a792489455236}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!register\_user@{register\_user}}
+\index{register\_user@{register\_user}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{register\_user}{register\_user}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_aa42075445e770b7e2c4a792489455236} 
+E2ees\+\_\+\+\_\+\+Register\+User\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::register\+\_\+user) (E2ees\+\_\+\+\_\+\+Register\+User\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Register user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_a0650e10a30d4e30a8437341e3dd38761}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!remove\_group\_members@{remove\_group\_members}}
+\index{remove\_group\_members@{remove\_group\_members}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{remove\_group\_members}{remove\_group\_members}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_a0650e10a30d4e30a8437341e3dd38761} 
+E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::remove\+\_\+group\+\_\+members) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Remove\+Group\+Members\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Remove group members. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_aaefb30fdad3bf63d00013be968ae197b}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!send\_group\_msg@{send\_group\_msg}}
+\index{send\_group\_msg@{send\_group\_msg}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{send\_group\_msg}{send\_group\_msg}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_aaefb30fdad3bf63d00013be968ae197b} 
+E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::send\+\_\+group\+\_\+msg) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Send\+Group\+Msg\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Send group message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_ad0d03b367e1454f5ecf7ae50c3ad0587}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!send\_one2one\_msg@{send\_one2one\_msg}}
+\index{send\_one2one\_msg@{send\_one2one\_msg}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{send\_one2one\_msg}{send\_one2one\_msg}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_ad0d03b367e1454f5ecf7ae50c3ad0587} 
+E2ees\+\_\+\+\_\+\+Send\+One2one\+Msg\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::send\+\_\+one2one\+\_\+msg) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Send\+One2one\+Msg\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Send one2one message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+\Hypertarget{structe2ees__proto__handler__t_af9b74d31bd3ecf0b6eafa491604825c4}\index{e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}!supply\_opks@{supply\_opks}}
+\index{supply\_opks@{supply\_opks}!e2ees\_proto\_handler\_t@{e2ees\_proto\_handler\_t}}
+\doxysubsubsection{\texorpdfstring{supply\_opks}{supply\_opks}}
+{\footnotesize\ttfamily \label{structe2ees__proto__handler__t_af9b74d31bd3ecf0b6eafa491604825c4} 
+E2ees\+\_\+\+\_\+\+Supply\+Opks\+Response \texorpdfstring{$\ast$}{*}(\texorpdfstring{$\ast$}{*} e2ees\+\_\+proto\+\_\+handler\+\_\+t\+::supply\+\_\+opks) (E2ees\+\_\+\+\_\+\+E2ee\+Address \texorpdfstring{$\ast$}{*}from, const char \texorpdfstring{$\ast$}{*}auth, E2ees\+\_\+\+\_\+\+Supply\+Opks\+Request \texorpdfstring{$\ast$}{*}request)}
+
+
+
+Supply onetime pre-\/key. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & \\
+\hline
+{\em auth} & \\
+\hline
+{\em request} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/e2ees/\mbox{\hyperlink{e2ees_8h}{e2ees.\+h}}\end{DoxyCompactItemize}

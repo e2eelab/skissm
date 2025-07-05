@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/ratchet.h Source File</title>
+<title>E2EES: include/e2ees/ratchet.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -103,38 +103,38 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="skissm_8h.html">skissm/skissm.h</a>&quot;</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;<a class="code" href="cipher_8h.html">skissm/cipher.h</a>&quot;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="e2ees_8h.html">e2ees/e2ees.h</a>&quot;</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;<a class="code" href="cipher_8h.html">e2ees/cipher.h</a>&quot;</span></div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="ratchet_8h.html#ab1c3158256ad9a9cd4a70014d8bb8c2f">   35</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="ratchet_8h.html#ab1c3158256ad9a9cd4a70014d8bb8c2f">initialise_as_bob</a>(</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    Skissm__Ratchet **ratchet_out,</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="ratchet_8h.html#a5f8920d394ff9a854d2a6d2c8d7feeb3">   35</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="ratchet_8h.html#a5f8920d394ff9a854d2a6d2c8d7feeb3">initialise_as_bob</a>(</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    E2ees__Ratchet **ratchet_out,</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structcipher__suite__t.html">cipher_suite_t</a> *cipher_suite,</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">const</span> uint8_t *shared_secret, <span class="keywordtype">size_t</span> shared_secret_len,</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keyword">const</span> Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keyword">const</span> E2ees__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>);</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="ratchet_8h.html#ad114416fd01fb516bec0d67a2a293913">   44</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="ratchet_8h.html#ad114416fd01fb516bec0d67a2a293913">initialise_as_alice</a>(</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    Skissm__Ratchet **ratchet_out,</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="ratchet_8h.html#af09825ec4ba53cccdce6de7744a0eed6">   44</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="ratchet_8h.html#af09825ec4ba53cccdce6de7744a0eed6">initialise_as_alice</a>(</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    E2ees__Ratchet **ratchet_out,</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structcipher__suite__t.html">cipher_suite_t</a> *cipher_suite,</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keyword">const</span> uint8_t *shared_secret,</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordtype">size_t</span> shared_secret_len,</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">const</span> Skissm__KeyPair *our_ratchet_key,</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">const</span> E2ees__KeyPair *our_ratchet_key,</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    ProtobufCBinaryData *their_ratchet_key,</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    ProtobufCBinaryData *their_encaps_ciphertext</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>);</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="ratchet_8h.html#aff5c9f6a4669647c87fdc58cbbda2dc2">   65</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="ratchet_8h.html#aff5c9f6a4669647c87fdc58cbbda2dc2">encrypt_ratchet</a>(</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    Skissm__One2oneMsgPayload **payload_out,</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="ratchet_8h.html#a1734ea0d35087b89e5e417f525a6dfb4">   65</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="ratchet_8h.html#a1734ea0d35087b89e5e417f525a6dfb4">encrypt_ratchet</a>(</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    E2ees__One2oneMsgPayload **payload_out,</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structcipher__suite__t.html">cipher_suite_t</a> *cipher_suite,</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    Skissm__Ratchet *ratchet,</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    E2ees__Ratchet *ratchet,</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    ProtobufCBinaryData ad,</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keyword">const</span> uint8_t *plaintext_data, <span class="keywordtype">size_t</span> plaintext_data_len</div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>);</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="ratchet_8h.html#a604edfa07dc4850da56d70ab10bdce7a">   86</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="ratchet_8h.html#a604edfa07dc4850da56d70ab10bdce7a">decrypt_ratchet</a>(</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="ratchet_8h.html#a4b057546513d142adee498fe83b1e3df">   86</a></span><span class="keywordtype">int</span> <a class="code hl_function" href="ratchet_8h.html#a4b057546513d142adee498fe83b1e3df">decrypt_ratchet</a>(</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    uint8_t **decrypted_data_out, <span class="keywordtype">size_t</span> *decrypted_data_len_out,</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structcipher__suite__t.html">cipher_suite_t</a> *cipher_suite,</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    E2ees__Ratchet *ratchet, ProtobufCBinaryData ad, E2ees__One2oneMsgPayload *payload</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>);</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="preprocessor">#ifdef __cplusplus</span></div>
@@ -143,12 +143,12 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="preprocessor">#endif </span><span class="comment">/* RATCHET_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="acipher_8h_html"><div class="ttname"><a href="cipher_8h.html">cipher.h</a></div></div>
-<div class="ttc" id="aratchet_8h_html_a604edfa07dc4850da56d70ab10bdce7a"><div class="ttname"><a href="ratchet_8h.html#a604edfa07dc4850da56d70ab10bdce7a">decrypt_ratchet</a></div><div class="ttdeci">int decrypt_ratchet(uint8_t **decrypted_data_out, size_t *decrypted_data_len_out, const cipher_suite_t *cipher_suite, Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, Skissm__One2oneMsgPayload *payload)</div><div class="ttdoc">Decrypt Skissm__One2oneMsgPayload payload to plaintext_data and keep updated ratchet states.</div></div>
-<div class="ttc" id="aratchet_8h_html_ab1c3158256ad9a9cd4a70014d8bb8c2f"><div class="ttname"><a href="ratchet_8h.html#ab1c3158256ad9a9cd4a70014d8bb8c2f">initialise_as_bob</a></div><div class="ttdeci">int initialise_as_bob(Skissm__Ratchet **ratchet_out, const cipher_suite_t *cipher_suite, const uint8_t *shared_secret, size_t shared_secret_len, const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key)</div></div>
-<div class="ttc" id="aratchet_8h_html_ad114416fd01fb516bec0d67a2a293913"><div class="ttname"><a href="ratchet_8h.html#ad114416fd01fb516bec0d67a2a293913">initialise_as_alice</a></div><div class="ttdeci">int initialise_as_alice(Skissm__Ratchet **ratchet_out, const cipher_suite_t *cipher_suite, const uint8_t *shared_secret, size_t shared_secret_len, const Skissm__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key, ProtobufCBinaryData *their_encaps_ciphertext)</div></div>
-<div class="ttc" id="aratchet_8h_html_aff5c9f6a4669647c87fdc58cbbda2dc2"><div class="ttname"><a href="ratchet_8h.html#aff5c9f6a4669647c87fdc58cbbda2dc2">encrypt_ratchet</a></div><div class="ttdeci">int encrypt_ratchet(Skissm__One2oneMsgPayload **payload_out, const cipher_suite_t *cipher_suite, Skissm__Ratchet *ratchet, ProtobufCBinaryData ad, const uint8_t *plaintext_data, size_t plaintext_data_len)</div><div class="ttdoc">Encrypt plaintext_data to Skissm__One2oneMsgPayload payload and keep updated ratchet states.</div></div>
-<div class="ttc" id="askissm_8h_html"><div class="ttname"><a href="skissm_8h.html">skissm.h</a></div></div>
-<div class="ttc" id="astructcipher__suite__t_html"><div class="ttname"><a href="structcipher__suite__t.html">cipher_suite_t</a></div><div class="ttdoc">Type definition of cipher suite.</div><div class="ttdef"><b>Definition</b> skissm.h:446</div></div>
+<div class="ttc" id="ae2ees_8h_html"><div class="ttname"><a href="e2ees_8h.html">e2ees.h</a></div></div>
+<div class="ttc" id="aratchet_8h_html_a1734ea0d35087b89e5e417f525a6dfb4"><div class="ttname"><a href="ratchet_8h.html#a1734ea0d35087b89e5e417f525a6dfb4">encrypt_ratchet</a></div><div class="ttdeci">int encrypt_ratchet(E2ees__One2oneMsgPayload **payload_out, const cipher_suite_t *cipher_suite, E2ees__Ratchet *ratchet, ProtobufCBinaryData ad, const uint8_t *plaintext_data, size_t plaintext_data_len)</div><div class="ttdoc">Encrypt plaintext_data to E2ees__One2oneMsgPayload payload and keep updated ratchet states.</div></div>
+<div class="ttc" id="aratchet_8h_html_a4b057546513d142adee498fe83b1e3df"><div class="ttname"><a href="ratchet_8h.html#a4b057546513d142adee498fe83b1e3df">decrypt_ratchet</a></div><div class="ttdeci">int decrypt_ratchet(uint8_t **decrypted_data_out, size_t *decrypted_data_len_out, const cipher_suite_t *cipher_suite, E2ees__Ratchet *ratchet, ProtobufCBinaryData ad, E2ees__One2oneMsgPayload *payload)</div><div class="ttdoc">Decrypt E2ees__One2oneMsgPayload payload to plaintext_data and keep updated ratchet states.</div></div>
+<div class="ttc" id="aratchet_8h_html_a5f8920d394ff9a854d2a6d2c8d7feeb3"><div class="ttname"><a href="ratchet_8h.html#a5f8920d394ff9a854d2a6d2c8d7feeb3">initialise_as_bob</a></div><div class="ttdeci">int initialise_as_bob(E2ees__Ratchet **ratchet_out, const cipher_suite_t *cipher_suite, const uint8_t *shared_secret, size_t shared_secret_len, const E2ees__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key)</div></div>
+<div class="ttc" id="aratchet_8h_html_af09825ec4ba53cccdce6de7744a0eed6"><div class="ttname"><a href="ratchet_8h.html#af09825ec4ba53cccdce6de7744a0eed6">initialise_as_alice</a></div><div class="ttdeci">int initialise_as_alice(E2ees__Ratchet **ratchet_out, const cipher_suite_t *cipher_suite, const uint8_t *shared_secret, size_t shared_secret_len, const E2ees__KeyPair *our_ratchet_key, ProtobufCBinaryData *their_ratchet_key, ProtobufCBinaryData *their_encaps_ciphertext)</div></div>
+<div class="ttc" id="astructcipher__suite__t_html"><div class="ttname"><a href="structcipher__suite__t.html">cipher_suite_t</a></div><div class="ttdoc">Type definition of cipher suite.</div><div class="ttdef"><b>Definition</b> e2ees.h:447</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SKISSM: include/skissm/session.h File Reference</title>
+<title>E2EES: include/e2ees/session.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">SKISSM<span id="projectnumber">&#160;v1.8.11</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.8.15</span>
    </div>
-   <div id="projectbrief">SKISSM implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
+   <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
  </tr>
  </tbody>
@@ -84,7 +84,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_956c81ac76eab6927020c2bccd9ddd32.html">skissm</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_9514de2203bcd6cb9e4dccb290e56882.html">e2ees</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -97,7 +97,7 @@ $(function(){ initResizable(false); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="skissm_8h_source.html">skissm/skissm.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="e2ees_8h_source.html">e2ees/e2ees.h</a>&quot;</code><br />
 </div>
 <p><a href="session_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -114,37 +114,37 @@ typedef struct session_suite_t&#160;</td><td class="memItemRight" valign="bottom
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5ad1ebeaa2353cdf1ca14ab47ca780e3" id="r_a5ad1ebeaa2353cdf1ca14ab47ca780e3"><td class="memItemLeft" align="right" valign="top"><a id="a5ad1ebeaa2353cdf1ca14ab47ca780e3" name="a5ad1ebeaa2353cdf1ca14ab47ca780e3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initialise_session</b> (Skissm__Session *session, uint32_t e2ee_pack_id, Skissm__E2eeAddress *our_address, Skissm__E2eeAddress *their_address)</td></tr>
-<tr class="separator:a5ad1ebeaa2353cdf1ca14ab47ca780e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dea303616da6d39928deeb65704be52" id="r_a1dea303616da6d39928deeb65704be52"><td class="memItemLeft" align="right" valign="top"><a id="a1dea303616da6d39928deeb65704be52" name="a1dea303616da6d39928deeb65704be52"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>initialise_session</b> (E2ees__Session *session, uint32_t e2ees_pack_id, E2ees__E2eeAddress *our_address, E2ees__E2eeAddress *their_address)</td></tr>
+<tr class="separator:a1dea303616da6d39928deeb65704be52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd0e3f96188dc4ef91d78a4527e3574b" id="r_acd0e3f96188dc4ef91d78a4527e3574b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acd0e3f96188dc4ef91d78a4527e3574b">pack_common_plaintext</a> (const uint8_t *plaintext_data, size_t plaintext_data_len, int plaintext_type, uint8_t **common_plaintext_data, size_t *common_plaintext_data_len)</td></tr>
 <tr class="memdesc:acd0e3f96188dc4ef91d78a4527e3574b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packaging a common plaintext to common_plaintext_data.  <br /></td></tr>
 <tr class="separator:acd0e3f96188dc4ef91d78a4527e3574b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaae05d5f4baacf1fe864db03cad4d331" id="r_aaae05d5f4baacf1fe864db03cad4d331"><td class="memItemLeft" align="right" valign="top"><a id="aaae05d5f4baacf1fe864db03cad4d331" name="aaae05d5f4baacf1fe864db03cad4d331"></a>
-Skissm__InviteResponse *&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_new_outbound_session</b> (Skissm__Session *session, const Skissm__Account *local_account, Skissm__PreKeyBundle *their_pre_key_bundle)</td></tr>
-<tr class="separator:aaae05d5f4baacf1fe864db03cad4d331"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1871f603d67e6146356a82b599a5ccc9" id="r_a1871f603d67e6146356a82b599a5ccc9"><td class="memItemLeft" align="right" valign="top"><a id="a1871f603d67e6146356a82b599a5ccc9" name="a1871f603d67e6146356a82b599a5ccc9"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_new_inbound_session</b> (Skissm__Session *session, Skissm__Account *local_account, Skissm__InviteMsg *msg)</td></tr>
-<tr class="separator:a1871f603d67e6146356a82b599a5ccc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92de682c46dbaa71455d45ce7f5354f6" id="r_a92de682c46dbaa71455d45ce7f5354f6"><td class="memItemLeft" align="right" valign="top"><a id="a92de682c46dbaa71455d45ce7f5354f6" name="a92de682c46dbaa71455d45ce7f5354f6"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_complete_outbound_session</b> (Skissm__Session *outbound_session, Skissm__AcceptMsg *msg)</td></tr>
-<tr class="separator:a92de682c46dbaa71455d45ce7f5354f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28b21940b08d400b97e023170a9218f6" id="r_a28b21940b08d400b97e023170a9218f6"><td class="memItemLeft" align="right" valign="top"><a id="a28b21940b08d400b97e023170a9218f6" name="a28b21940b08d400b97e023170a9218f6"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>pqc_new_outbound_session_v2</b> (Skissm__InviteResponse **response_out, Skissm__E2eeAddress *from, Skissm__PreKeyBundle *their_pre_key_bundle)</td></tr>
-<tr class="separator:a28b21940b08d400b97e023170a9218f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a221a0d91d8cdc7d120363921af27a4fc" id="r_a221a0d91d8cdc7d120363921af27a4fc"><td class="memItemLeft" align="right" valign="top"><a id="a221a0d91d8cdc7d120363921af27a4fc" name="a221a0d91d8cdc7d120363921af27a4fc"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>pqc_new_inbound_session</b> (Skissm__Session **inbound_session_out, Skissm__Account *local_account, Skissm__InviteMsg *msg)</td></tr>
-<tr class="separator:a221a0d91d8cdc7d120363921af27a4fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acab71cf9ec0baa1f401ecb9f33e8475e" id="r_acab71cf9ec0baa1f401ecb9f33e8475e"><td class="memItemLeft" align="right" valign="top"><a id="acab71cf9ec0baa1f401ecb9f33e8475e" name="acab71cf9ec0baa1f401ecb9f33e8475e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>pqc_complete_outbound_session</b> (Skissm__Session **outbound_session_out, Skissm__AcceptMsg *msg)</td></tr>
-<tr class="separator:acab71cf9ec0baa1f401ecb9f33e8475e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf3411f7e7f9eaca0dd78339cf98eaa8" id="r_abf3411f7e7f9eaca0dd78339cf98eaa8"><td class="memItemLeft" align="right" valign="top"><a id="abf3411f7e7f9eaca0dd78339cf98eaa8" name="abf3411f7e7f9eaca0dd78339cf98eaa8"></a>
+E2ees__InviteResponse *&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_new_outbound_session</b> (E2ees__Session *session, const E2ees__Account *local_account, E2ees__PreKeyBundle *their_pre_key_bundle)</td></tr>
+<tr class="separator:abf3411f7e7f9eaca0dd78339cf98eaa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adce8e319dbf212ff31f361b2c3db9f6d" id="r_adce8e319dbf212ff31f361b2c3db9f6d"><td class="memItemLeft" align="right" valign="top"><a id="adce8e319dbf212ff31f361b2c3db9f6d" name="adce8e319dbf212ff31f361b2c3db9f6d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_new_inbound_session</b> (E2ees__Session *session, E2ees__Account *local_account, E2ees__InviteMsg *msg)</td></tr>
+<tr class="separator:adce8e319dbf212ff31f361b2c3db9f6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cd700296f9a059c34f19696141575f5" id="r_a2cd700296f9a059c34f19696141575f5"><td class="memItemLeft" align="right" valign="top"><a id="a2cd700296f9a059c34f19696141575f5" name="a2cd700296f9a059c34f19696141575f5"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_complete_outbound_session</b> (E2ees__Session *outbound_session, E2ees__AcceptMsg *msg)</td></tr>
+<tr class="separator:a2cd700296f9a059c34f19696141575f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb3913a8e3d3e48ba430fbad13c1165c" id="r_acb3913a8e3d3e48ba430fbad13c1165c"><td class="memItemLeft" align="right" valign="top"><a id="acb3913a8e3d3e48ba430fbad13c1165c" name="acb3913a8e3d3e48ba430fbad13c1165c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>pqc_new_outbound_session_v2</b> (E2ees__InviteResponse **response_out, E2ees__E2eeAddress *from, E2ees__PreKeyBundle *their_pre_key_bundle)</td></tr>
+<tr class="separator:acb3913a8e3d3e48ba430fbad13c1165c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a968c41c60d69557b2d1c61cdb4e0918b" id="r_a968c41c60d69557b2d1c61cdb4e0918b"><td class="memItemLeft" align="right" valign="top"><a id="a968c41c60d69557b2d1c61cdb4e0918b" name="a968c41c60d69557b2d1c61cdb4e0918b"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>pqc_new_inbound_session</b> (E2ees__Session **inbound_session_out, E2ees__Account *local_account, E2ees__InviteMsg *msg)</td></tr>
+<tr class="separator:a968c41c60d69557b2d1c61cdb4e0918b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae068509a92bf494c1cd155f1db82656" id="r_aae068509a92bf494c1cd155f1db82656"><td class="memItemLeft" align="right" valign="top"><a id="aae068509a92bf494c1cd155f1db82656" name="aae068509a92bf494c1cd155f1db82656"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>pqc_complete_outbound_session</b> (E2ees__Session **outbound_session_out, E2ees__AcceptMsg *msg)</td></tr>
+<tr class="separator:aae068509a92bf494c1cd155f1db82656"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Copyright © 2020-2021 by Academia Sinica</p>
-<p>This file is part of SKISSM.</p>
+<div class="textblock"><p>Copyright © 2021 Academia Sinica. All Rights Reserved.</p>
+<p>This file is part of E2EE Security.</p>
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-<p>SKISSM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License along with SKISSM. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
+<p>E2EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License along with E2EE Security. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="acd0e3f96188dc4ef91d78a4527e3574b" name="acd0e3f96188dc4ef91d78a4527e3574b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd0e3f96188dc4ef91d78a4527e3574b">&#9670;&#160;</a></span>pack_common_plaintext()</h2>

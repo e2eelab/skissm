@@ -1,15 +1,15 @@
 var searchData=
 [
-  ['on_5fgroup_5fcreated_0',['on_group_created',['../structskissm__event__handler__t.html#a82ff78814b564d907fce0e9d10738dad',1,'skissm_event_handler_t']]],
-  ['on_5fgroup_5fmembers_5fadded_1',['on_group_members_added',['../structskissm__event__handler__t.html#a0966d397de13cfe51766d1edab634598',1,'skissm_event_handler_t']]],
-  ['on_5fgroup_5fmembers_5fremoved_2',['on_group_members_removed',['../structskissm__event__handler__t.html#a6eeba3aa1759d827591176aa99276418',1,'skissm_event_handler_t']]],
-  ['on_5fgroup_5fmsg_5freceived_3',['on_group_msg_received',['../structskissm__event__handler__t.html#a1468ea66a74de7c2862eb00151918cd8',1,'skissm_event_handler_t']]],
-  ['on_5finbound_5fsession_5finvited_4',['on_inbound_session_invited',['../structskissm__event__handler__t.html#a390d943e3c3d108d657b934727cfbbf6',1,'skissm_event_handler_t']]],
-  ['on_5finbound_5fsession_5fready_5',['on_inbound_session_ready',['../structskissm__event__handler__t.html#ab890fb99fb241ef863614e49d5daaa5a',1,'skissm_event_handler_t']]],
-  ['on_5flog_6',['on_log',['../structskissm__event__handler__t.html#acb21d9ebae1f280fcefc0b59f9a16703',1,'skissm_event_handler_t']]],
-  ['on_5fone2one_5fmsg_5freceived_7',['on_one2one_msg_received',['../structskissm__event__handler__t.html#a5281d19e9727f558326cd65b14860f88',1,'skissm_event_handler_t']]],
-  ['on_5fother_5fdevice_5fmsg_5freceived_8',['on_other_device_msg_received',['../structskissm__event__handler__t.html#afcb6763e185383d696b3ec53af4a08ac',1,'skissm_event_handler_t']]],
-  ['on_5foutbound_5fsession_5fready_9',['on_outbound_session_ready',['../structskissm__event__handler__t.html#a92f048bdcef4bc7b9e77ea16d1e85a70',1,'skissm_event_handler_t']]],
-  ['on_5fuser_5fregistered_10',['on_user_registered',['../structskissm__event__handler__t.html#adb08c1b3e35b9d705232b1ee1f1086e3',1,'skissm_event_handler_t']]],
+  ['on_5fgroup_5fcreated_0',['on_group_created',['../structe2ees__event__handler__t.html#a177245b71ea3090a3ce75364ca3f624f',1,'e2ees_event_handler_t']]],
+  ['on_5fgroup_5fmembers_5fadded_1',['on_group_members_added',['../structe2ees__event__handler__t.html#aff4021cb1e6b96950f2e59e3bed77484',1,'e2ees_event_handler_t']]],
+  ['on_5fgroup_5fmembers_5fremoved_2',['on_group_members_removed',['../structe2ees__event__handler__t.html#a36ea7f3e63708a93c095d7a73c7ac800',1,'e2ees_event_handler_t']]],
+  ['on_5fgroup_5fmsg_5freceived_3',['on_group_msg_received',['../structe2ees__event__handler__t.html#a5a6210ad7d5f6cbfc1ccb480b11482dc',1,'e2ees_event_handler_t']]],
+  ['on_5finbound_5fsession_5finvited_4',['on_inbound_session_invited',['../structe2ees__event__handler__t.html#a501fb3cc145d0a5c5b7024f0d96e729f',1,'e2ees_event_handler_t']]],
+  ['on_5finbound_5fsession_5fready_5',['on_inbound_session_ready',['../structe2ees__event__handler__t.html#aca7ea990181f8b4adc775ce8d452e60c',1,'e2ees_event_handler_t']]],
+  ['on_5flog_6',['on_log',['../structe2ees__event__handler__t.html#ad5d44437a0d1b322edf615d194a06ba2',1,'e2ees_event_handler_t']]],
+  ['on_5fone2one_5fmsg_5freceived_7',['on_one2one_msg_received',['../structe2ees__event__handler__t.html#aa16893d63d4917639d7a04ff7be33174',1,'e2ees_event_handler_t']]],
+  ['on_5fother_5fdevice_5fmsg_5freceived_8',['on_other_device_msg_received',['../structe2ees__event__handler__t.html#a5ac02b99c90f6b630b2d8c82d533364c',1,'e2ees_event_handler_t']]],
+  ['on_5foutbound_5fsession_5fready_9',['on_outbound_session_ready',['../structe2ees__event__handler__t.html#a5019f4a481c464f804700d6dcb6acb55',1,'e2ees_event_handler_t']]],
+  ['on_5fuser_5fregistered_10',['on_user_registered',['../structe2ees__event__handler__t.html#a001d83b813c0a7ae830bdb4a7b4dd870',1,'e2ees_event_handler_t']]],
   ['overwrite_5fprotobuf_5ffrom_5farray_11',['overwrite_protobuf_from_array',['../mem__util_8h.html#a46b071539e26197cf6045c29e7ebd8b8',1,'mem_util.h']]]
 ];
