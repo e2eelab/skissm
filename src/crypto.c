@@ -1749,8 +1749,11 @@ int crypto_hash_by_e2ees_pack_id(
     uint32_t hash_len = hash_suite->get_crypto_param().hash_len;
     *hash_out_len = hash_len;
     *hash_out = (uint8_t *)malloc(sizeof(uint8_t) * hash_len);
-    hash_suite->hash(msg, msg_len, *hash_out);
-    return 0;
+    int result = hash_suite->hash(msg, msg_len, *hash_out);
+    if (result < 0) {
+        free_mem((void **)&hash_out, hash_len);
+    }
+    return result;
 }
 
 int crypto_ds_key_gen_by_e2ees_pack_id(
