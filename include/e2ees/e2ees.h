@@ -1173,9 +1173,9 @@ e2ees_pack_t *get_e2ees_pack(uint32_t e2ees_pack_id_raw);
 
 /**
  * @brief The begining function for starting E2EE Security.
- * @param ssm_plugin
+ * @param plugin
  */
-void e2ees_begin(e2ees_plugin_t *ssm_plugin);
+void e2ees_begin(e2ees_plugin_t *plugin);
 
 /**
  * @brief The ending function for terminating E2EE Security.

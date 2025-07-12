@@ -82,7 +82,7 @@ static void on_group_msg_received(
     print_msg("on_group_msg_received: plaintext", plaintext, plaintext_len);
 }
 
-struct e2ees_plugin_t ssm_plugin = {
+struct e2ees_plugin_t mock_plugin = {
     // common
     {
         gen_ts,
@@ -159,7 +159,7 @@ struct e2ees_plugin_t ssm_plugin = {
 void tear_up() {
     mock_db_begin();
     mock_server_begin();
-    e2ees_begin(&ssm_plugin);
+    e2ees_begin(&mock_plugin);
 }
 
 void tear_down() {

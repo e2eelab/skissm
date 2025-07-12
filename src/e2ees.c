@@ -69,19 +69,19 @@ e2ees_pack_t E2EES_PACK = { NULL, NULL };
 extern struct session_suite_t E2EES_SESSION_ECC;
 extern struct session_suite_t E2EES_SESSION_PQC;
 
-static e2ees_plugin_t *skissm_plugin;
+static e2ees_plugin_t *e2ees_plugin;
 
-void e2ees_begin(e2ees_plugin_t *ssm_plugin) {
-    skissm_plugin = ssm_plugin;
+void e2ees_begin(e2ees_plugin_t *plugin) {
+    e2ees_plugin = plugin;
     account_begin();
 }
 
 void e2ees_end() {
-    skissm_plugin = NULL;
+    e2ees_plugin = NULL;
     account_end();
 }
 
-e2ees_plugin_t *get_e2ees_plugin() { return skissm_plugin; }
+e2ees_plugin_t *get_e2ees_plugin() { return e2ees_plugin; }
 
 ds_suite_t *get_ds_suite(unsigned digital_signature_id) {
     if (digital_signature_id == E2EES_PACK_ALG_DS_CURVE25519) {
@@ -236,58 +236,58 @@ e2ees_pack_t *get_e2ees_pack(uint32_t e2ees_pack_id_raw) {
 }
 
 void e2ees_notify_log(E2ees__E2eeAddress *user_address, LogCode log_code, const char *msg_fmt, ...) {
-    if (skissm_plugin != NULL) {
+    if (e2ees_plugin != NULL) {
         char msg[256] = {0};
         va_list arg;
         va_start(arg, msg_fmt);
         vsnprintf(msg, 256, msg_fmt, arg);
         va_end(arg);
-        skissm_plugin->event_handler.on_log(user_address, log_code, msg);
+        e2ees_plugin->event_handler.on_log(user_address, log_code, msg);
     }
 }
 
 void e2ees_notify_user_registered(E2ees__Account *account) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_user_registered(account);
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_user_registered(account);
 }
 
 void e2ees_notify_inbound_session_invited(E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_inbound_session_invited(user_address, from);
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_inbound_session_invited(user_address, from);
 }
 
 void e2ees_notify_inbound_session_ready(E2ees__E2eeAddress *user_address, E2ees__Session *inbound_session) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_inbound_session_ready(user_address, inbound_session);
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_inbound_session_ready(user_address, inbound_session);
 }
 
 void e2ees_notify_outbound_session_ready(E2ees__E2eeAddress *user_address, E2ees__Session *outbound_session) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_outbound_session_ready(user_address, outbound_session);
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_outbound_session_ready(user_address, outbound_session);
 }
 
 void e2ees_notify_one2one_msg(
     E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from_address, E2ees__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_one2one_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_one2one_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
 }
 
 void e2ees_notify_other_device_msg(
     E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from_address, E2ees__E2eeAddress *to_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_other_device_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_other_device_msg_received(user_address, from_address, to_address, plaintext, plaintext_len);
 }
 
 void e2ees_notify_group_created(
     E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *group_address, const char *group_name,
     E2ees__GroupMember **group_members, size_t group_members_num
 ) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_created(
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_group_created(
             user_address, group_address, group_name,
             group_members, group_members_num
         );
@@ -298,8 +298,8 @@ void e2ees_notify_group_members_added(
     E2ees__GroupMember **group_members, size_t group_members_num,
     E2ees__GroupMember **added_group_members, size_t added_group_members_num
 ) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_members_added(
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_group_members_added(
             user_address, group_address, group_name,
             group_members, group_members_num,
             added_group_members, added_group_members_num
@@ -311,8 +311,8 @@ void e2ees_notify_group_members_removed(
     E2ees__GroupMember **group_members, size_t group_members_num,
     E2ees__GroupMember **removed_group_members, size_t removed_group_members_num
 ) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_members_removed(
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_group_members_removed(
             user_address, group_address, group_name,
             group_members, group_members_num,
             removed_group_members, removed_group_members_num
@@ -323,8 +323,8 @@ void e2ees_notify_group_msg(
     E2ees__E2eeAddress *user_address, E2ees__E2eeAddress *from_address, E2ees__E2eeAddress *group_address,
     uint8_t *plaintext, size_t plaintext_len
 ) {
-    if (skissm_plugin != NULL)
-        skissm_plugin->event_handler.on_group_msg_received(
+    if (e2ees_plugin != NULL)
+        e2ees_plugin->event_handler.on_group_msg_received(
             user_address, from_address, group_address, plaintext, plaintext_len
         );
 }
