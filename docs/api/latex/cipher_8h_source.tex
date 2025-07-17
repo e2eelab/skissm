@@ -8,36 +8,133 @@
 \DoxyCodeLine{00022\ }
 \DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
 \DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
-\DoxyCodeLine{00025\ }
-\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
-\DoxyCodeLine{00027\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
-\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00029\ }
-\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{e2ees_8h}{e2ees/e2ees.h}}"{}}}
-\DoxyCodeLine{00031\ }
-\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ KDF\_INFO\_ROOT\ "{}ROOT"{}}}
-\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#define\ KDF\_INFO\_RATCHET\ "{}RATCHET"{}}}
-\DoxyCodeLine{00038\ }
-\DoxyCodeLine{00045\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{cipher_8h_ad449cbcd6449c8cff0b8de22bcc9baa0}{aes256\_gcm\_ciphertext\_data\_len}}(\textcolor{keywordtype}{size\_t}\ plaintext\_data\_length);}
-\DoxyCodeLine{00046\ }
-\DoxyCodeLine{00053\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{cipher_8h_a0c9d322f09b8b9e997838fee395a09a6}{aes256\_gcm\_plaintext\_data\_len}}(\textcolor{keywordtype}{size\_t}\ ciphertext\_data\_len);}
-\DoxyCodeLine{00054\ }
-\DoxyCodeLine{00066\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{cipher_8h_a1bff7c10814e8a777dd1a106f436406a}{aes256\_gcm\_encrypt}}(}
-\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ad,\ \textcolor{keyword}{const}\ uint8\_t\ *aes\_key,}
-\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
-\DoxyCodeLine{00069\ \ \ \ \ uint8\_t\ **ciphertext\_data,\ \textcolor{keywordtype}{size\_t}\ *ciphertext\_data\_len}
-\DoxyCodeLine{00070\ );}
-\DoxyCodeLine{00071\ }
-\DoxyCodeLine{00083\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{cipher_8h_ade62c4239668838b57e54a5169028bdd}{aes256\_gcm\_decrypt}}(}
-\DoxyCodeLine{00084\ \ \ \ \ uint8\_t\ **decrypted\_data\_out,\ \textcolor{keywordtype}{size\_t}\ *decrypted\_data\_len\_out,}
-\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ad,\ \textcolor{keyword}{const}\ uint8\_t\ *aes\_key,}
-\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *ciphertext\_data,\ \textcolor{keywordtype}{size\_t}\ ciphertext\_data\_len}
-\DoxyCodeLine{00087\ );}
-\DoxyCodeLine{00088\ }
-\DoxyCodeLine{00089\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
-\DoxyCodeLine{00090\ \}}
-\DoxyCodeLine{00091\ \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00092\ }
-\DoxyCodeLine{00093\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ CIPHER\_H\_\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <stdbool.h>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00028\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{e2ees_8h}{e2ees/e2ees.h}}"{}}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00036\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\_ds\_param\_t}}\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{bool}\ pqc\_param;}
+\DoxyCodeLine{00038\ \ \ \ \ uint32\_t\ sign\_pub\_key\_len;}
+\DoxyCodeLine{00039\ \ \ \ \ uint32\_t\ sign\_priv\_key\_len;}
+\DoxyCodeLine{00040\ \ \ \ \ uint32\_t\ sig\_len;}
+\DoxyCodeLine{00041\ \}\ \mbox{\hyperlink{cipher_8h_a3a5946bb59ef37e260551ccd156dda5e}{crypto\_ds\_param\_t}};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{bool}\ pqc\_param;}
+\DoxyCodeLine{00048\ \ \ \ \ uint32\_t\ asym\_pub\_key\_len;}
+\DoxyCodeLine{00049\ \ \ \ \ uint32\_t\ asym\_priv\_key\_len;}
+\DoxyCodeLine{00050\ \ \ \ \ uint32\_t\ kem\_ciphertext\_len;}
+\DoxyCodeLine{00051\ \ \ \ \ uint32\_t\ shared\_secret\_len;}
+\DoxyCodeLine{00052\ \}\ \mbox{\hyperlink{cipher_8h_ae20eb84b8db760dff90fb80506043872}{crypto\_kem\_param\_t}};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00057\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__se__param__t}{crypto\_se\_param\_t}}\ \{}
+\DoxyCodeLine{00058\ \ \ \ \ uint32\_t\ aead\_key\_len;}
+\DoxyCodeLine{00059\ \ \ \ \ uint32\_t\ aead\_iv\_len;}
+\DoxyCodeLine{00060\ \ \ \ \ uint32\_t\ aead\_tag\_len;}
+\DoxyCodeLine{00061\ \}\ \mbox{\hyperlink{cipher_8h_a72627fa90ca017b9a58e32122e1492ef}{crypto\_se\_param\_t}};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00066\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__hf__param__t}{crypto\_hf\_param\_t}}\ \{}
+\DoxyCodeLine{00067\ \ \ \ \ uint32\_t\ hf\_len;}
+\DoxyCodeLine{00068\ \}\ \mbox{\hyperlink{cipher_8h_a1d059ddbbd7878dbf7dd749a9321444c}{crypto\_hf\_param\_t}};}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00073\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structds__suite__t}{ds\_suite\_t}}\ \{}
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\_ds\_param\_t}}\ (*\mbox{\hyperlink{structds__suite__t_a905d20de8a77174d2c6430a50d505e96}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00087\ \ \ \ \ int\ (*\mbox{\hyperlink{structds__suite__t_a54cd6cd0f027601ddf44a4fa1581e970}{sign\_key\_gen}})(}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *pub\_key,}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00090\ \ \ \ \ );}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00102\ \ \ \ \ int\ (*\mbox{\hyperlink{structds__suite__t_a46d695f2d62249196166f79052141229}{sign}})(}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ uint8\_t\ *signature\_out,\ \textcolor{keywordtype}{size\_t}\ *signature\_out\_len,}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *private\_key}
+\DoxyCodeLine{00106\ \ \ \ \ );}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00118\ \ \ \ \ int\ (*\mbox{\hyperlink{structds__suite__t_a320e9b1599d99c5a5e94ce9a97f264e0}{verify}})(}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *signature\_in,\ \textcolor{keywordtype}{size\_t}\ signature\_in\_len,}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,\ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *public\_key}
+\DoxyCodeLine{00122\ \ \ \ \ );}
+\DoxyCodeLine{00123\ \}\ \mbox{\hyperlink{cipher_8h_a5680b1715e4077238b3c979284d1c8ba}{ds\_suite\_t}};}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00128\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ \{}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\_kem\_param\_t}}\ (*\mbox{\hyperlink{structkem__suite__t_a2c102cdde7c6f66a97c1192ae845f7f6}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00141\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_a8cb7fafa56b33c45a717e4a2d358335f}{asym\_key\_gen}})(}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *pub\_key,}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *priv\_key}
+\DoxyCodeLine{00144\ \ \ \ \ );}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00154\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_acb69c24dfa2b2571fcf43f3676d2c23e}{encaps}})(}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ ProtobufCBinaryData\ *ciphertext,}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *their\_key}
+\DoxyCodeLine{00158\ \ \ \ \ );}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00168\ \ \ \ \ int\ (*\mbox{\hyperlink{structkem__suite__t_a275cda3e1962677ce05f492bcd6de467}{decaps}})(}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *our\_key,}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ciphertext}
+\DoxyCodeLine{00172\ \ \ \ \ );}
+\DoxyCodeLine{00173\ \}\ \mbox{\hyperlink{cipher_8h_a7f99b84ece115e05e0f2385ecd9d35e4}{kem\_suite\_t}};}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00178\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structse__suite__t}{se\_suite\_t}}\ \{}
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__se__param__t}{crypto\_se\_param\_t}}\ (*\mbox{\hyperlink{structse__suite__t_a5cff7596803766b01571fe0a4a873718}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00196\ \ \ \ \ int\ (*\mbox{\hyperlink{structse__suite__t_adbf054632d9528b1dee88be17c0a6faf}{encrypt}})(}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *,}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,\ size\_t,}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ uint8\_t\ **,\ \textcolor{keywordtype}{size\_t}\ *}
+\DoxyCodeLine{00201\ \ \ \ \ );}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00214\ \ \ \ \ int\ (*\mbox{\hyperlink{structse__suite__t_a28075d5db728fcdf04bce0519b093915}{decrypt}})(}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ uint8\_t\ **,\ \textcolor{keywordtype}{size\_t}\ *,}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *,}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *,\ size\_t}
+\DoxyCodeLine{00219\ \ \ \ \ );}
+\DoxyCodeLine{00220\ \}\ \mbox{\hyperlink{cipher_8h_ad12fee6d7f201a4525a795f1f56c3211}{se\_suite\_t}};}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00225\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structhf__suite__t}{hf\_suite\_t}}\ \{}
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcrypto__hf__param__t}{crypto\_hf\_param\_t}}\ (*\mbox{\hyperlink{structhf__suite__t_a9b0890a198c5a96920736ad2cc636cb4}{get\_crypto\_param}})(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00245\ \ \ \ \ int\ (*\mbox{\hyperlink{structhf__suite__t_ab1812ed5d03687f4843cf34694f0f21a}{hkdf}})(}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *salt,\ \textcolor{keywordtype}{size\_t}\ salt\_len,}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *info,\ \textcolor{keywordtype}{size\_t}\ info\_len,}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ uint8\_t\ *output,\ \textcolor{keywordtype}{size\_t}\ output\_len}
+\DoxyCodeLine{00250\ \ \ \ \ );}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00262\ \ \ \ \ int\ (*\mbox{\hyperlink{structhf__suite__t_af52f63df546cd7039660d8868e86e72f}{hmac}})(}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *key,\ \textcolor{keywordtype}{size\_t}\ key\_len,}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *input,\ \textcolor{keywordtype}{size\_t}\ input\_len,}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ uint8\_t\ *output}
+\DoxyCodeLine{00266\ \ \ \ \ );}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00276\ \ \ \ \ int\ (*\mbox{\hyperlink{structhf__suite__t_a1fc5075ffd8b9f7e40550598860a75ab}{hash}})(}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *msg,}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ msg\_len,}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ uint8\_t\ *hash\_out}
+\DoxyCodeLine{00280\ \ \ \ \ );}
+\DoxyCodeLine{00281\ \}\ \mbox{\hyperlink{cipher_8h_a2651d1354df4e1928f04ae416f74fbef}{hf\_suite\_t}};}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00286\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ \{}
+\DoxyCodeLine{00287\ \ \ \ \ \mbox{\hyperlink{structds__suite__t}{ds\_suite\_t}}\ *ds\_suite;}
+\DoxyCodeLine{00288\ \ \ \ \ \mbox{\hyperlink{structkem__suite__t}{kem\_suite\_t}}\ *kem\_suite;}
+\DoxyCodeLine{00289\ \ \ \ \ \mbox{\hyperlink{structse__suite__t}{se\_suite\_t}}\ *se\_suite;}
+\DoxyCodeLine{00290\ \ \ \ \ \mbox{\hyperlink{structhf__suite__t}{hf\_suite\_t}}\ *hf\_suite;}
+\DoxyCodeLine{00291\ \}\ \mbox{\hyperlink{cipher_8h_a764f131fe1cf3e866758cf3e45028de8}{cipher\_suite\_t}};}
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00294\ \}}
+\DoxyCodeLine{00295\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ CIPHER\_H\_\ */}\textcolor{preprocessor}{}}
 
 \end{DoxyCode}

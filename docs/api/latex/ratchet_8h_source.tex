@@ -16,41 +16,44 @@
 \DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{e2ees_8h}{e2ees/e2ees.h}}"{}}}
 \DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{cipher_8h}{e2ees/cipher.h}}"{}}}
 \DoxyCodeLine{00032\ }
-\DoxyCodeLine{00035\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{ratchet_8h_a5f8920d394ff9a854d2a6d2c8d7feeb3}{initialise\_as\_bob}}(}
-\DoxyCodeLine{00036\ \ \ \ \ E2ees\_\_Ratchet\ **ratchet\_out,}
-\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
-\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *shared\_secret,\ \textcolor{keywordtype}{size\_t}\ shared\_secret\_len,}
-\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{const}\ E2ees\_\_KeyPair\ *our\_ratchet\_key,\ ProtobufCBinaryData\ *their\_ratchet\_key}
-\DoxyCodeLine{00040\ );}
-\DoxyCodeLine{00041\ }
-\DoxyCodeLine{00044\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{ratchet_8h_af09825ec4ba53cccdce6de7744a0eed6}{initialise\_as\_alice}}(}
-\DoxyCodeLine{00045\ \ \ \ \ E2ees\_\_Ratchet\ **ratchet\_out,}
-\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
-\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *shared\_secret,}
-\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ shared\_secret\_len,}
-\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{const}\ E2ees\_\_KeyPair\ *our\_ratchet\_key,}
-\DoxyCodeLine{00050\ \ \ \ \ ProtobufCBinaryData\ *their\_ratchet\_key,}
-\DoxyCodeLine{00051\ \ \ \ \ ProtobufCBinaryData\ *their\_encaps\_ciphertext}
-\DoxyCodeLine{00052\ );}
-\DoxyCodeLine{00053\ }
-\DoxyCodeLine{00065\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{ratchet_8h_a1734ea0d35087b89e5e417f525a6dfb4}{encrypt\_ratchet}}(}
-\DoxyCodeLine{00066\ \ \ \ \ E2ees\_\_One2oneMsgPayload\ **payload\_out,}
-\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
-\DoxyCodeLine{00068\ \ \ \ \ E2ees\_\_Ratchet\ *ratchet,}
-\DoxyCodeLine{00069\ \ \ \ \ ProtobufCBinaryData\ ad,}
-\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len}
-\DoxyCodeLine{00071\ );}
-\DoxyCodeLine{00072\ }
-\DoxyCodeLine{00086\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{ratchet_8h_a4b057546513d142adee498fe83b1e3df}{decrypt\_ratchet}}(}
-\DoxyCodeLine{00087\ \ \ \ \ uint8\_t\ **decrypted\_data\_out,\ \textcolor{keywordtype}{size\_t}\ *decrypted\_data\_len\_out,}
-\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
-\DoxyCodeLine{00089\ \ \ \ \ E2ees\_\_Ratchet\ *ratchet,\ ProtobufCBinaryData\ ad,\ E2ees\_\_One2oneMsgPayload\ *payload}
-\DoxyCodeLine{00090\ );}
-\DoxyCodeLine{00091\ }
-\DoxyCodeLine{00092\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
-\DoxyCodeLine{00093\ \}}
-\DoxyCodeLine{00094\ \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00095\ }
-\DoxyCodeLine{00096\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ RATCHET\_H\_\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#define\ KDF\_INFO\_ROOT\ "{}ROOT"{}}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ KDF\_INFO\_RATCHET\ "{}RATCHET"{}}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00042\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{ratchet_8h_a5f8920d394ff9a854d2a6d2c8d7feeb3}{initialise\_as\_bob}}(}
+\DoxyCodeLine{00043\ \ \ \ \ E2ees\_\_Ratchet\ **ratchet\_out,}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *shared\_secret,\ \textcolor{keywordtype}{size\_t}\ shared\_secret\_len,}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{const}\ E2ees\_\_KeyPair\ *our\_ratchet\_key,\ ProtobufCBinaryData\ *their\_ratchet\_key}
+\DoxyCodeLine{00047\ );}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00051\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{ratchet_8h_af09825ec4ba53cccdce6de7744a0eed6}{initialise\_as\_alice}}(}
+\DoxyCodeLine{00052\ \ \ \ \ E2ees\_\_Ratchet\ **ratchet\_out,}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *shared\_secret,}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ shared\_secret\_len,}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{const}\ E2ees\_\_KeyPair\ *our\_ratchet\_key,}
+\DoxyCodeLine{00057\ \ \ \ \ ProtobufCBinaryData\ *their\_ratchet\_key,}
+\DoxyCodeLine{00058\ \ \ \ \ ProtobufCBinaryData\ *their\_encaps\_ciphertext}
+\DoxyCodeLine{00059\ );}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00072\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{ratchet_8h_a1734ea0d35087b89e5e417f525a6dfb4}{encrypt\_ratchet}}(}
+\DoxyCodeLine{00073\ \ \ \ \ E2ees\_\_One2oneMsgPayload\ **payload\_out,}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
+\DoxyCodeLine{00075\ \ \ \ \ E2ees\_\_Ratchet\ *ratchet,}
+\DoxyCodeLine{00076\ \ \ \ \ ProtobufCBinaryData\ ad,}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len}
+\DoxyCodeLine{00078\ );}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00093\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{ratchet_8h_a4b057546513d142adee498fe83b1e3df}{decrypt\_ratchet}}(}
+\DoxyCodeLine{00094\ \ \ \ \ uint8\_t\ **decrypted\_data\_out,\ \textcolor{keywordtype}{size\_t}\ *decrypted\_data\_len\_out,}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{structcipher__suite__t}{cipher\_suite\_t}}\ *cipher\_suite,}
+\DoxyCodeLine{00096\ \ \ \ \ E2ees\_\_Ratchet\ *ratchet,\ ProtobufCBinaryData\ ad,\ E2ees\_\_One2oneMsgPayload\ *payload}
+\DoxyCodeLine{00097\ );}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00100\ \}}
+\DoxyCodeLine{00101\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ RATCHET\_H\_\ */}\textcolor{preprocessor}{}}
 
 \end{DoxyCode}

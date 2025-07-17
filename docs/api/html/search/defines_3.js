@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sha256_5foutput_5flength_0',['SHA256_OUTPUT_LENGTH',['../crypto_8h.html#ab1bd3ef9b594e851769e8d7baf17f0f1',1,'crypto.h']]]
+  ['kdf_5finfo_5froot_0',['KDF_INFO_ROOT',['../ratchet_8h.html#a124359a86abbd0fb65fb6aa6b4ffeee9',1,'ratchet.h']]]
 ];

@@ -1,0 +1,37 @@
+\doxysection{cipher\+\_\+se.\+h}
+\hypertarget{cipher__se_8h_source}{}\label{cipher__se_8h_source}\index{include/e2ees/cipher\_se.h@{include/e2ees/cipher\_se.h}}
+\mbox{\hyperlink{cipher__se_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#ifndef\ CIPHER\_SE\_H\_}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ CIPHER\_SE\_H\_}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00028\ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{e2ees_8h}{e2ees/e2ees.h}}"{}}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00044\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{cipher__se_8h_a1bff7c10814e8a777dd1a106f436406a}{aes256\_gcm\_encrypt}}(}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ad,\ \textcolor{keyword}{const}\ uint8\_t\ *aes\_key,}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
+\DoxyCodeLine{00047\ \ \ \ \ uint8\_t\ **ciphertext\_data,\ \textcolor{keywordtype}{size\_t}\ *ciphertext\_data\_len}
+\DoxyCodeLine{00048\ );}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00061\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{cipher__se_8h_ade62c4239668838b57e54a5169028bdd}{aes256\_gcm\_decrypt}}(}
+\DoxyCodeLine{00062\ \ \ \ \ uint8\_t\ **decrypted\_data\_out,\ \textcolor{keywordtype}{size\_t}\ *decrypted\_data\_len\_out,}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{const}\ ProtobufCBinaryData\ *ad,\ \textcolor{keyword}{const}\ uint8\_t\ *aes\_key,}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *ciphertext\_data,\ \textcolor{keywordtype}{size\_t}\ ciphertext\_data\_len}
+\DoxyCodeLine{00065\ );}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00068\ \}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ CIPHER\_SE\_H\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

@@ -30,6 +30,13 @@ extern "C" {
 #include "e2ees/e2ees.h"
 #include "e2ees/cipher.h"
 
+/**
+ * The context strings that are used by the HKDF
+ * for deriving next root key and chain key.
+ */
+#define KDF_INFO_ROOT "ROOT"
+#define KDF_INFO_RATCHET "RATCHET"
+
 /** Initialise the session using a shared secret and the public part of the
  * remote's first ratchet key */
 int initialise_as_bob(

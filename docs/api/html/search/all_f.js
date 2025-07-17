@@ -1,7 +1,7 @@
 var searchData=
 [
   ['safe_5fstrcmp_0',['safe_strcmp',['../mem__util_8h.html#acaf04287564cbb5a3662c896622257d5',1,'mem_util.h']]],
-  ['se_5fsuite_5ft_1',['se_suite_t',['../structse__suite__t.html',1,'se_suite_t'],['../e2ees_8h.html#ad12fee6d7f201a4525a795f1f56c3211',1,'se_suite_t:&#160;e2ees.h']]],
+  ['se_5fsuite_5ft_1',['se_suite_t',['../structse__suite__t.html',1,'se_suite_t'],['../cipher_8h.html#ad12fee6d7f201a4525a795f1f56c3211',1,'se_suite_t:&#160;e2ees.h']]],
   ['send_5fgroup_5fmsg_2',['send_group_msg',['../structe2ees__proto__handler__t.html#aaefb30fdad3bf63d00013be968ae197b',1,'e2ees_proto_handler_t::send_group_msg'],['../e2ees__client_8h.html#a60ee15d990bdfc9790c544399994d41e',1,'send_group_msg(E2ees__SendGroupMsgResponse **response_out, E2ees__E2eeAddress *sender_address, E2ees__E2eeAddress *group_address, uint32_t notif_level, const uint8_t *plaintext_data, size_t plaintext_data_len):&#160;e2ees_client.h']]],
   ['send_5fgroup_5fmsg_5fwith_5ffilter_3',['send_group_msg_with_filter',['../e2ees__client_8h.html#aa8b4af8849fc2dcb98c84932b4461800',1,'e2ees_client.h']]],
   ['send_5fone2one_5fmsg_4',['send_one2one_msg',['../structe2ees__proto__handler__t.html#ad0d03b367e1454f5ecf7ae50c3ad0587',1,'e2ees_proto_handler_t::send_one2one_msg'],['../e2ees__client_8h.html#ac2019c93bd20f5b65431e9bc5b50cde8',1,'send_one2one_msg(E2ees__E2eeAddress *from, const char *to_user_id, const char *to_domain, uint32_t notif_level, const uint8_t *plaintext_data, size_t plaintext_data_len):&#160;e2ees_client.h']]],
@@ -10,7 +10,7 @@ var searchData=
   ['send_5fsync_5fmsg_7',['send_sync_msg',['../e2ees__client_8h.html#a2c7b96306e74c6088c32921722c56fa2',1,'e2ees_client.h']]],
   ['session_2eh_8',['session.h',['../session_8h.html',1,'']]],
   ['session_5fmanager_2eh_9',['session_manager.h',['../session__manager_8h.html',1,'']]],
-  ['session_5fsuite_5ft_10',['session_suite_t',['../structsession__suite__t.html',1,'']]],
+  ['session_5fsuite_5ft_10',['session_suite_t',['../structsession__suite__t.html',1,'session_suite_t'],['../session_8h.html#acacb2ffb4b01513b805aba08b266a2ab',1,'session_suite_t:&#160;session.h']]],
   ['sha256_5foutput_5flength_11',['SHA256_OUTPUT_LENGTH',['../crypto_8h.html#ab1bd3ef9b594e851769e8d7baf17f0f1',1,'crypto.h']]],
   ['sign_12',['sign',['../structds__suite__t.html#a46d695f2d62249196166f79052141229',1,'ds_suite_t']]],
   ['sign_5fkey_5fgen_13',['sign_key_gen',['../structds__suite__t.html#a54cd6cd0f027601ddf44a4fa1581e970',1,'ds_suite_t']]],

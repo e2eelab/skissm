@@ -1,0 +1,83 @@
+\doxysection{include/e2ees/cipher\+\_\+se.h File Reference}
+\hypertarget{cipher__se_8h}{}\label{cipher__se_8h}\index{include/e2ees/cipher\_se.h@{include/e2ees/cipher\_se.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include "{}e2ees/e2ees.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{cipher__se_8h_a1bff7c10814e8a777dd1a106f436406a}{aes256\+\_\+gcm\+\_\+encrypt}} (const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ad, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}aes\+\_\+key, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}ciphertext\+\_\+data, size\+\_\+t \texorpdfstring{$\ast$}{*}ciphertext\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Encrypt plaintext with AES GCM. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{cipher__se_8h_ade62c4239668838b57e54a5169028bdd}{aes256\+\_\+gcm\+\_\+decrypt}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}decrypted\+\_\+data\+\_\+out, size\+\_\+t \texorpdfstring{$\ast$}{*}decrypted\+\_\+data\+\_\+len\+\_\+out, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ad, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}aes\+\_\+key, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}ciphertext\+\_\+data, size\+\_\+t ciphertext\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Decrypt a ciphertext with AES GCM. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2021 Academia Sinica. All Rights Reserved.
+
+This file is part of E2\+EE Security.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+E2\+EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with E2\+EE Security. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{cipher__se_8h_ade62c4239668838b57e54a5169028bdd}\index{cipher\_se.h@{cipher\_se.h}!aes256\_gcm\_decrypt@{aes256\_gcm\_decrypt}}
+\index{aes256\_gcm\_decrypt@{aes256\_gcm\_decrypt}!cipher\_se.h@{cipher\_se.h}}
+\doxysubsubsection{\texorpdfstring{aes256\_gcm\_decrypt()}{aes256\_gcm\_decrypt()}}
+{\footnotesize\ttfamily \label{cipher__se_8h_ade62c4239668838b57e54a5169028bdd} 
+int aes256\+\_\+gcm\+\_\+decrypt (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{decrypted\+\_\+data\+\_\+out}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{decrypted\+\_\+data\+\_\+len\+\_\+out}{, }\item[{const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{ad}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{aes\+\_\+key}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{ciphertext\+\_\+data}{, }\item[{size\+\_\+t}]{ciphertext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Decrypt a ciphertext with AES GCM. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em decrypted\+\_\+data\+\_\+out} & \\
+\hline
+{\em decrypted\+\_\+data\+\_\+len\+\_\+out} & \\
+\hline
+{\em ad} & \\
+\hline
+{\em aes\+\_\+key} & \\
+\hline
+{\em ciphertext\+\_\+data} & \\
+\hline
+{\em ciphertext\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The length of plaintext\+\_\+data or -\/1 for decryption error 
+\end{DoxyReturn}
+\Hypertarget{cipher__se_8h_a1bff7c10814e8a777dd1a106f436406a}\index{cipher\_se.h@{cipher\_se.h}!aes256\_gcm\_encrypt@{aes256\_gcm\_encrypt}}
+\index{aes256\_gcm\_encrypt@{aes256\_gcm\_encrypt}!cipher\_se.h@{cipher\_se.h}}
+\doxysubsubsection{\texorpdfstring{aes256\_gcm\_encrypt()}{aes256\_gcm\_encrypt()}}
+{\footnotesize\ttfamily \label{cipher__se_8h_a1bff7c10814e8a777dd1a106f436406a} 
+int aes256\+\_\+gcm\+\_\+encrypt (\begin{DoxyParamCaption}\item[{const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{ad}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{aes\+\_\+key}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{ciphertext\+\_\+data}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{ciphertext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Encrypt plaintext with AES GCM. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ad} & \\
+\hline
+{\em aes\+\_\+key} & \\
+\hline
+{\em plaintext\+\_\+data} & \\
+\hline
+{\em plaintext\+\_\+data\+\_\+len} & \\
+\hline
+{\em ciphertext\+\_\+data} & \\
+\hline
+{\em ciphertext\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}

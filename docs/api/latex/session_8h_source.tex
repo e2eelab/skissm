@@ -14,79 +14,79 @@
 \DoxyCodeLine{00028\ }
 \DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{e2ees_8h}{e2ees/e2ees.h}}"{}}}
 \DoxyCodeLine{00030\ }
-\DoxyCodeLine{00031\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsession__suite__t}{session\_suite\_t}}\ \{}
-\DoxyCodeLine{00040\ \ \ \ \ int\ (*\mbox{\hyperlink{structsession__suite__t_a5fe96befc268f81c56d464036f25b770}{new\_outbound\_session}})(}
-\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ E2ees\_\_InviteResponse\ **,}
-\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *,}
-\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ E2ees\_\_PreKeyBundle\ *}
-\DoxyCodeLine{00044\ \ \ \ \ );}
-\DoxyCodeLine{00045\ }
-\DoxyCodeLine{00054\ \ \ \ \ int\ (*\mbox{\hyperlink{structsession__suite__t_ad0ecab49689623541909004ecaf7fae0}{new\_inbound\_session}})(}
-\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ **,}
-\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ E2ees\_\_Account\ *,}
-\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ E2ees\_\_InviteMsg\ *}
-\DoxyCodeLine{00058\ \ \ \ \ );}
-\DoxyCodeLine{00059\ }
-\DoxyCodeLine{00067\ \ \ \ \ int\ (*\mbox{\hyperlink{structsession__suite__t_af84df092de5f86cd19382eca10b9703e}{complete\_outbound\_session}})(}
-\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ **,}
-\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ E2ees\_\_AcceptMsg\ *}
-\DoxyCodeLine{00070\ \ \ \ \ );}
-\DoxyCodeLine{00071\ \}\ \mbox{\hyperlink{structsession__suite__t}{session\_suite\_t}};}
-\DoxyCodeLine{00072\ }
-\DoxyCodeLine{00073\ \textcolor{comment}{/*\ common\ */}}
-\DoxyCodeLine{00074\ \textcolor{keywordtype}{void}\ initialise\_session(}
-\DoxyCodeLine{00075\ \ \ \ \ E2ees\_\_Session\ *session,}
-\DoxyCodeLine{00076\ \ \ \ \ uint32\_t\ e2ees\_pack\_id,}
-\DoxyCodeLine{00077\ \ \ \ \ E2ees\_\_E2eeAddress\ *our\_address,}
-\DoxyCodeLine{00078\ \ \ \ \ E2ees\_\_E2eeAddress\ *their\_address}
-\DoxyCodeLine{00079\ );}
-\DoxyCodeLine{00080\ }
-\DoxyCodeLine{00090\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{session_8h_acd0e3f96188dc4ef91d78a4527e3574b}{pack\_common\_plaintext}}(}
-\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
-\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{int}\ plaintext\_type,}
-\DoxyCodeLine{00093\ \ \ \ \ uint8\_t\ **common\_plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ *common\_plaintext\_data\_len}
-\DoxyCodeLine{00094\ );}
-\DoxyCodeLine{00095\ }
-\DoxyCodeLine{00096\ \textcolor{comment}{/*\ ECC-\/related\ */}}
-\DoxyCodeLine{00097\ E2ees\_\_InviteResponse\ *crypto\_curve25519\_new\_outbound\_session(}
-\DoxyCodeLine{00098\ \ \ \ \ E2ees\_\_Session\ *session,}
-\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keyword}{const}\ E2ees\_\_Account\ *local\_account,}
-\DoxyCodeLine{00100\ \ \ \ \ E2ees\_\_PreKeyBundle\ *their\_pre\_key\_bundle}
-\DoxyCodeLine{00101\ );}
-\DoxyCodeLine{00102\ }
-\DoxyCodeLine{00103\ \textcolor{keywordtype}{int}\ crypto\_curve25519\_new\_inbound\_session(}
-\DoxyCodeLine{00104\ \ \ \ \ E2ees\_\_Session\ *session,}
-\DoxyCodeLine{00105\ \ \ \ \ E2ees\_\_Account\ *local\_account,}
-\DoxyCodeLine{00106\ \ \ \ \ E2ees\_\_InviteMsg\ *msg}
-\DoxyCodeLine{00107\ );}
-\DoxyCodeLine{00108\ }
-\DoxyCodeLine{00109\ \textcolor{keywordtype}{int}\ crypto\_curve25519\_complete\_outbound\_session(}
-\DoxyCodeLine{00110\ \ \ \ \ E2ees\_\_Session\ *outbound\_session,}
-\DoxyCodeLine{00111\ \ \ \ \ E2ees\_\_AcceptMsg\ *msg}
-\DoxyCodeLine{00112\ );}
-\DoxyCodeLine{00113\ }
-\DoxyCodeLine{00114\ \textcolor{comment}{/*\ PQC-\/related\ */}}
-\DoxyCodeLine{00115\ \textcolor{keywordtype}{int}\ pqc\_new\_outbound\_session\_v2(}
-\DoxyCodeLine{00116\ \ \ \ \ E2ees\_\_InviteResponse\ **response\_out,}
-\DoxyCodeLine{00117\ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
-\DoxyCodeLine{00118\ \ \ \ \ E2ees\_\_PreKeyBundle\ *their\_pre\_key\_bundle}
-\DoxyCodeLine{00119\ );}
-\DoxyCodeLine{00120\ }
-\DoxyCodeLine{00121\ \textcolor{keywordtype}{int}\ pqc\_new\_inbound\_session(}
-\DoxyCodeLine{00122\ \ \ \ \ E2ees\_\_Session\ **inbound\_session\_out,}
-\DoxyCodeLine{00123\ \ \ \ \ E2ees\_\_Account\ *local\_account,}
-\DoxyCodeLine{00124\ \ \ \ \ E2ees\_\_InviteMsg\ *msg}
-\DoxyCodeLine{00125\ );}
-\DoxyCodeLine{00126\ }
-\DoxyCodeLine{00127\ \textcolor{keywordtype}{int}\ pqc\_complete\_outbound\_session(}
-\DoxyCodeLine{00128\ \ \ \ \ E2ees\_\_Session\ **outbound\_session\_out,}
-\DoxyCodeLine{00129\ \ \ \ \ E2ees\_\_AcceptMsg\ *msg}
-\DoxyCodeLine{00130\ );}
-\DoxyCodeLine{00131\ }
-\DoxyCodeLine{00132\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
-\DoxyCodeLine{00133\ \}}
-\DoxyCodeLine{00134\ \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{00135\ }
-\DoxyCodeLine{00136\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ SESSION\_H\_\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00034\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsession__suite__t}{session\_suite\_t}}\ \{}
+\DoxyCodeLine{00043\ \ \ \ \ int\ (*\mbox{\hyperlink{structsession__suite__t_a5fe96befc268f81c56d464036f25b770}{new\_outbound\_session}})(}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ E2ees\_\_InviteResponse\ **,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ E2ees\_\_E2eeAddress\ *,}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ E2ees\_\_PreKeyBundle\ *}
+\DoxyCodeLine{00047\ \ \ \ \ );}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00057\ \ \ \ \ int\ (*\mbox{\hyperlink{structsession__suite__t_ad0ecab49689623541909004ecaf7fae0}{new\_inbound\_session}})(}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ **,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ E2ees\_\_Account\ *,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ E2ees\_\_InviteMsg\ *}
+\DoxyCodeLine{00061\ \ \ \ \ );}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00070\ \ \ \ \ int\ (*\mbox{\hyperlink{structsession__suite__t_af84df092de5f86cd19382eca10b9703e}{complete\_outbound\_session}})(}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ E2ees\_\_Session\ **,}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ E2ees\_\_AcceptMsg\ *}
+\DoxyCodeLine{00073\ \ \ \ \ );}
+\DoxyCodeLine{00074\ \}\ \mbox{\hyperlink{session_8h_acacb2ffb4b01513b805aba08b266a2ab}{session\_suite\_t}};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \textcolor{comment}{/*\ common\ */}}
+\DoxyCodeLine{00077\ \textcolor{keywordtype}{void}\ initialise\_session(}
+\DoxyCodeLine{00078\ \ \ \ \ E2ees\_\_Session\ *session,}
+\DoxyCodeLine{00079\ \ \ \ \ uint32\_t\ e2ees\_pack\_id,}
+\DoxyCodeLine{00080\ \ \ \ \ E2ees\_\_E2eeAddress\ *our\_address,}
+\DoxyCodeLine{00081\ \ \ \ \ E2ees\_\_E2eeAddress\ *their\_address}
+\DoxyCodeLine{00082\ );}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00093\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{session_8h_acd0e3f96188dc4ef91d78a4527e3574b}{pack\_common\_plaintext}}(}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ plaintext\_data\_len,}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keywordtype}{int}\ plaintext\_type,}
+\DoxyCodeLine{00096\ \ \ \ \ uint8\_t\ **common\_plaintext\_data,\ \textcolor{keywordtype}{size\_t}\ *common\_plaintext\_data\_len}
+\DoxyCodeLine{00097\ );}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \textcolor{comment}{/*\ ECC-\/related\ */}}
+\DoxyCodeLine{00100\ E2ees\_\_InviteResponse\ *crypto\_curve25519\_new\_outbound\_session(}
+\DoxyCodeLine{00101\ \ \ \ \ E2ees\_\_Session\ *session,}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keyword}{const}\ E2ees\_\_Account\ *local\_account,}
+\DoxyCodeLine{00103\ \ \ \ \ E2ees\_\_PreKeyBundle\ *their\_pre\_key\_bundle}
+\DoxyCodeLine{00104\ );}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{keywordtype}{int}\ crypto\_curve25519\_new\_inbound\_session(}
+\DoxyCodeLine{00107\ \ \ \ \ E2ees\_\_Session\ *session,}
+\DoxyCodeLine{00108\ \ \ \ \ E2ees\_\_Account\ *local\_account,}
+\DoxyCodeLine{00109\ \ \ \ \ E2ees\_\_InviteMsg\ *msg}
+\DoxyCodeLine{00110\ );}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{keywordtype}{int}\ crypto\_curve25519\_complete\_outbound\_session(}
+\DoxyCodeLine{00113\ \ \ \ \ E2ees\_\_Session\ *outbound\_session,}
+\DoxyCodeLine{00114\ \ \ \ \ E2ees\_\_AcceptMsg\ *msg}
+\DoxyCodeLine{00115\ );}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \textcolor{comment}{/*\ PQC-\/related\ */}}
+\DoxyCodeLine{00118\ \textcolor{keywordtype}{int}\ pqc\_new\_outbound\_session\_v2(}
+\DoxyCodeLine{00119\ \ \ \ \ E2ees\_\_InviteResponse\ **response\_out,}
+\DoxyCodeLine{00120\ \ \ \ \ E2ees\_\_E2eeAddress\ *from,}
+\DoxyCodeLine{00121\ \ \ \ \ E2ees\_\_PreKeyBundle\ *their\_pre\_key\_bundle}
+\DoxyCodeLine{00122\ );}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{keywordtype}{int}\ pqc\_new\_inbound\_session(}
+\DoxyCodeLine{00125\ \ \ \ \ E2ees\_\_Session\ **inbound\_session\_out,}
+\DoxyCodeLine{00126\ \ \ \ \ E2ees\_\_Account\ *local\_account,}
+\DoxyCodeLine{00127\ \ \ \ \ E2ees\_\_InviteMsg\ *msg}
+\DoxyCodeLine{00128\ );}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{keywordtype}{int}\ pqc\_complete\_outbound\_session(}
+\DoxyCodeLine{00131\ \ \ \ \ E2ees\_\_Session\ **outbound\_session\_out,}
+\DoxyCodeLine{00132\ \ \ \ \ E2ees\_\_AcceptMsg\ *msg}
+\DoxyCodeLine{00133\ );}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00136\ \}}
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ SESSION\_H\_\ */}\textcolor{preprocessor}{}}
 
 \end{DoxyCode}

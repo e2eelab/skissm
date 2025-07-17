@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['kdf_5finfo_5froot_0',['KDF_INFO_ROOT',['../cipher_8h.html#a124359a86abbd0fb65fb6aa6b4ffeee9',1,'cipher.h']]]
+  ['file_5fencryption_5fbuffer_5flength_0',['FILE_ENCRYPTION_BUFFER_LENGTH',['../crypto_8h.html#a06a923f056ee99cb8562286c8fcffc82',1,'crypto.h']]]
 ];

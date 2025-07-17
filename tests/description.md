@@ -5,13 +5,13 @@
 
 ### e2ees
 
-*   **get_digital_signature_suite**
+*   **get_ds_suite**
 
 *   **get_kem_suite**
 
 *   **get_se_suite**
 
-*   **get_hash_suite**
+*   **get_hf_suite**
 
 *   **get_cipher_suite**
 

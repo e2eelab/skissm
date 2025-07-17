@@ -161,12 +161,12 @@ int pqc_new_outbound_session_v2(
             memcpy(hash_input + asym_pub_key_len + asym_pub_key_len + asym_pub_key_len, their_opk->public_key.data, asym_pub_key_len);
         }
 
-        int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        int shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
         uint8_t derived_secrets[2 * shared_key_len];
-        int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-        uint8_t salt[hash_len];
-        memset(salt, 0, hash_len);
-        cipher_suite->hash_suite->hkdf(
+        int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        uint8_t salt[hf_len];
+        memset(salt, 0, hf_len);
+        cipher_suite->hf_suite->hkdf(
             hash_input, hash_input_len,
             salt, sizeof(salt),
             (uint8_t *)FINGERPRINT_SEED, sizeof(FINGERPRINT_SEED) - 1,
@@ -277,7 +277,7 @@ int pqc_new_inbound_session(
     int hash_input_len;
     uint8_t *hash_input = NULL;
     int shared_key_len;
-    int hash_len;
+    int hf_len;
     int shared_secret_len;
     uint32_t ciphertext_len;
     ProtobufCBinaryData ciphertext_1 = {0, NULL};
@@ -294,8 +294,8 @@ int pqc_new_inbound_session(
     if (is_valid_invite_msg(msg)) {
         cipher_suite = get_e2ees_pack(msg->e2ees_pack_id)->cipher_suite;
         asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-        shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-        hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
         shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
         ciphertext_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
         bob_signed_pre_key_id = msg->bob_signed_pre_key_id;
@@ -375,9 +375,9 @@ int pqc_new_inbound_session(
             memcpy(hash_input + asym_pub_key_len + asym_pub_key_len + asym_pub_key_len, bob_one_time_pre_key->public_key.data, asym_pub_key_len);
         }
         uint8_t derived_secrets[2 * shared_key_len];
-        uint8_t salt[hash_len];
-        memset(salt, 0, hash_len);
-        cipher_suite->hash_suite->hkdf(
+        uint8_t salt[hf_len];
+        memset(salt, 0, hf_len);
+        cipher_suite->hf_suite->hkdf(
             hash_input, hash_input_len,
             salt, sizeof(salt),
             (uint8_t *)FINGERPRINT_SEED, sizeof(FINGERPRINT_SEED) - 1,

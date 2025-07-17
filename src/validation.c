@@ -71,12 +71,12 @@ bool is_valid_cipher_suite(const cipher_suite_t *cipher_suite) {
         } else {
             return false;
         }
-        if (cipher_suite->hash_suite != NULL) {
-            if (cipher_suite->hash_suite->hash == NULL)
+        if (cipher_suite->hf_suite != NULL) {
+            if (cipher_suite->hf_suite->hash == NULL)
                 return false;
-            if (cipher_suite->hash_suite->hkdf == NULL)
+            if (cipher_suite->hf_suite->hkdf == NULL)
                 return false;
-            if (cipher_suite->hash_suite->hmac == NULL)
+            if (cipher_suite->hf_suite->hmac == NULL)
                 return false;
         } else {
             return false;

@@ -16,21 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "e2ees/cipher.h"
+#include "e2ees/cipher_se.h"
 
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
+#include "e2ees/cipher.h"
 #include "e2ees/crypto.h"
 #include "e2ees/mem_util.h"
 
-size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length) {
-    return plaintext_data_length + AES256_GCM_TAG_LENGTH;
-}
+static crypto_se_param_t aes256_param = {
+    AES256_KEY_LENGTH,
+    AES256_IV_LENGTH,
+    AES256_GCM_TAG_LENGTH
+};
 
-size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len) {
-    return ciphertext_data_len - AES256_GCM_TAG_LENGTH;
+static crypto_se_param_t get_aes256_param() {
+    return aes256_param;
 }
 
 int aes256_gcm_encrypt(
@@ -71,18 +75,10 @@ int aes256_gcm_decrypt(
     return ret;
 }
 
-
-// symmetric encryption
+// default symmetric encryption suite
 
 const struct se_suite_t E2EES_AES256_SHA256 = {
     get_aes256_param,
     aes256_gcm_encrypt,
     aes256_gcm_decrypt,
-};
-
-const struct hash_suite_t E2EES_SHA256 = {
-    get_sha256_param,
-    crypto_hkdf_sha256,
-    crypto_hmac_sha256,
-    crypto_sha256
 };

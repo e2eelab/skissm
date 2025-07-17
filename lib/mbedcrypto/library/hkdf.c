@@ -37,22 +37,22 @@ int mbedtls_hkdf_extract( const mbedtls_md_info_t *md,
 
     if( salt == NULL )
     {
-        size_t hash_len;
+        size_t hf_len;
 
         if( salt_len != 0 )
         {
             return MBEDTLS_ERR_HKDF_BAD_INPUT_DATA;
         }
 
-        hash_len = mbedtls_md_get_size( md );
+        hf_len = mbedtls_md_get_size( md );
 
-        if( hash_len == 0 )
+        if( hf_len == 0 )
         {
             return MBEDTLS_ERR_HKDF_BAD_INPUT_DATA;
         }
 
         salt = null_salt;
-        salt_len = hash_len;
+        salt_len = hf_len;
     }
 
     return( mbedtls_md_hmac( md, salt, salt_len, ikm, ikm_len, prk ) );
@@ -62,7 +62,7 @@ int mbedtls_hkdf_expand( const mbedtls_md_info_t *md, const unsigned char *prk,
                          size_t prk_len, const unsigned char *info,
                          size_t info_len, unsigned char *okm, size_t okm_len )
 {
-    size_t hash_len;
+    size_t hf_len;
     size_t where = 0;
     size_t n;
     size_t t_len = 0;
@@ -76,9 +76,9 @@ int mbedtls_hkdf_expand( const mbedtls_md_info_t *md, const unsigned char *prk,
         return( MBEDTLS_ERR_HKDF_BAD_INPUT_DATA );
     }
 
-    hash_len = mbedtls_md_get_size( md );
+    hf_len = mbedtls_md_get_size( md );
 
-    if( prk_len < hash_len || hash_len == 0 )
+    if( prk_len < hf_len || hf_len == 0 )
     {
         return( MBEDTLS_ERR_HKDF_BAD_INPUT_DATA );
     }
@@ -89,9 +89,9 @@ int mbedtls_hkdf_expand( const mbedtls_md_info_t *md, const unsigned char *prk,
         info_len = 0;
     }
 
-    n = okm_len / hash_len;
+    n = okm_len / hf_len;
 
-    if( okm_len % hash_len != 0 )
+    if( okm_len % hf_len != 0 )
     {
         n++;
     }
@@ -112,7 +112,7 @@ int mbedtls_hkdf_expand( const mbedtls_md_info_t *md, const unsigned char *prk,
         goto exit;
     }
 
-    memset( t, 0, hash_len );
+    memset( t, 0, hf_len );
 
     /*
      * Compute T = T(1) | T(2) | T(3) | ... | T(N)
@@ -155,10 +155,10 @@ int mbedtls_hkdf_expand( const mbedtls_md_info_t *md, const unsigned char *prk,
             goto exit;
         }
 
-        num_to_copy = i != n ? hash_len : okm_len - where;
+        num_to_copy = i != n ? hf_len : okm_len - where;
         memcpy( okm + where, t, num_to_copy );
-        where += hash_len;
-        t_len = hash_len;
+        where += hf_len;
+        t_len = hf_len;
     }
 
 exit:

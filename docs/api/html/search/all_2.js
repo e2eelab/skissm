@@ -7,5 +7,5 @@ var searchData=
   ['decrypt_5faes_5ffile_4',['decrypt_aes_file',['../crypto_8h.html#afc58ceff0d85193ef70700f828959123',1,'crypto.h']]],
   ['decrypt_5ffile_5',['decrypt_file',['../crypto_8h.html#ac7b60f90ce2bf7b0f3ac50a837ad043a',1,'crypto.h']]],
   ['decrypt_5fratchet_6',['decrypt_ratchet',['../ratchet_8h.html#a4b057546513d142adee498fe83b1e3df',1,'ratchet.h']]],
-  ['ds_5fsuite_5ft_7',['ds_suite_t',['../structds__suite__t.html',1,'ds_suite_t'],['../e2ees_8h.html#a5680b1715e4077238b3c979284d1c8ba',1,'ds_suite_t:&#160;e2ees.h']]]
+  ['ds_5fsuite_5ft_7',['ds_suite_t',['../structds__suite__t.html',1,'ds_suite_t'],['../cipher_8h.html#a5680b1715e4077238b3c979284d1c8ba',1,'ds_suite_t:&#160;e2ees.h']]]
 ];

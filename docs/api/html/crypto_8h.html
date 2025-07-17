@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.9.1</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.9.2</span>
    </div>
    <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
@@ -120,315 +120,28 @@ Macros</h2></td></tr>
 <tr class="separator:a8c63fc2cbdf1811a42513c959ca5b15a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbbbf1c1be8a7fb625cf3879c3168dc3" id="r_adbbbf1c1be8a7fb625cf3879c3168dc3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adbbbf1c1be8a7fb625cf3879c3168dc3">AES256_DATA_IV_LENGTH</a>&#160;&#160;&#160;12</td></tr>
 <tr class="separator:adbbbf1c1be8a7fb625cf3879c3168dc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a2b042788dd7df27281676080f9d6cc" id="r_a8a2b042788dd7df27281676080f9d6cc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a2b042788dd7df27281676080f9d6cc">CURVE25519_RANDOM_LENGTH</a>&#160;&#160;&#160;<a class="el" href="cipher__ecc_8h.html#af267d8aed138e3cdf5cc4b635ab6fd12">CURVE25519_KEY_LENGTH</a></td></tr>
+<tr class="separator:a8a2b042788dd7df27281676080f9d6cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb48f175c6bc95c40cac93a2805e8fbb" id="r_acb48f175c6bc95c40cac93a2805e8fbb"><td class="memItemLeft" align="right" valign="top"><a id="acb48f175c6bc95c40cac93a2805e8fbb" name="acb48f175c6bc95c40cac93a2805e8fbb"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>AES256_FILE_AD</b>&#160;&#160;&#160;&quot;E2EES ---&gt; file encryption with AES256/GCM/Nopadding algorithm&quot;</td></tr>
+<tr class="separator:acb48f175c6bc95c40cac93a2805e8fbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4708956a26b6c3a0df7073e1b45ca8b2" id="r_a4708956a26b6c3a0df7073e1b45ca8b2"><td class="memItemLeft" align="right" valign="top"><a id="a4708956a26b6c3a0df7073e1b45ca8b2" name="a4708956a26b6c3a0df7073e1b45ca8b2"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>AES256_FILE_AD_LEN</b>&#160;&#160;&#160;64</td></tr>
+<tr class="separator:a4708956a26b6c3a0df7073e1b45ca8b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c455cd930c0d97635fe21e48e14ba24" id="r_a3c455cd930c0d97635fe21e48e14ba24"><td class="memItemLeft" align="right" valign="top"><a id="a3c455cd930c0d97635fe21e48e14ba24" name="a3c455cd930c0d97635fe21e48e14ba24"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>AES256_FILE_KDF_INFO</b>&#160;&#160;&#160;&quot;FILE&quot;</td></tr>
+<tr class="separator:a3c455cd930c0d97635fe21e48e14ba24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a544bceee02b8927df6ee6905000c44f6" id="r_a544bceee02b8927df6ee6905000c44f6"><td class="memItemLeft" align="right" valign="top"><a id="a544bceee02b8927df6ee6905000c44f6" name="a544bceee02b8927df6ee6905000c44f6"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>AES256_DATA_AD</b>&#160;&#160;&#160;&quot;E2EES ---&gt; data encryption with AES256/GCM/Nopadding algorithm&quot;</td></tr>
+<tr class="separator:a544bceee02b8927df6ee6905000c44f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b3f2736657deae3801214287adbc704" id="r_a1b3f2736657deae3801214287adbc704"><td class="memItemLeft" align="right" valign="top"><a id="a1b3f2736657deae3801214287adbc704" name="a1b3f2736657deae3801214287adbc704"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>AES256_DATA_AD_LEN</b>&#160;&#160;&#160;64</td></tr>
+<tr class="separator:a1b3f2736657deae3801214287adbc704"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06a923f056ee99cb8562286c8fcffc82" id="r_a06a923f056ee99cb8562286c8fcffc82"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a06a923f056ee99cb8562286c8fcffc82">FILE_ENCRYPTION_BUFFER_LENGTH</a>&#160;&#160;&#160;8192</td></tr>
+<tr class="separator:a06a923f056ee99cb8562286c8fcffc82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:acfcc17f9f382228311fa4e95b445861c" id="r_acfcc17f9f382228311fa4e95b445861c"><td class="memItemLeft" align="right" valign="top"><a id="acfcc17f9f382228311fa4e95b445861c" name="acfcc17f9f382228311fa4e95b445861c"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_curve25519_sign_param</b> ()</td></tr>
-<tr class="separator:acfcc17f9f382228311fa4e95b445861c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4719fc547b13d202e0675f7db2e29796" id="r_a4719fc547b13d202e0675f7db2e29796"><td class="memItemLeft" align="right" valign="top"><a id="a4719fc547b13d202e0675f7db2e29796" name="a4719fc547b13d202e0675f7db2e29796"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mldsa44_param</b> ()</td></tr>
-<tr class="separator:a4719fc547b13d202e0675f7db2e29796"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64806bb0fd3de9d5a12ae8d8bda10ead" id="r_a64806bb0fd3de9d5a12ae8d8bda10ead"><td class="memItemLeft" align="right" valign="top"><a id="a64806bb0fd3de9d5a12ae8d8bda10ead" name="a64806bb0fd3de9d5a12ae8d8bda10ead"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mldsa65_param</b> ()</td></tr>
-<tr class="separator:a64806bb0fd3de9d5a12ae8d8bda10ead"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f77aab1d49dc045138f3687b6007c91" id="r_a1f77aab1d49dc045138f3687b6007c91"><td class="memItemLeft" align="right" valign="top"><a id="a1f77aab1d49dc045138f3687b6007c91" name="a1f77aab1d49dc045138f3687b6007c91"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mldsa87_param</b> ()</td></tr>
-<tr class="separator:a1f77aab1d49dc045138f3687b6007c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0d1d1f829541243b0e1a814ef422085" id="r_af0d1d1f829541243b0e1a814ef422085"><td class="memItemLeft" align="right" valign="top"><a id="af0d1d1f829541243b0e1a814ef422085" name="af0d1d1f829541243b0e1a814ef422085"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_falcon512_param</b> ()</td></tr>
-<tr class="separator:af0d1d1f829541243b0e1a814ef422085"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4f5ce00a0663e539866bab4e062d0c8" id="r_ab4f5ce00a0663e539866bab4e062d0c8"><td class="memItemLeft" align="right" valign="top"><a id="ab4f5ce00a0663e539866bab4e062d0c8" name="ab4f5ce00a0663e539866bab4e062d0c8"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_falcon1024_param</b> ()</td></tr>
-<tr class="separator:ab4f5ce00a0663e539866bab4e062d0c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae10e1f81146bd075099805aad9105a27" id="r_ae10e1f81146bd075099805aad9105a27"><td class="memItemLeft" align="right" valign="top"><a id="ae10e1f81146bd075099805aad9105a27" name="ae10e1f81146bd075099805aad9105a27"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_128f_param</b> ()</td></tr>
-<tr class="separator:ae10e1f81146bd075099805aad9105a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaedaf50277a975a7910068c6ee7d0bb1" id="r_aaedaf50277a975a7910068c6ee7d0bb1"><td class="memItemLeft" align="right" valign="top"><a id="aaedaf50277a975a7910068c6ee7d0bb1" name="aaedaf50277a975a7910068c6ee7d0bb1"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_128s_param</b> ()</td></tr>
-<tr class="separator:aaedaf50277a975a7910068c6ee7d0bb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8c935d2664feb955753723401cf6860" id="r_ab8c935d2664feb955753723401cf6860"><td class="memItemLeft" align="right" valign="top"><a id="ab8c935d2664feb955753723401cf6860" name="ab8c935d2664feb955753723401cf6860"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_192f_param</b> ()</td></tr>
-<tr class="separator:ab8c935d2664feb955753723401cf6860"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b830b7de67deae75f3b0ba5e98c6bb8" id="r_a2b830b7de67deae75f3b0ba5e98c6bb8"><td class="memItemLeft" align="right" valign="top"><a id="a2b830b7de67deae75f3b0ba5e98c6bb8" name="a2b830b7de67deae75f3b0ba5e98c6bb8"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_192s_param</b> ()</td></tr>
-<tr class="separator:a2b830b7de67deae75f3b0ba5e98c6bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb8f8500c997e8971568f9b602f41e7d" id="r_acb8f8500c997e8971568f9b602f41e7d"><td class="memItemLeft" align="right" valign="top"><a id="acb8f8500c997e8971568f9b602f41e7d" name="acb8f8500c997e8971568f9b602f41e7d"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_256f_param</b> ()</td></tr>
-<tr class="separator:acb8f8500c997e8971568f9b602f41e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ab87f9e7a3129b1560d9b8bdcfe8887" id="r_a2ab87f9e7a3129b1560d9b8bdcfe8887"><td class="memItemLeft" align="right" valign="top"><a id="a2ab87f9e7a3129b1560d9b8bdcfe8887" name="a2ab87f9e7a3129b1560d9b8bdcfe8887"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_sha2_256s_param</b> ()</td></tr>
-<tr class="separator:a2ab87f9e7a3129b1560d9b8bdcfe8887"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ee2d41ba2de10091b544451aacb022f" id="r_a8ee2d41ba2de10091b544451aacb022f"><td class="memItemLeft" align="right" valign="top"><a id="a8ee2d41ba2de10091b544451aacb022f" name="a8ee2d41ba2de10091b544451aacb022f"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_128f_param</b> ()</td></tr>
-<tr class="separator:a8ee2d41ba2de10091b544451aacb022f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaefb8457572bae1597d79a678a10bf4c" id="r_aaefb8457572bae1597d79a678a10bf4c"><td class="memItemLeft" align="right" valign="top"><a id="aaefb8457572bae1597d79a678a10bf4c" name="aaefb8457572bae1597d79a678a10bf4c"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_128s_param</b> ()</td></tr>
-<tr class="separator:aaefb8457572bae1597d79a678a10bf4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a474c1a73d3654b463d57751b4a8c7d03" id="r_a474c1a73d3654b463d57751b4a8c7d03"><td class="memItemLeft" align="right" valign="top"><a id="a474c1a73d3654b463d57751b4a8c7d03" name="a474c1a73d3654b463d57751b4a8c7d03"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_192f_param</b> ()</td></tr>
-<tr class="separator:a474c1a73d3654b463d57751b4a8c7d03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f707ad7e9ccef1a2657ccc01f4e94db" id="r_a6f707ad7e9ccef1a2657ccc01f4e94db"><td class="memItemLeft" align="right" valign="top"><a id="a6f707ad7e9ccef1a2657ccc01f4e94db" name="a6f707ad7e9ccef1a2657ccc01f4e94db"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_192s_param</b> ()</td></tr>
-<tr class="separator:a6f707ad7e9ccef1a2657ccc01f4e94db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca1d6f5387d20c2fff33acc891628258" id="r_aca1d6f5387d20c2fff33acc891628258"><td class="memItemLeft" align="right" valign="top"><a id="aca1d6f5387d20c2fff33acc891628258" name="aca1d6f5387d20c2fff33acc891628258"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_256f_param</b> ()</td></tr>
-<tr class="separator:aca1d6f5387d20c2fff33acc891628258"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae41fb0b3b623a4b65a9778cf4827440d" id="r_ae41fb0b3b623a4b65a9778cf4827440d"><td class="memItemLeft" align="right" valign="top"><a id="ae41fb0b3b623a4b65a9778cf4827440d" name="ae41fb0b3b623a4b65a9778cf4827440d"></a>
-<a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sphincs_shake_256s_param</b> ()</td></tr>
-<tr class="separator:ae41fb0b3b623a4b65a9778cf4827440d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a160f647a5fd3664f70fac700316bc5f8" id="r_a160f647a5fd3664f70fac700316bc5f8"><td class="memItemLeft" align="right" valign="top"><a id="a160f647a5fd3664f70fac700316bc5f8" name="a160f647a5fd3664f70fac700316bc5f8"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mldsa44_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a160f647a5fd3664f70fac700316bc5f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c4abafc02f8b8b0eed5a3cfb8c981d5" id="r_a6c4abafc02f8b8b0eed5a3cfb8c981d5"><td class="memItemLeft" align="right" valign="top"><a id="a6c4abafc02f8b8b0eed5a3cfb8c981d5" name="a6c4abafc02f8b8b0eed5a3cfb8c981d5"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mldsa65_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a6c4abafc02f8b8b0eed5a3cfb8c981d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd3872da5e49667ca194a599192077b1" id="r_abd3872da5e49667ca194a599192077b1"><td class="memItemLeft" align="right" valign="top"><a id="abd3872da5e49667ca194a599192077b1" name="abd3872da5e49667ca194a599192077b1"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mldsa87_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:abd3872da5e49667ca194a599192077b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada5d43accf1d9aaece24f7b7d1b4aeb4" id="r_ada5d43accf1d9aaece24f7b7d1b4aeb4"><td class="memItemLeft" align="right" valign="top"><a id="ada5d43accf1d9aaece24f7b7d1b4aeb4" name="ada5d43accf1d9aaece24f7b7d1b4aeb4"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_falcon512_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:ada5d43accf1d9aaece24f7b7d1b4aeb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc946e869ca6c3e81ec26e38b22b1418" id="r_afc946e869ca6c3e81ec26e38b22b1418"><td class="memItemLeft" align="right" valign="top"><a id="afc946e869ca6c3e81ec26e38b22b1418" name="afc946e869ca6c3e81ec26e38b22b1418"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_falcon1024_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:afc946e869ca6c3e81ec26e38b22b1418"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55028bc4c4cb7f84fb43e55a202559b9" id="r_a55028bc4c4cb7f84fb43e55a202559b9"><td class="memItemLeft" align="right" valign="top"><a id="a55028bc4c4cb7f84fb43e55a202559b9" name="a55028bc4c4cb7f84fb43e55a202559b9"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_sha2_128f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a55028bc4c4cb7f84fb43e55a202559b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b77b516febcc9e236d5ab32e3300d3e" id="r_a1b77b516febcc9e236d5ab32e3300d3e"><td class="memItemLeft" align="right" valign="top"><a id="a1b77b516febcc9e236d5ab32e3300d3e" name="a1b77b516febcc9e236d5ab32e3300d3e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_sha2_128s_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a1b77b516febcc9e236d5ab32e3300d3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5babc62b0e960223ac38aa7f1567fc26" id="r_a5babc62b0e960223ac38aa7f1567fc26"><td class="memItemLeft" align="right" valign="top"><a id="a5babc62b0e960223ac38aa7f1567fc26" name="a5babc62b0e960223ac38aa7f1567fc26"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_sha2_192f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a5babc62b0e960223ac38aa7f1567fc26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec826c1bf5aaf4082c124eeb5207c5df" id="r_aec826c1bf5aaf4082c124eeb5207c5df"><td class="memItemLeft" align="right" valign="top"><a id="aec826c1bf5aaf4082c124eeb5207c5df" name="aec826c1bf5aaf4082c124eeb5207c5df"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_sha2_192s_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:aec826c1bf5aaf4082c124eeb5207c5df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a229ae758565c7fe1eee50153c6f21455" id="r_a229ae758565c7fe1eee50153c6f21455"><td class="memItemLeft" align="right" valign="top"><a id="a229ae758565c7fe1eee50153c6f21455" name="a229ae758565c7fe1eee50153c6f21455"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_sha2_256f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a229ae758565c7fe1eee50153c6f21455"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e530c0a2ff6cbdf4ee06c1983886d4a" id="r_a5e530c0a2ff6cbdf4ee06c1983886d4a"><td class="memItemLeft" align="right" valign="top"><a id="a5e530c0a2ff6cbdf4ee06c1983886d4a" name="a5e530c0a2ff6cbdf4ee06c1983886d4a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_sha2_256s_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a5e530c0a2ff6cbdf4ee06c1983886d4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab25cfed885b011494b487ec29793d93d" id="r_ab25cfed885b011494b487ec29793d93d"><td class="memItemLeft" align="right" valign="top"><a id="ab25cfed885b011494b487ec29793d93d" name="ab25cfed885b011494b487ec29793d93d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_shake_128f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:ab25cfed885b011494b487ec29793d93d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93a84e91d71ca73a48a7727a3c449903" id="r_a93a84e91d71ca73a48a7727a3c449903"><td class="memItemLeft" align="right" valign="top"><a id="a93a84e91d71ca73a48a7727a3c449903" name="a93a84e91d71ca73a48a7727a3c449903"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_shake_128s_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a93a84e91d71ca73a48a7727a3c449903"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4622bc8188643af7e33e687de70de921" id="r_a4622bc8188643af7e33e687de70de921"><td class="memItemLeft" align="right" valign="top"><a id="a4622bc8188643af7e33e687de70de921" name="a4622bc8188643af7e33e687de70de921"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_shake_192f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a4622bc8188643af7e33e687de70de921"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51800e8bdc222607dd5936d2a3a33e8c" id="r_a51800e8bdc222607dd5936d2a3a33e8c"><td class="memItemLeft" align="right" valign="top"><a id="a51800e8bdc222607dd5936d2a3a33e8c" name="a51800e8bdc222607dd5936d2a3a33e8c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_shake_192s_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a51800e8bdc222607dd5936d2a3a33e8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35a91be8e79402b7ce78a4e542747a27" id="r_a35a91be8e79402b7ce78a4e542747a27"><td class="memItemLeft" align="right" valign="top"><a id="a35a91be8e79402b7ce78a4e542747a27" name="a35a91be8e79402b7ce78a4e542747a27"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_shake_256f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a35a91be8e79402b7ce78a4e542747a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b492ca929609824c6c154669fa4b035" id="r_a7b492ca929609824c6c154669fa4b035"><td class="memItemLeft" align="right" valign="top"><a id="a7b492ca929609824c6c154669fa4b035" name="a7b492ca929609824c6c154669fa4b035"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_sphincs_shake_256s_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a7b492ca929609824c6c154669fa4b035"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a882ff0bfd0a71df378bf70432a0b3f57" id="r_a882ff0bfd0a71df378bf70432a0b3f57"><td class="memItemLeft" align="right" valign="top"><a id="a882ff0bfd0a71df378bf70432a0b3f57" name="a882ff0bfd0a71df378bf70432a0b3f57"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_curve25519_ECDH_param</b> ()</td></tr>
-<tr class="separator:a882ff0bfd0a71df378bf70432a0b3f57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac471f1a1912f19167e8256fdf29bc7d3" id="r_ac471f1a1912f19167e8256fdf29bc7d3"><td class="memItemLeft" align="right" valign="top"><a id="ac471f1a1912f19167e8256fdf29bc7d3" name="ac471f1a1912f19167e8256fdf29bc7d3"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_hqc128_param</b> ()</td></tr>
-<tr class="separator:ac471f1a1912f19167e8256fdf29bc7d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d5a559c95788345c1450dc8a978827f" id="r_a9d5a559c95788345c1450dc8a978827f"><td class="memItemLeft" align="right" valign="top"><a id="a9d5a559c95788345c1450dc8a978827f" name="a9d5a559c95788345c1450dc8a978827f"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_hqc192_param</b> ()</td></tr>
-<tr class="separator:a9d5a559c95788345c1450dc8a978827f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a8727dd68c23ab09544e4798341d62d" id="r_a7a8727dd68c23ab09544e4798341d62d"><td class="memItemLeft" align="right" valign="top"><a id="a7a8727dd68c23ab09544e4798341d62d" name="a7a8727dd68c23ab09544e4798341d62d"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_hqc256_param</b> ()</td></tr>
-<tr class="separator:a7a8727dd68c23ab09544e4798341d62d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9239b80200b2ecfd1b0bcac5e9d14c18" id="r_a9239b80200b2ecfd1b0bcac5e9d14c18"><td class="memItemLeft" align="right" valign="top"><a id="a9239b80200b2ecfd1b0bcac5e9d14c18" name="a9239b80200b2ecfd1b0bcac5e9d14c18"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mlkem512_param</b> ()</td></tr>
-<tr class="separator:a9239b80200b2ecfd1b0bcac5e9d14c18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7487b5b96948aef1da8ffbb77ccf9e2" id="r_ac7487b5b96948aef1da8ffbb77ccf9e2"><td class="memItemLeft" align="right" valign="top"><a id="ac7487b5b96948aef1da8ffbb77ccf9e2" name="ac7487b5b96948aef1da8ffbb77ccf9e2"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mlkem768_param</b> ()</td></tr>
-<tr class="separator:ac7487b5b96948aef1da8ffbb77ccf9e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74093167dfe00891e9adfbd89a25e841" id="r_a74093167dfe00891e9adfbd89a25e841"><td class="memItemLeft" align="right" valign="top"><a id="a74093167dfe00891e9adfbd89a25e841" name="a74093167dfe00891e9adfbd89a25e841"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mlkem1024_param</b> ()</td></tr>
-<tr class="separator:a74093167dfe00891e9adfbd89a25e841"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0018de3bb3769a355a391bca56001ba" id="r_ac0018de3bb3769a355a391bca56001ba"><td class="memItemLeft" align="right" valign="top"><a id="ac0018de3bb3769a355a391bca56001ba" name="ac0018de3bb3769a355a391bca56001ba"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece348864_param</b> ()</td></tr>
-<tr class="separator:ac0018de3bb3769a355a391bca56001ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aacecde9baede9412103d5d21800da919" id="r_aacecde9baede9412103d5d21800da919"><td class="memItemLeft" align="right" valign="top"><a id="aacecde9baede9412103d5d21800da919" name="aacecde9baede9412103d5d21800da919"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece348864f_param</b> ()</td></tr>
-<tr class="separator:aacecde9baede9412103d5d21800da919"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51139a2ce5ab9ef8df7aa8ee8205a878" id="r_a51139a2ce5ab9ef8df7aa8ee8205a878"><td class="memItemLeft" align="right" valign="top"><a id="a51139a2ce5ab9ef8df7aa8ee8205a878" name="a51139a2ce5ab9ef8df7aa8ee8205a878"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece460896_param</b> ()</td></tr>
-<tr class="separator:a51139a2ce5ab9ef8df7aa8ee8205a878"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae816e1269203c47b7f8823e2cc5ff214" id="r_ae816e1269203c47b7f8823e2cc5ff214"><td class="memItemLeft" align="right" valign="top"><a id="ae816e1269203c47b7f8823e2cc5ff214" name="ae816e1269203c47b7f8823e2cc5ff214"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece460896f_param</b> ()</td></tr>
-<tr class="separator:ae816e1269203c47b7f8823e2cc5ff214"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca7e15e9c674f0c67227080ca4c91565" id="r_aca7e15e9c674f0c67227080ca4c91565"><td class="memItemLeft" align="right" valign="top"><a id="aca7e15e9c674f0c67227080ca4c91565" name="aca7e15e9c674f0c67227080ca4c91565"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece6688128_param</b> ()</td></tr>
-<tr class="separator:aca7e15e9c674f0c67227080ca4c91565"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee0af6c1a6d61eab366391077c507468" id="r_aee0af6c1a6d61eab366391077c507468"><td class="memItemLeft" align="right" valign="top"><a id="aee0af6c1a6d61eab366391077c507468" name="aee0af6c1a6d61eab366391077c507468"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece6688128f_param</b> ()</td></tr>
-<tr class="separator:aee0af6c1a6d61eab366391077c507468"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74f6f4b8339bb87cb3b0935e5d900411" id="r_a74f6f4b8339bb87cb3b0935e5d900411"><td class="memItemLeft" align="right" valign="top"><a id="a74f6f4b8339bb87cb3b0935e5d900411" name="a74f6f4b8339bb87cb3b0935e5d900411"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece6960119_param</b> ()</td></tr>
-<tr class="separator:a74f6f4b8339bb87cb3b0935e5d900411"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdd0cc1e6ceeb878ce9fd523d25b046c" id="r_afdd0cc1e6ceeb878ce9fd523d25b046c"><td class="memItemLeft" align="right" valign="top"><a id="afdd0cc1e6ceeb878ce9fd523d25b046c" name="afdd0cc1e6ceeb878ce9fd523d25b046c"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece6960119f_param</b> ()</td></tr>
-<tr class="separator:afdd0cc1e6ceeb878ce9fd523d25b046c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abaa1496a256a4e41948e00c13b7cc2d6" id="r_abaa1496a256a4e41948e00c13b7cc2d6"><td class="memItemLeft" align="right" valign="top"><a id="abaa1496a256a4e41948e00c13b7cc2d6" name="abaa1496a256a4e41948e00c13b7cc2d6"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece8192128_param</b> ()</td></tr>
-<tr class="separator:abaa1496a256a4e41948e00c13b7cc2d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40e354bfc29c979eeb4e1d80fa6838ac" id="r_a40e354bfc29c979eeb4e1d80fa6838ac"><td class="memItemLeft" align="right" valign="top"><a id="a40e354bfc29c979eeb4e1d80fa6838ac" name="a40e354bfc29c979eeb4e1d80fa6838ac"></a>
-<a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_mceliece8192128f_param</b> ()</td></tr>
-<tr class="separator:a40e354bfc29c979eeb4e1d80fa6838ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac915a50a9c87392422cb0c159cb1620e" id="r_ac915a50a9c87392422cb0c159cb1620e"><td class="memItemLeft" align="right" valign="top"><a id="ac915a50a9c87392422cb0c159cb1620e" name="ac915a50a9c87392422cb0c159cb1620e"></a>
-<a class="el" href="structcrypto__se__param__t.html">crypto_se_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_aes256_param</b> ()</td></tr>
-<tr class="separator:ac915a50a9c87392422cb0c159cb1620e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a965a4d8e65c0753655a0288b6271dbf0" id="r_a965a4d8e65c0753655a0288b6271dbf0"><td class="memItemLeft" align="right" valign="top"><a id="a965a4d8e65c0753655a0288b6271dbf0" name="a965a4d8e65c0753655a0288b6271dbf0"></a>
-<a class="el" href="structcrypto__hash__param__t.html">crypto_hash_param_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_sha256_param</b> ()</td></tr>
-<tr class="separator:a965a4d8e65c0753655a0288b6271dbf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0ca5a817f5c904535ada57f7ef796ee" id="r_aa0ca5a817f5c904535ada57f7ef796ee"><td class="memItemLeft" align="right" valign="top"><a id="aa0ca5a817f5c904535ada57f7ef796ee" name="aa0ca5a817f5c904535ada57f7ef796ee"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc128_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:aa0ca5a817f5c904535ada57f7ef796ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a198ad41866fe08f071d6f611af3d82a3" id="r_a198ad41866fe08f071d6f611af3d82a3"><td class="memItemLeft" align="right" valign="top"><a id="a198ad41866fe08f071d6f611af3d82a3" name="a198ad41866fe08f071d6f611af3d82a3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc192_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a198ad41866fe08f071d6f611af3d82a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7854c5c3468bf316b69067fb4a549d6" id="r_ac7854c5c3468bf316b69067fb4a549d6"><td class="memItemLeft" align="right" valign="top"><a id="ac7854c5c3468bf316b69067fb4a549d6" name="ac7854c5c3468bf316b69067fb4a549d6"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc256_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:ac7854c5c3468bf316b69067fb4a549d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcffc9f7b22da7de8847c5b5bb389a6a" id="r_abcffc9f7b22da7de8847c5b5bb389a6a"><td class="memItemLeft" align="right" valign="top"><a id="abcffc9f7b22da7de8847c5b5bb389a6a" name="abcffc9f7b22da7de8847c5b5bb389a6a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem512_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:abcffc9f7b22da7de8847c5b5bb389a6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c26b24c8bcefe2447a3c7abf5ffab46" id="r_a3c26b24c8bcefe2447a3c7abf5ffab46"><td class="memItemLeft" align="right" valign="top"><a id="a3c26b24c8bcefe2447a3c7abf5ffab46" name="a3c26b24c8bcefe2447a3c7abf5ffab46"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem768_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a3c26b24c8bcefe2447a3c7abf5ffab46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af815467723afa7aa8bc430a4552bf0f2" id="r_af815467723afa7aa8bc430a4552bf0f2"><td class="memItemLeft" align="right" valign="top"><a id="af815467723afa7aa8bc430a4552bf0f2" name="af815467723afa7aa8bc430a4552bf0f2"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem1024_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:af815467723afa7aa8bc430a4552bf0f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a257398f436471200daed3ef4135850c3" id="r_a257398f436471200daed3ef4135850c3"><td class="memItemLeft" align="right" valign="top"><a id="a257398f436471200daed3ef4135850c3" name="a257398f436471200daed3ef4135850c3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece348864_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a257398f436471200daed3ef4135850c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf3a57cb41b1a860cbdd946da4c0114e" id="r_adf3a57cb41b1a860cbdd946da4c0114e"><td class="memItemLeft" align="right" valign="top"><a id="adf3a57cb41b1a860cbdd946da4c0114e" name="adf3a57cb41b1a860cbdd946da4c0114e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece348864f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:adf3a57cb41b1a860cbdd946da4c0114e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2faa1f05b67b2fd10294913d483cbec7" id="r_a2faa1f05b67b2fd10294913d483cbec7"><td class="memItemLeft" align="right" valign="top"><a id="a2faa1f05b67b2fd10294913d483cbec7" name="a2faa1f05b67b2fd10294913d483cbec7"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece460896_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a2faa1f05b67b2fd10294913d483cbec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af038875613e941fdbb0bd2b6ee60e926" id="r_af038875613e941fdbb0bd2b6ee60e926"><td class="memItemLeft" align="right" valign="top"><a id="af038875613e941fdbb0bd2b6ee60e926" name="af038875613e941fdbb0bd2b6ee60e926"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece460896f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:af038875613e941fdbb0bd2b6ee60e926"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e850ba4a6e6227e3a230256d2ea3f68" id="r_a4e850ba4a6e6227e3a230256d2ea3f68"><td class="memItemLeft" align="right" valign="top"><a id="a4e850ba4a6e6227e3a230256d2ea3f68" name="a4e850ba4a6e6227e3a230256d2ea3f68"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6688128_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a4e850ba4a6e6227e3a230256d2ea3f68"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f11118581923dfaec8334bf626452e2" id="r_a2f11118581923dfaec8334bf626452e2"><td class="memItemLeft" align="right" valign="top"><a id="a2f11118581923dfaec8334bf626452e2" name="a2f11118581923dfaec8334bf626452e2"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6688128f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a2f11118581923dfaec8334bf626452e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39d1e59a7c0d51696c7dd9f33bf3965a" id="r_a39d1e59a7c0d51696c7dd9f33bf3965a"><td class="memItemLeft" align="right" valign="top"><a id="a39d1e59a7c0d51696c7dd9f33bf3965a" name="a39d1e59a7c0d51696c7dd9f33bf3965a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6960119_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a39d1e59a7c0d51696c7dd9f33bf3965a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7286598a0569376d3c6dec5d39958e14" id="r_a7286598a0569376d3c6dec5d39958e14"><td class="memItemLeft" align="right" valign="top"><a id="a7286598a0569376d3c6dec5d39958e14" name="a7286598a0569376d3c6dec5d39958e14"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6960119f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:a7286598a0569376d3c6dec5d39958e14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab83d67cd23858416bc666bc1cf250f31" id="r_ab83d67cd23858416bc666bc1cf250f31"><td class="memItemLeft" align="right" valign="top"><a id="ab83d67cd23858416bc666bc1cf250f31" name="ab83d67cd23858416bc666bc1cf250f31"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece8192128_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:ab83d67cd23858416bc666bc1cf250f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae33aa2ccf85e9f074c084b50c4a4941c" id="r_ae33aa2ccf85e9f074c084b50c4a4941c"><td class="memItemLeft" align="right" valign="top"><a id="ae33aa2ccf85e9f074c084b50c4a4941c" name="ae33aa2ccf85e9f074c084b50c4a4941c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece8192128f_generate_key_pair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
-<tr class="separator:ae33aa2ccf85e9f074c084b50c4a4941c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46ca237283a58eadbb5723b44c78ba77" id="r_a46ca237283a58eadbb5723b44c78ba77"><td class="memItemLeft" align="right" valign="top"><a id="a46ca237283a58eadbb5723b44c78ba77" name="a46ca237283a58eadbb5723b44c78ba77"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc128_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:a46ca237283a58eadbb5723b44c78ba77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b90204b610d87577b3ec686099ad68f" id="r_a3b90204b610d87577b3ec686099ad68f"><td class="memItemLeft" align="right" valign="top"><a id="a3b90204b610d87577b3ec686099ad68f" name="a3b90204b610d87577b3ec686099ad68f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc192_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:a3b90204b610d87577b3ec686099ad68f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5d8e251f4c26337af88490baebb93a1" id="r_ab5d8e251f4c26337af88490baebb93a1"><td class="memItemLeft" align="right" valign="top"><a id="ab5d8e251f4c26337af88490baebb93a1" name="ab5d8e251f4c26337af88490baebb93a1"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc256_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:ab5d8e251f4c26337af88490baebb93a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a57b773f74907f614804a46bffd1532" id="r_a2a57b773f74907f614804a46bffd1532"><td class="memItemLeft" align="right" valign="top"><a id="a2a57b773f74907f614804a46bffd1532" name="a2a57b773f74907f614804a46bffd1532"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem512_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:a2a57b773f74907f614804a46bffd1532"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a606fcda2cdba0e24417c95eb195ed37a" id="r_a606fcda2cdba0e24417c95eb195ed37a"><td class="memItemLeft" align="right" valign="top"><a id="a606fcda2cdba0e24417c95eb195ed37a" name="a606fcda2cdba0e24417c95eb195ed37a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem768_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:a606fcda2cdba0e24417c95eb195ed37a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3c0bff6470d5b67c89af386b010bddf" id="r_af3c0bff6470d5b67c89af386b010bddf"><td class="memItemLeft" align="right" valign="top"><a id="af3c0bff6470d5b67c89af386b010bddf" name="af3c0bff6470d5b67c89af386b010bddf"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem1024_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:af3c0bff6470d5b67c89af386b010bddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae20685821fa2c4effc730b7c39dd49a9" id="r_ae20685821fa2c4effc730b7c39dd49a9"><td class="memItemLeft" align="right" valign="top"><a id="ae20685821fa2c4effc730b7c39dd49a9" name="ae20685821fa2c4effc730b7c39dd49a9"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece348864_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:ae20685821fa2c4effc730b7c39dd49a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa3af024cc577c6312829a6b1ab88b3f" id="r_afa3af024cc577c6312829a6b1ab88b3f"><td class="memItemLeft" align="right" valign="top"><a id="afa3af024cc577c6312829a6b1ab88b3f" name="afa3af024cc577c6312829a6b1ab88b3f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece348864f_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:afa3af024cc577c6312829a6b1ab88b3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91982c8c13729b545ad67848155e48a6" id="r_a91982c8c13729b545ad67848155e48a6"><td class="memItemLeft" align="right" valign="top"><a id="a91982c8c13729b545ad67848155e48a6" name="a91982c8c13729b545ad67848155e48a6"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece460896_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:a91982c8c13729b545ad67848155e48a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1460a4422b5812dda3947faa3109316e" id="r_a1460a4422b5812dda3947faa3109316e"><td class="memItemLeft" align="right" valign="top"><a id="a1460a4422b5812dda3947faa3109316e" name="a1460a4422b5812dda3947faa3109316e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece460896f_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:a1460a4422b5812dda3947faa3109316e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24ded75a24ff1eb3d772c8fb81bd36c1" id="r_a24ded75a24ff1eb3d772c8fb81bd36c1"><td class="memItemLeft" align="right" valign="top"><a id="a24ded75a24ff1eb3d772c8fb81bd36c1" name="a24ded75a24ff1eb3d772c8fb81bd36c1"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6688128_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:a24ded75a24ff1eb3d772c8fb81bd36c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65759325648a67cdf8bace70a30ce917" id="r_a65759325648a67cdf8bace70a30ce917"><td class="memItemLeft" align="right" valign="top"><a id="a65759325648a67cdf8bace70a30ce917" name="a65759325648a67cdf8bace70a30ce917"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6688128f_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:a65759325648a67cdf8bace70a30ce917"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7f6c33322797ee1ec1cf08d7f10cec7" id="r_af7f6c33322797ee1ec1cf08d7f10cec7"><td class="memItemLeft" align="right" valign="top"><a id="af7f6c33322797ee1ec1cf08d7f10cec7" name="af7f6c33322797ee1ec1cf08d7f10cec7"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6960119_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:af7f6c33322797ee1ec1cf08d7f10cec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b98088708c84144f5a91d83423b3c34" id="r_a3b98088708c84144f5a91d83423b3c34"><td class="memItemLeft" align="right" valign="top"><a id="a3b98088708c84144f5a91d83423b3c34" name="a3b98088708c84144f5a91d83423b3c34"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6960119f_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:a3b98088708c84144f5a91d83423b3c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab543d646ed24f7cdf88439885e96e325" id="r_ab543d646ed24f7cdf88439885e96e325"><td class="memItemLeft" align="right" valign="top"><a id="ab543d646ed24f7cdf88439885e96e325" name="ab543d646ed24f7cdf88439885e96e325"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece8192128_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:ab543d646ed24f7cdf88439885e96e325"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae34f4b5e5e6ec90273771b9d3fd2eb9c" id="r_ae34f4b5e5e6ec90273771b9d3fd2eb9c"><td class="memItemLeft" align="right" valign="top"><a id="ae34f4b5e5e6ec90273771b9d3fd2eb9c" name="ae34f4b5e5e6ec90273771b9d3fd2eb9c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece8192128f_encaps</b> (uint8_t *shared_secret, ProtobufCBinaryData *ciphertext, const ProtobufCBinaryData *their_key)</td></tr>
-<tr class="separator:ae34f4b5e5e6ec90273771b9d3fd2eb9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48cfad76663b5bf935ce6790e6eeeb6e" id="r_a48cfad76663b5bf935ce6790e6eeeb6e"><td class="memItemLeft" align="right" valign="top"><a id="a48cfad76663b5bf935ce6790e6eeeb6e" name="a48cfad76663b5bf935ce6790e6eeeb6e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc128_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a48cfad76663b5bf935ce6790e6eeeb6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53460cdf8d4df809bc6fff7de8ef33d2" id="r_a53460cdf8d4df809bc6fff7de8ef33d2"><td class="memItemLeft" align="right" valign="top"><a id="a53460cdf8d4df809bc6fff7de8ef33d2" name="a53460cdf8d4df809bc6fff7de8ef33d2"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc192_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a53460cdf8d4df809bc6fff7de8ef33d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50f46f7a1fb2618610d75bf4b91d432d" id="r_a50f46f7a1fb2618610d75bf4b91d432d"><td class="memItemLeft" align="right" valign="top"><a id="a50f46f7a1fb2618610d75bf4b91d432d" name="a50f46f7a1fb2618610d75bf4b91d432d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hqc256_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a50f46f7a1fb2618610d75bf4b91d432d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a574693f0c013644b57d91a4bfce8a345" id="r_a574693f0c013644b57d91a4bfce8a345"><td class="memItemLeft" align="right" valign="top"><a id="a574693f0c013644b57d91a4bfce8a345" name="a574693f0c013644b57d91a4bfce8a345"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem512_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a574693f0c013644b57d91a4bfce8a345"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af52ab581b7b882766dd65c318412037e" id="r_af52ab581b7b882766dd65c318412037e"><td class="memItemLeft" align="right" valign="top"><a id="af52ab581b7b882766dd65c318412037e" name="af52ab581b7b882766dd65c318412037e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem768_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:af52ab581b7b882766dd65c318412037e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3be0c33608b698ed9175a0229d1f3636" id="r_a3be0c33608b698ed9175a0229d1f3636"><td class="memItemLeft" align="right" valign="top"><a id="a3be0c33608b698ed9175a0229d1f3636" name="a3be0c33608b698ed9175a0229d1f3636"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mlkem1024_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a3be0c33608b698ed9175a0229d1f3636"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62d852af3293d65eeb0d8a3c1c3718ed" id="r_a62d852af3293d65eeb0d8a3c1c3718ed"><td class="memItemLeft" align="right" valign="top"><a id="a62d852af3293d65eeb0d8a3c1c3718ed" name="a62d852af3293d65eeb0d8a3c1c3718ed"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece348864_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a62d852af3293d65eeb0d8a3c1c3718ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f61be4e6fadce334eb0d02fdcdf1b49" id="r_a7f61be4e6fadce334eb0d02fdcdf1b49"><td class="memItemLeft" align="right" valign="top"><a id="a7f61be4e6fadce334eb0d02fdcdf1b49" name="a7f61be4e6fadce334eb0d02fdcdf1b49"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece348864f_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a7f61be4e6fadce334eb0d02fdcdf1b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fd690673cde406422039362ecf23caa" id="r_a1fd690673cde406422039362ecf23caa"><td class="memItemLeft" align="right" valign="top"><a id="a1fd690673cde406422039362ecf23caa" name="a1fd690673cde406422039362ecf23caa"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece460896_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a1fd690673cde406422039362ecf23caa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab335d8e0cd0835ffa3884d9b7836f955" id="r_ab335d8e0cd0835ffa3884d9b7836f955"><td class="memItemLeft" align="right" valign="top"><a id="ab335d8e0cd0835ffa3884d9b7836f955" name="ab335d8e0cd0835ffa3884d9b7836f955"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece460896f_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:ab335d8e0cd0835ffa3884d9b7836f955"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad22081c19808b08a00fb9bba85d44ff0" id="r_ad22081c19808b08a00fb9bba85d44ff0"><td class="memItemLeft" align="right" valign="top"><a id="ad22081c19808b08a00fb9bba85d44ff0" name="ad22081c19808b08a00fb9bba85d44ff0"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6688128_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:ad22081c19808b08a00fb9bba85d44ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9525c495738a80ba1aa9ca7d2d7de92" id="r_ab9525c495738a80ba1aa9ca7d2d7de92"><td class="memItemLeft" align="right" valign="top"><a id="ab9525c495738a80ba1aa9ca7d2d7de92" name="ab9525c495738a80ba1aa9ca7d2d7de92"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6688128f_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:ab9525c495738a80ba1aa9ca7d2d7de92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acddfeb950e99059dbd09f406671fd02e" id="r_acddfeb950e99059dbd09f406671fd02e"><td class="memItemLeft" align="right" valign="top"><a id="acddfeb950e99059dbd09f406671fd02e" name="acddfeb950e99059dbd09f406671fd02e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6960119_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:acddfeb950e99059dbd09f406671fd02e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8bc57d939067b7868c3e590de653a43" id="r_ac8bc57d939067b7868c3e590de653a43"><td class="memItemLeft" align="right" valign="top"><a id="ac8bc57d939067b7868c3e590de653a43" name="ac8bc57d939067b7868c3e590de653a43"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece6960119f_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:ac8bc57d939067b7868c3e590de653a43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0544477708a0c2f4657a5f830d59a35a" id="r_a0544477708a0c2f4657a5f830d59a35a"><td class="memItemLeft" align="right" valign="top"><a id="a0544477708a0c2f4657a5f830d59a35a" name="a0544477708a0c2f4657a5f830d59a35a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece8192128_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a0544477708a0c2f4657a5f830d59a35a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a727fded0588dbd64a4248299b010c70b" id="r_a727fded0588dbd64a4248299b010c70b"><td class="memItemLeft" align="right" valign="top"><a id="a727fded0588dbd64a4248299b010c70b" name="a727fded0588dbd64a4248299b010c70b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_mceliece8192128f_decaps</b> (uint8_t *shared_secret, const ProtobufCBinaryData *our_key, const ProtobufCBinaryData *ciphertext)</td></tr>
-<tr class="separator:a727fded0588dbd64a4248299b010c70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac56ee8caaea1c4a8f22133d577fa083c" id="r_ac56ee8caaea1c4a8f22133d577fa083c"><td class="memItemLeft" align="right" valign="top"><a id="ac56ee8caaea1c4a8f22133d577fa083c" name="ac56ee8caaea1c4a8f22133d577fa083c"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>CURVE25519_crypto_sign_keypair</b> (ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key)</td></tr>
 <tr class="separator:ac56ee8caaea1c4a8f22133d577fa083c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -465,6 +178,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 <tr class="memitem:a0abf54c9a3f3c89e4552ea50b87afde3" id="r_a0abf54c9a3f3c89e4552ea50b87afde3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0abf54c9a3f3c89e4552ea50b87afde3">crypto_aes_decrypt_gcm</a> (const uint8_t *ciphertext_data, size_t ciphertext_data_len, const uint8_t *aes_key, const uint8_t *iv, const uint8_t *add, size_t add_len, uint8_t *plaintext_data, size_t *plaintext_data_len)</td></tr>
 <tr class="memdesc:a0abf54c9a3f3c89e4552ea50b87afde3"><td class="mdescLeft">&#160;</td><td class="mdescRight">AES256 decrypt function in GCM mode.  <br /></td></tr>
 <tr class="separator:a0abf54c9a3f3c89e4552ea50b87afde3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad449cbcd6449c8cff0b8de22bcc9baa0" id="r_ad449cbcd6449c8cff0b8de22bcc9baa0"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad449cbcd6449c8cff0b8de22bcc9baa0">aes256_gcm_ciphertext_data_len</a> (size_t plaintext_data_length)</td></tr>
+<tr class="memdesc:ad449cbcd6449c8cff0b8de22bcc9baa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate ciphertext data len for AES GCM.  <br /></td></tr>
+<tr class="separator:ad449cbcd6449c8cff0b8de22bcc9baa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c9d322f09b8b9e997838fee395a09a6" id="r_a0c9d322f09b8b9e997838fee395a09a6"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c9d322f09b8b9e997838fee395a09a6">aes256_gcm_plaintext_data_len</a> (size_t ciphertext_data_len)</td></tr>
+<tr class="memdesc:a0c9d322f09b8b9e997838fee395a09a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate plaintext data len for AES GCM.  <br /></td></tr>
+<tr class="separator:a0c9d322f09b8b9e997838fee395a09a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc26d7ca538bd3f7fec38b2c1959beb0" id="r_afc26d7ca538bd3f7fec38b2c1959beb0"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc26d7ca538bd3f7fec38b2c1959beb0">encrypt_aes_data_with_iv</a> (const uint8_t *plaintext_data, size_t plaintext_data_len, const uint8_t aes_key[<a class="el" href="#af36200aa1d4d85292b027b6d811263ad">AES256_KEY_LENGTH</a>], const uint8_t iv[<a class="el" href="#adbbbf1c1be8a7fb625cf3879c3168dc3">AES256_DATA_IV_LENGTH</a>], uint8_t **ciphertext_data)</td></tr>
 <tr class="memdesc:afc26d7ca538bd3f7fec38b2c1959beb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">AES256 encrypt data in GCM mode.  <br /></td></tr>
 <tr class="separator:afc26d7ca538bd3f7fec38b2c1959beb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -590,6 +309,21 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 
 </div>
 </div>
+<a id="a8a2b042788dd7df27281676080f9d6cc" name="a8a2b042788dd7df27281676080f9d6cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a2b042788dd7df27281676080f9d6cc">&#9670;&#160;</a></span>CURVE25519_RANDOM_LENGTH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CURVE25519_RANDOM_LENGTH&#160;&#160;&#160;<a class="el" href="cipher__ecc_8h.html#af267d8aed138e3cdf5cc4b635ab6fd12">CURVE25519_KEY_LENGTH</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>amount of random data required to create a Curve25519 keypair </p>
+
+</div>
+</div>
 <a id="a5a2bb125ad5cf2351de9cb070d78bcc6" name="a5a2bb125ad5cf2351de9cb070d78bcc6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5a2bb125ad5cf2351de9cb070d78bcc6">&#9670;&#160;</a></span>CURVE_SIGNATURE_LENGTH</h2>
 
@@ -602,6 +336,21 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
       </table>
 </div><div class="memdoc">
 <p>length of a Curve25519 signature </p>
+
+</div>
+</div>
+<a id="a06a923f056ee99cb8562286c8fcffc82" name="a06a923f056ee99cb8562286c8fcffc82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06a923f056ee99cb8562286c8fcffc82">&#9670;&#160;</a></span>FILE_ENCRYPTION_BUFFER_LENGTH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FILE_ENCRYPTION_BUFFER_LENGTH&#160;&#160;&#160;8192</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>buffer length for file encryption/decryption </p>
 
 </div>
 </div>
@@ -621,6 +370,58 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_curve25519_veri
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ad449cbcd6449c8cff0b8de22bcc9baa0" name="ad449cbcd6449c8cff0b8de22bcc9baa0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad449cbcd6449c8cff0b8de22bcc9baa0">&#9670;&#160;</a></span>aes256_gcm_ciphertext_data_len()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t aes256_gcm_ciphertext_data_len </td>
+          <td>(</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>plaintext_data_length</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculate ciphertext data len for AES GCM. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">plaintext_data_length</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>size_t length of ciphertext data </dd></dl>
+
+</div>
+</div>
+<a id="a0c9d322f09b8b9e997838fee395a09a6" name="a0c9d322f09b8b9e997838fee395a09a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c9d322f09b8b9e997838fee395a09a6">&#9670;&#160;</a></span>aes256_gcm_plaintext_data_len()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t aes256_gcm_plaintext_data_len </td>
+          <td>(</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>ciphertext_data_len</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculate plaintext data len for AES GCM. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ciphertext_data_len</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>size_t length of plaintext data </dd></dl>
+
+</div>
+</div>
 <a id="a0abf54c9a3f3c89e4552ea50b87afde3" name="a0abf54c9a3f3c89e4552ea50b87afde3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0abf54c9a3f3c89e4552ea50b87afde3">&#9670;&#160;</a></span>crypto_aes_decrypt_gcm()</h2>
 

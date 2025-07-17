@@ -1,20 +1,20 @@
 /*
  * Copyright © 2021 Academia Sinica. All Rights Reserved.
  *
- * This file is part of SKISSM.
+ * This file is part of E2EE Security.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * SKISSM is distributed in the hope that it will be useful,
+ * E2EE Security is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with SKISSM.  If not, see <http://www.gnu.org/licenses/>.
+ * along with E2EE Security.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "e2ees/group_session.h"
 
@@ -37,9 +37,9 @@ static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 
 void advance_group_chain_key(const cipher_suite_t *cipher_suite, ProtobufCBinaryData *chain_key) {
-    int group_shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+    int group_shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
     uint8_t shared_key[group_shared_key_len];
-    cipher_suite->hash_suite->hmac(
+    cipher_suite->hf_suite->hmac(
         chain_key->data, chain_key->len,
         CHAIN_KEY_SEED, sizeof(CHAIN_KEY_SEED),
         shared_key
@@ -51,15 +51,15 @@ void advance_group_chain_key(const cipher_suite_t *cipher_suite, ProtobufCBinary
 void advance_group_chain_key_by_welcome(
     const cipher_suite_t *cipher_suite, const ProtobufCBinaryData *src_chain_key, ProtobufCBinaryData **dest_chain_key
 ) {
-    int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+    int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
     uint8_t salt[] = "welcome";
 
     *dest_chain_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
 
-    (*dest_chain_key)->len = hash_len;
-    (*dest_chain_key)->data = (uint8_t *)malloc(sizeof(uint8_t) * hash_len);
+    (*dest_chain_key)->len = hf_len;
+    (*dest_chain_key)->data = (uint8_t *)malloc(sizeof(uint8_t) * hf_len);
 
-    cipher_suite->hash_suite->hkdf(
+    cipher_suite->hf_suite->hkdf(
         src_chain_key->data, src_chain_key->len,
         salt, sizeof(salt) - 1,
         CHAIN_KEY_SEED, sizeof(CHAIN_KEY_SEED),
@@ -70,15 +70,15 @@ void advance_group_chain_key_by_welcome(
 void advance_group_chain_key_by_add(
     const cipher_suite_t *cipher_suite, const ProtobufCBinaryData *src_chain_key, ProtobufCBinaryData *dest_chain_key
 ) {
-    int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+    int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
     uint8_t salt[] = "add";
 
     ProtobufCBinaryData *new_chain_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
 
-    new_chain_key->len = hash_len;
-    new_chain_key->data = (uint8_t *)malloc(sizeof(uint8_t) * hash_len);
+    new_chain_key->len = hf_len;
+    new_chain_key->data = (uint8_t *)malloc(sizeof(uint8_t) * hf_len);
 
-    cipher_suite->hash_suite->hkdf(
+    cipher_suite->hf_suite->hkdf(
         src_chain_key->data, src_chain_key->len,
         salt, sizeof(salt) - 1,
         CHAIN_KEY_SEED, sizeof(CHAIN_KEY_SEED),
@@ -88,7 +88,7 @@ void advance_group_chain_key_by_add(
     overwrite_protobuf_from_array(dest_chain_key, new_chain_key->data);
 
     // release
-    free_mem((void **)&(new_chain_key->data), sizeof(uint8_t) * hash_len);
+    free_mem((void **)&(new_chain_key->data), sizeof(uint8_t) * hf_len);
     free_mem((void **)&new_chain_key, sizeof(ProtobufCBinaryData));
 }
 
@@ -103,10 +103,10 @@ void create_group_message_key(
     msg_key->derived_key.data = (uint8_t *)malloc(sizeof(uint8_t) * group_msg_key_len);
     msg_key->derived_key.len = group_msg_key_len;
 
-    int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-    uint8_t salt[hash_len];
-    memset(salt, 0, hash_len);
-    cipher_suite->hash_suite->hkdf(
+    int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+    uint8_t salt[hf_len];
+    memset(salt, 0, hf_len);
+    cipher_suite->hf_suite->hkdf(
         chain_key->data, chain_key->len,
         salt, sizeof(salt),
         (uint8_t *)MESSAGE_KEY_SEED, sizeof(MESSAGE_KEY_SEED) - 1,
@@ -281,12 +281,12 @@ static void insert_outbound_group_session_data(
     memcpy(secret + SEED_SECRET_LEN, identity_public_key, sign_key_len);
 
     // generate a chain key
-    int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-    uint8_t salt[hash_len];
-    memset(salt, 0, hash_len);
-    outbound_group_session->chain_key.len = hash_len;
+    int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+    uint8_t salt[hf_len];
+    memset(salt, 0, hf_len);
+    outbound_group_session->chain_key.len = hf_len;
     outbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
-    cipher_suite->hash_suite->hkdf(
+    cipher_suite->hf_suite->hkdf(
         secret, secret_len,
         salt, sizeof(salt),
         (uint8_t *)ROOT_SEED, sizeof(ROOT_SEED) - 1,
@@ -836,12 +836,12 @@ int complete_inbound_group_session_by_pre_key_bundle(
         memcpy(secret + SEED_SECRET_LEN, inbound_group_session->associated_data.data, sign_key_len);  // only copy the first half
 
         // generate a chain key
-        int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-        uint8_t salt[hash_len];
-        memset(salt, 0, hash_len);
-        inbound_group_session->chain_key.len = hash_len;
+        int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        uint8_t salt[hf_len];
+        memset(salt, 0, hf_len);
+        inbound_group_session->chain_key.len = hf_len;
         inbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * inbound_group_session->chain_key.len);
-        cipher_suite->hash_suite->hkdf(
+        cipher_suite->hf_suite->hkdf(
             secret, secret_len,
             salt, sizeof(salt),
             (uint8_t *)ROOT_SEED, sizeof(ROOT_SEED) - 1,
@@ -893,12 +893,12 @@ int complete_inbound_group_session_by_member_id(
         free_protobuf(&(inbound_group_session->group_seed));
 
         // generate a chain key
-        int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-        uint8_t salt[hash_len];
-        memset(salt, 0, hash_len);
-        inbound_group_session->chain_key.len = hash_len;
+        int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        uint8_t salt[hf_len];
+        memset(salt, 0, hf_len);
+        inbound_group_session->chain_key.len = hf_len;
         inbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * inbound_group_session->chain_key.len);
-        cipher_suite->hash_suite->hkdf(
+        cipher_suite->hf_suite->hkdf(
             secret, secret_len,
             salt, sizeof(salt),
             (uint8_t *)ROOT_SEED, sizeof(ROOT_SEED) - 1,
@@ -950,12 +950,12 @@ int new_and_complete_inbound_group_session(
         memcpy(secret + SEED_SECRET_LEN, identity_public_key, sign_key_len);
 
         // generate a chain key
-        int hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-        uint8_t salt[hash_len];
-        memset(salt, 0, hash_len);
-        inbound_group_session->chain_key.len = hash_len;
+        int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        uint8_t salt[hf_len];
+        memset(salt, 0, hf_len);
+        inbound_group_session->chain_key.len = hf_len;
         inbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * inbound_group_session->chain_key.len);
-        cipher_suite->hash_suite->hkdf(
+        cipher_suite->hf_suite->hkdf(
             secret, secret_len,
             salt, sizeof(salt),
             (uint8_t *)ROOT_SEED, sizeof(ROOT_SEED) - 1,

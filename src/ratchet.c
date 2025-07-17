@@ -102,7 +102,7 @@ static int create_chain_key(
     if (ret == E2EES_RESULT_SUCC) {
         pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
 
-        int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        int shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
         int shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
 
         uint8_t secret[shared_secret_len];
@@ -118,7 +118,7 @@ static int create_chain_key(
             cipher_suite->kem_suite->decaps(secret, our_private_key, their_key);
         }
         uint8_t derived_secrets[2 * shared_key_len];
-        cipher_suite->hash_suite->hkdf(
+        cipher_suite->hf_suite->hkdf(
             secret, sizeof(secret),
             root_key.data, root_key.len,
             (uint8_t *)KDF_INFO_RATCHET, sizeof(KDF_INFO_RATCHET) - 1,
@@ -161,10 +161,10 @@ static int advance_chain_key(
     }
 
     if (ret == E2EES_RESULT_SUCC) {
-        int shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        int shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
         uint8_t shared_key[shared_key_len];
         memset(shared_key, 0, shared_key_len);
-        cipher_suite->hash_suite->hmac(
+        cipher_suite->hf_suite->hmac(
             chain_key->shared_key.data, chain_key->shared_key.len,
             CHAIN_KEY_SEED, sizeof(CHAIN_KEY_SEED),
             shared_key
@@ -186,7 +186,7 @@ static int create_msg_keys(
     E2ees__MsgKey *msg_key = NULL;
     uint8_t *output = NULL;
     int msg_key_len = 0;
-    int hash_len;
+    int hf_len;
 
     if (is_valid_cipher_suite(cipher_suite)) {
         if (!is_valid_chain_key(chain_key)) {
@@ -200,10 +200,10 @@ static int create_msg_keys(
         msg_key_len = cipher_suite->se_suite->get_crypto_param().aead_key_len
                     + cipher_suite->se_suite->get_crypto_param().aead_iv_len;
         output = (uint8_t *)malloc(sizeof(uint8_t) * msg_key_len);
-        hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-        uint8_t salt[hash_len];
-        memset(salt, 0, hash_len);
-        ret = cipher_suite->hash_suite->hkdf(
+        hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        uint8_t salt[hf_len];
+        memset(salt, 0, hf_len);
+        ret = cipher_suite->hf_suite->hkdf(
             chain_key->shared_key.data, chain_key->shared_key.len,
             salt, sizeof(salt),
             (uint8_t *)MESSAGE_KEY_SEED, sizeof(MESSAGE_KEY_SEED) - 1,
@@ -412,7 +412,7 @@ int initialise_as_bob(
     E2ees__Ratchet *ratchet = NULL;
     bool pqc_param;
     int shared_key_len;
-    int hash_len;
+    int hf_len;
     uint8_t *derived_secrets = NULL;
     size_t derived_secrets_len = 0;
     ProtobufCBinaryData ciphertext = {0, NULL};
@@ -435,13 +435,13 @@ int initialise_as_bob(
 
     if (ret == E2EES_RESULT_SUCC) {
         // the ssk will be 64 bytes
-        shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
         derived_secrets_len = shared_key_len * 2;
         derived_secrets = (uint8_t *)malloc(sizeof(uint8_t) * derived_secrets_len);
-        hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-        uint8_t salt[hash_len];
-        memset(salt, 0, hash_len);
-        ret = cipher_suite->hash_suite->hkdf(
+        hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        uint8_t salt[hf_len];
+        memset(salt, 0, hf_len);
+        ret = cipher_suite->hf_suite->hkdf(
             shared_secret, shared_secret_len,
             salt, sizeof(salt),
             (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,
@@ -515,7 +515,7 @@ int initialise_as_alice(
     E2ees__Ratchet *ratchet = NULL;
     bool pqc_param;
     int shared_key_len = 0;
-    int hash_len = 0;
+    int hf_len = 0;
     uint8_t *derived_secrets = NULL;
     size_t derived_secrets_len = 0;
 
@@ -543,14 +543,14 @@ int initialise_as_alice(
 
     if (ret == E2EES_RESULT_SUCC) {
         // the length of derived_secrets will be 64 bytes
-        shared_key_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
+        shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
         derived_secrets_len = shared_key_len * 2;
         derived_secrets = (uint8_t *)malloc(sizeof(uint8_t) * derived_secrets_len);
-        hash_len = cipher_suite->hash_suite->get_crypto_param().hash_len;
-        uint8_t salt[hash_len];
-        memset(salt, 0, hash_len);
+        hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        uint8_t salt[hf_len];
+        memset(salt, 0, hf_len);
         // shared_secret_len may be 128 or 96
-        ret = cipher_suite->hash_suite->hkdf(
+        ret = cipher_suite->hf_suite->hkdf(
             shared_secret, shared_secret_len,
             salt, sizeof(salt),
             (uint8_t *)KDF_INFO_ROOT, sizeof(KDF_INFO_ROOT) - 1,

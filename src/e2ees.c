@@ -60,7 +60,7 @@ extern struct kem_suite_t E2EES_MCELIECE6960119F;
 extern struct kem_suite_t E2EES_MCELIECE8192128;
 extern struct kem_suite_t E2EES_MCELIECE8192128F;
 extern struct se_suite_t E2EES_AES256_SHA256;
-extern struct hash_suite_t E2EES_SHA256;
+extern struct hf_suite_t E2EES_SHA256;
 
 cipher_suite_t E2EES_CIPHER_SUITE = { NULL, NULL, NULL };
 
@@ -173,8 +173,8 @@ se_suite_t *get_se_suite(unsigned symmetric_encryption_id) {
     }
 }
 
-hash_suite_t *get_hash_suite(unsigned hash_id) {
-    if (hash_id == E2EES_PACK_ALG_HASH_SHA2_256) {
+hf_suite_t *get_hf_suite(unsigned hf_id) {
+    if (hf_id == E2EES_PACK_ALG_HASH_SHA2_256) {
         return &E2EES_SHA256;
     } else {
         return NULL;
@@ -185,7 +185,7 @@ cipher_suite_t *get_cipher_suite(e2ees_pack_id_t e2ees_pack_id) {
     E2EES_CIPHER_SUITE.ds_suite = get_ds_suite(e2ees_pack_id.ds);
     E2EES_CIPHER_SUITE.kem_suite = get_kem_suite(e2ees_pack_id.kem);
     E2EES_CIPHER_SUITE.se_suite = get_se_suite(e2ees_pack_id.se);
-    E2EES_CIPHER_SUITE.hash_suite = get_hash_suite(e2ees_pack_id.hash);
+    E2EES_CIPHER_SUITE.hf_suite = get_hf_suite(e2ees_pack_id.hash);
 
     return &E2EES_CIPHER_SUITE;
 }

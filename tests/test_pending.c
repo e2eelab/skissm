@@ -108,11 +108,11 @@ static void test_one_group_pre_key() {
 
     outbound_group_session->sequence = 0;
 
-    outbound_group_session->chain_key.len = test_cipher_suite->hash_suite->get_crypto_param().hash_len;
+    outbound_group_session->chain_key.len = test_cipher_suite->hf_suite->get_crypto_param().hf_len;
     outbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
     get_e2ees_plugin()->common_handler.gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
 
-    outbound_group_session->group_seed.len = test_cipher_suite->hash_suite->get_crypto_param().hash_len;
+    outbound_group_session->group_seed.len = test_cipher_suite->hf_suite->get_crypto_param().hf_len;
     outbound_group_session->group_seed.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
     get_e2ees_plugin()->common_handler.gen_rand(outbound_group_session->group_seed.data, outbound_group_session->group_seed.len);
 

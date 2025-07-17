@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,61 +31,264 @@ extern "C" {
 #include "e2ees/e2ees.h"
 
 /**
- * The context strings that are used by the HKDF
- * for deriving next root key and chain key.
+ * @brief Type definition of digital signature algorithm parameters.
  */
-#define KDF_INFO_ROOT "ROOT"
-#define KDF_INFO_RATCHET "RATCHET"
+typedef struct crypto_ds_param_t {
+    bool pqc_param;
+    uint32_t sign_pub_key_len;
+    uint32_t sign_priv_key_len;
+    uint32_t sig_len;
+} crypto_ds_param_t;
 
 /**
- * @brief Calculate ciphertext data len for AES GCM.
- *
- * @param plaintext_data_length
- * @return size_t length of ciphertext data
+ * @brief Type definition of kem algorithm parameters.
  */
-size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length);
+typedef struct crypto_kem_param_t {
+    bool pqc_param;
+    uint32_t asym_pub_key_len;
+    uint32_t asym_priv_key_len;
+    uint32_t kem_ciphertext_len;
+    uint32_t shared_secret_len;
+} crypto_kem_param_t;
 
 /**
- * @brief Calculate plaintext data len for AES GCM.
- *
- * @param ciphertext_data_len
- * @return size_t length of plaintext data
+ * @brief Type definition of symmetric encryption algorithm parameters.
  */
-size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len);
+typedef struct crypto_se_param_t {
+    uint32_t aead_key_len;
+    uint32_t aead_iv_len;
+    uint32_t aead_tag_len;
+} crypto_se_param_t;
 
 /**
- * @brief Encrypt plaintext with AES GCM.
- *
- * @param ad
- * @param aes_key
- * @param plaintext_data
- * @param plaintext_data_len
- * @param ciphertext_data
- * @param ciphertext_data_len
- * @return 0 if success
+ * @brief Type definition of hash function parameters.
  */
-int aes256_gcm_encrypt(
-    const ProtobufCBinaryData *ad, const uint8_t *aes_key,
-    const uint8_t *plaintext_data, size_t plaintext_data_len,
-    uint8_t **ciphertext_data, size_t *ciphertext_data_len
-);
+typedef struct crypto_hf_param_t {
+    uint32_t hf_len;
+} crypto_hf_param_t;
 
 /**
- * @brief Decrypt a ciphertext with AES GCM.
- *
- * @param decrypted_data_out
- * @param decrypted_data_len_out
- * @param ad
- * @param aes_key
- * @param ciphertext_data
- * @param ciphertext_data_len
- * @return The length of plaintext_data or -1 for decryption error
+ * @brief Type definition of digital signature algorithm suite.
  */
-int aes256_gcm_decrypt(
-    uint8_t **decrypted_data_out, size_t *decrypted_data_len_out,
-    const ProtobufCBinaryData *ad, const uint8_t *aes_key,
-    const uint8_t *ciphertext_data, size_t ciphertext_data_len
-);
+typedef struct ds_suite_t {
+    /**
+     * @brief Get the parameters of this digital signature suite.
+     * @return crypto_ds_param_t
+     */
+    struct crypto_ds_param_t (*get_crypto_param)(void);
+
+    /**
+     * @brief Generate a random key pair that will be used to generate or verify a signature.
+     *
+     * @param pub_key
+     * @param priv_key
+     * @return value < 0 for error
+     */
+    int (*sign_key_gen)(
+        ProtobufCBinaryData *pub_key,
+        ProtobufCBinaryData *priv_key
+    );
+
+    /**
+     * @brief Sign a message.
+     *
+     * @param signature_out
+     * @param signature_out_len
+     * @param msg
+     * @param msg_len
+     * @param private_key
+     * @return value < 0 for error
+     */
+    int (*sign)(
+        uint8_t *signature_out, size_t *signature_out_len,
+        const uint8_t *msg, size_t msg_len,
+        const uint8_t *private_key
+    );
+
+    /**
+     * @brief Verify a signature with a given message.
+     *
+     * @param signature_in
+     * @param signature_in_len
+     * @param msg
+     * @param msg_len
+     * @param public_key
+     * @return value < 0 for error
+     */
+    int (*verify)(
+        const uint8_t *signature_in, size_t signature_in_len,
+        const uint8_t *msg, size_t msg_len,
+        const uint8_t *public_key
+    );
+} ds_suite_t;
+
+/**
+ * @brief Type definition of kem algorithm suite.
+ */
+typedef struct kem_suite_t {
+    /**
+     * @brief Get the parameters of this kem suite.
+     * @return crypto_kem_param_t
+     */
+    struct crypto_kem_param_t (*get_crypto_param)(void);
+
+    /**
+     * @brief Generate a random key pair that will be used to calculate shared secret keys.
+     *
+     * @param pub_key
+     * @param priv_key
+     */
+    int (*asym_key_gen)(
+        ProtobufCBinaryData *pub_key,
+        ProtobufCBinaryData *priv_key
+    );
+
+    /**
+    * @brief Encapsulation.
+    *
+    * @param shared_secret
+    * @param ciphertext
+    * @param their_key
+    * @return value < 0 for error.
+    */
+    int (*encaps)(
+        uint8_t *shared_secret,
+        ProtobufCBinaryData *ciphertext,
+        const ProtobufCBinaryData *their_key
+    );
+
+    /**
+    * @brief Decapsulation.
+    *
+    * @param shared_secret
+    * @param our_key
+    * @param ciphertext
+    * @return value < 0 for error.
+    */
+    int (*decaps)(
+        uint8_t *shared_secret,
+        const ProtobufCBinaryData *our_key,
+        const ProtobufCBinaryData *ciphertext
+    );
+} kem_suite_t;
+
+/**
+ * @brief Type definition of symmetric encryption algorithm suite.
+ */
+typedef struct se_suite_t {
+    /**
+     * @brief Get the parameters of this symmetric encryption suite.
+     * @return crypto_se_param_t
+     */
+    struct crypto_se_param_t (*get_crypto_param)(void);
+
+    /**
+     * @brief Encrypt a given plaintext.
+     *
+     * @param ad The associated data
+     * @param key The secret key
+     * @param plaintext_data The plaintext to encrypt
+     * @param plaintext_data_len The plaintext length
+     * @param ciphertext_data The output ciphertext
+     * @param ciphertext_data_len The output ciphertext length
+     * @return Success or not
+     */
+    int (*encrypt)(
+        const ProtobufCBinaryData *,
+        const uint8_t *,
+        const uint8_t *, size_t,
+        uint8_t **, size_t *
+    );
+
+    /**
+     * @brief Decrypt a given ciphertext.
+     *
+     * @param decrypted_data_out The output plaintext
+     * @param decrypted_data_len_out The output plaintext length
+     * @param ad The associated data
+     * @param key The secret key
+     * @param ciphertext_data The ciphertext to decrypt
+     * @param ciphertext_data_len The ciphertext length
+     * @return The length of plaintext_data or -1 for decryption error
+     */
+    int (*decrypt)(
+        uint8_t **, size_t *,
+        const ProtobufCBinaryData *,
+        const uint8_t *,
+        const uint8_t *, size_t
+    );
+} se_suite_t;
+
+/**
+ * @brief Type definition of hash function suite.
+ */
+typedef struct hf_suite_t {
+    /**
+     * @brief Get the parameters of this hash function suite.
+     * @return crypto_hf_param_t
+     */
+    struct crypto_hf_param_t (*get_crypto_param)(void);
+
+    /**
+     * @brief HMAC-based key derivation function.
+     *
+     * @param input
+     * @param input_len
+     * @param salt
+     * @param salt_len
+     * @param info
+     * @param info_len
+     * @param output
+     * @param output_len
+     * @return 0 if success
+     */
+    int (*hkdf)(
+        const uint8_t *input, size_t input_len,
+        const uint8_t *salt, size_t salt_len,
+        const uint8_t *info, size_t info_len,
+        uint8_t *output, size_t output_len
+    );
+
+    /**
+     * @brief Keyed-Hashing for message authentication.
+     *
+     * @param key
+     * @param key_len
+     * @param input
+     * @param input_len
+     * @param output
+     * @return 0 if success
+     */
+    int (*hmac)(
+        const uint8_t *key, size_t key_len,
+        const uint8_t *input, size_t input_len,
+        uint8_t *output
+    );
+
+    /**
+     * @brief Hash function.
+     *
+     * @param msg
+     * @param msg_len
+     * @param hash_out
+     * @return 0 if success
+     */
+    int (*hash)(
+        const uint8_t *msg,
+        size_t msg_len,
+        uint8_t *hash_out
+    );
+} hf_suite_t;
+
+/**
+ * @brief Type definition of cipher suite.
+ */
+typedef struct cipher_suite_t {
+    ds_suite_t *ds_suite;
+    kem_suite_t *kem_suite;
+    se_suite_t *se_suite;
+    hf_suite_t *hf_suite;
+} cipher_suite_t;
 
 #ifdef __cplusplus
 }

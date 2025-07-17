@@ -75,8 +75,8 @@
 {\ttfamily \#include "{}e2ees/\+Supply\+Opks\+Response.\+pb-\/c.\+h"{}}\newline
 {\ttfamily \#include "{}e2ees/\+User\+Devices\+Bundle.\+pb-\/c.\+h"{}}\newline
 {\ttfamily \#include "{}e2ees/cipher.\+h"{}}\newline
-{\ttfamily \#include "{}e2ees/log\+\_\+code.\+h"{}}\newline
 {\ttfamily \#include "{}e2ees/session.\+h"{}}\newline
+{\ttfamily \#include "{}e2ees/log\+\_\+code.\+h"{}}\newline
 \doxysubsubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
@@ -84,24 +84,6 @@ struct \mbox{\hyperlink{structe2ees__pack__id__t}{e2ees\+\_\+pack\+\_\+id\+\_\+t
 \begin{DoxyCompactList}\small\item\em Type definition of E2\+EE Security pack id. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{structe2ees__pack__t}{e2ees\+\_\+pack\+\_\+t}}
 \begin{DoxyCompactList}\small\item\em Type definition of E2\+EE Security pack. An \doxylink{structe2ees__pack__t}{e2ees\+\_\+pack\+\_\+t} consists of cipher suite and session suite. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm parameters. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm parameters. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structcrypto__se__param__t}{crypto\+\_\+se\+\_\+param\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm parameters. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structcrypto__hash__param__t}{crypto\+\_\+hash\+\_\+param\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Type definition of hash algorithm parameters. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structds__suite__t}{ds\+\_\+suite\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm suite. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structkem__suite__t}{kem\+\_\+suite\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm suite. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structse__suite__t}{se\+\_\+suite\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm suite. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structhash__suite__t}{hash\+\_\+suite\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Type definition of hash algorithm suite. \end{DoxyCompactList}\item 
-struct \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}}
-\begin{DoxyCompactList}\small\item\em Type definition of cipher suite. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{structe2ees__common__handler__t}{e2ees\+\_\+common\+\_\+handler\+\_\+t}}
 \begin{DoxyCompactList}\small\item\em Type definition of common handler. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{structe2ees__db__handler__t}{e2ees\+\_\+db\+\_\+handler\+\_\+t}}
@@ -298,33 +280,6 @@ typedef struct e2ees\+\_\+pack\+\_\+id\+\_\+t {\bfseries e2ees\+\_\+pack\+\_\+id
 \Hypertarget{e2ees_8h_ab337bf7181becbca083426814a1d3ad0}\label{e2ees_8h_ab337bf7181becbca083426814a1d3ad0} 
 typedef struct e2ees\+\_\+pack\+\_\+t {\bfseries e2ees\+\_\+pack\+\_\+t}
 \begin{DoxyCompactList}\small\item\em Type definition of E2\+EE Security pack. An \doxylink{structe2ees__pack__t}{e2ees\+\_\+pack\+\_\+t} consists of cipher suite and session suite. \end{DoxyCompactList}\item 
-\Hypertarget{e2ees_8h_a3a5946bb59ef37e260551ccd156dda5e}\label{e2ees_8h_a3a5946bb59ef37e260551ccd156dda5e} 
-typedef struct crypto\+\_\+ds\+\_\+param\+\_\+t {\bfseries crypto\+\_\+ds\+\_\+param\+\_\+t}
-\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm parameters. \end{DoxyCompactList}\item 
-\Hypertarget{e2ees_8h_ae20eb84b8db760dff90fb80506043872}\label{e2ees_8h_ae20eb84b8db760dff90fb80506043872} 
-typedef struct crypto\+\_\+kem\+\_\+param\+\_\+t {\bfseries crypto\+\_\+kem\+\_\+param\+\_\+t}
-\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm parameters. \end{DoxyCompactList}\item 
-\Hypertarget{e2ees_8h_a72627fa90ca017b9a58e32122e1492ef}\label{e2ees_8h_a72627fa90ca017b9a58e32122e1492ef} 
-typedef struct crypto\+\_\+se\+\_\+param\+\_\+t {\bfseries crypto\+\_\+se\+\_\+param\+\_\+t}
-\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm parameters. \end{DoxyCompactList}\item 
-\Hypertarget{e2ees_8h_a4e32bf3a288f430cdca74c840b479f9e}\label{e2ees_8h_a4e32bf3a288f430cdca74c840b479f9e} 
-typedef struct crypto\+\_\+hash\+\_\+param\+\_\+t {\bfseries crypto\+\_\+hash\+\_\+param\+\_\+t}
-\begin{DoxyCompactList}\small\item\em Type definition of hash algorithm parameters. \end{DoxyCompactList}\item 
-\Hypertarget{e2ees_8h_a5680b1715e4077238b3c979284d1c8ba}\label{e2ees_8h_a5680b1715e4077238b3c979284d1c8ba} 
-typedef struct ds\+\_\+suite\+\_\+t {\bfseries ds\+\_\+suite\+\_\+t}
-\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm suite. \end{DoxyCompactList}\item 
-\Hypertarget{e2ees_8h_a7f99b84ece115e05e0f2385ecd9d35e4}\label{e2ees_8h_a7f99b84ece115e05e0f2385ecd9d35e4} 
-typedef struct kem\+\_\+suite\+\_\+t {\bfseries kem\+\_\+suite\+\_\+t}
-\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm suite. \end{DoxyCompactList}\item 
-\Hypertarget{e2ees_8h_ad12fee6d7f201a4525a795f1f56c3211}\label{e2ees_8h_ad12fee6d7f201a4525a795f1f56c3211} 
-typedef struct se\+\_\+suite\+\_\+t {\bfseries se\+\_\+suite\+\_\+t}
-\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm suite. \end{DoxyCompactList}\item 
-\Hypertarget{e2ees_8h_a929c38c678a77d7993ba05573aa44aba}\label{e2ees_8h_a929c38c678a77d7993ba05573aa44aba} 
-typedef struct hash\+\_\+suite\+\_\+t {\bfseries hash\+\_\+suite\+\_\+t}
-\begin{DoxyCompactList}\small\item\em Type definition of hash algorithm suite. \end{DoxyCompactList}\item 
-\Hypertarget{e2ees_8h_a764f131fe1cf3e866758cf3e45028de8}\label{e2ees_8h_a764f131fe1cf3e866758cf3e45028de8} 
-typedef struct cipher\+\_\+suite\+\_\+t {\bfseries cipher\+\_\+suite\+\_\+t}
-\begin{DoxyCompactList}\small\item\em Type definition of cipher suite. \end{DoxyCompactList}\item 
 \Hypertarget{e2ees_8h_ac08ac7e2b47eea66b717187e64aa8c3e}\label{e2ees_8h_ac08ac7e2b47eea66b717187e64aa8c3e} 
 typedef struct e2ees\+\_\+common\+\_\+handler\+\_\+t {\bfseries e2ees\+\_\+common\+\_\+handler\+\_\+t}
 \begin{DoxyCompactList}\small\item\em Type definition of common handler. \end{DoxyCompactList}\item 
@@ -344,13 +299,13 @@ typedef struct e2ees\+\_\+plugin\+\_\+t {\bfseries e2ees\+\_\+plugin\+\_\+t}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\hyperlink{structds__suite__t}{ds\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_a3b539d90daae8a9b65e6812aa3338e4b}{get\+\_\+ds\+\_\+suite}} (unsigned digital\+\_\+signature\+\_\+id)
-\begin{DoxyCompactList}\small\item\em Get digital signature suit by ID. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Get digital signature suite by ID. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{structkem__suite__t}{kem\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_a462243e4ae976b459ae16bd508245267}{get\+\_\+kem\+\_\+suite}} (unsigned kem\+\_\+id)
 \begin{DoxyCompactList}\small\item\em Get kem suite by ID. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{structse__suite__t}{se\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_a79f59b7d0c5be411361c55d0796a218f}{get\+\_\+se\+\_\+suite}} (unsigned symmetric\+\_\+encryption\+\_\+id)
 \begin{DoxyCompactList}\small\item\em Get symmetric encryption suite by ID. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{structhash__suite__t}{hash\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_aabcd2fc78c62a8cf7080d0da3c4521df}{get\+\_\+hash\+\_\+suite}} (unsigned hash\+\_\+id)
-\begin{DoxyCompactList}\small\item\em Get hash suite by ID. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structhf__suite__t}{hf\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_ab8b58451b117663875f59b8c173c0681}{get\+\_\+hf\+\_\+suite}} (unsigned hf\+\_\+id)
+\begin{DoxyCompactList}\small\item\em Get hash function suite by ID. \end{DoxyCompactList}\item 
 uint32\+\_\+t \mbox{\hyperlink{e2ees_8h_a10508002144034d1aeabaca872ca5589}{gen\+\_\+e2ees\+\_\+pack\+\_\+id\+\_\+raw}} (unsigned ver, unsigned ds, unsigned kem, unsigned se, unsigned hash)
 \begin{DoxyCompactList}\small\item\em Generate the E2\+EE Security pack ID raw number. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{structe2ees__pack__t}{e2ees\+\_\+pack\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{e2ees_8h_a3a25b0ef11a49a303ab7cf29ec6941a2}{get\+\_\+e2ees\+\_\+pack}} (uint32\+\_\+t e2ees\+\_\+pack\+\_\+id\+\_\+raw)
@@ -682,7 +637,7 @@ Generate the E2\+EE Security pack ID raw number.
 
 
 
-Get digital signature suit by ID. 
+Get digital signature suite by ID. 
 
 
 \begin{DoxyParams}{Parameters}
@@ -707,19 +662,19 @@ Get the E2\+EE Security pack by given e2ees\+\_\+pack\+\_\+id raw number.
 {\em e2ees\+\_\+pack\+\_\+id\+\_\+raw} & \\
 \hline
 \end{DoxyParams}
-\Hypertarget{e2ees_8h_aabcd2fc78c62a8cf7080d0da3c4521df}\index{e2ees.h@{e2ees.h}!get\_hash\_suite@{get\_hash\_suite}}
-\index{get\_hash\_suite@{get\_hash\_suite}!e2ees.h@{e2ees.h}}
-\doxysubsubsection{\texorpdfstring{get\_hash\_suite()}{get\_hash\_suite()}}
-{\footnotesize\ttfamily \label{e2ees_8h_aabcd2fc78c62a8cf7080d0da3c4521df} 
-\mbox{\hyperlink{structhash__suite__t}{hash\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} get\+\_\+hash\+\_\+suite (\begin{DoxyParamCaption}\item[{unsigned}]{hash\+\_\+id}{}\end{DoxyParamCaption})}
+\Hypertarget{e2ees_8h_ab8b58451b117663875f59b8c173c0681}\index{e2ees.h@{e2ees.h}!get\_hf\_suite@{get\_hf\_suite}}
+\index{get\_hf\_suite@{get\_hf\_suite}!e2ees.h@{e2ees.h}}
+\doxysubsubsection{\texorpdfstring{get\_hf\_suite()}{get\_hf\_suite()}}
+{\footnotesize\ttfamily \label{e2ees_8h_ab8b58451b117663875f59b8c173c0681} 
+\mbox{\hyperlink{structhf__suite__t}{hf\+\_\+suite\+\_\+t}} \texorpdfstring{$\ast$}{*} get\+\_\+hf\+\_\+suite (\begin{DoxyParamCaption}\item[{unsigned}]{hf\+\_\+id}{}\end{DoxyParamCaption})}
 
 
 
-Get hash suite by ID. 
+Get hash function suite by ID. 
 
 
 \begin{DoxyParams}{Parameters}
-{\em hash\+\_\+id} & \\
+{\em hf\+\_\+id} & \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}

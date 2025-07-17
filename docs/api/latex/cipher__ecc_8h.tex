@@ -1,0 +1,50 @@
+\doxysection{include/e2ees/cipher\+\_\+ecc.h File Reference}
+\hypertarget{cipher__ecc_8h}{}\label{cipher__ecc_8h}\index{include/e2ees/cipher\_ecc.h@{include/e2ees/cipher\_ecc.h}}
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include "{}e2ees/e2ees.\+h"{}}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{cipher__ecc_8h_af267d8aed138e3cdf5cc4b635ab6fd12}{CURVE25519\+\_\+\+KEY\+\_\+\+LENGTH}}~32
+\item 
+\#define \mbox{\hyperlink{cipher__ecc_8h_a5a2bb125ad5cf2351de9cb070d78bcc6}{CURVE\+\_\+\+SIGNATURE\+\_\+\+LENGTH}}~64
+\item 
+\#define \mbox{\hyperlink{cipher__ecc_8h_a8a2b042788dd7df27281676080f9d6cc}{CURVE25519\+\_\+\+RANDOM\+\_\+\+LENGTH}}~\mbox{\hyperlink{cipher__ecc_8h_af267d8aed138e3cdf5cc4b635ab6fd12}{CURVE25519\+\_\+\+KEY\+\_\+\+LENGTH}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Copyright © 2021 Academia Sinica. All Rights Reserved.
+
+This file is part of E2\+EE Security.
+
+This program is free software\+: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+E2\+EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with E2\+EE Security. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{cipher__ecc_8h_af267d8aed138e3cdf5cc4b635ab6fd12}\index{cipher\_ecc.h@{cipher\_ecc.h}!CURVE25519\_KEY\_LENGTH@{CURVE25519\_KEY\_LENGTH}}
+\index{CURVE25519\_KEY\_LENGTH@{CURVE25519\_KEY\_LENGTH}!cipher\_ecc.h@{cipher\_ecc.h}}
+\doxysubsubsection{\texorpdfstring{CURVE25519\_KEY\_LENGTH}{CURVE25519\_KEY\_LENGTH}}
+{\footnotesize\ttfamily \label{cipher__ecc_8h_af267d8aed138e3cdf5cc4b635ab6fd12} 
+\#define CURVE25519\+\_\+\+KEY\+\_\+\+LENGTH~32}
+
+length of a public or private Curve25519 key \Hypertarget{cipher__ecc_8h_a8a2b042788dd7df27281676080f9d6cc}\index{cipher\_ecc.h@{cipher\_ecc.h}!CURVE25519\_RANDOM\_LENGTH@{CURVE25519\_RANDOM\_LENGTH}}
+\index{CURVE25519\_RANDOM\_LENGTH@{CURVE25519\_RANDOM\_LENGTH}!cipher\_ecc.h@{cipher\_ecc.h}}
+\doxysubsubsection{\texorpdfstring{CURVE25519\_RANDOM\_LENGTH}{CURVE25519\_RANDOM\_LENGTH}}
+{\footnotesize\ttfamily \label{cipher__ecc_8h_a8a2b042788dd7df27281676080f9d6cc} 
+\#define CURVE25519\+\_\+\+RANDOM\+\_\+\+LENGTH~\mbox{\hyperlink{cipher__ecc_8h_af267d8aed138e3cdf5cc4b635ab6fd12}{CURVE25519\+\_\+\+KEY\+\_\+\+LENGTH}}}
+
+amount of random data required to create a Curve25519 keypair \Hypertarget{cipher__ecc_8h_a5a2bb125ad5cf2351de9cb070d78bcc6}\index{cipher\_ecc.h@{cipher\_ecc.h}!CURVE\_SIGNATURE\_LENGTH@{CURVE\_SIGNATURE\_LENGTH}}
+\index{CURVE\_SIGNATURE\_LENGTH@{CURVE\_SIGNATURE\_LENGTH}!cipher\_ecc.h@{cipher\_ecc.h}}
+\doxysubsubsection{\texorpdfstring{CURVE\_SIGNATURE\_LENGTH}{CURVE\_SIGNATURE\_LENGTH}}
+{\footnotesize\ttfamily \label{cipher__ecc_8h_a5a2bb125ad5cf2351de9cb070d78bcc6} 
+\#define CURVE\+\_\+\+SIGNATURE\+\_\+\+LENGTH~64}
+
+length of a Curve25519 signature 

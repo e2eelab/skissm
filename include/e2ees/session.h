@@ -28,6 +28,9 @@ extern "C" {
 
 #include "e2ees/e2ees.h"
 
+/**
+ * @brief Type definition of session suite.
+ */
 typedef struct session_suite_t {
     /**
      * @brief Create a new outbound session.

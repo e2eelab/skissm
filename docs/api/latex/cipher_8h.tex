@@ -2,26 +2,59 @@
 \hypertarget{cipher_8h}{}\label{cipher_8h}\index{include/e2ees/cipher.h@{include/e2ees/cipher.h}}
 {\ttfamily \#include $<$stdint.\+h$>$}\newline
 {\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
 {\ttfamily \#include "{}e2ees/e2ees.\+h"{}}\newline
-\doxysubsubsection*{Macros}
+\doxysubsubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-\#define \mbox{\hyperlink{cipher_8h_a124359a86abbd0fb65fb6aa6b4ffeee9}{KDF\+\_\+\+INFO\+\_\+\+ROOT}}~"{}ROOT"{}
-\item 
-\Hypertarget{cipher_8h_ae4a3b22acf68e26f25cb5edcaad0945e}\label{cipher_8h_ae4a3b22acf68e26f25cb5edcaad0945e} 
-\#define {\bfseries KDF\+\_\+\+INFO\+\_\+\+RATCHET}~"{}RATCHET"{}
-\end{DoxyCompactItemize}
-\doxysubsubsection*{Functions}
+struct \mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcrypto__se__param__t}{crypto\+\_\+se\+\_\+param\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcrypto__hf__param__t}{crypto\+\_\+hf\+\_\+param\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of hash function parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structds__suite__t}{ds\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structkem__suite__t}{kem\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structse__suite__t}{se\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structhf__suite__t}{hf\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of hash function suite. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structcipher__suite__t}{cipher\+\_\+suite\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em Type definition of cipher suite. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-size\+\_\+t \mbox{\hyperlink{cipher_8h_ad449cbcd6449c8cff0b8de22bcc9baa0}{aes256\+\_\+gcm\+\_\+ciphertext\+\_\+data\+\_\+len}} (size\+\_\+t plaintext\+\_\+data\+\_\+length)
-\begin{DoxyCompactList}\small\item\em Calculate ciphertext data len for AES GCM. \end{DoxyCompactList}\item 
-size\+\_\+t \mbox{\hyperlink{cipher_8h_a0c9d322f09b8b9e997838fee395a09a6}{aes256\+\_\+gcm\+\_\+plaintext\+\_\+data\+\_\+len}} (size\+\_\+t ciphertext\+\_\+data\+\_\+len)
-\begin{DoxyCompactList}\small\item\em Calculate plaintext data len for AES GCM. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{cipher_8h_a1bff7c10814e8a777dd1a106f436406a}{aes256\+\_\+gcm\+\_\+encrypt}} (const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ad, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}aes\+\_\+key, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}ciphertext\+\_\+data, size\+\_\+t \texorpdfstring{$\ast$}{*}ciphertext\+\_\+data\+\_\+len)
-\begin{DoxyCompactList}\small\item\em Encrypt plaintext with AES GCM. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{cipher_8h_ade62c4239668838b57e54a5169028bdd}{aes256\+\_\+gcm\+\_\+decrypt}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}decrypted\+\_\+data\+\_\+out, size\+\_\+t \texorpdfstring{$\ast$}{*}decrypted\+\_\+data\+\_\+len\+\_\+out, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ad, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}aes\+\_\+key, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}ciphertext\+\_\+data, size\+\_\+t ciphertext\+\_\+data\+\_\+len)
-\begin{DoxyCompactList}\small\item\em Decrypt a ciphertext with AES GCM. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\Hypertarget{cipher_8h_a3a5946bb59ef37e260551ccd156dda5e}\label{cipher_8h_a3a5946bb59ef37e260551ccd156dda5e} 
+typedef struct crypto\+\_\+ds\+\_\+param\+\_\+t {\bfseries crypto\+\_\+ds\+\_\+param\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm parameters. \end{DoxyCompactList}\item 
+\Hypertarget{cipher_8h_ae20eb84b8db760dff90fb80506043872}\label{cipher_8h_ae20eb84b8db760dff90fb80506043872} 
+typedef struct crypto\+\_\+kem\+\_\+param\+\_\+t {\bfseries crypto\+\_\+kem\+\_\+param\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm parameters. \end{DoxyCompactList}\item 
+\Hypertarget{cipher_8h_a72627fa90ca017b9a58e32122e1492ef}\label{cipher_8h_a72627fa90ca017b9a58e32122e1492ef} 
+typedef struct crypto\+\_\+se\+\_\+param\+\_\+t {\bfseries crypto\+\_\+se\+\_\+param\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm parameters. \end{DoxyCompactList}\item 
+\Hypertarget{cipher_8h_a1d059ddbbd7878dbf7dd749a9321444c}\label{cipher_8h_a1d059ddbbd7878dbf7dd749a9321444c} 
+typedef struct crypto\+\_\+hf\+\_\+param\+\_\+t {\bfseries crypto\+\_\+hf\+\_\+param\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of hash function parameters. \end{DoxyCompactList}\item 
+\Hypertarget{cipher_8h_a5680b1715e4077238b3c979284d1c8ba}\label{cipher_8h_a5680b1715e4077238b3c979284d1c8ba} 
+typedef struct ds\+\_\+suite\+\_\+t {\bfseries ds\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of digital signature algorithm suite. \end{DoxyCompactList}\item 
+\Hypertarget{cipher_8h_a7f99b84ece115e05e0f2385ecd9d35e4}\label{cipher_8h_a7f99b84ece115e05e0f2385ecd9d35e4} 
+typedef struct kem\+\_\+suite\+\_\+t {\bfseries kem\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of kem algorithm suite. \end{DoxyCompactList}\item 
+\Hypertarget{cipher_8h_ad12fee6d7f201a4525a795f1f56c3211}\label{cipher_8h_ad12fee6d7f201a4525a795f1f56c3211} 
+typedef struct se\+\_\+suite\+\_\+t {\bfseries se\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of symmetric encryption algorithm suite. \end{DoxyCompactList}\item 
+\Hypertarget{cipher_8h_a2651d1354df4e1928f04ae416f74fbef}\label{cipher_8h_a2651d1354df4e1928f04ae416f74fbef} 
+typedef struct hf\+\_\+suite\+\_\+t {\bfseries hf\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of hash function suite. \end{DoxyCompactList}\item 
+\Hypertarget{cipher_8h_a764f131fe1cf3e866758cf3e45028de8}\label{cipher_8h_a764f131fe1cf3e866758cf3e45028de8} 
+typedef struct cipher\+\_\+suite\+\_\+t {\bfseries cipher\+\_\+suite\+\_\+t}
+\begin{DoxyCompactList}\small\item\em Type definition of cipher suite. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -34,106 +67,3 @@ This program is free software\+: you can redistribute it and/or modify it under 
 E2\+EE Security is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with E2\+EE Security. If not, see \href{http://www.gnu.org/licenses/}{\texttt{ http\+://www.\+gnu.\+org/licenses/}}. 
-
-\doxysubsection{Macro Definition Documentation}
-\Hypertarget{cipher_8h_a124359a86abbd0fb65fb6aa6b4ffeee9}\index{cipher.h@{cipher.h}!KDF\_INFO\_ROOT@{KDF\_INFO\_ROOT}}
-\index{KDF\_INFO\_ROOT@{KDF\_INFO\_ROOT}!cipher.h@{cipher.h}}
-\doxysubsubsection{\texorpdfstring{KDF\_INFO\_ROOT}{KDF\_INFO\_ROOT}}
-{\footnotesize\ttfamily \label{cipher_8h_a124359a86abbd0fb65fb6aa6b4ffeee9} 
-\#define KDF\+\_\+\+INFO\+\_\+\+ROOT~"{}ROOT"{}}
-
-The context strings that are used by the HKDF for deriving next root key and chain key. 
-
-\doxysubsection{Function Documentation}
-\Hypertarget{cipher_8h_ad449cbcd6449c8cff0b8de22bcc9baa0}\index{cipher.h@{cipher.h}!aes256\_gcm\_ciphertext\_data\_len@{aes256\_gcm\_ciphertext\_data\_len}}
-\index{aes256\_gcm\_ciphertext\_data\_len@{aes256\_gcm\_ciphertext\_data\_len}!cipher.h@{cipher.h}}
-\doxysubsubsection{\texorpdfstring{aes256\_gcm\_ciphertext\_data\_len()}{aes256\_gcm\_ciphertext\_data\_len()}}
-{\footnotesize\ttfamily \label{cipher_8h_ad449cbcd6449c8cff0b8de22bcc9baa0} 
-size\+\_\+t aes256\+\_\+gcm\+\_\+ciphertext\+\_\+data\+\_\+len (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+length}{}\end{DoxyParamCaption})}
-
-
-
-Calculate ciphertext data len for AES GCM. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em plaintext\+\_\+data\+\_\+length} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-size\+\_\+t length of ciphertext data 
-\end{DoxyReturn}
-\Hypertarget{cipher_8h_ade62c4239668838b57e54a5169028bdd}\index{cipher.h@{cipher.h}!aes256\_gcm\_decrypt@{aes256\_gcm\_decrypt}}
-\index{aes256\_gcm\_decrypt@{aes256\_gcm\_decrypt}!cipher.h@{cipher.h}}
-\doxysubsubsection{\texorpdfstring{aes256\_gcm\_decrypt()}{aes256\_gcm\_decrypt()}}
-{\footnotesize\ttfamily \label{cipher_8h_ade62c4239668838b57e54a5169028bdd} 
-int aes256\+\_\+gcm\+\_\+decrypt (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{decrypted\+\_\+data\+\_\+out}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{decrypted\+\_\+data\+\_\+len\+\_\+out}{, }\item[{const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{ad}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{aes\+\_\+key}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{ciphertext\+\_\+data}{, }\item[{size\+\_\+t}]{ciphertext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
-
-
-
-Decrypt a ciphertext with AES GCM. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em decrypted\+\_\+data\+\_\+out} & \\
-\hline
-{\em decrypted\+\_\+data\+\_\+len\+\_\+out} & \\
-\hline
-{\em ad} & \\
-\hline
-{\em aes\+\_\+key} & \\
-\hline
-{\em ciphertext\+\_\+data} & \\
-\hline
-{\em ciphertext\+\_\+data\+\_\+len} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-The length of plaintext\+\_\+data or -\/1 for decryption error 
-\end{DoxyReturn}
-\Hypertarget{cipher_8h_a1bff7c10814e8a777dd1a106f436406a}\index{cipher.h@{cipher.h}!aes256\_gcm\_encrypt@{aes256\_gcm\_encrypt}}
-\index{aes256\_gcm\_encrypt@{aes256\_gcm\_encrypt}!cipher.h@{cipher.h}}
-\doxysubsubsection{\texorpdfstring{aes256\_gcm\_encrypt()}{aes256\_gcm\_encrypt()}}
-{\footnotesize\ttfamily \label{cipher_8h_a1bff7c10814e8a777dd1a106f436406a} 
-int aes256\+\_\+gcm\+\_\+encrypt (\begin{DoxyParamCaption}\item[{const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}}]{ad}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{aes\+\_\+key}{, }\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{plaintext\+\_\+data}{, }\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+len}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{ciphertext\+\_\+data}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{ciphertext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
-
-
-
-Encrypt plaintext with AES GCM. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em ad} & \\
-\hline
-{\em aes\+\_\+key} & \\
-\hline
-{\em plaintext\+\_\+data} & \\
-\hline
-{\em plaintext\+\_\+data\+\_\+len} & \\
-\hline
-{\em ciphertext\+\_\+data} & \\
-\hline
-{\em ciphertext\+\_\+data\+\_\+len} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-0 if success 
-\end{DoxyReturn}
-\Hypertarget{cipher_8h_a0c9d322f09b8b9e997838fee395a09a6}\index{cipher.h@{cipher.h}!aes256\_gcm\_plaintext\_data\_len@{aes256\_gcm\_plaintext\_data\_len}}
-\index{aes256\_gcm\_plaintext\_data\_len@{aes256\_gcm\_plaintext\_data\_len}!cipher.h@{cipher.h}}
-\doxysubsubsection{\texorpdfstring{aes256\_gcm\_plaintext\_data\_len()}{aes256\_gcm\_plaintext\_data\_len()}}
-{\footnotesize\ttfamily \label{cipher_8h_a0c9d322f09b8b9e997838fee395a09a6} 
-size\+\_\+t aes256\+\_\+gcm\+\_\+plaintext\+\_\+data\+\_\+len (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{ciphertext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
-
-
-
-Calculate plaintext data len for AES GCM. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em ciphertext\+\_\+data\+\_\+len} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-size\+\_\+t length of plaintext data 
-\end{DoxyReturn}

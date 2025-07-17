@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.9.1</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.9.2</span>
    </div>
    <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
@@ -172,8 +172,8 @@ $(function(){ initResizable(false); });
 <code>#include &quot;e2ees/SupplyOpksResponse.pb-c.h&quot;</code><br />
 <code>#include &quot;e2ees/UserDevicesBundle.pb-c.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="cipher_8h_source.html">e2ees/cipher.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="log__code_8h_source.html">e2ees/log_code.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="session_8h_source.html">e2ees/session.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="log__code_8h_source.html">e2ees/log_code.h</a>&quot;</code><br />
 </div>
 <p><a href="e2ees_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -184,33 +184,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structe2ees__pack__t.html">e2ees_pack_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of E2EE Security pack. An <a class="el" href="structe2ees__pack__t.html" title="Type definition of E2EE Security pack. An e2ees_pack_t consists of cipher suite and session suite.">e2ees_pack_t</a> consists of cipher suite and session suite.  <a href="structe2ees__pack__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrypto__ds__param__t.html">crypto_ds_param_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of digital signature algorithm parameters.  <a href="structcrypto__ds__param__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrypto__kem__param__t.html">crypto_kem_param_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of kem algorithm parameters.  <a href="structcrypto__kem__param__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrypto__se__param__t.html">crypto_se_param_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of symmetric encryption algorithm parameters.  <a href="structcrypto__se__param__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcrypto__hash__param__t.html">crypto_hash_param_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of hash algorithm parameters.  <a href="structcrypto__hash__param__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structds__suite__t.html">ds_suite_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of digital signature algorithm suite.  <a href="structds__suite__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structkem__suite__t.html">kem_suite_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of kem algorithm suite.  <a href="structkem__suite__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structse__suite__t.html">se_suite_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of symmetric encryption algorithm suite.  <a href="structse__suite__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhash__suite__t.html">hash_suite_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of hash algorithm suite.  <a href="structhash__suite__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcipher__suite__t.html">cipher_suite_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of cipher suite.  <a href="structcipher__suite__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structe2ees__common__handler__t.html">e2ees_common_handler_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of common handler.  <a href="structe2ees__common__handler__t.html#details">More...</a><br /></td></tr>
@@ -414,42 +387,6 @@ typedef struct e2ees_pack_id_t&#160;</td><td class="memItemRight" valign="bottom
 typedef struct e2ees_pack_t&#160;</td><td class="memItemRight" valign="bottom"><b>e2ees_pack_t</b></td></tr>
 <tr class="memdesc:ab337bf7181becbca083426814a1d3ad0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of E2EE Security pack. An <a class="el" href="structe2ees__pack__t.html" title="Type definition of E2EE Security pack. An e2ees_pack_t consists of cipher suite and session suite.">e2ees_pack_t</a> consists of cipher suite and session suite. <br /></td></tr>
 <tr class="separator:ab337bf7181becbca083426814a1d3ad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a5946bb59ef37e260551ccd156dda5e" id="r_a3a5946bb59ef37e260551ccd156dda5e"><td class="memItemLeft" align="right" valign="top"><a id="a3a5946bb59ef37e260551ccd156dda5e" name="a3a5946bb59ef37e260551ccd156dda5e"></a>
-typedef struct crypto_ds_param_t&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_ds_param_t</b></td></tr>
-<tr class="memdesc:a3a5946bb59ef37e260551ccd156dda5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of digital signature algorithm parameters. <br /></td></tr>
-<tr class="separator:a3a5946bb59ef37e260551ccd156dda5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae20eb84b8db760dff90fb80506043872" id="r_ae20eb84b8db760dff90fb80506043872"><td class="memItemLeft" align="right" valign="top"><a id="ae20eb84b8db760dff90fb80506043872" name="ae20eb84b8db760dff90fb80506043872"></a>
-typedef struct crypto_kem_param_t&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_kem_param_t</b></td></tr>
-<tr class="memdesc:ae20eb84b8db760dff90fb80506043872"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of kem algorithm parameters. <br /></td></tr>
-<tr class="separator:ae20eb84b8db760dff90fb80506043872"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72627fa90ca017b9a58e32122e1492ef" id="r_a72627fa90ca017b9a58e32122e1492ef"><td class="memItemLeft" align="right" valign="top"><a id="a72627fa90ca017b9a58e32122e1492ef" name="a72627fa90ca017b9a58e32122e1492ef"></a>
-typedef struct crypto_se_param_t&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_se_param_t</b></td></tr>
-<tr class="memdesc:a72627fa90ca017b9a58e32122e1492ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of symmetric encryption algorithm parameters. <br /></td></tr>
-<tr class="separator:a72627fa90ca017b9a58e32122e1492ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e32bf3a288f430cdca74c840b479f9e" id="r_a4e32bf3a288f430cdca74c840b479f9e"><td class="memItemLeft" align="right" valign="top"><a id="a4e32bf3a288f430cdca74c840b479f9e" name="a4e32bf3a288f430cdca74c840b479f9e"></a>
-typedef struct crypto_hash_param_t&#160;</td><td class="memItemRight" valign="bottom"><b>crypto_hash_param_t</b></td></tr>
-<tr class="memdesc:a4e32bf3a288f430cdca74c840b479f9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of hash algorithm parameters. <br /></td></tr>
-<tr class="separator:a4e32bf3a288f430cdca74c840b479f9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5680b1715e4077238b3c979284d1c8ba" id="r_a5680b1715e4077238b3c979284d1c8ba"><td class="memItemLeft" align="right" valign="top"><a id="a5680b1715e4077238b3c979284d1c8ba" name="a5680b1715e4077238b3c979284d1c8ba"></a>
-typedef struct ds_suite_t&#160;</td><td class="memItemRight" valign="bottom"><b>ds_suite_t</b></td></tr>
-<tr class="memdesc:a5680b1715e4077238b3c979284d1c8ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of digital signature algorithm suite. <br /></td></tr>
-<tr class="separator:a5680b1715e4077238b3c979284d1c8ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f99b84ece115e05e0f2385ecd9d35e4" id="r_a7f99b84ece115e05e0f2385ecd9d35e4"><td class="memItemLeft" align="right" valign="top"><a id="a7f99b84ece115e05e0f2385ecd9d35e4" name="a7f99b84ece115e05e0f2385ecd9d35e4"></a>
-typedef struct kem_suite_t&#160;</td><td class="memItemRight" valign="bottom"><b>kem_suite_t</b></td></tr>
-<tr class="memdesc:a7f99b84ece115e05e0f2385ecd9d35e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of kem algorithm suite. <br /></td></tr>
-<tr class="separator:a7f99b84ece115e05e0f2385ecd9d35e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad12fee6d7f201a4525a795f1f56c3211" id="r_ad12fee6d7f201a4525a795f1f56c3211"><td class="memItemLeft" align="right" valign="top"><a id="ad12fee6d7f201a4525a795f1f56c3211" name="ad12fee6d7f201a4525a795f1f56c3211"></a>
-typedef struct se_suite_t&#160;</td><td class="memItemRight" valign="bottom"><b>se_suite_t</b></td></tr>
-<tr class="memdesc:ad12fee6d7f201a4525a795f1f56c3211"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of symmetric encryption algorithm suite. <br /></td></tr>
-<tr class="separator:ad12fee6d7f201a4525a795f1f56c3211"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a929c38c678a77d7993ba05573aa44aba" id="r_a929c38c678a77d7993ba05573aa44aba"><td class="memItemLeft" align="right" valign="top"><a id="a929c38c678a77d7993ba05573aa44aba" name="a929c38c678a77d7993ba05573aa44aba"></a>
-typedef struct hash_suite_t&#160;</td><td class="memItemRight" valign="bottom"><b>hash_suite_t</b></td></tr>
-<tr class="memdesc:a929c38c678a77d7993ba05573aa44aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of hash algorithm suite. <br /></td></tr>
-<tr class="separator:a929c38c678a77d7993ba05573aa44aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a764f131fe1cf3e866758cf3e45028de8" id="r_a764f131fe1cf3e866758cf3e45028de8"><td class="memItemLeft" align="right" valign="top"><a id="a764f131fe1cf3e866758cf3e45028de8" name="a764f131fe1cf3e866758cf3e45028de8"></a>
-typedef struct cipher_suite_t&#160;</td><td class="memItemRight" valign="bottom"><b>cipher_suite_t</b></td></tr>
-<tr class="memdesc:a764f131fe1cf3e866758cf3e45028de8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of cipher suite. <br /></td></tr>
-<tr class="separator:a764f131fe1cf3e866758cf3e45028de8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac08ac7e2b47eea66b717187e64aa8c3e" id="r_ac08ac7e2b47eea66b717187e64aa8c3e"><td class="memItemLeft" align="right" valign="top"><a id="ac08ac7e2b47eea66b717187e64aa8c3e" name="ac08ac7e2b47eea66b717187e64aa8c3e"></a>
 typedef struct e2ees_common_handler_t&#160;</td><td class="memItemRight" valign="bottom"><b>e2ees_common_handler_t</b></td></tr>
 <tr class="memdesc:ac08ac7e2b47eea66b717187e64aa8c3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition of common handler. <br /></td></tr>
@@ -473,7 +410,7 @@ typedef struct e2ees_plugin_t&#160;</td><td class="memItemRight" valign="bottom"
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a3b539d90daae8a9b65e6812aa3338e4b" id="r_a3b539d90daae8a9b65e6812aa3338e4b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structds__suite__t.html">ds_suite_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3b539d90daae8a9b65e6812aa3338e4b">get_ds_suite</a> (unsigned digital_signature_id)</td></tr>
-<tr class="memdesc:a3b539d90daae8a9b65e6812aa3338e4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get digital signature suit by ID.  <br /></td></tr>
+<tr class="memdesc:a3b539d90daae8a9b65e6812aa3338e4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get digital signature suite by ID.  <br /></td></tr>
 <tr class="separator:a3b539d90daae8a9b65e6812aa3338e4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a462243e4ae976b459ae16bd508245267" id="r_a462243e4ae976b459ae16bd508245267"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structkem__suite__t.html">kem_suite_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a462243e4ae976b459ae16bd508245267">get_kem_suite</a> (unsigned kem_id)</td></tr>
 <tr class="memdesc:a462243e4ae976b459ae16bd508245267"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get kem suite by ID.  <br /></td></tr>
@@ -481,9 +418,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a79f59b7d0c5be411361c55d0796a218f" id="r_a79f59b7d0c5be411361c55d0796a218f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structse__suite__t.html">se_suite_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a79f59b7d0c5be411361c55d0796a218f">get_se_suite</a> (unsigned symmetric_encryption_id)</td></tr>
 <tr class="memdesc:a79f59b7d0c5be411361c55d0796a218f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get symmetric encryption suite by ID.  <br /></td></tr>
 <tr class="separator:a79f59b7d0c5be411361c55d0796a218f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aabcd2fc78c62a8cf7080d0da3c4521df" id="r_aabcd2fc78c62a8cf7080d0da3c4521df"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structhash__suite__t.html">hash_suite_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aabcd2fc78c62a8cf7080d0da3c4521df">get_hash_suite</a> (unsigned hash_id)</td></tr>
-<tr class="memdesc:aabcd2fc78c62a8cf7080d0da3c4521df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get hash suite by ID.  <br /></td></tr>
-<tr class="separator:aabcd2fc78c62a8cf7080d0da3c4521df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8b58451b117663875f59b8c173c0681" id="r_ab8b58451b117663875f59b8c173c0681"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structhf__suite__t.html">hf_suite_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab8b58451b117663875f59b8c173c0681">get_hf_suite</a> (unsigned hf_id)</td></tr>
+<tr class="memdesc:ab8b58451b117663875f59b8c173c0681"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get hash function suite by ID.  <br /></td></tr>
+<tr class="separator:ab8b58451b117663875f59b8c173c0681"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10508002144034d1aeabaca872ca5589" id="r_a10508002144034d1aeabaca872ca5589"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a10508002144034d1aeabaca872ca5589">gen_e2ees_pack_id_raw</a> (unsigned ver, unsigned ds, unsigned kem, unsigned se, unsigned hash)</td></tr>
 <tr class="memdesc:a10508002144034d1aeabaca872ca5589"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate the E2EE Security pack ID raw number.  <br /></td></tr>
 <tr class="separator:a10508002144034d1aeabaca872ca5589"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1106,7 +1043,7 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>e2ees_pack_id_to_
       </table>
 </div><div class="memdoc">
 
-<p>Get digital signature suit by ID. </p>
+<p>Get digital signature suite by ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">digital_signature_id</td><td></td></tr>
@@ -1142,25 +1079,25 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>e2ees_pack_id_to_
 
 </div>
 </div>
-<a id="aabcd2fc78c62a8cf7080d0da3c4521df" name="aabcd2fc78c62a8cf7080d0da3c4521df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aabcd2fc78c62a8cf7080d0da3c4521df">&#9670;&#160;</a></span>get_hash_suite()</h2>
+<a id="ab8b58451b117663875f59b8c173c0681" name="ab8b58451b117663875f59b8c173c0681"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8b58451b117663875f59b8c173c0681">&#9670;&#160;</a></span>get_hf_suite()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structhash__suite__t.html">hash_suite_t</a> * get_hash_suite </td>
+          <td class="memname"><a class="el" href="structhf__suite__t.html">hf_suite_t</a> * get_hf_suite </td>
           <td>(</td>
-          <td class="paramtype">unsigned</td>          <td class="paramname"><span class="paramname"><em>hash_id</em></span></td><td>)</td>
+          <td class="paramtype">unsigned</td>          <td class="paramname"><span class="paramname"><em>hf_id</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get hash suite by ID. </p>
+<p>Get hash function suite by ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">hash_id</td><td></td></tr>
+    <tr><td class="paramname">hf_id</td><td></td></tr>
   </table>
   </dd>
 </dl>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>E2EES: hash_suite_t Struct Reference</title>
+<title>E2EES: hf_suite_t Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.9.1</span>
+   <div id="projectname">E2EES<span id="projectnumber">&#160;v1.9.2</span>
    </div>
    <div id="projectbrief">E2EES implements the Signal protocol and aims to make it easy to build versatile end-to-end messaging applications.</div>
   </td>
@@ -87,59 +87,59 @@ $(function(){ initResizable(false); });
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structhash__suite__t-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">hash_suite_t Struct Reference</div></div>
+<a href="structhf__suite__t-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">hf_suite_t Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>Type definition of hash algorithm suite.  
+<p>Type definition of hash function suite.  
  <a href="#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="e2ees_8h_source.html">e2ees.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="cipher_8h_source.html">cipher.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ad03f8e1623c09090ed1760ee4d2c0d1f" id="r_ad03f8e1623c09090ed1760ee4d2c0d1f"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structcrypto__hash__param__t.html">crypto_hash_param_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad03f8e1623c09090ed1760ee4d2c0d1f">get_crypto_param</a> )(void)</td></tr>
-<tr class="memdesc:ad03f8e1623c09090ed1760ee4d2c0d1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the parameters of this hash suite.  <br /></td></tr>
-<tr class="separator:ad03f8e1623c09090ed1760ee4d2c0d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24a93c49162231ce34b5cb34c611b51b" id="r_a24a93c49162231ce34b5cb34c611b51b"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24a93c49162231ce34b5cb34c611b51b">hkdf</a> )(const uint8_t *input, size_t input_len, const uint8_t *salt, size_t salt_len, const uint8_t *info, size_t info_len, uint8_t *output, size_t output_len)</td></tr>
-<tr class="memdesc:a24a93c49162231ce34b5cb34c611b51b"><td class="mdescLeft">&#160;</td><td class="mdescRight">HMAC-based key derivation function.  <br /></td></tr>
-<tr class="separator:a24a93c49162231ce34b5cb34c611b51b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e7b75b9bd093d20599c3e276a18e0c7" id="r_a3e7b75b9bd093d20599c3e276a18e0c7"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e7b75b9bd093d20599c3e276a18e0c7">hmac</a> )(const uint8_t *key, size_t key_len, const uint8_t *input, size_t input_len, uint8_t *output)</td></tr>
-<tr class="memdesc:a3e7b75b9bd093d20599c3e276a18e0c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keyed-Hashing for message authentication.  <br /></td></tr>
-<tr class="separator:a3e7b75b9bd093d20599c3e276a18e0c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07b0734eaccf837ac46b0dd1d4cb1b22" id="r_a07b0734eaccf837ac46b0dd1d4cb1b22"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07b0734eaccf837ac46b0dd1d4cb1b22">hash</a> )(const uint8_t *msg, size_t msg_len, uint8_t *hash_out)</td></tr>
-<tr class="memdesc:a07b0734eaccf837ac46b0dd1d4cb1b22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hash function.  <br /></td></tr>
-<tr class="separator:a07b0734eaccf837ac46b0dd1d4cb1b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b0890a198c5a96920736ad2cc636cb4" id="r_a9b0890a198c5a96920736ad2cc636cb4"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structcrypto__hf__param__t.html">crypto_hf_param_t</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b0890a198c5a96920736ad2cc636cb4">get_crypto_param</a> )(void)</td></tr>
+<tr class="memdesc:a9b0890a198c5a96920736ad2cc636cb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the parameters of this hash function suite.  <br /></td></tr>
+<tr class="separator:a9b0890a198c5a96920736ad2cc636cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1812ed5d03687f4843cf34694f0f21a" id="r_ab1812ed5d03687f4843cf34694f0f21a"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1812ed5d03687f4843cf34694f0f21a">hkdf</a> )(const uint8_t *input, size_t input_len, const uint8_t *salt, size_t salt_len, const uint8_t *info, size_t info_len, uint8_t *output, size_t output_len)</td></tr>
+<tr class="memdesc:ab1812ed5d03687f4843cf34694f0f21a"><td class="mdescLeft">&#160;</td><td class="mdescRight">HMAC-based key derivation function.  <br /></td></tr>
+<tr class="separator:ab1812ed5d03687f4843cf34694f0f21a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af52f63df546cd7039660d8868e86e72f" id="r_af52f63df546cd7039660d8868e86e72f"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af52f63df546cd7039660d8868e86e72f">hmac</a> )(const uint8_t *key, size_t key_len, const uint8_t *input, size_t input_len, uint8_t *output)</td></tr>
+<tr class="memdesc:af52f63df546cd7039660d8868e86e72f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keyed-Hashing for message authentication.  <br /></td></tr>
+<tr class="separator:af52f63df546cd7039660d8868e86e72f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fc5075ffd8b9f7e40550598860a75ab" id="r_a1fc5075ffd8b9f7e40550598860a75ab"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fc5075ffd8b9f7e40550598860a75ab">hash</a> )(const uint8_t *msg, size_t msg_len, uint8_t *hash_out)</td></tr>
+<tr class="memdesc:a1fc5075ffd8b9f7e40550598860a75ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hash function.  <br /></td></tr>
+<tr class="separator:a1fc5075ffd8b9f7e40550598860a75ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Type definition of hash algorithm suite. </p>
+<div class="textblock"><p>Type definition of hash function suite. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="ad03f8e1623c09090ed1760ee4d2c0d1f" name="ad03f8e1623c09090ed1760ee4d2c0d1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad03f8e1623c09090ed1760ee4d2c0d1f">&#9670;&#160;</a></span>get_crypto_param</h2>
+<a id="a9b0890a198c5a96920736ad2cc636cb4" name="a9b0890a198c5a96920736ad2cc636cb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b0890a198c5a96920736ad2cc636cb4">&#9670;&#160;</a></span>get_crypto_param</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structcrypto__hash__param__t.html">crypto_hash_param_t</a>(* hash_suite_t::get_crypto_param) (void)</td>
+          <td class="memname">struct <a class="el" href="structcrypto__hf__param__t.html">crypto_hf_param_t</a>(* hf_suite_t::get_crypto_param) (void)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the parameters of this hash suite. </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structcrypto__hash__param__t.html" title="Type definition of hash algorithm parameters.">crypto_hash_param_t</a> </dd></dl>
+<p>Get the parameters of this hash function suite. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structcrypto__hf__param__t.html" title="Type definition of hash function parameters.">crypto_hf_param_t</a> </dd></dl>
 
 </div>
 </div>
-<a id="a07b0734eaccf837ac46b0dd1d4cb1b22" name="a07b0734eaccf837ac46b0dd1d4cb1b22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07b0734eaccf837ac46b0dd1d4cb1b22">&#9670;&#160;</a></span>hash</h2>
+<a id="a1fc5075ffd8b9f7e40550598860a75ab" name="a1fc5075ffd8b9f7e40550598860a75ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fc5075ffd8b9f7e40550598860a75ab">&#9670;&#160;</a></span>hash</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* hash_suite_t::hash) (const uint8_t *msg, size_t msg_len, uint8_t *hash_out)</td>
+          <td class="memname">int(* hf_suite_t::hash) (const uint8_t *msg, size_t msg_len, uint8_t *hash_out)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -157,14 +157,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a24a93c49162231ce34b5cb34c611b51b" name="a24a93c49162231ce34b5cb34c611b51b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24a93c49162231ce34b5cb34c611b51b">&#9670;&#160;</a></span>hkdf</h2>
+<a id="ab1812ed5d03687f4843cf34694f0f21a" name="ab1812ed5d03687f4843cf34694f0f21a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1812ed5d03687f4843cf34694f0f21a">&#9670;&#160;</a></span>hkdf</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* hash_suite_t::hkdf) (const uint8_t *input, size_t input_len, const uint8_t *salt, size_t salt_len, const uint8_t *info, size_t info_len, uint8_t *output, size_t output_len)</td>
+          <td class="memname">int(* hf_suite_t::hkdf) (const uint8_t *input, size_t input_len, const uint8_t *salt, size_t salt_len, const uint8_t *info, size_t info_len, uint8_t *output, size_t output_len)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -187,14 +187,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3e7b75b9bd093d20599c3e276a18e0c7" name="a3e7b75b9bd093d20599c3e276a18e0c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e7b75b9bd093d20599c3e276a18e0c7">&#9670;&#160;</a></span>hmac</h2>
+<a id="af52f63df546cd7039660d8868e86e72f" name="af52f63df546cd7039660d8868e86e72f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af52f63df546cd7039660d8868e86e72f">&#9670;&#160;</a></span>hmac</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int(* hash_suite_t::hmac) (const uint8_t *key, size_t key_len, const uint8_t *input, size_t input_len, uint8_t *output)</td>
+          <td class="memname">int(* hf_suite_t::hmac) (const uint8_t *key, size_t key_len, const uint8_t *input, size_t input_len, uint8_t *output)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -215,7 +215,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/e2ees/<a class="el" href="e2ees_8h_source.html">e2ees.h</a></li>
+<li>include/e2ees/<a class="el" href="cipher_8h_source.html">cipher.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

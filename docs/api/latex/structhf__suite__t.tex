@@ -1,0 +1,126 @@
+\doxysection{hf\+\_\+suite\+\_\+t Struct Reference}
+\hypertarget{structhf__suite__t}{}\label{structhf__suite__t}\index{hf\_suite\_t@{hf\_suite\_t}}
+
+
+Type definition of hash function suite.  
+
+
+
+
+{\ttfamily \#include $<$cipher.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcrypto__hf__param__t}{crypto\+\_\+hf\+\_\+param\+\_\+t}}(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structhf__suite__t_a9b0890a198c5a96920736ad2cc636cb4}{get\+\_\+crypto\+\_\+param}} )(void)
+\begin{DoxyCompactList}\small\item\em Get the parameters of this hash function suite. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structhf__suite__t_ab1812ed5d03687f4843cf34694f0f21a}{hkdf}} )(const uint8\+\_\+t \texorpdfstring{$\ast$}{*}input, size\+\_\+t input\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}salt, size\+\_\+t salt\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}info, size\+\_\+t info\+\_\+len, uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, size\+\_\+t output\+\_\+len)
+\begin{DoxyCompactList}\small\item\em HMAC-\/based key derivation function. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structhf__suite__t_af52f63df546cd7039660d8868e86e72f}{hmac}} )(const uint8\+\_\+t \texorpdfstring{$\ast$}{*}key, size\+\_\+t key\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}input, size\+\_\+t input\+\_\+len, uint8\+\_\+t \texorpdfstring{$\ast$}{*}output)
+\begin{DoxyCompactList}\small\item\em Keyed-\/\+Hashing for message authentication. \end{DoxyCompactList}\item 
+int(\texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structhf__suite__t_a1fc5075ffd8b9f7e40550598860a75ab}{hash}} )(const uint8\+\_\+t \texorpdfstring{$\ast$}{*}msg, size\+\_\+t msg\+\_\+len, uint8\+\_\+t \texorpdfstring{$\ast$}{*}hash\+\_\+out)
+\begin{DoxyCompactList}\small\item\em Hash function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Type definition of hash function suite. 
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structhf__suite__t_a9b0890a198c5a96920736ad2cc636cb4}\index{hf\_suite\_t@{hf\_suite\_t}!get\_crypto\_param@{get\_crypto\_param}}
+\index{get\_crypto\_param@{get\_crypto\_param}!hf\_suite\_t@{hf\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{get\_crypto\_param}{get\_crypto\_param}}
+{\footnotesize\ttfamily \label{structhf__suite__t_a9b0890a198c5a96920736ad2cc636cb4} 
+struct \mbox{\hyperlink{structcrypto__hf__param__t}{crypto\+\_\+hf\+\_\+param\+\_\+t}}(\texorpdfstring{$\ast$}{*} hf\+\_\+suite\+\_\+t\+::get\+\_\+crypto\+\_\+param) (void)}
+
+
+
+Get the parameters of this hash function suite. 
+
+\begin{DoxyReturn}{Returns}
+\doxylink{structcrypto__hf__param__t}{crypto\+\_\+hf\+\_\+param\+\_\+t} 
+\end{DoxyReturn}
+\Hypertarget{structhf__suite__t_a1fc5075ffd8b9f7e40550598860a75ab}\index{hf\_suite\_t@{hf\_suite\_t}!hash@{hash}}
+\index{hash@{hash}!hf\_suite\_t@{hf\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{hash}{hash}}
+{\footnotesize\ttfamily \label{structhf__suite__t_a1fc5075ffd8b9f7e40550598860a75ab} 
+int(\texorpdfstring{$\ast$}{*} hf\+\_\+suite\+\_\+t\+::hash) (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}msg, size\+\_\+t msg\+\_\+len, uint8\+\_\+t \texorpdfstring{$\ast$}{*}hash\+\_\+out)}
+
+
+
+Hash function. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \\
+\hline
+{\em msg\+\_\+len} & \\
+\hline
+{\em hash\+\_\+out} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{structhf__suite__t_ab1812ed5d03687f4843cf34694f0f21a}\index{hf\_suite\_t@{hf\_suite\_t}!hkdf@{hkdf}}
+\index{hkdf@{hkdf}!hf\_suite\_t@{hf\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{hkdf}{hkdf}}
+{\footnotesize\ttfamily \label{structhf__suite__t_ab1812ed5d03687f4843cf34694f0f21a} 
+int(\texorpdfstring{$\ast$}{*} hf\+\_\+suite\+\_\+t\+::hkdf) (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}input, size\+\_\+t input\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}salt, size\+\_\+t salt\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}info, size\+\_\+t info\+\_\+len, uint8\+\_\+t \texorpdfstring{$\ast$}{*}output, size\+\_\+t output\+\_\+len)}
+
+
+
+HMAC-\/based key derivation function. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & \\
+\hline
+{\em input\+\_\+len} & \\
+\hline
+{\em salt} & \\
+\hline
+{\em salt\+\_\+len} & \\
+\hline
+{\em info} & \\
+\hline
+{\em info\+\_\+len} & \\
+\hline
+{\em output} & \\
+\hline
+{\em output\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+\Hypertarget{structhf__suite__t_af52f63df546cd7039660d8868e86e72f}\index{hf\_suite\_t@{hf\_suite\_t}!hmac@{hmac}}
+\index{hmac@{hmac}!hf\_suite\_t@{hf\_suite\_t}}
+\doxysubsubsection{\texorpdfstring{hmac}{hmac}}
+{\footnotesize\ttfamily \label{structhf__suite__t_af52f63df546cd7039660d8868e86e72f} 
+int(\texorpdfstring{$\ast$}{*} hf\+\_\+suite\+\_\+t\+::hmac) (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}key, size\+\_\+t key\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}input, size\+\_\+t input\+\_\+len, uint8\+\_\+t \texorpdfstring{$\ast$}{*}output)}
+
+
+
+Keyed-\/\+Hashing for message authentication. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & \\
+\hline
+{\em key\+\_\+len} & \\
+\hline
+{\em input} & \\
+\hline
+{\em input\+\_\+len} & \\
+\hline
+{\em output} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 if success 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/e2ees/\mbox{\hyperlink{cipher_8h}{cipher.\+h}}\end{DoxyCompactItemize}

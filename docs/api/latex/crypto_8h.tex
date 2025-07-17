@@ -22,315 +22,28 @@
 \#define \mbox{\hyperlink{crypto_8h_a8c63fc2cbdf1811a42513c959ca5b15a}{AES256\+\_\+\+GCM\+\_\+\+TAG\+\_\+\+LENGTH}}~16
 \item 
 \#define \mbox{\hyperlink{crypto_8h_adbbbf1c1be8a7fb625cf3879c3168dc3}{AES256\+\_\+\+DATA\+\_\+\+IV\+\_\+\+LENGTH}}~12
+\item 
+\#define \mbox{\hyperlink{crypto_8h_a8a2b042788dd7df27281676080f9d6cc}{CURVE25519\+\_\+\+RANDOM\+\_\+\+LENGTH}}~\mbox{\hyperlink{cipher__ecc_8h_af267d8aed138e3cdf5cc4b635ab6fd12}{CURVE25519\+\_\+\+KEY\+\_\+\+LENGTH}}
+\item 
+\Hypertarget{crypto_8h_acb48f175c6bc95c40cac93a2805e8fbb}\label{crypto_8h_acb48f175c6bc95c40cac93a2805e8fbb} 
+\#define {\bfseries AES256\+\_\+\+FILE\+\_\+\+AD}~"{}E2\+EES -\/-\/-\/$>$ file encryption with AES256/GCM/Nopadding algorithm"{}
+\item 
+\Hypertarget{crypto_8h_a4708956a26b6c3a0df7073e1b45ca8b2}\label{crypto_8h_a4708956a26b6c3a0df7073e1b45ca8b2} 
+\#define {\bfseries AES256\+\_\+\+FILE\+\_\+\+AD\+\_\+\+LEN}~64
+\item 
+\Hypertarget{crypto_8h_a3c455cd930c0d97635fe21e48e14ba24}\label{crypto_8h_a3c455cd930c0d97635fe21e48e14ba24} 
+\#define {\bfseries AES256\+\_\+\+FILE\+\_\+\+KDF\+\_\+\+INFO}~"{}FILE"{}
+\item 
+\Hypertarget{crypto_8h_a544bceee02b8927df6ee6905000c44f6}\label{crypto_8h_a544bceee02b8927df6ee6905000c44f6} 
+\#define {\bfseries AES256\+\_\+\+DATA\+\_\+\+AD}~"{}E2\+EES -\/-\/-\/$>$ data encryption with AES256/GCM/Nopadding algorithm"{}
+\item 
+\Hypertarget{crypto_8h_a1b3f2736657deae3801214287adbc704}\label{crypto_8h_a1b3f2736657deae3801214287adbc704} 
+\#define {\bfseries AES256\+\_\+\+DATA\+\_\+\+AD\+\_\+\+LEN}~64
+\item 
+\#define \mbox{\hyperlink{crypto_8h_a06a923f056ee99cb8562286c8fcffc82}{FILE\+\_\+\+ENCRYPTION\+\_\+\+BUFFER\+\_\+\+LENGTH}}~8192
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Functions}
 \begin{DoxyCompactItemize}
-\item 
-\Hypertarget{crypto_8h_acfcc17f9f382228311fa4e95b445861c}\label{crypto_8h_acfcc17f9f382228311fa4e95b445861c} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+curve25519\+\_\+sign\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a4719fc547b13d202e0675f7db2e29796}\label{crypto_8h_a4719fc547b13d202e0675f7db2e29796} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mldsa44\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a64806bb0fd3de9d5a12ae8d8bda10ead}\label{crypto_8h_a64806bb0fd3de9d5a12ae8d8bda10ead} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mldsa65\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a1f77aab1d49dc045138f3687b6007c91}\label{crypto_8h_a1f77aab1d49dc045138f3687b6007c91} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mldsa87\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_af0d1d1f829541243b0e1a814ef422085}\label{crypto_8h_af0d1d1f829541243b0e1a814ef422085} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+falcon512\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_ab4f5ce00a0663e539866bab4e062d0c8}\label{crypto_8h_ab4f5ce00a0663e539866bab4e062d0c8} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+falcon1024\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_ae10e1f81146bd075099805aad9105a27}\label{crypto_8h_ae10e1f81146bd075099805aad9105a27} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+sha2\+\_\+128f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_aaedaf50277a975a7910068c6ee7d0bb1}\label{crypto_8h_aaedaf50277a975a7910068c6ee7d0bb1} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+sha2\+\_\+128s\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_ab8c935d2664feb955753723401cf6860}\label{crypto_8h_ab8c935d2664feb955753723401cf6860} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+sha2\+\_\+192f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a2b830b7de67deae75f3b0ba5e98c6bb8}\label{crypto_8h_a2b830b7de67deae75f3b0ba5e98c6bb8} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+sha2\+\_\+192s\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_acb8f8500c997e8971568f9b602f41e7d}\label{crypto_8h_acb8f8500c997e8971568f9b602f41e7d} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+sha2\+\_\+256f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a2ab87f9e7a3129b1560d9b8bdcfe8887}\label{crypto_8h_a2ab87f9e7a3129b1560d9b8bdcfe8887} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+sha2\+\_\+256s\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a8ee2d41ba2de10091b544451aacb022f}\label{crypto_8h_a8ee2d41ba2de10091b544451aacb022f} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+shake\+\_\+128f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_aaefb8457572bae1597d79a678a10bf4c}\label{crypto_8h_aaefb8457572bae1597d79a678a10bf4c} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+shake\+\_\+128s\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a474c1a73d3654b463d57751b4a8c7d03}\label{crypto_8h_a474c1a73d3654b463d57751b4a8c7d03} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+shake\+\_\+192f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a6f707ad7e9ccef1a2657ccc01f4e94db}\label{crypto_8h_a6f707ad7e9ccef1a2657ccc01f4e94db} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+shake\+\_\+192s\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_aca1d6f5387d20c2fff33acc891628258}\label{crypto_8h_aca1d6f5387d20c2fff33acc891628258} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+shake\+\_\+256f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_ae41fb0b3b623a4b65a9778cf4827440d}\label{crypto_8h_ae41fb0b3b623a4b65a9778cf4827440d} 
-\mbox{\hyperlink{structcrypto__ds__param__t}{crypto\+\_\+ds\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sphincs\+\_\+shake\+\_\+256s\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a160f647a5fd3664f70fac700316bc5f8}\label{crypto_8h_a160f647a5fd3664f70fac700316bc5f8} 
-int {\bfseries crypto\+\_\+mldsa44\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a6c4abafc02f8b8b0eed5a3cfb8c981d5}\label{crypto_8h_a6c4abafc02f8b8b0eed5a3cfb8c981d5} 
-int {\bfseries crypto\+\_\+mldsa65\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_abd3872da5e49667ca194a599192077b1}\label{crypto_8h_abd3872da5e49667ca194a599192077b1} 
-int {\bfseries crypto\+\_\+mldsa87\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_ada5d43accf1d9aaece24f7b7d1b4aeb4}\label{crypto_8h_ada5d43accf1d9aaece24f7b7d1b4aeb4} 
-int {\bfseries crypto\+\_\+falcon512\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_afc946e869ca6c3e81ec26e38b22b1418}\label{crypto_8h_afc946e869ca6c3e81ec26e38b22b1418} 
-int {\bfseries crypto\+\_\+falcon1024\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a55028bc4c4cb7f84fb43e55a202559b9}\label{crypto_8h_a55028bc4c4cb7f84fb43e55a202559b9} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+sha2\+\_\+128f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a1b77b516febcc9e236d5ab32e3300d3e}\label{crypto_8h_a1b77b516febcc9e236d5ab32e3300d3e} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+sha2\+\_\+128s\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a5babc62b0e960223ac38aa7f1567fc26}\label{crypto_8h_a5babc62b0e960223ac38aa7f1567fc26} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+sha2\+\_\+192f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_aec826c1bf5aaf4082c124eeb5207c5df}\label{crypto_8h_aec826c1bf5aaf4082c124eeb5207c5df} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+sha2\+\_\+192s\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a229ae758565c7fe1eee50153c6f21455}\label{crypto_8h_a229ae758565c7fe1eee50153c6f21455} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+sha2\+\_\+256f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a5e530c0a2ff6cbdf4ee06c1983886d4a}\label{crypto_8h_a5e530c0a2ff6cbdf4ee06c1983886d4a} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+sha2\+\_\+256s\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_ab25cfed885b011494b487ec29793d93d}\label{crypto_8h_ab25cfed885b011494b487ec29793d93d} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+shake\+\_\+128f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a93a84e91d71ca73a48a7727a3c449903}\label{crypto_8h_a93a84e91d71ca73a48a7727a3c449903} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+shake\+\_\+128s\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a4622bc8188643af7e33e687de70de921}\label{crypto_8h_a4622bc8188643af7e33e687de70de921} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+shake\+\_\+192f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a51800e8bdc222607dd5936d2a3a33e8c}\label{crypto_8h_a51800e8bdc222607dd5936d2a3a33e8c} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+shake\+\_\+192s\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a35a91be8e79402b7ce78a4e542747a27}\label{crypto_8h_a35a91be8e79402b7ce78a4e542747a27} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+shake\+\_\+256f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a7b492ca929609824c6c154669fa4b035}\label{crypto_8h_a7b492ca929609824c6c154669fa4b035} 
-int {\bfseries crypto\+\_\+sphincs\+\_\+shake\+\_\+256s\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a882ff0bfd0a71df378bf70432a0b3f57}\label{crypto_8h_a882ff0bfd0a71df378bf70432a0b3f57} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+curve25519\+\_\+\+ECDH\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_ac471f1a1912f19167e8256fdf29bc7d3}\label{crypto_8h_ac471f1a1912f19167e8256fdf29bc7d3} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+hqc128\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a9d5a559c95788345c1450dc8a978827f}\label{crypto_8h_a9d5a559c95788345c1450dc8a978827f} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+hqc192\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a7a8727dd68c23ab09544e4798341d62d}\label{crypto_8h_a7a8727dd68c23ab09544e4798341d62d} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+hqc256\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a9239b80200b2ecfd1b0bcac5e9d14c18}\label{crypto_8h_a9239b80200b2ecfd1b0bcac5e9d14c18} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mlkem512\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_ac7487b5b96948aef1da8ffbb77ccf9e2}\label{crypto_8h_ac7487b5b96948aef1da8ffbb77ccf9e2} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mlkem768\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a74093167dfe00891e9adfbd89a25e841}\label{crypto_8h_a74093167dfe00891e9adfbd89a25e841} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mlkem1024\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_ac0018de3bb3769a355a391bca56001ba}\label{crypto_8h_ac0018de3bb3769a355a391bca56001ba} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece348864\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_aacecde9baede9412103d5d21800da919}\label{crypto_8h_aacecde9baede9412103d5d21800da919} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece348864f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a51139a2ce5ab9ef8df7aa8ee8205a878}\label{crypto_8h_a51139a2ce5ab9ef8df7aa8ee8205a878} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece460896\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_ae816e1269203c47b7f8823e2cc5ff214}\label{crypto_8h_ae816e1269203c47b7f8823e2cc5ff214} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece460896f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_aca7e15e9c674f0c67227080ca4c91565}\label{crypto_8h_aca7e15e9c674f0c67227080ca4c91565} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece6688128\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_aee0af6c1a6d61eab366391077c507468}\label{crypto_8h_aee0af6c1a6d61eab366391077c507468} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece6688128f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a74f6f4b8339bb87cb3b0935e5d900411}\label{crypto_8h_a74f6f4b8339bb87cb3b0935e5d900411} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece6960119\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_afdd0cc1e6ceeb878ce9fd523d25b046c}\label{crypto_8h_afdd0cc1e6ceeb878ce9fd523d25b046c} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece6960119f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_abaa1496a256a4e41948e00c13b7cc2d6}\label{crypto_8h_abaa1496a256a4e41948e00c13b7cc2d6} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece8192128\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a40e354bfc29c979eeb4e1d80fa6838ac}\label{crypto_8h_a40e354bfc29c979eeb4e1d80fa6838ac} 
-\mbox{\hyperlink{structcrypto__kem__param__t}{crypto\+\_\+kem\+\_\+param\+\_\+t}} {\bfseries get\+\_\+mceliece8192128f\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_ac915a50a9c87392422cb0c159cb1620e}\label{crypto_8h_ac915a50a9c87392422cb0c159cb1620e} 
-\mbox{\hyperlink{structcrypto__se__param__t}{crypto\+\_\+se\+\_\+param\+\_\+t}} {\bfseries get\+\_\+aes256\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_a965a4d8e65c0753655a0288b6271dbf0}\label{crypto_8h_a965a4d8e65c0753655a0288b6271dbf0} 
-\mbox{\hyperlink{structcrypto__hash__param__t}{crypto\+\_\+hash\+\_\+param\+\_\+t}} {\bfseries get\+\_\+sha256\+\_\+param} ()
-\item 
-\Hypertarget{crypto_8h_aa0ca5a817f5c904535ada57f7ef796ee}\label{crypto_8h_aa0ca5a817f5c904535ada57f7ef796ee} 
-int {\bfseries crypto\+\_\+hqc128\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a198ad41866fe08f071d6f611af3d82a3}\label{crypto_8h_a198ad41866fe08f071d6f611af3d82a3} 
-int {\bfseries crypto\+\_\+hqc192\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_ac7854c5c3468bf316b69067fb4a549d6}\label{crypto_8h_ac7854c5c3468bf316b69067fb4a549d6} 
-int {\bfseries crypto\+\_\+hqc256\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_abcffc9f7b22da7de8847c5b5bb389a6a}\label{crypto_8h_abcffc9f7b22da7de8847c5b5bb389a6a} 
-int {\bfseries crypto\+\_\+mlkem512\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a3c26b24c8bcefe2447a3c7abf5ffab46}\label{crypto_8h_a3c26b24c8bcefe2447a3c7abf5ffab46} 
-int {\bfseries crypto\+\_\+mlkem768\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_af815467723afa7aa8bc430a4552bf0f2}\label{crypto_8h_af815467723afa7aa8bc430a4552bf0f2} 
-int {\bfseries crypto\+\_\+mlkem1024\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a257398f436471200daed3ef4135850c3}\label{crypto_8h_a257398f436471200daed3ef4135850c3} 
-int {\bfseries crypto\+\_\+mceliece348864\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_adf3a57cb41b1a860cbdd946da4c0114e}\label{crypto_8h_adf3a57cb41b1a860cbdd946da4c0114e} 
-int {\bfseries crypto\+\_\+mceliece348864f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a2faa1f05b67b2fd10294913d483cbec7}\label{crypto_8h_a2faa1f05b67b2fd10294913d483cbec7} 
-int {\bfseries crypto\+\_\+mceliece460896\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_af038875613e941fdbb0bd2b6ee60e926}\label{crypto_8h_af038875613e941fdbb0bd2b6ee60e926} 
-int {\bfseries crypto\+\_\+mceliece460896f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a4e850ba4a6e6227e3a230256d2ea3f68}\label{crypto_8h_a4e850ba4a6e6227e3a230256d2ea3f68} 
-int {\bfseries crypto\+\_\+mceliece6688128\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a2f11118581923dfaec8334bf626452e2}\label{crypto_8h_a2f11118581923dfaec8334bf626452e2} 
-int {\bfseries crypto\+\_\+mceliece6688128f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a39d1e59a7c0d51696c7dd9f33bf3965a}\label{crypto_8h_a39d1e59a7c0d51696c7dd9f33bf3965a} 
-int {\bfseries crypto\+\_\+mceliece6960119\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a7286598a0569376d3c6dec5d39958e14}\label{crypto_8h_a7286598a0569376d3c6dec5d39958e14} 
-int {\bfseries crypto\+\_\+mceliece6960119f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_ab83d67cd23858416bc666bc1cf250f31}\label{crypto_8h_ab83d67cd23858416bc666bc1cf250f31} 
-int {\bfseries crypto\+\_\+mceliece8192128\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_ae33aa2ccf85e9f074c084b50c4a4941c}\label{crypto_8h_ae33aa2ccf85e9f074c084b50c4a4941c} 
-int {\bfseries crypto\+\_\+mceliece8192128f\+\_\+generate\+\_\+key\+\_\+pair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a46ca237283a58eadbb5723b44c78ba77}\label{crypto_8h_a46ca237283a58eadbb5723b44c78ba77} 
-int {\bfseries crypto\+\_\+hqc128\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a3b90204b610d87577b3ec686099ad68f}\label{crypto_8h_a3b90204b610d87577b3ec686099ad68f} 
-int {\bfseries crypto\+\_\+hqc192\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_ab5d8e251f4c26337af88490baebb93a1}\label{crypto_8h_ab5d8e251f4c26337af88490baebb93a1} 
-int {\bfseries crypto\+\_\+hqc256\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a2a57b773f74907f614804a46bffd1532}\label{crypto_8h_a2a57b773f74907f614804a46bffd1532} 
-int {\bfseries crypto\+\_\+mlkem512\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a606fcda2cdba0e24417c95eb195ed37a}\label{crypto_8h_a606fcda2cdba0e24417c95eb195ed37a} 
-int {\bfseries crypto\+\_\+mlkem768\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_af3c0bff6470d5b67c89af386b010bddf}\label{crypto_8h_af3c0bff6470d5b67c89af386b010bddf} 
-int {\bfseries crypto\+\_\+mlkem1024\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_ae20685821fa2c4effc730b7c39dd49a9}\label{crypto_8h_ae20685821fa2c4effc730b7c39dd49a9} 
-int {\bfseries crypto\+\_\+mceliece348864\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_afa3af024cc577c6312829a6b1ab88b3f}\label{crypto_8h_afa3af024cc577c6312829a6b1ab88b3f} 
-int {\bfseries crypto\+\_\+mceliece348864f\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a91982c8c13729b545ad67848155e48a6}\label{crypto_8h_a91982c8c13729b545ad67848155e48a6} 
-int {\bfseries crypto\+\_\+mceliece460896\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a1460a4422b5812dda3947faa3109316e}\label{crypto_8h_a1460a4422b5812dda3947faa3109316e} 
-int {\bfseries crypto\+\_\+mceliece460896f\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a24ded75a24ff1eb3d772c8fb81bd36c1}\label{crypto_8h_a24ded75a24ff1eb3d772c8fb81bd36c1} 
-int {\bfseries crypto\+\_\+mceliece6688128\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a65759325648a67cdf8bace70a30ce917}\label{crypto_8h_a65759325648a67cdf8bace70a30ce917} 
-int {\bfseries crypto\+\_\+mceliece6688128f\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_af7f6c33322797ee1ec1cf08d7f10cec7}\label{crypto_8h_af7f6c33322797ee1ec1cf08d7f10cec7} 
-int {\bfseries crypto\+\_\+mceliece6960119\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a3b98088708c84144f5a91d83423b3c34}\label{crypto_8h_a3b98088708c84144f5a91d83423b3c34} 
-int {\bfseries crypto\+\_\+mceliece6960119f\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_ab543d646ed24f7cdf88439885e96e325}\label{crypto_8h_ab543d646ed24f7cdf88439885e96e325} 
-int {\bfseries crypto\+\_\+mceliece8192128\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_ae34f4b5e5e6ec90273771b9d3fd2eb9c}\label{crypto_8h_ae34f4b5e5e6ec90273771b9d3fd2eb9c} 
-int {\bfseries crypto\+\_\+mceliece8192128f\+\_\+encaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}their\+\_\+key)
-\item 
-\Hypertarget{crypto_8h_a48cfad76663b5bf935ce6790e6eeeb6e}\label{crypto_8h_a48cfad76663b5bf935ce6790e6eeeb6e} 
-int {\bfseries crypto\+\_\+hqc128\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_a53460cdf8d4df809bc6fff7de8ef33d2}\label{crypto_8h_a53460cdf8d4df809bc6fff7de8ef33d2} 
-int {\bfseries crypto\+\_\+hqc192\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_a50f46f7a1fb2618610d75bf4b91d432d}\label{crypto_8h_a50f46f7a1fb2618610d75bf4b91d432d} 
-int {\bfseries crypto\+\_\+hqc256\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_a574693f0c013644b57d91a4bfce8a345}\label{crypto_8h_a574693f0c013644b57d91a4bfce8a345} 
-int {\bfseries crypto\+\_\+mlkem512\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_af52ab581b7b882766dd65c318412037e}\label{crypto_8h_af52ab581b7b882766dd65c318412037e} 
-int {\bfseries crypto\+\_\+mlkem768\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_a3be0c33608b698ed9175a0229d1f3636}\label{crypto_8h_a3be0c33608b698ed9175a0229d1f3636} 
-int {\bfseries crypto\+\_\+mlkem1024\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_a62d852af3293d65eeb0d8a3c1c3718ed}\label{crypto_8h_a62d852af3293d65eeb0d8a3c1c3718ed} 
-int {\bfseries crypto\+\_\+mceliece348864\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_a7f61be4e6fadce334eb0d02fdcdf1b49}\label{crypto_8h_a7f61be4e6fadce334eb0d02fdcdf1b49} 
-int {\bfseries crypto\+\_\+mceliece348864f\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_a1fd690673cde406422039362ecf23caa}\label{crypto_8h_a1fd690673cde406422039362ecf23caa} 
-int {\bfseries crypto\+\_\+mceliece460896\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_ab335d8e0cd0835ffa3884d9b7836f955}\label{crypto_8h_ab335d8e0cd0835ffa3884d9b7836f955} 
-int {\bfseries crypto\+\_\+mceliece460896f\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_ad22081c19808b08a00fb9bba85d44ff0}\label{crypto_8h_ad22081c19808b08a00fb9bba85d44ff0} 
-int {\bfseries crypto\+\_\+mceliece6688128\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_ab9525c495738a80ba1aa9ca7d2d7de92}\label{crypto_8h_ab9525c495738a80ba1aa9ca7d2d7de92} 
-int {\bfseries crypto\+\_\+mceliece6688128f\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_acddfeb950e99059dbd09f406671fd02e}\label{crypto_8h_acddfeb950e99059dbd09f406671fd02e} 
-int {\bfseries crypto\+\_\+mceliece6960119\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_ac8bc57d939067b7868c3e590de653a43}\label{crypto_8h_ac8bc57d939067b7868c3e590de653a43} 
-int {\bfseries crypto\+\_\+mceliece6960119f\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_a0544477708a0c2f4657a5f830d59a35a}\label{crypto_8h_a0544477708a0c2f4657a5f830d59a35a} 
-int {\bfseries crypto\+\_\+mceliece8192128\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
-\item 
-\Hypertarget{crypto_8h_a727fded0588dbd64a4248299b010c70b}\label{crypto_8h_a727fded0588dbd64a4248299b010c70b} 
-int {\bfseries crypto\+\_\+mceliece8192128f\+\_\+decaps} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}shared\+\_\+secret, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}our\+\_\+key, const Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}ciphertext)
 \item 
 \Hypertarget{crypto_8h_ac56ee8caaea1c4a8f22133d577fa083c}\label{crypto_8h_ac56ee8caaea1c4a8f22133d577fa083c} 
 int {\bfseries CURVE25519\+\_\+crypto\+\_\+sign\+\_\+keypair} (Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}pub\+\_\+key, Protobuf\+CBinary\+Data \texorpdfstring{$\ast$}{*}priv\+\_\+key)
@@ -363,6 +76,10 @@ int \mbox{\hyperlink{crypto_8h_a1ecbc7f2cf34bcec4b5d3853bd504bad}{crypto\+\_\+ae
 \begin{DoxyCompactList}\small\item\em AES256 encrypt function in GCM mode. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{crypto_8h_a0abf54c9a3f3c89e4552ea50b87afde3}{crypto\+\_\+aes\+\_\+decrypt\+\_\+gcm}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}ciphertext\+\_\+data, size\+\_\+t ciphertext\+\_\+data\+\_\+len, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}aes\+\_\+key, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}iv, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}add, size\+\_\+t add\+\_\+len, uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data\+\_\+len)
 \begin{DoxyCompactList}\small\item\em AES256 decrypt function in GCM mode. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{crypto_8h_ad449cbcd6449c8cff0b8de22bcc9baa0}{aes256\+\_\+gcm\+\_\+ciphertext\+\_\+data\+\_\+len}} (size\+\_\+t plaintext\+\_\+data\+\_\+length)
+\begin{DoxyCompactList}\small\item\em Calculate ciphertext data len for AES GCM. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{crypto_8h_a0c9d322f09b8b9e997838fee395a09a6}{aes256\+\_\+gcm\+\_\+plaintext\+\_\+data\+\_\+len}} (size\+\_\+t ciphertext\+\_\+data\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Calculate plaintext data len for AES GCM. \end{DoxyCompactList}\item 
 size\+\_\+t \mbox{\hyperlink{crypto_8h_afc26d7ca538bd3f7fec38b2c1959beb0}{encrypt\+\_\+aes\+\_\+data\+\_\+with\+\_\+iv}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len, const uint8\+\_\+t aes\+\_\+key\mbox{[}\mbox{\hyperlink{crypto_8h_af36200aa1d4d85292b027b6d811263ad}{AES256\+\_\+\+KEY\+\_\+\+LENGTH}}\mbox{]}, const uint8\+\_\+t iv\mbox{[}\mbox{\hyperlink{crypto_8h_adbbbf1c1be8a7fb625cf3879c3168dc3}{AES256\+\_\+\+DATA\+\_\+\+IV\+\_\+\+LENGTH}}\mbox{]}, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}ciphertext\+\_\+data)
 \begin{DoxyCompactList}\small\item\em AES256 encrypt data in GCM mode. \end{DoxyCompactList}\item 
 size\+\_\+t \mbox{\hyperlink{crypto_8h_a9239e4f32141c64f2ed409902253db2e}{encrypt\+\_\+aes\+\_\+data}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}plaintext\+\_\+data, size\+\_\+t plaintext\+\_\+data\+\_\+len, const uint8\+\_\+t aes\+\_\+key\mbox{[}\mbox{\hyperlink{crypto_8h_af36200aa1d4d85292b027b6d811263ad}{AES256\+\_\+\+KEY\+\_\+\+LENGTH}}\mbox{]}, uint8\+\_\+t \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}ciphertext\+\_\+data)
@@ -435,13 +152,25 @@ length of an aes256 key \Hypertarget{crypto_8h_af267d8aed138e3cdf5cc4b635ab6fd12
 {\footnotesize\ttfamily \label{crypto_8h_af267d8aed138e3cdf5cc4b635ab6fd12} 
 \#define CURVE25519\+\_\+\+KEY\+\_\+\+LENGTH~32}
 
-length of a public or private Curve25519 key \Hypertarget{crypto_8h_a5a2bb125ad5cf2351de9cb070d78bcc6}\index{crypto.h@{crypto.h}!CURVE\_SIGNATURE\_LENGTH@{CURVE\_SIGNATURE\_LENGTH}}
+length of a public or private Curve25519 key \Hypertarget{crypto_8h_a8a2b042788dd7df27281676080f9d6cc}\index{crypto.h@{crypto.h}!CURVE25519\_RANDOM\_LENGTH@{CURVE25519\_RANDOM\_LENGTH}}
+\index{CURVE25519\_RANDOM\_LENGTH@{CURVE25519\_RANDOM\_LENGTH}!crypto.h@{crypto.h}}
+\doxysubsubsection{\texorpdfstring{CURVE25519\_RANDOM\_LENGTH}{CURVE25519\_RANDOM\_LENGTH}}
+{\footnotesize\ttfamily \label{crypto_8h_a8a2b042788dd7df27281676080f9d6cc} 
+\#define CURVE25519\+\_\+\+RANDOM\+\_\+\+LENGTH~\mbox{\hyperlink{cipher__ecc_8h_af267d8aed138e3cdf5cc4b635ab6fd12}{CURVE25519\+\_\+\+KEY\+\_\+\+LENGTH}}}
+
+amount of random data required to create a Curve25519 keypair \Hypertarget{crypto_8h_a5a2bb125ad5cf2351de9cb070d78bcc6}\index{crypto.h@{crypto.h}!CURVE\_SIGNATURE\_LENGTH@{CURVE\_SIGNATURE\_LENGTH}}
 \index{CURVE\_SIGNATURE\_LENGTH@{CURVE\_SIGNATURE\_LENGTH}!crypto.h@{crypto.h}}
 \doxysubsubsection{\texorpdfstring{CURVE\_SIGNATURE\_LENGTH}{CURVE\_SIGNATURE\_LENGTH}}
 {\footnotesize\ttfamily \label{crypto_8h_a5a2bb125ad5cf2351de9cb070d78bcc6} 
 \#define CURVE\+\_\+\+SIGNATURE\+\_\+\+LENGTH~64}
 
-length of a Curve25519 signature \Hypertarget{crypto_8h_ab1bd3ef9b594e851769e8d7baf17f0f1}\index{crypto.h@{crypto.h}!SHA256\_OUTPUT\_LENGTH@{SHA256\_OUTPUT\_LENGTH}}
+length of a Curve25519 signature \Hypertarget{crypto_8h_a06a923f056ee99cb8562286c8fcffc82}\index{crypto.h@{crypto.h}!FILE\_ENCRYPTION\_BUFFER\_LENGTH@{FILE\_ENCRYPTION\_BUFFER\_LENGTH}}
+\index{FILE\_ENCRYPTION\_BUFFER\_LENGTH@{FILE\_ENCRYPTION\_BUFFER\_LENGTH}!crypto.h@{crypto.h}}
+\doxysubsubsection{\texorpdfstring{FILE\_ENCRYPTION\_BUFFER\_LENGTH}{FILE\_ENCRYPTION\_BUFFER\_LENGTH}}
+{\footnotesize\ttfamily \label{crypto_8h_a06a923f056ee99cb8562286c8fcffc82} 
+\#define FILE\+\_\+\+ENCRYPTION\+\_\+\+BUFFER\+\_\+\+LENGTH~8192}
+
+buffer length for file encryption/decryption \Hypertarget{crypto_8h_ab1bd3ef9b594e851769e8d7baf17f0f1}\index{crypto.h@{crypto.h}!SHA256\_OUTPUT\_LENGTH@{SHA256\_OUTPUT\_LENGTH}}
 \index{SHA256\_OUTPUT\_LENGTH@{SHA256\_OUTPUT\_LENGTH}!crypto.h@{crypto.h}}
 \doxysubsubsection{\texorpdfstring{SHA256\_OUTPUT\_LENGTH}{SHA256\_OUTPUT\_LENGTH}}
 {\footnotesize\ttfamily \label{crypto_8h_ab1bd3ef9b594e851769e8d7baf17f0f1} 
@@ -450,6 +179,42 @@ length of a Curve25519 signature \Hypertarget{crypto_8h_ab1bd3ef9b594e851769e8d7
 length of a sha256 hash 
 
 \doxysubsection{Function Documentation}
+\Hypertarget{crypto_8h_ad449cbcd6449c8cff0b8de22bcc9baa0}\index{crypto.h@{crypto.h}!aes256\_gcm\_ciphertext\_data\_len@{aes256\_gcm\_ciphertext\_data\_len}}
+\index{aes256\_gcm\_ciphertext\_data\_len@{aes256\_gcm\_ciphertext\_data\_len}!crypto.h@{crypto.h}}
+\doxysubsubsection{\texorpdfstring{aes256\_gcm\_ciphertext\_data\_len()}{aes256\_gcm\_ciphertext\_data\_len()}}
+{\footnotesize\ttfamily \label{crypto_8h_ad449cbcd6449c8cff0b8de22bcc9baa0} 
+size\+\_\+t aes256\+\_\+gcm\+\_\+ciphertext\+\_\+data\+\_\+len (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{plaintext\+\_\+data\+\_\+length}{}\end{DoxyParamCaption})}
+
+
+
+Calculate ciphertext data len for AES GCM. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em plaintext\+\_\+data\+\_\+length} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+size\+\_\+t length of ciphertext data 
+\end{DoxyReturn}
+\Hypertarget{crypto_8h_a0c9d322f09b8b9e997838fee395a09a6}\index{crypto.h@{crypto.h}!aes256\_gcm\_plaintext\_data\_len@{aes256\_gcm\_plaintext\_data\_len}}
+\index{aes256\_gcm\_plaintext\_data\_len@{aes256\_gcm\_plaintext\_data\_len}!crypto.h@{crypto.h}}
+\doxysubsubsection{\texorpdfstring{aes256\_gcm\_plaintext\_data\_len()}{aes256\_gcm\_plaintext\_data\_len()}}
+{\footnotesize\ttfamily \label{crypto_8h_a0c9d322f09b8b9e997838fee395a09a6} 
+size\+\_\+t aes256\+\_\+gcm\+\_\+plaintext\+\_\+data\+\_\+len (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{ciphertext\+\_\+data\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Calculate plaintext data len for AES GCM. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ciphertext\+\_\+data\+\_\+len} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+size\+\_\+t length of plaintext data 
+\end{DoxyReturn}
 \Hypertarget{crypto_8h_a0abf54c9a3f3c89e4552ea50b87afde3}\index{crypto.h@{crypto.h}!crypto\_aes\_decrypt\_gcm@{crypto\_aes\_decrypt\_gcm}}
 \index{crypto\_aes\_decrypt\_gcm@{crypto\_aes\_decrypt\_gcm}!crypto.h@{crypto.h}}
 \doxysubsubsection{\texorpdfstring{crypto\_aes\_decrypt\_gcm()}{crypto\_aes\_decrypt\_gcm()}}
