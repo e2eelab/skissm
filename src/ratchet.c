@@ -100,10 +100,10 @@ static int create_chain_key(
     }
 
     if (ret == E2EES_RESULT_SUCC) {
-        pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
+        pqc_param = cipher_suite->kem_suite->get_param().pqc_param;
 
-        int shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
-        int shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
+        int shared_key_len = cipher_suite->hf_suite->get_param().hf_len;
+        int shared_secret_len = cipher_suite->kem_suite->get_param().shared_secret_len;
 
         uint8_t secret[shared_secret_len];
         memset(secret, 0, shared_secret_len);
@@ -161,7 +161,7 @@ static int advance_chain_key(
     }
 
     if (ret == E2EES_RESULT_SUCC) {
-        int shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        int shared_key_len = cipher_suite->hf_suite->get_param().hf_len;
         uint8_t shared_key[shared_key_len];
         memset(shared_key, 0, shared_key_len);
         cipher_suite->hf_suite->hmac(
@@ -197,10 +197,10 @@ static int create_msg_keys(
     }
 
     if (ret == E2EES_RESULT_SUCC) {
-        msg_key_len = cipher_suite->se_suite->get_crypto_param().aead_key_len
-                    + cipher_suite->se_suite->get_crypto_param().aead_iv_len;
+        msg_key_len = cipher_suite->se_suite->get_param().aead_key_len
+                    + cipher_suite->se_suite->get_param().aead_iv_len;
         output = (uint8_t *)malloc(sizeof(uint8_t) * msg_key_len);
-        hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        hf_len = cipher_suite->hf_suite->get_param().hf_len;
         uint8_t salt[hf_len];
         memset(salt, 0, hf_len);
         ret = cipher_suite->hf_suite->hkdf(
@@ -333,7 +333,7 @@ static size_t verify_and_decrypt_for_new_chain(
     uint32_t our_root_sequence;
 
     if (is_valid_cipher_suite(cipher_suite)) {
-        pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
+        pqc_param = cipher_suite->kem_suite->get_param().pqc_param;
         if (!is_valid_protobuf(&ad)) {
             ret = E2EES_RESULT_FAIL;
         }
@@ -351,11 +351,11 @@ static size_t verify_and_decrypt_for_new_chain(
             }
             // the length of the ratchet key should be correct
             if (pqc_param) {
-                if (payload->ratchet_key.len != cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len) {
+                if (payload->ratchet_key.len != cipher_suite->kem_suite->get_param().kem_ciphertext_len) {
                     ret = E2EES_RESULT_FAIL;
                 }
             } else {
-                if (payload->ratchet_key.len != cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len) {
+                if (payload->ratchet_key.len != cipher_suite->kem_suite->get_param().asym_pub_key_len) {
                     ret = E2EES_RESULT_FAIL;
                 }
             }
@@ -418,7 +418,7 @@ int initialise_as_bob(
     ProtobufCBinaryData ciphertext = {0, NULL};
 
     if (is_valid_cipher_suite(cipher_suite)) {
-        pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
+        pqc_param = cipher_suite->kem_suite->get_param().pqc_param;
     } else {
         ret = E2EES_RESULT_FAIL;
     }
@@ -435,10 +435,10 @@ int initialise_as_bob(
 
     if (ret == E2EES_RESULT_SUCC) {
         // the ssk will be 64 bytes
-        shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        shared_key_len = cipher_suite->hf_suite->get_param().hf_len;
         derived_secrets_len = shared_key_len * 2;
         derived_secrets = (uint8_t *)malloc(sizeof(uint8_t) * derived_secrets_len);
-        hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        hf_len = cipher_suite->hf_suite->get_param().hf_len;
         uint8_t salt[hf_len];
         memset(salt, 0, hf_len);
         ret = cipher_suite->hf_suite->hkdf(
@@ -450,7 +450,7 @@ int initialise_as_bob(
     }
 
     if (ret == E2EES_RESULT_SUCC) {
-        int temp_shared_key_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
+        int temp_shared_key_len = cipher_suite->kem_suite->get_param().shared_secret_len;
         uint8_t temp_secret[temp_shared_key_len];
         ret = cipher_suite->kem_suite->encaps(temp_secret, &ciphertext, their_ratchet_key);
 
@@ -481,7 +481,7 @@ int initialise_as_bob(
 
         copy_protobuf_from_protobuf(&(sender_chain->their_ratchet_public_key), their_ratchet_key);
 
-        if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
+        if (cipher_suite->kem_suite->get_param().pqc_param == false) {
             // ECC mode
             copy_protobuf_from_protobuf(&(sender_chain->our_ratchet_public_key), &(our_ratchet_key->public_key));
         } else {
@@ -520,7 +520,7 @@ int initialise_as_alice(
     size_t derived_secrets_len = 0;
 
     if (is_valid_cipher_suite(cipher_suite)) {
-        pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
+        pqc_param = cipher_suite->kem_suite->get_param().pqc_param;
         if (pqc_param) {
             if (!is_valid_protobuf(their_encaps_ciphertext))
                 ret = E2EES_RESULT_FAIL;
@@ -543,10 +543,10 @@ int initialise_as_alice(
 
     if (ret == E2EES_RESULT_SUCC) {
         // the length of derived_secrets will be 64 bytes
-        shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        shared_key_len = cipher_suite->hf_suite->get_param().hf_len;
         derived_secrets_len = shared_key_len * 2;
         derived_secrets = (uint8_t *)malloc(sizeof(uint8_t) * derived_secrets_len);
-        hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        hf_len = cipher_suite->hf_suite->get_param().hf_len;
         uint8_t salt[hf_len];
         memset(salt, 0, hf_len);
         // shared_secret_len may be 128 or 96
@@ -698,11 +698,11 @@ int decrypt_ratchet(
 
     if (is_valid_cipher_suite(cipher_suite)) {
         // the cipher suite should exist and be safe
-        pqc_param = cipher_suite->kem_suite->get_crypto_param().pqc_param;
+        pqc_param = cipher_suite->kem_suite->get_param().pqc_param;
         if (pqc_param == false) {
-            ratchet_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
+            ratchet_key_len = cipher_suite->kem_suite->get_param().asym_pub_key_len;
         } else {
-            ratchet_key_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
+            ratchet_key_len = cipher_suite->kem_suite->get_param().kem_ciphertext_len;
         }
         if (is_valid_one2one_msg_payload(payload)) {
             if (payload->ratchet_key.len != ratchet_key_len) {
@@ -921,7 +921,7 @@ int decrypt_ratchet(
 
                 new_sender_chain->chain_key = (E2ees__ChainKey *)malloc(sizeof(E2ees__ChainKey));
                 e2ees__chain_key__init(new_sender_chain->chain_key);
-                if (cipher_suite->kem_suite->get_crypto_param().pqc_param == false) {
+                if (cipher_suite->kem_suite->get_param().pqc_param == false) {
                     // ECC mode
                     new_ratchet_key_pair = (E2ees__KeyPair *)malloc(sizeof(E2ees__KeyPair));
                     e2ees__key_pair__init(new_ratchet_key_pair);

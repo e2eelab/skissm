@@ -1098,7 +1098,7 @@ int produce_send_group_msg_request(
         group_msg_payload->ciphertext.len = ciphertext_data_len;
 
         // signature
-        uint32_t sig_len = cipher_suite->ds_suite->get_crypto_param().sig_len;
+        uint32_t sig_len = cipher_suite->ds_suite->get_param().sig_len;
         group_msg_payload->signature.len = sig_len;
         group_msg_payload->signature.data = (uint8_t *)malloc(sizeof(uint8_t) * sig_len);
         size_t signature_out_len;
@@ -1207,7 +1207,7 @@ bool consume_group_msg(E2ees__E2eeAddress *receiver_address, E2ees__E2eeMsg *e2e
     }
 
     const cipher_suite_t *cipher_suite = get_e2ees_pack(inbound_group_session->e2ees_pack_id)->cipher_suite;
-    int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+    int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
     if (inbound_group_session->associated_data.data == NULL || inbound_group_session->associated_data.len < sign_key_len){
         e2ees_notify_log(receiver_address, BAD_GROUP_SESSION, "consume_group_msg() inbound group session associated_data is null, just consume it");

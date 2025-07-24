@@ -63,7 +63,7 @@ static void test_one_group_pre_key() {
     mock_address(&user_address, "alice", "alice's domain", "alice's device");
     mock_address(&member_address, "bob", "bob's domain", "bob's device");
 
-    int key_len = test_cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+    int key_len = test_cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
     size_t group_members_num = 2;
     // the first group member is Alice
@@ -108,11 +108,11 @@ static void test_one_group_pre_key() {
 
     outbound_group_session->sequence = 0;
 
-    outbound_group_session->chain_key.len = test_cipher_suite->hf_suite->get_crypto_param().hf_len;
+    outbound_group_session->chain_key.len = test_cipher_suite->hf_suite->get_param().hf_len;
     outbound_group_session->chain_key.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->chain_key.len);
     get_e2ees_plugin()->common_handler.gen_rand(outbound_group_session->chain_key.data, outbound_group_session->chain_key.len);
 
-    outbound_group_session->group_seed.len = test_cipher_suite->hf_suite->get_crypto_param().hf_len;
+    outbound_group_session->group_seed.len = test_cipher_suite->hf_suite->get_param().hf_len;
     outbound_group_session->group_seed.data = (uint8_t *)malloc(sizeof(uint8_t) * outbound_group_session->group_seed.len);
     get_e2ees_plugin()->common_handler.gen_rand(outbound_group_session->group_seed.data, outbound_group_session->group_seed.len);
 

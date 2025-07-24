@@ -72,10 +72,10 @@ typedef struct crypto_hf_param_t {
  */
 typedef struct ds_suite_t {
     /**
-     * @brief Get the parameters of this digital signature suite.
+     * @brief Get the parameters of this digital signature algorithm suite.
      * @return crypto_ds_param_t
      */
-    struct crypto_ds_param_t (*get_crypto_param)(void);
+    struct crypto_ds_param_t (*get_param)(void);
 
     /**
      * @brief Generate a random key pair that will be used to generate or verify a signature.
@@ -84,7 +84,7 @@ typedef struct ds_suite_t {
      * @param priv_key
      * @return value < 0 for error
      */
-    int (*sign_key_gen)(
+    int (*ds_key_gen)(
         ProtobufCBinaryData *pub_key,
         ProtobufCBinaryData *priv_key
     );
@@ -130,7 +130,7 @@ typedef struct kem_suite_t {
      * @brief Get the parameters of this kem suite.
      * @return crypto_kem_param_t
      */
-    struct crypto_kem_param_t (*get_crypto_param)(void);
+    struct crypto_kem_param_t (*get_param)(void);
 
     /**
      * @brief Generate a random key pair that will be used to calculate shared secret keys.
@@ -180,7 +180,7 @@ typedef struct se_suite_t {
      * @brief Get the parameters of this symmetric encryption suite.
      * @return crypto_se_param_t
      */
-    struct crypto_se_param_t (*get_crypto_param)(void);
+    struct crypto_se_param_t (*get_param)(void);
 
     /**
      * @brief Encrypt a given plaintext.
@@ -227,7 +227,7 @@ typedef struct hf_suite_t {
      * @brief Get the parameters of this hash function suite.
      * @return crypto_hf_param_t
      */
-    struct crypto_hf_param_t (*get_crypto_param)(void);
+    struct crypto_hf_param_t (*get_param)(void);
 
     /**
      * @brief HMAC-based key derivation function.

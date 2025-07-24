@@ -61,10 +61,10 @@ int pqc_new_outbound_session_v2(
                 cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
                 to = their_pre_key_bundle->user_address;
                 if (is_valid_cipher_suite(cipher_suite)) {
-                    asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-                    sign_pub_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
-                    sig_len = cipher_suite->ds_suite->get_crypto_param().sig_len;
-                    kem_ciphertext_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
+                    asym_pub_key_len = cipher_suite->kem_suite->get_param().asym_pub_key_len;
+                    sign_pub_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
+                    sig_len = cipher_suite->ds_suite->get_param().sig_len;
+                    kem_ciphertext_len = cipher_suite->kem_suite->get_param().kem_ciphertext_len;
 
                     their_ik = their_pre_key_bundle->identity_key_public;
                     their_spk = their_pre_key_bundle->signed_pre_key_public;
@@ -161,9 +161,9 @@ int pqc_new_outbound_session_v2(
             memcpy(hash_input + asym_pub_key_len + asym_pub_key_len + asym_pub_key_len, their_opk->public_key.data, asym_pub_key_len);
         }
 
-        int shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        int shared_key_len = cipher_suite->hf_suite->get_param().hf_len;
         uint8_t derived_secrets[2 * shared_key_len];
-        int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        int hf_len = cipher_suite->hf_suite->get_param().hf_len;
         uint8_t salt[hf_len];
         memset(salt, 0, hf_len);
         cipher_suite->hf_suite->hkdf(
@@ -175,7 +175,7 @@ int pqc_new_outbound_session_v2(
 
         copy_protobuf_from_array(&(outbound_session->fingerprint), derived_secrets, sizeof(derived_secrets));
 
-        int shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
+        int shared_secret_len = cipher_suite->kem_suite->get_param().shared_secret_len;
         // calculate the shared secret S via encapsulation
         uint8_t secret[x3dh_epoch * shared_secret_len];
         uint8_t *pos = secret;
@@ -293,11 +293,11 @@ int pqc_new_inbound_session(
     }
     if (is_valid_invite_msg(msg)) {
         cipher_suite = get_e2ees_pack(msg->e2ees_pack_id)->cipher_suite;
-        asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-        shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
-        hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
-        shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
-        ciphertext_len = cipher_suite->kem_suite->get_crypto_param().kem_ciphertext_len;
+        asym_pub_key_len = cipher_suite->kem_suite->get_param().asym_pub_key_len;
+        shared_key_len = cipher_suite->hf_suite->get_param().hf_len;
+        hf_len = cipher_suite->hf_suite->get_param().hf_len;
+        shared_secret_len = cipher_suite->kem_suite->get_param().shared_secret_len;
+        ciphertext_len = cipher_suite->kem_suite->get_param().kem_ciphertext_len;
         bob_signed_pre_key_id = msg->bob_signed_pre_key_id;
         bob_one_time_pre_key_id = msg->bob_one_time_pre_key_id;
     } else {

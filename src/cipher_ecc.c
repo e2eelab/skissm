@@ -25,6 +25,7 @@
 #include <curve25519-donna.h>
 
 #include "e2ees/cipher.h"
+#include "e2ees/crypto.h"
 #include "e2ees/mem_util.h"
 
 static const uint8_t CURVE25519_BASEPOINT[32] = {9};
@@ -36,90 +37,8 @@ static crypto_ds_param_t curve25519_sign_param = {
     CURVE_SIGNATURE_LENGTH
 };
 
-static crypto_ds_param_t get_curve25519_sign_param() {
+static crypto_ds_param_t crypto_ds_params_curve25519() {
     return curve25519_sign_param;
-}
-
-static void crypto_curve25519_sign(
-    uint8_t *private_key,
-    uint8_t *msg, size_t msg_len,
-    uint8_t *signature_out
-) {
-    uint8_t nonce[CURVE_SIGNATURE_LENGTH];
-    get_e2ees_plugin()->common_handler.gen_rand(nonce, sizeof(nonce));
-    curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
-}
-
-static int crypto_curve25519_verify(
-    uint8_t *signature_in, uint8_t *public_key,
-    uint8_t *msg, size_t msg_len
-) {
-    return curve25519_verify(signature_in, public_key, msg, msg_len);
-}
-
-static void crypto_curve25519_generate_private_key(uint8_t *private_key) {
-    uint8_t random[CURVE25519_RANDOM_LENGTH];
-    get_e2ees_plugin()->common_handler.gen_rand(random, sizeof(random));
-
-    random[0] &= 248;
-    random[31] &= 127;
-    random[31] |= 64;
-
-    memcpy(private_key, random, CURVE25519_KEY_LENGTH);
-}
-
-static int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key) {
-    int result;
-
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
-    priv_key->len = CURVE25519_KEY_LENGTH;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
-    pub_key->len = CURVE25519_KEY_LENGTH;
-
-    uint8_t msg[10] = {0};
-    uint8_t signature[CURVE_SIGNATURE_LENGTH];
-
-    while (true) {
-        crypto_curve25519_generate_private_key(priv_key->data);
-
-        curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
-        crypto_curve25519_sign(priv_key->data, msg, 10, signature);
-        result = crypto_curve25519_verify(signature, pub_key->data, msg, 10);
-        if (result != 0) {
-            // verify failed, regenerate the key pair
-            e2ees_notify_log(
-                NULL,
-                BAD_SIGNATURE,
-                "CURVE25519_crypto_sign_keypair() verify failed, regenerate the key pair."
-            );
-        } else {
-            // success
-            break;
-        }
-        // TODO in case of long running
-    }
-
-    return result;
-}
-
-static int CURVE25519_crypto_sign_signature(
-    uint8_t *signature_out, size_t *signature_out_len,
-    const uint8_t *msg, size_t msg_len,
-    const uint8_t *private_key
-) {
-    *signature_out_len = CURVE_SIGNATURE_LENGTH;
-    uint8_t nonce[*signature_out_len];
-    get_e2ees_plugin()->common_handler.gen_rand(nonce, sizeof(nonce));
-    return curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
-}
-
-static int CURVE25519_crypto_sign_verify(
-    const uint8_t *signature_in, size_t signature_in_len,
-    const uint8_t *msg, size_t msg_len,
-    const uint8_t *public_key
-) {
-    return curve25519_verify(signature_in, public_key, msg, msg_len);
 }
 
 static crypto_kem_param_t curve25519_ECDH_param = {
@@ -130,42 +49,22 @@ static crypto_kem_param_t curve25519_ECDH_param = {
     CURVE25519_KEY_LENGTH
 };
 
-static crypto_kem_param_t get_curve25519_ECDH_param() {
+static crypto_kem_param_t crypto_kem_params_curve25519() {
     return curve25519_ECDH_param;
 }
 
-static int CURVE25519_crypto_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key) {
-    priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
-    priv_key->len = CURVE25519_KEY_LENGTH;
-
-    pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
-    pub_key->len = CURVE25519_KEY_LENGTH;
-
-    crypto_curve25519_generate_private_key(priv_key->data);
-
-    return curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
-}
-
-static int crypto_curve25519_dh(
-    uint8_t *shared_secret,
-    const ProtobufCBinaryData *our_key,
-    const ProtobufCBinaryData *ciphertext
-) {
-    return curve25519_donna(shared_secret, our_key->data, ciphertext->data);
-}
-
 // default digital signature suite with ecc
-struct ds_suite_t E2EES_CURVE25519_SIGN = {
-    get_curve25519_sign_param,
-    CURVE25519_crypto_sign_keypair,
-    CURVE25519_crypto_sign_signature,
-    CURVE25519_crypto_sign_verify
+struct ds_suite_t E2EES_DS_CURVE25519 = {
+    crypto_ds_params_curve25519,
+    crypto_ds_key_gen_curve25519,
+    crypto_ds_sign_curve25519,
+    crypto_ds_verify_curve25519
 };
 
 // default kem suite with ecc
-struct kem_suite_t E2EES_CURVE25519_ECDH = {
-    get_curve25519_ECDH_param,
-    CURVE25519_crypto_keypair,
+struct kem_suite_t E2EES_KEM_CURVE25519_ECDH = {
+    crypto_kem_params_curve25519,
+    crypto_kem_asym_key_gen_curve25519,
     NULL,
-    crypto_curve25519_dh
+    crypto_kem_decaps_curve25519
 };

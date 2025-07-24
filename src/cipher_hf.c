@@ -29,15 +29,15 @@ static crypto_hf_param_t sha256_param = {
     SHA256_OUTPUT_LENGTH,
 };
 
-static crypto_hf_param_t get_sha256_param() {
+static crypto_hf_param_t crypto_hf_params_sha256() {
     return sha256_param;
 }
 
 // default hash function suite
 
-const struct hf_suite_t E2EES_SHA256 = {
-    get_sha256_param,
-    crypto_hkdf_sha256,
-    crypto_hmac_sha256,
-    crypto_sha256
+const struct hf_suite_t E2EES_HF_SHA256 = {
+    crypto_hf_params_sha256,
+    crypto_hf_hkdf_sha256,
+    crypto_hf_hmac_sha256,
+    crypto_hf_sha256
 };

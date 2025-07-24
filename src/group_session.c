@@ -37,7 +37,7 @@ static const uint8_t CHAIN_KEY_SEED[1] = {0x02};
 static const char MESSAGE_KEY_SEED[] = "MessageKeys";
 
 void advance_group_chain_key(const cipher_suite_t *cipher_suite, ProtobufCBinaryData *chain_key) {
-    int group_shared_key_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+    int group_shared_key_len = cipher_suite->hf_suite->get_param().hf_len;
     uint8_t shared_key[group_shared_key_len];
     cipher_suite->hf_suite->hmac(
         chain_key->data, chain_key->len,
@@ -51,7 +51,7 @@ void advance_group_chain_key(const cipher_suite_t *cipher_suite, ProtobufCBinary
 void advance_group_chain_key_by_welcome(
     const cipher_suite_t *cipher_suite, const ProtobufCBinaryData *src_chain_key, ProtobufCBinaryData **dest_chain_key
 ) {
-    int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+    int hf_len = cipher_suite->hf_suite->get_param().hf_len;
     uint8_t salt[] = "welcome";
 
     *dest_chain_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
@@ -70,7 +70,7 @@ void advance_group_chain_key_by_welcome(
 void advance_group_chain_key_by_add(
     const cipher_suite_t *cipher_suite, const ProtobufCBinaryData *src_chain_key, ProtobufCBinaryData *dest_chain_key
 ) {
-    int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+    int hf_len = cipher_suite->hf_suite->get_param().hf_len;
     uint8_t salt[] = "add";
 
     ProtobufCBinaryData *new_chain_key = (ProtobufCBinaryData *)malloc(sizeof(ProtobufCBinaryData));
@@ -97,13 +97,13 @@ void create_group_message_key(
     const ProtobufCBinaryData *chain_key,
     E2ees__MsgKey *msg_key
 ) {
-    int group_msg_key_len = cipher_suite->se_suite->get_crypto_param().aead_key_len + cipher_suite->se_suite->get_crypto_param().aead_iv_len;
+    int group_msg_key_len = cipher_suite->se_suite->get_param().aead_key_len + cipher_suite->se_suite->get_param().aead_iv_len;
 
     free_protobuf(&(msg_key->derived_key));
     msg_key->derived_key.data = (uint8_t *)malloc(sizeof(uint8_t) * group_msg_key_len);
     msg_key->derived_key.len = group_msg_key_len;
 
-    int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+    int hf_len = cipher_suite->hf_suite->get_param().hf_len;
     uint8_t salt[hf_len];
     memset(salt, 0, hf_len);
     cipher_suite->hf_suite->hkdf(
@@ -252,7 +252,7 @@ static void insert_outbound_group_session_data(
     const uint8_t *identity_public_key
 ) {
     const cipher_suite_t *cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
-    int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+    int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
     outbound_group_session->version = strdup(E2EES_PROTOCOL_VERSION);
     outbound_group_session->e2ees_pack_id = e2ees_pack_id;
@@ -281,7 +281,7 @@ static void insert_outbound_group_session_data(
     memcpy(secret + SEED_SECRET_LEN, identity_public_key, sign_key_len);
 
     // generate a chain key
-    int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+    int hf_len = cipher_suite->hf_suite->get_param().hf_len;
     uint8_t salt[hf_len];
     memset(salt, 0, hf_len);
     outbound_group_session->chain_key.len = hf_len;
@@ -624,7 +624,7 @@ int new_outbound_group_session_invited(
 
     if (ret == E2EES_RESULT_SUCC) {
         const cipher_suite_t *cipher_suite = get_e2ees_pack(group_update_key_bundle->e2ees_pack_id)->cipher_suite;
-        int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+        int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
         E2ees__GroupSession *outbound_group_session = (E2ees__GroupSession *)malloc(sizeof(E2ees__GroupSession));
         e2ees__group_session__init(outbound_group_session);
@@ -724,7 +724,7 @@ int new_inbound_group_session_by_pre_key_bundle(
 
     if (ret == E2EES_RESULT_SUCC) {
         const cipher_suite_t *cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
-        int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+        int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
         E2ees__GroupSession *inbound_group_session = (E2ees__GroupSession *)malloc(sizeof(E2ees__GroupSession));
         e2ees__group_session__init(inbound_group_session);
@@ -778,7 +778,7 @@ int new_inbound_group_session_by_member_id(
 
     if (ret == E2EES_RESULT_SUCC) {
         const cipher_suite_t *cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
-        int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+        int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
         E2ees__GroupSession *inbound_group_session = (E2ees__GroupSession *)malloc(sizeof(E2ees__GroupSession));
         e2ees__group_session__init(inbound_group_session);
@@ -821,7 +821,7 @@ int complete_inbound_group_session_by_pre_key_bundle(
 
     if (ret == E2EES_RESULT_SUCC) {
         const cipher_suite_t *cipher_suite = get_e2ees_pack(inbound_group_session->e2ees_pack_id)->cipher_suite;
-        int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+        int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
         size_t secret_len = SEED_SECRET_LEN + sign_key_len;
         uint8_t *secret = (uint8_t *)malloc(sizeof(uint8_t) * secret_len);
@@ -836,7 +836,7 @@ int complete_inbound_group_session_by_pre_key_bundle(
         memcpy(secret + SEED_SECRET_LEN, inbound_group_session->associated_data.data, sign_key_len);  // only copy the first half
 
         // generate a chain key
-        int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        int hf_len = cipher_suite->hf_suite->get_param().hf_len;
         uint8_t salt[hf_len];
         memset(salt, 0, hf_len);
         inbound_group_session->chain_key.len = hf_len;
@@ -874,7 +874,7 @@ int complete_inbound_group_session_by_member_id(
 
     if (ret == E2EES_RESULT_SUCC) {
         const cipher_suite_t *cipher_suite = get_e2ees_pack(inbound_group_session->e2ees_pack_id)->cipher_suite;
-        int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+        int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
         size_t secret_len = SEED_SECRET_LEN + sign_key_len;
         uint8_t *secret = (uint8_t *)malloc(sizeof(uint8_t) * secret_len);
@@ -893,7 +893,7 @@ int complete_inbound_group_session_by_member_id(
         free_protobuf(&(inbound_group_session->group_seed));
 
         // generate a chain key
-        int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        int hf_len = cipher_suite->hf_suite->get_param().hf_len;
         uint8_t salt[hf_len];
         memset(salt, 0, hf_len);
         inbound_group_session->chain_key.len = hf_len;
@@ -936,7 +936,7 @@ int new_and_complete_inbound_group_session(
         insert_inbound_group_session_data(group_member_id, other_group_session, inbound_group_session);
 
         const cipher_suite_t *cipher_suite = get_e2ees_pack(other_group_session->e2ees_pack_id)->cipher_suite;
-        int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+        int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
         uint8_t *identity_public_key = group_member_id->sign_public_key.data;
 
@@ -950,7 +950,7 @@ int new_and_complete_inbound_group_session(
         memcpy(secret + SEED_SECRET_LEN, identity_public_key, sign_key_len);
 
         // generate a chain key
-        int hf_len = cipher_suite->hf_suite->get_crypto_param().hf_len;
+        int hf_len = cipher_suite->hf_suite->get_param().hf_len;
         uint8_t salt[hf_len];
         memset(salt, 0, hf_len);
         inbound_group_session->chain_key.len = hf_len;
@@ -1006,7 +1006,7 @@ int new_and_complete_inbound_group_session_with_chain_key(
         insert_inbound_group_session_data(group_member_info, other_group_session, inbound_group_session);
 
         const cipher_suite_t *cipher_suite = get_e2ees_pack(other_group_session->e2ees_pack_id)->cipher_suite;
-        int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+        int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
         uint8_t *identity_public_key = group_member_info->sign_public_key.data;
 
@@ -1069,7 +1069,7 @@ int new_and_complete_inbound_group_session_with_ratchet_state(
         copy_protobuf_from_protobuf(&(inbound_group_session->chain_key), &(group_update_key_bundle->chain_key));
         inbound_group_session->sequence = 0;
 
-        int sign_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
+        int sign_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
 
         uint8_t *identity_public_key = group_update_key_bundle->sign_public_key.data;
 

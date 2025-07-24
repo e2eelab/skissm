@@ -167,71 +167,71 @@ static crypto_kem_param_t mceliece8192128f_param = {
     PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_BYTES
 };
 
-static crypto_kem_param_t get_hqc128_param() {
+static crypto_kem_param_t crypto_kem_params_hqc128() {
     return hqc128_param;
 }
 
-static crypto_kem_param_t get_hqc192_param() {
+static crypto_kem_param_t crypto_kem_params_hqc192() {
     return hqc192_param;
 }
 
-static crypto_kem_param_t get_hqc256_param() {
+static crypto_kem_param_t crypto_kem_params_hqc256() {
     return hqc256_param;
 }
 
-static crypto_kem_param_t get_mlkem512_param() {
+static crypto_kem_param_t crypto_kem_params_mlkem512() {
     return mlkem512_param;
 }
 
-static crypto_kem_param_t get_mlkem768_param() {
+static crypto_kem_param_t crypto_kem_params_mlkem768() {
     return mlkem768_param;
 }
 
-static crypto_kem_param_t get_mlkem1024_param() {
+static crypto_kem_param_t crypto_kem_params_mlkem1024() {
     return mlkem1024_param;
 }
 
-static crypto_kem_param_t get_mceliece348864_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece348864() {
     return mceliece348864_param;
 }
 
-static crypto_kem_param_t get_mceliece348864f_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece348864f() {
     return mceliece348864f_param;
 }
 
-static crypto_kem_param_t get_mceliece460896_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece460896() {
     return mceliece460896_param;
 }
 
-static crypto_kem_param_t get_mceliece460896f_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece460896f() {
     return mceliece460896f_param;
 }
 
-static crypto_kem_param_t get_mceliece6688128_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece6688128() {
     return mceliece6688128_param;
 }
 
-static crypto_kem_param_t get_mceliece6688128f_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece6688128f() {
     return mceliece6688128f_param;
 }
 
-static crypto_kem_param_t get_mceliece6960119_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece6960119() {
     return mceliece6960119_param;
 }
 
-static crypto_kem_param_t get_mceliece6960119f_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece6960119f() {
     return mceliece6960119f_param;
 }
 
-static crypto_kem_param_t get_mceliece8192128_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece8192128() {
     return mceliece8192128_param;
 }
 
-static crypto_kem_param_t get_mceliece8192128f_param() {
+static crypto_kem_param_t crypto_kem_params_mceliece8192128f() {
     return mceliece8192128f_param;
 }
 
-static int crypto_hqc128_generate_key_pair(
+static int crypto_kem_asym_key_gen_hqc128(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC128_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -243,7 +243,7 @@ static int crypto_hqc128_generate_key_pair(
     return PQCLEAN_HQC128_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_hqc192_generate_key_pair(
+static int crypto_kem_asym_key_gen_hqc192(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC192_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -255,7 +255,7 @@ static int crypto_hqc192_generate_key_pair(
     return PQCLEAN_HQC192_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_hqc256_generate_key_pair(
+static int crypto_kem_asym_key_gen_hqc256(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_HQC256_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -267,7 +267,7 @@ static int crypto_hqc256_generate_key_pair(
     return PQCLEAN_HQC256_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mlkem512_generate_key_pair(
+static int crypto_kem_asym_key_gen_mlkem512(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MLKEM512_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -279,7 +279,7 @@ static int crypto_mlkem512_generate_key_pair(
     return PQCLEAN_MLKEM512_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mlkem768_generate_key_pair(
+static int crypto_kem_asym_key_gen_mlkem768(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MLKEM768_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -291,7 +291,7 @@ static int crypto_mlkem768_generate_key_pair(
     return PQCLEAN_MLKEM768_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mlkem1024_generate_key_pair(
+static int crypto_kem_asym_key_gen_mlkem1024(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MLKEM1024_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -303,7 +303,7 @@ static int crypto_mlkem1024_generate_key_pair(
     return PQCLEAN_MLKEM1024_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece348864_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece348864(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -315,7 +315,7 @@ static int crypto_mceliece348864_generate_key_pair(
     return PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece348864f_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece348864f(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE348864F_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -327,7 +327,7 @@ static int crypto_mceliece348864f_generate_key_pair(
     return PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece460896_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece460896(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -339,7 +339,7 @@ static int crypto_mceliece460896_generate_key_pair(
     return PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece460896f_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece460896f(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE460896F_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -351,7 +351,7 @@ static int crypto_mceliece460896f_generate_key_pair(
     return PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece6688128_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece6688128(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -363,7 +363,7 @@ static int crypto_mceliece6688128_generate_key_pair(
     return PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece6688128f_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece6688128f(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6688128F_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -375,7 +375,7 @@ static int crypto_mceliece6688128f_generate_key_pair(
     return PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece6960119_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece6960119(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -387,7 +387,7 @@ static int crypto_mceliece6960119_generate_key_pair(
     return PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece6960119f_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece6960119f(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE6960119F_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -399,7 +399,7 @@ static int crypto_mceliece6960119f_generate_key_pair(
     return PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece8192128_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece8192128(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -411,7 +411,7 @@ static int crypto_mceliece8192128_generate_key_pair(
     return PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_mceliece8192128f_generate_key_pair(
+static int crypto_kem_asym_key_gen_mceliece8192128f(
     ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key
 ) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * PQCLEAN_MCELIECE8192128F_CLEAN_CRYPTO_SECRETKEYBYTES);
@@ -423,7 +423,7 @@ static int crypto_mceliece8192128f_generate_key_pair(
     return PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_keypair(pub_key->data, priv_key->data);
 }
 
-static int crypto_hqc128_encaps(
+static int crypto_kem_encaps_hqc128(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -433,7 +433,7 @@ static int crypto_hqc128_encaps(
     return PQCLEAN_HQC128_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_hqc192_encaps(
+static int crypto_kem_encaps_hqc192(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -443,7 +443,7 @@ static int crypto_hqc192_encaps(
     return PQCLEAN_HQC192_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_hqc256_encaps(
+static int crypto_kem_encaps_hqc256(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -453,7 +453,7 @@ static int crypto_hqc256_encaps(
     return PQCLEAN_HQC256_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mlkem512_encaps(
+static int crypto_kem_encaps_mlkem512(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -463,7 +463,7 @@ static int crypto_mlkem512_encaps(
     return PQCLEAN_MLKEM512_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mlkem768_encaps(
+static int crypto_kem_encaps_mlkem768(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -473,7 +473,7 @@ static int crypto_mlkem768_encaps(
     return PQCLEAN_MLKEM768_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mlkem1024_encaps(
+static int crypto_kem_encaps_mlkem1024(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -483,7 +483,7 @@ static int crypto_mlkem1024_encaps(
     return PQCLEAN_MLKEM1024_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece348864_encaps(
+static int crypto_kem_encaps_mceliece348864(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -493,7 +493,7 @@ static int crypto_mceliece348864_encaps(
     return PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece348864f_encaps(
+static int crypto_kem_encaps_mceliece348864f(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -503,7 +503,7 @@ static int crypto_mceliece348864f_encaps(
     return PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece460896_encaps(
+static int crypto_kem_encaps_mceliece460896(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -513,7 +513,7 @@ static int crypto_mceliece460896_encaps(
     return PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece460896f_encaps(
+static int crypto_kem_encaps_mceliece460896f(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -523,7 +523,7 @@ static int crypto_mceliece460896f_encaps(
     return PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece6688128_encaps(
+static int crypto_kem_encaps_mceliece6688128(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -533,7 +533,7 @@ static int crypto_mceliece6688128_encaps(
     return PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece6688128f_encaps(
+static int crypto_kem_encaps_mceliece6688128f(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -543,7 +543,7 @@ static int crypto_mceliece6688128f_encaps(
     return PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece6960119_encaps(
+static int crypto_kem_encaps_mceliece6960119(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -553,7 +553,7 @@ static int crypto_mceliece6960119_encaps(
     return PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece6960119f_encaps(
+static int crypto_kem_encaps_mceliece6960119f(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -563,7 +563,7 @@ static int crypto_mceliece6960119f_encaps(
     return PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece8192128_encaps(
+static int crypto_kem_encaps_mceliece8192128(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -573,7 +573,7 @@ static int crypto_mceliece8192128_encaps(
     return PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_mceliece8192128f_encaps(
+static int crypto_kem_encaps_mceliece8192128f(
     uint8_t *shared_secret,
     ProtobufCBinaryData *ciphertext,
     const ProtobufCBinaryData *their_key
@@ -583,7 +583,7 @@ static int crypto_mceliece8192128f_encaps(
     return PQCLEAN_MCELIECE8192128F_CLEAN_crypto_kem_enc(ciphertext->data, shared_secret, their_key->data);
 }
 
-static int crypto_hqc128_decaps(
+static int crypto_kem_decaps_hqc128(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -591,7 +591,7 @@ static int crypto_hqc128_decaps(
     return PQCLEAN_HQC128_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_hqc192_decaps(
+static int crypto_kem_decaps_hqc192(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -599,7 +599,7 @@ static int crypto_hqc192_decaps(
     return PQCLEAN_HQC192_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_hqc256_decaps(
+static int crypto_kem_decaps_hqc256(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -607,7 +607,7 @@ static int crypto_hqc256_decaps(
     return PQCLEAN_HQC256_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mlkem512_decaps(
+static int crypto_kem_decaps_mlkem512(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -615,7 +615,7 @@ static int crypto_mlkem512_decaps(
     return PQCLEAN_MLKEM512_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mlkem768_decaps(
+static int crypto_kem_decaps_mlkem768(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -623,7 +623,7 @@ static int crypto_mlkem768_decaps(
     return PQCLEAN_MLKEM768_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mlkem1024_decaps(
+static int crypto_kem_decaps_mlkem1024(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -631,7 +631,7 @@ static int crypto_mlkem1024_decaps(
     return PQCLEAN_MLKEM1024_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece348864_decaps(
+static int crypto_kem_decaps_mceliece348864(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -639,7 +639,7 @@ static int crypto_mceliece348864_decaps(
     return PQCLEAN_MCELIECE348864_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece348864f_decaps(
+static int crypto_kem_decaps_mceliece348864f(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -647,7 +647,7 @@ static int crypto_mceliece348864f_decaps(
     return PQCLEAN_MCELIECE348864F_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece460896_decaps(
+static int crypto_kem_decaps_mceliece460896(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -655,7 +655,7 @@ static int crypto_mceliece460896_decaps(
     return PQCLEAN_MCELIECE460896_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece460896f_decaps(
+static int crypto_kem_decaps_mceliece460896f(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -663,7 +663,7 @@ static int crypto_mceliece460896f_decaps(
     return PQCLEAN_MCELIECE460896F_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece6688128_decaps(
+static int crypto_kem_decaps_mceliece6688128(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -671,7 +671,7 @@ static int crypto_mceliece6688128_decaps(
     return PQCLEAN_MCELIECE6688128_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece6688128f_decaps(
+static int crypto_kem_decaps_mceliece6688128f(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -679,7 +679,7 @@ static int crypto_mceliece6688128f_decaps(
     return PQCLEAN_MCELIECE6688128F_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece6960119_decaps(
+static int crypto_kem_decaps_mceliece6960119(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -687,7 +687,7 @@ static int crypto_mceliece6960119_decaps(
     return PQCLEAN_MCELIECE6960119_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece6960119f_decaps(
+static int crypto_kem_decaps_mceliece6960119f(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -695,7 +695,7 @@ static int crypto_mceliece6960119f_decaps(
     return PQCLEAN_MCELIECE6960119F_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece8192128_decaps(
+static int crypto_kem_decaps_mceliece8192128(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -703,7 +703,7 @@ static int crypto_mceliece8192128_decaps(
     return PQCLEAN_MCELIECE8192128_CLEAN_crypto_kem_dec(shared_secret, ciphertext->data, our_key->data);
 }
 
-static int crypto_mceliece8192128f_decaps(
+static int crypto_kem_decaps_mceliece8192128f(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -713,114 +713,114 @@ static int crypto_mceliece8192128f_decaps(
 
 // default kem suites with pqc
 
-struct kem_suite_t E2EES_HQC128 = {
-    get_hqc128_param,
-    crypto_hqc128_generate_key_pair,
-    crypto_hqc128_encaps,
-    crypto_hqc128_decaps
+struct kem_suite_t E2EES_KEM_HQC128 = {
+    crypto_kem_params_hqc128,
+    crypto_kem_asym_key_gen_hqc128,
+    crypto_kem_encaps_hqc128,
+    crypto_kem_decaps_hqc128
 };
 
-struct kem_suite_t E2EES_HQC192 = {
-    get_hqc192_param,
-    crypto_hqc192_generate_key_pair,
-    crypto_hqc192_encaps,
-    crypto_hqc192_decaps
+struct kem_suite_t E2EES_KEM_HQC192 = {
+    crypto_kem_params_hqc192,
+    crypto_kem_asym_key_gen_hqc192,
+    crypto_kem_encaps_hqc192,
+    crypto_kem_decaps_hqc192
 };
 
-struct kem_suite_t E2EES_HQC256 = {
-    get_hqc256_param,
-    crypto_hqc256_generate_key_pair,
-    crypto_hqc256_encaps,
-    crypto_hqc256_decaps
+struct kem_suite_t E2EES_KEM_HQC256 = {
+    crypto_kem_params_hqc256,
+    crypto_kem_asym_key_gen_hqc256,
+    crypto_kem_encaps_hqc256,
+    crypto_kem_decaps_hqc256
 };
 
-struct kem_suite_t E2EES_MLKEM512 = {
-    get_mlkem512_param,
-    crypto_mlkem512_generate_key_pair,
-    crypto_mlkem512_encaps,
-    crypto_mlkem512_decaps
+struct kem_suite_t E2EES_KEM_MLKEM512 = {
+    crypto_kem_params_mlkem512,
+    crypto_kem_asym_key_gen_mlkem512,
+    crypto_kem_encaps_mlkem512,
+    crypto_kem_decaps_mlkem512
 };
 
-struct kem_suite_t E2EES_MLKEM768 = {
-    get_mlkem768_param,
-    crypto_mlkem768_generate_key_pair,
-    crypto_mlkem768_encaps,
-    crypto_mlkem768_decaps
+struct kem_suite_t E2EES_KEM_MLKEM768 = {
+    crypto_kem_params_mlkem768,
+    crypto_kem_asym_key_gen_mlkem768,
+    crypto_kem_encaps_mlkem768,
+    crypto_kem_decaps_mlkem768
 };
 
-struct kem_suite_t E2EES_MLKEM1024 = {
-    get_mlkem1024_param,
-    crypto_mlkem1024_generate_key_pair,
-    crypto_mlkem1024_encaps,
-    crypto_mlkem1024_decaps
+struct kem_suite_t E2EES_KEM_MLKEM1024 = {
+    crypto_kem_params_mlkem1024,
+    crypto_kem_asym_key_gen_mlkem1024,
+    crypto_kem_encaps_mlkem1024,
+    crypto_kem_decaps_mlkem1024
 };
 
-struct kem_suite_t E2EES_MCELIECE348864 = {
-    get_mceliece348864_param,
-    crypto_mceliece348864_generate_key_pair,
-    crypto_mceliece348864_encaps,
-    crypto_mceliece348864_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE348864 = {
+    crypto_kem_params_mceliece348864,
+    crypto_kem_asym_key_gen_mceliece348864,
+    crypto_kem_encaps_mceliece348864,
+    crypto_kem_decaps_mceliece348864
 };
 
-struct kem_suite_t E2EES_MCELIECE348864F = {
-    get_mceliece348864f_param,
-    crypto_mceliece348864f_generate_key_pair,
-    crypto_mceliece348864f_encaps,
-    crypto_mceliece348864f_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE348864F = {
+    crypto_kem_params_mceliece348864f,
+    crypto_kem_asym_key_gen_mceliece348864f,
+    crypto_kem_encaps_mceliece348864f,
+    crypto_kem_decaps_mceliece348864f
 };
 
-struct kem_suite_t E2EES_MCELIECE460896 = {
-    get_mceliece460896_param,
-    crypto_mceliece460896_generate_key_pair,
-    crypto_mceliece460896_encaps,
-    crypto_mceliece460896_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE460896 = {
+    crypto_kem_params_mceliece460896,
+    crypto_kem_asym_key_gen_mceliece460896,
+    crypto_kem_encaps_mceliece460896,
+    crypto_kem_decaps_mceliece460896
 };
 
-struct kem_suite_t E2EES_MCELIECE460896F = {
-    get_mceliece460896f_param,
-    crypto_mceliece460896f_generate_key_pair,
-    crypto_mceliece460896f_encaps,
-    crypto_mceliece460896f_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE460896F = {
+    crypto_kem_params_mceliece460896f,
+    crypto_kem_asym_key_gen_mceliece460896f,
+    crypto_kem_encaps_mceliece460896f,
+    crypto_kem_decaps_mceliece460896f
 };
 
-struct kem_suite_t E2EES_MCELIECE6688128 = {
-    get_mceliece6688128_param,
-    crypto_mceliece6688128_generate_key_pair,
-    crypto_mceliece6688128_encaps,
-    crypto_mceliece6688128_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE6688128 = {
+    crypto_kem_params_mceliece6688128,
+    crypto_kem_asym_key_gen_mceliece6688128,
+    crypto_kem_encaps_mceliece6688128,
+    crypto_kem_decaps_mceliece6688128
 };
 
-struct kem_suite_t E2EES_MCELIECE6688128F = {
-    get_mceliece6688128f_param,
-    crypto_mceliece6688128f_generate_key_pair,
-    crypto_mceliece6688128f_encaps,
-    crypto_mceliece6688128f_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE6688128F = {
+    crypto_kem_params_mceliece6688128f,
+    crypto_kem_asym_key_gen_mceliece6688128f,
+    crypto_kem_encaps_mceliece6688128f,
+    crypto_kem_decaps_mceliece6688128f
 };
 
-struct kem_suite_t E2EES_MCELIECE6960119 = {
-    get_mceliece6960119_param,
-    crypto_mceliece6960119_generate_key_pair,
-    crypto_mceliece6960119_encaps,
-    crypto_mceliece6960119_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE6960119 = {
+    crypto_kem_params_mceliece6960119,
+    crypto_kem_asym_key_gen_mceliece6960119,
+    crypto_kem_encaps_mceliece6960119,
+    crypto_kem_decaps_mceliece6960119
 };
 
-struct kem_suite_t E2EES_MCELIECE6960119F = {
-    get_mceliece6960119f_param,
-    crypto_mceliece6960119f_generate_key_pair,
-    crypto_mceliece6960119f_encaps,
-    crypto_mceliece6960119f_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE6960119F = {
+    crypto_kem_params_mceliece6960119f,
+    crypto_kem_asym_key_gen_mceliece6960119f,
+    crypto_kem_encaps_mceliece6960119f,
+    crypto_kem_decaps_mceliece6960119f
 };
 
-struct kem_suite_t E2EES_MCELIECE8192128 = {
-    get_mceliece8192128_param,
-    crypto_mceliece8192128_generate_key_pair,
-    crypto_mceliece8192128_encaps,
-    crypto_mceliece8192128_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE8192128 = {
+    crypto_kem_params_mceliece8192128,
+    crypto_kem_asym_key_gen_mceliece8192128,
+    crypto_kem_encaps_mceliece8192128,
+    crypto_kem_decaps_mceliece8192128
 };
 
-struct kem_suite_t E2EES_MCELIECE8192128F = {
-    get_mceliece8192128f_param,
-    crypto_mceliece8192128f_generate_key_pair,
-    crypto_mceliece8192128f_encaps,
-    crypto_mceliece8192128f_decaps
+struct kem_suite_t E2EES_KEM_MCELIECE8192128F = {
+    crypto_kem_params_mceliece8192128f,
+    crypto_kem_asym_key_gen_mceliece8192128f,
+    crypto_kem_encaps_mceliece8192128f,
+    crypto_kem_decaps_mceliece8192128f
 };

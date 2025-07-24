@@ -66,33 +66,33 @@ extern "C" {
 /** buffer length for file encryption/decryption */
 #define FILE_ENCRYPTION_BUFFER_LENGTH 8192
 
-int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key);
+int crypto_ds_key_gen_curve25519(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key);
 
-int CURVE25519_crypto_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key);
+int crypto_kem_asym_key_gen_curve25519(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key);
 
-int CURVE25519_crypto_sign_signature(
+int crypto_ds_sign_curve25519(
     uint8_t *signature_out, size_t *signature_out_len,
     const uint8_t *msg, size_t msg_len,
     const uint8_t *private_key
 );
 
-int CURVE25519_crypto_sign_verify(
+int crypto_ds_verify_curve25519(
     const uint8_t *signature_in, size_t signature_in_len,
     const uint8_t *msg, size_t msg_len,
     const uint8_t *public_key
 );
 
-int crypto_curve25519_dh(
+int crypto_kem_decaps_curve25519(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
 );
 
-void crypto_curve25519_sign(uint8_t *private_key,
+void crypto_sign_curve25519(uint8_t *private_key,
     uint8_t *msg, size_t msg_len, uint8_t *signature_out
 );
 
-int crypto_curve25519_verify(
+int crypto_verify_curve25519(
     uint8_t *signature_in, uint8_t *public_key,
     uint8_t *msg, size_t msg_len
 );
@@ -111,7 +111,7 @@ int crypto_curve25519_verify(
  * @param output
  * @param output_len
  */
-int crypto_hkdf_sha256(
+int crypto_hf_hkdf_sha256(
     const uint8_t *input, size_t input_len,
     const uint8_t *salt, size_t salt_len,
     const uint8_t *info, size_t info_len,
@@ -130,7 +130,7 @@ int crypto_hkdf_sha256(
  * @param input_len
  * @param output
  */
-int crypto_hmac_sha256(
+int crypto_hf_hmac_sha256(
     const uint8_t *key, size_t key_len,
     const uint8_t *input, size_t input_len,
     uint8_t *output
@@ -146,7 +146,7 @@ int crypto_hmac_sha256(
  * @param msg_len
  * @param hash_out
  */
-int crypto_sha256(
+int crypto_hf_sha256(
     const uint8_t *msg, size_t msg_len,
     uint8_t *hash_out
 );
@@ -196,7 +196,7 @@ int crypto_aes_decrypt_gcm(
  * @param plaintext_data_length
  * @return size_t length of ciphertext data
  */
-size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length);
+size_t crypto_aes256_gcm_ciphertext_data_len(size_t plaintext_data_length);
 
 /**
  * @brief Calculate plaintext data len for AES GCM.
@@ -204,7 +204,7 @@ size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length);
  * @param ciphertext_data_len
  * @return size_t length of plaintext data
  */
-size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len);
+size_t crypto_aes256_gcm_plaintext_data_len(size_t ciphertext_data_len);
 
 /**
  * @brief AES256 encrypt data in GCM mode.
@@ -216,7 +216,7 @@ size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len);
  * @param ciphertext_data
  * @return
  */
-size_t encrypt_aes_data_with_iv(
+size_t crypto_encrypt_aes_data_with_iv(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     const uint8_t aes_key[AES256_KEY_LENGTH],
     const uint8_t iv[AES256_DATA_IV_LENGTH],
@@ -233,7 +233,7 @@ size_t encrypt_aes_data_with_iv(
  * @param ciphertext_data
  * @return size_t ciphertext data length
  */
-size_t encrypt_aes_data(
+size_t crypto_encrypt_aes_data(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     const uint8_t aes_key[AES256_KEY_LENGTH],
     uint8_t **ciphertext_data
@@ -249,7 +249,7 @@ size_t encrypt_aes_data(
  * @param plaintext_data
  * @return
  */
-size_t decrypt_aes_data_with_iv(
+size_t crypto_decrypt_aes_data_with_iv(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
     const uint8_t aes_key[AES256_KEY_LENGTH],
     const uint8_t iv[AES256_DATA_IV_LENGTH],
@@ -266,7 +266,7 @@ size_t decrypt_aes_data_with_iv(
  * @param plaintext_data
  * @return size_t plaintext data length
  */
-size_t decrypt_aes_data(
+size_t crypto_decrypt_aes_data(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
     const uint8_t aes_key[AES256_KEY_LENGTH],
     uint8_t **plaintext_data
@@ -281,7 +281,7 @@ size_t decrypt_aes_data(
  * @param aes_key
  * @return int 0 for success
  */
-int encrypt_aes_file(
+int crypto_encrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t aes_key[AES256_KEY_LENGTH]
 );
@@ -295,7 +295,7 @@ int encrypt_aes_file(
  * @param aes_key
  * @return int 0 for success
  */
-int decrypt_aes_file(
+int crypto_decrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t aes_key[AES256_KEY_LENGTH]
 );
@@ -311,7 +311,7 @@ int decrypt_aes_file(
  * @param password_len
  * @return int 0 for success
  */
-int encrypt_file(
+int crypto_encrypt_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t *password,
     const size_t password_len
@@ -328,7 +328,7 @@ int encrypt_file(
  * @param password_len
  * @return int 0 for success
  */
-int decrypt_file(
+int crypto_decrypt_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t *password,
     const size_t password_len

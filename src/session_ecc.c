@@ -32,12 +32,12 @@ E2ees__InviteResponse *crypto_curve25519_new_outbound_session(
     E2ees__Session *outbound_session, const E2ees__Account *local_account, E2ees__PreKeyBundle *their_pre_key_bundle
 ) {
     const cipher_suite_t *cipher_suite = get_e2ees_pack(outbound_session->e2ees_pack_id)->cipher_suite;
-    int key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
+    int key_len = cipher_suite->kem_suite->get_param().asym_pub_key_len;
     // verify the signature
     int result;
     if ((their_pre_key_bundle->identity_key_public->asym_public_key.len != key_len)
         || (their_pre_key_bundle->signed_pre_key_public->public_key.len != key_len)
-        || (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->ds_suite->get_crypto_param().sig_len)
+        || (their_pre_key_bundle->signed_pre_key_public->signature.len != cipher_suite->ds_suite->get_param().sig_len)
     ) {
         e2ees_notify_log(outbound_session->our_address, BAD_PRE_KEY_BUNDLE, "crypto_curve25519_new_outbound_session()");
         return NULL;
@@ -93,7 +93,7 @@ E2ees__InviteResponse *crypto_curve25519_new_outbound_session(
     memcpy(outbound_session->associated_data.data, my_identity_key_pair.public_key.data, key_len);
     memcpy((outbound_session->associated_data.data) + key_len, their_pre_key_bundle->identity_key_public->asym_public_key.data, key_len);
 
-    int shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
+    int shared_secret_len = cipher_suite->kem_suite->get_param().shared_secret_len;
     // calculate the shared secret S via quadruple ECDH
     uint8_t secret[x3dh_epoch * shared_secret_len];
     uint8_t *pos = secret;
@@ -162,7 +162,7 @@ int crypto_curve25519_new_inbound_session(E2ees__Session *inbound_session, E2ees
         x3dh_epoch = 4;
     }
 
-    int key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
+    int key_len = cipher_suite->kem_suite->get_param().asym_pub_key_len;
     int ad_len = 2 * key_len;
     inbound_session->associated_data.len = ad_len;
     inbound_session->associated_data.data = (uint8_t *)malloc(sizeof(uint8_t) * ad_len);
@@ -200,7 +200,7 @@ int crypto_curve25519_new_inbound_session(E2ees__Session *inbound_session, E2ees
         bob_one_time_pre_key = NULL;
     }
 
-    int shared_secret_len = cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
+    int shared_secret_len = cipher_suite->kem_suite->get_param().shared_secret_len;
     // calculate the shared secret S via quadruple DH
     uint8_t secret[x3dh_epoch * shared_secret_len];
     uint8_t *pos = secret;

@@ -320,7 +320,7 @@ static void initialization(
     E2ees__KeyPair bob_spk;
     test_cipher_suite->kem_suite->asym_key_gen(&(bob_spk.public_key), &(bob_spk.private_key));
 
-    int ad_len = 2 * test_cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
+    int ad_len = 2 * test_cipher_suite->kem_suite->get_param().asym_pub_key_len;
     uint8_t associated_data[ad_len];
     memset(associated_data, 0, ad_len);
     ad->len = ad_len;
@@ -380,7 +380,7 @@ static void test_initialise_as_alice() {
     uint8_t shared_secret[] = "shared_secret:nwjeldUbnjwcwkdt5q";
 
     ProtobufCBinaryData ciphertext = {0, NULL};
-    int temp_shared_key_len = test_cipher_suite->kem_suite->get_crypto_param().shared_secret_len;
+    int temp_shared_key_len = test_cipher_suite->kem_suite->get_param().shared_secret_len;
     uint8_t temp_secret[temp_shared_key_len];
     test_cipher_suite->kem_suite->encaps(temp_secret, &ciphertext, &(alice_ratchet_key.public_key));
 

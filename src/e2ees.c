@@ -24,43 +24,46 @@
 #include "e2ees/account.h"
 #include "e2ees/mem_util.h"
 
-extern struct ds_suite_t E2EES_CURVE25519_SIGN;
-extern struct ds_suite_t E2EES_MLDSA44;
-extern struct ds_suite_t E2EES_MLDSA65;
-extern struct ds_suite_t E2EES_MLDSA87;
-extern struct ds_suite_t E2EES_FALCON512;
-extern struct ds_suite_t E2EES_FALCON1024;
-extern struct ds_suite_t E2EES_SPHINCS_SHA2_128F;
-extern struct ds_suite_t E2EES_SPHINCS_SHA2_128S;
-extern struct ds_suite_t E2EES_SPHINCS_SHA2_192F;
-extern struct ds_suite_t E2EES_SPHINCS_SHA2_192S;
-extern struct ds_suite_t E2EES_SPHINCS_SHA2_256F;
-extern struct ds_suite_t E2EES_SPHINCS_SHA2_256S;
-extern struct ds_suite_t E2EES_SPHINCS_SHAKE_128F;
-extern struct ds_suite_t E2EES_SPHINCS_SHAKE_128S;
-extern struct ds_suite_t E2EES_SPHINCS_SHAKE_192F;
-extern struct ds_suite_t E2EES_SPHINCS_SHAKE_192S;
-extern struct ds_suite_t E2EES_SPHINCS_SHAKE_256F;
-extern struct ds_suite_t E2EES_SPHINCS_SHAKE_256S;
-extern struct kem_suite_t E2EES_CURVE25519_ECDH;
-extern struct kem_suite_t E2EES_HQC128;
-extern struct kem_suite_t E2EES_HQC192;
-extern struct kem_suite_t E2EES_HQC256;
-extern struct kem_suite_t E2EES_MLKEM512;
-extern struct kem_suite_t E2EES_MLKEM768;
-extern struct kem_suite_t E2EES_MLKEM1024;
-extern struct kem_suite_t E2EES_MCELIECE348864;
-extern struct kem_suite_t E2EES_MCELIECE348864F;
-extern struct kem_suite_t E2EES_MCELIECE460896;
-extern struct kem_suite_t E2EES_MCELIECE460896F;
-extern struct kem_suite_t E2EES_MCELIECE6688128;
-extern struct kem_suite_t E2EES_MCELIECE6688128F;
-extern struct kem_suite_t E2EES_MCELIECE6960119;
-extern struct kem_suite_t E2EES_MCELIECE6960119F;
-extern struct kem_suite_t E2EES_MCELIECE8192128;
-extern struct kem_suite_t E2EES_MCELIECE8192128F;
-extern struct se_suite_t E2EES_AES256_SHA256;
-extern struct hf_suite_t E2EES_SHA256;
+extern struct ds_suite_t E2EES_DS_CURVE25519;
+extern struct ds_suite_t E2EES_DS_MLDSA44;
+extern struct ds_suite_t E2EES_DS_MLDSA65;
+extern struct ds_suite_t E2EES_DS_MLDSA87;
+extern struct ds_suite_t E2EES_DS_FALCON512;
+extern struct ds_suite_t E2EES_DS_FALCON1024;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHA2_128F;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHA2_128S;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHA2_192F;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHA2_192S;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHA2_256F;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHA2_256S;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHAKE_128F;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHAKE_128S;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHAKE_192F;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHAKE_192S;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHAKE_256F;
+extern struct ds_suite_t E2EES_DS_SPHINCS_SHAKE_256S;
+
+extern struct kem_suite_t E2EES_KEM_CURVE25519_ECDH;
+extern struct kem_suite_t E2EES_KEM_HQC128;
+extern struct kem_suite_t E2EES_KEM_HQC192;
+extern struct kem_suite_t E2EES_KEM_HQC256;
+extern struct kem_suite_t E2EES_KEM_MLKEM512;
+extern struct kem_suite_t E2EES_KEM_MLKEM768;
+extern struct kem_suite_t E2EES_KEM_MLKEM1024;
+extern struct kem_suite_t E2EES_KEM_MCELIECE348864;
+extern struct kem_suite_t E2EES_KEM_MCELIECE348864F;
+extern struct kem_suite_t E2EES_KEM_MCELIECE460896;
+extern struct kem_suite_t E2EES_KEM_MCELIECE460896F;
+extern struct kem_suite_t E2EES_KEM_MCELIECE6688128;
+extern struct kem_suite_t E2EES_KEM_MCELIECE6688128F;
+extern struct kem_suite_t E2EES_KEM_MCELIECE6960119;
+extern struct kem_suite_t E2EES_KEM_MCELIECE6960119F;
+extern struct kem_suite_t E2EES_KEM_MCELIECE8192128;
+extern struct kem_suite_t E2EES_KEM_MCELIECE8192128F;
+
+extern struct se_suite_t E2EES_SE_AES256_SHA256;
+
+extern struct hf_suite_t E2EES_HF_SHA256;
 
 cipher_suite_t E2EES_CIPHER_SUITE = { NULL, NULL, NULL };
 
@@ -85,41 +88,41 @@ e2ees_plugin_t *get_e2ees_plugin() { return e2ees_plugin; }
 
 ds_suite_t *get_ds_suite(unsigned digital_signature_id) {
     if (digital_signature_id == E2EES_PACK_ALG_DS_CURVE25519) {
-        return &E2EES_CURVE25519_SIGN;
+        return &E2EES_DS_CURVE25519;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_MLDSA44) {
-        return &E2EES_MLDSA44;
+        return &E2EES_DS_MLDSA44;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_MLDSA65) {
-        return &E2EES_MLDSA65;
+        return &E2EES_DS_MLDSA65;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_MLDSA87) {
-        return &E2EES_MLDSA87;
+        return &E2EES_DS_MLDSA87;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_FALCON512) {
-        return &E2EES_FALCON512;
+        return &E2EES_DS_FALCON512;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_FALCON1024) {
-        return &E2EES_FALCON1024;
+        return &E2EES_DS_FALCON1024;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHA2_128F) {
-        return &E2EES_SPHINCS_SHA2_128F;
+        return &E2EES_DS_SPHINCS_SHA2_128F;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHA2_128S) {
-        return &E2EES_SPHINCS_SHA2_128S;
+        return &E2EES_DS_SPHINCS_SHA2_128S;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHA2_192F) {
-        return &E2EES_SPHINCS_SHA2_192F;
+        return &E2EES_DS_SPHINCS_SHA2_192F;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHA2_192S) {
-        return &E2EES_SPHINCS_SHA2_192S;
+        return &E2EES_DS_SPHINCS_SHA2_192S;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHA2_256F) {
-        return &E2EES_SPHINCS_SHA2_256F;
+        return &E2EES_DS_SPHINCS_SHA2_256F;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHA2_256S) {
-        return &E2EES_SPHINCS_SHA2_256S;
+        return &E2EES_DS_SPHINCS_SHA2_256S;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHAKE_128F) {
-        return &E2EES_SPHINCS_SHAKE_128F;
+        return &E2EES_DS_SPHINCS_SHAKE_128F;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHAKE_128S) {
-        return &E2EES_SPHINCS_SHAKE_128S;
+        return &E2EES_DS_SPHINCS_SHAKE_128S;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHAKE_192F) {
-        return &E2EES_SPHINCS_SHAKE_192F;
+        return &E2EES_DS_SPHINCS_SHAKE_192F;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHAKE_192S) {
-        return &E2EES_SPHINCS_SHAKE_192S;
+        return &E2EES_DS_SPHINCS_SHAKE_192S;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHAKE_256F) {
-        return &E2EES_SPHINCS_SHAKE_256F;
+        return &E2EES_DS_SPHINCS_SHAKE_256F;
     } else if (digital_signature_id == E2EES_PACK_ALG_DS_SPHINCS_SHAKE_256S) {
-        return &E2EES_SPHINCS_SHAKE_256S;
+        return &E2EES_DS_SPHINCS_SHAKE_256S;
     } else {
         return NULL;
     }
@@ -127,39 +130,39 @@ ds_suite_t *get_ds_suite(unsigned digital_signature_id) {
 
 kem_suite_t *get_kem_suite(unsigned kem_id) {
     if (kem_id == E2EES_PACK_ALG_KEM_CURVE25519) {
-        return &E2EES_CURVE25519_ECDH;
+        return &E2EES_KEM_CURVE25519_ECDH;
     } else if (kem_id == E2EES_PACK_ALG_KEM_HQC128) {
-        return &E2EES_HQC128;
+        return &E2EES_KEM_HQC128;
     } else if (kem_id == E2EES_PACK_ALG_KEM_HQC192) {
-        return &E2EES_HQC192;
+        return &E2EES_KEM_HQC192;
     } else if (kem_id == E2EES_PACK_ALG_KEM_HQC256) {
-        return &E2EES_HQC256;
+        return &E2EES_KEM_HQC256;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MLKEM512) {
-        return &E2EES_MLKEM512;
+        return &E2EES_KEM_MLKEM512;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MLKEM768) {
-        return &E2EES_MLKEM768;
+        return &E2EES_KEM_MLKEM768;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MLKEM1024) {
-        return &E2EES_MLKEM1024;
+        return &E2EES_KEM_MLKEM1024;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE348864) {
-        return &E2EES_MCELIECE348864;
+        return &E2EES_KEM_MCELIECE348864;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE348864F) {
-        return &E2EES_MCELIECE348864F;
+        return &E2EES_KEM_MCELIECE348864F;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE460896) {
-        return &E2EES_MCELIECE460896;
+        return &E2EES_KEM_MCELIECE460896;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE460896) {
-        return &E2EES_MCELIECE460896F;
+        return &E2EES_KEM_MCELIECE460896F;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE6688128) {
-        return &E2EES_MCELIECE6688128;
+        return &E2EES_KEM_MCELIECE6688128;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE6688128F) {
-        return &E2EES_MCELIECE6688128F;
+        return &E2EES_KEM_MCELIECE6688128F;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE6960119) {
-        return &E2EES_MCELIECE6960119;
+        return &E2EES_KEM_MCELIECE6960119;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE6960119F) {
-        return &E2EES_MCELIECE6960119F;
+        return &E2EES_KEM_MCELIECE6960119F;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE8192128) {
-        return &E2EES_MCELIECE8192128;
+        return &E2EES_KEM_MCELIECE8192128;
     } else if (kem_id == E2EES_PACK_ALG_KEM_MCELIECE8192128F) {
-        return &E2EES_MCELIECE8192128F;
+        return &E2EES_KEM_MCELIECE8192128F;
     } else {
         return NULL;
     }
@@ -167,7 +170,7 @@ kem_suite_t *get_kem_suite(unsigned kem_id) {
 
 se_suite_t *get_se_suite(unsigned symmetric_encryption_id) {
     if (symmetric_encryption_id == E2EES_PACK_ALG_SE_AES256GCM) {
-        return &E2EES_AES256_SHA256;
+        return &E2EES_SE_AES256_SHA256;
     } else {
         return NULL;
     }
@@ -175,7 +178,7 @@ se_suite_t *get_se_suite(unsigned symmetric_encryption_id) {
 
 hf_suite_t *get_hf_suite(unsigned hf_id) {
     if (hf_id == E2EES_PACK_ALG_HASH_SHA2_256) {
-        return &E2EES_SHA256;
+        return &E2EES_HF_SHA256;
     } else {
         return NULL;
     }

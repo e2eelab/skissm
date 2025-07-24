@@ -180,10 +180,10 @@ int generate_identity_key(
     // get the cipher suite
     const cipher_suite_t *cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
     if (is_valid_cipher_suite(cipher_suite)) {
-        asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-        asym_priv_key_len = cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
-        sign_pub_key_len = cipher_suite->ds_suite->get_crypto_param().sign_pub_key_len;
-        sign_priv_key_len = cipher_suite->ds_suite->get_crypto_param().sign_priv_key_len;
+        asym_pub_key_len = cipher_suite->kem_suite->get_param().asym_pub_key_len;
+        asym_priv_key_len = cipher_suite->kem_suite->get_param().asym_priv_key_len;
+        sign_pub_key_len = cipher_suite->ds_suite->get_param().sign_pub_key_len;
+        sign_priv_key_len = cipher_suite->ds_suite->get_param().sign_priv_key_len;
     } else {
         e2ees_notify_log(NULL, BAD_CIPHER_SUITE, "generate_identity_key() no cipher suite");
         ret = E2EES_RESULT_FAIL;
@@ -203,7 +203,7 @@ int generate_identity_key(
     if (ret == E2EES_RESULT_SUCC) {
         sign_key_pair = (E2ees__KeyPair *)malloc(sizeof(E2ees__KeyPair));
         e2ees__key_pair__init(sign_key_pair);
-        ret = cipher_suite->ds_suite->sign_key_gen(&(sign_key_pair->public_key), &(sign_key_pair->private_key));
+        ret = cipher_suite->ds_suite->ds_key_gen(&(sign_key_pair->public_key), &(sign_key_pair->private_key));
 
         if (!accurate_key_pair(sign_key_pair, sign_pub_key_len, sign_priv_key_len)) {
             e2ees_notify_log(NULL, BAD_KEY_PAIR, "generate_identity_key() bad sign_key_pair");
@@ -251,9 +251,9 @@ int generate_signed_pre_key(
     // get the cipher suite
     const cipher_suite_t *cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
     if (is_valid_cipher_suite(cipher_suite)) {
-        asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-        asym_priv_key_len = cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
-        sig_len = cipher_suite->ds_suite->get_crypto_param().sig_len;
+        asym_pub_key_len = cipher_suite->kem_suite->get_param().asym_pub_key_len;
+        asym_priv_key_len = cipher_suite->kem_suite->get_param().asym_priv_key_len;
+        sig_len = cipher_suite->ds_suite->get_param().sig_len;
     } else {
         e2ees_notify_log(NULL, BAD_CIPHER_SUITE, "generate_signed_pre_key() no cipher suite");
         ret = E2EES_RESULT_FAIL;
@@ -349,8 +349,8 @@ int generate_opks(
 
     const cipher_suite_t *cipher_suite = get_e2ees_pack(e2ees_pack_id)->cipher_suite;
     if (is_valid_cipher_suite(cipher_suite)) {
-        asym_pub_key_len = cipher_suite->kem_suite->get_crypto_param().asym_pub_key_len;
-        asym_priv_key_len = cipher_suite->kem_suite->get_crypto_param().asym_priv_key_len;
+        asym_pub_key_len = cipher_suite->kem_suite->get_param().asym_pub_key_len;
+        asym_priv_key_len = cipher_suite->kem_suite->get_param().asym_priv_key_len;
     } else {
         e2ees_notify_log(NULL, BAD_CIPHER_SUITE, "generate_opks() no cipher suite");
         ret = E2EES_RESULT_FAIL;

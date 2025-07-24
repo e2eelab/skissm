@@ -41,7 +41,7 @@ extern "C" {
  * @param ciphertext_data_len
  * @return 0 if success
  */
-int aes256_gcm_encrypt(
+int crypto_se_encrypt_aes256_gcm(
     const ProtobufCBinaryData *ad, const uint8_t *aes_key,
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     uint8_t **ciphertext_data, size_t *ciphertext_data_len
@@ -58,7 +58,7 @@ int aes256_gcm_encrypt(
  * @param ciphertext_data_len
  * @return The length of plaintext_data or -1 for decryption error
  */
-int aes256_gcm_decrypt(
+int crypto_se_decrypt_aes256_gcm(
     uint8_t **decrypted_data_out, size_t *decrypted_data_len_out,
     const ProtobufCBinaryData *ad, const uint8_t *aes_key,
     const uint8_t *ciphertext_data, size_t ciphertext_data_len

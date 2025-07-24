@@ -37,7 +37,7 @@
 
 static const uint8_t CURVE25519_BASEPOINT[32] = {9};
 
-static void crypto_curve25519_generate_private_key(uint8_t *private_key) {
+static void crypto_generate_private_key_curve25519(uint8_t *private_key) {
     uint8_t random[CURVE25519_RANDOM_LENGTH];
     get_e2ees_plugin()->common_handler.gen_rand(random, sizeof(random));
 
@@ -48,7 +48,7 @@ static void crypto_curve25519_generate_private_key(uint8_t *private_key) {
     memcpy(private_key, random, CURVE25519_KEY_LENGTH);
 }
 
-int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key) {
+int crypto_ds_key_gen_curve25519(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key) {
     int result;
 
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
@@ -61,17 +61,17 @@ int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinary
     uint8_t signature[CURVE_SIGNATURE_LENGTH];
 
     while (true) {
-        crypto_curve25519_generate_private_key(priv_key->data);
+        crypto_generate_private_key_curve25519(priv_key->data);
 
         curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
-        crypto_curve25519_sign(priv_key->data, msg, 10, signature);
-        result = crypto_curve25519_verify(signature, pub_key->data, msg, 10);
+        crypto_sign_curve25519(priv_key->data, msg, 10, signature);
+        result = crypto_verify_curve25519(signature, pub_key->data, msg, 10);
         if (result != 0) {
             // verify failed, regenerate the key pair
             e2ees_notify_log(
                 NULL,
                 BAD_SIGNATURE,
-                "CURVE25519_crypto_sign_keypair() verify failed, regenerate the key pair."
+                "crypto_generate_private_key_curve25519() verify failed, regenerate the key pair."
             );
         } else {
             // success
@@ -83,19 +83,19 @@ int CURVE25519_crypto_sign_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinary
     return result;
 }
 
-int CURVE25519_crypto_keypair(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key) {
+int crypto_kem_asym_key_gen_curve25519(ProtobufCBinaryData *pub_key, ProtobufCBinaryData *priv_key) {
     priv_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
     priv_key->len = CURVE25519_KEY_LENGTH;
 
     pub_key->data = (uint8_t *)malloc(sizeof(uint8_t) * CURVE25519_KEY_LENGTH);
     pub_key->len = CURVE25519_KEY_LENGTH;
 
-    crypto_curve25519_generate_private_key(priv_key->data);
+    crypto_generate_private_key_curve25519(priv_key->data);
 
     return curve25519_donna(pub_key->data, priv_key->data, CURVE25519_BASEPOINT);
 }
 
-int CURVE25519_crypto_sign_signature(
+int crypto_ds_sign_curve25519(
     uint8_t *signature_out, size_t *signature_out_len,
     const uint8_t *msg, size_t msg_len,
     const uint8_t *private_key
@@ -106,7 +106,7 @@ int CURVE25519_crypto_sign_signature(
     return curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
 }
 
-int CURVE25519_crypto_sign_verify(
+int crypto_ds_verify_curve25519(
     const uint8_t *signature_in, size_t signature_in_len,
     const uint8_t *msg, size_t msg_len,
     const uint8_t *public_key
@@ -114,7 +114,7 @@ int CURVE25519_crypto_sign_verify(
     return curve25519_verify(signature_in, public_key, msg, msg_len);
 }
 
-int crypto_curve25519_dh(
+int crypto_kem_decaps_curve25519(
     uint8_t *shared_secret,
     const ProtobufCBinaryData *our_key,
     const ProtobufCBinaryData *ciphertext
@@ -122,7 +122,7 @@ int crypto_curve25519_dh(
     return curve25519_donna(shared_secret, our_key->data, ciphertext->data);
 }
 
-void crypto_curve25519_sign(
+void crypto_sign_curve25519(
     uint8_t *private_key,
     uint8_t *msg, size_t msg_len,
     uint8_t *signature_out
@@ -132,7 +132,7 @@ void crypto_curve25519_sign(
     curve25519_sign(signature_out, private_key, msg, msg_len, nonce);
 }
 
-int crypto_curve25519_verify(
+int crypto_verify_curve25519(
     uint8_t *signature_in, uint8_t *public_key,
     uint8_t *msg, size_t msg_len
 ) {
@@ -209,13 +209,13 @@ int crypto_aes_decrypt_gcm(
     return ret;
 }
 
-size_t encrypt_aes_data_with_iv(
+size_t crypto_encrypt_aes_data_with_iv(
     const uint8_t *plaintext_data, size_t plaintext_data_len,
     const uint8_t aes_key[AES256_KEY_LENGTH],
     const uint8_t iv[AES256_DATA_IV_LENGTH],
     uint8_t **ciphertext_data
 ) {
-    size_t ciphertext_data_len = aes256_gcm_ciphertext_data_len(plaintext_data_len);
+    size_t ciphertext_data_len = crypto_aes256_gcm_ciphertext_data_len(plaintext_data_len);
     *ciphertext_data = (uint8_t *)malloc(ciphertext_data_len);
 
     mbedtls_gcm_context ctx;
@@ -249,22 +249,30 @@ size_t encrypt_aes_data_with_iv(
     }
 }
 
+size_t crypto_encrypt_aes_data(
+        const uint8_t *plaintext_data, size_t plaintext_data_len,
+        const uint8_t aes_key[AES256_KEY_LENGTH],
+        uint8_t **ciphertext_data
+) {
+    uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
+    return crypto_encrypt_aes_data_with_iv(plaintext_data, plaintext_data_len, aes_key, iv, ciphertext_data);
+}
 
-size_t aes256_gcm_ciphertext_data_len(size_t plaintext_data_length) {
+size_t crypto_aes256_gcm_ciphertext_data_len(size_t plaintext_data_length) {
     return plaintext_data_length + AES256_GCM_TAG_LENGTH;
 }
 
-size_t aes256_gcm_plaintext_data_len(size_t ciphertext_data_len) {
+size_t crypto_aes256_gcm_plaintext_data_len(size_t ciphertext_data_len) {
     return ciphertext_data_len - AES256_GCM_TAG_LENGTH;
 }
 
-size_t decrypt_aes_data_with_iv(
+size_t crypto_decrypt_aes_data_with_iv(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
     const uint8_t aes_key[AES256_KEY_LENGTH],
     const uint8_t iv[AES256_DATA_IV_LENGTH],
     uint8_t **plaintext_data
 ) {
-    size_t plaintext_data_len = aes256_gcm_plaintext_data_len(ciphertext_data_len);
+    size_t plaintext_data_len = crypto_aes256_gcm_plaintext_data_len(ciphertext_data_len);
     *plaintext_data = (uint8_t *)malloc(plaintext_data_len);
 
     mbedtls_gcm_context ctx;
@@ -300,16 +308,16 @@ size_t decrypt_aes_data_with_iv(
     }
 }
 
-size_t decrypt_aes_data(
+size_t crypto_decrypt_aes_data(
     const uint8_t *ciphertext_data, size_t ciphertext_data_len,
     const uint8_t aes_key[AES256_KEY_LENGTH],
     uint8_t **plaintext_data
 ) {
     uint8_t iv[AES256_DATA_IV_LENGTH] = {0};
-    return decrypt_aes_data_with_iv(ciphertext_data, ciphertext_data_len, aes_key, iv, plaintext_data);
+    return crypto_decrypt_aes_data_with_iv(ciphertext_data, ciphertext_data_len, aes_key, iv, plaintext_data);
 }
 
-int encrypt_aes_file(
+int crypto_encrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t aes_key[AES256_KEY_LENGTH]
 ) {
@@ -319,7 +327,7 @@ int encrypt_aes_file(
         e2ees_notify_log(
             NULL,
             BAD_FILE_ENCRYPTION,
-            "encrypt_aes_file() in_file_path: %s, with errorno: %d.", in_file_path, errno);
+            "crypto_encrypt_aes_file() in_file_path: %s, with errorno: %d.", in_file_path, errno);
         return -1;
     }
 
@@ -328,7 +336,7 @@ int encrypt_aes_file(
         e2ees_notify_log(
             NULL,
             BAD_FILE_ENCRYPTION,
-            "encrypt_aes_file() out_file_path: %s, with errorno: %d.", out_file_path, errno);
+            "crypto_encrypt_aes_file() out_file_path: %s, with errorno: %d.", out_file_path, errno);
         // release
         fclose(infile);
         return -1;
@@ -391,7 +399,7 @@ int encrypt_aes_file(
     return ret;
 }
 
-int decrypt_aes_file(
+int crypto_decrypt_aes_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t aes_key[AES256_KEY_LENGTH]
 ) {
@@ -401,7 +409,7 @@ int decrypt_aes_file(
         e2ees_notify_log(
             NULL,
             BAD_FILE_DECRYPTION,
-            "decrypt_aes_file() in_file_path: %s, with errorno: %d.", in_file_path, errno);
+            "crypto_decrypt_aes_file() in_file_path: %s, with errorno: %d.", in_file_path, errno);
         return -1;
     }
 
@@ -410,7 +418,7 @@ int decrypt_aes_file(
         e2ees_notify_log(
             NULL,
             BAD_FILE_DECRYPTION,
-            "decrypt_aes_file() out_file_path: %s, with errorno: %d.", out_file_path, errno);
+            "crypto_decrypt_aes_file() out_file_path: %s, with errorno: %d.", out_file_path, errno);
         // release
         fclose(infile);
         return -1;
@@ -486,7 +494,7 @@ int decrypt_aes_file(
     return ret;
 }
 
-int encrypt_file(
+int crypto_encrypt_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t *password,
     const size_t password_len
@@ -496,7 +504,7 @@ int encrypt_file(
     uint8_t salt[salt_len];
     uint8_t aes_key[AES256_KEY_LENGTH];
 
-    crypto_hkdf_sha256(
+    crypto_hf_hkdf_sha256(
         password, password_len,
         salt, salt_len,
         (uint8_t *)AES256_FILE_KDF_INFO, sizeof(AES256_FILE_KDF_INFO) - 1,
@@ -504,10 +512,10 @@ int encrypt_file(
     );
 
     // perform aes encryption
-    return encrypt_aes_file(in_file_path, out_file_path, aes_key);
+    return crypto_encrypt_aes_file(in_file_path, out_file_path, aes_key);
 }
 
-int decrypt_file(
+int crypto_decrypt_file(
     const char *in_file_path, const char *out_file_path,
     const uint8_t *password,
     const size_t password_len
@@ -517,7 +525,7 @@ int decrypt_file(
     uint8_t salt[salt_len];
     uint8_t aes_key[AES256_KEY_LENGTH];
 
-    crypto_hkdf_sha256(
+    crypto_hf_hkdf_sha256(
         password, password_len,
         salt, salt_len,
         (uint8_t *)AES256_FILE_KDF_INFO, sizeof(AES256_FILE_KDF_INFO) - 1,
@@ -525,10 +533,10 @@ int decrypt_file(
     );
 
     // perform aes decryption
-    return decrypt_aes_file(in_file_path, out_file_path, aes_key);
+    return crypto_decrypt_aes_file(in_file_path, out_file_path, aes_key);
 }
 
-int crypto_hkdf_sha256(
+int crypto_hf_hkdf_sha256(
     const uint8_t *input, size_t input_len,
     const uint8_t *salt, size_t salt_len,
     const uint8_t *info, size_t info_len, uint8_t *output,
@@ -538,7 +546,7 @@ int crypto_hkdf_sha256(
     return mbedtls_hkdf(sha256_info, salt, salt_len, input, input_len, info, info_len, output, output_len);
 }
 
-int crypto_hmac_sha256(
+int crypto_hf_hmac_sha256(
     const uint8_t *key, size_t key_len,
     const uint8_t *input, size_t input_len,
     uint8_t *output
@@ -557,7 +565,7 @@ int crypto_hmac_sha256(
     return ret;
 }
 
-int crypto_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
+int crypto_hf_sha256(const uint8_t *msg, size_t msg_len, uint8_t *hash_out) {
     int ret = E2EES_RESULT_SUCC;
     mbedtls_sha256_context ctx;
 
@@ -613,7 +621,7 @@ int crypto_hash_by_e2ees_pack_id(
         return -1;
     }
 
-    uint32_t hf_len = hf_suite->get_crypto_param().hf_len;
+    uint32_t hf_len = hf_suite->get_param().hf_len;
     *hash_out_len = hf_len;
     *hash_out = (uint8_t *)malloc(sizeof(uint8_t) * hf_len);
     hf_suite->hash(msg, msg_len, *hash_out);
@@ -636,7 +644,7 @@ int crypto_ds_key_gen_by_e2ees_pack_id(
         return -1;
     }
 
-    int result = digital_signature_suite->sign_key_gen(pub_key, priv_key);
+    int result = digital_signature_suite->ds_key_gen(pub_key, priv_key);
     if (result < 0) {
         e2ees_notify_log(
             NULL,
@@ -666,7 +674,7 @@ int crypto_ds_sign_by_e2ees_pack_id(
         );
         return -1;
     }
-    if (private_key == NULL || private_key_len != digital_signature_suite->get_crypto_param().sign_priv_key_len) {
+    if (private_key == NULL || private_key_len != digital_signature_suite->get_param().sign_priv_key_len) {
         e2ees_notify_log(
             NULL,
             BAD_PRIVATE_KEY,
@@ -675,7 +683,7 @@ int crypto_ds_sign_by_e2ees_pack_id(
         return -1;
     }
 
-    int sig_len = digital_signature_suite->get_crypto_param().sig_len;
+    size_t sig_len = digital_signature_suite->get_param().sig_len;
     *signature_out = (uint8_t *)malloc(sizeof(uint8_t) * sig_len);
     int result = digital_signature_suite->sign(*signature_out, signature_out_len, msg, msg_len, private_key);
     if (result < 0) {
@@ -706,7 +714,7 @@ int crypto_ds_verify_by_e2ees_pack_id(
         );
         return -1;
     }
-    if (public_key == NULL || public_key_len != digital_signature_suite->get_crypto_param().sign_pub_key_len) {
+    if (public_key == NULL || public_key_len != digital_signature_suite->get_param().sign_pub_key_len) {
         e2ees_notify_log(
             NULL,
             BAD_PUBLIC_KEY,

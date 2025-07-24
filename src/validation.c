@@ -38,11 +38,11 @@ bool accurate_key_pair(E2ees__KeyPair *key_pair, uint32_t pub_key_len, uint32_t 
 bool is_valid_cipher_suite(const cipher_suite_t *cipher_suite) {
     if (cipher_suite != NULL) {
         if (cipher_suite->ds_suite != NULL) {
-            if (cipher_suite->ds_suite->get_crypto_param == NULL)
+            if (cipher_suite->ds_suite->get_param == NULL)
                 return false;
             if (cipher_suite->ds_suite->sign == NULL)
                 return false;
-            if (cipher_suite->ds_suite->sign_key_gen == NULL)
+            if (cipher_suite->ds_suite->ds_key_gen == NULL)
                 return false;
             if (cipher_suite->ds_suite->verify == NULL)
                 return false;
@@ -52,7 +52,7 @@ bool is_valid_cipher_suite(const cipher_suite_t *cipher_suite) {
         if (cipher_suite->kem_suite != NULL) {
             if (cipher_suite->kem_suite->asym_key_gen == NULL)
                 return false;
-            if (cipher_suite->kem_suite->get_crypto_param == NULL)
+            if (cipher_suite->kem_suite->get_param == NULL)
                 return false;
             if (cipher_suite->kem_suite->encaps == NULL)
                 return false;
@@ -66,7 +66,7 @@ bool is_valid_cipher_suite(const cipher_suite_t *cipher_suite) {
                 return false;
             if (cipher_suite->se_suite->encrypt == NULL)
                 return false;
-            if (cipher_suite->se_suite->get_crypto_param == NULL)
+            if (cipher_suite->se_suite->get_param == NULL)
                 return false;
         } else {
             return false;

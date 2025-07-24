@@ -374,7 +374,7 @@ void mock_server_signed_signature(
 ) {
     uint32_t e2ees_pack_id_raw = gen_e2ees_pack_id_pqc();
     const cipher_suite_t *cipher_suite = get_e2ees_pack(e2ees_pack_id_raw)->cipher_suite;
-    int sig_len = cipher_suite->ds_suite->get_crypto_param().sig_len;
+    int sig_len = cipher_suite->ds_suite->get_param().sig_len;
 
     *out = (E2ees__ServerSignedSignature *)malloc(sizeof(E2ees__ServerSignedSignature));
     e2ees__server_signed_signature__init(*out);
